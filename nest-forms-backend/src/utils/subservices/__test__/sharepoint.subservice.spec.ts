@@ -24,7 +24,7 @@ import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import SharepointSubservice from '../sharepoint.subservice'
 
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
-  extractFormSubject: jest.fn(),
+  extractFormSubjectPlain: jest.fn(),
 }))
 describe('SharepointSubservice', () => {
   let service: SharepointSubservice

@@ -45,12 +45,21 @@ module.exports = {
     /* Lodash rules that dont make sense */
     'lodash/prefer-noop': 'off',
     'lodash-fp/prefer-constant': 'off',
+    'import/prefer-default-export': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
   },
   overrides: [
     {
-      files: ['**/*.spec.ts'],
+      files: ['**/*.spec.ts', '**/*.e2e-spec.ts', 'test/**/*.ts'],
       rules: {
         '@typescript-eslint/dot-notation': 'off', // to test private methods
+        '@darraghor/nestjs-typed/controllers-should-supply-api-tags': 'off',
+        '@darraghor/nestjs-typed/api-method-should-specify-api-response': 'off',
+        '@darraghor/nestjs-typed/injectable-should-be-provided': 'off',
+        'pii/no-email': 'off',
+        'pii/no-dob': 'off',
+        'pii/no-ip': 'off',
+        'pii/no-phone-number': 'off',
       },
     },
     {

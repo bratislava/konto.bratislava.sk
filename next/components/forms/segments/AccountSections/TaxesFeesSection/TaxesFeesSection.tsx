@@ -7,15 +7,16 @@ import TaxesFeesCards from './TaxesFeesCards'
 import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethodChangeModal'
 import TaxesFeesErrorCard from './TaxesFeesErrorCard'
 import TaxesFeesInPreparationCard from './TaxesFeesInPreparationCard'
+import { useStrapiTax } from './useStrapiTax'
 import { useTaxFeesSection } from './useTaxFeesSection'
 
 const TaxesFeesSection = () => {
   const {
     taxesData,
-    strapiTax: { displayCurrentYearTaxInPreparation, accountCommunicationConsentText },
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
   } = useTaxFeesSection()
+  const { displayCurrentYearTaxInPreparation, accountCommunicationConsentText } = useStrapiTax()
   const { t } = useTranslation('account')
 
   const displayErrorCard = !taxesData.isInNoris

@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-secrets/no-secrets */
+import type { WithImplicitCoercion } from 'node:buffer'
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
@@ -13,6 +14,7 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
@@ -42,6 +44,10 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import {
+  SendMessageNasesSender,
+  SendMessageNasesSenderType,
+} from '../types/send-message-nases-sender.type'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -262,9 +268,9 @@ export default class NasesUtilsService {
       .catch((error) => {
         throw this.throwerErrorGuard.NotFoundException(
           NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          `${NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR} error: ${<
-            string
-          >error}`,
+          NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR,
+          undefined,
+          error,
         )
       })
   }
@@ -352,7 +358,9 @@ export default class NasesUtilsService {
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `There was an error during converting json form data to xml: ${<string>error}`,
+          'There was an error during converting json form data to xml.',
+          undefined,
+          error,
         )
       }
     }
@@ -360,11 +368,22 @@ export default class NasesUtilsService {
     if (!message) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        `Message of body is not defined. There is no base64 nor schema`,
+        'Message of body is not defined. There is no base64 nor schema',
       )
     }
 
     return message
+  }
+
+  private getSenderId(sender: SendMessageNasesSender): string {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return sender.senderUri
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.configService.getOrThrow<string>('NASES_SENDER_URI')
+    }
+
+    throw new Error('Invalid sender type')
   }
 
   /**
@@ -384,7 +403,7 @@ export default class NasesUtilsService {
    */
   private async createEnvelopeSendMessage(
     form: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -403,10 +422,18 @@ export default class NasesUtilsService {
 
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
-    const senderId =
-      senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+      )
+    }
+    const subject = extractFormSubjectTechnical(
+      formDefinition,
+      form.formDataJson,
+    )
+    const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
-    let subject: string = form.id
     const mimeType = isSigned
       ? 'application/vnd.etsi.asic-e+zip'
       : 'application/x-eform-xml'
@@ -414,7 +441,6 @@ export default class NasesUtilsService {
     let attachments: NasesAttachmentXmlObject[] = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
-      subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
 
@@ -500,15 +526,31 @@ export default class NasesUtilsService {
     }`
   }
 
+  private getSendMessageNasesEndpoint = (
+    sender: SendMessageNasesSender,
+  ):
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceivePost => {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return this.clientsService.slovenskoSkApi
+        .apiSktalkReceiveAndSaveToOutboxPost
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
+    }
+
+    throw new Error('Invalid sender type')
+  }
+
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<NasesSendResponse> {
     let message
     try {
-      message = await this.createEnvelopeSendMessage(data, senderUri)
+      message = await this.createEnvelopeSendMessage(data, sender)
     } catch (error) {
       return {
         status: 500,
@@ -517,16 +559,8 @@ export default class NasesUtilsService {
         },
       }
     }
-
-    // skip saving the message to outbox if we are sending it to ourselves as it will be available in inbox
-    const sktalkReceiveFn =
-      !senderUri ||
-      senderUri === (this.configService.get<string>('NASES_SENDER_URI') ?? '')
-        ? this.clientsService.slovenskoSkApi.apiSktalkReceivePost
-        : this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
-
     try {
-      const response = await sktalkReceiveFn(
+      const response = await this.getSendMessageNasesEndpoint(sender)(
         {
           message,
         },

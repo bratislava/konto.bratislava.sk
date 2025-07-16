@@ -9,8 +9,8 @@ import {
 } from 'forms-shared/versioning/version-compare'
 import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
+import { makeClientFormDefinition } from '../../../components/forms/clientFormDefinitions'
 import FormPage, { FormPageProps } from '../../../components/forms/FormPage'
-import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { ROUTES } from '../../../frontend/api/constants'
@@ -34,22 +34,22 @@ type Params = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & GlobalAppProps, Params>(
-  async ({ context, getAccessToken, isSignedIn }) => {
+  async ({ context, fetchAuthSession, isSignedIn }) => {
     if (!context.params) {
       return { notFound: true }
     }
 
     const { slug, id: formId } = context.params
-    const formDefinition = getFormDefinitionBySlug(slug)
-    if (!formDefinition) {
+    const serverFormDefinition = getFormDefinitionBySlug(slug)
+    if (!serverFormDefinition) {
       return { notFound: true }
     }
 
     try {
       // These promises cannot be run in parallel because the redirects in catch blocks depends on the error response of the first promise.
       const { data: form } = await formsClient.nasesControllerGetForm(formId, {
-        accessToken: 'onlyAuthenticated',
-        accessTokenSsrGetFn: getAccessToken,
+        authStrategy: 'authOrGuestWithToken',
+        getSsrAuthSession: fetchAuthSession,
       })
       if (
         !form ||
@@ -61,8 +61,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
 
       const [{ data: files }, strapiForm] = await Promise.all([
         formsClient.filesControllerGetFilesStatusByForm(formId, {
-          accessToken: 'onlyAuthenticated',
-          accessTokenSsrGetFn: getAccessToken,
+          authStrategy: 'authOrGuestWithToken',
+          getSsrAuthSession: fetchAuthSession,
         }),
         fetchStrapiForm(slug),
       ])
@@ -72,19 +72,19 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
       const formMigrationRequired = Boolean(isSignedIn && !form.userExternalId)
 
       const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
-        formDefinition,
+        serverFormDefinition,
         context,
       )
       if (!embeddedSuccess) {
         return { notFound: true }
       }
       const initialFormDataJson =
-        form.formDataJson ?? getDefaultFormDataForFormDefinition(formDefinition)
+        form.formDataJson ?? getDefaultFormDataForFormDefinition(serverFormDefinition)
 
       return {
         props: {
           formServerContext: {
-            formDefinition: makeSerializableFormDefinition(formDefinition),
+            formDefinition: makeClientFormDefinition(serverFormDefinition),
             formId,
             initialFormDataJson,
             initialServerFiles: files,
@@ -92,7 +92,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
             initialFormSent,
             initialSummaryJson: getInitialSummaryJson(
               context.query,
-              formDefinition,
+              serverFormDefinition,
               initialFormDataJson,
             ),
             formMigrationRequired,
@@ -101,7 +101,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
             versionCompareContinueAction: environment.featureToggles.versioning
               ? versionCompareContinueAction({
                   currentVersion: form.jsonVersion,
-                  latestVersion: formDefinition.jsonVersion,
+                  latestVersion: serverFormDefinition.jsonVersion,
                 })
               : VersionCompareContinueAction.None,
           },

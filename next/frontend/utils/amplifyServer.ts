@@ -1,11 +1,12 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { AuthError } from 'aws-amplify/auth'
-import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth/server'
+import { AuthError, AuthSession } from 'aws-amplify/auth'
+import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
 
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
+import type { GlobalAppProps } from '../../pages/_app'
 import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import { AmplifyServerContextSpec } from './amplifyTypes'
@@ -16,23 +17,6 @@ import {
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
 } from './queryParamRedirect'
-
-const getIsSignedIn = async (amplifyContextSpec: AmplifyServerContextSpec) => {
-  try {
-    const { userId } = await getCurrentUser(amplifyContextSpec)
-    return Boolean(userId)
-  } catch (error) {
-    if (error instanceof AuthError && error.name === 'UserUnAuthenticatedException') {
-      return false
-    }
-    throw error
-  }
-}
-
-const getAccessToken = async (amplifyContextSpec: AmplifyServerContextSpec) => {
-  const authSession = await fetchAuthSession(amplifyContextSpec)
-  return authSession.tokens?.accessToken.toString() ?? null
-}
 
 /**
  * In Amplify V6, `getServerSideProps` must run in Amplify server context to execute Amplify operations. This is a
@@ -61,7 +45,7 @@ export const amplifyGetServerSideProps = <
   getServerSidePropsFn: (args: {
     context: GetServerSidePropsContext<Params, Preview>
     amplifyContextSpec: AmplifyServerContextSpec
-    getAccessToken: () => Promise<string | null>
+    fetchAuthSession: () => Promise<AuthSession>
     isSignedIn: boolean
   }) => Promise<GetServerSidePropsResult<Props>>,
   options?: {
@@ -75,10 +59,29 @@ export const amplifyGetServerSideProps = <
     baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
-        const isSignedIn = await getIsSignedIn(contextSpec)
-        const getAccessTokenFn = isSignedIn
-          ? () => getAccessToken(contextSpec)
-          : () => Promise.resolve(null)
+        const fetchAuthSessionFn = () => fetchAuthSession(contextSpec)
+
+        let authSession: AuthSession
+        try {
+          // `fetchAuthSession` must be called in each request, otherwise guests wouldn't receive identity ID
+          authSession = await fetchAuthSessionFn()
+        } catch (error) {
+          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+          if (
+            error instanceof AuthError &&
+            (error.name === 'ResourceNotFoundException' || error.name === 'NotAuthorizedException')
+          ) {
+            return {
+              props: {
+                appProps: {
+                  amplifyResetCookies: true,
+                },
+              } satisfies GlobalAppProps as unknown as Props,
+            }
+          }
+          throw error
+        }
+        const isSignedIn = Boolean(authSession.tokens)
 
         if (
           options?.redirectQueryParam &&
@@ -98,7 +101,7 @@ export const amplifyGetServerSideProps = <
         if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
           if (options?.redirectQueryParam) {
             const safeRedirect = getSafeRedirect(context.query[redirectQueryParam])
-            const destination = await getRedirectUrl(safeRedirect, getAccessTokenFn)
+            const destination = await getRedirectUrl(safeRedirect, fetchAuthSessionFn)
 
             return {
               redirect: {
@@ -124,17 +127,22 @@ export const amplifyGetServerSideProps = <
           getServerSidePropsFn({
             context,
             amplifyContextSpec: contextSpec,
-            getAccessToken: getAccessTokenFn,
+            fetchAuthSession: fetchAuthSessionFn,
             isSignedIn,
           }),
         ])
+        const guestIdentityId = isSignedIn ? null : authSession.identityId!
 
         if ('props' in getServerSidePropsResult && !options?.skipSsrAuthContext) {
           return {
             props: {
               // props could be a promise, so we need to await it, if it is not a promise, it will be resolved immediately
               ...(await getServerSidePropsResult.props),
-              [ssrAuthContextPropKey]: { isSignedIn, userAttributes },
+              [ssrAuthContextPropKey]: {
+                isSignedIn,
+                userAttributes,
+                guestIdentityId,
+              },
             },
           } satisfies GetServerSidePropsResult<
             Props & { [ssrAuthContextPropKey]: SsrAuthContextType }

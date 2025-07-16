@@ -3,6 +3,8 @@ import { PrismaClient, Prisma } from '@prisma/client'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { escapeForLogfmt } from '../utils/logging'
 
+export const ACTIVE_USER_FILTER = { isDeceased: false }
+
 @Injectable()
 export class PrismaService
   extends PrismaClient<Prisma.PrismaClientOptions, 'info' | 'warn' | 'error'>

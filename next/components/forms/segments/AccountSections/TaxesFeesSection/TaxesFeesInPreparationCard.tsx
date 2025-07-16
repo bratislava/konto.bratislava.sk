@@ -2,12 +2,10 @@ import React from 'react'
 
 import Alert from '../../../info-components/Alert'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
-import { useTaxFeesSection } from './useTaxFeesSection'
+import { useStrapiTax } from './useStrapiTax'
 
 const TaxesFeesInPreparationCard = () => {
-  const {
-    strapiTax: { currentYearTaxInPreparationTitle, currentYearTaxInPreparationText },
-  } = useTaxFeesSection()
+  const { currentYearTaxInPreparationTitle, currentYearTaxInPreparationText } = useStrapiTax()
 
   return (
     <Alert

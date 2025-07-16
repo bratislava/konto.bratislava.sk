@@ -2,7 +2,6 @@ import { DownloadIcon, UploadIcon } from '@assets/ui-icons'
 import Editor from '@monaco-editor/react'
 import Form from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
-import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampleForms'
 import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
 import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
@@ -16,6 +15,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { downloadBlob } from '../../frontend/utils/general'
+import { ClientPlaygroundFormDefinition } from './clientFormDefinitions'
 import Button from './simple-components/ButtonNew'
 import ThemedForm from './ThemedForm'
 import { FormDataContext } from './useFormData'
@@ -25,8 +25,8 @@ import { FormValidatorRegistryProvider, useFormValidatorRegistry } from './useFo
 import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
 
 export type FormsPlaygroundProps = {
-  formDefinitions: FormDefinition[]
-  devFormDefinitions: FormDefinition[]
+  formDefinitions: ClientPlaygroundFormDefinition[]
+  devFormDefinitions: ClientPlaygroundFormDefinition[]
   exampleForms: typeof exampleForms
   exampleDevForms: typeof exampleDevForms
 }

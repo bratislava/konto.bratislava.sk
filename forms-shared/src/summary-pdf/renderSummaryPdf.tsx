@@ -11,7 +11,7 @@ import { GenericObjectType, ValidationData } from '@rjsf/utils'
 
 export type RenderSummaryPdfPayload = {
   formSummary: FormSummary
-  validationData?: ValidationData<GenericObjectType>
+  validationData: ValidationData<GenericObjectType> | null
   /**
    * Playwright must be installed and managed by the consumer of this function (e.g. in Docker) to run correctly, and is
    * only a peer dependency of this package.
@@ -37,7 +37,7 @@ export const renderSummaryPdf = async ({
     <SummaryPdf
       formSummary={formSummary}
       validationData={validationData}
-      cssToInject={summaryPdfCss.toString()}
+      cssToInject={summaryPdfCss}
       fileInfos={fileInfos}
     ></SummaryPdf>,
   )

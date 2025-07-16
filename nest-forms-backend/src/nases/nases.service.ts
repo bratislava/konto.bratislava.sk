@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
+import {
+  FormError,
+  FormOwnerType,
+  Forms,
+  FormState,
+  Prisma,
+} from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { evaluateFormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import {
   verifyFormSignature,
@@ -22,6 +28,8 @@ import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import { isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
+import { getUserIco, userToFormOwnerType } from '../auth-v2/utils/user-utils'
 import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -52,6 +60,7 @@ import {
 import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
+import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
@@ -87,13 +96,14 @@ export default class NasesService {
       })
       .then((response) => response.data)
       .catch((error) => {
-        console.error(
+        this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
             'Failed to get nases identity, verify if this is because of invalid token or a server issue',
+            undefined,
+            error,
           ),
         )
-        console.error(error)
         return null
       })
     return result
@@ -101,8 +111,7 @@ export default class NasesService {
 
   async createForm(
     requestData: CreateFormRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<CreateFormResponseDto> {
     const formDefinition = getFormDefinitionBySlug(
       requestData.formDefinitionSlug,
@@ -114,18 +123,13 @@ export default class NasesService {
       )
     }
 
-    const data = {
-      userExternalId: user ? user.sub : null,
+    const data: Prisma.FormsUncheckedCreateInput = {
+      userExternalId: isAuthUser(user) ? user.cognitoJwtPayload.sub : null,
+      cognitoGuestIdentityId: isGuestUser(user) ? user.cognitoIdentityId : null,
       formDefinitionSlug: requestData.formDefinitionSlug,
       jsonVersion: formDefinition.jsonVersion,
-      ico,
-      ownerType:
-        user?.['custom:account_type'] === 'po' ||
-        user?.['custom:account_type'] === 'fo-p'
-          ? FormOwnerType.PO
-          : user?.['custom:account_type']
-            ? FormOwnerType.FO
-            : undefined,
+      ico: getUserIco(user),
+      ownerType: userToFormOwnerType(user),
     }
     const result = await this.formsService.createForm(data)
 
@@ -165,6 +169,7 @@ export default class NasesService {
       },
       data: {
         userExternalId: user.sub,
+        cognitoGuestIdentityId: null,
         ico,
         ownerType:
           user?.['custom:account_type'] === 'po' ||
@@ -193,7 +198,7 @@ export default class NasesService {
 
     return {
       ...form,
-      formSubject: extractFormSubject(formDefinition, form.formDataJson),
+      formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
     }
   }
 
@@ -288,11 +293,14 @@ export default class NasesService {
       })
     } catch (error) {
       this.logger.error(
-        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}, error: ${error}`,
+        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}`,
+        error,
       )
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
         NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -392,7 +400,9 @@ export default class NasesService {
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
         `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
           form.id
-        } Error: ${error as string}`,
+        }`,
+        undefined,
+        error,
       )
     }
 
@@ -583,10 +593,13 @@ export default class NasesService {
         form,
         data,
         formDefinition,
-        user.sub,
+        {
+          type: SendMessageNasesSenderType.Eid,
+          senderUri: user.sub,
+        },
       )
     } catch (error) {
-      this.logger.error(`Error sending form to nases: ${error}`)
+      this.logger.error(`Error sending form to nases.`, error)
     }
 
     if (!isSent) {
@@ -597,7 +610,7 @@ export default class NasesService {
       })
 
       // TODO temp SEND_TO_NASES_ERROR log, remove
-      console.log(
+      this.logger.log(
         `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
           form.formSignature,
           null,

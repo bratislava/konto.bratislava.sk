@@ -325,6 +325,47 @@ enum ENUM_CONTENTRELEASESRELEASEACTION_TYPE {
   unpublish
 }
 
+enum ENUM_MUNICIPALSERVICE_COLOR {
+  culture
+  education
+  environment
+  main
+  marianum
+  olo
+  social
+  transport
+  tsb
+}
+
+enum ENUM_MUNICIPALSERVICE_ICON {
+  administration
+  christmas_tree
+  community_gardens
+  connector
+  cultural_organizations
+  events_support
+  excavations
+  front_gardens
+  greenery
+  housing
+  kids_teenagers
+  lamp
+  library
+  management_communications
+  marianum
+  mosquito
+  parking
+  public_space_occupation
+  security
+  spatial_planning
+  swimming_pool
+  taxes
+  towing
+  transport
+  waste
+  zoo
+}
+
 type Error {
   code: String!
   message: String
@@ -442,7 +483,7 @@ type GeneralRelationResponseCollection {
   data: [GeneralEntity!]!
 }
 
-union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | I18NLocale | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -479,6 +520,107 @@ input HelpPageInput {
 
 type HelpPageRelationResponseCollection {
   data: [HelpPageEntity!]!
+}
+
+type Homepage {
+  announcements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementRelationResponseCollection
+  announcementsLegalPerson(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementRelationResponseCollection
+  createdAt: DateTime
+  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  updatedAt: DateTime
+}
+
+type HomepageAnnouncement {
+  buttonText: String!
+  createdAt: DateTime
+  dateFrom: DateTime
+  dateTo: DateTime
+  description: String!
+  href: String!
+  image: UploadFileEntityResponse!
+  title: String!
+  updatedAt: DateTime
+}
+
+type HomepageAnnouncementEntity {
+  attributes: HomepageAnnouncement
+  id: ID
+}
+
+type HomepageAnnouncementEntityResponse {
+  data: HomepageAnnouncementEntity
+}
+
+type HomepageAnnouncementEntityResponseCollection {
+  data: [HomepageAnnouncementEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input HomepageAnnouncementFiltersInput {
+  and: [HomepageAnnouncementFiltersInput]
+  buttonText: StringFilterInput
+  createdAt: DateTimeFilterInput
+  dateFrom: DateTimeFilterInput
+  dateTo: DateTimeFilterInput
+  description: StringFilterInput
+  href: StringFilterInput
+  id: IDFilterInput
+  not: HomepageAnnouncementFiltersInput
+  or: [HomepageAnnouncementFiltersInput]
+  title: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input HomepageAnnouncementInput {
+  buttonText: String
+  dateFrom: DateTime
+  dateTo: DateTime
+  description: String
+  href: String
+  image: ID
+  title: String
+}
+
+type HomepageAnnouncementRelationResponseCollection {
+  data: [HomepageAnnouncementEntity!]!
+}
+
+type HomepageEntity {
+  attributes: Homepage
+  id: ID
+}
+
+type HomepageEntityResponse {
+  data: HomepageEntity
+}
+
+type HomepageEntityResponseCollection {
+  data: [HomepageEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input HomepageFiltersInput {
+  and: [HomepageFiltersInput]
+  announcements: HomepageAnnouncementFiltersInput
+  announcementsLegalPerson: HomepageAnnouncementFiltersInput
+  createdAt: DateTimeFilterInput
+  not: HomepageFiltersInput
+  or: [HomepageFiltersInput]
+  services: MunicipalServiceFiltersInput
+  servicesLegalPerson: MunicipalServiceFiltersInput
+  updatedAt: DateTimeFilterInput
+}
+
+input HomepageInput {
+  announcements: [ID]
+  announcementsLegalPerson: [ID]
+  services: [ID]
+  servicesLegalPerson: [ID]
+}
+
+type HomepageRelationResponseCollection {
+  data: [HomepageEntity!]!
 }
 
 type I18NLocale {
@@ -635,12 +777,197 @@ input LongFilterInput {
   startsWith: Long
 }
 
+type MunicipalService {
+  buttonText: String!
+  categories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryRelationResponseCollection
+  color: ENUM_MUNICIPALSERVICE_COLOR!
+  createdAt: DateTime
+  description: String!
+  href: String!
+  icon: ENUM_MUNICIPALSERVICE_ICON!
+  tags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagRelationResponseCollection
+  title: String!
+  updatedAt: DateTime
+}
+
+type MunicipalServiceCategory {
+  createdAt: DateTime
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  title: String!
+  updatedAt: DateTime
+}
+
+type MunicipalServiceCategoryEntity {
+  attributes: MunicipalServiceCategory
+  id: ID
+}
+
+type MunicipalServiceCategoryEntityResponse {
+  data: MunicipalServiceCategoryEntity
+}
+
+type MunicipalServiceCategoryEntityResponseCollection {
+  data: [MunicipalServiceCategoryEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input MunicipalServiceCategoryFiltersInput {
+  and: [MunicipalServiceCategoryFiltersInput]
+  createdAt: DateTimeFilterInput
+  id: IDFilterInput
+  municipalServices: MunicipalServiceFiltersInput
+  not: MunicipalServiceCategoryFiltersInput
+  or: [MunicipalServiceCategoryFiltersInput]
+  title: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input MunicipalServiceCategoryInput {
+  municipalServices: [ID]
+  title: String
+}
+
+type MunicipalServiceCategoryRelationResponseCollection {
+  data: [MunicipalServiceCategoryEntity!]!
+}
+
+type MunicipalServiceEntity {
+  attributes: MunicipalService
+  id: ID
+}
+
+type MunicipalServiceEntityResponse {
+  data: MunicipalServiceEntity
+}
+
+type MunicipalServiceEntityResponseCollection {
+  data: [MunicipalServiceEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input MunicipalServiceFiltersInput {
+  and: [MunicipalServiceFiltersInput]
+  buttonText: StringFilterInput
+  categories: MunicipalServiceCategoryFiltersInput
+  color: StringFilterInput
+  createdAt: DateTimeFilterInput
+  description: StringFilterInput
+  href: StringFilterInput
+  icon: StringFilterInput
+  id: IDFilterInput
+  not: MunicipalServiceFiltersInput
+  or: [MunicipalServiceFiltersInput]
+  tags: MunicipalServiceTagFiltersInput
+  title: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input MunicipalServiceInput {
+  buttonText: String
+  categories: [ID]
+  color: ENUM_MUNICIPALSERVICE_COLOR
+  description: String
+  href: String
+  icon: ENUM_MUNICIPALSERVICE_ICON
+  tags: [ID]
+  title: String
+}
+
+type MunicipalServiceRelationResponseCollection {
+  data: [MunicipalServiceEntity!]!
+}
+
+type MunicipalServiceTag {
+  createdAt: DateTime
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  title: String!
+  updatedAt: DateTime
+}
+
+type MunicipalServiceTagEntity {
+  attributes: MunicipalServiceTag
+  id: ID
+}
+
+type MunicipalServiceTagEntityResponse {
+  data: MunicipalServiceTagEntity
+}
+
+type MunicipalServiceTagEntityResponseCollection {
+  data: [MunicipalServiceTagEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input MunicipalServiceTagFiltersInput {
+  and: [MunicipalServiceTagFiltersInput]
+  createdAt: DateTimeFilterInput
+  id: IDFilterInput
+  municipalServices: MunicipalServiceFiltersInput
+  not: MunicipalServiceTagFiltersInput
+  or: [MunicipalServiceTagFiltersInput]
+  title: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input MunicipalServiceTagInput {
+  municipalServices: [ID]
+  title: String
+}
+
+type MunicipalServiceTagRelationResponseCollection {
+  data: [MunicipalServiceTagEntity!]!
+}
+
+type MunicipalServicesPage {
+  createdAt: DateTime
+  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  updatedAt: DateTime
+}
+
+type MunicipalServicesPageEntity {
+  attributes: MunicipalServicesPage
+  id: ID
+}
+
+type MunicipalServicesPageEntityResponse {
+  data: MunicipalServicesPageEntity
+}
+
+type MunicipalServicesPageEntityResponseCollection {
+  data: [MunicipalServicesPageEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input MunicipalServicesPageFiltersInput {
+  and: [MunicipalServicesPageFiltersInput]
+  createdAt: DateTimeFilterInput
+  not: MunicipalServicesPageFiltersInput
+  or: [MunicipalServicesPageFiltersInput]
+  services: MunicipalServiceFiltersInput
+  servicesLegalPerson: MunicipalServiceFiltersInput
+  updatedAt: DateTimeFilterInput
+}
+
+input MunicipalServicesPageInput {
+  services: [ID]
+  servicesLegalPerson: [ID]
+}
+
+type MunicipalServicesPageRelationResponseCollection {
+  data: [MunicipalServicesPageEntity!]!
+}
+
 type Mutation {
   """Change user password. Confirm with the current password."""
   changePassword(currentPassword: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
   createContentReleasesRelease(data: ContentReleasesReleaseInput!): ContentReleasesReleaseEntityResponse
   createContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!): ContentReleasesReleaseActionEntityResponse
   createForm(data: FormInput!): FormEntityResponse
+  createHomepageAnnouncement(data: HomepageAnnouncementInput!): HomepageAnnouncementEntityResponse
+  createMunicipalService(data: MunicipalServiceInput!): MunicipalServiceEntityResponse
+  createMunicipalServiceCategory(data: MunicipalServiceCategoryInput!): MunicipalServiceCategoryEntityResponse
+  createMunicipalServiceTag(data: MunicipalServiceTagInput!): MunicipalServiceTagEntityResponse
   createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
   createUploadFolder(data: UploadFolderInput!): UploadFolderEntityResponse
 
@@ -654,6 +981,12 @@ type Mutation {
   deleteForm(id: ID!): FormEntityResponse
   deleteGeneral: GeneralEntityResponse
   deleteHelpPage: HelpPageEntityResponse
+  deleteHomepage: HomepageEntityResponse
+  deleteHomepageAnnouncement(id: ID!): HomepageAnnouncementEntityResponse
+  deleteMunicipalService(id: ID!): MunicipalServiceEntityResponse
+  deleteMunicipalServiceCategory(id: ID!): MunicipalServiceCategoryEntityResponse
+  deleteMunicipalServiceTag(id: ID!): MunicipalServiceTagEntityResponse
+  deleteMunicipalServicesPage: MunicipalServicesPageEntityResponse
   deleteTax: TaxEntityResponse
   deleteUploadFile(id: ID!): UploadFileEntityResponse
   deleteUploadFolder(id: ID!): UploadFolderEntityResponse
@@ -686,6 +1019,12 @@ type Mutation {
   updateForm(data: FormInput!, id: ID!): FormEntityResponse
   updateGeneral(data: GeneralInput!): GeneralEntityResponse
   updateHelpPage(data: HelpPageInput!): HelpPageEntityResponse
+  updateHomepage(data: HomepageInput!): HomepageEntityResponse
+  updateHomepageAnnouncement(data: HomepageAnnouncementInput!, id: ID!): HomepageAnnouncementEntityResponse
+  updateMunicipalService(data: MunicipalServiceInput!, id: ID!): MunicipalServiceEntityResponse
+  updateMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, id: ID!): MunicipalServiceCategoryEntityResponse
+  updateMunicipalServiceTag(data: MunicipalServiceTagInput!, id: ID!): MunicipalServiceTagEntityResponse
+  updateMunicipalServicesPage(data: MunicipalServicesPageInput!): MunicipalServicesPageEntityResponse
   updateTax(data: TaxInput!): TaxEntityResponse
   updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
   updateUploadFolder(data: UploadFolderInput!, id: ID!): UploadFolderEntityResponse
@@ -726,9 +1065,19 @@ type Query {
   forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection
   general: GeneralEntityResponse
   helpPage: HelpPageEntityResponse
+  homepage: HomepageEntityResponse
+  homepageAnnouncement(id: ID): HomepageAnnouncementEntityResponse
+  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementEntityResponseCollection
   i18NLocale(id: ID): I18NLocaleEntityResponse
   i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe
+  municipalService(id: ID): MunicipalServiceEntityResponse
+  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
+  municipalServiceCategory(id: ID): MunicipalServiceCategoryEntityResponse
+  municipalServiceTag(id: ID): MunicipalServiceTagEntityResponse
+  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagEntityResponseCollection
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceEntityResponseCollection
+  municipalServicesPage: MunicipalServicesPageEntityResponse
   tax: TaxEntityResponse
   uploadFile(id: ID): UploadFileEntityResponse
   uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection

@@ -2,15 +2,19 @@ import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { removeAllCookiesAndClearLocalStorage } from 'frontend/utils/amplifyClient'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
+import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
+import {
+  removeAllCookiesAndClearLocalStorage,
+  removeAmplifyGuestIdentityIdCookies,
+} from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
@@ -32,6 +36,7 @@ const LoginPage = () => {
   const { redirect, getRouteWithRedirect, getRedirectQueryParams } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
+  const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -47,6 +52,9 @@ const LoginPage = () => {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
+        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+        removeAmplifyGuestIdentityIdCookies()
+        await prepareFormMigration()
         await redirect()
         return
       }

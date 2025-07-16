@@ -94,3 +94,21 @@
 - Changed confirmation email:
   - Added option to use same email as provided in applicant details
   - Added option to provide multiple emails for confirmation
+
+## Žiadosť o nájom bytu (ziadost-o-najom-bytu)
+
+### 2.0.0 (12-05-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2772)
+
+- Various complex changes, see PR.
+
+## Objednávka informatívneho zákresu sietí (tsb-objednavka-informativneho-zakresu-sieti)
+
+### 1.0.1 (17-05-2024 - https://github.com/bratislava/konto.bratislava.sk/pull/2838)
+
+- Changed title and helptext for the map snapshot field (`snimkaMapy`) to reference "ZBGIS Katastrálna mapa".
+
+## Žiadosť o stanovisko k projektovej dokumentácii (tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii)
+
+### 1.0.1 (17-05-2024 - https://github.com/bratislava/konto.bratislava.sk/pull/2838)
+
+- Changed title and helptext for the map snapshot field (`vyznaceneZaujmoveUzemie`) to reference "ZBGIS Katastrálna mapa".

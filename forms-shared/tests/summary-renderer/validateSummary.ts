@@ -19,7 +19,7 @@ describe('validateSummary', () => {
   })
 
   describe('Simple validation', () => {
-    const { schema } = object('wrapper', {}, {}, [
+    const { schema } = object('wrapper', {}, [
       input('requiredInput', { type: 'text', title: 'Required input', required: true }, {}),
       input('optionalInput', { type: 'text', title: 'Optional input' }, {}),
     ])
@@ -60,7 +60,7 @@ describe('validateSummary', () => {
   })
 
   describe('File upload validation', () => {
-    const { schema } = object('wrapper', {}, {}, [fileUpload('file', { title: 'File' }, {})])
+    const { schema } = object('wrapper', {}, [fileUpload('file', { title: 'File' }, {})])
 
     test('should validate successfully for valid file status', () => {
       const result = validateSummary({
@@ -124,9 +124,7 @@ describe('validateSummary', () => {
   })
 
   describe('Multiple file upload validation', () => {
-    const { schema } = object('wrapper', {}, {}, [
-      fileUploadMultiple('files', { title: 'File' }, {}),
-    ])
+    const { schema } = object('wrapper', {}, [fileUploadMultiple('files', { title: 'File' }, {})])
 
     test('should handle multiple file upload scenario', () => {
       const result = validateSummary({

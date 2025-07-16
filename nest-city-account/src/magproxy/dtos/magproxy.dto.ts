@@ -1,10 +1,10 @@
-import { ResponseRpoLegalPersonDto } from '../../generated-clients/new-magproxy'
-import { ResponseErrorDto } from '../../utils/guards/dtos/error.dto'
+import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
+import { ResponseErrorInternalDto } from '../../utils/guards/dtos/error.dto'
 
 export interface RfoDataMagproxyDto {
   statusCode: number
   data: RfoDataDataDto | null
-  errorData: ResponseErrorDto | null
+  errorData: ResponseErrorInternalDto | null
 }
 
 export interface RfoDataDataDto {
@@ -27,5 +27,5 @@ enum RfoDocumentType {
 export interface RpoDataMagproxyDto {
   statusCode: number
   data: ResponseRpoLegalPersonDto | null
-  errorData: ResponseErrorDto | null
+  errorData: ResponseErrorInternalDto | null
 }

@@ -1,19 +1,30 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { PaymentStatus, Prisma, Tax, TaxPayer } from '@prisma/client'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { NorisPaymentsDto, NorisTaxPayersDto } from '../../noris/noris.dto'
 import { NorisService } from '../../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../../noris/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
-import { TaxIdVariableSymbol } from '../../utils/types/types.prisma'
+import {
+  TaxIdVariableSymbolYear,
+  TaxWithTaxPayer,
+} from '../../utils/types/types.prisma'
 import { AdminService } from '../admin.service'
 import { RequestUpdateNorisDeliveryMethodsData } from '../dtos/requests.dto'
+import * as taxDetailHelper from '../utils/tax-detail.helper'
+
+jest.mock('../utils/tax-detail.helper')
 
 describe('TasksService', () => {
   let service: AdminService
+
+  let prismaMock: PrismaService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,12 +46,17 @@ describe('TasksService', () => {
     }).compile()
 
     service = module.get<AdminService>(AdminService)
+    prismaMock = module.get<PrismaService>(PrismaService)
+
+    jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+    jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
   })
 
   it('should be defined', () => {
     expect(service).toBeDefined()
   })
 
+  // eslint-disable-next-line no-secrets/no-secrets
   describe('updateDeliveryMethodsInNoris', () => {
     const mockDate1 = '2024-01-01'
     const mockDate2 = '2024-01-02'
@@ -237,9 +253,9 @@ describe('TasksService', () => {
 
   describe('updateTaxesFromNoris', () => {
     it('should update taxes with valid data', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
-        { id: 2, variableSymbol: 'VS2' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+        { id: 2, variableSymbol: 'VS2', year: 2025 },
       ]
       const mockData = [
         { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },
@@ -262,10 +278,10 @@ describe('TasksService', () => {
 
       await service.updateTaxesFromNoris(mockTaxes)
 
-      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith([
-        'VS1',
-        'VS2',
-      ])
+      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
+        ['VS1', 'VS2'],
+        [2024, 2025],
+      )
       expect(service['prismaService'].$transaction).toHaveBeenCalledWith([
         expect.any(Function),
         expect.any(Function),
@@ -273,9 +289,9 @@ describe('TasksService', () => {
     })
 
     it('should not update taxes if datum_platnosti is null', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
-        { id: 2, variableSymbol: 'VS2' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+        { id: 2, variableSymbol: 'VS2', year: 2024 },
       ]
       const mockData = [
         { variabilny_symbol: 'VS1', datum_platnosti: null },
@@ -288,16 +304,16 @@ describe('TasksService', () => {
 
       await service.updateTaxesFromNoris(mockTaxes)
 
-      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith([
-        'VS1',
-        'VS2',
-      ])
+      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
+        ['VS1', 'VS2'],
+        [2024],
+      )
       expect(service['prismaService'].$transaction).toHaveBeenCalledWith([])
     })
 
     it('should propagate errors from norisService', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
       ]
       const mockError = new Error('Update failed')
 
@@ -311,8 +327,8 @@ describe('TasksService', () => {
     })
 
     it('should propagate errors from prismaService', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
       ]
       const mockData = [
         { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },
@@ -329,6 +345,432 @@ describe('TasksService', () => {
       await expect(service.updateTaxesFromNoris(mockTaxes)).rejects.toThrow(
         mockError,
       )
+    })
+  })
+
+  describe('processNorisTaxData', () => {
+    it('should process tax data correctly', async () => {
+      const norisData: NorisTaxPayersDto[] = [
+        {
+          ICO_RC: '123456/789',
+          dan_spolu: '1000',
+          delivery_method: DeliveryMethod.EDESK,
+        },
+        {
+          ICO_RC: '123456/9999',
+          dan_spolu: '1000',
+          delivery_method: DeliveryMethod.EDESK,
+        },
+      ] as NorisTaxPayersDto[]
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/9999': {
+            externalId: '123456',
+          } as ResponseUserByBirthNumberDto,
+        })
+      jest
+        .spyOn(service['prismaService']['tax'], 'findMany')
+        .mockResolvedValueOnce([])
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockImplementation((callback) => callback(prismaMock))
+
+      const insertSpy = jest
+        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .mockImplementation((data) =>
+          Promise.resolve({ birthNumber: (data as NorisTaxPayersDto).ICO_RC }),
+        )
+      const bloomreachSpy = jest.spyOn(
+        service['bloomreachService'],
+        'trackEventTax',
+      )
+
+      const result = await service.processNorisTaxData(norisData, 2025)
+
+      expect(result).toEqual(['123456/789', '123456/9999'])
+      expect(insertSpy).toHaveBeenCalledTimes(2)
+      expect(bloomreachSpy).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return only birth numbers that were processed', async () => {
+      const norisData: NorisTaxPayersDto[] = [
+        {
+          ICO_RC: '123456/789',
+          dan_spolu: '1000',
+          delivery_method: DeliveryMethod.EDESK,
+        },
+        {
+          ICO_RC: '123456/777',
+          dan_spolu: '100',
+          delivery_method: DeliveryMethod.CITY_ACCOUNT,
+        },
+      ] as NorisTaxPayersDto[]
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/789': {
+            externalId: '123456',
+          } as ResponseUserByBirthNumberDto,
+          '123456/777': {
+            externalId: '123',
+          } as ResponseUserByBirthNumberDto,
+        })
+      jest
+        .spyOn(service['prismaService']['tax'], 'findMany')
+        .mockResolvedValueOnce([])
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockImplementation((callback) => callback(prismaMock))
+
+      const insertSpy = jest
+        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .mockImplementation((data) => {
+          if ((data as NorisTaxPayersDto).ICO_RC === '123456/789') {
+            return Promise.reject(new Error('Insert failed'))
+          }
+          return Promise.resolve({
+            birthNumber: (data as NorisTaxPayersDto).ICO_RC,
+          })
+        })
+
+      const result = await service.processNorisTaxData(norisData, 2025)
+
+      expect(result).toEqual(['123456/777'])
+      expect(insertSpy).toHaveBeenCalledTimes(2) // Called for both, but only one succeeded
+
+      expect(service['logger'].error).toHaveBeenCalledTimes(1)
+    })
+
+    it('should create only taxes which are not already in the database', async () => {
+      const norisData: NorisTaxPayersDto[] = [
+        {
+          ICO_RC: '123456/789',
+          dan_spolu: '1000',
+          delivery_method: DeliveryMethod.EDESK,
+        },
+        {
+          ICO_RC: '123456/777',
+          dan_spolu: '100',
+          delivery_method: DeliveryMethod.CITY_ACCOUNT,
+        },
+        {
+          ICO_RC: '123456/888',
+          dan_spolu: '100',
+          delivery_method: DeliveryMethod.CITY_ACCOUNT,
+        },
+      ] as NorisTaxPayersDto[]
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/789': {
+            externalId: '123456',
+          } as ResponseUserByBirthNumberDto,
+          '123456/777': {
+            externalId: '123',
+          } as ResponseUserByBirthNumberDto,
+          '123456/888': {
+            externalId: '123',
+          } as ResponseUserByBirthNumberDto,
+        })
+      jest
+        .spyOn(service['prismaService']['tax'], 'findMany')
+        .mockResolvedValueOnce([
+          {
+            taxPayer: {
+              birthNumber: '123456/888',
+            },
+          },
+        ] as unknown as Tax[])
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockImplementation((callback) => callback(prismaMock))
+
+      const insertSpy = jest
+        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .mockImplementation((data) => {
+          return Promise.resolve({
+            birthNumber: (data as NorisTaxPayersDto).ICO_RC,
+          })
+        })
+
+      const result = await service.processNorisTaxData(norisData, 2025)
+
+      expect(result).toEqual(
+        expect.arrayContaining(['123456/777', '123456/789', '123456/888']),
+      )
+      expect(result).toHaveLength(3)
+      expect(insertSpy).toHaveBeenCalledTimes(2) // Called for only two new taxes
+      expect(insertSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({ ICO_RC: '123456/888' }),
+      )
+
+      expect(service['logger'].error).toHaveBeenCalledTimes(0)
+    })
+
+    it('should log all errors, not just one', async () => {
+      const norisData: NorisTaxPayersDto[] = [
+        {
+          ICO_RC: '123456/789',
+          dan_spolu: '1000',
+          delivery_method: DeliveryMethod.EDESK,
+        },
+        {
+          ICO_RC: '123456/777',
+          dan_spolu: '100',
+          delivery_method: DeliveryMethod.CITY_ACCOUNT,
+        },
+      ] as NorisTaxPayersDto[]
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/789': {
+            externalId: '123456',
+          } as ResponseUserByBirthNumberDto,
+          '123456/777': {
+            externalId: '123',
+          } as ResponseUserByBirthNumberDto,
+        })
+      jest
+        .spyOn(service['prismaService']['tax'], 'findMany')
+        .mockResolvedValueOnce([])
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockImplementation((callback) => callback(prismaMock))
+
+      const insertSpy = jest
+        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .mockRejectedValue(new Error('Insert failed'))
+
+      const result = await service.processNorisTaxData(norisData, 2025)
+
+      expect(result).toEqual([])
+      expect(insertSpy).toHaveBeenCalledTimes(2) // Called for both, but none succeeded
+
+      expect(service['logger'].error).toHaveBeenCalledTimes(2) // Both errors should be logged
+    })
+  })
+
+  describe('insertTaxPayerDataToDatabase', () => {
+    let mockTransaction: Prisma.TransactionClient
+
+    beforeEach(() => {
+      mockTransaction = createMock<Prisma.TransactionClient>()
+    })
+
+    it('should propagate errors', async () => {
+      const mockData: NorisTaxPayersDto = {
+        ICO_RC: '123456/789',
+        dan_spolu: '1000',
+        delivery_method: DeliveryMethod.EDESK,
+        cislo_poradace: '123456',
+        variabilny_symbol: 'VS123',
+        dan_pozemky: '200',
+        dan_stavby_SPOLU: '300',
+        dan_byty: '400',
+        SPL4_2: '',
+        SPL1: '100',
+      } as unknown as NorisTaxPayersDto
+
+      jest.spyOn(mockTransaction['tax'], 'findMany').mockResolvedValueOnce([])
+
+      const mockError = new Error('Insert failed')
+      jest
+        .spyOn(mockTransaction['tax'], 'upsert')
+        .mockRejectedValueOnce(mockError)
+
+      await expect(
+        service['insertTaxPayerDataToDatabase'](
+          mockData,
+          2025,
+          mockTransaction,
+        ),
+      ).rejects.toThrow(mockError)
+    })
+
+    it('should insert tax payer data correctly', async () => {
+      const mockData: NorisTaxPayersDto = {
+        ICO_RC: '123456/789',
+        dan_spolu: '1000',
+        delivery_method: DeliveryMethod.EDESK,
+        cislo_poradace: '123456',
+        variabilny_symbol: 'VS123',
+        dan_pozemky: '200',
+        dan_stavby_SPOLU: '300',
+        dan_byty: '400',
+        SPL4_2: '',
+        SPL1: '100',
+      } as unknown as NorisTaxPayersDto
+
+      jest.spyOn(mockTransaction['tax'], 'findMany').mockResolvedValueOnce([])
+
+      const mockTaxPayer: TaxPayer = {
+        id: 1,
+        birthNumber: '123456/789',
+        taxAdministratorId: 1,
+        name: 'Test Name',
+      } as TaxPayer
+
+      jest
+        .spyOn(mockTransaction['taxPayer'], 'upsert')
+        .mockResolvedValueOnce(mockTaxPayer)
+
+      jest
+        .spyOn(taxDetailHelper, 'mapNorisToTaxDetailData')
+        .mockReturnValueOnce([
+          {
+            taxId: 1,
+            areaType: 'A',
+            type: taxDetailHelper.AreaTypesEnum.APARTMENT,
+            base: 100,
+            amount: 400,
+            area: null,
+          },
+          {
+            taxId: 1,
+            areaType: 'B',
+            type: taxDetailHelper.AreaTypesEnum.CONSTRUCTION,
+            base: 200,
+            amount: 300,
+            area: null,
+          },
+          {
+            taxId: 1,
+            areaType: 'C',
+            type: taxDetailHelper.AreaTypesEnum.GROUND,
+            base: 0,
+            amount: 200,
+            area: null,
+          },
+        ])
+
+      const result = await service['insertTaxPayerDataToDatabase'](
+        mockData,
+        2025,
+        mockTransaction,
+      )
+      expect(result).toEqual(mockTaxPayer)
+
+      // Check that all has been created (all creates had been called)
+      expect(mockTransaction['taxPayer'].upsert).toHaveBeenCalled()
+      expect(mockTransaction['tax'].upsert).toHaveBeenCalled()
+      expect(mockTransaction['taxDetail'].createMany).toHaveBeenCalled()
+      expect(mockTransaction['taxInstallment'].createMany).toHaveBeenCalled()
+      expect(mockTransaction['taxAdministrator'].upsert).toHaveBeenCalled()
+    })
+  })
+
+  // eslint-disable-next-line no-secrets/no-secrets
+  describe('processIndividualPayment', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockImplementation((callback) => callback(prismaMock))
+    })
+
+    it('should process individual payment correctly', async () => {
+      const mockPayment: NorisPaymentsDto = {
+        variabilny_symbol: 'VS123',
+        uhrazeno: '500.0',
+        zbyva_uhradit: '0',
+        specificky_symbol: 'SS123',
+      } as NorisPaymentsDto
+
+      const taxesDataByVsMap: Map<string, TaxWithTaxPayer> = new Map([
+        [
+          'VS123',
+          {
+            id: 1,
+            variableSymbol: 'VS123',
+            taxPayer: {
+              birthNumber: '123456/789',
+            },
+          } as unknown as TaxWithTaxPayer,
+        ],
+      ])
+
+      const taxPaymentDataMap: Map<number, { sum: number; count: number }> =
+        new Map([[1, { sum: 30_000, count: 2 }]])
+
+      const userDataFromCityAccount: Record<
+        string,
+        ResponseUserByBirthNumberDto
+      > = {
+        '123456/789': {
+          externalId: '123456',
+        } as ResponseUserByBirthNumberDto,
+      }
+
+      // eslint-disable-next-line no-secrets/no-secrets
+      const result = await service['processIndividualPayment'](
+        mockPayment,
+        taxesDataByVsMap,
+        taxPaymentDataMap,
+        userDataFromCityAccount,
+      )
+
+      expect(result).toBe('CREATED')
+      expect(prismaMock['taxPayment'].create).toHaveBeenCalledWith({
+        data: {
+          amount: 20_000,
+          source: 'BANK_ACCOUNT',
+          taxId: 1,
+          status: PaymentStatus.SUCCESS,
+          specificSymbol: 'SS123',
+        },
+      })
+      expect(
+        service['bloomreachService'].trackEventTaxPayment,
+      ).toHaveBeenCalled()
+    })
+
+    it('should process already paid tax with no action', async () => {
+      const mockPayment: NorisPaymentsDto = {
+        variabilny_symbol: 'VS123',
+        uhrazeno: '500.00',
+        zbyva_uhradit: '0',
+        specificky_symbol: 'SS123',
+      } as NorisPaymentsDto
+
+      const taxesDataByVsMap: Map<string, TaxWithTaxPayer> = new Map([
+        [
+          'VS123',
+          {
+            id: 1,
+            variableSymbol: 'VS123',
+            taxPayer: {
+              birthNumber: '123456/789',
+            },
+          } as unknown as TaxWithTaxPayer,
+        ],
+      ])
+
+      const taxPaymentDataMap: Map<number, { sum: number; count: number }> =
+        new Map([[1, { sum: 50_000, count: 2 }]])
+
+      const userDataFromCityAccount: Record<
+        string,
+        ResponseUserByBirthNumberDto
+      > = {
+        '123456/789': {
+          externalId: '123456',
+        } as ResponseUserByBirthNumberDto,
+      }
+
+      // eslint-disable-next-line no-secrets/no-secrets
+      const result = await service['processIndividualPayment'](
+        mockPayment,
+        taxesDataByVsMap,
+        taxPaymentDataMap,
+        userDataFromCityAccount,
+      )
+
+      expect(result).toBe('ALREADY_CREATED')
+      expect(prismaMock['taxPayment'].create).not.toHaveBeenCalled()
     })
   })
 })

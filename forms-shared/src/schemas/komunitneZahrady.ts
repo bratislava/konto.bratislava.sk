@@ -57,7 +57,6 @@ export default schema(
       ...getAdresaFields('Adresa sídla'),
       object(
         'statutar',
-        { required: true },
         {
           title: 'Štatutár',
         },
@@ -332,14 +331,15 @@ const extractFn = (formData: ExtractFormData) => {
   throw new Error('Failed to extract the subject.')
 }
 
-export const komunitneZahradyExtractSubject: SchemaFormDataExtractor<ExtractFormData> = {
+export const komunitneZahradyExtractPlainSubject: SchemaFormDataExtractor<ExtractFormData> = {
   type: 'schema',
   schema: extractSubjectSchema,
   extractFn,
   schemaValidationFailedFallback: 'Žiadosť o komunitnú záhradu',
 }
 
-export const komunitneZahradyExtractGinisSubject: SchemalessFormDataExtractor<ExtractFormData> = {
-  type: 'schemaless',
-  extractFn,
-}
+export const komunitneZahradyExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn,
+  }

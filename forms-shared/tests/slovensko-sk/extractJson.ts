@@ -9,6 +9,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
   const validXmlString = `
     <?xml version="1.0" encoding="UTF-8"?>
     <eform xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <FormId>f47ac10b-58cc-4372-a567-0e02b2c3d479</FormId>
       <JsonVersion>1.0.0</JsonVersion>
       <Json>{"key":"value"}</Json>
     </eform>
@@ -127,5 +128,18 @@ describe('extractJsonFromSlovenskoSkXml', () => {
         type: ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml,
       }),
     )
+  })
+
+  test('should handle missing FormId element', async () => {
+    const xmlWithoutFormId = validXmlString.replace(
+      '<FormId>f47ac10b-58cc-4372-a567-0e02b2c3d479</FormId>',
+      '',
+    )
+
+    const result = await extractJsonFromSlovenskoSkXml(formDefinition, xmlWithoutFormId)
+    expect(result).toEqual({
+      formDataJson: { key: 'value' },
+      jsonVersion: '1.0.0',
+    })
   })
 })

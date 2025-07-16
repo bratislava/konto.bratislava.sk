@@ -218,10 +218,10 @@ export class NorisService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Failed to update delivery methods`,
+        'Failed to update delivery methods',
         undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     } finally {
       // Always close the connection
@@ -229,7 +229,10 @@ export class NorisService {
     }
   }
 
-  async getDataForUpdate(variableSymbols: string[]): Promise<NorisUpdateDto[]> {
+  async getDataForUpdate(
+    variableSymbols: string[],
+    years: number[],
+  ): Promise<NorisUpdateDto[]> {
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
@@ -246,16 +249,24 @@ export class NorisService {
 
     try {
       const request = new Request(connection)
+
       const variableSymbolsPlaceholders = variableSymbols
         .map((_, index) => `@variablesymbol${index}`)
         .join(',')
       variableSymbols.forEach((variableSymbol, index) => {
         request.input(`variablesymbol${index}`, variableSymbol)
       })
-      const queryWithPlaceholders = getNorisDataForUpdate.replaceAll(
-        '@variable_symbols',
-        variableSymbolsPlaceholders,
-      )
+
+      const yearsPlaceholders = years
+        .map((_, index) => `@year${index}`)
+        .join(',')
+      years.forEach((year, index) => {
+        request.input(`year${index}`, year)
+      })
+
+      const queryWithPlaceholders = getNorisDataForUpdate
+        .replaceAll('@variable_symbols', variableSymbolsPlaceholders)
+        .replaceAll('@years', yearsPlaceholders)
 
       const norisData = await request.query(queryWithPlaceholders)
       return norisData.recordset

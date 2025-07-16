@@ -19,7 +19,6 @@ export const vyplnitKrokRadio = ({
 }) => [
   object(
     'vyplnitObject',
-    {},
     {
       objectDisplay: 'boxed',
     },

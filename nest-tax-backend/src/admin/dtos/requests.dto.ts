@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
+  IsDateString,
+  IsEmail,
   IsEnum,
   IsNumber,
   IsObject,
@@ -226,6 +228,21 @@ export class RequestAdminBloomreachCustomerEventTaxPaymentDto {
   })
   @IsString()
   birthNumber: string
+}
+export class RequestPostReportingSendReport {
+  @ApiProperty({
+    description: 'Date since when reports should be generated',
+    default: 2022,
+  })
+  @IsDateString()
+  date: string
+
+  @ApiProperty({
+    description: 'Email the report will be sent to',
+    default: 'test@bratislava.sk',
+  })
+  @IsEmail()
+  email: string
 }
 
 export type NorisRequestGeneral =

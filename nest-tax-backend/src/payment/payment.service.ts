@@ -62,8 +62,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not load data from taxPayment',
         'Database error',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
   }
@@ -101,8 +101,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not create order',
         'Database error',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
 
@@ -132,8 +132,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
         'Can not create url',
         'Create url error',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
   }
@@ -151,8 +151,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get tax error',
         'Database error',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
 
@@ -178,8 +178,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get taxpayer error',
         'Database error',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
 
@@ -206,8 +206,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get tax error',
         'Database error',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
 
@@ -328,8 +328,8 @@ export class PaymentService {
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
         'Error to redirect to response',
         'Error to redirect',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
   }

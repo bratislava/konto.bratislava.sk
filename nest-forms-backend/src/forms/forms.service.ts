@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
@@ -52,7 +52,9 @@ export default class FormsService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `There was an error when creating form: ${<string>error}`,
+        'There was an error when creating form.',
+        undefined,
+        error,
       )
     }
   }
@@ -82,6 +84,8 @@ export default class FormsService {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+        undefined,
+        error,
       )
     }
     return formsResult
@@ -113,6 +117,8 @@ export default class FormsService {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -145,6 +151,7 @@ export default class FormsService {
           userExternalId
         )}`,
         `Form ${id} does not exist for the user: ${<string>userExternalId}`,
+        error,
       )
     }
 
@@ -269,7 +276,7 @@ export default class FormsService {
 
       dataWithLatestFlag.push({
         ...form,
-        formSubject: extractFormSubject(formDefinition, form.formDataJson),
+        formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
         formDefinitionSlug: formDefinition.slug,
       })
     })

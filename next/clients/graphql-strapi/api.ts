@@ -19,8 +19,19 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
+  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  Date: { input: any; output: any }
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: { input: any; output: any }
+  /** A string used to identify an i18n locale */
+  I18NLocaleCode: { input: any; output: any }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any }
+  /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
+  Long: { input: any; output: any }
+  /** A time string with format HH:mm:ss.SSS */
+  Time: { input: any; output: any }
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: any; output: any }
 }
 
@@ -311,6 +322,36 @@ export type ContentReleasesReleaseInput = {
   timezone?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ContentReleasesReleaseRelationResponseCollection = {
+  __typename?: 'ContentReleasesReleaseRelationResponseCollection'
+  data: Array<ContentReleasesReleaseEntity>
+}
+
+export type DateFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  contains?: InputMaybe<Scalars['Date']['input']>
+  containsi?: InputMaybe<Scalars['Date']['input']>
+  endsWith?: InputMaybe<Scalars['Date']['input']>
+  eq?: InputMaybe<Scalars['Date']['input']>
+  eqi?: InputMaybe<Scalars['Date']['input']>
+  gt?: InputMaybe<Scalars['Date']['input']>
+  gte?: InputMaybe<Scalars['Date']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  lt?: InputMaybe<Scalars['Date']['input']>
+  lte?: InputMaybe<Scalars['Date']['input']>
+  ne?: InputMaybe<Scalars['Date']['input']>
+  nei?: InputMaybe<Scalars['Date']['input']>
+  not?: InputMaybe<DateFilterInput>
+  notContains?: InputMaybe<Scalars['Date']['input']>
+  notContainsi?: InputMaybe<Scalars['Date']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  startsWith?: InputMaybe<Scalars['Date']['input']>
+}
+
 export type DateTimeFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>
   between?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>
@@ -339,6 +380,53 @@ export type DateTimeFilterInput = {
 export enum Enum_Contentreleasesreleaseaction_Type {
   Publish = 'publish',
   Unpublish = 'unpublish',
+}
+
+export enum Enum_Municipalservice_Color {
+  Culture = 'culture',
+  Education = 'education',
+  Environment = 'environment',
+  Main = 'main',
+  Marianum = 'marianum',
+  Olo = 'olo',
+  Social = 'social',
+  Transport = 'transport',
+  Tsb = 'tsb',
+}
+
+export enum Enum_Municipalservice_Icon {
+  Administration = 'administration',
+  ChristmasTree = 'christmas_tree',
+  CommunityGardens = 'community_gardens',
+  Connector = 'connector',
+  CulturalOrganizations = 'cultural_organizations',
+  EventsSupport = 'events_support',
+  Excavations = 'excavations',
+  FrontGardens = 'front_gardens',
+  Greenery = 'greenery',
+  Housing = 'housing',
+  KidsTeenagers = 'kids_teenagers',
+  Lamp = 'lamp',
+  Library = 'library',
+  ManagementCommunications = 'management_communications',
+  Marianum = 'marianum',
+  Mosquito = 'mosquito',
+  Parking = 'parking',
+  PublicSpaceOccupation = 'public_space_occupation',
+  Security = 'security',
+  SpatialPlanning = 'spatial_planning',
+  SwimmingPool = 'swimming_pool',
+  Taxes = 'taxes',
+  Towing = 'towing',
+  Transport = 'transport',
+  Waste = 'waste',
+  Zoo = 'zoo',
+}
+
+export type Error = {
+  __typename?: 'Error'
+  code: Scalars['String']['output']
+  message?: Maybe<Scalars['String']['output']>
 }
 
 export type FileInfoInput = {
@@ -416,6 +504,11 @@ export type FormInput = {
   slug?: InputMaybe<Scalars['String']['input']>
 }
 
+export type FormRelationResponseCollection = {
+  __typename?: 'FormRelationResponseCollection'
+  data: Array<FormEntity>
+}
+
 export type General = {
   __typename?: 'General'
   alerts?: Maybe<Array<Maybe<ComponentGeneralAlert>>>
@@ -440,8 +533,28 @@ export type GeneralEntityResponse = {
   data?: Maybe<GeneralEntity>
 }
 
+export type GeneralEntityResponseCollection = {
+  __typename?: 'GeneralEntityResponseCollection'
+  data: Array<GeneralEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type GeneralFiltersInput = {
+  alerts?: InputMaybe<ComponentGeneralAlertFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<GeneralFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<GeneralFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<GeneralFiltersInput>>>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type GeneralInput = {
   alerts?: InputMaybe<Array<InputMaybe<ComponentGeneralAlertInput>>>
+}
+
+export type GeneralRelationResponseCollection = {
+  __typename?: 'GeneralRelationResponseCollection'
+  data: Array<GeneralEntity>
 }
 
 export type GenericMorph =
@@ -456,7 +569,13 @@ export type GenericMorph =
   | Form
   | General
   | HelpPage
+  | Homepage
+  | HomepageAnnouncement
   | I18NLocale
+  | MunicipalService
+  | MunicipalServiceCategory
+  | MunicipalServiceTag
+  | MunicipalServicesPage
   | Tax
   | UploadFile
   | UploadFolder
@@ -488,8 +607,163 @@ export type HelpPageEntityResponse = {
   data?: Maybe<HelpPageEntity>
 }
 
+export type HelpPageEntityResponseCollection = {
+  __typename?: 'HelpPageEntityResponseCollection'
+  data: Array<HelpPageEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type HelpPageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<HelpPageFiltersInput>>>
+  categories?: InputMaybe<ComponentBlocksHelpCategoryFiltersInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<HelpPageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<HelpPageFiltersInput>>>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type HelpPageInput = {
   categories?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpCategoryInput>>>
+}
+
+export type HelpPageRelationResponseCollection = {
+  __typename?: 'HelpPageRelationResponseCollection'
+  data: Array<HelpPageEntity>
+}
+
+export type Homepage = {
+  __typename?: 'Homepage'
+  announcements?: Maybe<HomepageAnnouncementRelationResponseCollection>
+  announcementsLegalPerson?: Maybe<HomepageAnnouncementRelationResponseCollection>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  services?: Maybe<MunicipalServiceRelationResponseCollection>
+  servicesLegalPerson?: Maybe<MunicipalServiceRelationResponseCollection>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type HomepageAnnouncementsArgs = {
+  filters?: InputMaybe<HomepageAnnouncementFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type HomepageAnnouncementsLegalPersonArgs = {
+  filters?: InputMaybe<HomepageAnnouncementFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type HomepageServicesArgs = {
+  filters?: InputMaybe<MunicipalServiceFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type HomepageServicesLegalPersonArgs = {
+  filters?: InputMaybe<MunicipalServiceFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type HomepageAnnouncement = {
+  __typename?: 'HomepageAnnouncement'
+  buttonText: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  dateFrom?: Maybe<Scalars['DateTime']['output']>
+  dateTo?: Maybe<Scalars['DateTime']['output']>
+  description: Scalars['String']['output']
+  href: Scalars['String']['output']
+  image: UploadFileEntityResponse
+  title: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type HomepageAnnouncementEntity = {
+  __typename?: 'HomepageAnnouncementEntity'
+  attributes?: Maybe<HomepageAnnouncement>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HomepageAnnouncementEntityResponse = {
+  __typename?: 'HomepageAnnouncementEntityResponse'
+  data?: Maybe<HomepageAnnouncementEntity>
+}
+
+export type HomepageAnnouncementEntityResponseCollection = {
+  __typename?: 'HomepageAnnouncementEntityResponseCollection'
+  data: Array<HomepageAnnouncementEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type HomepageAnnouncementFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
+  buttonText?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  dateFrom?: InputMaybe<DateTimeFilterInput>
+  dateTo?: InputMaybe<DateTimeFilterInput>
+  description?: InputMaybe<StringFilterInput>
+  href?: InputMaybe<StringFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  not?: InputMaybe<HomepageAnnouncementFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type HomepageAnnouncementInput = {
+  buttonText?: InputMaybe<Scalars['String']['input']>
+  dateFrom?: InputMaybe<Scalars['DateTime']['input']>
+  dateTo?: InputMaybe<Scalars['DateTime']['input']>
+  description?: InputMaybe<Scalars['String']['input']>
+  href?: InputMaybe<Scalars['String']['input']>
+  image?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type HomepageAnnouncementRelationResponseCollection = {
+  __typename?: 'HomepageAnnouncementRelationResponseCollection'
+  data: Array<HomepageAnnouncementEntity>
+}
+
+export type HomepageEntity = {
+  __typename?: 'HomepageEntity'
+  attributes?: Maybe<Homepage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HomepageEntityResponse = {
+  __typename?: 'HomepageEntityResponse'
+  data?: Maybe<HomepageEntity>
+}
+
+export type HomepageEntityResponseCollection = {
+  __typename?: 'HomepageEntityResponseCollection'
+  data: Array<HomepageEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type HomepageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<HomepageFiltersInput>>>
+  announcements?: InputMaybe<HomepageAnnouncementFiltersInput>
+  announcementsLegalPerson?: InputMaybe<HomepageAnnouncementFiltersInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<HomepageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<HomepageFiltersInput>>>
+  services?: InputMaybe<MunicipalServiceFiltersInput>
+  servicesLegalPerson?: InputMaybe<MunicipalServiceFiltersInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type HomepageInput = {
+  announcements?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  announcementsLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  services?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  servicesLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+}
+
+export type HomepageRelationResponseCollection = {
+  __typename?: 'HomepageRelationResponseCollection'
+  data: Array<HomepageEntity>
 }
 
 export type I18NLocale = {
@@ -526,6 +800,16 @@ export type I18NLocaleFiltersInput = {
   not?: InputMaybe<I18NLocaleFiltersInput>
   or?: InputMaybe<Array<InputMaybe<I18NLocaleFiltersInput>>>
   updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type I18NLocaleInput = {
+  code?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+}
+
+export type I18NLocaleRelationResponseCollection = {
+  __typename?: 'I18NLocaleRelationResponseCollection'
+  data: Array<I18NLocaleEntity>
 }
 
 export type IdFilterInput = {
@@ -603,6 +887,268 @@ export type JsonFilterInput = {
   startsWith?: InputMaybe<Scalars['JSON']['input']>
 }
 
+export type LongFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  contains?: InputMaybe<Scalars['Long']['input']>
+  containsi?: InputMaybe<Scalars['Long']['input']>
+  endsWith?: InputMaybe<Scalars['Long']['input']>
+  eq?: InputMaybe<Scalars['Long']['input']>
+  eqi?: InputMaybe<Scalars['Long']['input']>
+  gt?: InputMaybe<Scalars['Long']['input']>
+  gte?: InputMaybe<Scalars['Long']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  lt?: InputMaybe<Scalars['Long']['input']>
+  lte?: InputMaybe<Scalars['Long']['input']>
+  ne?: InputMaybe<Scalars['Long']['input']>
+  nei?: InputMaybe<Scalars['Long']['input']>
+  not?: InputMaybe<LongFilterInput>
+  notContains?: InputMaybe<Scalars['Long']['input']>
+  notContainsi?: InputMaybe<Scalars['Long']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  startsWith?: InputMaybe<Scalars['Long']['input']>
+}
+
+export type MunicipalService = {
+  __typename?: 'MunicipalService'
+  buttonText: Scalars['String']['output']
+  categories?: Maybe<MunicipalServiceCategoryRelationResponseCollection>
+  color: Enum_Municipalservice_Color
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  description: Scalars['String']['output']
+  href: Scalars['String']['output']
+  icon: Enum_Municipalservice_Icon
+  tags?: Maybe<MunicipalServiceTagRelationResponseCollection>
+  title: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalServiceCategoriesArgs = {
+  filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServiceTagsArgs = {
+  filters?: InputMaybe<MunicipalServiceTagFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServiceCategory = {
+  __typename?: 'MunicipalServiceCategory'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  municipalServices?: Maybe<MunicipalServiceRelationResponseCollection>
+  title: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalServiceCategoryMunicipalServicesArgs = {
+  filters?: InputMaybe<MunicipalServiceFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServiceCategoryEntity = {
+  __typename?: 'MunicipalServiceCategoryEntity'
+  attributes?: Maybe<MunicipalServiceCategory>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceCategoryEntityResponse = {
+  __typename?: 'MunicipalServiceCategoryEntityResponse'
+  data?: Maybe<MunicipalServiceCategoryEntity>
+}
+
+export type MunicipalServiceCategoryEntityResponseCollection = {
+  __typename?: 'MunicipalServiceCategoryEntityResponseCollection'
+  data: Array<MunicipalServiceCategoryEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type MunicipalServiceCategoryFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalServiceCategoryFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  municipalServices?: InputMaybe<MunicipalServiceFiltersInput>
+  not?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalServiceCategoryFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type MunicipalServiceCategoryInput = {
+  municipalServices?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MunicipalServiceCategoryRelationResponseCollection = {
+  __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
+  data: Array<MunicipalServiceCategoryEntity>
+}
+
+export type MunicipalServiceEntity = {
+  __typename?: 'MunicipalServiceEntity'
+  attributes?: Maybe<MunicipalService>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceEntityResponse = {
+  __typename?: 'MunicipalServiceEntityResponse'
+  data?: Maybe<MunicipalServiceEntity>
+}
+
+export type MunicipalServiceEntityResponseCollection = {
+  __typename?: 'MunicipalServiceEntityResponseCollection'
+  data: Array<MunicipalServiceEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type MunicipalServiceFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalServiceFiltersInput>>>
+  buttonText?: InputMaybe<StringFilterInput>
+  categories?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  color?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  description?: InputMaybe<StringFilterInput>
+  href?: InputMaybe<StringFilterInput>
+  icon?: InputMaybe<StringFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  not?: InputMaybe<MunicipalServiceFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalServiceFiltersInput>>>
+  tags?: InputMaybe<MunicipalServiceTagFiltersInput>
+  title?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type MunicipalServiceInput = {
+  buttonText?: InputMaybe<Scalars['String']['input']>
+  categories?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  color?: InputMaybe<Enum_Municipalservice_Color>
+  description?: InputMaybe<Scalars['String']['input']>
+  href?: InputMaybe<Scalars['String']['input']>
+  icon?: InputMaybe<Enum_Municipalservice_Icon>
+  tags?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MunicipalServiceRelationResponseCollection = {
+  __typename?: 'MunicipalServiceRelationResponseCollection'
+  data: Array<MunicipalServiceEntity>
+}
+
+export type MunicipalServiceTag = {
+  __typename?: 'MunicipalServiceTag'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  municipalServices?: Maybe<MunicipalServiceRelationResponseCollection>
+  title: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalServiceTagMunicipalServicesArgs = {
+  filters?: InputMaybe<MunicipalServiceFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServiceTagEntity = {
+  __typename?: 'MunicipalServiceTagEntity'
+  attributes?: Maybe<MunicipalServiceTag>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceTagEntityResponse = {
+  __typename?: 'MunicipalServiceTagEntityResponse'
+  data?: Maybe<MunicipalServiceTagEntity>
+}
+
+export type MunicipalServiceTagEntityResponseCollection = {
+  __typename?: 'MunicipalServiceTagEntityResponseCollection'
+  data: Array<MunicipalServiceTagEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type MunicipalServiceTagFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalServiceTagFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  municipalServices?: InputMaybe<MunicipalServiceFiltersInput>
+  not?: InputMaybe<MunicipalServiceTagFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalServiceTagFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type MunicipalServiceTagInput = {
+  municipalServices?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MunicipalServiceTagRelationResponseCollection = {
+  __typename?: 'MunicipalServiceTagRelationResponseCollection'
+  data: Array<MunicipalServiceTagEntity>
+}
+
+export type MunicipalServicesPage = {
+  __typename?: 'MunicipalServicesPage'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  services?: Maybe<MunicipalServiceRelationResponseCollection>
+  servicesLegalPerson?: Maybe<MunicipalServiceRelationResponseCollection>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalServicesPageServicesArgs = {
+  filters?: InputMaybe<MunicipalServiceFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServicesPageServicesLegalPersonArgs = {
+  filters?: InputMaybe<MunicipalServiceFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServicesPageEntity = {
+  __typename?: 'MunicipalServicesPageEntity'
+  attributes?: Maybe<MunicipalServicesPage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServicesPageEntityResponse = {
+  __typename?: 'MunicipalServicesPageEntityResponse'
+  data?: Maybe<MunicipalServicesPageEntity>
+}
+
+export type MunicipalServicesPageEntityResponseCollection = {
+  __typename?: 'MunicipalServicesPageEntityResponseCollection'
+  data: Array<MunicipalServicesPageEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type MunicipalServicesPageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalServicesPageFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<MunicipalServicesPageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalServicesPageFiltersInput>>>
+  services?: InputMaybe<MunicipalServiceFiltersInput>
+  servicesLegalPerson?: InputMaybe<MunicipalServiceFiltersInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type MunicipalServicesPageInput = {
+  services?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  servicesLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+}
+
+export type MunicipalServicesPageRelationResponseCollection = {
+  __typename?: 'MunicipalServicesPageRelationResponseCollection'
+  data: Array<MunicipalServicesPageEntity>
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
   /** Change user password. Confirm with the current password. */
@@ -610,6 +1156,10 @@ export type Mutation = {
   createContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
   createContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
   createForm?: Maybe<FormEntityResponse>
+  createHomepageAnnouncement?: Maybe<HomepageAnnouncementEntityResponse>
+  createMunicipalService?: Maybe<MunicipalServiceEntityResponse>
+  createMunicipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
+  createMunicipalServiceTag?: Maybe<MunicipalServiceTagEntityResponse>
   createUploadFile?: Maybe<UploadFileEntityResponse>
   createUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Create a new role */
@@ -621,6 +1171,12 @@ export type Mutation = {
   deleteForm?: Maybe<FormEntityResponse>
   deleteGeneral?: Maybe<GeneralEntityResponse>
   deleteHelpPage?: Maybe<HelpPageEntityResponse>
+  deleteHomepage?: Maybe<HomepageEntityResponse>
+  deleteHomepageAnnouncement?: Maybe<HomepageAnnouncementEntityResponse>
+  deleteMunicipalService?: Maybe<MunicipalServiceEntityResponse>
+  deleteMunicipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
+  deleteMunicipalServiceTag?: Maybe<MunicipalServiceTagEntityResponse>
+  deleteMunicipalServicesPage?: Maybe<MunicipalServicesPageEntityResponse>
   deleteTax?: Maybe<TaxEntityResponse>
   deleteUploadFile?: Maybe<UploadFileEntityResponse>
   deleteUploadFolder?: Maybe<UploadFolderEntityResponse>
@@ -645,6 +1201,12 @@ export type Mutation = {
   updateForm?: Maybe<FormEntityResponse>
   updateGeneral?: Maybe<GeneralEntityResponse>
   updateHelpPage?: Maybe<HelpPageEntityResponse>
+  updateHomepage?: Maybe<HomepageEntityResponse>
+  updateHomepageAnnouncement?: Maybe<HomepageAnnouncementEntityResponse>
+  updateMunicipalService?: Maybe<MunicipalServiceEntityResponse>
+  updateMunicipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
+  updateMunicipalServiceTag?: Maybe<MunicipalServiceTagEntityResponse>
+  updateMunicipalServicesPage?: Maybe<MunicipalServicesPageEntityResponse>
   updateTax?: Maybe<TaxEntityResponse>
   updateUploadFile?: Maybe<UploadFileEntityResponse>
   updateUploadFolder?: Maybe<UploadFolderEntityResponse>
@@ -673,6 +1235,22 @@ export type MutationCreateFormArgs = {
   data: FormInput
 }
 
+export type MutationCreateHomepageAnnouncementArgs = {
+  data: HomepageAnnouncementInput
+}
+
+export type MutationCreateMunicipalServiceArgs = {
+  data: MunicipalServiceInput
+}
+
+export type MutationCreateMunicipalServiceCategoryArgs = {
+  data: MunicipalServiceCategoryInput
+}
+
+export type MutationCreateMunicipalServiceTagArgs = {
+  data: MunicipalServiceTagInput
+}
+
 export type MutationCreateUploadFileArgs = {
   data: UploadFileInput
 }
@@ -698,6 +1276,22 @@ export type MutationDeleteContentReleasesReleaseActionArgs = {
 }
 
 export type MutationDeleteFormArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteHomepageAnnouncementArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteMunicipalServiceArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteMunicipalServiceCategoryArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteMunicipalServiceTagArgs = {
   id: Scalars['ID']['input']
 }
 
@@ -778,6 +1372,34 @@ export type MutationUpdateHelpPageArgs = {
   data: HelpPageInput
 }
 
+export type MutationUpdateHomepageArgs = {
+  data: HomepageInput
+}
+
+export type MutationUpdateHomepageAnnouncementArgs = {
+  data: HomepageAnnouncementInput
+  id: Scalars['ID']['input']
+}
+
+export type MutationUpdateMunicipalServiceArgs = {
+  data: MunicipalServiceInput
+  id: Scalars['ID']['input']
+}
+
+export type MutationUpdateMunicipalServiceCategoryArgs = {
+  data: MunicipalServiceCategoryInput
+  id: Scalars['ID']['input']
+}
+
+export type MutationUpdateMunicipalServiceTagArgs = {
+  data: MunicipalServiceTagInput
+  id: Scalars['ID']['input']
+}
+
+export type MutationUpdateMunicipalServicesPageArgs = {
+  data: MunicipalServicesPageInput
+}
+
 export type MutationUpdateTaxArgs = {
   data: TaxInput
 }
@@ -825,6 +1447,11 @@ export type PaginationArg = {
   start?: InputMaybe<Scalars['Int']['input']>
 }
 
+export enum PublicationState {
+  Live = 'LIVE',
+  Preview = 'PREVIEW',
+}
+
 export type Query = {
   __typename?: 'Query'
   contentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
@@ -835,9 +1462,19 @@ export type Query = {
   forms?: Maybe<FormEntityResponseCollection>
   general?: Maybe<GeneralEntityResponse>
   helpPage?: Maybe<HelpPageEntityResponse>
+  homepage?: Maybe<HomepageEntityResponse>
+  homepageAnnouncement?: Maybe<HomepageAnnouncementEntityResponse>
+  homepageAnnouncements?: Maybe<HomepageAnnouncementEntityResponseCollection>
   i18NLocale?: Maybe<I18NLocaleEntityResponse>
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>
   me?: Maybe<UsersPermissionsMe>
+  municipalService?: Maybe<MunicipalServiceEntityResponse>
+  municipalServiceCategories?: Maybe<MunicipalServiceCategoryEntityResponseCollection>
+  municipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
+  municipalServiceTag?: Maybe<MunicipalServiceTagEntityResponse>
+  municipalServiceTags?: Maybe<MunicipalServiceTagEntityResponseCollection>
+  municipalServices?: Maybe<MunicipalServiceEntityResponseCollection>
+  municipalServicesPage?: Maybe<MunicipalServicesPageEntityResponse>
   tax?: Maybe<TaxEntityResponse>
   uploadFile?: Maybe<UploadFileEntityResponse>
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>
@@ -879,12 +1516,52 @@ export type QueryFormsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type QueryHomepageAnnouncementArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type QueryHomepageAnnouncementsArgs = {
+  filters?: InputMaybe<HomepageAnnouncementFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
 export type QueryI18NLocaleArgs = {
   id?: InputMaybe<Scalars['ID']['input']>
 }
 
 export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type QueryMunicipalServiceArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type QueryMunicipalServiceCategoriesArgs = {
+  filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type QueryMunicipalServiceCategoryArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type QueryMunicipalServiceTagArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type QueryMunicipalServiceTagsArgs = {
+  filters?: InputMaybe<MunicipalServiceTagFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type QueryMunicipalServicesArgs = {
+  filters?: InputMaybe<MunicipalServiceFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
@@ -985,6 +1662,29 @@ export type TaxEntityResponse = {
   data?: Maybe<TaxEntity>
 }
 
+export type TaxEntityResponseCollection = {
+  __typename?: 'TaxEntityResponseCollection'
+  data: Array<TaxEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type TaxFiltersInput = {
+  accountCommunicationConsentText?: InputMaybe<StringFilterInput>
+  and?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
+  channelChangeEffectiveNextYearText?: InputMaybe<StringFilterInput>
+  channelChangeEffectiveNextYearTitle?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  currentYearTaxInPreparationText?: InputMaybe<StringFilterInput>
+  currentYearTaxInPreparationTitle?: InputMaybe<StringFilterInput>
+  displayCurrentYearTaxInPreparation?: InputMaybe<BooleanFilterInput>
+  not?: InputMaybe<TaxFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
+  paymentSuccessFaqLink?: InputMaybe<StringFilterInput>
+  paymentSuccessFeedbackLink?: InputMaybe<StringFilterInput>
+  paymentSuccessPrivacyPolicyLink?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type TaxInput = {
   accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
@@ -995,6 +1695,36 @@ export type TaxInput = {
   paymentSuccessFaqLink?: InputMaybe<Scalars['String']['input']>
   paymentSuccessFeedbackLink?: InputMaybe<Scalars['String']['input']>
   paymentSuccessPrivacyPolicyLink?: InputMaybe<Scalars['String']['input']>
+}
+
+export type TaxRelationResponseCollection = {
+  __typename?: 'TaxRelationResponseCollection'
+  data: Array<TaxEntity>
+}
+
+export type TimeFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  contains?: InputMaybe<Scalars['Time']['input']>
+  containsi?: InputMaybe<Scalars['Time']['input']>
+  endsWith?: InputMaybe<Scalars['Time']['input']>
+  eq?: InputMaybe<Scalars['Time']['input']>
+  eqi?: InputMaybe<Scalars['Time']['input']>
+  gt?: InputMaybe<Scalars['Time']['input']>
+  gte?: InputMaybe<Scalars['Time']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  lt?: InputMaybe<Scalars['Time']['input']>
+  lte?: InputMaybe<Scalars['Time']['input']>
+  ne?: InputMaybe<Scalars['Time']['input']>
+  nei?: InputMaybe<Scalars['Time']['input']>
+  not?: InputMaybe<TimeFilterInput>
+  notContains?: InputMaybe<Scalars['Time']['input']>
+  notContainsi?: InputMaybe<Scalars['Time']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  startsWith?: InputMaybe<Scalars['Time']['input']>
 }
 
 export type UploadFile = {
@@ -1213,6 +1943,17 @@ export type UsersPermissionsPermissionEntity = {
   id?: Maybe<Scalars['ID']['output']>
 }
 
+export type UsersPermissionsPermissionEntityResponse = {
+  __typename?: 'UsersPermissionsPermissionEntityResponse'
+  data?: Maybe<UsersPermissionsPermissionEntity>
+}
+
+export type UsersPermissionsPermissionEntityResponseCollection = {
+  __typename?: 'UsersPermissionsPermissionEntityResponseCollection'
+  data: Array<UsersPermissionsPermissionEntity>
+  meta: ResponseCollectionMeta
+}
+
 export type UsersPermissionsPermissionFiltersInput = {
   action?: InputMaybe<StringFilterInput>
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsPermissionFiltersInput>>>
@@ -1222,6 +1963,11 @@ export type UsersPermissionsPermissionFiltersInput = {
   or?: InputMaybe<Array<InputMaybe<UsersPermissionsPermissionFiltersInput>>>
   role?: InputMaybe<UsersPermissionsRoleFiltersInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type UsersPermissionsPermissionInput = {
+  action?: InputMaybe<Scalars['String']['input']>
+  role?: InputMaybe<Scalars['ID']['input']>
 }
 
 export type UsersPermissionsPermissionRelationResponseCollection = {
@@ -1295,6 +2041,11 @@ export type UsersPermissionsRoleInput = {
   permissions?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   type?: InputMaybe<Scalars['String']['input']>
   users?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+}
+
+export type UsersPermissionsRoleRelationResponseCollection = {
+  __typename?: 'UsersPermissionsRoleRelationResponseCollection'
+  data: Array<UsersPermissionsRoleEntity>
 }
 
 export type UsersPermissionsUpdateRolePayload = {
@@ -1545,6 +2296,291 @@ export type HelpPageQuery = {
   } | null
 }
 
+export type HomepageQueryVariables = Exact<{ [key: string]: never }>
+
+export type HomepageQuery = {
+  __typename?: 'Query'
+  homepage?: {
+    __typename?: 'HomepageEntityResponse'
+    data?: {
+      __typename?: 'HomepageEntity'
+      attributes?: {
+        __typename?: 'Homepage'
+        services?: {
+          __typename?: 'MunicipalServiceRelationResponseCollection'
+          data: Array<{
+            __typename?: 'MunicipalServiceEntity'
+            id?: string | null
+            attributes?: {
+              __typename?: 'MunicipalService'
+              title: string
+              description: string
+              buttonText: string
+              href: string
+              color: Enum_Municipalservice_Color
+              icon: Enum_Municipalservice_Icon
+              tags?: {
+                __typename?: 'MunicipalServiceTagRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceTagEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
+                }>
+              } | null
+            } | null
+          }>
+        } | null
+        servicesLegalPerson?: {
+          __typename?: 'MunicipalServiceRelationResponseCollection'
+          data: Array<{
+            __typename?: 'MunicipalServiceEntity'
+            id?: string | null
+            attributes?: {
+              __typename?: 'MunicipalService'
+              title: string
+              description: string
+              buttonText: string
+              href: string
+              color: Enum_Municipalservice_Color
+              icon: Enum_Municipalservice_Icon
+              tags?: {
+                __typename?: 'MunicipalServiceTagRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceTagEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
+                }>
+              } | null
+            } | null
+          }>
+        } | null
+        announcements?: {
+          __typename?: 'HomepageAnnouncementRelationResponseCollection'
+          data: Array<{
+            __typename?: 'HomepageAnnouncementEntity'
+            id?: string | null
+            attributes?: {
+              __typename?: 'HomepageAnnouncement'
+              title: string
+              description: string
+              buttonText: string
+              href: string
+              dateFrom?: any | null
+              dateTo?: any | null
+              image: {
+                __typename?: 'UploadFileEntityResponse'
+                data?: {
+                  __typename?: 'UploadFileEntity'
+                  attributes?: {
+                    __typename?: 'UploadFile'
+                    url: string
+                    alternativeText?: string | null
+                  } | null
+                } | null
+              }
+            } | null
+          }>
+        } | null
+        announcementsLegalPerson?: {
+          __typename?: 'HomepageAnnouncementRelationResponseCollection'
+          data: Array<{
+            __typename?: 'HomepageAnnouncementEntity'
+            id?: string | null
+            attributes?: {
+              __typename?: 'HomepageAnnouncement'
+              title: string
+              description: string
+              buttonText: string
+              href: string
+              dateFrom?: any | null
+              dateTo?: any | null
+              image: {
+                __typename?: 'UploadFileEntityResponse'
+                data?: {
+                  __typename?: 'UploadFileEntity'
+                  attributes?: {
+                    __typename?: 'UploadFile'
+                    url: string
+                    alternativeText?: string | null
+                  } | null
+                } | null
+              }
+            } | null
+          }>
+        } | null
+      } | null
+    } | null
+  } | null
+}
+
+export type HomepageAnnouncementEntityFragment = {
+  __typename?: 'HomepageAnnouncementEntity'
+  id?: string | null
+  attributes?: {
+    __typename?: 'HomepageAnnouncement'
+    title: string
+    description: string
+    buttonText: string
+    href: string
+    dateFrom?: any | null
+    dateTo?: any | null
+    image: {
+      __typename?: 'UploadFileEntityResponse'
+      data?: {
+        __typename?: 'UploadFileEntity'
+        attributes?: {
+          __typename?: 'UploadFile'
+          url: string
+          alternativeText?: string | null
+        } | null
+      } | null
+    }
+  } | null
+}
+
+export type MunicipalServiceTagEntityFragment = {
+  __typename?: 'MunicipalServiceTagEntity'
+  id?: string | null
+  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
+}
+
+export type MunicipalServiceCategoryEntityFragment = {
+  __typename?: 'MunicipalServiceCategoryEntity'
+  id?: string | null
+  attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+}
+
+export type MunicipalServiceCardEntityFragment = {
+  __typename?: 'MunicipalServiceEntity'
+  id?: string | null
+  attributes?: {
+    __typename?: 'MunicipalService'
+    title: string
+    description: string
+    buttonText: string
+    href: string
+    color: Enum_Municipalservice_Color
+    icon: Enum_Municipalservice_Icon
+    tags?: {
+      __typename?: 'MunicipalServiceTagRelationResponseCollection'
+      data: Array<{
+        __typename?: 'MunicipalServiceTagEntity'
+        id?: string | null
+        attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
+      }>
+    } | null
+  } | null
+}
+
+export type MunicipalServiceEntityFragment = {
+  __typename?: 'MunicipalServiceEntity'
+  id?: string | null
+  attributes?: {
+    __typename?: 'MunicipalService'
+    title: string
+    description: string
+    buttonText: string
+    href: string
+    color: Enum_Municipalservice_Color
+    icon: Enum_Municipalservice_Icon
+    categories?: {
+      __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
+      data: Array<{
+        __typename?: 'MunicipalServiceCategoryEntity'
+        id?: string | null
+        attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+      }>
+    } | null
+    tags?: {
+      __typename?: 'MunicipalServiceTagRelationResponseCollection'
+      data: Array<{
+        __typename?: 'MunicipalServiceTagEntity'
+        id?: string | null
+        attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
+      }>
+    } | null
+  } | null
+}
+
+export type MunicipalServicesPageQueryVariables = Exact<{ [key: string]: never }>
+
+export type MunicipalServicesPageQuery = {
+  __typename?: 'Query'
+  municipalServicesPage?: {
+    __typename?: 'MunicipalServicesPageEntityResponse'
+    data?: {
+      __typename?: 'MunicipalServicesPageEntity'
+      attributes?: {
+        __typename?: 'MunicipalServicesPage'
+        services?: {
+          __typename?: 'MunicipalServiceRelationResponseCollection'
+          data: Array<{
+            __typename?: 'MunicipalServiceEntity'
+            id?: string | null
+            attributes?: {
+              __typename?: 'MunicipalService'
+              title: string
+              description: string
+              buttonText: string
+              href: string
+              color: Enum_Municipalservice_Color
+              icon: Enum_Municipalservice_Icon
+              categories?: {
+                __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceCategoryEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+                }>
+              } | null
+              tags?: {
+                __typename?: 'MunicipalServiceTagRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceTagEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
+                }>
+              } | null
+            } | null
+          }>
+        } | null
+        servicesLegalPerson?: {
+          __typename?: 'MunicipalServiceRelationResponseCollection'
+          data: Array<{
+            __typename?: 'MunicipalServiceEntity'
+            id?: string | null
+            attributes?: {
+              __typename?: 'MunicipalService'
+              title: string
+              description: string
+              buttonText: string
+              href: string
+              color: Enum_Municipalservice_Color
+              icon: Enum_Municipalservice_Icon
+              categories?: {
+                __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceCategoryEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+                }>
+              } | null
+              tags?: {
+                __typename?: 'MunicipalServiceTagRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceTagEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
+                }>
+              } | null
+            } | null
+          }>
+        } | null
+      } | null
+    } | null
+  } | null
+}
+
 export type TaxFragment = {
   __typename?: 'Tax'
   accountCommunicationConsentText: string
@@ -1654,6 +2690,76 @@ export const HelpPageFragmentDoc = gql`
   }
   ${HelpCategoryFragmentDoc}
 `
+export const HomepageAnnouncementEntityFragmentDoc = gql`
+  fragment HomepageAnnouncementEntity on HomepageAnnouncementEntity {
+    id
+    attributes {
+      title
+      description
+      buttonText
+      href
+      dateFrom
+      dateTo
+      image {
+        data {
+          attributes {
+            url
+            alternativeText
+          }
+        }
+      }
+    }
+  }
+`
+export const MunicipalServiceTagEntityFragmentDoc = gql`
+  fragment MunicipalServiceTagEntity on MunicipalServiceTagEntity {
+    id
+    attributes {
+      title
+    }
+  }
+`
+export const MunicipalServiceCardEntityFragmentDoc = gql`
+  fragment MunicipalServiceCardEntity on MunicipalServiceEntity {
+    id
+    attributes {
+      title
+      description
+      buttonText
+      href
+      color
+      icon
+      tags {
+        data {
+          ...MunicipalServiceTagEntity
+        }
+      }
+    }
+  }
+  ${MunicipalServiceTagEntityFragmentDoc}
+`
+export const MunicipalServiceCategoryEntityFragmentDoc = gql`
+  fragment MunicipalServiceCategoryEntity on MunicipalServiceCategoryEntity {
+    id
+    attributes {
+      title
+    }
+  }
+`
+export const MunicipalServiceEntityFragmentDoc = gql`
+  fragment MunicipalServiceEntity on MunicipalServiceEntity {
+    ...MunicipalServiceCardEntity
+    attributes {
+      categories {
+        data {
+          ...MunicipalServiceCategoryEntity
+        }
+      }
+    }
+  }
+  ${MunicipalServiceCardEntityFragmentDoc}
+  ${MunicipalServiceCategoryEntityFragmentDoc}
+`
 export const TaxFragmentDoc = gql`
   fragment Tax on Tax {
     accountCommunicationConsentText
@@ -1705,6 +2811,59 @@ export const HelpPageDocument = gql`
   }
   ${HelpPageFragmentDoc}
 `
+export const HomepageDocument = gql`
+  query Homepage {
+    homepage {
+      data {
+        attributes {
+          services(pagination: { limit: 4 }) {
+            data {
+              ...MunicipalServiceCardEntity
+            }
+          }
+          servicesLegalPerson(pagination: { limit: 4 }) {
+            data {
+              ...MunicipalServiceCardEntity
+            }
+          }
+          announcements {
+            data {
+              ...HomepageAnnouncementEntity
+            }
+          }
+          announcementsLegalPerson {
+            data {
+              ...HomepageAnnouncementEntity
+            }
+          }
+        }
+      }
+    }
+  }
+  ${MunicipalServiceCardEntityFragmentDoc}
+  ${HomepageAnnouncementEntityFragmentDoc}
+`
+export const MunicipalServicesPageDocument = gql`
+  query MunicipalServicesPage {
+    municipalServicesPage {
+      data {
+        attributes {
+          services {
+            data {
+              ...MunicipalServiceEntity
+            }
+          }
+          servicesLegalPerson {
+            data {
+              ...MunicipalServiceEntity
+            }
+          }
+        }
+      }
+    }
+  }
+  ${MunicipalServiceEntityFragmentDoc}
+`
 export const TaxDocument = gql`
   query Tax {
     tax {
@@ -1733,12 +2892,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     FormBaseBySlug(
       variables: FormBaseBySlugQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<FormBaseBySlugQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<FormBaseBySlugQuery>(FormBaseBySlugDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<FormBaseBySlugQuery>({
+            document: FormBaseBySlugDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'FormBaseBySlug',
         'query',
@@ -1748,14 +2910,16 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     FormWithLandingPageBySlug(
       variables: FormWithLandingPageBySlugQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<FormWithLandingPageBySlugQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<FormWithLandingPageBySlugQuery>(
-            FormWithLandingPageBySlugDocument,
+          client.request<FormWithLandingPageBySlugQuery>({
+            document: FormWithLandingPageBySlugDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'FormWithLandingPageBySlug',
         'query',
         variables,
@@ -1764,14 +2928,53 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     HelpPage(
       variables?: HelpPageQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<HelpPageQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<HelpPageQuery>(HelpPageDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<HelpPageQuery>({
+            document: HelpPageDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'HelpPage',
+        'query',
+        variables,
+      )
+    },
+    Homepage(
+      variables?: HomepageQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<HomepageQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<HomepageQuery>({
+            document: HomepageDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'Homepage',
+        'query',
+        variables,
+      )
+    },
+    MunicipalServicesPage(
+      variables?: MunicipalServicesPageQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<MunicipalServicesPageQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MunicipalServicesPageQuery>({
+            document: MunicipalServicesPageDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'MunicipalServicesPage',
         'query',
         variables,
       )
@@ -1779,12 +2982,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Tax(
       variables?: TaxQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<TaxQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<TaxQuery>(TaxDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<TaxQuery>({
+            document: TaxDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'Tax',
         'query',

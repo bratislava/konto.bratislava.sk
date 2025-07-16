@@ -13,6 +13,7 @@ import {
 export enum NodeEnv {
   Development = 'development',
   Production = 'production',
+  Test = 'test',
 }
 
 export enum ClusterEnv {
@@ -93,6 +94,16 @@ export default class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   AWS_COGNITO_SECRET: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  AWS_ACCOUNT_ID: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  AWS_UNAUTH_ROLE_NAME: string
 
   @Expose()
   @IsString()
@@ -192,7 +203,22 @@ export default class EnvironmentVariables {
   @Expose()
   @IsUrl()
   @IsNotEmpty()
+  GINIS_SSL_MTOM_HOST: string
+
+  @Expose()
+  @IsUrl()
+  @IsNotEmpty()
   GINIS_GIN_HOST: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  GINIS_FORM_ID_PROPERTY_ID: string
+
+  @Expose()
+  @IsBoolean()
+  @IsNotEmpty()
+  GINIS_SHOULD_REGISTER: boolean
 
   @Expose()
   @IsString()

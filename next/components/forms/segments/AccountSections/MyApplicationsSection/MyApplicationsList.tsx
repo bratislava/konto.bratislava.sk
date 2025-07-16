@@ -1,4 +1,5 @@
 import { formsClient } from '@clients/forms'
+import { AuthSession } from 'aws-amplify/auth'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
@@ -9,6 +10,7 @@ import { ApplicationsListVariant } from 'pages/moje-ziadosti'
 import React from 'react'
 
 import MyApplicationsCard from './MyApplicationsCard'
+import { patchApplicationFormIfNeeded } from './patchApplicationFormIfNeededClient'
 
 // must be string due to typing
 const PAGE_SIZE = '10'
@@ -16,8 +18,9 @@ const PAGE_SIZE = '10'
 export const getDraftApplications = async (
   variant: ApplicationsListVariant,
   page: number,
-  accessTokenSsrGetFn?: () => Promise<string | null>,
-) => {
+  emailFormSlugs: string[],
+  getSsrAuthSession?: () => Promise<AuthSession>,
+): Promise<GetFormsResponseDto> => {
   // TODO - required functionality per product docs - SENDING tab will display only the ERRORs that the user can edit + queued/sending_to_nases
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
@@ -38,9 +41,12 @@ export const getDraftApplications = async (
     // if this is set varianToStates would be ignored, that does not match the required functionality in any of the tabs
     undefined,
     undefined,
-    { accessToken: 'always', accessTokenSsrGetFn },
+    { authStrategy: 'authOnly', getSsrAuthSession },
   )
-  return response.data
+  return {
+    ...response.data,
+    items: response.data.items.map((item) => patchApplicationFormIfNeeded(item, emailFormSlugs)),
+  }
 }
 
 type MyApplicationsListProps = {

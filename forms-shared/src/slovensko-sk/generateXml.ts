@@ -26,6 +26,7 @@ function getSlovenskoSkXmlObjectBase(
  */
 export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlovenskoSk) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
+    FormId: '',
     JsonVersion: '',
     Json: JSON.stringify({}),
     Summary: {
@@ -41,6 +42,7 @@ export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlove
 
 type GenerateSlovenskoSkXmlObjectParams = {
   formDefinition: FormDefinitionSlovenskoSk
+  formId: string
   formSummary: FormSummary
   formData: GenericObjectType
   jsonVersion: string
@@ -53,11 +55,13 @@ type GenerateSlovenskoSkXmlObjectParams = {
 export async function generateSlovenskoSkXmlObject({
   formDefinition,
   formSummary,
+  formId,
   formData,
   jsonVersion,
   serverFiles,
 }: GenerateSlovenskoSkXmlObjectParams) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
+    FormId: formId,
     JsonVersion: jsonVersion,
     Json: JSON.stringify(formData),
     Summary: await renderSlovenskoXmlSummary({

@@ -11,13 +11,17 @@ import {
   isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import {
+  SendMessageNasesSender,
+  SendMessageNasesSenderType,
+} from '../nases/types/send-message-nases-sender.type'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -131,6 +135,7 @@ export default class NasesConsumerService {
       form,
       data,
       formDefinition,
+      { type: SendMessageNasesSenderType.Self },
     )
     if (isSent) {
       const toEmail = data.userData.email || form.email
@@ -141,7 +146,7 @@ export default class NasesConsumerService {
             template: MailgunTemplateEnum.NASES_SENT,
             data: {
               formId: form.id,
-              messageSubject: extractFormSubject(
+              messageSubject: extractFormSubjectPlain(
                 formDefinition,
                 form.formDataJson,
               ),
@@ -162,7 +167,7 @@ export default class NasesConsumerService {
             template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
             data: {
               formId: form.id,
-              messageSubject: extractFormSubject(
+              messageSubject: extractFormSubjectPlain(
                 formDefinition,
                 form.formDataJson,
               ),
@@ -190,7 +195,7 @@ export default class NasesConsumerService {
     form: Forms,
     data: RabbitPayloadDto,
     formDefinition: FormDefinitionSlovenskoSk,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<boolean> {
     // TODO find a nicer place to do this
@@ -203,7 +208,7 @@ export default class NasesConsumerService {
     const sendData = await this.nasesUtilsService.sendMessageNases(
       jwt,
       form,
-      senderUri,
+      sender,
     )
 
     if ((sendData && sendData.status !== 200) || !sendData) {

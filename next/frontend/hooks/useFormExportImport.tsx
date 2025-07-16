@@ -64,7 +64,7 @@ export const useGetContext = () => {
           // `null` must be set explicitly, otherwise the signature would not be removed if needed
           formSignature: signature ?? null,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onMutate: ({ fromModal }) => {
@@ -86,7 +86,7 @@ export const useGetContext = () => {
 
   const { mutate: migrateFormMutate, isPending: migrateFormIsPending } = useMutation({
     mutationFn: () =>
-      formsClient.nasesControllerMigrateForm(formId, { accessToken: 'onlyAuthenticated' }),
+      formsClient.formMigrationsControllerClaimMigration(formId, { authStrategy: 'authOnly' }),
     networkMode: 'always',
     onSuccess: () => {
       turnOffLeaveProtection()
@@ -116,7 +116,7 @@ export const useGetContext = () => {
           formId,
           jsonData: formData,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
       const fileName = `${slug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
@@ -156,7 +156,7 @@ export const useGetContext = () => {
           formId,
           xmlForm,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
       closeSnackbarInfo()
 
@@ -214,7 +214,7 @@ export const useGetContext = () => {
         })),
       },
       {
-        accessToken: 'onlyAuthenticated',
+        authStrategy: 'authOrGuestWithToken',
         responseType: 'arraybuffer',
         signal: abortController?.signal,
       },
@@ -273,7 +273,7 @@ export const useGetContext = () => {
     openSnackbarInfo(t('info_messages.concept_delete'))
     try {
       await formsClient.nasesControllerDeleteForm(formId, {
-        accessToken: 'onlyAuthenticated',
+        authStrategy: 'authOrGuestWithToken',
       })
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.concept_delete'))

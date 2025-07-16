@@ -130,7 +130,10 @@ describe('NorisService', () => {
       })
       const closeSpy = jest.spyOn(mockConnection, 'close')
 
-      const result = await service.getDataForUpdate(['123456', '789012'])
+      const result = await service.getDataForUpdate(
+        ['123456', '789012'],
+        [2024],
+      )
 
       expect(requestSpy).toHaveBeenCalledTimes(1)
       expect(querySpy).toHaveBeenCalledTimes(1)
@@ -146,7 +149,7 @@ describe('NorisService', () => {
       const closeSpy = jest.spyOn(mockConnection, 'close')
 
       await expect(
-        service.getDataForUpdate(['123456', '789012']),
+        service.getDataForUpdate(['123456', '789012'], [2024, 2025]),
       ).rejects.toThrow()
 
       expect(querySpy).not.toHaveBeenCalled()

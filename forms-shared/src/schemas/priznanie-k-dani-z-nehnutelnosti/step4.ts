@@ -174,7 +174,7 @@ const innerArray = (kalkulacka: boolean) =>
         },
       ),
       conditionalFields(createCondition([[['castStavbyOslobodenaOdDane'], { const: true }]]), [
-        object('castStavbyOslobodenaOdDaneDetaily', {}, {}, [
+        object('castStavbyOslobodenaOdDaneDetaily', {}, [
           number(
             'celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby',
             {
@@ -205,7 +205,7 @@ const innerArray = (kalkulacka: boolean) =>
           ),
         ]),
       ]),
-      object('datumy', {}, {}, [
+      object('datumy', {}, [
         datePicker(
           'datumVznikuDanovejPovinnosti',
           { title: 'Dátum vzniku daňovej povinnosti' },

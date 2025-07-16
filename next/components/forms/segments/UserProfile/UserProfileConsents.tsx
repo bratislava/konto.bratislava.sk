@@ -10,7 +10,7 @@ import UserProfileSectionHeader from './UserProfileSectionHeader'
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
   const { isSubscribed, changeSubscription, subscriptionChangePending } = useUserSubscription({
-    category: GdprDataDtoCategoryEnum.Taxes,
+    category: GdprDataDtoCategoryEnum.Esbs,
     type: GdprDataDtoTypeEnum.Marketing,
   })
 

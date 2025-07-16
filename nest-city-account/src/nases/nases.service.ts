@@ -37,7 +37,8 @@ export class NasesService {
         throw this.throwerErrorGuard.BadRequestException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          JSON.stringify(error)
+          undefined,
+          error
         )
       })
   }

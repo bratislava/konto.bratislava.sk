@@ -34,7 +34,7 @@ export const renderFormTemplate = (
 }
 
 export const renderFormAdditionalInfo = (
-  formDefinition: FormDefinition,
+  formDefinition: Pick<FormDefinition, 'additionalInfoTemplate'>,
   formDataJson: GenericObjectType,
   logError = false,
 ) => {

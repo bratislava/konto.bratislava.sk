@@ -115,6 +115,7 @@ export default class ConvertService {
     return generateSlovenskoSkXmlObject({
       formDefinition: formDefinitionPatched,
       formSummary,
+      formId: form.id,
       jsonVersion: form.jsonVersion,
       formData: formDataJson,
       serverFiles: formWithFiles.files,
@@ -219,12 +220,13 @@ export default class ConvertService {
           errorEnum,
           errorMessage,
         )
-      } else {
-        this.logger.error(
-          `Unexpected error during XML to JSON conversion: ${error}`,
-        )
-        throw error
       }
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Unexpected error during XML to JSON conversion',
+        undefined,
+        error,
+      )
     }
 
     if (
@@ -252,7 +254,7 @@ export default class ConvertService {
 
   private async generateTaxPdf(
     formDataJson: PrismaJson.FormDataJson,
-    formId?: string,
+    formId: string,
   ): Promise<Readable> {
     try {
       const base64Pdf = await this.taxService.getFilledInPdfBase64(
@@ -265,7 +267,9 @@ export default class ConvertService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `There was an error during generating pdf. ${<string>error}`,
+        'There was an error during generating pdf.',
+        undefined,
+        error,
       )
     }
   }
@@ -339,16 +343,17 @@ export default class ConvertService {
 
         pdfBuffer = await renderSummaryPdf({
           formSummary: form.formSummary,
+          validationData: null,
           launchBrowser: () => chromium.launch(),
           serverFiles: form.files,
         })
       }
     } catch (error) {
-      this.logger.error(`Error during generating PDF: ${<string>error}`)
-
       throw this.throwerErrorGuard.InternalServerErrorException(
         ConvertErrorsEnum.PDF_GENERATION_FAILED,
         ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
+        undefined,
+        error,
       )
     }
 

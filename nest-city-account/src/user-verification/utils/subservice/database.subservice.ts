@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import { LegalPerson, User } from '@prisma/client'
-import { PrismaService } from '../../../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../../utils/guards/errors.guard'
 import { ResponseVerificationIdentityCardDto } from '../../dtos/requests.verification.dto'
@@ -24,12 +24,14 @@ export class DatabaseSubserviceUser {
       user = await this.prisma.user.findUnique({
         where: {
           email,
+          ...ACTIVE_USER_FILTER,
         },
       })
       if (!user) {
         user = await this.prisma.user.findUnique({
           where: {
             externalId,
+            ...ACTIVE_USER_FILTER,
           },
         })
       }
@@ -38,7 +40,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -66,7 +69,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -89,6 +93,7 @@ export class DatabaseSubserviceUser {
           await this.prisma.user.update({
             where: {
               id: user.id,
+              ...ACTIVE_USER_FILTER,
             },
             data: {
               lastVerificationIdentityCard: new Date(),
@@ -120,6 +125,7 @@ export class DatabaseSubserviceUser {
           await this.prisma.user.update({
             where: {
               id: user.id,
+              ...ACTIVE_USER_FILTER,
             },
             data: {
               ifo,
@@ -153,7 +159,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -246,7 +253,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -258,6 +266,7 @@ export class DatabaseSubserviceUser {
         return await this.prisma.user.update({
           where: {
             id: user.id,
+            ...ACTIVE_USER_FILTER,
           },
           data: {
             requeuedInVerification: {
@@ -278,7 +287,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -290,6 +300,7 @@ export class DatabaseSubserviceUser {
         return await this.prisma.user.update({
           where: {
             id: user.id,
+            ...ACTIVE_USER_FILTER,
           },
           data: {
             requeuedInVerification: 0,
@@ -308,7 +319,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }

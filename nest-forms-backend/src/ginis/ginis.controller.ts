@@ -6,13 +6,9 @@ import {
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 
 import {
@@ -21,35 +17,25 @@ import {
 } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import {
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotFoundErrorDto,
-} from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
 import { User } from '../utils/decorators/request.decorator'
 import {
   mapGinisHistory,
   MappedDocumentHistory,
 } from '../utils/ginis/ginis-api-helper'
-import {
-  DatabaseErrorDto,
-  UnauthorizedErrorDto,
-} from '../utils/global-dtos/errors.dto'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisDocumentDetailResponseDto from './dtos/ginis-api.response.dto'
+import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 
 @ApiTags('ginis')
 @ApiBearerAuth()
-@ApiUnauthorizedResponse({
-  description: 'Unauthorized.',
-  type: UnauthorizedErrorDto,
-})
 @Controller('ginis')
 export default class GinisController {
   constructor(
     private readonly ginisAPIService: GinisAPIService,
+    private readonly ginisHelper: GinisHelper,
     private readonly formsService: FormsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
@@ -61,18 +47,6 @@ export default class GinisController {
   @ApiOkResponse({
     description: '',
     type: GinisDocumentDetailResponseDto,
-  })
-  @ApiForbiddenResponse({
-    description: 'Form is Forbidden.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'Form not found.',
-    type: FormNotFoundErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    type: DatabaseErrorDto,
   })
   @UseGuards(CognitoGuard)
   @Get(':formId')
@@ -126,7 +100,8 @@ export default class GinisController {
     return {
       id: wflDocument['Id-dokumentu'],
       dossierId: wflDocument['Id-spisu'],
-      ownerName: `${ownerDetail.Jmeno || ''} ${ownerDetail.Prijmeni || ''}`,
+      ownerName:
+        this.ginisHelper.extractSanitizeGinisOwnerFullName(ownerDetail),
       ownerEmail: ownerDetail.Mail || '',
       ownerPhone: ownerDetail.Telefon || '',
       documentHistory,

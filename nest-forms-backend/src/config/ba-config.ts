@@ -36,10 +36,12 @@ export default class BaConfig {
   get cognito() {
     return {
       clientId: this.validatedConfig.AWS_COGNITO_CLIENT_ID,
-      userpoolId: this.validatedConfig.AWS_COGNITO_USERPOOL_ID,
+      userPoolId: this.validatedConfig.AWS_COGNITO_USERPOOL_ID,
       region: this.validatedConfig.AWS_COGNITO_REGION,
-      access: this.validatedConfig.AWS_COGNITO_ACCESS,
-      secret: this.validatedConfig.AWS_COGNITO_SECRET,
+      accessKeyId: this.validatedConfig.AWS_COGNITO_ACCESS,
+      secretAccessKey: this.validatedConfig.AWS_COGNITO_SECRET,
+      accountId: this.validatedConfig.AWS_ACCOUNT_ID,
+      unauthRoleName: this.validatedConfig.AWS_UNAUTH_ROLE_NAME,
     }
   }
 
@@ -96,7 +98,15 @@ export default class BaConfig {
       username: this.validatedConfig.GINIS_USERNAME,
       password: this.validatedConfig.GINIS_PASSWORD,
       sslHost: this.validatedConfig.GINIS_SSL_HOST,
+      sslMtomHost: this.validatedConfig.GINIS_SSL_MTOM_HOST,
       ginHost: this.validatedConfig.GINIS_GIN_HOST,
+      formIdPropertyId: this.validatedConfig.GINIS_FORM_ID_PROPERTY_ID,
+    }
+  }
+
+  get ginis() {
+    return {
+      shouldRegister: this.validatedConfig.GINIS_SHOULD_REGISTER,
     }
   }
 

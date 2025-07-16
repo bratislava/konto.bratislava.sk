@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator'
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
 
 export enum ResponseVerificationIdentityCardMessageEnum {
@@ -21,8 +21,7 @@ export class RequestQueryUserByBirthNumberDto {
 
 export class RequestBatchQueryUsersByBirthNumbersDto {
   @ApiProperty({
-    description:
-      'Birth numbers without slash which should be retrieved from user database.',
+    description: 'Birth numbers without slash which should be retrieved from user database.',
     default: ['0000000000', '0000001010'],
     type: String,
     isArray: true,
@@ -103,4 +102,32 @@ export class RequestValidatePhysicalEntityRfoDto {
   })
   @IsUUID()
   physicalEntityId!: string
+}
+
+export class RequestDeleteTaxDto {
+  @ApiProperty({
+    description: 'Year of tax',
+    default: 2022,
+  })
+  @IsNumber()
+  year: number
+
+  @ApiProperty({
+    description: 'Birth number in format with slash',
+    example: '0000000000',
+  })
+  @IsString()
+  birthNumber: string
+}
+
+export class MarkDeceasedAccountRequestDto {
+  @ApiProperty({
+    description: 'List of birthnumbers/external IDs to mark as deceased',
+    example: ['1234567890', '2345678901', '3456789012'],
+    type: [String],
+  })
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  birthNumbers: string[]
 }

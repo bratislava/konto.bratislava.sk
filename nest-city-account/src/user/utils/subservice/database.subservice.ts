@@ -16,7 +16,7 @@ import {
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../../../user/user.error.enum'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -344,6 +344,9 @@ export class DatabaseSubserviceUser {
     })
 
     for (const elem of gdprData) {
+      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
+      // If there is error it isn't blocker for futher process.
+      // TODO Data will be also uploaded from database to bloomreach every day.
       this.bloomreachService.trackEventConsent(
         elem.subType,
         [
@@ -377,6 +380,9 @@ export class DatabaseSubserviceUser {
     })
 
     for (const elem of gdprData) {
+      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
+      // If there is error it isn't blocker for futher process.
+      // TODO Data will be also uploaded from database to bloomreach every day.
       this.bloomreachService.trackEventConsent(
         elem.subType,
         [

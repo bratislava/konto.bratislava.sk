@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
@@ -8,19 +9,24 @@ import {
 } from '../../dtos/gdpr.legalperson.dto'
 import {
   GdprCategory,
-  GdprDataDto,
   GdprSubType,
   GdprType,
   ResponseGdprUserDataDto,
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 
 @Injectable()
 export class DatabaseSubserviceUser {
   private readonly logger: LineLoggerSubservice
 
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private bloomreachService: BloomreachService,
+    private throwerErrorGuard: ThrowerErrorGuard
+  ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
 
@@ -49,22 +55,18 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
-        await this.prisma.userGdprData.createMany({
-          data: [
-            {
-              type: GdprType.LICENSE,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              userId: user.id,
-            },
-            {
-              type: GdprType.MARKETING,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              userId: user.id,
-            },
-          ],
-        })
+        await this.changeUserGdprData(user.id, [
+          {
+            type: GdprType.LICENSE,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+          {
+            type: GdprType.MARKETING,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+        ])
       } else if (user.email != email) {
         const oldEmail = user.email
         user = await this.prisma.user.update({
@@ -89,14 +91,13 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.prisma.userGdprData.create({
-        data: {
+      await this.changeUserGdprData(user.id, [
+        {
           type: GdprType.LICENSE,
           category: GdprCategory.ESBS,
           subType: GdprSubType.SUB,
-          userId: user.id,
         },
-      })
+      ])
     }
 
     return prismaExclude(user, ['ifo'])
@@ -129,23 +130,18 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
-        await this.prisma.legalPersonGdprData.createMany({
-          data: [
-            {
-              type: GdprType.LICENSE,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              legalPersonId: legalPerson.id,
-            },
-            {
-              type: GdprType.MARKETING,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              legalPersonId: legalPerson.id,
-            },
-          ],
-        })
-        await this.createLegalPersonGdprData(legalPerson.id, null)
+        await this.changeLegalPersonGdprData(legalPerson.id, [
+          {
+            type: GdprType.LICENSE,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+          {
+            type: GdprType.MARKETING,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+        ])
       } else if (legalPerson.email != email) {
         const oldEmail = legalPerson.email
         legalPerson = await this.prisma.legalPerson.update({
@@ -170,15 +166,13 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.prisma.legalPersonGdprData.create({
-        data: {
+      await this.changeLegalPersonGdprData(legalPerson.id, [
+        {
           type: GdprType.LICENSE,
           category: GdprCategory.ESBS,
           subType: GdprSubType.SUB,
-          legalPersonId: legalPerson.id,
         },
-      })
-      await this.createLegalPersonGdprData(legalPerson.id, null)
+      ])
     }
     return legalPerson
   }
@@ -231,65 +225,7 @@ export class DatabaseSubserviceUser {
     return user
   }
 
-  async createUserGdprData(userId: string, gdprSubType: GdprSubType, gdprData: GdprDataDto[]) {
-    const data = []
-    for (const elem of gdprData) {
-      data.push({
-        category: elem.category,
-        type: elem.type,
-        subType: gdprSubType,
-        userId: userId,
-      })
-    }
-    const sendEmailData = gdprData.find((value) => {
-      return value.category === GdprCategory.TAXES && value.type === GdprType.FORMAL_COMMUNICATION
-    })
-    if (sendEmailData && gdprSubType === GdprSubType.SUB) {
-      //TODO - add template and create pdf and send to email
-      // await this.mailgunSubservice.sendEmail('TBD - SUBSCRIPTION TAMPLATE', {
-      //   to: email,
-      //   variables: {
-      //     firstName,
-      //   },
-      // })
-    }
-    await this.prisma.userGdprData.createMany({ data: data })
-    return data
-  }
-
-  async createLegalPersonGdprData(
-    legalPersonId: string,
-    gdprSubType: GdprSubType | null,
-    gdprData?: GdprDataDto[]
-  ) {
-    const data = []
-    if (!gdprData) {
-      for (const category in GdprCategory) {
-        for (const type in GdprType) {
-          if (type !== GdprType.LICENSE) {
-            data.push({
-              category: category,
-              type: type,
-              subType: gdprSubType,
-              legalPersonId: legalPersonId,
-            })
-          }
-        }
-      }
-    } else {
-      for (const elem of gdprData) {
-        data.push({
-          category: elem.category,
-          type: elem.type,
-          subType: gdprSubType,
-          legalPersonId: legalPersonId,
-        })
-      }
-    }
-    await this.prisma.legalPersonGdprData.createMany({ data: data })
-    return data
-  }
-
+  // is this ok?
   async getUserGdprData(userId: string): Promise<ResponseGdprUserDataDto[]> {
     const data: ResponseGdprUserDataDto[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT ON(category, "type")
@@ -314,6 +250,7 @@ export class DatabaseSubserviceUser {
     return data
   }
 
+  // is this ok?
   async getLegalPersonGdprData(legalPersonId: string): Promise<ResponseGdprLegalPersonDataDto[]> {
     const data: ResponseGdprLegalPersonDataDto[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT ON(category, "type")
@@ -385,5 +322,77 @@ export class DatabaseSubserviceUser {
       return false
     }
     return true
+  }
+
+  async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    })
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
+    }
+    await this.prisma.userGdprData.createMany({
+      data: gdprData.map((elem) => ({
+        type: elem.type,
+        category: elem.category,
+        subType: elem.subType,
+        userId: user.id,
+      })),
+    })
+
+    for (const elem of gdprData) {
+      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
+      // If there is error it isn't blocker for futher process.
+      // TODO Data will be also uploaded from database to bloomreach every day.
+      this.bloomreachService.trackEventConsent(
+        elem.subType,
+        [
+          {
+            category: elem.category,
+            type: elem.type,
+          },
+        ],
+        user.externalId
+      )
+    }
+  }
+
+  async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: { id: legalPersonId },
+    })
+    if (!legalPerson) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
+    }
+    await this.prisma.legalPersonGdprData.createMany({
+      data: gdprData.map((elem) => ({
+        type: elem.type,
+        category: elem.category,
+        subType: elem.subType,
+        legalPersonId: legalPerson.id,
+      })),
+    })
+
+    for (const elem of gdprData) {
+      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
+      // If there is error it isn't blocker for futher process.
+      // TODO Data will be also uploaded from database to bloomreach every day.
+      this.bloomreachService.trackEventConsent(
+        elem.subType,
+        [
+          {
+            category: elem.category,
+            type: elem.type,
+          },
+        ],
+        legalPerson.externalId
+      )
+    }
   }
 }

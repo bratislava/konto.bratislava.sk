@@ -8,15 +8,11 @@ import BaConfigService from '../config/ba-config.service'
 export default class ClientsService {
   constructor(private readonly baConfigService: BaConfigService) {}
 
-  // Without explicit type TypeScript throws TS2742 error
-  public readonly slovenskoSkApi: ReturnType<typeof createSlovenskoSkClient> =
-    createSlovenskoSkClient({
-      basePath: this.baConfigService.slovenskoSk.url,
-    })
+  public readonly slovenskoSkApi = createSlovenskoSkClient({
+    basePath: this.baConfigService.slovenskoSk.url,
+  })
 
-  // Without explicit type TypeScript throws TS2742 error
-  public readonly cityAccountApi: ReturnType<typeof createCityAccountClient> =
-    createCityAccountClient({
-      basePath: this.baConfigService.cityAccountBackend.url,
-    })
+  public readonly cityAccountApi = createCityAccountClient({
+    basePath: this.baConfigService.cityAccountBackend.url,
+  })
 }

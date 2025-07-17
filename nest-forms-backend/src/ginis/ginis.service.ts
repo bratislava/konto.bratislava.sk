@@ -314,7 +314,6 @@ export default class GinisService {
       )
     }
 
-    const filesWithError = form.files.filter((file) => file.ginisUploadedError)
     const filesToUpload = form.files.filter((file) => !file.ginisUploaded)
 
     // Registration
@@ -346,7 +345,11 @@ export default class GinisService {
     }
 
     // Attachments upload
-    if (form.ginisState === GinisState.REGISTERED && filesToUpload.length > 0) {
+    if (
+      (form.ginisState === GinisState.REGISTERED ||
+        form.ginisState === GinisState.RUNNING_UPLOAD_ATTACHMENTS) &&
+      filesToUpload.length > 0
+    ) {
       if (!form.ginisDocumentId) {
         alertError(
           `ERROR uploadAttachments - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
@@ -354,18 +357,8 @@ export default class GinisService {
         )
         return this.nackTrueWithWait(20_000)
       }
-      this.logger.debug('---- start to upload attachments ----')
+      this.logger.debug('---- uploading attachments ----')
       await this.uploadAttachments(form, formDefinition.pospID)
-      return this.nackTrueWithWait(20_000)
-    }
-
-    if (
-      form.ginisState === GinisState.ERROR_ATTACHMENT_UPLOAD ||
-      filesWithError.length > 0
-    ) {
-      this.logger.error(
-        '---- ERROR uploading attachments (manual intervention required) ----',
-      )
       return this.nackTrueWithWait(20_000)
     }
 
@@ -386,10 +379,7 @@ export default class GinisService {
     }
 
     // Assign submission
-    if (
-      form.ginisState === GinisState.ATTACHMENTS_UPLOADED ||
-      form.ginisState === GinisState.ERROR_ASSIGN_SUBMISSION
-    ) {
+    if (form.ginisState === GinisState.ATTACHMENTS_UPLOADED) {
       if (!form.ginisDocumentId) {
         alertError(
           `ERROR assignSubmission - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
@@ -403,6 +393,13 @@ export default class GinisService {
         formDefinition.ginisAssignment.ginisFunctionId,
       )
       return this.nackTrueWithWait(20_000)
+    }
+
+    if (form.ginisState === GinisState.ERROR_ASSIGN_SUBMISSION) {
+      this.logger.error(
+        '---- ERROR assigning submission (manual intervention required) ----',
+      )
+      return this.nackTrueWithWait(600_000)
     }
 
     // Send externally

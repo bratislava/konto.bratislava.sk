@@ -187,7 +187,7 @@ describe('GinisService', () => {
 
       expect(registerSpy).not.toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // should try to register and requeue if it couldn't find the document
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -201,7 +201,7 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(registerSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // should only change state if there was error to allow register again
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -251,11 +251,11 @@ describe('GinisService', () => {
 
       // When upload for first time - just upload
       let result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
       expect(uploadSpy).toHaveBeenCalled()
-      jest.resetAllMocks()
+      expect(result.requeue).toBeTruthy()
+      jest.clearAllMocks()
 
-      // When one error - requeue, do not upload, report error
+      // When one error - requeue, upload, report error
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -276,11 +276,11 @@ describe('GinisService', () => {
         ],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
+      expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      expect(uploadSpy).not.toHaveBeenCalled()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
-      // When all errors - requeue, do not upload, report error (TODO update behavior)
+      // When all errors - requeue, upload, report error
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -301,9 +301,9 @@ describe('GinisService', () => {
         ],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
+      expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      expect(uploadSpy).not.toHaveBeenCalled()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // When no more files, change to Attachments uploaded
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -317,8 +317,6 @@ describe('GinisService', () => {
         files: [],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
-      expect(uploadSpy).not.toHaveBeenCalled()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
         expect.objectContaining({
           data: {
@@ -327,6 +325,8 @@ describe('GinisService', () => {
           },
         }),
       )
+      expect(uploadSpy).not.toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
 
       // When missing ginisDocumentId, skip upload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -349,9 +349,8 @@ describe('GinisService', () => {
       } as FormWithFiles)
 
       result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
-      jest.resetAllMocks()
+      expect(result.requeue).toBeTruthy()
     })
 
     it('should mark as files uploaded if there are no files', async () => {
@@ -415,7 +414,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy()
       expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
 
-      // The same should happen if the state is ERROR_ASSIGN_SUBMISSION
+      // If ERROR_ASSIGN_SUBMISSION, skip upload, manual intervention required
 
       // missing ginisDocumentId
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -436,7 +435,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
-      expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
+      expect(assignSpy).not.toHaveBeenCalled()
     })
 
     it('should mark as ready for processing if there is no sharepoint', async () => {
@@ -474,7 +473,7 @@ describe('GinisService', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
       expect(sendToSharepointSpy).not.toHaveBeenCalled()
 
-      jest.resetAllMocks()
+      jest.clearAllMocks()
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -541,7 +540,7 @@ describe('GinisService', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
       expect(sendToSharepointSpy).toHaveBeenCalled()
 
-      jest.resetAllMocks()
+      jest.clearAllMocks()
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',

@@ -83,9 +83,9 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             <AccountMarkdown content={strapiForm.landingPage.text} variant="sm" />
           )}
           <div className="flex flex-col rounded-xl border-2 border-gray-200">
-            {strapiForm.landingPage.linkCtas
-              ?.filter(isDefined)
-              .map((linkCta) => <FormLandingPageCard key={linkCta.id} {...linkCta} />)}
+            {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
+              <FormLandingPageCard key={linkCta.id} {...linkCta} />
+            ))}
             <FormLandingPageCard
               {...strapiForm.landingPage.formCta}
               isLoading={isPending}

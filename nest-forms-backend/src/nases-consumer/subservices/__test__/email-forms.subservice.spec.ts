@@ -576,8 +576,7 @@ describe('EmailFormsSubservice', () => {
       const originalSendJsonData =
         mockFormDefinitionWithSendEmail.email
           .sendJsonDataAttachmentInTechnicalMail
-      mockFormDefinitionWithSendEmail.email.sendJsonDataAttachmentInTechnicalMail =
-        false
+      mockFormDefinitionWithSendEmail.email.sendJsonDataAttachmentInTechnicalMail = false
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 

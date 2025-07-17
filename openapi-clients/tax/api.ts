@@ -63,6 +63,25 @@ export type DeliveryMethodNamed = (typeof DeliveryMethodNamed)[keyof typeof Deli
 /**
  *
  * @export
+ * @interface RequestAdminBloomreachCustomerEventTaxPaymentDto
+ */
+export interface RequestAdminBloomreachCustomerEventTaxPaymentDto {
+  /**
+   * Fake Bloomreach Data
+   * @type {TaxPaymentBloomreachDataDto}
+   * @memberof RequestAdminBloomreachCustomerEventTaxPaymentDto
+   */
+  bloomreachData: TaxPaymentBloomreachDataDto
+  /**
+   * Birth number in format with slash
+   * @type {string}
+   * @memberof RequestAdminBloomreachCustomerEventTaxPaymentDto
+   */
+  birthNumber: string
+}
+/**
+ *
+ * @export
  * @interface RequestAdminCreateTestingTaxDto
  */
 export interface RequestAdminCreateTestingTaxDto {
@@ -1125,11 +1144,89 @@ export const TaxPaidStatusEnum = {
 export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
 
 /**
+ *
+ * @export
+ * @interface TaxPaymentBloomreachDataDto
+ */
+export interface TaxPaymentBloomreachDataDto {
+  /**
+   * year
+   * @type {number}
+   * @memberof TaxPaymentBloomreachDataDto
+   */
+  year: number
+  /**
+   * amount
+   * @type {number}
+   * @memberof TaxPaymentBloomreachDataDto
+   */
+  amount: number
+  /**
+   * payment_source
+   * @type {object}
+   * @memberof TaxPaymentBloomreachDataDto
+   */
+  payment_source: object
+}
+
+/**
  * AdminApi - axios parameter creator
  * @export
  */
 export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * Send tax payment to bloomreach for a specific birth number
+     * @summary Send tax payment to bloomreach
+     * @param {RequestAdminBloomreachCustomerEventTaxPaymentDto} requestAdminBloomreachCustomerEventTaxPaymentDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerBloomreachCustomerEventTaxPayment: async (
+      requestAdminBloomreachCustomerEventTaxPaymentDto: RequestAdminBloomreachCustomerEventTaxPaymentDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestAdminBloomreachCustomerEventTaxPaymentDto' is not null or undefined
+      assertParamExists(
+        'adminControllerBloomreachCustomerEventTaxPayment',
+        'requestAdminBloomreachCustomerEventTaxPaymentDto',
+        requestAdminBloomreachCustomerEventTaxPaymentDto,
+      )
+      const localVarPath = `/admin/bloomreach-customer-event-tax-payment`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestAdminBloomreachCustomerEventTaxPaymentDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
@@ -1497,6 +1594,35 @@ export const AdminApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
   return {
     /**
+     * Send tax payment to bloomreach for a specific birth number
+     * @summary Send tax payment to bloomreach
+     * @param {RequestAdminBloomreachCustomerEventTaxPaymentDto} requestAdminBloomreachCustomerEventTaxPaymentDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerBloomreachCustomerEventTaxPayment(
+      requestAdminBloomreachCustomerEventTaxPaymentDto: RequestAdminBloomreachCustomerEventTaxPaymentDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerBloomreachCustomerEventTaxPayment(
+          requestAdminBloomreachCustomerEventTaxPaymentDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerBloomreachCustomerEventTaxPayment']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
@@ -1710,6 +1836,24 @@ export const AdminApiFactory = function (
   const localVarFp = AdminApiFp(configuration)
   return {
     /**
+     * Send tax payment to bloomreach for a specific birth number
+     * @summary Send tax payment to bloomreach
+     * @param {RequestAdminBloomreachCustomerEventTaxPaymentDto} requestAdminBloomreachCustomerEventTaxPaymentDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerBloomreachCustomerEventTaxPayment(
+      requestAdminBloomreachCustomerEventTaxPaymentDto: RequestAdminBloomreachCustomerEventTaxPaymentDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerBloomreachCustomerEventTaxPayment(
+          requestAdminBloomreachCustomerEventTaxPaymentDto,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
@@ -1824,6 +1968,26 @@ export const AdminApiFactory = function (
  * @extends {BaseAPI}
  */
 export class AdminApi extends BaseAPI {
+  /**
+   * Send tax payment to bloomreach for a specific birth number
+   * @summary Send tax payment to bloomreach
+   * @param {RequestAdminBloomreachCustomerEventTaxPaymentDto} requestAdminBloomreachCustomerEventTaxPaymentDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminControllerBloomreachCustomerEventTaxPayment(
+    requestAdminBloomreachCustomerEventTaxPaymentDto: RequestAdminBloomreachCustomerEventTaxPaymentDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerBloomreachCustomerEventTaxPayment(
+        requestAdminBloomreachCustomerEventTaxPaymentDto,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    * Creates a testing tax record with specified details for development and testing purposes
    * @summary Create a testing tax record

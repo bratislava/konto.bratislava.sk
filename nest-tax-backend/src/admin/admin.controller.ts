@@ -19,6 +19,7 @@ import { AdminGuard } from 'src/auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
 import { AdminService } from './admin.service'
 import {
+  RequestAdminBloomreachCustomerEventTaxPaymentDto,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
@@ -156,5 +157,25 @@ export class AdminController {
   @Post('delete-tax')
   async deleteTax(@Body() request: RequestAdminDeleteTaxDto): Promise<void> {
     await this.adminService.deleteTax(request)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Send tax payment to bloomreach',
+    description: 'Send tax payment to bloomreach for a specific birth number',
+  })
+  @ApiOkResponse({
+    description: 'Tax payment sent to bloomreach successfully',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error or tax payer not found',
+  })
+  @UseGuards(AdminGuard)
+  @UseGuards(NotProductionGuard)
+  @Post('bloomreach-customer-event-tax-payment')
+  async bloomreachCustomerEventTaxPayment(
+    @Body() request: RequestAdminBloomreachCustomerEventTaxPaymentDto,
+  ): Promise<void> {
+    await this.adminService.bloomreachCustomerEventTaxPayment(request)
   }
 }

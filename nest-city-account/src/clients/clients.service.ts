@@ -7,11 +7,11 @@ import { createMagproxyClient } from 'openapi-clients/magproxy'
 export default class ClientsService {
   constructor(private configService: ConfigService) {}
 
-  public readonly taxBackendApi: ReturnType<typeof createTaxClient> = createTaxClient({
+  public readonly taxBackendApi = createTaxClient({
     basePath: this.configService.getOrThrow('TAX_BACKEND_URL'),
   })
 
-  public readonly magproxyApi: ReturnType<typeof createMagproxyClient> = createMagproxyClient({
+  public readonly magproxyApi = createMagproxyClient({
     basePath: this.configService.getOrThrow('MAGPROXY_URL'),
   })
 }

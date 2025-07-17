@@ -13203,3 +13203,242 @@ exports[`getSummaryJson > ziadostOSlobodnyPristupKInformaciamExample summary JSO
   "type": "Form",
 }
 `;
+
+exports[`getSummaryJson > ziadostOUzemnoplanovaciuInformaciuExample summary JSON should match snapshot 1`] = `
+{
+  "id": "root",
+  "steps": [
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Fyzická osoba",
+            },
+          ],
+          "id": "root_ziadatel_typZiadatela",
+          "label": "Žiadate ako",
+          "type": "Field",
+          "value": "fyzickaOsoba",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Jana",
+            },
+          ],
+          "id": "root_ziadatel_meno",
+          "label": "Meno",
+          "type": "Field",
+          "value": "Jana",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Svobodová",
+            },
+          ],
+          "id": "root_ziadatel_priezvisko",
+          "label": "Priezvisko",
+          "type": "Field",
+          "value": "Svobodová",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Ružinovská 15",
+            },
+          ],
+          "id": "root_ziadatel_ulicaCislo",
+          "label": "Adresa pobytu",
+          "type": "Field",
+          "value": "Ružinovská 15",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bratislava",
+            },
+          ],
+          "id": "root_ziadatel_mesto",
+          "label": "Mesto",
+          "type": "Field",
+          "value": "Bratislava",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "82109",
+            },
+          ],
+          "id": "root_ziadatel_psc",
+          "label": "PSČ",
+          "type": "Field",
+          "value": "82109",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "jana.svobodova@priklad.sk",
+            },
+          ],
+          "id": "root_ziadatel_kontaktneUdaje_email",
+          "label": "Email",
+          "type": "Field",
+          "value": "jana.svobodova@priklad.sk",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "+421917654321",
+            },
+          ],
+          "id": "root_ziadatel_kontaktneUdaje_telefon",
+          "label": "Telefónne číslo",
+          "type": "Field",
+          "value": "+421917654321",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Email",
+            },
+          ],
+          "id": "root_ziadatel_formaDorucovania",
+          "label": "Akou formou chcete doručiť územnoplánovaciu informáciu?",
+          "type": "Field",
+          "value": "email",
+        },
+      ],
+      "id": "root_ziadatel",
+      "title": "Žiadateľ",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Čunovo",
+            },
+          ],
+          "id": "root_detailAUcel_katastralneUzemie",
+          "label": "Katastrálne územie",
+          "type": "Field",
+          "value": "809985",
+        },
+        {
+          "id": "root_detailAUcel_informacieOLokalite_lokality",
+          "items": [
+            {
+              "children": [
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "1245/2",
+                    },
+                  ],
+                  "id": "root_detailAUcel_informacieOLokalite_lokality_0_parcelneCislo",
+                  "label": "Parcelné číslo",
+                  "type": "Field",
+                  "value": "1245/2",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "register C-KN",
+                    },
+                  ],
+                  "id": "root_detailAUcel_informacieOLokalite_lokality_0_registerParcely",
+                  "label": "Register parcely",
+                  "type": "Field",
+                  "value": "registerCKn",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Tomášikova 32",
+                    },
+                  ],
+                  "id": "root_detailAUcel_informacieOLokalite_lokality_0_ulicaACislo",
+                  "label": "Ulica a číslo / popis lokality",
+                  "type": "Field",
+                  "value": "Tomášikova 32",
+                },
+              ],
+              "id": "root_detailAUcel_informacieOLokalite_lokality_0",
+              "title": "Lokalita č. 1",
+              "type": "ArrayItem",
+            },
+          ],
+          "title": "Lokality",
+          "type": "Array",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Planovaný investičný zámer",
+            },
+          ],
+          "id": "root_detailAUcel_ucelUzemnoplanovacichiInformacii",
+          "label": "Účel územnoplánovacej informácie",
+          "type": "Field",
+          "value": "planovanyInvesticnyZamer",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Plánovaná výstavba rodinného domu s garážou na parcele č. 1245/2 v katastrálnom území Ružinov.",
+            },
+          ],
+          "id": "root_detailAUcel_popisZameru",
+          "label": "Popíšte zámer, pre ktorý žiadate o územnoplánovaciu informáciu.",
+          "type": "Field",
+          "value": "Plánovaná výstavba rodinného domu s garážou na parcele č. 1245/2 v katastrálnom území Ružinov.",
+        },
+      ],
+      "id": "root_detailAUcel",
+      "title": "Detail a účel",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "id": "2eb663ad-8ea7-423b-958a-c1830f656d52",
+              "type": "File",
+            },
+          ],
+          "id": "root_prilohy_zakresZaujmovychParciel",
+          "label": "Zákres záujmových parciel do kópie katastrálnej mapy",
+          "type": "Field",
+          "value": [
+            "2eb663ad-8ea7-423b-958a-c1830f656d52",
+          ],
+        },
+      ],
+      "id": "root_prilohy",
+      "title": "Prílohy",
+      "type": "Step",
+    },
+  ],
+  "title": "Žiadosť o územnoplánovaciu informáciu",
+  "type": "Form",
+}
+`;

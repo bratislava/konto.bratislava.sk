@@ -89,14 +89,14 @@ export class UserService {
   }
 
   async subUnsubUser(
-    id: string,
+    externalId: string,
     gdprSubType: GdprSubType,
     email: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(id, email)
+    const user = await this.databaseSubservice.getOrCreateUser(externalId, email)
     await this.databaseSubservice.changeUserGdprData(
-      id,
+      user.id,
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
     // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
@@ -118,12 +118,12 @@ export class UserService {
   }
 
   async subUnsubLegalPerson(
-    id: string,
+    externalId: string,
     gdprSubType: GdprSubType,
     email: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.databaseSubservice.getOrCreateLegalPerson(id, email)
+    const user = await this.databaseSubservice.getOrCreateLegalPerson(externalId, email)
     await this.databaseSubservice.changeLegalPersonGdprData(
       user.id,
       gdprData.map((elem) => ({

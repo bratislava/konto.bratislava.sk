@@ -1,8 +1,6 @@
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import React from 'react'
 
-import { AccountType } from '../../../../../frontend/dtos/accountDto'
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import ContactInformationSection from './ContactInformation'
 import PaymentData from './PaymentData'
 import TaxDetails from './TaxDetails'
@@ -14,7 +12,6 @@ import { useStrapiTax } from './useStrapiTax'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxFeeSection = () => {
-  const { accountType } = useSsrAuth()
   const {
     taxData,
     officialCorrespondenceChannelModalOpen,
@@ -22,8 +19,6 @@ const TaxFeeSection = () => {
     strapiTaxAdministrator,
   } = useTaxFeeSection()
   const { accountCommunicationConsentText } = useStrapiTax()
-  const displayTaxAdministratorCard =
-    strapiTaxAdministrator !== null && accountType === AccountType.FyzickaOsoba
 
   return (
     <>
@@ -39,9 +34,10 @@ const TaxFeeSection = () => {
             <TaxesFeesDeliveryMethodCard
               onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
             />
-            {displayTaxAdministratorCard && (
-              <TaxesFeesTaxAdministratorCard strapiTaxAdministrator={strapiTaxAdministrator} />
-            )}
+            <TaxesFeesTaxAdministratorCard
+              beTaxAdministrator={taxData.taxAdministrator}
+              strapiTaxAdministrator={strapiTaxAdministrator}
+            />
           </div>
           <ContactInformationSection />
           <TaxDetails />

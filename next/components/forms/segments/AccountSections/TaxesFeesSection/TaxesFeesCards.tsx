@@ -13,10 +13,10 @@ import { useTaxFeesSection } from './useTaxFeesSection'
 
 const TaxesFeesCards = () => {
   const { accountType } = useSsrAuth()
-  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen } = useTaxFeesSection()
+  const { strapiTaxAdministrator, setOfficialCorrespondenceChannelModalOpen } = useTaxFeesSection()
   const strapiTax = useStrapiTax()
   const displayTaxAdministratorCard =
-    taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
+    strapiTaxAdministrator !== null && accountType === AccountType.FyzickaOsoba
   const { showEmailCommunicationBanner, channelChangeEffectiveNextYear } = useTaxChannel()
 
   const wrapperStyle = cn('flex flex-col gap-4', {
@@ -37,7 +37,7 @@ const TaxesFeesCards = () => {
           />
         )}
         {displayTaxAdministratorCard && (
-          <TaxesFeesTaxAdministratorCard taxAdministrator={taxAdministrator} />
+          <TaxesFeesTaxAdministratorCard strapiTaxAdministrator={strapiTaxAdministrator} />
         )}
       </div>
       {channelChangeEffectiveNextYear && (

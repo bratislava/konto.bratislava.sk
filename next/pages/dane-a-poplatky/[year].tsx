@@ -1,9 +1,7 @@
-import {
-  getTaxAdministratorForUser,
-  StrapiTaxAdministrator,
-} from '@backend/utils/tax-administrator'
+import { getTaxAdministratorForUser } from '@backend/utils/strapi-tax-administrator'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
+import { TaxAdministratorFragment } from '@clients/graphql-strapi-bratislava/api'
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
@@ -20,7 +18,7 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 
 type AccountTaxesFeesPageProps = {
   taxData: ResponseTaxDto
-  taxAdministrator: StrapiTaxAdministrator | null
+  strapiTaxAdministrator: TaxAdministratorFragment | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }
@@ -48,7 +46,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }, strapiTax, taxAdministrator] = await Promise.all([
+      const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
         taxClient.taxControllerGetActualTaxes(yearNumber, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
@@ -66,7 +64,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
         props: {
           taxData,
           strapiTax,
-          taxAdministrator: taxAdministrator ?? null,
+          strapiTaxAdministrator: strapiTaxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
         },
@@ -96,13 +94,13 @@ const AccountTaxesFeesPage = ({
   taxData,
   strapiTax,
   dehydratedState,
-  taxAdministrator,
+  strapiTaxAdministrator,
 }: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxFeeSectionProvider taxData={taxData} taxAdministrator={taxAdministrator}>
+          <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
             <TaxFeeSection />
           </TaxFeeSectionProvider>
         </StrapiTaxProvider>

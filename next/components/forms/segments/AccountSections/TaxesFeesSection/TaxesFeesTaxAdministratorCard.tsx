@@ -1,18 +1,37 @@
 import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import { ResponseTaxAdministratorDto } from 'openapi-clients/tax'
 
 import MLinkNew from '../../../simple-components/MLinkNew'
 
 type TaxesFeesTaxAdministratorCardProps = {
-  strapiTaxAdministrator: StrapiTaxAdministrator
+  beTaxAdministrator: ResponseTaxAdministratorDto | null
+  strapiTaxAdministrator: StrapiTaxAdministrator | null
+}
+
+const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorDto) => {
+  return {
+    name: taxAdministrator.name,
+    phone: taxAdministrator.phoneNumber,
+    email: taxAdministrator.email,
+  }
 }
 
 /**
  * TODO: Use card component, translations
  */
 const TaxesFeesTaxAdministratorCard = ({
+  beTaxAdministrator,
   strapiTaxAdministrator,
 }: TaxesFeesTaxAdministratorCardProps) => {
+  if (!beTaxAdministrator && !strapiTaxAdministrator) {
+    return null
+  }
+
+  const taxAdministrator = beTaxAdministrator
+    ? normalizeBeTaxAdministrator(beTaxAdministrator)
+    : strapiTaxAdministrator!
+
   return (
     <div className="flex w-full items-start gap-4 rounded-lg border-2 border-gray-200 p-5">
       <div className="hidden rounded-lg border-2 border-gray-200 p-3 sm:block">
@@ -21,21 +40,21 @@ const TaxesFeesTaxAdministratorCard = ({
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
           <span className="text-p2">Kontaktná osoba pre daň z nehnuteľností</span>
-          <span className="text-p1-semibold">{strapiTaxAdministrator.name}</span>
+          <span className="text-p1-semibold">{taxAdministrator.name}</span>
         </div>
         <div className="flex flex-wrap content-center items-center gap-x-3 gap-y-2 self-stretch">
           <span className="flex items-center gap-x-2">
             <PhoneIcon className="size-5" />
-            <MLinkNew href={`tel:${strapiTaxAdministrator.phone}`} variant="underlined-medium">
-              {strapiTaxAdministrator.phone}
+            <MLinkNew href={`tel:${taxAdministrator.phone}`} variant="underlined-medium">
+              {taxAdministrator.phone}
             </MLinkNew>
             <span> • </span>
           </span>
 
           <span className="flex items-center gap-x-2">
             <MailIcon className="size-5" />
-            <MLinkNew href={`mailto:${strapiTaxAdministrator.email}`} variant="underlined-medium">
-              {strapiTaxAdministrator.email}
+            <MLinkNew href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
+              {taxAdministrator.email}
             </MLinkNew>
             <span> • </span>
           </span>

@@ -18,7 +18,9 @@
     "test:ci": "jest --ci",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
-    "generate-client-strapi": "graphql-codegen && prettier --write ./clients/graphql-strapi/api.ts",
+    "generate-client-strapi": "graphql-codegen --project strapi && prettier --write ./clients/graphql-strapi/api.ts",
+    "generate-client-strapi-bratislava": "graphql-codegen --project strapi-bratislava && prettier --write ./clients/graphql-strapi-bratislava/api.ts",
+    "generate-clients-strapi": "npm run generate-client-strapi && npm run generate-client-strapi-bratislava",
     "update-react-aria": "npm install @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest @react-aria/utils@latest --save-exact --save-exact-dev",
     "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest --save-exact",
     "update-markdown": "npm install remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
@@ -29,7 +31,7 @@
     "update-i18next": "npm install i18next@latest next-i18next@latest react-i18next@latest --save-exact",
     "update-prettier": "npm install prettier@latest eslint-config-prettier@latest --save-dev --save-exact",
     "update-eslint": "npm install eslint@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest eslint-config-adjunct@latest eslint-config-airbnb@latest eslint-config-airbnb-typescript@latest eslint-config-auto@latest eslint-config-next@latest eslint-config-prettier@latest eslint-plugin-array-func@latest eslint-plugin-const-case@latest eslint-plugin-eslint-comments@latest eslint-plugin-html@latest eslint-plugin-import@latest eslint-plugin-jest@latest eslint-plugin-jest-async@latest eslint-plugin-jest-dom@latest eslint-plugin-json@latest eslint-plugin-lodash@latest eslint-plugin-lodash-fp@latest eslint-plugin-markdown@latest eslint-plugin-no-constructor-bind@latest eslint-plugin-no-secrets@latest eslint-plugin-no-unsanitized@latest eslint-plugin-no-use-extend-native@latest eslint-plugin-optimize-regex@latest eslint-plugin-pii@latest eslint-plugin-prettier@latest eslint-plugin-promise@latest eslint-plugin-react-hooks@latest eslint-plugin-scanjs-rules@latest eslint-plugin-security@latest eslint-plugin-simple-import-sort@latest eslint-plugin-sonarjs@latest eslint-plugin-switch-case@latest eslint-plugin-testing-library@latest eslint-plugin-unicorn@latest eslint-plugin-xss@latest @tanstack/eslint-plugin-query@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest --save-dev --save-exact",
-    "update-graphql": "npm install @graphql-codegen/cli@latest @graphql-codegen/client-preset@latest @graphql-codegen/typescript-graphql-request@latest --save-dev --save-exact && npm install graphql@latest graphql-request@latest graphql-tag@latest --save-exact",
+    "update-graphql": "npm install @graphql-codegen/cli@latest @graphql-codegen/client-preset@latest @graphql-codegen/typescript-graphql-request@latest graphql-config@latest --save-dev --save-exact && npm install graphql@latest graphql-request@latest graphql-tag@latest --save-exact",
     "postinstall": "patch-package"
   },
   "overrides": {
@@ -117,6 +119,7 @@
     "@graphql-codegen/cli": "5.0.7",
     "@graphql-codegen/client-preset": "4.8.3",
     "@graphql-codegen/typescript-graphql-request": "6.3.0",
+    "graphql-config": "^5.0.3",
     "@next/bundle-analyzer": "15.4.1",
     "@svgr/webpack": "8.1.0",
     "@tailwindcss/postcss": "4.1.11",

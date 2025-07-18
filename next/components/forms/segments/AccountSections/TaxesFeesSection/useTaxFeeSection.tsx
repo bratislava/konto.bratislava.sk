@@ -1,4 +1,4 @@
-import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import { TaxAdministratorFragment } from '@clients/graphql-strapi-bratislava/api'
 import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
@@ -11,7 +11,7 @@ import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxDto
-  strapiTaxAdministrator: StrapiTaxAdministrator | null
+  strapiTaxAdministrator: TaxAdministratorFragment | null
 }
 
 const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProviderProps) => {

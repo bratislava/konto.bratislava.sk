@@ -1,10 +1,10 @@
 import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
-import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import { TaxAdministratorFragment } from '@clients/graphql-strapi-bratislava/api'
 
 import MLinkNew from '../../../simple-components/MLinkNew'
 
 type TaxesFeesTaxAdministratorCardProps = {
-  strapiTaxAdministrator: StrapiTaxAdministrator
+  strapiTaxAdministrator: TaxAdministratorFragment
 }
 
 /**

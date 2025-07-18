@@ -1,0 +1,16 @@
+fragment TaxAdministrator on ComponentTaxAdministratorsTaxAdministrator {
+  id
+  range
+  name
+  email
+  phone
+  officeNumber
+}
+
+query TaxAdministratorsList {
+  taxAdministratorsList {
+    taxAdministrators {
+      ...TaxAdministrator
+    }
+  }
+}

@@ -1,9 +1,7 @@
-import {
-  getTaxAdministratorForUser,
-  StrapiTaxAdministrator,
-} from '@backend/utils/strapi-tax-administrator'
+import { getTaxAdministratorForUser } from '@backend/utils/strapi-tax-administrator'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
+import { TaxAdministratorFragment } from '@clients/graphql-strapi-bratislava/api'
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
@@ -23,7 +21,7 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 
 type AccountTaxesFeesPageProps = {
   taxesData: ResponseGetTaxesDto
-  strapiTaxAdministrator: StrapiTaxAdministrator | null
+  strapiTaxAdministrator: TaxAdministratorFragment | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }

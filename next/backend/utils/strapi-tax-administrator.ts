@@ -1,41 +1,19 @@
+import { strapiBratislavaClient } from '@clients/graphql-strapi-bratislava'
+import { TaxAdministratorFragment } from '@clients/graphql-strapi-bratislava/api'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
-import axios from 'axios'
 
-import { environment } from '../../environment'
 import { AmplifyServerContextSpec } from '../../frontend/utils/amplifyTypes'
+import { isDefined } from '../../frontend/utils/general'
 
-const axiosInstance = axios.create()
+const getStrapiTaxAdministrators = async () => {
+  const response = await strapiBratislavaClient.TaxAdministratorsList()
 
-export interface StrapiTaxAdministrator {
-  id: number
-  range: string
-  name: string
-  email: string
-  phone: string
-  officeNumber: string
-}
-
-export type StrapiTaxAdministrators = StrapiTaxAdministrator[]
-
-interface StrapiTaxAdministratorsListResponse {
-  data: {
-    id: number
-    attributes: {
-      createdAt: string
-      updatedAt: string
-      taxAdministrators: StrapiTaxAdministrators
-    }
+  if (!response.taxAdministratorsList?.taxAdministrators) {
+    return []
   }
-  meta: unknown
-}
 
-const getStrapiTaxAdministrators = async () =>
-  axiosInstance.get<StrapiTaxAdministratorsListResponse>(
-    `${environment.bratislavaStrapiUrl}/api/tax-administrators-list?populate=*`,
-    {
-      responseType: 'json',
-    },
-  )
+  return response.taxAdministratorsList.taxAdministrators.filter(isDefined)
+}
 
 /**
  * Returns the start of the range in lowercase.
@@ -55,7 +33,7 @@ const getRangeLowercaseStart = (range: string) => range.split('-')[0].toLocaleLo
  * For simplicity, we work with all strings in lowercase.
  */
 function findTaxAdministratorBySurname(
-  strapiTaxAdministrators: StrapiTaxAdministrators,
+  strapiTaxAdministrators: TaxAdministratorFragment[],
   surname: string,
 ) {
   /* Context for sorting Slovak strings: https://jazykovaporadna.sme.sk/q/2736/ - it is hard. */
@@ -84,7 +62,7 @@ function findTaxAdministratorBySurname(
 
 export const getTaxAdministratorForUser = async (contextSpec: AmplifyServerContextSpec) => {
   try {
-    const [userAttributes, taxAdministratorsResponse] = await Promise.all([
+    const [userAttributes, taxAdministrators] = await Promise.all([
       fetchUserAttributes(contextSpec),
       getStrapiTaxAdministrators(),
     ])
@@ -93,10 +71,7 @@ export const getTaxAdministratorForUser = async (contextSpec: AmplifyServerConte
       return null
     }
 
-    return findTaxAdministratorBySurname(
-      taxAdministratorsResponse.data.data.attributes.taxAdministrators,
-      userAttributes.family_name,
-    )
+    return findTaxAdministratorBySurname(taxAdministrators, userAttributes.family_name)
   } catch (error) {
     return null
   }

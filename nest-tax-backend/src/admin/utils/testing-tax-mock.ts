@@ -145,8 +145,5 @@ export const createTestingTaxMock = (
 
     // user type
     TYP_USER: 'FO',
-
-    // delivery method
-    delivery_method: norisData.deliveryMethod,
   }
 }

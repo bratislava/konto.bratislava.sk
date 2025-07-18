@@ -45,7 +45,11 @@ const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
       // TODO: This should be replace with a proper error code (which is not returned)
       error.response?.data?.message === 'Forbidden tier'
     ) {
-      return { isInNoris: false, items: [], strapiTaxAdministrator: null } as ResponseGetTaxesDto
+      return {
+        isInNoris: false,
+        items: [],
+        taxAdministrator: null,
+      } as ResponseGetTaxesDto
     }
     throw error
   }

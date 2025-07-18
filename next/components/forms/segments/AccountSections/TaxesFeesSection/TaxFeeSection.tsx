@@ -19,11 +19,11 @@ const TaxFeeSection = () => {
     taxData,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
-    taxAdministrator,
+    strapiTaxAdministrator,
   } = useTaxFeeSection()
   const { accountCommunicationConsentText } = useStrapiTax()
   const displayTaxAdministratorCard =
-    taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
+    strapiTaxAdministrator !== null && accountType === AccountType.FyzickaOsoba
 
   return (
     <>
@@ -40,7 +40,7 @@ const TaxFeeSection = () => {
               onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
             />
             {displayTaxAdministratorCard && (
-              <TaxesFeesTaxAdministratorCard taxAdministrator={taxAdministrator} />
+              <TaxesFeesTaxAdministratorCard strapiTaxAdministrator={strapiTaxAdministrator} />
             )}
           </div>
           <ContactInformationSection />

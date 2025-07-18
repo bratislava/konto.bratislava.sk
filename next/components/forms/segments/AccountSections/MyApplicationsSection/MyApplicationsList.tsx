@@ -21,7 +21,7 @@ export const getDraftApplications = async (
   emailFormSlugs: string[],
   getSsrAuthSession?: () => Promise<AuthSession>,
 ): Promise<GetFormsResponseDto> => {
-  // TODO - required functionality per product docs - SENDING tab will display only the ERRORs that the user can edit + queued/sending_to_nases
+  // TODO - required functionality per product docs - SENDING tab will display only the ERRORs that the user can edit + queued
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
       'REJECTED',
@@ -30,7 +30,7 @@ export const getDraftApplications = async (
       'DELIVERED_NASES',
       'DELIVERED_GINIS',
     ] satisfies Array<GetFormResponseDtoStateEnum>,
-    SENDING: ['QUEUED', 'ERROR', 'SENDING_TO_NASES'] satisfies Array<GetFormResponseDtoStateEnum>,
+    SENDING: ['QUEUED', 'ERROR'] satisfies Array<GetFormResponseDtoStateEnum>,
     DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
   }[variant]
   const response = await formsClient.nasesControllerGetForms(

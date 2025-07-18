@@ -78,7 +78,6 @@ enum GinisState {
 enum FormState {
   DRAFT
   QUEUED
-  SENDING_TO_NASES // no longer used, we go directly from DRAFT/QUEUED to DELIVERED_NASES
   DELIVERED_NASES
   DELIVERED_GINIS
   SENDING_TO_SHAREPOINT

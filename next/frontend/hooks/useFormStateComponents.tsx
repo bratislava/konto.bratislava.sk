@@ -140,19 +140,6 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: <p>{t('account_section_applications.navigation_concept_card.status_scanning')}</p>,
         },
-        SENDING_TO_NASES: {
-          icon: <SendIcon className="size-6 text-warning-700" />,
-          iconRound: (
-            <div className="rounded-full bg-warning-100 p-1.5">
-              <SendIcon className="size-5 text-warning-700" />
-            </div>
-          ),
-          text: (
-            <p className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.sending_to_nases')}
-            </p>
-          ),
-        },
         DELIVERED_NASES: {
           icon: <SendIcon className="size-6 text-warning-700" />,
           iconRound: (

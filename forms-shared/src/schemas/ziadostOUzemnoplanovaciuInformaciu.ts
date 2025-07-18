@@ -199,7 +199,7 @@ export default schema(
           {
             title: 'Informácie o lokalite',
             description:
-              'V jednej žiadosti môžete žiadať o informáciu maximálne k 5 parcelám. Každá lokalita predstavuje jedno parcelné číslo. Všetky lokality musia byť umiestnené v jednom katastrálnom území vybranom vyššie',
+              'V jednej žiadosti môžete žiadať o informáciu maximálne k 5 parcelám. Každá lokalita predstavuje jedno parcelné číslo. Všetky lokality musia byť umiestnené v jednom katastrálnom území vybranom vyššie.',
             objectDisplay: 'boxed',
           },
           [

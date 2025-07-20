@@ -57,7 +57,7 @@ export class DeliveryMethodDto {
   date?: Date
 }
 
-export class DeliveryMethodActiveAndLocked {
+export class DeliveryMethodActiveAndLockedDto {
   @ApiProperty({
     description: 'Active delivery method',
     type: DeliveryMethodDto,

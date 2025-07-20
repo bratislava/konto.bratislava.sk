@@ -214,11 +214,11 @@ export interface RequestPostReportingSendReport {
    */
   date: string
   /**
-   * Email the report will be sent to
-   * @type {string}
+   * Emails the report will be sent to
+   * @type {Array<string>}
    * @memberof RequestPostReportingSendReport
    */
-  email: string
+  email: Array<string>
 }
 /**
  *

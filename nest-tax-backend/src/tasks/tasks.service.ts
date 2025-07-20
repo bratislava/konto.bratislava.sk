@@ -196,7 +196,7 @@ export class TasksService {
     await this.cardPaymentReportingService.generateAndSendPaymentReport(
       emailArray,
     )
-  }f
+  }
 
   // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
   @Cron(CronExpression.EVERY_10_MINUTES)

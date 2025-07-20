@@ -16,9 +16,12 @@ const config: Config = {
   ],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
+  // eslint-disable-next-line xss/no-mixed-html
   setupFilesAfterEnv: ['<rootDir>/../test/singleton.ts'],
   moduleNameMapper: {
     '^react-markdown$': '<rootDir>/../test/react-markdown-mock.js',
+    // eslint-disable-next-line no-secrets/no-secrets
+    '^@golevelup/nestjs-rabbitmq$': '<rootDir>/../test/rabbitmq-client-mock.js',
   },
 }
 

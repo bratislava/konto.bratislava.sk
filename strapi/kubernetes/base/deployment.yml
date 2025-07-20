@@ -36,7 +36,7 @@ spec:
             - secretRef:
                 name: ${BUILD_REPOSITORY_NAME}-database-secret
             - secretRef:
-                name: minio-secret-standalone
+                name: ${BUILD_REPOSITORY_NAME}-minio-secret
             - configMapRef:
                 name: ${BUILD_REPOSITORY_NAME}-env
             - configMapRef:

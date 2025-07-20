@@ -13,6 +13,7 @@ import { AdminService } from './admin.service'
 import { AdminCronSubservice } from './subservices/admin-cron.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import { UserModule } from '../user/user.module'
+import ClientsModule from '../clients/clients.module'
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from '../user/user.module'
     PhysicalEntityModule,
     BloomreachModule,
     UserModule,
+    ClientsModule,
   ],
   providers: [
     AdminService,

@@ -265,6 +265,74 @@ export interface ManuallyVerifyUserRequestDto {
 /**
  *
  * @export
+ * @interface MarkDeceasedAccountRequestDto
+ */
+export interface MarkDeceasedAccountRequestDto {
+  /**
+   * List of birthnumbers/external IDs to mark as deceased
+   * @type {Array<string>}
+   * @memberof MarkDeceasedAccountRequestDto
+   */
+  birthNumbers: Array<string>
+}
+/**
+ *
+ * @export
+ * @interface MarkDeceasedAccountResponseDto
+ */
+export interface MarkDeceasedAccountResponseDto {
+  /**
+   * List of birth numbers with success marked for each data storage.
+   * @type {Array<MarkDeceasedAccountResponseItemDto>}
+   * @memberof MarkDeceasedAccountResponseDto
+   */
+  results: Array<MarkDeceasedAccountResponseItemDto>
+}
+/**
+ *
+ * @export
+ * @interface MarkDeceasedAccountResponseItemDto
+ */
+export interface MarkDeceasedAccountResponseItemDto {
+  /**
+   * Birth number of the deceased person
+   * @type {string}
+   * @memberof MarkDeceasedAccountResponseItemDto
+   */
+  birthNumber: string
+  /**
+   * Whether the user was successfully marked as deceased in the database
+   * @type {boolean}
+   * @memberof MarkDeceasedAccountResponseItemDto
+   */
+  databaseMarked: boolean
+  /**
+   * Whether the user was successfully archived in Cognito / mail was changed.
+   * @type {boolean}
+   * @memberof MarkDeceasedAccountResponseItemDto
+   */
+  cognitoArchived: boolean
+  /**
+   * Status of the anonymization of user in Bloomreach
+   * @type {string}
+   * @memberof MarkDeceasedAccountResponseItemDto
+   */
+  bloomreachRemoved?: MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum
+}
+
+export const MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum = {
+  NotFound: 'NOT_FOUND',
+  NotActive: 'NOT_ACTIVE',
+  Error: 'ERROR',
+  Success: 'SUCCESS',
+} as const
+
+export type MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum =
+  (typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum)[keyof typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum]
+
+/**
+ *
+ * @export
  * @interface OnlySuccessDto
  */
 export interface OnlySuccessDto {
@@ -369,6 +437,25 @@ export interface RequestBodyVerifyWithRpoDto {
    * @memberof RequestBodyVerifyWithRpoDto
    */
   turnstileToken: string
+}
+/**
+ *
+ * @export
+ * @interface RequestDeleteTaxDto
+ */
+export interface RequestDeleteTaxDto {
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof RequestDeleteTaxDto
+   */
+  year: number
+  /**
+   * Birth number in format with slash
+   * @type {string}
+   * @memberof RequestDeleteTaxDto
+   */
+  birthNumber: string
 }
 /**
  *
@@ -1361,6 +1448,54 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
+     * Delete tax for user, for example when the tax is cancelled in Noris.
+     * @summary Delete tax for user
+     * @param {RequestDeleteTaxDto} requestDeleteTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDeleteTax: async (
+      requestDeleteTaxDto: RequestDeleteTaxDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestDeleteTaxDto' is not null or undefined
+      assertParamExists('adminControllerDeleteTax', 'requestDeleteTaxDto', requestDeleteTaxDto)
+      const localVarPath = `/admin/delete-tax`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestDeleteTaxDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Get user data by birthnumber
      * @summary Get user data
      * @param {string} birthNumber userBirthNumber
@@ -1495,6 +1630,58 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.
+     * @summary Mark accounts as deceased
+     * @param {MarkDeceasedAccountRequestDto} markDeceasedAccountRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerMarkAccountsAsDeceasedByBirthnumber: async (
+      markDeceasedAccountRequestDto: MarkDeceasedAccountRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'markDeceasedAccountRequestDto' is not null or undefined
+      assertParamExists(
+        'adminControllerMarkAccountsAsDeceasedByBirthnumber',
+        'markDeceasedAccountRequestDto',
+        markDeceasedAccountRequestDto,
+      )
+      const localVarPath = `/admin/mark-deceased`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        markDeceasedAccountRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1770,6 +1957,32 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Delete tax for user, for example when the tax is cancelled in Noris.
+     * @summary Delete tax for user
+     * @param {RequestDeleteTaxDto} requestDeleteTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerDeleteTax(
+      requestDeleteTaxDto: RequestDeleteTaxDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeleteTax(
+        requestDeleteTaxDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerDeleteTax']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Get user data by birthnumber
      * @summary Get user data
      * @param {string} birthNumber userBirthNumber
@@ -1852,6 +2065,37 @@ export const ADMINApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ADMINApi.adminControllerGetVerificationDataForUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.
+     * @summary Mark accounts as deceased
+     * @param {MarkDeceasedAccountRequestDto} markDeceasedAccountRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerMarkAccountsAsDeceasedByBirthnumber(
+      markDeceasedAccountRequestDto: MarkDeceasedAccountRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<MarkDeceasedAccountResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerMarkAccountsAsDeceasedByBirthnumber(
+          markDeceasedAccountRequestDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerMarkAccountsAsDeceasedByBirthnumber']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -2032,6 +2276,21 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Delete tax for user, for example when the tax is cancelled in Noris.
+     * @summary Delete tax for user
+     * @param {RequestDeleteTaxDto} requestDeleteTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDeleteTax(
+      requestDeleteTaxDto: RequestDeleteTaxDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerDeleteTax(requestDeleteTaxDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Get user data by birthnumber
      * @summary Get user data
      * @param {string} birthNumber userBirthNumber
@@ -2077,6 +2336,21 @@ export const ADMINApiFactory = function (
     ): AxiosPromise<VerificationDataForUserResponseDto> {
       return localVarFp
         .adminControllerGetVerificationDataForUser(email, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.
+     * @summary Mark accounts as deceased
+     * @param {MarkDeceasedAccountRequestDto} markDeceasedAccountRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerMarkAccountsAsDeceasedByBirthnumber(
+      markDeceasedAccountRequestDto: MarkDeceasedAccountRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<MarkDeceasedAccountResponseDto> {
+      return localVarFp
+        .adminControllerMarkAccountsAsDeceasedByBirthnumber(markDeceasedAccountRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2178,6 +2452,23 @@ export class ADMINApi extends BaseAPI {
   }
 
   /**
+   * Delete tax for user, for example when the tax is cancelled in Noris.
+   * @summary Delete tax for user
+   * @param {RequestDeleteTaxDto} requestDeleteTaxDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerDeleteTax(
+    requestDeleteTaxDto: RequestDeleteTaxDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerDeleteTax(requestDeleteTaxDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * Get user data by birthnumber
    * @summary Get user data
    * @param {string} birthNumber userBirthNumber
@@ -2225,6 +2516,23 @@ export class ADMINApi extends BaseAPI {
   public adminControllerGetVerificationDataForUser(email: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetVerificationDataForUser(email, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.
+   * @summary Mark accounts as deceased
+   * @param {MarkDeceasedAccountRequestDto} markDeceasedAccountRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerMarkAccountsAsDeceasedByBirthnumber(
+    markDeceasedAccountRequestDto: MarkDeceasedAccountRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerMarkAccountsAsDeceasedByBirthnumber(markDeceasedAccountRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

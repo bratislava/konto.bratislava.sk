@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpException,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -22,11 +23,12 @@ import {
 import * as _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { AdminGuard } from '../auth/guards/admin.guard'
-import { PrismaService } from '../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
+  MarkDeceasedAccountRequestDto,
   RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
   RequestDeleteTaxDto,
@@ -36,6 +38,7 @@ import {
 import {
   DeactivateAccountResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
+  MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
   ResponseValidatePhysicalEntityRfoDto,
@@ -126,6 +129,21 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
+    summary: 'Mark accounts as deceased',
+    description:
+      'This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.',
+  })
+  @UseGuards(AdminGuard)
+  @Patch('mark-deceased')
+  async markAccountsAsDeceasedByBirthnumber(
+    @Body() data: MarkDeceasedAccountRequestDto
+  ): Promise<MarkDeceasedAccountResponseDto> {
+    const response = await this.adminService.markAccountsAsDeceased(data.birthNumbers)
+    return response
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
     summary: 'Get verification data for user.',
     description:
       'Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.',
@@ -180,7 +198,11 @@ export class AdminController {
   @Post('validated-users-to-physical-entities')
   async validatedUsersToPhysicalEntities() {
     const users = await this.prismaService.user.findMany({
-      where: { birthNumber: { not: null }, physicalEntity: null },
+      where: {
+        birthNumber: { not: null },
+        physicalEntity: null,
+        ...ACTIVE_USER_FILTER,
+      },
       take: 1000,
     })
 

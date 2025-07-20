@@ -18,6 +18,7 @@ export const validTypes = [
   'city-account',
   'slovensko-sk',
   'clamav-scanner',
+  'magproxy'
 ] as const
 export type ValidType = (typeof validTypes)[number]
 
@@ -27,6 +28,7 @@ export const endpoints: Record<ValidType, string> = {
   'city-account': 'https://nest-city-account.staging.bratislava.sk/api-json',
   'clamav-scanner': 'https://nest-clamav-scanner.staging.bratislava.sk/api-json',
   'slovensko-sk': 'https://fix.slovensko-sk-api.bratislava.sk/openapi.yaml',
+  'magproxy': 'https://new-magproxy.staging.bratislava.sk/api-json'
 }
 
 export const getLocalEndpoint = (type: ValidType, localUrl: string): string => {
@@ -172,6 +174,27 @@ const generateOpenApiClient = (type: ValidType, url: string, outputDir: string) 
   )
 }
 
+const removeDocsAndCleanupFiles = (type: ValidType, outputDir: string) => {
+  console.log(`Cleaning up documentation files for ${type}...`)
+
+  // Remove docs directory
+  const docsDir = path.join(outputDir, 'docs')
+  rimrafSync(docsDir)
+
+  // Clean up FILES list to remove docs entries
+  const filesPath = path.join(outputDir, '.openapi-generator', 'FILES')
+  try {
+    const filesContent = readFileSync(filesPath, 'utf8')
+    const filteredLines = filesContent
+      .split('\n')
+      .filter((line) => !line.startsWith('docs/'))
+      .join('\n')
+    writeFileSync(filesPath, filteredLines)
+  } catch (error) {
+    console.warn('Could not clean up FILES list:', error)
+  }
+}
+
 export const generateClient = async (type: ValidType, options: GenerateClientOptions = {}) => {
   await checkOpenApiGeneratorVersion()
   const outputDir = path.join(options.rootDir ?? appRootDir, type)
@@ -180,6 +203,7 @@ export const generateClient = async (type: ValidType, options: GenerateClientOpt
   try {
     cleanupExistingClient(type, outputDir)
     generateOpenApiClient(type, url, outputDir)
+    removeDocsAndCleanupFiles(type, outputDir)
     generateClientFile(type, outputDir)
     updateIndexFile(type, outputDir)
     customizeSlovenskoSkGeneratedCode(type, outputDir)

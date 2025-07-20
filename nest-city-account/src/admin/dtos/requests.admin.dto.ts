@@ -119,3 +119,15 @@ export class RequestDeleteTaxDto {
   @IsString()
   birthNumber: string
 }
+
+export class MarkDeceasedAccountRequestDto {
+  @ApiProperty({
+    description: 'List of birthnumbers/external IDs to mark as deceased',
+    example: ['1234567890', '2345678901', '3456789012'],
+    type: [String],
+  })
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  birthNumbers: string[]
+}

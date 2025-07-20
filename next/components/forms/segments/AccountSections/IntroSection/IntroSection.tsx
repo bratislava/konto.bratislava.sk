@@ -1,18 +1,32 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
+import {
+  HomepageAnnouncementEntityFragment,
+  MunicipalServiceCardEntityFragment,
+} from '@clients/graphql-strapi/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
-import ServiceCard from 'components/forms/simple-components/ServiceCard'
-import { serviceCards } from 'frontend/constants/constants'
-import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
+import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
-const IntroSection = () => {
+type IntroSectionProps = {
+  services: MunicipalServiceCardEntityFragment[]
+  servicesLegalPerson: MunicipalServiceCardEntityFragment[]
+  announcements: HomepageAnnouncementEntityFragment[]
+  announcementsLegalPerson: HomepageAnnouncementEntityFragment[]
+}
+
+const IntroSection = ({
+  services,
+  servicesLegalPerson,
+  announcements,
+  announcementsLegalPerson,
+}: IntroSectionProps) => {
   const { t } = useTranslation('account')
   const { userAttributes, isLegalEntity } = useSsrAuth()
 
@@ -22,14 +36,7 @@ const IntroSection = () => {
     'account_section_intro.banner_content',
   )}</span>`
 
-  const foMunicipalServicesSection = [1, 44, 9, 34]
-  const poMunicipalServicesSection = [34, 35, 43, 4]
-
-  const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
-
-  const filteredServiceCards = serviceCardIndexes
-    .map((id) => serviceCards.find((card) => card.id === id))
-    .filter(isDefined)
+  const servicesByPersonType = isLegalEntity ? servicesLegalPerson : services
 
   return (
     <>
@@ -46,7 +53,10 @@ const IntroSection = () => {
           titleAsParagraph
         />
         <div className="m-auto w-full max-w-(--breakpoint-lg)">
-          <Announcements />
+          <Announcements
+            announcements={announcements}
+            announcementsLegalPerson={announcementsLegalPerson}
+          />
           <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
           <div className="flex flex-col gap-6 py-6 lg:py-16">
             <div className="flex w-full items-center justify-between px-4 lg:px-0">
@@ -60,18 +70,8 @@ const IntroSection = () => {
               />
             </div>
             <div className="scrollbar-hide flex gap-3 overflow-x-scroll px-4 lg:gap-8 lg:px-0">
-              {filteredServiceCards.map((card) => (
-                <ServiceCard
-                  key={card.id}
-                  title={t(card.title)}
-                  description={t(card.description)}
-                  buttonText={t(card.buttonText)}
-                  icon={card.icon}
-                  href={card.href}
-                  tag={card.tag ? t(card.tag) : undefined}
-                  tagStyle={card.tagStyle}
-                  plausibleProps={{ id: `Domov: ${t(card.title)}` }}
-                />
+              {servicesByPersonType.map((service) => (
+                <MunicipalServiceCard key={service.id} service={service} />
               ))}
             </div>
             <Button

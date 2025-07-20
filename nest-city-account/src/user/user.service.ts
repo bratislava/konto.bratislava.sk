@@ -90,14 +90,19 @@ export class UserService {
   }
 
   async subUnsubUser(
-    id: string,
+    externalId: string,
     gdprSubType: GdprSubType,
     email: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(id, email)
-    await this.databaseSubservice.createUserGdprData(user.id, gdprSubType, gdprData)
-    // this is attentional not await, we don't want to wait for bloomreach integration if there will be error. Data will be also integrated every day for updated from database
+    const user = await this.databaseSubservice.getOrCreateUser(externalId, email)
+    await this.databaseSubservice.changeUserGdprData(
+      user.id,
+      gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
+    )
+    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
+    // If there is error it isn't blocker for futher process.
+    // TODO Data will be also uploaded from database to bloomreach every day.
     this.bloomreachService.trackEventConsent(gdprSubType, gdprData, user.externalId)
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
@@ -114,21 +119,32 @@ export class UserService {
   }
 
   async subUnsubLegalPerson(
-    id: string,
-    gdprSubType: GdprSubType | null,
+    externalId: string,
+    gdprSubType: GdprSubType,
     email: string,
-    gdprData?: GdprDataDto[]
+    gdprData: GdprDataDto[]
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.databaseSubservice.getOrCreateLegalPerson(id, email)
-    await this.databaseSubservice.createLegalPersonGdprData(user.id, gdprSubType, gdprData)
+    const user = await this.databaseSubservice.getOrCreateLegalPerson(externalId, email)
+    await this.databaseSubservice.changeLegalPersonGdprData(
+      user.id,
+      gdprData.map((elem) => ({
+        ...elem,
+        subType: gdprSubType,
+      }))
+    )
     const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
   }
 
   async subscribePublicUser(data: RequestPublicSubscriptionDto): Promise<ResponseUserDataDto> {
     const user = await this.databaseSubservice.getOrCreateUser(null, data.email)
-    await this.databaseSubservice.createUserGdprData(user.id, GdprSubType.SUB, data.gdprData)
-    // this is attentional not await, we don't want to wait for bloomreach integration if there will be error. Data will be also integrated every day for updated from database
+    await this.databaseSubservice.changeUserGdprData(
+      user.id,
+      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB }))
+    )
+    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
+    // If there is error it isn't blocker for futher process.
+    // TODO Data will be also uploaded from database to bloomreach every day.
     this.bloomreachService.trackEventConsent(GdprSubType.SUB, data.gdprData, user.externalId)
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
@@ -148,7 +164,10 @@ export class UserService {
     id: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponsePublicUnsubscribeDto> {
-    await this.databaseSubservice.createUserGdprData(id, GdprSubType.UNSUB, gdprData)
+    await this.databaseSubservice.changeUserGdprData(
+      id,
+      gdprData.map((elem) => ({ ...elem, subType: GdprSubType.UNSUB }))
+    )
     const getGdprData = await this.databaseSubservice.getUserGdprData(id)
     const user = await this.databaseSubservice.getUserById(id)
     if (!user) {
@@ -157,7 +176,9 @@ export class UserService {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
-    // this is attentional not await, we don't want to wait for bloomreach integration if there will be error. Data will be also integrated every day for updated from database
+    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
+    // If there is error it isn't blocker for futher process.
+    // TODO Data will be also uploaded from database to bloomreach every day.
     this.bloomreachService.trackEventConsent(GdprSubType.UNSUB, gdprData, user.externalId)
     return { id: id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
   }

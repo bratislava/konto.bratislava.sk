@@ -9,7 +9,7 @@ import {
   UpvsIdentityByUriServiceCreateManyParam,
 } from 'src/upvs-identity-by-uri/upvs-identity-by-uri.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { PrismaService } from '../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
@@ -28,6 +28,7 @@ import { AdminErrorsEnum, AdminErrorsResponseEnum } from './admin.errors.enum'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
+  MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
   UserVerifyState,
@@ -37,7 +38,8 @@ import {
   removeLegalPersonDataFromDatabase,
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
-import { RequestAdminDeleteTaxDto } from '../generated-clients/nest-tax-backend'
+import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
+import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
 
 @Injectable()
@@ -55,7 +57,7 @@ export class AdminService {
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
     const user = await this.prismaService.user.findUnique({
-      where: { birthNumber },
+      where: { birthNumber, ...ACTIVE_USER_FILTER },
     })
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -91,6 +93,7 @@ export class AdminService {
         birthNumber: {
           in: birthNumbers,
         },
+        ...ACTIVE_USER_FILTER,
       },
     })
     const result: Record<string, ResponseUserByBirthNumberDto> = {}
@@ -139,6 +142,7 @@ export class AdminService {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
+        ...ACTIVE_USER_FILTER,
       },
     })
     if (user !== null) {
@@ -257,6 +261,68 @@ export class AdminService {
     return { success: true, bloomreachRemoved, taxDeliveryMethodsRemoved }
   }
 
+  async markAccountsAsDeceased(birthNumberList: string[]): Promise<MarkDeceasedAccountResponseDto> {
+    const users = await this.prismaService.user.updateManyAndReturn({
+      where: {
+        birthNumber: {
+          in: birthNumberList,
+        },
+        ...ACTIVE_USER_FILTER,
+      },
+      data: {
+        isDeceased: true,
+        markedDeceasedAt: new Date(),
+      },
+      select: {
+        externalId: true,
+        birthNumber: true,
+        email: true,
+      },
+    })
+
+    const foundResults: {
+      birthNumber: string
+      databaseMarked: boolean
+      cognitoArchived: boolean
+      bloomreachRemoved?: AnonymizeResponse
+    }[] = await Promise.all(
+      users.map(async (item) => {
+        if (!item.externalId || !item.email) {
+          return { birthNumber: item.birthNumber!, databaseMarked: true, cognitoArchived: false }
+        }
+
+        let cognitoSuccess = true
+        try {
+          await this.cognitoSubservice.cognitoDeactivateUser(item.externalId)
+        } catch (error) {
+          cognitoSuccess = false
+        }
+
+        const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(item.externalId)
+        return {
+          birthNumber: item.birthNumber!,
+          databaseMarked: true,
+          cognitoArchived: cognitoSuccess,
+          bloomreachRemoved,
+        }
+      })
+    )
+
+    const foundBirthNumbers = users.map((user) => user.birthNumber!)
+
+    const notFoundBirthNumbers = birthNumberList.filter(
+      (birthNumber) => !foundBirthNumbers.includes(birthNumber)
+    )
+
+    const notFoundResults = notFoundBirthNumbers.map((birthNumber) => ({
+      birthNumber,
+      databaseMarked: false,
+      cognitoArchived: false,
+    }))
+
+    return { results: [...foundResults, ...notFoundResults] }
+  }
+
   async getVerificationDataForUser(email: string): Promise<VerificationDataForUserResponseDto> {
     const legalPerson = await this.prismaService.legalPerson.findUnique({
       where: {
@@ -270,6 +336,7 @@ export class AdminService {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
+        ...ACTIVE_USER_FILTER,
       },
     })
 
@@ -343,6 +410,7 @@ export class AdminService {
       user = await this.prismaService.user.findUnique({
         where: {
           email,
+          ...ACTIVE_USER_FILTER,
         },
       })
     }
@@ -390,6 +458,7 @@ export class AdminService {
       await this.prismaService.user.update({
         where: {
           email,
+          ...ACTIVE_USER_FILTER,
         },
         data: {
           ifo: data.ifo,
@@ -449,6 +518,7 @@ export class AdminService {
         externalId: {
           not: null,
         },
+        ...ACTIVE_USER_FILTER,
       },
     })
 
@@ -510,7 +580,7 @@ export class AdminService {
 
   async deleteTax(data: RequestAdminDeleteTaxDto): Promise<OnlySuccessDto> {
     const user = await this.prismaService.user.findUnique({
-      where: { birthNumber: data.birthNumber },
+      where: { birthNumber: data.birthNumber, ...ACTIVE_USER_FILTER },
     })
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(

@@ -189,10 +189,14 @@ export class TasksService {
       return
     }
 
+    const emailArray = config.REPORTING_RECIPIENT_EMAIL.split(',')
+      .map((email) => email.trim())
+      .filter((email) => email.length > 0)
+
     await this.cardPaymentReportingService.generateAndSendPaymentReport(
-      config.REPORTING_RECIPIENT_EMAIL,
+      emailArray,
     )
-  }
+  }f
 
   // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
   @Cron(CronExpression.EVERY_10_MINUTES)

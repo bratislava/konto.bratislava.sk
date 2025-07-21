@@ -320,7 +320,7 @@ export class DatabaseSubserviceUser {
     if (user.physicalEntity?.activeEdesk) {
       return { deliveryMethod: DeliveryMethodEnum.EDESK }
     } else if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
-      if (user.userGdprData[0].createdAt) {
+      if (!user.userGdprData[0].createdAt) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
           SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,

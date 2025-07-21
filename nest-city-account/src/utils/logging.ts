@@ -14,7 +14,7 @@ import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
  * need for a query.
  */
 export function escapeForLogfmt(value: string): string {
-  return value.replaceAll(/["\\]/g, String.raw`\$&`).replaceAll('\n', String.raw`\n`)
+  return value.replaceAll(/["\\]/g, String.raw`\$&`)
 }
 
 /**

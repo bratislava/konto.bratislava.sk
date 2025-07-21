@@ -31,7 +31,7 @@ export class AdminCronSubservice {
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_5_HOURS)
   @HandleErrors('Cron Error')
   async validateEdeskFromCognitoData(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({
@@ -89,7 +89,7 @@ export class AdminCronSubservice {
     }
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_5_HOURS)
   @HandleErrors('Cron Error')
   async validateEdeskFromRfoData(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({

@@ -272,17 +272,8 @@ export class TasksService {
       return
     }
 
-    await Promise.all(
-      entitiesToUpdate.map(async (entity) => {
-        try {
-          await this.physicalEntityService.updateEdeskFromUpvs({ id: entity.id })
-        } catch (error) {
-          this.logger.error(
-            `Failed to update activeEdesk status for entity with id: ${entity.id}`,
-            error
-          )
-        }
-      })
-    )
+    const entityIdArray = entitiesToUpdate.map((entity) => entity.id)
+
+    await this.physicalEntityService.updateEdeskFromUpvs({ id: { in: entityIdArray } })
   }
 }

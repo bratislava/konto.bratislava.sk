@@ -103,10 +103,7 @@ export class PhysicalEntityService {
     updatedEntities: PhysicalEntity[]
     upvsResult: UpvsCreateManyResult
   }> {
-    let upvsResult: {
-      success: UpvsIdentityByUri[]
-      failed: { physicalEntityId?: string; uri: string }[]
-    } | null = null
+    let upvsResult: UpvsCreateManyResult | null = null
     try {
       upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
     } catch (error) {

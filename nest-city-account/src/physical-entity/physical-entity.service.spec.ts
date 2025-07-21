@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../test/singleton'
 import { PrismaService } from '../prisma/prisma.service'
-import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import { UpvsCreateManyResult, UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PhysicalEntityService } from './physical-entity.service'
 import { RfoIdentityList } from '../rfo-by-birthnumber/dtos/rfoSchema'
@@ -111,8 +111,12 @@ describe('PhysicalEntityService', () => {
     consoleSpy = jest.spyOn(console, 'log')
     consoleSpy.mockImplementation(() => {})
   })
-  describe('updateUriAndEdeskFromUpvs', () => {
-    const mockUpvsInput = { uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }
+  describe('checkUriAndUpdateEdeskFromUpvs', () => {
+    const mockUpvsInput = [
+      { uri: 'mock-uri1', physicalEntityId: 'mock-entity-id1' },
+      { uri: 'mock-uri2', physicalEntityId: 'mock-entity-id2' },
+      { uri: 'mock-uri3', physicalEntityId: 'mock-entity-id3' },
+    ]
 
     it('should successfully update a PhysicalEntity with UPVS success result', async () => {
       const mockUpvsResult = {
@@ -141,14 +145,12 @@ describe('PhysicalEntityService', () => {
         activeEdeskUpdateFailedAt: null,
         activeEdeskUpdateFailCount: 0,
       }
-      const updateSpy = jest
-        .spyOn(service, 'update')
-        .mockResolvedValue(mockUpdated)
+      const updateSpy = jest.spyOn(service, 'update').mockResolvedValue(mockUpdated)
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
-      expect(result.updatedEntity).toEqual(mockUpdated)
+      expect(result.updatedEntities).toEqual([mockUpdated])
       expect(updateSpy).toHaveBeenCalledWith({
         id: 'mock-entity-id',
         uri: 'mock-uri',
@@ -156,7 +158,7 @@ describe('PhysicalEntityService', () => {
       })
     })
 
-    it('should throw an error when multiple UPVS success results are returned', async () => {
+    it('should return multiple when UPVS success results are returned', async () => {
       const mockUpvsResult = {
         success: [
           {
@@ -178,31 +180,69 @@ describe('PhysicalEntityService', () => {
         ],
         failed: [],
       }
-      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
-      await expect(service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)).rejects.toThrowError(
-        new ThrowerErrorGuard().InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          `Multiple successful UPVS results for uri input ${JSON.stringify(
-            mockUpvsInput
-          )}, this shouldn't be possible`
-        )
-      )
+      const mockUpdatedEntities = [
+        {
+          id: 'mock-entity-id1',
+          uri: 'mock-uri1',
+          activeEdesk: true,
+          ifo: 'mock-ifo1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          userId: 'mock-user-id1',
+          birthNumber: 'mock-birth-number1',
+          activeEdeskUpdatedAt: null,
+          activeEdeskUpdateFailedAt: null,
+          activeEdeskUpdateFailCount: 0,
+        },
+        {
+          id: 'mock-entity-id2',
+          uri: 'mock-uri2',
+          activeEdesk: true,
+          ifo: 'mock-ifo2',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          userId: 'mock-user-id2',
+          birthNumber: 'mock-birth-number2',
+          activeEdeskUpdatedAt: null,
+          activeEdeskUpdateFailedAt: null,
+          activeEdeskUpdateFailCount: 0,
+        }
+      ]
+
+
+      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
+      const updateSpy = jest.spyOn(service, 'update')
+        .mockResolvedValueOnce(mockUpdatedEntities[0])
+        .mockResolvedValueOnce(mockUpdatedEntities[1])
+
+      const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
+
+      expect(result.updatedEntities).toEqual(mockUpdatedEntities)
+      expect(result.upvsResult).toEqual(mockUpvsResult)
+      expect(updateSpy).toHaveBeenCalledTimes(2)
+      expect(updateSpy).toHaveBeenCalledWith({
+        id: 'id1',
+        uri: 'uri1',
+        activeEdesk: true,
+      })
+      expect(updateSpy).toHaveBeenCalledWith({
+        id: 'id2',
+        uri: 'uri2',
+        activeEdesk: true,
+      })
+
     })
 
     it('should log an error when no UPVS success results are returned', async () => {
-      const mockUpvsResult = { success: [], failed: [] }
+      const mockUpvsResult = { success: [], failed: mockUpvsInput }
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
       const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
-      expect(result).toEqual({})
-      expect(loggerSpy).toHaveBeenCalledWith(
-        expect.stringContaining('No successful UPVS results for uri input')
-      )
+      expect(result).toEqual({updatedEntities: [], upvsResult: mockUpvsResult})
     })
 
     it('should log an error if an exception is thrown during createMany', async () => {
@@ -214,7 +254,7 @@ describe('PhysicalEntityService', () => {
 
       const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
-      expect(result).toEqual({})
+      expect(result).toEqual({updatedEntities: [], upvsResult: {success: [], failed: mockUpvsInput}})
       expect(loggerSpy).toHaveBeenCalledWith(
         expect.stringContaining('An error occurred while requesting data from UPVS'),
         { upvsInput: mockUpvsInput },
@@ -360,22 +400,22 @@ describe('PhysicalEntityService', () => {
       })
       jest.spyOn(prismaMock.physicalEntity, 'findMany').mockResolvedValue([])
 
-        const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
+      const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
-        const prismaSpyUpdate = jest.spyOn(prismaMock.physicalEntity, 'update')
-        const prismaSpyFindMany = jest.spyOn(prismaMock.physicalEntity, 'findMany')
+      const prismaSpyUpdate = jest.spyOn(prismaMock.physicalEntity, 'update')
+      const prismaSpyFindMany = jest.spyOn(prismaMock.physicalEntity, 'findMany')
 
-        const result = await service.createFromBirthNumber(mockBirthNumber)
+      const result = await service.createFromBirthNumber(mockBirthNumber)
 
-        expect(result).toEqual([])
-        expect(rfoSpy).toHaveBeenCalledTimes(1)
-        expect(prismaSpyCreate).toHaveBeenCalledTimes(1)
-        expect(prismaSpyUpdate).toHaveBeenCalledTimes(0)
-        expect(prismaSpyFindMany).toHaveBeenCalledTimes(1)
-        expect(loggerSpy).toHaveBeenCalledWith(
-          `PhysicalEntity ${mockBirthNumber} not created. No entries from magproxy.`
-        )
-      })
+      expect(result).toEqual([])
+      expect(rfoSpy).toHaveBeenCalledTimes(1)
+      expect(prismaSpyCreate).toHaveBeenCalledTimes(1)
+      expect(prismaSpyUpdate).toHaveBeenCalledTimes(0)
+      expect(prismaSpyFindMany).toHaveBeenCalledTimes(1)
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `PhysicalEntity ${mockBirthNumber} not created. No entries from magproxy.`
+      )
+    })
 
     it('should fail after getting multiple RFO entries, but should return them.', async () => {
       const mockData = RfoIdentityListMockData.concat(RfoIdentityListMockData)
@@ -450,14 +490,19 @@ describe('PhysicalEntityService', () => {
         .mockResolvedValue(RfoIdentityListMockData)
 
       const upvsSpy = jest.spyOn(service, 'checkUriAndUpdateEdeskFromUpvs').mockResolvedValue({
-        updatedEntity: { ...mockPhysicalEntity, uri: 'mock-uri', activeEdesk: true },
+        updatedEntities: [{ ...mockPhysicalEntity, uri: 'mock-uri', activeEdesk: true }],
         upvsResult: {
-          uri: 'mock-uri',
-          physicalEntityId: mockEntityID,
-          id: 'mock-id',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          data: {},
+          success: [
+            {
+              uri: 'mock-uri',
+              physicalEntityId: mockEntityID,
+              id: 'mock-id',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              data: {},
+            },
+          ],
+          failed: [],
         },
       })
 

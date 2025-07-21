@@ -494,6 +494,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   jsonVersion: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof GetFormResponseDto
+   */
+  requiresMigration: boolean
 }
 
 export const GetFormResponseDtoStateEnum = {
@@ -3592,6 +3598,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required

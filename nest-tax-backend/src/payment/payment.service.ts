@@ -31,7 +31,6 @@ import {
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
-import dayjs from 'dayjs'
 
 @Injectable()
 export class PaymentService {

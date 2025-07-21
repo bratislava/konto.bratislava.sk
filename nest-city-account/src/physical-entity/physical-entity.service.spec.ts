@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../test/singleton'
 import { PrismaService } from '../prisma/prisma.service'
-import { UpvsCreateManyResult, UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PhysicalEntityService } from './physical-entity.service'
 import { RfoIdentityList } from '../rfo-by-birthnumber/dtos/rfoSchema'
@@ -207,12 +207,12 @@ describe('PhysicalEntityService', () => {
           activeEdeskUpdatedAt: null,
           activeEdeskUpdateFailedAt: null,
           activeEdeskUpdateFailCount: 0,
-        }
+        },
       ]
 
-
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
-      const updateSpy = jest.spyOn(service, 'update')
+      const updateSpy = jest
+        .spyOn(service, 'update')
         .mockResolvedValueOnce(mockUpdatedEntities[0])
         .mockResolvedValueOnce(mockUpdatedEntities[1])
 
@@ -231,10 +231,9 @@ describe('PhysicalEntityService', () => {
         uri: 'uri2',
         activeEdesk: true,
       })
-
     })
 
-    it('should log an error when no UPVS success results are returned', async () => {
+    it('should return only failed if all UPVS results failed', async () => {
       const mockUpvsResult = { success: [], failed: mockUpvsInput }
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
@@ -242,7 +241,8 @@ describe('PhysicalEntityService', () => {
 
       const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
-      expect(result).toEqual({updatedEntities: [], upvsResult: mockUpvsResult})
+      expect(result).toEqual({ updatedEntities: [], upvsResult: mockUpvsResult })
+      expect(loggerSpy).toHaveBeenCalledTimes(0)
     })
 
     it('should log an error if an exception is thrown during createMany', async () => {
@@ -254,7 +254,10 @@ describe('PhysicalEntityService', () => {
 
       const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
-      expect(result).toEqual({updatedEntities: [], upvsResult: {success: [], failed: mockUpvsInput}})
+      expect(result).toEqual({
+        updatedEntities: [],
+        upvsResult: { success: [], failed: mockUpvsInput },
+      })
       expect(loggerSpy).toHaveBeenCalledWith(
         expect.stringContaining('An error occurred while requesting data from UPVS'),
         { upvsInput: mockUpvsInput },

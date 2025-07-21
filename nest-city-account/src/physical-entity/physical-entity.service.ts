@@ -132,7 +132,7 @@ export class PhysicalEntityService {
 
     const updatedEntities: PhysicalEntity[] = await Promise.all(
       upvsSuccessValueArray.map(async (item) => {
-        return await this.update(item)
+        return this.update(item)
       })
     )
 
@@ -252,7 +252,9 @@ export class PhysicalEntityService {
 
     const { updatedEntities, upvsResult } = await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
 
-    const updatedPhysicalEntity = updatedEntities.find((entity) => entity.id === physicalEntityId)
+    const updatedPhysicalEntity = updatedEntities.find(
+      (updatedEntity) => updatedEntity.id === physicalEntityId
+    )
     const upvsResultSingle = upvsResult.success.find(
       (result) => result.physicalEntityId === physicalEntityId
     )

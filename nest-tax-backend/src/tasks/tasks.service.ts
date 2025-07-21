@@ -189,12 +189,12 @@ export class TasksService {
       return
     }
 
-    const emailArray = config.REPORTING_RECIPIENT_EMAIL.split(',')
+    const emailRecipients = config.REPORTING_RECIPIENT_EMAIL.split(',')
       .map((email) => email.trim())
       .filter((email) => email.length > 0)
 
     await this.cardPaymentReportingService.generateAndSendPaymentReport(
-      emailArray,
+      emailRecipients,
     )
   }
 

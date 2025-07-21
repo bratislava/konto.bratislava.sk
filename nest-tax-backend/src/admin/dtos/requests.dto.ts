@@ -227,7 +227,7 @@ export class RequestPostReportingSendReport {
     type: [String],
   })
   @IsEmail({}, { each: true })
-  email: string[]
+  emailRecipients: string[]
 }
 
 export type NorisRequestGeneral =

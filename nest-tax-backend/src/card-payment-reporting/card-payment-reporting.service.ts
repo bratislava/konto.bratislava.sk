@@ -332,8 +332,7 @@ export class CardPaymentReportingService {
         ? 'Dnes nie je čo reportovať.'
         : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
-    await this.mailSubservice.
-    send(
+    await this.mailSubservice.send(
       email,
       'Report platieb kartou',
       message,

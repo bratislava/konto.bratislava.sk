@@ -64,7 +64,8 @@ export default class EmailSubservice {
       const info = await this.transporter.sendMail(emailOptions)
 
       this.logger.log(
-        `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`, {emailOptions}
+        `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`,
+        { emailOptions },
       )
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(

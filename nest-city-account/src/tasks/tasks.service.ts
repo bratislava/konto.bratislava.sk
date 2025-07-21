@@ -276,4 +276,26 @@ export class TasksService {
 
     await this.physicalEntityService.updateEdeskFromUpvs({ id: { in: entityIdArray } })
   }
+
+  @Cron(CronExpression.EVERY_DAY_AT_9AM)
+  @HandleErrors('CronError')
+  async alertFailingEdeskUpdate(): Promise<void> {
+    const entitiesFailedToUpdate = await this.prismaService.physicalEntity.findMany({
+      where: { activeEdeskUpdateFailCount: { gte: 7 } },
+      select: {
+        id: true,
+        birthNumber: true,
+        activeEdeskUpdateFailCount: true,
+      },
+    })
+
+    if (entitiesFailedToUpdate.length === 0) {
+      return
+    }
+
+    this.logger.error('Entities that failed to update at least 7 times in a row: ', {
+      entities: entitiesFailedToUpdate,
+      alert: 1,
+    })
+  }
 }

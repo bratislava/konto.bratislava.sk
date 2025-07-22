@@ -23,7 +23,7 @@ import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.g
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
-import { RABBIT_MQ } from './constats'
+import { RABBIT_MQ } from './constants'
 import { RabbitMessageDto } from './dtos/rabbit.dto'
 import {
   RequestBodyVerifyIdentityCardDto,

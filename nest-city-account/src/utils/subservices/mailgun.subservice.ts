@@ -7,7 +7,7 @@ const mailgun = new Mailgun(formData)
 
 import { MailgunTemplates } from '../global-dtos/mailgun.dto'
 import { LineLoggerSubservice } from './line-logger.subservice'
-import { MAILGUN } from '../../user-verification/constats'
+import { MAILGUN } from '../../user-verification/constants'
 
 @Injectable()
 export class MailgunSubservice {

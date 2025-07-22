@@ -33,7 +33,7 @@ type UserWithRelations = Prisma.UserGetPayload<{
   }
 }>
 
-describe('TasksSubservice', () => {
+describe('TasksService', () => {
   let service: TasksService
 
   let throwerErrorGuard: ThrowerErrorGuard

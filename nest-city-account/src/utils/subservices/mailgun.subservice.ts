@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common'
 import formData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { MAILGUN } from '../../user-verification/constats'
+import { Interfaces } from 'mailgun.js/definitions'
 
 const mailgun = new Mailgun(formData)
 
 import { MailgunTemplates } from '../global-dtos/mailgun.dto'
 import { LineLoggerSubservice } from './line-logger.subservice'
+import { MAILGUN } from '../../user-verification/constats'
+
 @Injectable()
 export class MailgunSubservice {
-  private mg
+
+  private mg: Interfaces.IMailgunClient
 
   private readonly config
 
@@ -18,7 +21,7 @@ export class MailgunSubservice {
   constructor() {
     // TODO temporarily uses dummy token which always passes
     if (!process.env.MAILGUN_API_KEY || !process.env.DEFAULT_MAILGUN_DOMAIN) {
-      throw new Error('MailgunSubservice ENV vars are not set ')
+      throw new Error('MailgunSubservice ENV vars are not set.')
     }
     this.config = {
       defaultMailgunDomain: process.env.DEFAULT_MAILGUN_DOMAIN,

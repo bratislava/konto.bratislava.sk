@@ -81,7 +81,7 @@ model PhysicalEntity {
   ifo                        String?             @unique
   birthNumber                String?
   activeEdesk                Boolean?
-  activeEdeskUpdatedAt       DateTime?           @updatedAt
+  activeEdeskUpdatedAt       DateTime?
   activeEdeskUpdateFailedAt  DateTime?
   activeEdeskUpdateFailCount Int                 @default(0)
   UpvsIdentityByUri          UpvsIdentityByUri[]

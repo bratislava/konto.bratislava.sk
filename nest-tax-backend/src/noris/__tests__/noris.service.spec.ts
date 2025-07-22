@@ -87,6 +87,46 @@ describe('NorisService', () => {
       expect(closeSpy).toHaveBeenCalledTimes(1)
     })
 
+    it('should map POSTAL to EDESK', async () => {
+      const requestSpy = jest.spyOn(mssql, 'Request')
+      const querySpy = jest.spyOn(mockRequest, 'query')
+      const closeSpy = jest.spyOn(mockConnection, 'close')
+      const inputQuerySpy = jest.spyOn(mockRequest, 'input')
+
+      await service.updateDeliveryMethods([
+        {
+          birthNumbers: ['003322/4455', '003322/4456'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.POSTAL,
+          date: null,
+        },
+        {
+          birthNumbers: ['003322/4455', '003322/4456'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+        {
+          birthNumbers: ['003322/4455', '003322/4456'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: '2024-01-01',
+        },
+      ])
+
+      expect(requestSpy).toHaveBeenCalledTimes(3)
+      expect(querySpy).toHaveBeenCalledTimes(3)
+      expect(closeSpy).toHaveBeenCalledTimes(1)
+      expect(inputQuerySpy).not.toHaveBeenCalledWith(
+        'dkba_sposob_dorucovania',
+        DeliveryMethod.POSTAL,
+      )
+      expect(inputQuerySpy).toHaveBeenCalledWith(
+        'dkba_sposob_dorucovania',
+        DeliveryMethod.EDESK,
+      )
+    })
+
     it('should throw if something throws', async () => {
       jest.spyOn(mssql, 'Request').mockImplementation(() => {
         throw new Error('mock-error')

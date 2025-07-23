@@ -25,7 +25,6 @@ import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
-import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
 import {
   FormAccessService,
@@ -68,10 +67,6 @@ describe('NasesService', () => {
         {
           provide: FilesService,
           useValue: createMock<FilesService>(),
-        },
-        {
-          provide: FormsHelper,
-          useValue: createMock<FormsHelper>(),
         },
         {
           provide: NasesConsumerService,

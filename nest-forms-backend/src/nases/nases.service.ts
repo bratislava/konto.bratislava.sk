@@ -30,7 +30,6 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
-import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
@@ -66,7 +65,6 @@ export default class NasesService {
   constructor(
     private readonly formsService: FormsService,
     private readonly filesService: FilesService,
-    private readonly formsHelper: FormsHelper,
     private readonly nasesConsumerService: NasesConsumerService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private throwerErrorGuard: ThrowerErrorGuard,

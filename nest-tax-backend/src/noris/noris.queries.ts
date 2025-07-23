@@ -496,27 +496,23 @@ SELECT
 `
 
 export const setDeliveryMethodsForUser = `
-    UPDATE lcs.uda_21_organizacia_mag
+    UPDATE org_mag
     SET
-        dkba_stav = @dkba_stav,
-        dkba_datum_suhlasu = @dkba_datum_suhlasu,
-        dkba_sposob_dorucovania = @dkba_sposob_dorucovania
+        org_mag.dkba_stav = @dkba_stav,
+        org_mag.dkba_datum_suhlasu = @dkba_datum_suhlasu,
+        org_mag.dkba_sposob_dorucovania = @dkba_sposob_dorucovania
     OUTPUT
         inserted.cislo_subjektu
-    WHERE
-        cislo_subjektu IN (
-            SELECT DISTINCT subjekt
-            FROM lcs.dane21_priznanie
-            WHERE podnikatel = 'N' 
-            AND rodne_cislo IN (@birth_numbers)
-        )
+    FROM lcs.uda_21_organizacia_mag org_mag
+    INNER JOIN lcs.organizace org
+        ON org_mag.cislo_subjektu = org.cislo_subjektu
+    WHERE org.rodne_cislo IN (@birth_numbers)
 `
 
 export const getBirthNumbersForSubjects = `
-    SELECT DISTINCT rodne_cislo
-    FROM lcs.dane21_priznanie
-    WHERE podnikatel = 'N' 
-    AND subjekt IN (@subjects)
+    SELECT rodne_cislo
+    FROM lcs.organizace
+    WHERE subjekt IN (@subjects)
 `
 
 export const getNorisDataForUpdate = `

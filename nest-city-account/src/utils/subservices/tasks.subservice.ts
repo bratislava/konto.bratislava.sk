@@ -170,6 +170,9 @@ export class TasksSubservice {
         },
       },
       take: UPLOAD_TAX_DELIVERY_METHOD_BATCH,
+      orderBy: {
+        lastTaxDeliveryMethodsUpdateTry: 'asc',
+      },
     })
 
     if (users.length === 0) {
@@ -199,7 +202,10 @@ export class TasksSubservice {
       {}
     )
 
-    await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
+    const updateResponse = await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
+    const updatedBirthNumbers = updateResponse.data.birthNumbers.map((birthNumber) =>
+      birthNumber.replaceAll('/', '')
+    )
 
     // Now we should check if some user was not deactivated during his update in Noris.
     // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However it is an edge case.
@@ -232,12 +238,24 @@ export class TasksSubservice {
     // If OK we should set the Users to have updated delivery methods in Noris for current year. Otherwise the error will be thrown.
     await this.prisma.user.updateMany({
       where: {
+        birthNumber: {
+          in: updatedBirthNumbers,
+        },
+      },
+      data: {
+        lastTaxDeliveryMethodsUpdateYear: currentYear,
+      },
+    })
+
+    // For all users, not only those who were updated, we should set the last timestamp of trying to update delivery methods in Noris.
+    await this.prisma.user.updateMany({
+      where: {
         id: {
           in: users.map((user) => user.id),
         },
       },
       data: {
-        lastTaxDeliveryMethodsUpdateYear: currentYear,
+        lastTaxDeliveryMethodsUpdateTry: new Date(),
       },
     })
   }

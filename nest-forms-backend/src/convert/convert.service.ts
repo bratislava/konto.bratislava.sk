@@ -29,7 +29,7 @@ import {
 } from 'forms-shared/versioning/version-compare'
 import { chromium } from 'playwright'
 
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import { User } from '../auth-v2/types/user'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -158,13 +158,11 @@ export default class ConvertService {
 
   async convertJsonToXmlV2(
     data: JsonToXmlV2RequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<string> {
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
-      user?.sub ?? null,
-      ico,
+      user,
     )
 
     const xmlObject = await this.convertJsonToXmlObjectForForm(
@@ -176,13 +174,11 @@ export default class ConvertService {
 
   async convertXmlToJson(
     data: XmlToJsonRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<XmlToJsonResponseDto> {
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
-      user?.sub ?? null,
-      ico,
+      user,
     )
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
@@ -362,14 +358,12 @@ export default class ConvertService {
 
   async convertToPdf(
     data: ConvertToPdfRequestDto,
-    ico: string | null,
     res: Response,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<StreamableFile> {
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
-      user?.sub ?? null,
-      ico,
+      user,
     )
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)

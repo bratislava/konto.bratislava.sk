@@ -256,6 +256,7 @@ export interface FormSignatureDto {
 export const FormState = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -505,6 +506,7 @@ export interface GetFormResponseDto {
 export const GetFormResponseDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -591,6 +593,7 @@ export interface GetFormResponseSimpleDto {
 export const GetFormResponseSimpleDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -773,25 +776,6 @@ export interface JsonToXmlV2RequestDto {
    * @memberof JsonToXmlV2RequestDto
    */
   jsonData?: object
-}
-/**
- *
- * @export
- * @interface MigrateFormResponseDto
- */
-export interface MigrateFormResponseDto {
-  /**
-   * ID of form
-   * @type {string}
-   * @memberof MigrateFormResponseDto
-   */
-  formId: string
-  /**
-   * True if the form was successfully migrated.
-   * @type {boolean}
-   * @memberof MigrateFormResponseDto
-   */
-  success: boolean
 }
 /**
  *
@@ -1692,6 +1676,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -1745,6 +1732,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -1797,6 +1787,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2116,6 +2109,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -2160,6 +2156,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2276,6 +2275,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
       const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2948,6 +2950,9 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -3554,6 +3559,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -3688,51 +3696,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerMigrateForm: async (
-      id: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerMigrateForm', 'id', id)
-      const localVarPath = `/nases/migrate-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
@@ -3767,6 +3730,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3828,6 +3794,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -3883,6 +3852,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -4028,33 +4000,6 @@ export const NasesApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['NasesApi.nasesControllerGetForms']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerMigrateForm(
-      id: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MigrateFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerMigrateForm(
-        id,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerMigrateForm']?.[localVarOperationServerIndex]
-          ?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -4242,21 +4187,6 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerMigrateForm(
-      id: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<MigrateFormResponseDto> {
-      return localVarFp
-        .nasesControllerMigrateForm(id, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
@@ -4395,20 +4325,6 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Assign form with no assigned user to the authenticated user
-   * @summary
-   * @param {string} id
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerMigrateForm(id: string, options?: RawAxiosRequestConfig) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerMigrateForm(id, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
    * @summary
    * @param {string} id
@@ -4500,6 +4416,9 @@ export const SignerApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required

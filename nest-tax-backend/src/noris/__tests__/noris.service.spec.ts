@@ -208,9 +208,9 @@ describe('NorisService', () => {
 
       const mockQueryResult = {
         recordset: [
-          { rodne_cislo: '001122/3344' },
-          { rodne_cislo: '005566/7788' },
-          { rodne_cislo: '009900/1122' },
+          { ico: '001122/3344' },
+          { ico: '005566/7788' },
+          { ico: '009900/1122' },
         ],
       }
 
@@ -247,14 +247,16 @@ describe('NorisService', () => {
         .mockResolvedValue(mockQueryResult)
       const inputSpy = jest.spyOn(mockRequest, 'input')
       const closeSpy = jest.spyOn(mockConnection, 'close')
+      const connectionSpy = jest.spyOn(mssql, 'connect')
 
       const result =
         await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
 
-      expect(requestSpy).toHaveBeenCalledTimes(1)
+      expect(requestSpy).not.toHaveBeenCalled()
       expect(inputSpy).not.toHaveBeenCalled()
-      expect(querySpy).toHaveBeenCalledTimes(1)
-      expect(closeSpy).toHaveBeenCalledTimes(1)
+      expect(querySpy).not.toHaveBeenCalled()
+      expect(connectionSpy).not.toHaveBeenCalled()
+      expect(closeSpy).not.toHaveBeenCalled() // since the connection was not open
       expect(result).toEqual([])
     })
 
@@ -266,7 +268,7 @@ describe('NorisService', () => {
       ]
 
       const mockQueryResult = {
-        recordset: [{ rodne_cislo: '123456/7890' }],
+        recordset: [{ ico: '123456/7890' }],
       }
 
       const requestSpy = jest.spyOn(mssql, 'Request')

@@ -506,13 +506,14 @@ export const setDeliveryMethodsForUser = `
     FROM lcs.uda_21_organizacia_mag org_mag
     INNER JOIN lcs.organizace org
         ON org_mag.cislo_subjektu = org.cislo_subjektu
-    WHERE org.rodne_cislo IN (@birth_numbers)
+    WHERE org.ico IN (@birth_numbers)
 `
 
 export const getBirthNumbersForSubjects = `
-    SELECT rodne_cislo
+    -- birth numbers are stored in column 'ico'
+    SELECT ico
     FROM lcs.organizace
-    WHERE subjekt IN (@subjects)
+    WHERE cislo_subjektu IN (@subjects)
 `
 
 export const getNorisDataForUpdate = `

@@ -246,6 +246,10 @@ export class NorisService {
       item.recordset.map((record) => record.cislo_subjektu),
     )
 
+    if (updatedSubjects.length === 0) {
+      return []
+    }
+
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
@@ -277,9 +281,9 @@ export class NorisService {
 
       // Execute the query
       const result = await request.query(queryWithPlaceholders)
-      return result.recordset.map(
-        (record: { rodne_cislo: string }) => record.rodne_cislo,
-      )
+      return result.recordset.map((record: { ico: string }) =>
+        record.ico.trim(),
+      ) // Birth numbers are stored in `ico` column in the respective table
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

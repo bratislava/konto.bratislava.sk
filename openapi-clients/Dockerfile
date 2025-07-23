@@ -2,6 +2,7 @@ FROM node:20.9-slim AS base
 
 WORKDIR /app
 COPY package.json package-lock.json ./
+RUN ls ../nest-forms-backend
 RUN npm ci --include=dev --frozen-lockfile
 
 FROM base AS prod

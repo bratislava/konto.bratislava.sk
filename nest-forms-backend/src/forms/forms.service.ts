@@ -134,7 +134,7 @@ export default class FormsService {
     return form
   }
 
-  async getForm(id: string, user: User): Promise<Forms> {
+  async getForm(id: string): Promise<Forms> {
     let form: Forms
     try {
       form = await this.prisma.forms.findUniqueOrThrow({
@@ -149,11 +149,7 @@ export default class FormsService {
       )
     }
 
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess || form.archived) {
+    if (form.archived) {
       throw this.throwerErrorGuard.ForbiddenException(
         FormsErrorsEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
         FormsErrorsResponseEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,

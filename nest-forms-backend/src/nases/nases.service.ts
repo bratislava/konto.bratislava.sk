@@ -132,9 +132,8 @@ export default class NasesService {
 
   async getForm(
     id: string,
-    user: User,
   ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
-    const form = await this.formsService.getForm(id, user)
+    const form = await this.formsService.getForm(id)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(

@@ -83,7 +83,7 @@ export default class NasesController {
     @GetUser() user: User,
     @GetFormAccessType() accessType: FormAccessType,
   ): Promise<GetFormResponseDto> {
-    const data = await this.nasesService.getForm(id, user)
+    const data = await this.nasesService.getForm(id)
     return {
       ...data,
       requiresMigration: accessType === FormAccessType.Migration,

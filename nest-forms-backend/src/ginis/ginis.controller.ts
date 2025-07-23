@@ -11,14 +11,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import {
-  UserInfo,
-  UserInfoResponse,
-} from '../auth/decorators/user-info.decorator'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import CognitoGuard from '../auth/guards/cognito.guard'
+import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
+import { GetUser } from '../auth-v2/decorators/get-user.decorator'
+import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
+import { AuthUser, UserType } from '../auth-v2/types/user'
 import FormsService from '../forms/forms.service'
-import { User } from '../utils/decorators/request.decorator'
 import {
   mapGinisHistory,
   MappedDocumentHistory,
@@ -48,18 +45,15 @@ export default class GinisController {
     description: '',
     type: GinisDocumentDetailResponseDto,
   })
-  @UseGuards(CognitoGuard)
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth])
+  @UseGuards(UserAuthGuard)
   @Get(':formId')
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,
-    @User() user: CognitoGetUserData | undefined,
-    @UserInfo() userInfo: UserInfoResponse,
+    @GetUser() user: AuthUser,
   ): Promise<GinisDocumentDetailResponseDto> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      formId,
-      user ? user.sub : null,
-      userInfo?.ico ?? null,
-    )
+    const form = await this.formsService.getFormWithAccessCheck(formId, user)
     const { ginisDocumentId } = form
     if (!ginisDocumentId) {
       throw this.throwerErrorGuard.NotFoundException(

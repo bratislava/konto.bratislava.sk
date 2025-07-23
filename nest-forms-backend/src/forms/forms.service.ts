@@ -5,9 +5,12 @@ import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtract
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
+import { AuthUser, User } from '../auth-v2/types/user'
+import { getUserIco } from '../auth-v2/utils/user-utils'
 // eslint-disable-next-line import/no-cycle
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
+import { FormAccessService } from '../forms-v2/services/form-access.service'
 import {
   GetFormResponseSimpleDto,
   GetFormsRequestDto,
@@ -40,6 +43,7 @@ export default class FormsService {
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FormsService')
   }
@@ -91,12 +95,8 @@ export default class FormsService {
     return formsResult
   }
 
-  async archiveForm(
-    id: string,
-    user: string | null,
-    ico: string | null,
-  ): Promise<void> {
-    const form = await this.getFormWithAccessCheck(id, user, ico)
+  async archiveForm(id: string, user: User): Promise<void> {
+    const form = await this.getFormWithAccessCheck(id, user)
     if (!FormsHelper.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
@@ -134,11 +134,7 @@ export default class FormsService {
     return form
   }
 
-  async getForm(
-    id: string,
-    ico: string | null,
-    userExternalId?: string,
-  ): Promise<Forms> {
+  async getForm(id: string, user: User): Promise<Forms> {
     let form: Forms
     try {
       form = await this.prisma.forms.findUniqueOrThrow({
@@ -147,22 +143,17 @@ export default class FormsService {
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_OR_USER_NOT_FOUND_ERROR,
-        `Form with formId: ${id}, does not exist for the user: ${<string>(
-          userExternalId
-        )}`,
-        `Form ${id} does not exist for the user: ${<string>userExternalId}`,
+        `Form with formId: ${id} does not exist`,
+        `Form ${id} does not exist`,
         error,
       )
     }
 
-    if (
-      !this.formsHelper.isFormAccessGranted(
-        form,
-        userExternalId ?? null,
-        ico,
-      ) ||
-      form.archived
-    ) {
+    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
+      form,
+      user,
+    )
+    if (!hasAccess || form.archived) {
       throw this.throwerErrorGuard.ForbiddenException(
         FormsErrorsEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
         FormsErrorsResponseEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
@@ -182,8 +173,7 @@ export default class FormsService {
 
   async getForms(
     query: GetFormsRequestDto,
-    userExternalId: string,
-    ico: string | null,
+    user: AuthUser,
   ): Promise<GetFormsResponseDto> {
     const { formDefinitionSlug, currentPage, pagination, states, userCanEdit } =
       query
@@ -212,7 +202,7 @@ export default class FormsService {
 
     const where: Prisma.FormsWhereInput = {
       ...statesFilter,
-      userExternalId,
+      userExternalId: user.cognitoJwtPayload.sub,
       archived: false,
       formDefinitionSlug,
       formDataJson: {
@@ -237,32 +227,31 @@ export default class FormsService {
               ],
     }
 
-    if (ico !== null) {
+    const ico = getUserIco(user)
+    if (ico != null) {
       where.userExternalId = undefined
       where.ico = ico
     }
 
-    const data = userExternalId
-      ? await this.prisma.forms.findMany({
-          where,
-          orderBy: [
-            {
-              createdAt: 'desc',
-            },
-          ],
-          take,
-          skip,
-          select: {
-            id: true,
-            updatedAt: true,
-            createdAt: true,
-            state: true,
-            error: true,
-            formDataJson: true,
-            formDefinitionSlug: true,
-          },
-        })
-      : []
+    const data = await this.prisma.forms.findMany({
+      where,
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+      ],
+      take,
+      skip,
+      select: {
+        id: true,
+        updatedAt: true,
+        createdAt: true,
+        state: true,
+        error: true,
+        formDataJson: true,
+        formDefinitionSlug: true,
+      },
+    })
 
     const dataWithLatestFlag: GetFormResponseSimpleDto[] = []
     Object.values(data).forEach((form) => {
@@ -339,11 +328,7 @@ export default class FormsService {
     return form
   }
 
-  async getFormWithAccessCheck(
-    formId: string,
-    user: string | null,
-    ico: string | null,
-  ): Promise<Forms> {
+  async getFormWithAccessCheck(formId: string, user: User): Promise<Forms> {
     const form = await this.getUniqueForm(formId)
 
     if (!form) {
@@ -353,7 +338,11 @@ export default class FormsService {
       )
     }
 
-    if (!this.formsHelper.isFormAccessGranted(form, user, ico)) {
+    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
+      form,
+      user,
+    )
+    if (!hasAccess) {
       throw this.throwerErrorGuard.ForbiddenException(
         FormsErrorsEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
         FormsErrorsResponseEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,

@@ -6,7 +6,10 @@ import { getUserIco, userToFormOwnerType } from '../../auth-v2/utils/user-utils'
 export const getUserFormFields = (
   user: User,
 ): Required<
-  Pick<Forms, 'cognitoGuestIdentityId' | 'userExternalId' | 'ico' | 'ownerType'>
+  Pick<
+    Forms,
+    'cognitoGuestIdentityId' | 'userExternalId' | 'ico' | 'ownerType' | 'email'
+  >
 > => {
   if (isAuthUser(user)) {
     return {
@@ -14,6 +17,7 @@ export const getUserFormFields = (
       userExternalId: user.cognitoJwtPayload.sub,
       ico: getUserIco(user),
       ownerType: userToFormOwnerType(user),
+      email: user.cityAccountUser.email,
     }
   }
 
@@ -23,6 +27,7 @@ export const getUserFormFields = (
       userExternalId: null,
       ico: null,
       ownerType: null,
+      email: null,
     }
   }
 

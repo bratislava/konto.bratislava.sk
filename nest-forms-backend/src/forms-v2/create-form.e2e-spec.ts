@@ -78,6 +78,7 @@ describe('Create form', () => {
     expect(form!.cognitoGuestIdentityId).toBeNull()
     expect(form!.ico).toBeNull()
     expect(form!.formDefinitionSlug).toBe(createFormRequest.formDefinitionSlug)
+    expect(form!.email).toBe(foAuthUser.user.cityAccountUser.email)
   })
 
   it('should create form for guest users', async () => {
@@ -98,6 +99,7 @@ describe('Create form', () => {
     expect(form!.cognitoGuestIdentityId).toBe(guestUser.identityId)
     expect(form!.ico).toBeNull()
     expect(form!.formDefinitionSlug).toBe(createFormRequest.formDefinitionSlug)
+    expect(form!.email).toBeNull()
   })
 
   it('should create form for FoP users with ICO', async () => {
@@ -120,6 +122,7 @@ describe('Create form', () => {
       (fopAuthUser.user.cityAccountUser as ResponseLegalPersonDataDto).ico,
     )
     expect(form!.formDefinitionSlug).toBe(createFormRequest.formDefinitionSlug)
+    expect(form!.email).toBe(fopAuthUser.user.cityAccountUser.email)
   })
 
   it('should create form for Po users with ICO', async () => {
@@ -142,5 +145,6 @@ describe('Create form', () => {
       (poAuthUser.user.cityAccountUser as ResponseLegalPersonDataDto).ico,
     )
     expect(form!.formDefinitionSlug).toBe(createFormRequest.formDefinitionSlug)
+    expect(form!.email).toBe(poAuthUser.user.cityAccountUser.email)
   })
 })

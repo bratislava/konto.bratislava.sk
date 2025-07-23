@@ -256,7 +256,6 @@ export interface FormSignatureDto {
 export const FormState = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
-  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -506,7 +505,6 @@ export interface GetFormResponseDto {
 export const GetFormResponseDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
-  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -593,7 +591,6 @@ export interface GetFormResponseSimpleDto {
 export const GetFormResponseSimpleDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
-  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',

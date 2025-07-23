@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { NorisDeliveryMethodsUpdateResultDto } from '../noris.dto'
 import { NorisService } from '../noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../noris.types'
 
@@ -60,8 +61,11 @@ describe('NorisService', () => {
       const requestSpy = jest.spyOn(mssql, 'Request')
       const querySpy = jest.spyOn(mockRequest, 'query')
       const closeSpy = jest.spyOn(mockConnection, 'close')
+      jest
+        .spyOn(service as any, 'getBirthNumbersWithUpdatedDeliveryMethods')
+        .mockResolvedValue(['003322/4455', '003322/4456'])
 
-      await service.updateDeliveryMethods([
+      const result = await service.updateDeliveryMethods([
         {
           birthNumbers: ['003322/4455', '003322/4456'],
           inCityAccount: IsInCityAccount.YES,
@@ -81,6 +85,8 @@ describe('NorisService', () => {
           date: '2024-01-01',
         },
       ])
+
+      expect(result).toEqual(['003322/4455', '003322/4456'])
 
       expect(requestSpy).toHaveBeenCalledTimes(3)
       expect(querySpy).toHaveBeenCalledTimes(3)
@@ -120,6 +126,34 @@ describe('NorisService', () => {
       expect(querySpy).not.toHaveBeenCalled()
       expect(closeSpy).toHaveBeenCalled()
     })
+
+    it('should return updated birthNumbers', async () => {
+      jest
+        .spyOn(service as any, 'getBirthNumbersWithUpdatedDeliveryMethods')
+        .mockResolvedValue(['003322/4455', '003322/4456'])
+      const result = await service.updateDeliveryMethods([
+        {
+          birthNumbers: ['003322/4455', '003322/4456'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.POSTAL,
+          date: null,
+        },
+        {
+          birthNumbers: ['003322/5544', '003322/1122'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+        {
+          birthNumbers: ['003322/0000', '003322/442'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: '2024-01-01',
+        },
+      ])
+
+      expect(result).toEqual(['003322/4455', '003322/4456'])
+    })
   })
 
   describe('getDataForUpdate', () => {
@@ -158,6 +192,118 @@ describe('NorisService', () => {
 
       expect(querySpy).not.toHaveBeenCalled()
       expect(closeSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('getBirthNumbersWithUpdatedDeliveryMethods', () => {
+    it('should return birth numbers for updated subjects', async () => {
+      const mockData: NorisDeliveryMethodsUpdateResultDto[] = [
+        {
+          recordset: [{ cislo_subjektu: 123 }, { cislo_subjektu: 456 }],
+        },
+        {
+          recordset: [{ cislo_subjektu: 789 }],
+        },
+      ]
+
+      const mockQueryResult = {
+        recordset: [
+          { rodne_cislo: '001122/3344' },
+          { rodne_cislo: '005566/7788' },
+          { rodne_cislo: '009900/1122' },
+        ],
+      }
+
+      const requestSpy = jest.spyOn(mssql, 'Request')
+      const querySpy = jest
+        .spyOn(mockRequest, 'query')
+        .mockResolvedValue(mockQueryResult)
+      const inputSpy = jest.spyOn(mockRequest, 'input')
+      const closeSpy = jest.spyOn(mockConnection, 'close')
+
+      const result =
+        await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
+
+      expect(requestSpy).toHaveBeenCalledTimes(1)
+      expect(inputSpy).toHaveBeenCalledTimes(3)
+      expect(inputSpy).toHaveBeenCalledWith('subject0', 123)
+      expect(inputSpy).toHaveBeenCalledWith('subject1', 456)
+      expect(inputSpy).toHaveBeenCalledWith('subject2', 789)
+      expect(querySpy).toHaveBeenCalledTimes(1)
+      expect(closeSpy).toHaveBeenCalledTimes(1)
+      expect(result).toEqual(['001122/3344', '005566/7788', '009900/1122'])
+    })
+
+    it('should handle empty recordsets', async () => {
+      const mockData = [{ recordset: [] }, { recordset: [] }]
+
+      const mockQueryResult = {
+        recordset: [],
+      }
+
+      const requestSpy = jest.spyOn(mssql, 'Request')
+      const querySpy = jest
+        .spyOn(mockRequest, 'query')
+        .mockResolvedValue(mockQueryResult)
+      const inputSpy = jest.spyOn(mockRequest, 'input')
+      const closeSpy = jest.spyOn(mockConnection, 'close')
+
+      const result =
+        await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
+
+      expect(requestSpy).toHaveBeenCalledTimes(1)
+      expect(inputSpy).not.toHaveBeenCalled()
+      expect(querySpy).toHaveBeenCalledTimes(1)
+      expect(closeSpy).toHaveBeenCalledTimes(1)
+      expect(result).toEqual([])
+    })
+
+    it('should handle single subject', async () => {
+      const mockData = [
+        {
+          recordset: [{ cislo_subjektu: 100 }],
+        },
+      ]
+
+      const mockQueryResult = {
+        recordset: [{ rodne_cislo: '123456/7890' }],
+      }
+
+      const requestSpy = jest.spyOn(mssql, 'Request')
+      const querySpy = jest
+        .spyOn(mockRequest, 'query')
+        .mockResolvedValue(mockQueryResult)
+      const inputSpy = jest.spyOn(mockRequest, 'input')
+      const closeSpy = jest.spyOn(mockConnection, 'close')
+
+      const result =
+        await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
+
+      expect(requestSpy).toHaveBeenCalledTimes(1)
+      expect(inputSpy).toHaveBeenCalledTimes(1)
+      expect(inputSpy).toHaveBeenCalledWith('subject0', 100)
+      expect(querySpy).toHaveBeenCalledTimes(1)
+      expect(closeSpy).toHaveBeenCalledTimes(1)
+      expect(result).toEqual(['123456/7890'])
+    })
+
+    it('should close connection on error', async () => {
+      const mockData = [
+        {
+          recordset: [{ cislo_subjektu: 123 }],
+        },
+      ]
+
+      jest.spyOn(mssql, 'Request').mockImplementation(() => {
+        throw new Error('Database connection failed')
+      })
+      const closeSpy = jest.spyOn(mockConnection, 'close')
+
+      await expect(
+        service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData),
+      ).rejects.toThrow()
+
+      expect(closeSpy).toHaveBeenCalledTimes(1)
     })
   })
 

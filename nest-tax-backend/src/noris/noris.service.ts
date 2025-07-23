@@ -240,12 +240,10 @@ export class NorisService {
   }
 
   private async getBirthNumbersWithUpdatedDeliveryMethods(
-    data: any[],
+    data: NorisDeliveryMethodsUpdateResultDto[],
   ): Promise<string[]> {
     const updatedSubjects = data.flatMap((item) =>
-      item.recordset.map(
-        (record: { cislo_subjektu: number }) => record.cislo_subjektu,
-      ),
+      item.recordset.map((record) => record.cislo_subjektu),
     )
 
     const connection = await connect({
@@ -262,25 +260,37 @@ export class NorisService {
       },
     })
 
-    const request = new Request(connection)
+    try {
+      const request = new Request(connection)
 
-    // Set parameters for the query
-    const subjectPlaceholders = updatedSubjects
-      .map((_, index) => `@subject${index}`)
-      .join(',')
-    updatedSubjects.forEach((subject, index) => {
-      request.input(`subject${index}`, subject)
-    })
-    const queryWithPlaceholders = getBirthNumbersForSubjects.replaceAll(
-      '@subjects',
-      subjectPlaceholders,
-    )
+      // Set parameters for the query
+      const subjectPlaceholders = updatedSubjects
+        .map((_, index) => `@subject${index}`)
+        .join(',')
+      updatedSubjects.forEach((subject, index) => {
+        request.input(`subject${index}`, subject)
+      })
+      const queryWithPlaceholders = getBirthNumbersForSubjects.replaceAll(
+        '@subjects',
+        subjectPlaceholders,
+      )
 
-    // Execute the query
-    const result = await request.query(queryWithPlaceholders)
-    return result.recordset.map(
-      (record: { rodne_cislo: string }) => record.rodne_cislo,
-    )
+      // Execute the query
+      const result = await request.query(queryWithPlaceholders)
+      return result.recordset.map(
+        (record: { rodne_cislo: string }) => record.rodne_cislo,
+      )
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Failed to get birth numbers for updated subjects',
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    } finally {
+      await connection.close()
+    }
   }
 
   async getDataForUpdate(

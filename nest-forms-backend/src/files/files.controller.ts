@@ -151,13 +151,13 @@ export default class FilesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Get('download/jwt/:fileId')
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Get('download/jwt/:formId/:fileId')
   async downloadToken(
+    @Param('formId') formId: string,
     @Param('fileId') fileId: string,
-    @GetUser() user: User,
   ): Promise<DownloadTokenResponseDataDto> {
-    return this.filesService.downloadToken(fileId, user)
+    return this.filesService.downloadToken(formId, fileId)
   }
 
   @ApiOperation({

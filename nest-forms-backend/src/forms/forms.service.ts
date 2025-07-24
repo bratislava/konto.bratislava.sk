@@ -340,7 +340,15 @@ export default class FormsService {
     return form
   }
 
-  async bumpJsonVersion(form: Forms): Promise<void> {
+  async bumpJsonVersion(formId: string): Promise<void> {
+    const form = await this.getUniqueForm(formId)
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
+
     if (!FormsHelper.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,

@@ -247,7 +247,6 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
-    user: User,
   ): Promise<PostFileResponseDto> {
     const fileName = data.filename
     const fileId = data.id
@@ -282,7 +281,14 @@ export default class FilesService {
       )
     }
 
-    const form = await this.formsService.getFormWithAccessCheck(formId, user)
+    const form = await this.formsService.getUniqueForm(formId)
+
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {
       throw this.throwerErrorGuard.NotAcceptableException(

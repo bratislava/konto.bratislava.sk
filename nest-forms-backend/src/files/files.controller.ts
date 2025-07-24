@@ -130,16 +130,15 @@ export default class FilesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard)
   @Post('upload/:formId')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
-    @GetUser() user: User,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(formId, file, body, user)
+    return this.filesService.uploadFile(formId, file, body)
   }
 
   @ApiOperation({

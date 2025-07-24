@@ -28,6 +28,7 @@ import {
   versionCompareRequiresConfirmationImportXml,
 } from 'forms-shared/versioning/version-compare'
 import { chromium } from 'playwright'
+
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,

@@ -38,6 +38,8 @@ model User {
   lastTaxYear                      Int?
   lastTaxBackendUploadTry          DateTime                       @default(now())
   lastTaxDeliveryMethodsUpdateYear Int?
+  // This is used to store the last time we tried to update the delivery methods in Noris for this user.
+  lastTaxDeliveryMethodsUpdateTry  DateTime                       @default(now())
   cognitoTier                      CognitoUserAttributesTierEnum?
   userIdCardVerify                 UserIdCardVerify[]
   isDeceased                       Boolean                        @default(false)

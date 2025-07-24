@@ -77,48 +77,6 @@ export class UpdateFormRequestDto {
   @IsObject()
   @ValidateNested()
   formSignature?: FormSignatureDto
-
-  @ApiPropertyOptional({
-    description: 'State of form ',
-    default: FormState.DRAFT,
-  })
-  @IsOptional()
-  @IsEnum(FormState)
-  state?: FormState
-
-  @ApiPropertyOptional({
-    description: 'Data from ginis saved in our db',
-    default: '<XML ...>',
-  })
-  @IsOptional()
-  @IsString()
-  formDataGinis?: string
-
-  @Type(() => Date)
-  @ApiPropertyOptional({
-    description: 'Date time, when submission was finished in ginis',
-    default: new Date(),
-  })
-  @IsOptional()
-  @IsDate()
-  finishSubmission?: Date
-
-  @ApiPropertyOptional({
-    description: 'ID of person, who is sending this (URI)',
-    default: 'rc://8808070000/jozko_mrkvicka',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @IsOptional()
-  recipientId?: string
-
-  @ApiPropertyOptional({
-    description: 'Ginis document id generated after registering the submission',
-    default: 'MAG0X03RZC97',
-  })
-  @IsOptional()
-  @IsString()
-  ginisDocumentId?: string
 }
 
 export class EidSendFormRequestDto {

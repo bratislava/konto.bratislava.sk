@@ -37,7 +37,6 @@ import {
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
-  CreateFormRequestDto,
   EidUpdateSendFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -46,7 +45,6 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
-import { CreateFormResponseDto } from './dtos/responses.dto'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
@@ -130,28 +128,6 @@ export default class NasesController {
       archived: true,
       formId,
     }
-  }
-
-  @ApiOperation({
-    summary: '',
-    description:
-      'Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES',
-  })
-  @ApiOkResponse({
-    description: 'Create form in db',
-    type: CreateFormResponseDto,
-  })
-  @ApiCognitoGuestIdentityIdAuth()
-  @ApiBearerAuth()
-  @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Post('create-form')
-  async createForm(
-    @Body() data: CreateFormRequestDto,
-    @GetUser() user: User,
-  ): Promise<CreateFormResponseDto> {
-    const returnData = await this.nasesService.createForm(data, user)
-    return returnData
   }
 
   @ApiOperation({

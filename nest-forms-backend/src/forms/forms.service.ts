@@ -48,21 +48,6 @@ export default class FormsService {
     this.logger = new LineLoggerSubservice('FormsService')
   }
 
-  async createForm(data: Prisma.FormsUncheckedCreateInput): Promise<Forms> {
-    try {
-      return await this.prisma.forms.create({
-        data,
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'There was an error when creating form.',
-        undefined,
-        error,
-      )
-    }
-  }
-
   async updateForm(id: string, data: FormUpdateBodyDto): Promise<Forms> {
     // Try if this form with such id exists and is not archived
     const form = await this.getUniqueForm(id)

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { FormError, Forms, FormState, Prisma } from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -19,8 +19,7 @@ import {
 } from 'forms-shared/versioning/version-compare'
 import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
 
-import { AuthUser, isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
-import { getUserIco, userToFormOwnerType } from '../auth-v2/utils/user-utils'
+import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
 import FilesService from '../files/files.service'
@@ -41,7 +40,6 @@ import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
-  CreateFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
   GetFormsResponseDto,
@@ -49,7 +47,6 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
-import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
@@ -99,35 +96,6 @@ export default class NasesService {
         return null
       })
     return result
-  }
-
-  async createForm(
-    requestData: CreateFormRequestDto,
-    user: User,
-  ): Promise<CreateFormResponseDto> {
-    const formDefinition = getFormDefinitionBySlug(
-      requestData.formDefinitionSlug,
-    )
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
-      )
-    }
-
-    const data: Prisma.FormsUncheckedCreateInput = {
-      userExternalId: isAuthUser(user) ? user.cognitoJwtPayload.sub : null,
-      cognitoGuestIdentityId: isGuestUser(user) ? user.cognitoIdentityId : null,
-      formDefinitionSlug: requestData.formDefinitionSlug,
-      jsonVersion: formDefinition.jsonVersion,
-      ico: getUserIco(user),
-      ownerType: userToFormOwnerType(user),
-    }
-    const result = await this.formsService.createForm(data)
-
-    return {
-      formId: result.id,
-    }
   }
 
   async getForm(

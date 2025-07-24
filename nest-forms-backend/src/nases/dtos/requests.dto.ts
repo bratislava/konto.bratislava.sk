@@ -48,16 +48,6 @@ export class JwtNasesPayloadDto {
   declare jti: string
 }
 
-export class CreateFormRequestDto {
-  @ApiProperty({
-    description: 'Slug of the form definition',
-    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
-  })
-  @IsNotEmpty()
-  @IsString()
-  declare formDefinitionSlug: string
-}
-
 export class UpdateFormRequestDto {
   // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @ApiPropertyOptional({

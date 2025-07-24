@@ -586,5 +586,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
   },
 ]

@@ -95,8 +95,15 @@ export default class FormsService {
     return formsResult
   }
 
-  async archiveForm(id: string, user: User): Promise<void> {
-    const form = await this.getFormWithAccessCheck(id, user)
+  async archiveForm(formId: string): Promise<void> {
+    const form = await this.getUniqueForm(formId)
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${formId}`,
+      )
+    }
+
     if (!FormsHelper.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
@@ -107,7 +114,7 @@ export default class FormsService {
     try {
       await this.prisma.forms.update({
         where: {
-          id,
+          id: formId,
         },
         data: {
           archived: true,

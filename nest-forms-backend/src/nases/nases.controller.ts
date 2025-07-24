@@ -120,16 +120,15 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Delete(':id')
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Delete(':formId')
   async deleteForm(
-    @Param('id') id: string,
-    @GetUser() user: User,
+    @Param('formId') formId: string,
   ): Promise<FormDeleteResponseDto> {
-    await this.formsService.archiveForm(id, user)
+    await this.formsService.archiveForm(formId)
     return {
       archived: true,
-      formId: id,
+      formId,
     }
   }
 

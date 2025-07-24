@@ -90,13 +90,13 @@ export default class ConvertController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Post('xml-to-json')
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Post('xml-to-json/:formId')
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
-    @GetUser() user: User,
+    @Param('formId') formId: string,
   ): Promise<XmlToJsonResponseDto> {
-    return this.convertService.convertXmlToJson(data, user)
+    return this.convertService.convertXmlToJson(formId, data)
   }
 
   @ApiOperation({

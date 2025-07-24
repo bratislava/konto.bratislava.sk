@@ -177,13 +177,17 @@ export default class ConvertService {
   }
 
   async convertXmlToJson(
+    formId: string,
     data: XmlToJsonRequestDto,
-    user: User,
   ): Promise<XmlToJsonResponseDto> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      data.formId,
-      user,
-    )
+    const form = await this.formsService.getUniqueForm(formId)
+
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {

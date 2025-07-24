@@ -142,14 +142,14 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Post('update-form/:id')
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Post('update-form/:formId')
   async updateForm(
     @Body() data: UpdateFormRequestDto,
-    @Param('id') id: string,
+    @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<Forms> {
-    const returnData = await this.nasesService.updateForm(id, data, user)
+    const returnData = await this.nasesService.updateForm(formId, data, user)
     return returnData
   }
 

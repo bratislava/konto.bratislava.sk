@@ -158,17 +158,6 @@ export default class NasesService {
       )
     }
 
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        'Unauthorized',
-      )
-    }
-
     const data = {
       ...getUserFormFields(user),
       ...requestData,

@@ -1,7 +1,7 @@
 import {
   getTaxAdministratorForUser,
   StrapiTaxAdministrator,
-} from '@backend/utils/tax-administrator'
+} from '@backend/utils/strapi-tax-administrator'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { taxClient } from '@clients/tax'
@@ -23,7 +23,7 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 
 type AccountTaxesFeesPageProps = {
   taxesData: ResponseGetTaxesDto
-  taxAdministrator: StrapiTaxAdministrator | null
+  strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }
@@ -45,7 +45,11 @@ const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
       // TODO: This should be replace with a proper error code (which is not returned)
       error.response?.data?.message === 'Forbidden tier'
     ) {
-      return { isInNoris: false, items: [], taxAdministrator: null } as ResponseGetTaxesDto
+      return {
+        isInNoris: false,
+        items: [],
+        taxAdministrator: null,
+      } as ResponseGetTaxesDto
     }
     throw error
   }
@@ -56,7 +60,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [taxesData, taxAdministrator, strapiTax, accountType] = await Promise.all([
+      const [taxesData, strapiTaxAdministrator, strapiTax, accountType] = await Promise.all([
         getTaxes(fetchAuthSession),
         getTaxAdministratorForUser(amplifyContextSpec),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
@@ -80,7 +84,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
       return {
         props: {
           taxesData,
-          taxAdministrator: taxAdministrator ?? null,
+          strapiTaxAdministrator: strapiTaxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           strapiTax,
           ...(await slovakServerSideTranslations()),
@@ -100,7 +104,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
 const AccountTaxesFeesPage = ({
   taxesData,
-  taxAdministrator,
+  strapiTaxAdministrator,
   strapiTax,
   dehydratedState,
 }: AccountTaxesFeesPageProps) => {
@@ -108,7 +112,10 @@ const AccountTaxesFeesPage = ({
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxFeesSectionProvider taxesData={taxesData} taxAdministrator={taxAdministrator}>
+          <TaxFeesSectionProvider
+            taxesData={taxesData}
+            strapiTaxAdministrator={strapiTaxAdministrator}
+          >
             <TaxesFeesSection />
           </TaxFeesSectionProvider>
         </StrapiTaxProvider>

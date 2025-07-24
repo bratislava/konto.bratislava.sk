@@ -1,19 +1,19 @@
-import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
+import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
 import { ResponseGetTaxesDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 type TaxFeesSectionProviderProps = {
   taxesData: ResponseGetTaxesDto
-  taxAdministrator: StrapiTaxAdministrator | null
+  strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
-const useGetContext = ({ taxesData, taxAdministrator }: TaxFeesSectionProviderProps) => {
+const useGetContext = ({ taxesData, strapiTaxAdministrator }: TaxFeesSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
   return {
     taxesData,
-    taxAdministrator,
+    strapiTaxAdministrator,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
   }

@@ -55,7 +55,7 @@ const getRangeLowercaseStart = (range: string) => range.split('-')[0].toLocaleLo
  * For simplicity, we work with all strings in lowercase.
  */
 function findTaxAdministratorBySurname(
-  taxAdministrators: StrapiTaxAdministrators,
+  strapiTaxAdministrators: StrapiTaxAdministrators,
   surname: string,
 ) {
   /* Context for sorting Slovak strings: https://jazykovaporadna.sme.sk/q/2736/ - it is hard. */
@@ -69,7 +69,7 @@ function findTaxAdministratorBySurname(
    * IB-PA // -1 - the right one
    * A-IA  // -1 - if not reversed, we would return this one
    */
-  const taxAdministratorsSortedReversed = taxAdministrators.toSorted((a, b) =>
+  const taxAdministratorsSortedReversed = strapiTaxAdministrators.toSorted((a, b) =>
     collator.compare(getRangeLowercaseStart(b.range), getRangeLowercaseStart(a.range)),
   )
 

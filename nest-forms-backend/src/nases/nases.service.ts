@@ -30,7 +30,6 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
@@ -70,7 +69,6 @@ export default class NasesService {
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
     private readonly clientsService: ClientsService,
-    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
@@ -198,24 +196,13 @@ export default class NasesService {
     }
   }
 
-  async sendForm(id: string, user: User): Promise<SendFormResponseDto> {
-    const form = await this.formsService.checkFormBeforeSending(id)
+  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
+    const form = await this.formsService.checkFormBeforeSending(formId)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
-    }
-
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
 
@@ -260,7 +247,7 @@ export default class NasesService {
     )
     if (validationResult.errors.length > 0) {
       this.logger.error(
-        `Data for form with id ${id} is invalid: ${JSON.stringify(
+        `Data for form with id ${formId} is invalid: ${JSON.stringify(
           validationResult.errors,
         )}`,
       )
@@ -271,7 +258,9 @@ export default class NasesService {
       )
     }
 
-    this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
+    this.checkAttachments(
+      await this.filesService.areFormAttachmentsReady(formId),
+    )
 
     const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
 
@@ -332,17 +321,6 @@ export default class NasesService {
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
-
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
-      )
-    }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {

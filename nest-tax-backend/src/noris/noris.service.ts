@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionPool, Request } from 'mssql'
+
 import {
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
-} from 'src/admin/dtos/requests.dto'
-
+} from '../admin/dtos/requests.dto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NorisUpdateDto } from './noris.dto'

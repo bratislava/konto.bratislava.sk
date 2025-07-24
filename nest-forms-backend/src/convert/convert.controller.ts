@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Param,
   Post,
   Res,
   StreamableFile,
@@ -19,6 +20,7 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { User, UserType } from '../auth-v2/types/user'
+import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
@@ -50,15 +52,16 @@ export default class ConvertController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Post('json-to-xml-v2')
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Post('json-to-xml-v2/:formId')
   async convertJsonToXmlV2(
     @Body() data: JsonToXmlV2RequestDto,
+    @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<string> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
-      return await this.convertService.convertJsonToXmlV2(data, user)
+      return await this.convertService.convertJsonToXmlV2(formId, data)
     } catch (error) {
       const userId =
         user.type === UserType.Auth
@@ -68,9 +71,9 @@ export default class ConvertController {
         user.type === UserType.Auth ? user.cityAccountUser.email : undefined
 
       this.logger.log(
-        `Error during convertJsonToXmlV2, userId: ${userId}, email: ${email}, formId: ${
-          data.formId
-        }, data: ${JSON.stringify(data.jsonData)}`,
+        `Error during convertJsonToXmlV2, userId: ${userId}, email: ${email}, formId: ${formId}, data: ${JSON.stringify(
+          data.jsonData,
+        )}`,
       )
       throw error
     }

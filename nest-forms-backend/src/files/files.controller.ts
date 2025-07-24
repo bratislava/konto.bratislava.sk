@@ -31,6 +31,10 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { User, UserType } from '../auth-v2/types/user'
+import {
+  FormAccessAllowMigrations,
+  FormAccessGuard,
+} from '../forms-v2/guards/form-access.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BufferedFileDto,
@@ -66,13 +70,13 @@ export default class FilesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
+  @FormAccessAllowMigrations()
+  @UseGuards(UserAuthGuard, FormAccessGuard)
   @Get('forms/:formId')
   getFilesStatusByForm(
     @Param('formId') formId: string,
-    @GetUser() user: User,
   ): Promise<GetFileResponseReducedDto[]> {
-    return this.filesService.getFilesByForm(formId, user)
+    return this.filesService.getFilesByForm(formId)
   }
 
   // patch controller which accepts status updates for file. Add swagger documentation.

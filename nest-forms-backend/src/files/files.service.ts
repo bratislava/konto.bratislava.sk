@@ -131,12 +131,7 @@ export default class FilesService {
     return file
   }
 
-  async getFilesByForm(
-    formId: string,
-    user: User,
-  ): Promise<GetFileResponseReducedDto[]> {
-    await this.formsService.getFormWithAccessCheck(formId, user)
-
+  async getFilesByForm(formId: string): Promise<GetFileResponseReducedDto[]> {
     let files
     try {
       files = await this.prisma.files.findMany({

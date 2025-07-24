@@ -1,11 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import {
-  IsNotEmpty,
-  IsObject,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator'
+import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator'
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 

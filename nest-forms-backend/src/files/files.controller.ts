@@ -28,9 +28,8 @@ import { contentType } from 'mime-types'
 import BasicGuard from '../auth/guards/auth-basic.guard'
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
-import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
-import { User, UserType } from '../auth-v2/types/user'
+import { UserType } from '../auth-v2/types/user'
 import {
   FormAccessAllowMigrations,
   FormAccessGuard,

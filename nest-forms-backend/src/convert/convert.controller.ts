@@ -110,13 +110,13 @@ export default class ConvertController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Post('pdf')
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Post('pdf/:formId')
   async convertToPdf(
     @Res({ passthrough: true }) res: Response,
     @Body() data: ConvertToPdfRequestDto,
-    @GetUser() user: User,
+    @Param('formId') formId: string,
   ): Promise<StreamableFile> {
-    return this.convertService.convertToPdf(data, res, user)
+    return this.convertService.convertToPdf(formId, data, res)
   }
 }

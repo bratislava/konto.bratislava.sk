@@ -365,14 +365,18 @@ export default class ConvertService {
   }
 
   async convertToPdf(
+    formId: string,
     data: ConvertToPdfRequestDto,
     res: Response,
-    user: User,
   ): Promise<StreamableFile> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      data.formId,
-      user,
-    )
+    const form = await this.formsService.getUniqueForm(formId)
+
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -393,7 +397,7 @@ export default class ConvertService {
 
     const file = await this.generatePdf(
       formJsonData,
-      data.formId,
+      formId,
       formDefinition,
       data.clientFiles as ClientFileInfo[],
     )

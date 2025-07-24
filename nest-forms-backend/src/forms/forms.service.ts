@@ -5,12 +5,11 @@ import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtract
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
-import { AuthUser, User } from '../auth-v2/types/user'
+import { AuthUser } from '../auth-v2/types/user'
 import { getUserIco } from '../auth-v2/utils/user-utils'
 // eslint-disable-next-line import/no-cycle
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import { FormAccessService } from '../forms-v2/services/form-access.service'
 import {
   GetFormResponseSimpleDto,
   GetFormsRequestDto,
@@ -43,7 +42,6 @@ export default class FormsService {
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FormsService')
   }
@@ -313,30 +311,6 @@ export default class FormsService {
         `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} Current form state is: ${form.state}.`,
       )
     }
-    return form
-  }
-
-  async getFormWithAccessCheck(formId: string, user: User): Promise<Forms> {
-    const form = await this.getUniqueForm(formId)
-
-    if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
-    }
-
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        FormsErrorsEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
-        FormsErrorsResponseEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
-      )
-    }
-
     return form
   }
 

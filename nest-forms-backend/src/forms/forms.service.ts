@@ -150,9 +150,9 @@ export default class FormsService {
     }
 
     if (form.archived) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        FormsErrorsEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
-        FormsErrorsResponseEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
       )
     }
 

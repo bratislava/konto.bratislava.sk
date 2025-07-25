@@ -1,4 +1,11 @@
-import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Logger,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -11,6 +18,7 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { User, UserType } from '../auth-v2/types/user'
+import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import SignerService from './signer.service'
 
@@ -36,15 +44,16 @@ export default class SignerController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard)
-  @Post('get-signer-data')
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Post('get-signer-data/:formId')
   async getSignerData(
     @Body() data: SignerDataRequestDto,
+    @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SignerDataResponseDto> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
-      return await this.signerService.getSignerData(data, user)
+      return await this.signerService.getSignerData(formId, data)
     } catch (error) {
       const userId =
         user.type === UserType.Auth
@@ -54,9 +63,9 @@ export default class SignerController {
         user.type === UserType.Auth ? user.cityAccountUser.email : undefined
 
       this.logger.log(
-        `Error during getSignerData, userId: ${userId}, email: ${email}, formId: ${
-          data.formId
-        }, data: ${JSON.stringify(data.formDataJson)}`,
+        `Error during getSignerData, userId: ${userId}, email: ${email}, formId: ${formId}, data: ${JSON.stringify(
+          data.formDataJson,
+        )}`,
       )
       throw error
     }

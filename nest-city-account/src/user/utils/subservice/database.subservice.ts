@@ -100,6 +100,10 @@ export class DatabaseSubserviceUser {
       ])
     }
 
+    if (externalId) {
+      await this.bloomreachService.trackCustomer(externalId)
+    }
+
     return prismaExclude(user, ['ifo'])
   }
 

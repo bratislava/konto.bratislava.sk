@@ -6,6 +6,9 @@ export enum CustomErrorTaxTypesEnum {
   INSTALLMENT_INCORRECT_COUNT = 'INSTALLMENT_INCORRECT_COUNT',
   INSTALLMENT_UNEXPECTED_ERROR = 'INSTALLMENT_UNEXPECTED_ERROR',
   STATE_HOLIDAY_NOT_EXISTS = 'STATE_HOLIDAY_NOT_EXISTS',
+  ALREADY_PAID = 'ALREADY_PAID',
+  AFTER_DUE_DATE = 'AFTER_DUE_DATE',
+  BELOW_THRESHOLD = 'BELOW_THRESHOLD',
 }
 
 export enum CustomErrorTaxTypesResponseEnum {
@@ -16,6 +19,9 @@ export enum CustomErrorTaxTypesResponseEnum {
   INSTALLMENT_INCORRECT_COUNT = 'Number of installments does not equal 3.',
   INSTALLMENT_UNEXPECTED_ERROR = 'An unexpected error occurred while calculating installments.',
   STATE_HOLIDAY_NOT_EXISTS = 'State holidays are not configured for this or the next year.',
+  ALREADY_PAID = 'Tax for this year was already paid.',
+  AFTER_DUE_DATE = 'Tax is after due date.',
+  BELOW_THRESHOLD = 'Tax amount is below threshold for installment payments.',
 }
 
 export enum CustomErrorPdfCreateTypesEnum {

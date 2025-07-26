@@ -870,14 +870,6 @@ export class ResponseOneTimePaymentDetailsDto {
   @IsString()
   @IsOptional()
   variableSymbol?: string
-
-  @ApiPropertyOptional({
-    description: 'Link to payment gateway (only when type is ONE_TIME_PAYMENT)',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  paymentGatewayLink?: string
 }
 
 export class ResponseInstallmentItemDto {

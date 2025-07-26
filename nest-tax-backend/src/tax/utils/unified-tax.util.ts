@@ -3,6 +3,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   QrCodeGeneratorDto,
@@ -472,5 +473,147 @@ export const getTaxDetailPure = (options: {
     oneTimePayment,
     installmentPayment,
     itemizedDetail,
+  }
+}
+export const getTaxDetailPureForOneTimeGenerator = (options: {
+  taxId: number
+  overallAmount: number // suma na zaplatenie
+  taxPayments: {
+    amount: number
+    status: PaymentStatus
+  }[]
+}): PaymentGateURLGeneratorDto => {
+  const { taxId, overallAmount, taxPayments } = options
+
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
+    }
+  })
+
+  const overallBalance = Math.max(overallAmount - overallPaid, 0)
+
+  if (overallBalance <= 0) {
+    throw new ThrowerErrorGuard().UnprocessableEntityException(
+      CustomErrorTaxTypesEnum.ALREADY_PAID,
+      CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+    )
+  }
+
+  const description =
+    overallPaid === 0
+      ? `Platba za dane pre BA s id dane ${taxId}`
+      : `Platba zostatku za dane pre BA s id dane ${taxId}`
+
+  return {
+    amount: overallBalance,
+    taxId,
+    description,
+  }
+}
+
+export const getTaxDetailPureForInstallmentGenerator = (options: {
+  taxId: number
+  taxYear: number
+  today: Date
+  overallAmount: number
+  paymentCalendarThreshold: number
+  variableSymbol: string
+  dateOfValidity: Date | null
+  installments: { order: string | null; amount: number }[]
+  specificSymbol: string
+  taxPayments: {
+    amount: number
+    status: PaymentStatus
+  }[]
+}): PaymentGateURLGeneratorDto => {
+  const {
+    taxId,
+    taxYear,
+    today,
+    overallAmount,
+    paymentCalendarThreshold,
+    variableSymbol,
+    dateOfValidity,
+    installments,
+    specificSymbol,
+    taxPayments,
+  } = options
+
+  // Reuse the existing tax detail calculation
+  const taxDetail = getTaxDetailPure({
+    taxYear,
+    today,
+    overallAmount,
+    paymentCalendarThreshold,
+    variableSymbol,
+    dateOfValidity,
+    installments,
+    taxDetails: [], // Not needed for payment generation
+    taxConstructions: 0, // Not needed for payment generation
+    taxFlat: 0, // Not needed for payment generation
+    taxLand: 0, // Not needed for payment generation
+    specificSymbol,
+    taxPayments,
+  })
+
+  // Check if installment payment is possible
+  if (
+    !taxDetail.installmentPayment.isPossible ||
+    !taxDetail.installmentPayment.activeInstallment ||
+    !taxDetail.installmentPayment.installments
+  ) {
+    switch (taxDetail.installmentPayment.reasonNotPossible) {
+      case InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.ALREADY_PAID,
+          CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+        )
+
+      case InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
+          CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
+        )
+
+      case InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
+          CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+        )
+
+      default:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+          CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+        )
+    }
+  }
+
+  // Find the active installment details
+  const activeInstallmentInfo = taxDetail.installmentPayment.installments.find(
+    (installment) =>
+      installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
+      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
+  )
+
+  if (!activeInstallmentInfo) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    )
+  }
+
+  // Create description based on the installment status
+  const description =
+    activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
+      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
+      : `Platba ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
+
+  return {
+    amount: activeInstallmentInfo.remainingAmount,
+    taxId,
+    description,
   }
 }

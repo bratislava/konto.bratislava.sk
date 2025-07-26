@@ -14,7 +14,7 @@ import {
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export type UpvsIdentityByUriServiceCreateManyParam = {
-  physicalEntityId?: string | null | undefined
+  physicalEntityId?: string
   uri: string
 }[]
 

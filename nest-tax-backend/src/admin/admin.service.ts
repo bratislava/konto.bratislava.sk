@@ -134,6 +134,7 @@ export class AdminService {
   async processNorisTaxData(
     norisData: NorisTaxPayersDto[],
     year: number,
+    doNotTrackInBloomreach: boolean,
   ): Promise<string[]> {
     const birthNumbersResult: Set<string> = new Set()
 
@@ -188,6 +189,9 @@ export class AdminService {
               return
             }
 
+            if (doNotTrackInBloomreach) {
+              return
+            }
             const bloomreachTracker =
               await this.bloomreachService.trackEventTax(
                 {
@@ -224,7 +228,7 @@ export class AdminService {
     )
 
     // Add the payments for these added taxes to database
-    await this.updatePaymentsFromNorisWithData(norisData)
+    await this.updatePaymentsFromNorisWithData(norisData, doNotTrackInBloomreach)
 
     return [...birthNumbersResult]
   }
@@ -240,6 +244,7 @@ export class AdminService {
     const birthNumbersResult: string[] = await this.processNorisTaxData(
       norisData,
       data.year,
+      data.doNotTrackInBloomreach
     )
 
     return { birthNumbers: birthNumbersResult }
@@ -518,6 +523,7 @@ export class AdminService {
 
   async updatePaymentsFromNorisWithData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
+    doNotTrackInBloomreach: boolean = false,
   ) {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)

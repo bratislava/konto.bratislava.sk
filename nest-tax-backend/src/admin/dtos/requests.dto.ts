@@ -1,29 +1,56 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
+  ArrayNotEmpty,
+  IsArray, IsBoolean,
   IsDateString,
   IsEmail,
   IsEnum,
   IsNumber,
   IsObject,
   IsOptional,
-  IsString,
+  IsString, Matches,
+  Max,
+  Min, ValidateIf,
   ValidateNested,
 } from 'class-validator'
 
 import { DeliveryMethod } from '../../noris/noris.types'
+import { Transform } from 'class-transformer'
 
 export class RequestPostNorisLoadDataDto {
   @ApiProperty({
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
+  @Min(2020)
+  @Max(new Date().getFullYear() + 1)
   year: number
 
   @ApiProperty({
-    description: 'Birth numbers or ALL',
+    description: 'Birth numbers or the string `All` to process all birth numbers',
     default: ['000000/0000'],
+    oneOf: [
+      { type: 'array', items: { type: 'string', pattern: '^\\d{6}/\\d{3,4}$' } },
+      { type: 'string', enum: ['All'] }
+    ],
   })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateIf((o) => o.birthNumbers !== 'All')
+  @IsString({ each: true })
+  @Matches(/^\d{6}\/\d{4}$/, { each: true, message: 'Birth number must be in format XXXXXX/XXXX' })
   birthNumbers: string[] | 'All'
+
+  @ApiProperty({
+    description: 'Do not track event in Bloomreach',
+    default: false,
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value ?? false)
+  doNotTrackInBloomreach: boolean
 }
 
 export class CreateBirthNumbersRequestDto {

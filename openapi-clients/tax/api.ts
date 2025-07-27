@@ -164,12 +164,25 @@ export interface RequestPostNorisLoadDataDto {
    */
   year: number
   /**
-   * Birth numbers or ALL
-   * @type {object}
+   *
+   * @type {RequestPostNorisLoadDataDtoBirthNumbers}
    * @memberof RequestPostNorisLoadDataDto
    */
-  birthNumbers: object
+  birthNumbers: RequestPostNorisLoadDataDtoBirthNumbers
+  /**
+   * Do not track event in Bloomreach
+   * @type {boolean}
+   * @memberof RequestPostNorisLoadDataDto
+   */
+  doNotTrackInBloomreach?: boolean
 }
+/**
+ * @type RequestPostNorisLoadDataDtoBirthNumbers
+ * Birth numbers or the string `All` to process all birth numbers
+ * @export
+ */
+export type RequestPostNorisLoadDataDtoBirthNumbers = Array<string> | string
+
 /**
  *
  * @export
@@ -218,7 +231,7 @@ export interface RequestPostReportingSendReport {
    * @type {Array<string>}
    * @memberof RequestPostReportingSendReport
    */
-  email: Array<string>
+  emailRecipients: Array<string>
 }
 /**
  *

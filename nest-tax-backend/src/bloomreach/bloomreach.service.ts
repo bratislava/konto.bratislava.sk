@@ -69,6 +69,14 @@ export class BloomreachService {
     return true
   }
 
+  /**
+   * sends an email with thanks and info about status of the tax after payment (if partial or full).
+   *
+   * NOTE: May not work if `trackEventTax` was not yet tracked for the given cognitoId
+   *
+   * @param taxPaymentData
+   * @param cognitoId
+   */
   async trackEventTaxPayment(
     taxPaymentData: TaxPaymentBloomreachDataDto,
     cognitoId?: string,
@@ -84,6 +92,12 @@ export class BloomreachService {
     return pushEventResult
   }
 
+  /**
+   * sends and email about tax being loaded into our
+   *
+   * @param taxData
+   * @param cognitoId
+   */
   async trackEventTax(
     taxData: TaxBloomreachDataDto,
     cognitoId?: string,

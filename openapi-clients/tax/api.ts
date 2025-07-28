@@ -47,6 +47,54 @@ export interface CreateBirthNumbersResponseDto {
   birthNumbers: Array<string>
 }
 /**
+ *
+ * @export
+ * @interface DeliveryMethodActiveAndLockedDtoClass
+ */
+export interface DeliveryMethodActiveAndLockedDtoClass {
+  /**
+   * Active delivery method
+   * @type {DeliveryMethodDtoClass}
+   * @memberof DeliveryMethodActiveAndLockedDtoClass
+   */
+  active: DeliveryMethodDtoClass
+  /**
+   * Delivery method at lock date this year.
+   * @type {DeliveryMethodDtoClass}
+   * @memberof DeliveryMethodActiveAndLockedDtoClass
+   */
+  locked?: DeliveryMethodDtoClass
+}
+/**
+ *
+ * @export
+ * @interface DeliveryMethodDtoClass
+ */
+export interface DeliveryMethodDtoClass {
+  /**
+   * Delivery method
+   * @type {string}
+   * @memberof DeliveryMethodDtoClass
+   */
+  deliveryMethod: DeliveryMethodDtoClassDeliveryMethodEnum
+  /**
+   * Date (required for CITY_ACCOUNT method)
+   * @type {string}
+   * @memberof DeliveryMethodDtoClass
+   */
+  date?: string
+}
+
+export const DeliveryMethodDtoClassDeliveryMethodEnum = {
+  Edesk: 'EDESK',
+  CityAccount: 'CITY_ACCOUNT',
+  Postal: 'POSTAL',
+} as const
+
+export type DeliveryMethodDtoClassDeliveryMethodEnum =
+  (typeof DeliveryMethodDtoClassDeliveryMethodEnum)[keyof typeof DeliveryMethodDtoClassDeliveryMethodEnum]
+
+/**
  * delivery_method
  * @export
  * @enum {string}
@@ -218,7 +266,7 @@ export interface RequestPostReportingSendReport {
    * @type {Array<string>}
    * @memberof RequestPostReportingSendReport
    */
-  email: Array<string>
+  emailRecipients: Array<string>
 }
 /**
  *
@@ -1069,6 +1117,12 @@ export interface ResponseTaxSummaryDetailDto {
    * @memberof ResponseTaxSummaryDetailDto
    */
   taxAdministrator: ResponseTaxAdministratorDto | null
+  /**
+   * Delivery methods bot locked and latest.
+   * @type {DeliveryMethodActiveAndLockedDtoClass}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  deliveryMethod: DeliveryMethodActiveAndLockedDtoClass | null
 }
 /**
  * Type of tax detail - object of tax

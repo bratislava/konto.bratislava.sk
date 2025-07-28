@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, UpvsIdentityByUri } from '@prisma/client'
+import { PhysicalEntity, Prisma, UpvsIdentityByUri } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 
@@ -8,6 +8,7 @@ import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/d
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
 import {
+  UpvsCreateManyResult,
   UpvsIdentityByUriService,
   UpvsIdentityByUriServiceCreateManyParam,
 } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
@@ -20,7 +21,7 @@ import { MagproxyService } from '../magproxy/magproxy.service'
 export type UpdateFromRFOResult = {
   physicalEntity: PhysicalEntity
   rfoData: RfoIdentityList | null
-  upvsInput?: Array<{ uri: string; physicalEntityId: string }>
+  upvsInput?: { uri: string; physicalEntityId: string }
   upvsResult?: UpvsIdentityByUri
 }
 
@@ -96,48 +97,47 @@ export class PhysicalEntityService {
     return entity
   }
 
-  async updateUriAndEdeskFromUpvs(upvsInput: UpvsIdentityByUriServiceCreateManyParam) {
-    let upvsResult: {
-      success: UpvsIdentityByUri[]
-      failed: { physicalEntityId?: string; uri: string }[]
-    } | null = null
+  async checkUriAndUpdateEdeskFromUpvs(
+    upvsInput: UpvsIdentityByUriServiceCreateManyParam
+  ): Promise<{
+    updatedEntities: PhysicalEntity[]
+    upvsResult: UpvsCreateManyResult
+  }> {
+    let upvsResult: UpvsCreateManyResult | null = null
     try {
       upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
     } catch (error) {
       this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
     }
     if (!upvsResult) {
-      return {}
+      await this.updateFailedActiveEdeskUpdateInDatabase({
+        uri: { in: upvsInput.map((item) => item.uri) },
+      })
+      return { updatedEntities: [], upvsResult: { success: [], failed: upvsInput } }
     }
 
-    if (upvsResult.success.length > 1) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        `Multiple successful UPVS results for uri input ${JSON.stringify(
-          upvsInput
-        )}, this shouldn't be possible`
-      )
-    }
-    if (upvsResult.success.length === 0) {
-      this.logger.error(
-        `No successful UPVS results for uri input ${JSON.stringify(
-          upvsInput
-        )}, requires manual intervention`
-      )
-      return {}
+    if (upvsResult.failed.length > 0) {
+      await this.updateFailedActiveEdeskUpdateInDatabase({
+        uri: { in: upvsResult.failed.map((item) => item.uri) },
+      })
     }
 
-    const upvsSuccessValue = upvsResult.success[0]
-
-    const updatedEntity = await this.update({
-      id: upvsSuccessValue.physicalEntityId ?? undefined,
-      uri: upvsSuccessValue.uri,
-      activeEdesk: (upvsSuccessValue.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
+    const upvsSuccessValueArray = upvsResult.success.map((item) => {
+      return {
+        id: item.physicalEntityId ?? undefined,
+        uri: item.uri,
+        activeEdesk: (item.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
+      }
     })
 
-    this.logger.log(`Successfully verified uri input ${JSON.stringify(upvsInput)}`)
-    return { updatedEntity, upvsResult: upvsSuccessValue }
+    const updatedEntities: PhysicalEntity[] = await Promise.all(
+      upvsSuccessValueArray.map(async (item) => {
+        return this.update(item)
+      })
+    )
+
+    this.logger.log(`Successfully verified uri.`, upvsResult)
+    return { updatedEntities, upvsResult }
   }
 
   private parseRfoDataToUpvsInput(singleRfoRecord: RfoIdentityListElement, entity: PhysicalEntity) {
@@ -154,7 +154,7 @@ export class PhysicalEntityService {
     const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
     const uri = `rc://sk/${processedBirthNumber}_${uriName}`
     this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
-    return [{ uri, physicalEntityId: entity.id }]
+    return { uri, physicalEntityId: entity.id }
   }
 
   async createFromBirthNumber(birthNumber: string) {
@@ -194,7 +194,7 @@ export class PhysicalEntityService {
       return rfoData
     }
 
-    await this.updateUriAndEdeskFromUpvs(upvsInput)
+    await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
     return rfoData
   }
 
@@ -250,14 +250,45 @@ export class PhysicalEntityService {
       }
     }
 
-    const { updatedEntity, upvsResult } = await this.updateUriAndEdeskFromUpvs(upvsInput)
+    const { updatedEntities, upvsResult } = await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
+
+    const updatedPhysicalEntity = updatedEntities.find(
+      (updatedEntity) => updatedEntity.id === physicalEntityId
+    )
+    const upvsResultSingle = upvsResult.success.find(
+      (result) => result.physicalEntityId === physicalEntityId
+    )
 
     return {
-      physicalEntity: updatedEntity ?? entity,
+      physicalEntity: updatedPhysicalEntity ?? entity,
       rfoData,
       upvsInput,
-      upvsResult,
+      upvsResult: upvsResultSingle,
     }
+  }
+
+  async updateEdeskFromUpvs(where: Prisma.PhysicalEntityWhereInput) {
+    const entities = await this.prismaService.physicalEntity.findMany({
+      where,
+    })
+
+    const upvsInput: UpvsIdentityByUriServiceCreateManyParam = entities
+      .filter((entity) => entity.uri)
+      .map((entity) => {
+        return { id: entity.id, uri: entity.uri! }
+      })
+
+    await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)
+  }
+
+  async updateFailedActiveEdeskUpdateInDatabase(where: Prisma.PhysicalEntityWhereInput) {
+    await this.prismaService.physicalEntity.updateMany({
+      where,
+      data: {
+        activeEdeskUpdateFailedAt: new Date(),
+        activeEdeskUpdateFailCount: { increment: 1 },
+      },
+    })
   }
 
   // TODO either change or cleanup and use db directly
@@ -268,9 +299,21 @@ export class PhysicalEntityService {
         'PhysicalEntity id must be provided to update service'
       )
     }
+
+    // if activeEdesk is being updated, delete metadata about failed updates
+    let dataWithEdeskMetadata: Partial<PhysicalEntity> = data
+    if (data.activeEdesk !== null && data.activeEdesk !== undefined) {
+      dataWithEdeskMetadata = {
+        ...data,
+        activeEdeskUpdateFailedAt: null,
+        activeEdeskUpdateFailCount: 0,
+        activeEdeskUpdatedAt: new Date(),
+      }
+    }
+
     const physicalEntity = await this.prismaService.physicalEntity.update({
       where: { id: data.id },
-      data,
+      data: dataWithEdeskMetadata,
     })
     return physicalEntity
   }

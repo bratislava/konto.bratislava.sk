@@ -84,18 +84,6 @@ $$
              ) delivery_data
         WHERE u.id = delivery_data.id_user;
 
-        -- Get update count and log results
-        GET DIAGNOSTICS updated_count = ROW_COUNT;
-
-        RAISE NOTICE 'Migration completed successfully:';
-        RAISE NOTICE '  - Updated % users with delivery methods', updated_count;
-        RAISE NOTICE '  - City Account users: %',
-            (SELECT COUNT(*) FROM "User" WHERE "taxDeliveryMethodAtLockDate" = 'CITY_ACCOUNT');
-        RAISE NOTICE '  - E-Desk users: %',
-            (SELECT COUNT(*) FROM "User" WHERE "taxDeliveryMethodAtLockDate" = 'EDESK');
-        RAISE NOTICE '  - Postal users: %',
-            (SELECT COUNT(*) FROM "User" WHERE "taxDeliveryMethodAtLockDate" = 'POSTAL');
-
         -- Cleanup
         DROP TABLE temp_delivery_data;
     END

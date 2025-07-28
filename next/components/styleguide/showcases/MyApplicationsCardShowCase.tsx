@@ -104,15 +104,6 @@ const MyApplicationsCardShowCase = () => {
             }}
             formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
-          Sent (progress - SENDING_TO_NASES)
-          <MyApplicationsCard
-            variant="SENT"
-            form={getDummyData('SENDING_TO_NASES', 'NONE')}
-            refreshListData={async (): Promise<[void, boolean]> => {
-              return [undefined, false]
-            }}
-            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          />
           PROCESSING
           <MyApplicationsCard
             variant="SENT"

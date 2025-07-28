@@ -48,6 +48,7 @@
     "@internationalized/date": "3.8.2",
     "@jest/globals": "^30.0.4",
     "@monaco-editor/react": "^4.7.0",
+    "@next/third-parties": "15.4.1",
     "@radix-ui/react-dropdown-menu": "2.1.15",
     "@radix-ui/react-navigation-menu": "1.2.13",
     "@react-aria/utils": "3.29.1",

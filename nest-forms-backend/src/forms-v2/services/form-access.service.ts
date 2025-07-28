@@ -46,6 +46,7 @@ export class FormAccessService {
       where: { id: formId },
       select: {
         id: true,
+        formDefinitionSlug: true,
         userExternalId: true,
         cognitoGuestIdentityId: true,
         ico: true,
@@ -66,7 +67,11 @@ export class FormAccessService {
   async checkAccessByInstance(
     form: Pick<
       Forms,
-      'id' | 'userExternalId' | 'cognitoGuestIdentityId' | 'ico'
+      | 'id'
+      | 'formDefinitionSlug'
+      | 'userExternalId'
+      | 'cognitoGuestIdentityId'
+      | 'ico'
     >,
     user: User,
     options: FormAccessOptions = {},
@@ -122,14 +127,19 @@ export class FormAccessService {
   }
 
   private hasGuestIdentityAccess(
-    form: Pick<Forms, 'cognitoGuestIdentityId'>,
+    form: Pick<Forms, 'cognitoGuestIdentityId' | 'formDefinitionSlug'>,
     user: User,
   ): boolean {
     if (!form.cognitoGuestIdentityId || !isGuestUser(user)) {
       return false
     }
 
-    return form.cognitoGuestIdentityId === user.cognitoIdentityId
+    // Very special case for embedded (OLO) forms, in modern browsers, iframes cannot persist 3rd
+    // party cookies. It causes that on each page load a guest identity is assigned to the user.
+    // TODO: Remove ASAP as OLO forms are not embedded anymore!
+    const isOloForm = form.formDefinitionSlug.startsWith('olo')
+
+    return isOloForm || form.cognitoGuestIdentityId === user.cognitoIdentityId
   }
 
   private async hasMigrationAccess(

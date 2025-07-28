@@ -79,7 +79,7 @@ Stavy `RUNNING_*` boli potrebné z historických dôvodov, lebo všetky operáci
 ### Kontrola stavu
 
 1. Kontrolovať [metabase Forms dashboarde](https://metabase.bratislava.sk/dashboard/11-forms-dashboard?date_filter=past7days), `#metabase-forms` v Slacku, alebo priamo databázu.
-2. Sledovať hlavné stavy `DELIVERED_GINIS`, `SENDING_TO_SHAREPOINT`, v prípade daní `SENDING_TO_NASES`.
+2. Sledovať hlavné stavy `DELIVERED_GINIS`, `SENDING_TO_SHAREPOINT`, v prípade daní `QUEUED`.
 3. Sledovať Ginis stav `RUNNING_REGISTER` (hlavný stav `DELIVERED_NASES`) - prípustné trvanie je cca do 3 hodín.
 4. Sledovať `ERROR` stavy, aj ak sú len `DRAFT` formuláre (najmä pri dani z nehnuteľnosti).
 

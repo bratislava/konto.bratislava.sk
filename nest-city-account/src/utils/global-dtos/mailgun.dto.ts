@@ -1,4 +1,4 @@
-import { MAILGUN } from '../../user-verification/constats'
+import { MAILGUN } from '../../user-verification/constants'
 
 interface RegistrationSuccessfulMailgunParams {
   to: string

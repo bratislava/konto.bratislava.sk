@@ -305,6 +305,10 @@ export class GetFormResponseDto {
   @IsNotEmpty()
   @IsString()
   declare jsonVersion: string
+
+  @ApiProperty()
+  @IsBoolean()
+  declare requiresMigration: boolean
 }
 
 export class GetFormResponseSimpleDto {

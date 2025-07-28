@@ -4,7 +4,7 @@ import {
   UserVerifyStateTypeEnum,
 } from 'openapi-clients/city-account'
 
-import { isAuthUser, User } from '../types/user'
+import { AuthUser, isAuthUser, User } from '../types/user'
 
 const tierVerifiedMap = {
   [UserVerifyStateCognitoTierEnum.Eid]: true,
@@ -14,11 +14,7 @@ const tierVerifiedMap = {
   [UserVerifyStateCognitoTierEnum.New]: false,
 } satisfies Record<UserVerifyStateCognitoTierEnum, boolean>
 
-export function isUserVerified(user: User) {
-  if (!isAuthUser(user)) {
-    return false
-  }
-
+export function isUserVerified(user: AuthUser) {
   const tier = user.cognitoUser.userAttributes['custom:tier']
   if (!tier) {
     return false

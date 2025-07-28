@@ -80,6 +80,7 @@ export class DatabaseSubserviceUser {
             subType: GdprSubType.SUB,
           },
         ])
+        await this.bloomreachService.trackCustomer(externalId)
       } else if (user.email != email) {
         const oldEmail = user.email
         user = await this.prisma.user.update({
@@ -111,6 +112,9 @@ export class DatabaseSubserviceUser {
           subType: GdprSubType.SUB,
         },
       ])
+      if (externalId) {
+        await this.bloomreachService.trackCustomer(externalId)
+      }
     }
 
     return prismaExclude(user, ['ifo'])

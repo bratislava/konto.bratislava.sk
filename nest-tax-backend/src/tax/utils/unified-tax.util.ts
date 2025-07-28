@@ -41,6 +41,12 @@ const createHolidayYear = (year: number, dateStrings: string[]) => ({
 
 
 export const stateHolidays = [
+  // Historical years - empty holiday arrays maintained for tax detail retrieval compatibility
+  ...[2020, 2021, 2022, 2023, 2024]
+    .map(year => ({
+      year,
+      dates: [],
+    })),
   createHolidayYear(2025, [
     '2025-01-01',
     '2025-01-06',

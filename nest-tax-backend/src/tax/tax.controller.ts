@@ -1,7 +1,8 @@
 import {
   Controller,
   Get,
-  HttpCode, ParseIntPipe,
+  HttpCode,
+  ParseIntPipe,
   Query,
   Res,
   UseGuards,

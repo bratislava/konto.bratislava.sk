@@ -136,7 +136,7 @@ export class BloomreachService {
     await axios
       .post(
         `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
-        JSON.stringify({
+        {
           customer_ids: {
             city_account_id: cognitoId,
           },
@@ -144,7 +144,7 @@ export class BloomreachService {
             ...data,
           },
           event_type: eventName,
-        }),
+        },
         {
           headers: {
             Authorization: `Basic ${this.bloomreachCredentials}`,
@@ -167,18 +167,19 @@ export class BloomreachService {
       this.logger.error(
         `No externalId for ${userType} with id: ${userId} has no externalId, skipping trackEventConsents`
       )
-    } else {
-      this.logger.log(`Tracking ${gdprData.length} events for ${userType} with id: ${cognitoId}`)
-      await Promise.allSettled(
-        gdprData.map((elem) =>
-          this.trackEvent(
-            this.createBloomreachConsentCategory(elem.category, elem.type, elem.subType),
-            cognitoId,
-            BloomreachEventNameEnum.CONSENT
-          )
+      return
+    }
+
+    this.logger.log(`Tracking ${gdprData.length} events for ${userType} with id: ${cognitoId}`)
+    await Promise.allSettled(
+      gdprData.map((elem) =>
+        this.trackEvent(
+          this.createBloomreachConsentCategory(elem.category, elem.type, elem.subType),
+          cognitoId,
+          BloomreachEventNameEnum.CONSENT
         )
       )
-    }
+    )
   }
 
   /**

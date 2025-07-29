@@ -11,7 +11,7 @@ import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 @Module({
   imports: [PassportModule, PrismaModule, BloomreachModule],
   providers: [UserService, DatabaseSubserviceUser, ThrowerErrorGuard],
-  exports: [],
+  exports: [UserService],
   controllers: [UserController],
 })
 export class UserModule {}

@@ -82,4 +82,25 @@ export class CityAccountSubservice {
 
     return result
   }
+
+  async getDeliveryMethod(
+    birthNumber: string,
+  ) {
+    const birthNumberWithoutSlash = birthNumber.replace('/', '')
+    try {
+      const data =
+        await this.clientsService.cityAccountApi.adminControllerGetDeliveryMethod(
+          birthNumberWithoutSlash,
+          {
+            headers: {
+              apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+            },
+          },
+        )
+      return data.data
+    } catch (error) {
+      this.logger.error("Error getting delivery method for user: " + birthNumber, error)
+    }
+    return null
+  }
 }

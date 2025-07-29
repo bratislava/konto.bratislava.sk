@@ -12,6 +12,7 @@ import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
 import { AdminCronSubservice } from './subservices/admin-cron.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
+import { UserModule } from '../user/user.module'
 import ClientsModule from '../clients/clients.module'
 
 @Module({
@@ -21,6 +22,7 @@ import ClientsModule from '../clients/clients.module'
     UpvsIdentityByUriModule,
     PhysicalEntityModule,
     BloomreachModule,
+    UserModule,
     ClientsModule,
   ],
   providers: [

@@ -20,6 +20,12 @@ import {
   ValidateNested,
 } from 'class-validator'
 
+import {
+  DeliveryMethodActiveAndLockedDto,
+  DeliveryMethodDto,
+  DeliveryMethodDtoDeliveryMethodEnum,
+} from 'openapi-clients/city-account'
+
 export enum TaxDetailTypeEnum {
   APARTMENT = 'APARTMENT',
   CONSTRUCTION = 'CONSTRUCTION',
@@ -987,6 +993,47 @@ export class ResponseInstallmentPaymentDetailDto {
   activeInstallment?: ResponseActiveInstallmentDto
 }
 
+export class DeliveryMethodDtoClass implements DeliveryMethodDto {
+  @ApiProperty({
+    enum: ['EDESK', 'CITY_ACCOUNT', 'POSTAL'],
+    description: 'Delivery method',
+  })
+  @IsString()
+  deliveryMethod: DeliveryMethodDtoDeliveryMethodEnum
+
+  @ApiProperty({
+    required: false,
+    description: 'Date (required for CITY_ACCOUNT method)',
+  })
+  @IsOptional()
+  @IsString()
+  date?: string
+}
+
+export class DeliveryMethodActiveAndLockedDtoClass
+  implements DeliveryMethodActiveAndLockedDto
+{
+  @ApiProperty({
+    type: DeliveryMethodDtoClass,
+    description: 'Active delivery method',
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => DeliveryMethodDtoClass)
+  active: DeliveryMethodDto
+
+  @ApiProperty({
+    type: DeliveryMethodDtoClass,
+    required: false,
+    description: 'Delivery method at lock date this year.',
+  })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => DeliveryMethodDtoClass)
+  locked?: DeliveryMethodDto
+}
+
 export class ResponseTaxSummaryDetailDto {
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()
@@ -1040,4 +1087,13 @@ export class ResponseTaxSummaryDetailDto {
   @Type(() => ResponseTaxAdministratorDto)
   @IsOptional()
   taxAdministrator: ResponseTaxAdministratorDto | null
+
+  @ApiProperty({
+    description: 'Delivery methods bot locked and latest.',
+    type: DeliveryMethodActiveAndLockedDtoClass,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => DeliveryMethodActiveAndLockedDtoClass)
+  deliveryMethod: DeliveryMethodActiveAndLockedDtoClass | null
 }

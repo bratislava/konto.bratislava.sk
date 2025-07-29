@@ -20,6 +20,7 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { DeliveryMethodActiveAndLockedDto } from './dtos/deliveryMethod.dto'
 
 @Injectable()
 export class UserService {
@@ -261,5 +262,11 @@ export class UserService {
         error
       )
     }
+  }
+
+  async getDeliveryMethodsWithDateByBirthNumber(
+    birthNumber: string
+  ): Promise<DeliveryMethodActiveAndLockedDto> {
+    return this.databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates({ birthNumber })
   }
 }

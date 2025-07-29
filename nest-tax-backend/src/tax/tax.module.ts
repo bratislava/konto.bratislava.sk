@@ -10,6 +10,7 @@ import { PaymentModule } from '../payment/payment.module'
 import { TaxController } from './tax.controller'
 import { TaxService } from './tax.service'
 import { TaxControllerV2 } from './tax.v2.controller'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 
 @Module({
   imports: [PrismaModule, PaymentModule, ClientsModule, UserInfoPipeModule],
@@ -18,6 +19,7 @@ import { TaxControllerV2 } from './tax.v2.controller'
     CognitoSubservice,
     ThrowerErrorGuard,
     QrCodeSubservice,
+    CityAccountSubservice,
   ],
   exports: [TaxService],
   controllers: [TaxController, TaxControllerV2],

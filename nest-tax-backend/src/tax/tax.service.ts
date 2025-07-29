@@ -27,6 +27,7 @@ import {
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 import { getTaxDetailPure } from './utils/unified-tax.util'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 
 const paymentCalendarThreshold = 6600
 
@@ -39,6 +40,7 @@ export class TaxService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
     private readonly paymentService: PaymentService,
+    private readonly cityAccountSubservice: CityAccountSubservice,
   ) {}
 
   private async fetchTaxData(birthNumber: string, year: number) {
@@ -293,11 +295,14 @@ export class TaxService {
 
     const { taxAdministrator } = tax.taxPayer
 
+    const deliveryMethod = await this.cityAccountSubservice.getDeliveryMethod(birthNumber)
+
     return {
       ...detailWithoutQrCode,
       oneTimePayment,
       installmentPayment,
       taxAdministrator,
+      deliveryMethod,
     }
   }
 }

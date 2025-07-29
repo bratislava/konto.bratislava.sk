@@ -99,10 +99,14 @@ export class UserService {
       user.id,
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
-    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-    // If there is error it isn't blocker for futher process.
-    // TODO Data will be also uploaded from database to bloomreach every day.
-    this.bloomreachService.trackEventConsent(gdprSubType, gdprData, user.externalId)
+
+    await this.bloomreachService.trackEventConsents(
+      gdprData.map((elem) => ({ ...elem, subType: gdprSubType })),
+      user.externalId,
+      user.id,
+      false
+    )
+
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
@@ -141,10 +145,13 @@ export class UserService {
       user.id,
       data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB }))
     )
-    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-    // If there is error it isn't blocker for futher process.
-    // TODO Data will be also uploaded from database to bloomreach every day.
-    this.bloomreachService.trackEventConsent(GdprSubType.SUB, data.gdprData, user.externalId)
+
+    await this.bloomreachService.trackEventConsents(
+      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB })),
+      user.externalId,
+      user.id,
+      false
+    )
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
@@ -175,10 +182,14 @@ export class UserService {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
-    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-    // If there is error it isn't blocker for futher process.
-    // TODO Data will be also uploaded from database to bloomreach every day.
-    this.bloomreachService.trackEventConsent(GdprSubType.UNSUB, gdprData, user.externalId)
+
+    await this.bloomreachService.trackEventConsents(
+      gdprData.map((elem) => ({ ...elem, subType: GdprSubType.UNSUB })),
+      user.externalId,
+      user.id,
+      false
+    )
+
     return { id: id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
   }
 

@@ -36,6 +36,10 @@ export class GdprDataDto {
 }
 
 export class GdprDataSubscriptionDto extends GdprDataDto {
+  @ApiProperty({
+    description: 'Type of subType - unsubscribe or subscribe',
+    default: 'unsubscribe',
+  })
   subType!: GdprSubType
 }
 

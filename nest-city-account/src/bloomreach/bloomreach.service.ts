@@ -133,7 +133,7 @@ export class BloomreachService {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return
     }
-    const eventResponse = await axios
+    await axios
       .post(
         `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
         JSON.stringify({
@@ -152,12 +152,8 @@ export class BloomreachService {
         }
       )
       .catch((error) => {
-        this.logger.error(error)
-        throw error
+        this.logger.error(error, { alert: 1 })
       })
-    if (eventResponse.status != 200) {
-      this.logger.error(`Write event ${eventName} to bloomreach error for user: ${cognitoId}`)
-    }
   }
 
   async trackEventConsents(
@@ -166,14 +162,13 @@ export class BloomreachService {
     userId: string,
     isLegalPerson: boolean
   ) {
+    const userType = isLegalPerson ? 'legal person' : 'user'
     if (!cognitoId) {
-      if (isLegalPerson) {
-        this.logger.error(`Legal person ${userId} has no externalId, skipping trackEventConsents`)
-      } else {
-        this.logger.error(`User ${userId} has no externalId, skipping trackEventConsents`)
-      }
+      this.logger.error(
+        `No externalId for ${userType} with id: ${userId} has no externalId, skipping trackEventConsents`
+      )
     } else {
-      this.logger.log(`Tracking ${gdprData.length} events for legalPerson "${cognitoId}"`)
+      this.logger.log(`Tracking ${gdprData.length} events for ${userType} with id: ${cognitoId}`)
       await Promise.allSettled(
         gdprData.map((elem) =>
           this.trackEvent(

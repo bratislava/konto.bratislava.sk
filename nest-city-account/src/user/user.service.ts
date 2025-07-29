@@ -20,20 +20,15 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class UserService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private databaseSubservice: DatabaseSubserviceUser,
     private prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
     private bloomreachService: BloomreachService
-  ) {
-    this.logger = new LineLoggerSubservice(UserService.name)
-  }
+  ) {}
 
   private verificationDeadline(verificationDate: Date | null): boolean {
     const verificationDeadlineDate = getTaxDeadlineDate()

@@ -1,13 +1,19 @@
+import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
+import {
+  AuthFixtureUser,
+  UserFixtureFactory,
+} from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
+import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { GetFormsRequestDto } from '../nases/dtos/requests.dto'
 import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
@@ -34,6 +40,13 @@ jest.mock('../form-validator-registry/form-validator-registry.service')
 
 describe('FormsService', () => {
   let service: FormsService
+  let userFixtureFactory: UserFixtureFactory
+  let authUser: AuthFixtureUser
+
+  beforeAll(() => {
+    userFixtureFactory = new UserFixtureFactory()
+    authUser = userFixtureFactory.createFoAuthUser()
+  })
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
@@ -50,6 +63,10 @@ describe('FormsService', () => {
         ConfigService,
         FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
+        {
+          provide: FormAccessService,
+          useValue: createMock<FormAccessService>(),
+        },
       ],
     }).compile()
 
@@ -71,7 +88,7 @@ describe('FormsService', () => {
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
       prismaMock.forms.count.mockResolvedValue(63)
-      prismaMock.forms.groupBy = jest.fn().mockResolvedValue([])
+      prismaMock.forms.groupBy.mockResolvedValue([])
       Object.defineProperty(prismaMock.forms, 'fields', {
         value: { createdAt: 'createdAtMock' },
       })
@@ -81,9 +98,7 @@ describe('FormsService', () => {
         pagination: '20',
         states: [FormState.DRAFT, FormState.PROCESSING],
       }
-      const userExternalId = 'userId'
-
-      const result = await service.getForms(query, userExternalId, null)
+      const result = await service.getForms(query, authUser.user)
 
       expect(spy).toHaveBeenCalledWith({
         select: {
@@ -97,7 +112,7 @@ describe('FormsService', () => {
         },
         where: {
           archived: false,
-          userExternalId: 'userId',
+          userExternalId: authUser.sub,
           formDataJson: {
             not: {
               equals: null,
@@ -168,7 +183,7 @@ describe('FormsService', () => {
 
   describe('getFormsCount', () => {
     it('should return all 0 if there is no record in database', async () => {
-      prismaMock.forms.groupBy = jest.fn().mockResolvedValue([])
+      prismaMock.forms.groupBy.mockResolvedValue([])
       const result = await service.getFormsCount({})
       Object.values(FormState).forEach((state) => {
         expect(result[state]).toBe(0)
@@ -176,14 +191,14 @@ describe('FormsService', () => {
     })
 
     it('should return correct count otherwise', async () => {
-      prismaMock.forms.groupBy = jest.fn().mockResolvedValue([
+      prismaMock.forms.groupBy.mockResolvedValue([
         {
           _count: {
             _all: 10,
           },
-          state: 'DRAFT',
+          state: FormState.DRAFT,
         },
-      ])
+      ] as any)
       const result = await service.getFormsCount({})
       Object.values(FormState).forEach((state) => {
         if (state === FormState.DRAFT) {

@@ -1,3 +1,4 @@
+import { cityAccountClient } from '@clients/city-account'
 import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
@@ -55,6 +56,9 @@ const LoginPage = () => {
         // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
         removeAmplifyGuestIdentityIdCookies()
         await prepareFormMigration()
+        // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
+        // there might be some cases where user is not there yet.
+        await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
         await redirect()
         return
       }

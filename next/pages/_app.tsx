@@ -4,6 +4,7 @@ import './index.css'
 import '../frontend/utils/amplifyConfig'
 import 'react-loading-skeleton/dist/skeleton.css'
 
+import { GoogleTagManager } from '@next/third-parties/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
@@ -20,6 +21,7 @@ import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { useEffectOnce } from 'usehooks-ts'
 
+import { environment } from '../environment'
 import { removeAllCookiesAndClearLocalStorage } from '../frontend/utils/amplifyClient'
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
@@ -99,6 +101,13 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
           }
         `}</style>
       </Head>
+      {environment.gtmId ? (
+        <GoogleTagManager
+          gtmId={environment.gtmId}
+          auth={environment.gtmAuth}
+          preview={environment.gtmPreview}
+        />
+      ) : null}
 
       <AmplifyClientProvider>
         <I18nProvider locale="sk-SK">

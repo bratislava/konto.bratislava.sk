@@ -244,7 +244,7 @@ export class CardPaymentReportingService {
     return head + body + footer
   }
 
-  async generateAndSendPaymentReport(email: string, from?: Date) {
+  async generateAndSendPaymentReport(emailRecipients: string[], from?: Date) {
     const sftpFiles = await this.sftpFileSubservice.getNewFiles(from)
 
     const hundredEightyDaysAgo = dayjs().subtract(180, 'day')
@@ -333,7 +333,7 @@ export class CardPaymentReportingService {
         : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
-      [email],
+      emailRecipients,
       'Report platieb kartou',
       message,
       attachments,

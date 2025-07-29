@@ -65,6 +65,7 @@ export default class EmailSubservice {
 
       this.logger.log(
         `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`,
+        { emailOptions },
       )
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(

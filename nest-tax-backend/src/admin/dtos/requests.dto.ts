@@ -222,11 +222,12 @@ export class RequestPostReportingSendReport {
   date: string
 
   @ApiProperty({
-    description: 'Email the report will be sent to',
-    default: 'test@bratislava.sk',
+    description: 'Emails the report will be sent to',
+    default: ['test@bratislava.sk'],
+    type: [String],
   })
-  @IsEmail()
-  email: string
+  @IsEmail({}, { each: true })
+  emailRecipients: string[]
 }
 
 export type NorisRequestGeneral =

@@ -6,14 +6,14 @@ import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import { User } from '../auth-v2/types/user'
 import {
   isValidScanStatus,
   processingScanStatuses,
 } from '../common/utils/helpers'
-import FormsHelper from '../forms/forms.helper'
 // eslint-disable-next-line import/no-cycle
 import FormsService from '../forms/forms.service'
+import { FormAccessService } from '../forms-v2/services/form-access.service'
 import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -48,9 +48,9 @@ export default class FilesService {
     private readonly minioClientSubervice: MinioClientSubservice,
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
-    private formsHelper: FormsHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesConsumerHelper: NasesConsumerHelper,
+    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FilesService')
     this.jwtSecret = this.configService.get('JWT_SECRET') ?? ''
@@ -84,8 +84,7 @@ export default class FilesService {
 
   async getFileWithUserVerify(
     fileId: string,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<GetFileResponseDto> {
     // get file from database
     let file
@@ -119,13 +118,11 @@ export default class FilesService {
       )
     }
 
-    if (
-      !this.formsHelper.isFormAccessGranted(
-        file.forms,
-        user ? user.sub : null,
-        ico,
-      )
-    ) {
+    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
+      file.forms,
+      user,
+    )
+    if (!hasAccess) {
       throw this.throwerErrorGuard.ForbiddenException(
         FilesErrorsEnum.FILE_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
         FilesErrorsResponseEnum.FILE_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
@@ -134,17 +131,7 @@ export default class FilesService {
     return file
   }
 
-  async getFilesByForm(
-    formId: string,
-    ico: string | null,
-    user?: CognitoGetUserData,
-  ): Promise<GetFileResponseReducedDto[]> {
-    await this.formsService.getFormWithAccessCheck(
-      formId,
-      user ? user.sub : null,
-      ico,
-    )
-
+  async getFilesByForm(formId: string): Promise<GetFileResponseReducedDto[]> {
     let files
     try {
       files = await this.prisma.files.findMany({
@@ -260,10 +247,8 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<PostFileResponseDto> {
-    const userId = user ? user.sub : null
     const fileName = data.filename
     const fileId = data.id
     this.logger.log(
@@ -297,11 +282,7 @@ export default class FilesService {
       )
     }
 
-    const form = await this.formsService.getFormWithAccessCheck(
-      formId,
-      userId,
-      ico,
-    )
+    const form = await this.formsService.getFormWithAccessCheck(formId, user)
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {
       throw this.throwerErrorGuard.NotAcceptableException(
@@ -428,11 +409,10 @@ export default class FilesService {
 
   async downloadToken(
     fileId: string,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<DownloadTokenResponseDataDto> {
     this.logger.log(`Received token download request for fileId ${fileId}.`)
-    await this.getFileWithUserVerify(fileId, ico, user)
+    await this.getFileWithUserVerify(fileId, user)
     const payload = { fileId }
     const token = jwt.sign(payload, this.jwtSecret, { expiresIn: '30s' })
     return {

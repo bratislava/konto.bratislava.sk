@@ -63,7 +63,7 @@ export default schema(
           helptext: `Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11), kde nájdete požadované záujmové územie.
 
 **Ako vytvoriť snímku?**
-Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Pri položke „Meranie 1“ kliknite na ikonu troch bodiek v pravom hornom rohu a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.`,
+Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.`,
           helptextMarkdown: true,
         },
       ),

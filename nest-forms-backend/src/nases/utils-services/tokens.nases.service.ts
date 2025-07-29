@@ -526,11 +526,7 @@ export default class NasesUtilsService {
     }`
   }
 
-  private getSendMessageNasesEndpoint = (
-    sender: SendMessageNasesSender,
-  ):
-    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
-    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceivePost => {
+  private getSendMessageNasesEndpoint = (sender: SendMessageNasesSender) => {
     if (sender.type === SendMessageNasesSenderType.Eid) {
       return this.clientsService.slovenskoSkApi
         .apiSktalkReceiveAndSaveToOutboxPost

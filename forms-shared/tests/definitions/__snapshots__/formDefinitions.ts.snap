@@ -73111,7 +73111,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                   "helptext": "Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11), kde nájdete požadované záujmové územie.
 
 **Ako vytvoriť snímku?**
-Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Pri položke „Meranie 1“ kliknite na ikonu troch bodiek v pravom hornom rohu a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
+Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
                   "helptextMarkdown": true,
                   "type": "dragAndDrop",
                 },
@@ -74685,7 +74685,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                   "helptext": "Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11), kde nájdete požadované záujmové územie.
 
 **Ako vytvoriť snímku?**
-Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Pri položke „Meranie 1“ kliknite na ikonu troch bodiek v pravom hornom rohu a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
+Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
                   "helptextMarkdown": true,
                   "type": "dragAndDrop",
                 },
@@ -89613,5 +89613,949 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
     },
   ],
   "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
+}
+`;
+
+exports[`Form definitions > ziadost-o-uzemnoplanovaciu-informaciu > default form state should match snapshot 1`] = `
+{
+  "detailAUcel": {
+    "informacieOLokalite": {
+      "lokality": [
+        {},
+      ],
+    },
+  },
+  "prilohy": {
+    "zakresZaujmovychParciel": [],
+  },
+  "ziadatel": {
+    "typZiadatela": "fyzickaOsoba",
+  },
+}
+`;
+
+exports[`Form definitions > ziadost-o-uzemnoplanovaciu-informaciu > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "ziadatel": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "meno": {
+                    "baOrder": 2,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "2/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Meno",
+                    "type": "string",
+                  },
+                  "priezvisko": {
+                    "baOrder": 3,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "2/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Priezvisko",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "meno",
+                  "priezvisko",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "fyzickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "mesto": {
+                    "baOrder": 5,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 6,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaCislo": {
+                    "baOrder": 4,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Adresa pobytu",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaCislo",
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "enum": [
+                      "fyzickaOsobaPodnikatel",
+                      "pravnickaOsoba",
+                    ],
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "ico": {
+                    "baOrder": 8,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "size": "medium",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-ico",
+                    "title": "IČO",
+                    "type": "string",
+                  },
+                  "obchodneMeno": {
+                    "baOrder": 7,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Obchodné meno",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "obchodneMeno",
+                  "ico",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "fyzickaOsobaPodnikatel",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "mesto": {
+                    "baOrder": 10,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 11,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaCislo": {
+                    "baOrder": 9,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Miesto podnikania",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaCislo",
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "pravnickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "mesto": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaCislo": {
+                    "baOrder": 12,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Adresa sídla",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaCislo",
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "kontaktneUdaje": {
+                    "baOrder": 15,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "objectDisplay": "boxed",
+                        "title": "Kontaktné údaje",
+                      },
+                    },
+                    "properties": {
+                      "email": {
+                        "baOrder": 1,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "email",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "email",
+                        "title": "Email",
+                        "type": "string",
+                      },
+                      "telefon": {
+                        "baOrder": 2,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Vyplňte vo formáte +421",
+                            "inputType": "tel",
+                            "size": "medium",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "ba-phone-number",
+                        "title": "Telefónne číslo",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "email",
+                      "telefon",
+                    ],
+                    "type": "object",
+                  },
+                },
+                "required": [
+                  "kontaktneUdaje",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "pravnickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "kontaktneUdaje": {
+                    "baOrder": 16,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "objectDisplay": "boxed",
+                        "title": "Kontaktné údaje",
+                      },
+                    },
+                    "properties": {
+                      "email": {
+                        "baOrder": 3,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "email",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "email",
+                        "title": "Email",
+                        "type": "string",
+                      },
+                      "meno": {
+                        "baOrder": 1,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "text",
+                            "selfColumn": "2/4",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "title": "Meno",
+                        "type": "string",
+                      },
+                      "priezvisko": {
+                        "baOrder": 2,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "text",
+                            "selfColumn": "2/4",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "title": "Priezvisko",
+                        "type": "string",
+                      },
+                      "telefon": {
+                        "baOrder": 4,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Vyplňte vo formáte +421",
+                            "inputType": "tel",
+                            "size": "medium",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "ba-phone-number",
+                        "title": "Telefónne číslo",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "meno",
+                      "priezvisko",
+                      "email",
+                      "telefon",
+                    ],
+                    "type": "object",
+                  },
+                },
+                "required": [
+                  "kontaktneUdaje",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "fyzickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "formaDorucovania": {
+                    "baOrder": 17,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "enumMetadata": [
+                          {
+                            "label": "Email",
+                            "value": "email",
+                          },
+                          {
+                            "label": "Poštou na adresu žiadateľa",
+                            "value": "posta",
+                          },
+                          {
+                            "label": "Elektronická schránka slovensko.sk",
+                            "value": "elektronickaSchranka",
+                          },
+                        ],
+                        "variant": "boxed",
+                      },
+                      "ui:widget": "RadioGroup",
+                    },
+                    "enum": [
+                      "email",
+                      "posta",
+                      "elektronickaSchranka",
+                    ],
+                    "title": "Akou formou chcete doručiť územnoplánovaciu informáciu?",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "formaDorucovania",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "enum": [
+                      "fyzickaOsobaPodnikatel",
+                      "pravnickaOsoba",
+                    ],
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "formaDorucovania": {
+                    "baOrder": 18,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "enumMetadata": [
+                          {
+                            "label": "Email",
+                            "value": "email",
+                          },
+                          {
+                            "label": "Elektronická schránka slovensko.sk",
+                            "value": "elektronickaSchranka",
+                          },
+                        ],
+                        "variant": "boxed",
+                      },
+                      "ui:widget": "RadioGroup",
+                    },
+                    "enum": [
+                      "email",
+                      "elektronickaSchranka",
+                    ],
+                    "title": "Akou formou chcete doručiť územnoplánovaciu informáciu?",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "formaDorucovania",
+                ],
+                "type": "object",
+              },
+            },
+          ],
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "ziadatel",
+            },
+          },
+          "properties": {
+            "typZiadatela": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Fyzická osoba",
+                      "value": "fyzickaOsoba",
+                    },
+                    {
+                      "label": "Fyzická osoba – podnikateľ",
+                      "value": "fyzickaOsobaPodnikatel",
+                    },
+                    {
+                      "label": "Právnická osoba",
+                      "value": "pravnickaOsoba",
+                    },
+                  ],
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "default": "fyzickaOsoba",
+              "enum": [
+                "fyzickaOsoba",
+                "fyzickaOsobaPodnikatel",
+                "pravnickaOsoba",
+              ],
+              "title": "Žiadate ako",
+              "type": "string",
+            },
+          },
+          "required": [
+            "typZiadatela",
+          ],
+          "title": "Žiadateľ",
+          "type": "object",
+        },
+      },
+      "required": [
+        "ziadatel",
+      ],
+      "type": "object",
+    },
+    {
+      "properties": {
+        "detailAUcel": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "description": "V jednej žiadosti o územnoplánovaciu informáciu môžete žiadať o informáciu maximálne k 5 parcelám (lokalitám). Lokalita znamená jedno parcelné číslo. Všetky lokality v žiadosti sa musia nachádzať v jednom katastrálnom území.",
+              "stepQueryParam": "detail-a-ucel",
+            },
+          },
+          "properties": {
+            "informacieOLokalite": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "description": "V jednej žiadosti môžete žiadať o informáciu maximálne k 5 parcelám. Každá lokalita predstavuje jedno parcelné číslo. Všetky lokality musia byť umiestnené v jednom katastrálnom území vybranom vyššie.",
+                  "objectDisplay": "boxed",
+                  "title": "Informácie o lokalite",
+                },
+              },
+              "properties": {
+                "lokality": {
+                  "baOrder": 1,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "addButtonLabel": "Pridať informácie o ďalšej lokalite",
+                      "cannotAddItemMessage": "Nemôžete pridať viac ako 5 lokalít.",
+                      "itemTitle": "Lokalita č. {index}",
+                      "variant": "topLevel",
+                    },
+                  },
+                  "items": {
+                    "properties": {
+                      "parcelneCislo": {
+                        "baOrder": 1,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Číslo parcely nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11).",
+                            "helptextMarkdown": true,
+                            "inputType": "text",
+                            "selfColumn": "2/4",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "title": "Parcelné číslo",
+                        "type": "string",
+                      },
+                      "registerParcely": {
+                        "baOrder": 2,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "enumMetadata": [
+                              {
+                                "label": "register C-KN",
+                                "value": "registerCKn",
+                              },
+                              {
+                                "label": "register E-KN",
+                                "value": "registerEKn",
+                              },
+                            ],
+                            "helptext": "Vyberte či sa jedná o parcelu registra "C" alebo "E"",
+                            "selfColumn": "2/4",
+                          },
+                          "ui:widget": "Select",
+                        },
+                        "enum": [
+                          "registerCKn",
+                          "registerEKn",
+                        ],
+                        "title": "Register parcely",
+                        "type": "string",
+                      },
+                      "ulicaACislo": {
+                        "baOrder": 3,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "V prípade, že žiadaná oblasť nemá presnú ulicu, uveďte prosíme upresnenie lokality, príp. lokálny názov.",
+                            "inputType": "text",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "title": "Ulica a číslo / popis lokality",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "parcelneCislo",
+                      "registerParcely",
+                      "ulicaACislo",
+                    ],
+                    "type": "object",
+                  },
+                  "maxItems": 5,
+                  "minItems": 1,
+                  "title": "Lokality",
+                  "type": "array",
+                },
+              },
+              "required": [
+                "lokality",
+              ],
+              "type": "object",
+            },
+            "katastralneUzemie": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Čunovo",
+                      "value": "809985",
+                    },
+                    {
+                      "label": "Devín",
+                      "value": "805301",
+                    },
+                    {
+                      "label": "Devínska Nová Ves",
+                      "value": "810649",
+                    },
+                    {
+                      "label": "Dúbravka",
+                      "value": "806099",
+                    },
+                    {
+                      "label": "Jarovce",
+                      "value": "822256",
+                    },
+                    {
+                      "label": "Karlova Ves",
+                      "value": "805211",
+                    },
+                    {
+                      "label": "Lamač",
+                      "value": "806005",
+                    },
+                    {
+                      "label": "Nivy",
+                      "value": "804274",
+                    },
+                    {
+                      "label": "Nové Mesto",
+                      "value": "804690",
+                    },
+                    {
+                      "label": "Petržalka",
+                      "value": "804959",
+                    },
+                    {
+                      "label": "Podunajské Biskupice",
+                      "value": "847755",
+                    },
+                    {
+                      "label": "Rača",
+                      "value": "805866",
+                    },
+                    {
+                      "label": "Rusovce",
+                      "value": "853771",
+                    },
+                    {
+                      "label": "Ružinov",
+                      "value": "805556",
+                    },
+                    {
+                      "label": "Staré Mesto",
+                      "value": "804096",
+                    },
+                    {
+                      "label": "Trnávka",
+                      "value": "805343",
+                    },
+                    {
+                      "label": "Vajnory",
+                      "value": "805700",
+                    },
+                    {
+                      "label": "Vinohrady",
+                      "value": "804380",
+                    },
+                    {
+                      "label": "Vrakuňa",
+                      "value": "870293",
+                    },
+                    {
+                      "label": "Záhorská Bystrica",
+                      "value": "871796",
+                    },
+                  ],
+                  "helptext": "Vyberte katastrálne územie, v ktorom sa nachádzajú lokality, pre ktoré žiadate územnoplánovaciu informáciu.",
+                },
+                "ui:widget": "Select",
+              },
+              "enum": [
+                "809985",
+                "805301",
+                "810649",
+                "806099",
+                "822256",
+                "805211",
+                "806005",
+                "804274",
+                "804690",
+                "804959",
+                "847755",
+                "805866",
+                "853771",
+                "805556",
+                "804096",
+                "805343",
+                "805700",
+                "804380",
+                "870293",
+                "871796",
+              ],
+              "title": "Katastrálne územie",
+              "type": "string",
+            },
+            "popisZameru": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {},
+                "ui:widget": "TextArea",
+              },
+              "title": "Popíšte zámer, pre ktorý žiadate o územnoplánovaciu informáciu.",
+              "type": "string",
+            },
+            "ucelUzemnoplanovacichiInformacii": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Planovaný investičný zámer",
+                      "value": "planovanyInvesticnyZamer",
+                    },
+                    {
+                      "label": "Kúpa, predaj alebo nájom nehnuteľnosti",
+                      "value": "kupaPredajNajom",
+                    },
+                    {
+                      "label": "Súdnoznalecký posudok",
+                      "value": "sudnoznaleckyPosudok",
+                    },
+                    {
+                      "label": "Informatívny zámer",
+                      "value": "informativnyZamer",
+                    },
+                    {
+                      "label": "Iné",
+                      "value": "ine",
+                    },
+                  ],
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "enum": [
+                "planovanyInvesticnyZamer",
+                "kupaPredajNajom",
+                "sudnoznaleckyPosudok",
+                "informativnyZamer",
+                "ine",
+              ],
+              "title": "Účel územnoplánovacej informácie",
+              "type": "string",
+            },
+          },
+          "required": [
+            "katastralneUzemie",
+            "informacieOLokalite",
+            "ucelUzemnoplanovacichiInformacii",
+          ],
+          "title": "Detail a účel",
+          "type": "object",
+        },
+      },
+      "required": [
+        "detailAUcel",
+      ],
+      "type": "object",
+    },
+    {
+      "properties": {
+        "prilohy": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "prilohy",
+            },
+          },
+          "properties": {
+            "zakresZaujmovychParciel": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11), kde nájdete požadované záujmové územie.
+
+**Ako vytvoriť zákres?**
+Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
+                  "helptextMarkdown": true,
+                  "type": "dragAndDrop",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "minItems": 1,
+              "title": "Zákres záujmových parciel do kópie katastrálnej mapy",
+              "type": "array",
+            },
+          },
+          "required": [
+            "zakresZaujmovychParciel",
+          ],
+          "title": "Prílohy",
+          "type": "object",
+        },
+      },
+      "required": [
+        "prilohy",
+      ],
+      "type": "object",
+    },
+  ],
+  "title": "Žiadosť o územnoplánovaciu informáciu",
 }
 `;

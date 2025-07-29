@@ -91,6 +91,116 @@ export interface Activity {
 /**
  *
  * @export
+ * @interface ActivityDto
+ */
+export interface ActivityDto {
+  /**
+   * Predmet činnosti
+   * @type {string}
+   * @memberof ActivityDto
+   */
+  economicActivityDescription?: string
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof ActivityDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof ActivityDto
+   */
+  validTo?: string
+  /**
+   * Platnosť pozastavená od
+   * @type {string}
+   * @memberof ActivityDto
+   */
+  suspendedFrom?: string
+  /**
+   * Platnosť pozastavená do
+   * @type {string}
+   * @memberof ActivityDto
+   */
+  suspendedTo?: string
+}
+/**
+ *
+ * @export
+ * @interface AddressDto
+ */
+export interface AddressDto {
+  /**
+   * Formátovaná adresa
+   * @type {string}
+   * @memberof AddressDto
+   */
+  formatedAddress?: string
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof AddressDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof AddressDto
+   */
+  validTo?: string
+  /**
+   * Ulica
+   * @type {string}
+   * @memberof AddressDto
+   */
+  street?: string
+  /**
+   * Súpisné číslo
+   * @type {number}
+   * @memberof AddressDto
+   */
+  regNumber?: number
+  /**
+   * Orientačné číslo
+   * @type {string}
+   * @memberof AddressDto
+   */
+  buildingNumber?: string
+  /**
+   * PSČ
+   * @type {Array<string>}
+   * @memberof AddressDto
+   */
+  postalCodes?: Array<string>
+  /**
+   * Municipality
+   * @type {CodeValueDto}
+   * @memberof AddressDto
+   */
+  municipality?: CodeValueDto
+  /**
+   * Country
+   * @type {CodeValueDto}
+   * @memberof AddressDto
+   */
+  country?: CodeValueDto
+  /**
+   * District
+   * @type {CodeValueDto}
+   * @memberof AddressDto
+   */
+  district?: CodeValueDto
+  /**
+   * Index domu resp. identifikátor adresy z Registra adries
+   * @type {string}
+   * @memberof AddressDto
+   */
+  buildingIndex?: string
+}
+/**
+ *
+ * @export
  * @interface BadRequestErrorDto
  */
 export interface BadRequestErrorDto {
@@ -193,6 +303,31 @@ export interface BirthDto {
    * @memberof BirthDto
    */
   miestoNarodenia: string
+}
+/**
+ *
+ * @export
+ * @interface CodeValueDto
+ */
+export interface CodeValueDto {
+  /**
+   * Hodnota atribútu
+   * @type {string}
+   * @memberof CodeValueDto
+   */
+  value?: string
+  /**
+   * Kód hodnoty atribútu
+   * @type {string}
+   * @memberof CodeValueDto
+   */
+  code?: string
+  /**
+   * Kód číselníka
+   * @type {string}
+   * @memberof CodeValueDto
+   */
+  codelistCode?: string
 }
 /**
  *
@@ -505,6 +640,513 @@ export interface DomesticBankDto {
 /**
  *
  * @export
+ * @interface EntityIdGet200ResponseDepositsInnerDto
+ */
+export interface EntityIdGet200ResponseDepositsInnerDto {
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDepositsInnerDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDepositsInnerDto
+   */
+  validTo?: string
+  /**
+   * Person name
+   * @type {PersonNameDto}
+   * @memberof EntityIdGet200ResponseDepositsInnerDto
+   */
+  personName?: PersonNameDto
+  /**
+   * Názov zainteresovanej osoby (PO)
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDepositsInnerDto
+   */
+  fullName?: string
+  /**
+   * Typ vkladu
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDepositsInnerDto
+   */
+  type?: string
+  /**
+   * Výška vkladu
+   * @type {number}
+   * @memberof EntityIdGet200ResponseDepositsInnerDto
+   */
+  amount?: number
+  /**
+   * Currency
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseDepositsInnerDto
+   */
+  currency?: CodeValueDto
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponseDto
+ */
+export interface EntityIdGet200ResponseDto {
+  /**
+   * Jedinedinečný identifikátor záznamu
+   * @type {number}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  id: number
+  /**
+   * Dátum poslednej aktualizácie údajov o PO v databáze, t.j. kedy začala byť aktuálna verzia záznamu dostupná cez toto API.
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  dbModificationDate?: string
+  /**
+   * IČO
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  identifiers: Array<TimedValueEntryDto>
+  /**
+   * Plný názov PO
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  fullNames?: Array<TimedValueEntryDto>
+  /**
+   * Alternatívny názov PO
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  alternativeNames?: Array<TimedValueEntryDto>
+  /**
+   * Adresa sídla PO
+   * @type {Array<AddressDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  addresses?: Array<AddressDto>
+  /**
+   * Dátum vzniku
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  establishment: string
+  /**
+   * Dátum zániku
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  termination?: string
+  /**
+   * Predmet činnosti
+   * @type {Array<ActivityDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  activities?: Array<ActivityDto>
+  /**
+   * Štatutárny orgán
+   * @type {Array<StatutaryBodyDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  statutoryBodies?: Array<StatutaryBodyDto>
+  /**
+   * Zainteresovaná osoba
+   * @type {Array<StakeholderSusrDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  stakeholders?: Array<StakeholderSusrDto>
+  /**
+   * Právny stav PO (číselník CL010108)
+   * @type {Array<TimedCodeValueEntryDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  legalStatuses?: Array<TimedCodeValueEntryDto>
+  /**
+   * Iné právne skutočnosti
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  otherLegalFacts?: Array<TimedValueEntryDto>
+  /**
+   * Oprávnenie konať v mene PO
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  authorizations?: Array<TimedValueEntryDto>
+  /**
+   * Základné imanie
+   * @type {Array<EntityIdGet200ResponseEquitiesInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  equities?: Array<EntityIdGet200ResponseEquitiesInnerDto>
+  /**
+   * Akcie
+   * @type {Array<EntityIdGet200ResponseSharesInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  shares?: Array<EntityIdGet200ResponseSharesInnerDto>
+  /**
+   * Vklady
+   * @type {Array<EntityIdGet200ResponseDepositsInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  deposits?: Array<EntityIdGet200ResponseDepositsInnerDto>
+  /**
+   * Source register
+   * @type {SearchGet200ResponseResultsInnerSourceRegisterDto}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  sourceRegister?: SearchGet200ResponseResultsInnerSourceRegisterDto
+  /**
+   * Právny predchodca PO
+   * @type {Array<EntityIdGet200ResponsePredecessorsInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  predecessors?: Array<EntityIdGet200ResponsePredecessorsInnerDto>
+  /**
+   * Právny nástupca PO
+   * @type {Array<EntityIdGet200ResponsePredecessorsInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  successors?: Array<EntityIdGet200ResponsePredecessorsInnerDto>
+  /**
+   * Štatistické kódy
+   * @type {EntityIdGet200ResponseStatisticalCodesDto}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  statisticalCodes?: EntityIdGet200ResponseStatisticalCodesDto
+  /**
+   * Základné údaje o konečnom užívateľovi výhod
+   * @type {Array<EntityIdGet200ResponseKuvPersonsInfoInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  kuvPersonsInfo?: Array<EntityIdGet200ResponseKuvPersonsInfoInnerDto>
+  /**
+   * Základné údaje o vrcholovom manažmente konečného užívateľa výhod
+   * @type {Array<EntityIdGet200ResponseTopManagementsInfoInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  topManagementsInfo?: Array<EntityIdGet200ResponseTopManagementsInfoInnerDto>
+  /**
+   * Údaje o organizačných zložkách
+   * @type {Array<EntityIdGet200ResponseOrganizationUnitsInnerDto>}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  organizationUnits?: Array<EntityIdGet200ResponseOrganizationUnitsInnerDto>
+  /**
+   * Licenčné informácie
+   * @type {string}
+   * @memberof EntityIdGet200ResponseDto
+   */
+  license?: string
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponseEquitiesInnerDto
+ */
+export interface EntityIdGet200ResponseEquitiesInnerDto {
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof EntityIdGet200ResponseEquitiesInnerDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof EntityIdGet200ResponseEquitiesInnerDto
+   */
+  validTo?: string
+  /**
+   * Výška základného imania
+   * @type {number}
+   * @memberof EntityIdGet200ResponseEquitiesInnerDto
+   */
+  value?: number
+  /**
+   * Výška splateného imania
+   * @type {number}
+   * @memberof EntityIdGet200ResponseEquitiesInnerDto
+   */
+  valuePaid?: number
+  /**
+   * Schválená výška
+   * @type {number}
+   * @memberof EntityIdGet200ResponseEquitiesInnerDto
+   */
+  valueApproved?: number
+  /**
+   * Currency
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseEquitiesInnerDto
+   */
+  currency?: CodeValueDto
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponseKuvPersonsInfoInnerDto
+ */
+export interface EntityIdGet200ResponseKuvPersonsInfoInnerDto {
+  /**
+   * Person name
+   * @type {PersonNameDto}
+   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
+   */
+  personName?: PersonNameDto
+  /**
+   * Dátum narodenia
+   * @type {string}
+   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
+   */
+  birthDate?: string
+  /**
+   * Citizenship
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
+   */
+  citizenship?: CodeValueDto
+  /**
+   * Country
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
+   */
+  country?: CodeValueDto
+  /**
+   * Údaje o postavení konečného užívateľa výhod (číselník CL010430)
+   * @type {Array<TimedCodeValueEntryDto>}
+   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
+   */
+  kuvInfo?: Array<TimedCodeValueEntryDto>
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponseOrganizationUnitsInnerDto
+ */
+export interface EntityIdGet200ResponseOrganizationUnitsInnerDto {
+  /**
+   * Type
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  type?: CodeValueDto
+  /**
+   * IČO
+   * @type {string}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  identifier?: string
+  /**
+   * Plný názov organizačnej zložky
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  fullNames?: Array<TimedValueEntryDto>
+  /**
+   * Adresa
+   * @type {Array<AddressDto>}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  addresses?: Array<AddressDto>
+  /**
+   * Dátum vzniku
+   * @type {string}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  establishment?: string
+  /**
+   * Dátum zániku
+   * @type {string}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  termination?: string
+  /**
+   * Zainteresovaná osoba
+   * @type {Array<StakeholderSusrDto>}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  stakeholders?: Array<StakeholderSusrDto>
+  /**
+   * Predmet činnosti
+   * @type {Array<ActivityDto>}
+   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
+   */
+  activities?: Array<ActivityDto>
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponsePredecessorsInnerDto
+ */
+export interface EntityIdGet200ResponsePredecessorsInnerDto {
+  /**
+   * IČO
+   * @type {string}
+   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
+   */
+  identifier?: string
+  /**
+   * Názov
+   * @type {string}
+   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
+   */
+  fullName?: string
+  /**
+   * Adresa
+   * @type {AddressDto}
+   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
+   */
+  address?: AddressDto
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
+   */
+  validTo?: string
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponseSharesInnerDto
+ */
+export interface EntityIdGet200ResponseSharesInnerDto {
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  validTo?: string
+  /**
+   * Názov zainteresovanej osoby (PO)
+   * @type {string}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  fullName?: string
+  /**
+   * Person name
+   * @type {PersonNameDto}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  personName?: PersonNameDto
+  /**
+   * Share type
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  shareType?: CodeValueDto
+  /**
+   * Podoba akcie
+   * @type {string}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  shareForm?: string
+  /**
+   * Menovitá hodnota akcie
+   * @type {number}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  shareNominalValue?: number
+  /**
+   * Share currency
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  shareCurrency?: CodeValueDto
+  /**
+   * Množstvo akcií
+   * @type {number}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  amountOfFunds?: number
+  /**
+   * Prevoditelnosť akcií
+   * @type {string}
+   * @memberof EntityIdGet200ResponseSharesInnerDto
+   */
+  transferability?: string
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponseStatisticalCodesDto
+ */
+export interface EntityIdGet200ResponseStatisticalCodesDto {
+  /**
+   * Dátum aktualizácie štatistických kódov
+   * @type {string}
+   * @memberof EntityIdGet200ResponseStatisticalCodesDto
+   */
+  statCodesActualization?: string
+  /**
+   * Main activity
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseStatisticalCodesDto
+   */
+  mainActivity?: CodeValueDto
+  /**
+   * ESA2010
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseStatisticalCodesDto
+   */
+  esa2010?: CodeValueDto
+}
+/**
+ *
+ * @export
+ * @interface EntityIdGet200ResponseTopManagementsInfoInnerDto
+ */
+export interface EntityIdGet200ResponseTopManagementsInfoInnerDto {
+  /**
+   * Person name
+   * @type {PersonNameDto}
+   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
+   */
+  personName?: PersonNameDto
+  /**
+   * Dátum narodenia
+   * @type {string}
+   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
+   */
+  birthDate?: string
+  /**
+   * Citizenship
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
+   */
+  citizenship?: CodeValueDto
+  /**
+   * Country
+   * @type {CodeValueDto}
+   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
+   */
+  country?: CodeValueDto
+  /**
+   * Údaje o type vrcholového manažmentu (číselník CL010113)
+   * @type {Array<TimedCodeValueEntryDto>}
+   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
+   */
+  kuvInfo?: Array<TimedCodeValueEntryDto>
+}
+/**
+ *
+ * @export
  * @interface Equity
  */
 export interface Equity {
@@ -550,6 +1192,25 @@ export interface Equity {
    * @memberof Equity
    */
   mena: CodelistDto
+}
+/**
+ *
+ * @export
+ * @interface FindOneByIcoFromApiResponse
+ */
+export interface FindOneByIcoFromApiResponse {
+  /**
+   * Legal person
+   * @type {SearchGet200ResponseDto}
+   * @memberof FindOneByIcoFromApiResponse
+   */
+  legalPerson: SearchGet200ResponseDto
+  /**
+   * Legal person detail
+   * @type {EntityIdGet200ResponseDto}
+   * @memberof FindOneByIcoFromApiResponse
+   */
+  detail?: EntityIdGet200ResponseDto
 }
 /**
  *
@@ -794,6 +1455,49 @@ export interface PersonDto {
    * @memberof PersonDto
    */
   pravnickaOsoba: LegalPersonDto
+}
+/**
+ *
+ * @export
+ * @interface PersonNameDto
+ */
+export interface PersonNameDto {
+  /**
+   * Formatované meno
+   * @type {string}
+   * @memberof PersonNameDto
+   */
+  formatedName?: string
+  /**
+   * Meno
+   * @type {Array<string>}
+   * @memberof PersonNameDto
+   */
+  givenNames: Array<string>
+  /**
+   * Priezvisko
+   * @type {Array<string>}
+   * @memberof PersonNameDto
+   */
+  familyNames: Array<string>
+  /**
+   * Rodné priezvisko
+   * @type {Array<string>}
+   * @memberof PersonNameDto
+   */
+  givenFamilyNames?: Array<string>
+  /**
+   * Titul pred menom (číselníky CL000062 / TIT)
+   * @type {Array<CodeValueDto>}
+   * @memberof PersonNameDto
+   */
+  prefixes?: Array<CodeValueDto>
+  /**
+   * Titul za menom (číselníky CL000063 / TIT)
+   * @type {Array<CodeValueDto>}
+   * @memberof PersonNameDto
+   */
+  postfixes?: Array<CodeValueDto>
 }
 /**
  *
@@ -4013,6 +4717,105 @@ export type ResponseRsdStateDtoResultEnum =
 /**
  *
  * @export
+ * @interface SearchGet200ResponseDto
+ */
+export interface SearchGet200ResponseDto {
+  /**
+   * Zoznam nájdených PO
+   * @type {Array<SearchGet200ResponseResultsInnerDto>}
+   * @memberof SearchGet200ResponseDto
+   */
+  results: Array<SearchGet200ResponseResultsInnerDto>
+  /**
+   * Licenčné informácie
+   * @type {string}
+   * @memberof SearchGet200ResponseDto
+   */
+  license?: string
+}
+/**
+ *
+ * @export
+ * @interface SearchGet200ResponseResultsInnerDto
+ */
+export interface SearchGet200ResponseResultsInnerDto {
+  /**
+   * Jedinedinečný identifikátor záznamu
+   * @type {number}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  id: number
+  /**
+   * IČO
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  identifiers: Array<TimedValueEntryDto>
+  /**
+   * Plný názov PO
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  fullNames: Array<TimedValueEntryDto>
+  /**
+   * Adresa sídla PO
+   * @type {Array<AddressDto>}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  addresses: Array<AddressDto>
+  /**
+   * Dátum vzniku
+   * @type {string}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  establishment?: string
+  /**
+   * Dátum zániku
+   * @type {string}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  termination?: string
+  /**
+   * Source register
+   * @type {SearchGet200ResponseResultsInnerSourceRegisterDto}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  sourceRegister?: SearchGet200ResponseResultsInnerSourceRegisterDto
+  /**
+   * Dátum poslednej aktualizácie údajov o PO v databáze, t.j. kedy začala byť aktuálna verzia záznamu dostupná cez toto API.
+   * @type {string}
+   * @memberof SearchGet200ResponseResultsInnerDto
+   */
+  dbModificationDate?: string
+}
+/**
+ *
+ * @export
+ * @interface SearchGet200ResponseResultsInnerSourceRegisterDto
+ */
+export interface SearchGet200ResponseResultsInnerSourceRegisterDto {
+  /**
+   * Value
+   * @type {CodeValueDto}
+   * @memberof SearchGet200ResponseResultsInnerSourceRegisterDto
+   */
+  value?: CodeValueDto
+  /**
+   * Registrátor / registrový úrad
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof SearchGet200ResponseResultsInnerSourceRegisterDto
+   */
+  registrationOffices?: Array<TimedValueEntryDto>
+  /**
+   * Registračné číslo
+   * @type {Array<TimedValueEntryDto>}
+   * @memberof SearchGet200ResponseResultsInnerSourceRegisterDto
+   */
+  registrationNumbers?: Array<TimedValueEntryDto>
+}
+/**
+ *
+ * @export
  * @interface ShareDto
  */
 export interface ShareDto {
@@ -4124,6 +4927,134 @@ export interface StakeholderDto {
 /**
  *
  * @export
+ * @interface StakeholderSusrDto
+ */
+export interface StakeholderSusrDto {
+  /**
+   * Stakeholder type
+   * @type {CodeValueDto}
+   * @memberof StakeholderSusrDto
+   */
+  stakeholderType?: CodeValueDto
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof StakeholderSusrDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof StakeholderSusrDto
+   */
+  validTo?: string
+  /**
+   * Adresa
+   * @type {AddressDto}
+   * @memberof StakeholderSusrDto
+   */
+  address?: AddressDto
+  /**
+   * Person name
+   * @type {PersonNameDto}
+   * @memberof StakeholderSusrDto
+   */
+  personName?: PersonNameDto
+  /**
+   * IČO (vypĺňa sa v prípade, ak je zainteresovaná osoba PO alebo organizačná zložka)
+   * @type {string}
+   * @memberof StakeholderSusrDto
+   */
+  identifier?: string
+  /**
+   * Plný názov PO (vypĺňa sa v prípade, ak je zainteresovaná osoba PO alebo organizačná zložka)
+   * @type {string}
+   * @memberof StakeholderSusrDto
+   */
+  fullName?: string
+  /**
+   * Dátum vzniku
+   * @type {string}
+   * @memberof StakeholderSusrDto
+   */
+  establishment?: string
+  /**
+   * Dátum zániku
+   * @type {string}
+   * @memberof StakeholderSusrDto
+   */
+  termination?: string
+}
+/**
+ *
+ * @export
+ * @interface StatutaryBodyDto
+ */
+export interface StatutaryBodyDto {
+  /**
+   * Stakeholder type
+   * @type {CodeValueDto}
+   * @memberof StatutaryBodyDto
+   */
+  stakeholderType?: CodeValueDto
+  /**
+   * Statutary body member
+   * @type {CodeValueDto}
+   * @memberof StatutaryBodyDto
+   */
+  statutoryBodyMember?: CodeValueDto
+  /**
+   * Platnosť od
+   * @type {string}
+   * @memberof StatutaryBodyDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť do
+   * @type {string}
+   * @memberof StatutaryBodyDto
+   */
+  validTo?: string
+  /**
+   * Adresa
+   * @type {AddressDto}
+   * @memberof StatutaryBodyDto
+   */
+  address?: AddressDto
+  /**
+   * Person name
+   * @type {PersonNameDto}
+   * @memberof StatutaryBodyDto
+   */
+  personName?: PersonNameDto
+  /**
+   * IČO (vypĺňa sa v prípade, ak je štatutár PO alebo organizačná zložka)
+   * @type {string}
+   * @memberof StatutaryBodyDto
+   */
+  identifier?: string
+  /**
+   * Plný názov PO (vypĺňa sa v prípade, ak je štatutár PO alebo organizačná zložka)
+   * @type {string}
+   * @memberof StatutaryBodyDto
+   */
+  fullName?: string
+  /**
+   * Dátum vzniku
+   * @type {string}
+   * @memberof StatutaryBodyDto
+   */
+  establishment?: string
+  /**
+   * Dátum zániku
+   * @type {string}
+   * @memberof StatutaryBodyDto
+   */
+  termination?: string
+}
+/**
+ *
+ * @export
  * @interface StatutoryPropsDto
  */
 export interface StatutoryPropsDto {
@@ -4164,6 +5095,56 @@ export interface SurnamePropsDto {
    * @memberof SurnamePropsDto
    */
   prefix: string
+}
+/**
+ *
+ * @export
+ * @interface TimedCodeValueEntryDto
+ */
+export interface TimedCodeValueEntryDto {
+  /**
+   * Hodnota s kódom
+   * @type {CodeValueDto}
+   * @memberof TimedCodeValueEntryDto
+   */
+  value?: CodeValueDto
+  /**
+   * Platnosť hodnoty od
+   * @type {string}
+   * @memberof TimedCodeValueEntryDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť hodnoty do
+   * @type {string}
+   * @memberof TimedCodeValueEntryDto
+   */
+  validTo?: string
+}
+/**
+ *
+ * @export
+ * @interface TimedValueEntryDto
+ */
+export interface TimedValueEntryDto {
+  /**
+   * Hodnota
+   * @type {string}
+   * @memberof TimedValueEntryDto
+   */
+  value?: string
+  /**
+   * Platnosť hodnoty od
+   * @type {string}
+   * @memberof TimedValueEntryDto
+   */
+  validFrom?: string
+  /**
+   * Platnosť hodnoty do
+   * @type {string}
+   * @memberof TimedValueEntryDto
+   */
+  validTo?: string
 }
 /**
  *
@@ -4287,7 +5268,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerInsertOrUpdateDataInRpo: async (
       files?: Array<any>,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/admin/rpo/data`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4346,7 +5327,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminControllerInsertOrUpdateDataInRpo(
       files?: Array<any>,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerInsertOrUpdateDataInRpo(files, options)
@@ -4360,7 +5341,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -4373,7 +5354,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
 export const AdminApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = AdminApiFp(configuration)
   return {
@@ -4384,7 +5365,10 @@ export const AdminApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerInsertOrUpdateDataInRpo(files?: Array<any>, options?: any): AxiosPromise<void> {
+    adminControllerInsertOrUpdateDataInRpo(
+      files?: Array<any>,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
         .adminControllerInsertOrUpdateDataInRpo(files, options)
         .then((request) => request(axios, basePath))
@@ -4409,7 +5393,7 @@ export class AdminApi extends BaseAPI {
    */
   public adminControllerInsertOrUpdateDataInRpo(
     files?: Array<any>,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerInsertOrUpdateDataInRpo(files, options)
@@ -4472,7 +5456,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async appControllerHealth(
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HealthCheckResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealth(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -4483,7 +5467,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -4496,7 +5480,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
 export const DefaultApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = DefaultApiFp(configuration)
   return {
@@ -4506,7 +5490,7 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerHealth(options?: any): AxiosPromise<HealthCheckResponseDto> {
+    appControllerHealth(options?: RawAxiosRequestConfig): AxiosPromise<HealthCheckResponseDto> {
       return localVarFp.appControllerHealth(options).then((request) => request(axios, basePath))
     },
   }
@@ -4550,7 +5534,7 @@ export const DeveloperApiAxiosParamCreator = function (configuration?: Configura
     developerControllerPushRpoExchangeData: async (
       data?: object,
       files?: Array<any>,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/dev/create-exchange-data-rabbitmq`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4571,7 +5555,7 @@ export const DeveloperApiAxiosParamCreator = function (configuration?: Configura
       if (data !== undefined) {
         localVarFormParams.append(
           'data',
-          new Blob([JSON.stringify(data)], { type: 'application/json' })
+          new Blob([JSON.stringify(data)], { type: 'application/json' }),
         )
       }
       if (files) {
@@ -4617,7 +5601,7 @@ export const DeveloperApiFp = function (configuration?: Configuration) {
     async developerControllerPushRpoExchangeData(
       data?: object,
       files?: Array<any>,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.developerControllerPushRpoExchangeData(data, files, options)
@@ -4631,7 +5615,7 @@ export const DeveloperApiFp = function (configuration?: Configuration) {
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -4644,7 +5628,7 @@ export const DeveloperApiFp = function (configuration?: Configuration) {
 export const DeveloperApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = DeveloperApiFp(configuration)
   return {
@@ -4659,7 +5643,7 @@ export const DeveloperApiFactory = function (
     developerControllerPushRpoExchangeData(
       data?: object,
       files?: Array<any>,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .developerControllerPushRpoExchangeData(data, files, options)
@@ -4687,7 +5671,7 @@ export class DeveloperApi extends BaseAPI {
   public developerControllerPushRpoExchangeData(
     data?: object,
     files?: Array<any>,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return DeveloperApiFp(this.configuration)
       .developerControllerPushRpoExchangeData(data, files, options)
@@ -4711,7 +5695,7 @@ export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration
     knControllerGeneralAgenda: async (
       urlPath: string,
       query: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'urlPath' is not null or undefined
       assertParamExists('knControllerGeneralAgenda', 'urlPath', urlPath)
@@ -4767,7 +5751,7 @@ export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration
       districName: string,
       municipalityName: string,
       registerNumber: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'districName' is not null or undefined
       assertParamExists('knControllerGetOwner', 'districName', districName)
@@ -4831,7 +5815,7 @@ export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration
       firstName: string,
       surname: string,
       dateOfBirth: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'municipalityName' is not null or undefined
       assertParamExists('knControllerGetProperties', 'municipalityName', municipalityName)
@@ -4906,12 +5890,12 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
     async knControllerGeneralAgenda(
       urlPath: string,
       query: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseKNGetOwnersDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.knControllerGeneralAgenda(
         urlPath,
         query,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -4923,7 +5907,7 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -4939,13 +5923,13 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
       districName: string,
       municipalityName: string,
       registerNumber: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseKNGetOwnersDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.knControllerGetOwner(
         districName,
         municipalityName,
         registerNumber,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -4957,7 +5941,7 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -4975,7 +5959,7 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
       firstName: string,
       surname: string,
       dateOfBirth: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseKNGetPropertiesDto>
     > {
@@ -4984,7 +5968,7 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
         firstName,
         surname,
         dateOfBirth,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -4996,7 +5980,7 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -5009,7 +5993,7 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
 export const KNKatasterNehnutenostApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = KNKatasterNehnutenostApiFp(configuration)
   return {
@@ -5023,7 +6007,7 @@ export const KNKatasterNehnutenostApiFactory = function (
     knControllerGeneralAgenda(
       urlPath: string,
       query: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseKNGetOwnersDto> {
       return localVarFp
         .knControllerGeneralAgenda(urlPath, query, options)
@@ -5042,7 +6026,7 @@ export const KNKatasterNehnutenostApiFactory = function (
       districName: string,
       municipalityName: string,
       registerNumber: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseKNGetOwnersDto> {
       return localVarFp
         .knControllerGetOwner(districName, municipalityName, registerNumber, options)
@@ -5063,7 +6047,7 @@ export const KNKatasterNehnutenostApiFactory = function (
       firstName: string,
       surname: string,
       dateOfBirth: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseKNGetPropertiesDto> {
       return localVarFp
         .knControllerGetProperties(municipalityName, firstName, surname, dateOfBirth, options)
@@ -5090,7 +6074,7 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
   public knControllerGeneralAgenda(
     urlPath: string,
     query: string,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return KNKatasterNehnutenostApiFp(this.configuration)
       .knControllerGeneralAgenda(urlPath, query, options)
@@ -5111,7 +6095,7 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
     districName: string,
     municipalityName: string,
     registerNumber: string,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return KNKatasterNehnutenostApiFp(this.configuration)
       .knControllerGetOwner(districName, municipalityName, registerNumber, options)
@@ -5134,7 +6118,7 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
     firstName: string,
     surname: string,
     dateOfBirth: string,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return KNKatasterNehnutenostApiFp(this.configuration)
       .knControllerGetProperties(municipalityName, firstName, surname, dateOfBirth, options)
@@ -5147,7 +6131,7 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
  * @export
  */
 export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
-  configuration?: Configuration
+  configuration?: Configuration,
 ) {
   return {
     /**
@@ -5159,7 +6143,7 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
      */
     nevControllerTechnicalEmisionControl: async (
       id: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nevControllerTechnicalEmisionControl', 'id', id)
@@ -5201,13 +6185,13 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
      */
     nevControllerVehicleByECV: async (
       ecv: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ecv' is not null or undefined
       assertParamExists('nevControllerVehicleByECV', 'ecv', ecv)
       const localVarPath = `/nev/vozidlo/ecv/{ecv}`.replace(
         `{${'ecv'}}`,
-        encodeURIComponent(String(ecv))
+        encodeURIComponent(String(ecv)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5246,13 +6230,13 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
      */
     nevControllerVehicleByHolderBirthNumber: async (
       birthNumber: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'birthNumber' is not null or undefined
       assertParamExists('nevControllerVehicleByHolderBirthNumber', 'birthNumber', birthNumber)
       const localVarPath = `/nev/vozidlo/drzitel/rodnecislo/{birthNumber}`.replace(
         `{${'birthNumber'}}`,
-        encodeURIComponent(String(birthNumber))
+        encodeURIComponent(String(birthNumber)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5291,13 +6275,13 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
      */
     nevControllerVehicleByHolderICO: async (
       ico: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('nevControllerVehicleByHolderICO', 'ico', ico)
       const localVarPath = `/nev/vozidlo/drzitel/ico/{ico}`.replace(
         `{${'ico'}}`,
-        encodeURIComponent(String(ico))
+        encodeURIComponent(String(ico)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5336,13 +6320,13 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
      */
     nevControllerVehicleByOwnerBirthNumber: async (
       birthNumber: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'birthNumber' is not null or undefined
       assertParamExists('nevControllerVehicleByOwnerBirthNumber', 'birthNumber', birthNumber)
       const localVarPath = `/nev/vozidlo/vlastnik/rodnecislo/{birthNumber}`.replace(
         `{${'birthNumber'}}`,
-        encodeURIComponent(String(birthNumber))
+        encodeURIComponent(String(birthNumber)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5381,13 +6365,13 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
      */
     nevControllerVehicleByOwnerICO: async (
       ico: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('nevControllerVehicleByOwnerICO', 'ico', ico)
       const localVarPath = `/nev/vozidlo/vlastnik/ico/{ico}`.replace(
         `{${'ico'}}`,
-        encodeURIComponent(String(ico))
+        encodeURIComponent(String(ico)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5436,7 +6420,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
      */
     async nevControllerTechnicalEmisionControl(
       id: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNEVTkEkDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.nevControllerTechnicalEmisionControl(id, options)
@@ -5450,7 +6434,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -5462,11 +6446,11 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
      */
     async nevControllerVehicleByECV(
       ecv: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNEVMainDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nevControllerVehicleByECV(
         ecv,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -5478,7 +6462,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -5490,12 +6474,12 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
      */
     async nevControllerVehicleByHolderBirthNumber(
       birthNumber: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNEVMainDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.nevControllerVehicleByHolderBirthNumber(
           birthNumber,
-          options
+          options,
         )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -5507,7 +6491,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -5519,11 +6503,11 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
      */
     async nevControllerVehicleByHolderICO(
       ico: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNEVMainDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nevControllerVehicleByHolderICO(
         ico,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -5535,7 +6519,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -5547,7 +6531,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
      */
     async nevControllerVehicleByOwnerBirthNumber(
       birthNumber: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNEVMainDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.nevControllerVehicleByOwnerBirthNumber(birthNumber, options)
@@ -5561,7 +6545,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -5573,11 +6557,11 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
      */
     async nevControllerVehicleByOwnerICO(
       ico: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNEVMainDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nevControllerVehicleByOwnerICO(
         ico,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -5589,7 +6573,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -5602,7 +6586,7 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
 export const NEVNrodnEvidenciaVozidielApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = NEVNrodnEvidenciaVozidielApiFp(configuration)
   return {
@@ -5615,7 +6599,7 @@ export const NEVNrodnEvidenciaVozidielApiFactory = function (
      */
     nevControllerTechnicalEmisionControl(
       id: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseNEVTkEkDto> {
       return localVarFp
         .nevControllerTechnicalEmisionControl(id, options)
@@ -5628,7 +6612,10 @@ export const NEVNrodnEvidenciaVozidielApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nevControllerVehicleByECV(ecv: string, options?: any): AxiosPromise<ResponseNEVMainDto> {
+    nevControllerVehicleByECV(
+      ecv: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseNEVMainDto> {
       return localVarFp
         .nevControllerVehicleByECV(ecv, options)
         .then((request) => request(axios, basePath))
@@ -5642,7 +6629,7 @@ export const NEVNrodnEvidenciaVozidielApiFactory = function (
      */
     nevControllerVehicleByHolderBirthNumber(
       birthNumber: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseNEVMainDto> {
       return localVarFp
         .nevControllerVehicleByHolderBirthNumber(birthNumber, options)
@@ -5655,7 +6642,10 @@ export const NEVNrodnEvidenciaVozidielApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nevControllerVehicleByHolderICO(ico: string, options?: any): AxiosPromise<ResponseNEVMainDto> {
+    nevControllerVehicleByHolderICO(
+      ico: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseNEVMainDto> {
       return localVarFp
         .nevControllerVehicleByHolderICO(ico, options)
         .then((request) => request(axios, basePath))
@@ -5669,7 +6659,7 @@ export const NEVNrodnEvidenciaVozidielApiFactory = function (
      */
     nevControllerVehicleByOwnerBirthNumber(
       birthNumber: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseNEVMainDto> {
       return localVarFp
         .nevControllerVehicleByOwnerBirthNumber(birthNumber, options)
@@ -5682,7 +6672,10 @@ export const NEVNrodnEvidenciaVozidielApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nevControllerVehicleByOwnerICO(ico: string, options?: any): AxiosPromise<ResponseNEVMainDto> {
+    nevControllerVehicleByOwnerICO(
+      ico: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseNEVMainDto> {
       return localVarFp
         .nevControllerVehicleByOwnerICO(ico, options)
         .then((request) => request(axios, basePath))
@@ -5735,7 +6728,7 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    */
   public nevControllerVehicleByHolderBirthNumber(
     birthNumber: string,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return NEVNrodnEvidenciaVozidielApiFp(this.configuration)
       .nevControllerVehicleByHolderBirthNumber(birthNumber, options)
@@ -5766,7 +6759,7 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    */
   public nevControllerVehicleByOwnerBirthNumber(
     birthNumber: string,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return NEVNrodnEvidenciaVozidielApiFp(this.configuration)
       .nevControllerVehicleByOwnerBirthNumber(birthNumber, options)
@@ -5803,13 +6796,13 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
      */
     rfoControllerGetList: async (
       rodneCislo: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'rodneCislo' is not null or undefined
       assertParamExists('rfoControllerGetList', 'rodneCislo', rodneCislo)
       const localVarPath = `/rfo/rodneCislo/list/{rodneCislo}`.replace(
         `{${'rodneCislo'}}`,
-        encodeURIComponent(String(rodneCislo))
+        encodeURIComponent(String(rodneCislo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5852,13 +6845,13 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       rodneCislo: string,
       getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'rodneCislo' is not null or undefined
       assertParamExists('rfoControllerGetOne', 'rodneCislo', rodneCislo)
       const localVarPath = `/rfo/rodneCislo/{rodneCislo}`.replace(
         `{${'rodneCislo'}}`,
-        encodeURIComponent(String(rodneCislo))
+        encodeURIComponent(String(rodneCislo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5909,7 +6902,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       ifo: string,
       getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ifo' is not null or undefined
       assertParamExists('rfoControllerGetOneByIfo', 'ifo', ifo)
@@ -5965,7 +6958,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       priezvisko: Array<string>,
       datumNarodenia: string,
       rodnePriezvisko?: Array<string>,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'meno' is not null or undefined
       assertParamExists('rfoControllerGetOneByListOfNames', 'meno', meno)
@@ -6037,7 +7030,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
       rodnePriezvisko?: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'meno' is not null or undefined
       assertParamExists('rfoControllerGetOneByName', 'meno', meno)
@@ -6099,13 +7092,13 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
      */
     rfoControllerGetOneDcom: async (
       rodneCislo: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'rodneCislo' is not null or undefined
       assertParamExists('rfoControllerGetOneDcom', 'rodneCislo', rodneCislo)
       const localVarPath = `/rfo/rodneCislo/dcom/{rodneCislo}`.replace(
         `{${'rodneCislo'}}`,
-        encodeURIComponent(String(rodneCislo))
+        encodeURIComponent(String(rodneCislo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -6144,13 +7137,13 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
      */
     rfoControllerMark: async (
       ifo: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ifo' is not null or undefined
       assertParamExists('rfoControllerMark', 'ifo', ifo)
       const localVarPath = `/rfo/oznacenie-zaujmovej-osoby/{ifo}`.replace(
         `{${'ifo'}}`,
-        encodeURIComponent(String(ifo))
+        encodeURIComponent(String(ifo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -6189,13 +7182,13 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
      */
     rfoControllerUnMark: async (
       ifo: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ifo' is not null or undefined
       assertParamExists('rfoControllerUnMark', 'ifo', ifo)
       const localVarPath = `/rfo/odznacenie-zaujmovej-ososby/{ifo}`.replace(
         `{${'ifo'}}`,
-        encodeURIComponent(String(ifo))
+        encodeURIComponent(String(ifo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -6244,13 +7237,13 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
      */
     async rfoControllerGetList(
       rodneCislo: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonListDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetList(
         rodneCislo,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -6262,7 +7255,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -6278,13 +7271,13 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
       rodneCislo: string,
       getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetOne(
         rodneCislo,
         getFromDatabase,
         updateInDatabase,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -6296,7 +7289,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -6312,13 +7305,13 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
       ifo: string,
       getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetOneByIfo(
         ifo,
         getFromDatabase,
         updateInDatabase,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -6330,7 +7323,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -6348,14 +7341,14 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
       priezvisko: Array<string>,
       datumNarodenia: string,
       rodnePriezvisko?: Array<string>,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetOneByListOfNames(
         meno,
         priezvisko,
         datumNarodenia,
         rodnePriezvisko,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -6367,7 +7360,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -6389,7 +7382,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
       getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
       rodnePriezvisko?: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetOneByName(
         meno,
@@ -6398,7 +7391,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
         getFromDatabase,
         updateInDatabase,
         rodnePriezvisko,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -6410,7 +7403,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -6422,11 +7415,11 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
      */
     async rfoControllerGetOneDcom(
       rodneCislo: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetOneDcom(
         rodneCislo,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -6438,7 +7431,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -6450,7 +7443,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
      */
     async rfoControllerMark(
       ifo: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerMark(ifo, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -6463,7 +7456,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -6475,7 +7468,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
      */
     async rfoControllerUnMark(
       ifo: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerUnMark(ifo, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -6488,7 +7481,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -6501,7 +7494,7 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
 export const RFORegisterFyzickchOsbApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = RFORegisterFyzickchOsbApiFp(configuration)
   return {
@@ -6514,7 +7507,7 @@ export const RFORegisterFyzickchOsbApiFactory = function (
      */
     rfoControllerGetList(
       rodneCislo: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonListDto> {
       return localVarFp
         .rfoControllerGetList(rodneCislo, options)
@@ -6533,7 +7526,7 @@ export const RFORegisterFyzickchOsbApiFactory = function (
       rodneCislo: string,
       getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
         .rfoControllerGetOne(rodneCislo, getFromDatabase, updateInDatabase, options)
@@ -6552,7 +7545,7 @@ export const RFORegisterFyzickchOsbApiFactory = function (
       ifo: string,
       getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
         .rfoControllerGetOneByIfo(ifo, getFromDatabase, updateInDatabase, options)
@@ -6573,7 +7566,7 @@ export const RFORegisterFyzickchOsbApiFactory = function (
       priezvisko: Array<string>,
       datumNarodenia: string,
       rodnePriezvisko?: Array<string>,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
         .rfoControllerGetOneByListOfNames(
@@ -6581,7 +7574,7 @@ export const RFORegisterFyzickchOsbApiFactory = function (
           priezvisko,
           datumNarodenia,
           rodnePriezvisko,
-          options
+          options,
         )
         .then((request) => request(axios, basePath))
     },
@@ -6604,7 +7597,7 @@ export const RFORegisterFyzickchOsbApiFactory = function (
       getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
       updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
       rodnePriezvisko?: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
         .rfoControllerGetOneByName(
@@ -6614,7 +7607,7 @@ export const RFORegisterFyzickchOsbApiFactory = function (
           getFromDatabase,
           updateInDatabase,
           rodnePriezvisko,
-          options
+          options,
         )
         .then((request) => request(axios, basePath))
     },
@@ -6625,7 +7618,10 @@ export const RFORegisterFyzickchOsbApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    rfoControllerGetOneDcom(rodneCislo: string, options?: any): AxiosPromise<ResponseRfoPersonDto> {
+    rfoControllerGetOneDcom(
+      rodneCislo: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
         .rfoControllerGetOneDcom(rodneCislo, options)
         .then((request) => request(axios, basePath))
@@ -6637,7 +7633,10 @@ export const RFORegisterFyzickchOsbApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    rfoControllerMark(ifo: string, options?: any): AxiosPromise<ResponseRfoPersonDto> {
+    rfoControllerMark(
+      ifo: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp.rfoControllerMark(ifo, options).then((request) => request(axios, basePath))
     },
     /**
@@ -6647,7 +7646,10 @@ export const RFORegisterFyzickchOsbApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    rfoControllerUnMark(ifo: string, options?: any): AxiosPromise<ResponseRfoPersonDto> {
+    rfoControllerUnMark(
+      ifo: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
         .rfoControllerUnMark(ifo, options)
         .then((request) => request(axios, basePath))
@@ -6690,7 +7692,7 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
     rodneCislo: string,
     getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
     updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
       .rfoControllerGetOne(rodneCislo, getFromDatabase, updateInDatabase, options)
@@ -6711,7 +7713,7 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
     ifo: string,
     getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
     updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
       .rfoControllerGetOneByIfo(ifo, getFromDatabase, updateInDatabase, options)
@@ -6734,7 +7736,7 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
     priezvisko: Array<string>,
     datumNarodenia: string,
     rodnePriezvisko?: Array<string>,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
       .rfoControllerGetOneByListOfNames(meno, priezvisko, datumNarodenia, rodnePriezvisko, options)
@@ -6761,7 +7763,7 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
     getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
     updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
     rodnePriezvisko?: string,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
       .rfoControllerGetOneByName(
@@ -6771,7 +7773,7 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
         getFromDatabase,
         updateInDatabase,
         rodnePriezvisko,
-        options
+        options,
       )
       .then((request) => request(this.axios, this.basePath))
   }
@@ -6879,19 +7881,66 @@ export type RfoControllerGetOneByNameUpdateInDatabaseEnum =
  * @export
  */
 export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
-  configuration?: Configuration
+  configuration?: Configuration,
 ) {
   return {
+    /**
+     *
+     * @summary Returns array of legal persons (basic info) from SUSR RPO API.
+     * @param {string} fullName FULLTEXT search, for more info please refer to: https://susrrpo.docs.apiary.io/#/reference/0/vyhladavanie-po
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerFindLegalPersonsByFullNameFromApi: async (
+      fullName: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'fullName' is not null or undefined
+      assertParamExists('rpoControllerFindLegalPersonsByFullNameFromApi', 'fullName', fullName)
+      const localVarPath = `/rpo/susr/search`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (fullName !== undefined) {
+        localVarQueryParameter['fullName'] = fullName
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      *
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPerson: async (
       ico: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPerson', 'ico', ico)
@@ -6929,11 +7978,12 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPersonBase: async (
       ico: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPersonBase', 'ico', ico)
@@ -6971,17 +8021,111 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPersonBase_1: async (
       ico: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPersonBase_1', 'ico', ico)
       const localVarPath = `/rpo/base/ico/{ico}`.replace(
         `{${'ico'}}`,
-        encodeURIComponent(String(ico))
+        encodeURIComponent(String(ico)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Returns basic information and detail (optional) about a legal person from SUSR RPO API
+     * @param {string} ico
+     * @param {boolean} [returnDetail] If false, response won\&#39;t include detail of the legal person. Default: true
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPersonByIcoFromApi: async (
+      ico: string,
+      returnDetail?: boolean,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'ico' is not null or undefined
+      assertParamExists('rpoControllerGetLegalPersonByIcoFromApi', 'ico', ico)
+      const localVarPath = `/rpo/susr/{ico}`.replace(`{${'ico'}}`, encodeURIComponent(String(ico)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (returnDetail !== undefined) {
+        localVarQueryParameter['returnDetail'] = returnDetail
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Returns legal person detail (all info) from SUSR RPO API
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPersonDetailFromAPI: async (
+      id: number,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('rpoControllerGetLegalPersonDetailFromAPI', 'id', id)
+      const localVarPath = `/rpo/susr/detail/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -7016,11 +8160,12 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPerson_2: async (
       ico: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPerson_2', 'ico', ico)
@@ -7065,20 +8210,52 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
   return {
     /**
      *
+     * @summary Returns array of legal persons (basic info) from SUSR RPO API.
+     * @param {string} fullName FULLTEXT search, for more info please refer to: https://susrrpo.docs.apiary.io/#/reference/0/vyhladavanie-po
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async rpoControllerFindLegalPersonsByFullNameFromApi(
+      fullName: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SearchGet200ResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.rpoControllerFindLegalPersonsByFullNameFromApi(
+          fullName,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'RPORegisterPrvnickchOsbApi.rpoControllerFindLegalPersonsByFullNameFromApi'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async rpoControllerGetLegalPerson(
       ico: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPerson(
         ico,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -7090,7 +8267,7 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -7098,17 +8275,18 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async rpoControllerGetLegalPersonBase(
       ico: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPersonBase(
         ico,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -7120,7 +8298,7 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -7128,17 +8306,18 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async rpoControllerGetLegalPersonBase_1(
       ico: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPersonBase_1(
         ico,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -7150,7 +8329,69 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Returns basic information and detail (optional) about a legal person from SUSR RPO API
+     * @param {string} ico
+     * @param {boolean} [returnDetail] If false, response won\&#39;t include detail of the legal person. Default: true
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async rpoControllerGetLegalPersonByIcoFromApi(
+      ico: string,
+      returnDetail?: boolean,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<FindOneByIcoFromApiResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.rpoControllerGetLegalPersonByIcoFromApi(
+          ico,
+          returnDetail,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPersonByIcoFromApi']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Returns legal person detail (all info) from SUSR RPO API
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async rpoControllerGetLegalPersonDetailFromAPI(
+      id: number,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<EntityIdGet200ResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.rpoControllerGetLegalPersonDetailFromAPI(id, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPersonDetailFromAPI']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -7158,17 +8399,18 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async rpoControllerGetLegalPerson_2(
       ico: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPerson_2(
         ico,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -7180,7 +8422,7 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -7193,20 +8435,36 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
 export const RPORegisterPrvnickchOsbApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = RPORegisterPrvnickchOsbApiFp(configuration)
   return {
     /**
      *
+     * @summary Returns array of legal persons (basic info) from SUSR RPO API.
+     * @param {string} fullName FULLTEXT search, for more info please refer to: https://susrrpo.docs.apiary.io/#/reference/0/vyhladavanie-po
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerFindLegalPersonsByFullNameFromApi(
+      fullName: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SearchGet200ResponseDto> {
+      return localVarFp
+        .rpoControllerFindLegalPersonsByFullNameFromApi(fullName, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPerson(
       ico: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRpoLegalPersonDto> {
       return localVarFp
         .rpoControllerGetLegalPerson(ico, options)
@@ -7217,11 +8475,12 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPersonBase(
       ico: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRpoLegalPersonDto> {
       return localVarFp
         .rpoControllerGetLegalPersonBase(ico, options)
@@ -7232,11 +8491,12 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPersonBase_1(
       ico: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRpoLegalPersonDto> {
       return localVarFp
         .rpoControllerGetLegalPersonBase_1(ico, options)
@@ -7244,14 +8504,47 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
     },
     /**
      *
+     * @summary Returns basic information and detail (optional) about a legal person from SUSR RPO API
+     * @param {string} ico
+     * @param {boolean} [returnDetail] If false, response won\&#39;t include detail of the legal person. Default: true
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPersonByIcoFromApi(
+      ico: string,
+      returnDetail?: boolean,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<FindOneByIcoFromApiResponse> {
+      return localVarFp
+        .rpoControllerGetLegalPersonByIcoFromApi(ico, returnDetail, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Returns legal person detail (all info) from SUSR RPO API
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPersonDetailFromAPI(
+      id: number,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<EntityIdGet200ResponseDto> {
+      return localVarFp
+        .rpoControllerGetLegalPersonDetailFromAPI(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary Information about a legal person
      * @param {string} ico
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     rpoControllerGetLegalPerson_2(
       ico: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRpoLegalPersonDto> {
       return localVarFp
         .rpoControllerGetLegalPerson_2(ico, options)
@@ -7269,9 +8562,27 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
 export class RPORegisterPrvnickchOsbApi extends BaseAPI {
   /**
    *
+   * @summary Returns array of legal persons (basic info) from SUSR RPO API.
+   * @param {string} fullName FULLTEXT search, for more info please refer to: https://susrrpo.docs.apiary.io/#/reference/0/vyhladavanie-po
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RPORegisterPrvnickchOsbApi
+   */
+  public rpoControllerFindLegalPersonsByFullNameFromApi(
+    fullName: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return RPORegisterPrvnickchOsbApiFp(this.configuration)
+      .rpoControllerFindLegalPersonsByFullNameFromApi(fullName, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
    * @summary Information about a legal person
    * @param {string} ico
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof RPORegisterPrvnickchOsbApi
    */
@@ -7286,6 +8597,7 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @summary Information about a legal person
    * @param {string} ico
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof RPORegisterPrvnickchOsbApi
    */
@@ -7300,6 +8612,7 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @summary Information about a legal person
    * @param {string} ico
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof RPORegisterPrvnickchOsbApi
    */
@@ -7311,9 +8624,43 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
 
   /**
    *
+   * @summary Returns basic information and detail (optional) about a legal person from SUSR RPO API
+   * @param {string} ico
+   * @param {boolean} [returnDetail] If false, response won\&#39;t include detail of the legal person. Default: true
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RPORegisterPrvnickchOsbApi
+   */
+  public rpoControllerGetLegalPersonByIcoFromApi(
+    ico: string,
+    returnDetail?: boolean,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return RPORegisterPrvnickchOsbApiFp(this.configuration)
+      .rpoControllerGetLegalPersonByIcoFromApi(ico, returnDetail, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Returns legal person detail (all info) from SUSR RPO API
+   * @param {number} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RPORegisterPrvnickchOsbApi
+   */
+  public rpoControllerGetLegalPersonDetailFromAPI(id: number, options?: RawAxiosRequestConfig) {
+    return RPORegisterPrvnickchOsbApiFp(this.configuration)
+      .rpoControllerGetLegalPersonDetailFromAPI(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
    * @summary Information about a legal person
    * @param {string} ico
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof RPORegisterPrvnickchOsbApi
    */
@@ -7329,7 +8676,7 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
  * @export
  */
 export const RSDRegisterSocilnychDvokApiAxiosParamCreator = function (
-  configuration?: Configuration
+  configuration?: Configuration,
 ) {
   return {
     /**
@@ -7340,7 +8687,7 @@ export const RSDRegisterSocilnychDvokApiAxiosParamCreator = function (
      * @throws {RequiredError}
      */
     rsdControllerContributions: async (
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/rsd/contributions`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7388,7 +8735,7 @@ export const RSDRegisterSocilnychDvokApiAxiosParamCreator = function (
       toDate: string,
       dateOfBirth?: string,
       birthNumber?: string,
-      options: RawAxiosRequestConfig = {}
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'firstName' is not null or undefined
       assertParamExists('rsdControllerState', 'firstName', firstName)
@@ -7463,7 +8810,7 @@ export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configura
      * @throws {RequiredError}
      */
     async rsdControllerContributions(
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rsdControllerContributions(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -7476,7 +8823,7 @@ export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configura
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
@@ -7496,7 +8843,7 @@ export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configura
       toDate: string,
       dateOfBirth?: string,
       birthNumber?: string,
-      options?: RawAxiosRequestConfig
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRsdStateDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rsdControllerState(
         firstName,
@@ -7504,7 +8851,7 @@ export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configura
         toDate,
         dateOfBirth,
         birthNumber,
-        options
+        options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -7516,7 +8863,7 @@ export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configura
           localVarAxiosArgs,
           globalAxios,
           BASE_PATH,
-          configuration
+          configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
   }
@@ -7529,7 +8876,7 @@ export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configura
 export const RSDRegisterSocilnychDvokApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
-  axios?: AxiosInstance
+  axios?: AxiosInstance,
 ) {
   const localVarFp = RSDRegisterSocilnychDvokApiFp(configuration)
   return {
@@ -7540,7 +8887,7 @@ export const RSDRegisterSocilnychDvokApiFactory = function (
      * @deprecated
      * @throws {RequiredError}
      */
-    rsdControllerContributions(options?: any): AxiosPromise<void> {
+    rsdControllerContributions(options?: RawAxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
         .rsdControllerContributions(options)
         .then((request) => request(axios, basePath))
@@ -7562,7 +8909,7 @@ export const RSDRegisterSocilnychDvokApiFactory = function (
       toDate: string,
       dateOfBirth?: string,
       birthNumber?: string,
-      options?: any
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRsdStateDto> {
       return localVarFp
         .rsdControllerState(firstName, surname, toDate, dateOfBirth, birthNumber, options)
@@ -7610,7 +8957,7 @@ export class RSDRegisterSocilnychDvokApi extends BaseAPI {
     toDate: string,
     dateOfBirth?: string,
     birthNumber?: string,
-    options?: RawAxiosRequestConfig
+    options?: RawAxiosRequestConfig,
   ) {
     return RSDRegisterSocilnychDvokApiFp(this.configuration)
       .rsdControllerState(firstName, surname, toDate, dateOfBirth, birthNumber, options)

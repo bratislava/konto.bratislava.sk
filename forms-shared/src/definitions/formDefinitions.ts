@@ -82,6 +82,7 @@ import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamen
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
 import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPristupKInformaciam'
+import ziadostOUzemnoplanovaciuInformaciu from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -568,5 +569,23 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A3M3',
     },
     isSigned: false,
+  },
+  {
+    type: FormDefinitionType.SlovenskoSkGeneric,
+    slug: 'ziadost-o-uzemnoplanovaciu-informaciu',
+    title: 'Žiadosť o územnoplánovaciu informáciu',
+    jsonVersion: '1.0.0',
+    schema: ziadostOUzemnoplanovaciuInformaciu,
+    sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+    pospID: '00603481.ziadostOUzemnoplanovaciuInformaciu',
+    pospVersion: '1.3',
+    publisher: 'ico://sk/00603481',
+    termsAndConditions: generalTermsAndConditions,
+    ginisAssignment: {
+      ginisNodeId: 'MAG0SS00A0ZV',
+      ginisFunctionId: 'MAG0SF00ASI3',
+    },
+    isSigned: false,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
   },
 ]

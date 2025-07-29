@@ -99,7 +99,7 @@ export class TaxController {
   @Get('get-tax-pdf-by-year')
   async getTaxByYearPdf(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year') year: number,
+    @Query('year', ParseIntPipe) year: number,
     @Res() res: any,
   ) {
     try {

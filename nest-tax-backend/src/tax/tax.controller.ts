@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  ParseIntPipe,
   Query,
   Res,
   UseGuards,
@@ -68,7 +69,7 @@ export class TaxController {
   @Get('get-tax-by-year')
   async getActualTaxes(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year') year: number,
+    @Query('year', ParseIntPipe) year: number,
   ): Promise<ResponseTaxDto> {
     return this.taxService.getTaxByYear(year, baUser.birthNumber)
   }
@@ -99,7 +100,7 @@ export class TaxController {
   @Get('get-tax-pdf-by-year')
   async getTaxByYearPdf(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year') year: number,
+    @Query('year', ParseIntPipe) year: number,
     @Res() res: any,
   ) {
     try {

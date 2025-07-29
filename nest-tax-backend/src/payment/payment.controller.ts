@@ -3,7 +3,7 @@ import {
   Get,
   HttpCode,
   HttpException,
-  Param,
+  Param, ParseIntPipe,
   Post,
   Query,
   Redirect,
@@ -71,7 +71,7 @@ export class PaymentController {
   @Post('cardpay/by-year/:year')
   async payment(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Param('year') year: string,
+    @Param('year', ParseIntPipe) year: number,
   ) {
     const urlToRedirect = await this.paymentService.getPayGateUrlByUserAndYear(
       year,
@@ -108,7 +108,7 @@ export class PaymentController {
   @Post('cardpay/full-payment/:year')
   async generateFullPaymentLink(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Param('year') year: number,
+    @Param('year', ParseIntPipe) year: number,
   ) {
     const urlToRedirect = await this.paymentService.generateFullPaymentLink(
       {
@@ -148,7 +148,7 @@ export class PaymentController {
   @Post('cardpay/installment-payment/:year')
   async generateInstallmentPaymentLink(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Param('year') year: number,
+    @Param('year', ParseIntPipe) year: number,
   ) {
     const urlToRedirect =
       await this.paymentService.generateInstallmentPaymentLink(

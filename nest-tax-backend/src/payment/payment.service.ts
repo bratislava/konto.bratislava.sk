@@ -250,7 +250,7 @@ export class PaymentService {
     return this.getPaymentUrl(tax)
   }
 
-  async getPayGateUrlByUserAndYear(year: string, birthNumber: string) {
+  async getPayGateUrlByUserAndYear(year: number, birthNumber: string) {
     let taxPayer: TaxPayer | null = null
     try {
       taxPayer = await this.prisma.taxPayer.findUnique({

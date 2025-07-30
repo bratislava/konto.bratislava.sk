@@ -2347,13 +2347,13 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
-     * @param {number} year
+     * @param {string} year
      * @param {*} [options] Override http request option.
      * @deprecated
      * @throws {RequiredError}
      */
     paymentControllerPayment: async (
-      year: number,
+      year: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'year' is not null or undefined
@@ -2620,13 +2620,13 @@ export const PaymentApiFp = function (configuration?: Configuration) {
     /**
      * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
-     * @param {number} year
+     * @param {string} year
      * @param {*} [options] Override http request option.
      * @deprecated
      * @throws {RequiredError}
      */
     async paymentControllerPayment(
-      year: number,
+      year: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetPaymentUrlDto>
@@ -2782,13 +2782,13 @@ export const PaymentApiFactory = function (
     /**
      * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
-     * @param {number} year
+     * @param {string} year
      * @param {*} [options] Override http request option.
      * @deprecated
      * @throws {RequiredError}
      */
     paymentControllerPayment(
-      year: number,
+      year: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseGetPaymentUrlDto> {
       return localVarFp
@@ -2903,13 +2903,13 @@ export class PaymentApi extends BaseAPI {
   /**
    * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
    * @summary Generate payment link to logged user for submitted year if there is no payment.
-   * @param {number} year
+   * @param {string} year
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
    * @memberof PaymentApi
    */
-  public paymentControllerPayment(year: number, options?: RawAxiosRequestConfig) {
+  public paymentControllerPayment(year: string, options?: RawAxiosRequestConfig) {
     return PaymentApiFp(this.configuration)
       .paymentControllerPayment(year, options)
       .then((request) => request(this.axios, this.basePath))

@@ -1,20 +1,37 @@
 import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
-import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
+import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import { ResponseTaxAdministratorDto } from 'openapi-clients/tax'
 
 import MLinkNew from '../../../simple-components/MLinkNew'
 
 type TaxesFeesTaxAdministratorCardProps = {
-  taxAdministrator: StrapiTaxAdministrator
+  beTaxAdministrator: ResponseTaxAdministratorDto | null
+  strapiTaxAdministrator: StrapiTaxAdministrator | null
+}
+
+const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorDto) => {
+  return {
+    name: taxAdministrator.name,
+    phone: taxAdministrator.phoneNumber,
+    email: taxAdministrator.email,
+  }
 }
 
 /**
  * TODO: Use card component, translations
- * @param taxAdministrator
- * @constructor
  */
 const TaxesFeesTaxAdministratorCard = ({
-  taxAdministrator,
+  beTaxAdministrator,
+  strapiTaxAdministrator,
 }: TaxesFeesTaxAdministratorCardProps) => {
+  const taxAdministrator = beTaxAdministrator
+    ? normalizeBeTaxAdministrator(beTaxAdministrator)
+    : strapiTaxAdministrator
+
+  if (!taxAdministrator) {
+    return null
+  }
+
   return (
     <div className="flex w-full items-start gap-4 rounded-lg border-2 border-gray-200 p-5">
       <div className="hidden rounded-lg border-2 border-gray-200 p-3 sm:block">

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { FormError, Forms, FormState, Prisma } from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -19,8 +19,7 @@ import {
 } from 'forms-shared/versioning/version-compare'
 import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
 
-import { AuthUser, isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
-import { getUserIco, userToFormOwnerType } from '../auth-v2/utils/user-utils'
+import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
 import FilesService from '../files/files.service'
@@ -31,7 +30,6 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
@@ -41,7 +39,6 @@ import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
-  CreateFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
   GetFormsResponseDto,
@@ -49,7 +46,6 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
-import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
@@ -73,7 +69,6 @@ export default class NasesService {
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
     private readonly clientsService: ClientsService,
-    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
@@ -99,35 +94,6 @@ export default class NasesService {
         return null
       })
     return result
-  }
-
-  async createForm(
-    requestData: CreateFormRequestDto,
-    user: User,
-  ): Promise<CreateFormResponseDto> {
-    const formDefinition = getFormDefinitionBySlug(
-      requestData.formDefinitionSlug,
-    )
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
-      )
-    }
-
-    const data: Prisma.FormsUncheckedCreateInput = {
-      userExternalId: isAuthUser(user) ? user.cognitoJwtPayload.sub : null,
-      cognitoGuestIdentityId: isGuestUser(user) ? user.cognitoIdentityId : null,
-      formDefinitionSlug: requestData.formDefinitionSlug,
-      jsonVersion: formDefinition.jsonVersion,
-      ico: getUserIco(user),
-      ownerType: userToFormOwnerType(user),
-    }
-    const result = await this.formsService.createForm(data)
-
-    return {
-      formId: result.id,
-    }
   }
 
   async getForm(
@@ -190,17 +156,6 @@ export default class NasesService {
       )
     }
 
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        'Unauthorized',
-      )
-    }
-
     const data = {
       ...getUserFormFields(user),
       ...requestData,
@@ -241,24 +196,13 @@ export default class NasesService {
     }
   }
 
-  async sendForm(id: string, user: User): Promise<SendFormResponseDto> {
-    const form = await this.formsService.checkFormBeforeSending(id)
+  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
+    const form = await this.formsService.checkFormBeforeSending(formId)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
-    }
-
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
 
@@ -303,7 +247,7 @@ export default class NasesService {
     )
     if (validationResult.errors.length > 0) {
       this.logger.error(
-        `Data for form with id ${id} is invalid: ${JSON.stringify(
+        `Data for form with id ${formId} is invalid: ${JSON.stringify(
           validationResult.errors,
         )}`,
       )
@@ -314,7 +258,9 @@ export default class NasesService {
       )
     }
 
-    this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
+    this.checkAttachments(
+      await this.filesService.areFormAttachmentsReady(formId),
+    )
 
     const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
 
@@ -375,17 +321,6 @@ export default class NasesService {
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
-
-    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
-      form,
-      user,
-    )
-    if (!hasAccess) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
-      )
-    }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {

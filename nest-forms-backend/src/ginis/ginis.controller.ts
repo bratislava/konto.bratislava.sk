@@ -12,10 +12,14 @@ import {
 } from '@nestjs/swagger'
 
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
-import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
-import { AuthUser, UserType } from '../auth-v2/types/user'
+import { UserType } from '../auth-v2/types/user'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import {
   mapGinisHistory,
   MappedDocumentHistory,
@@ -47,13 +51,18 @@ export default class GinisController {
   })
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
-  @UseGuards(UserAuthGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard)
   @Get(':formId')
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,
-    @GetUser() user: AuthUser,
   ): Promise<GinisDocumentDetailResponseDto> {
-    const form = await this.formsService.getFormWithAccessCheck(formId, user)
+    const form = await this.formsService.getUniqueForm(formId)
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
     const { ginisDocumentId } = form
     if (!ginisDocumentId) {
       throw this.throwerErrorGuard.NotFoundException(

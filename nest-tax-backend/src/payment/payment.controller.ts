@@ -71,7 +71,7 @@ export class PaymentController {
   @Post('cardpay/by-year/:year')
   async payment(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Param('year', ParseIntPipe) year: number,
+    @Param('year') year: string,
   ) {
     const urlToRedirect = await this.paymentService.getPayGateUrlByUserAndYear(
       year,

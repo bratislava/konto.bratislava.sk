@@ -24,13 +24,13 @@ const TaxesFeesTaxAdministratorCard = ({
   beTaxAdministrator,
   strapiTaxAdministrator,
 }: TaxesFeesTaxAdministratorCardProps) => {
-  if (!beTaxAdministrator && !strapiTaxAdministrator) {
-    return null
-  }
-
   const taxAdministrator = beTaxAdministrator
     ? normalizeBeTaxAdministrator(beTaxAdministrator)
-    : strapiTaxAdministrator!
+    : strapiTaxAdministrator
+
+  if (!taxAdministrator) {
+    return null
+  }
 
   return (
     <div className="flex w-full items-start gap-4 rounded-lg border-2 border-gray-200 p-5">

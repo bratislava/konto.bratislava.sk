@@ -28,8 +28,9 @@ import { contentType } from 'mime-types'
 import BasicGuard from '../auth/guards/auth-basic.guard'
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
+import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
-import { UserType } from '../auth-v2/types/user'
+import { User, UserType } from '../auth-v2/types/user'
 import {
   FormAccessAllowMigrations,
   FormAccessGuard,
@@ -129,15 +130,16 @@ export default class FilesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(UserAuthGuard)
   @Post('upload/:formId')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
+    @GetUser() user: User,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(formId, file, body)
+    return this.filesService.uploadFile(formId, file, body, user)
   }
 
   @ApiOperation({
@@ -150,13 +152,13 @@ export default class FilesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Get('download/jwt/:formId/:fileId')
+  @UseGuards(UserAuthGuard)
+  @Get('download/jwt/:fileId')
   async downloadToken(
-    @Param('formId') formId: string,
     @Param('fileId') fileId: string,
+    @GetUser() user: User,
   ): Promise<DownloadTokenResponseDataDto> {
-    return this.filesService.downloadToken(formId, fileId)
+    return this.filesService.downloadToken(fileId, user)
   }
 
   @ApiOperation({

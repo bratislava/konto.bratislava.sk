@@ -99,8 +99,9 @@ const MyApplicationsCard = ({
     try {
       if (!formId) throw new Error('No form id provided for exportXml')
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
-        formId,
-        {},
+        {
+          formId,
+        },
         { authStrategy: 'authOrGuestWithToken' },
       )
       const fileName = `${formSlug}_output.xml`
@@ -122,8 +123,9 @@ const MyApplicationsCard = ({
           `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
       const response = await formsClient.convertControllerConvertToPdf(
-        formId,
-        {},
+        {
+          formId,
+        },
         { authStrategy: 'authOrGuestWithToken', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`

@@ -112,8 +112,8 @@ export const useGetContext = () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
-        formId,
         {
+          formId,
           jsonData: formData,
         },
         { authStrategy: 'authOrGuestWithToken' },
@@ -152,8 +152,8 @@ export const useGetContext = () => {
       openSnackbarInfo(t('info_messages.xml_import'))
       const xmlForm = await file.text()
       const { data } = await formsClient.convertControllerConvertXmlToJson(
-        formId,
         {
+          formId,
           xmlForm,
         },
         { authStrategy: 'authOrGuestWithToken' },
@@ -205,8 +205,8 @@ export const useGetContext = () => {
 
   const runPdfExport = async (abortController?: AbortController) => {
     const response = await formsClient.convertControllerConvertToPdf(
-      formId,
       {
+        formId,
         jsonData: formData,
         clientFiles: clientFiles.map((fileInfo) => ({
           ...fileInfo,

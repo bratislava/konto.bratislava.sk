@@ -9,10 +9,13 @@ import { UpvsIdentityByUriModule } from '../upvs-identity-by-uri/upvs-identity-b
 import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { AdminController } from './admin.controller'
+import { UserService } from '../user/user.service'
 import { AdminService } from './admin.service'
 import { AdminCronSubservice } from './subservices/admin-cron.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import ClientsModule from '../clients/clients.module'
+import { UserModule } from '../user/user.module'
+import { DatabaseSubserviceUser } from '../user/utils/subservice/database.subservice'
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import ClientsModule from '../clients/clients.module'
     PhysicalEntityModule,
     BloomreachModule,
     ClientsModule,
+    UserModule,
   ],
   providers: [
     AdminService,
@@ -31,6 +35,8 @@ import ClientsModule from '../clients/clients.module'
     CognitoSubservice,
     AdminCronSubservice,
     TaxSubservice,
+    UserService,
+    DatabaseSubserviceUser,
   ],
   exports: [],
   controllers: [AdminController],

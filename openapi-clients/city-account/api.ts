@@ -1689,6 +1689,43 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
+     * This endpoint is intended to be used manually to trigger a backup of all users from cognito and then call getOrCreate for each user.
+     * @summary Sync all users from cognito to db
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerSyncCognitoToDb: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/admin/sync-cognito-to-db`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
      * @summary Validate edesk for physicalEntities
      * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
@@ -2107,6 +2144,30 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * This endpoint is intended to be used manually to trigger a backup of all users from cognito and then call getOrCreate for each user.
+     * @summary Sync all users from cognito to db
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerSyncCognitoToDb(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerSyncCognitoToDb(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerSyncCognitoToDb']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
      * @summary Validate edesk for physicalEntities
      * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
@@ -2354,6 +2415,17 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * This endpoint is intended to be used manually to trigger a backup of all users from cognito and then call getOrCreate for each user.
+     * @summary Sync all users from cognito to db
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerSyncCognitoToDb(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerSyncCognitoToDb(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
      * @summary Validate edesk for physicalEntities
      * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
@@ -2533,6 +2605,19 @@ export class ADMINApi extends BaseAPI {
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerMarkAccountsAsDeceasedByBirthnumber(markDeceasedAccountRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * This endpoint is intended to be used manually to trigger a backup of all users from cognito and then call getOrCreate for each user.
+   * @summary Sync all users from cognito to db
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerSyncCognitoToDb(options?: RawAxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerSyncCognitoToDb(options)
       .then((request) => request(this.axios, this.basePath))
   }
 

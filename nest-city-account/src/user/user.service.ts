@@ -20,6 +20,7 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
 @Injectable()
 export class UserService {
@@ -260,6 +261,20 @@ export class UserService {
         undefined,
         error
       )
+    }
+  }
+
+  async getOrCreateUser(user: CognitoGetUserData) {
+    if (user['custom:account_type'] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      const result = await this.databaseSubservice.getOrCreateUser(user.idUser, user.email)
+      return result
+    }
+    if (
+      user['custom:account_type'] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      user['custom:account_type'] === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      const result = await this.databaseSubservice.getOrCreateLegalPerson(user.idUser, user.email)
+      return result
     }
   }
 }

@@ -1119,6 +1119,20 @@ export const TaxPaidStatusEnum = {
 export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
 
 /**
+ *
+ * @export
+ * @interface UpdateDeliveryMethodsInNorisResponseDto
+ */
+export interface UpdateDeliveryMethodsInNorisResponseDto {
+  /**
+   * An array of birth numbers which were added to TaxPayers in this batch.
+   * @type {Array<string>}
+   * @memberof UpdateDeliveryMethodsInNorisResponseDto
+   */
+  birthNumbers: Array<string>
+}
+
+/**
  * AdminApi - axios parameter creator
  * @export
  */
@@ -1641,7 +1655,12 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminControllerUpdateDeliveryMethodsInNoris(
       requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto>
+    > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerUpdateDeliveryMethodsInNoris(
           requestUpdateNorisDeliveryMethodsDto,
@@ -1788,7 +1807,7 @@ export const AdminApiFactory = function (
     adminControllerUpdateDeliveryMethodsInNoris(
       requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto> {
       return localVarFp
         .adminControllerUpdateDeliveryMethodsInNoris(requestUpdateNorisDeliveryMethodsDto, options)
         .then((request) => request(axios, basePath))

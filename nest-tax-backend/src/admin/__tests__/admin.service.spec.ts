@@ -214,6 +214,23 @@ describe('TasksService', () => {
         service['norisService'].updateDeliveryMethods,
       ).not.toHaveBeenCalled()
     })
+
+    it('should return all birth numbers which were updated', async () => {
+      const mockData: RequestUpdateNorisDeliveryMethodsData = {
+        '123456/789': { deliveryMethod: DeliveryMethod.EDESK },
+        '234567/890': { deliveryMethod: DeliveryMethod.EDESK },
+        '234567/111': { deliveryMethod: DeliveryMethod.POSTAL },
+      }
+      jest
+        .spyOn(service['norisService'], 'updateDeliveryMethods')
+        .mockResolvedValueOnce(['123456/789', '234567/890'])
+
+      const result = await service.updateDeliveryMethodsInNoris({
+        data: mockData,
+      })
+
+      expect(result.birthNumbers).toEqual(['123456/789', '234567/890']) // 234567/111 should not be included as it was not updated
+    })
   })
 
   describe('removeDeliveryMethodsFromNoris', () => {

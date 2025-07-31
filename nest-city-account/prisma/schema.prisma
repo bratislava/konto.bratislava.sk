@@ -25,31 +25,63 @@ enum DeliveryMethodEnum {
   POSTAL
 }
 
+enum DeliveryMethodUserEnum {
+  CITY_ACCOUNT
+  POSTAL
+}
+
+enum GDPRTypeEnum {
+  ANALYTICS
+  DATAPROCESSING
+  FORMAL_COMMUNICATION
+  LICENSE
+  MARKETING
+  // marketing
+}
+
+enum GDPRSubTypeEnum {
+  subscribe
+  unsubscribe
+}
+
+enum GDPRCategoryEnum {
+  CITY
+  ESBS
+  SWIMMINGPOOLS
+  TAXES
+  // init
+  INIT
+  // library
+  LIBRARY
+}
+
 model User {
-  id                               String                         @id @default(uuid()) @db.Uuid
-  createdAt                        DateTime                       @default(now())
-  updatedAt                        DateTime                       @updatedAt
-  externalId                       String?                        @unique
-  email                            String?                        @unique
-  ifo                              String?                        @unique
-  birthNumber                      String?                        @unique
-  lastVerificationIdentityCard     DateTime?
-  oldMagproxyDatabase              Int                            @default(0)
-  requeuedInVerification           Int                            @default(0)
-  birthnumberAlreadyExistsLast     String?
-  birthnumberAlreadyExistsCounter  Int                            @default(0)
-  userAttribute                    String?
-  userGdprData                     UserGdprData[]
-  physicalEntity                   PhysicalEntity?
-  lastTaxYear                      Int?
-  lastTaxBackendUploadTry          DateTime                       @default(now())
-  lastTaxDeliveryMethodsUpdateYear Int?
-  taxDeliveryMethodAtLockDate      DeliveryMethodEnum?
-  taxDeliveryMethodCityAccountDate DateTime?
-  cognitoTier                      CognitoUserAttributesTierEnum?
-  userIdCardVerify                 UserIdCardVerify[]
-  isDeceased                       Boolean                        @default(false)
-  markedDeceasedAt                 DateTime?
+  id                                   String                         @id @default(uuid()) @db.Uuid
+  createdAt                            DateTime                       @default(now())
+  updatedAt                            DateTime                       @updatedAt
+  externalId                           String?                        @unique
+  email                                String?                        @unique
+  ifo                                  String?                        @unique
+  birthNumber                          String?                        @unique
+  lastVerificationIdentityCard         DateTime?
+  oldMagproxyDatabase                  Int                            @default(0)
+  requeuedInVerification               Int                            @default(0)
+  birthnumberAlreadyExistsLast         String?
+  birthnumberAlreadyExistsCounter      Int                            @default(0)
+  userAttribute                        String?
+  userGdprData                         UserGdprData[]
+  physicalEntity                       PhysicalEntity?
+  lastTaxYear                          Int?
+  lastTaxBackendUploadTry              DateTime                       @default(now())
+  lastTaxDeliveryMethodsUpdateYear     Int?
+  taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
+  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery
+  taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
+  taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
+  cognitoTier                          CognitoUserAttributesTierEnum?
+  userIdCardVerify                     UserIdCardVerify[]
+  isDeceased                           Boolean                        @default(false)
+  markedDeceasedAt                     DateTime?
 }
 
 // In this table we store for one month the data used by a user to verify their account by ID card.
@@ -126,25 +158,25 @@ model LegalPerson {
 }
 
 model UserGdprData {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @db.Uuid
-  type      String
-  category  String
-  subType   String?
-  user      User     @relation(fields: [userId], references: [id])
+  id        String           @id @default(uuid())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  userId    String           @db.Uuid
+  type      GDPRTypeEnum
+  category  GDPRCategoryEnum
+  subType   GDPRSubTypeEnum?
+  user      User             @relation(fields: [userId], references: [id])
 }
 
 model LegalPersonGdprData {
-  id            String      @id @default(uuid())
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  legalPersonId String      @db.Uuid
-  type          String
-  category      String
-  subType       String?
-  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id])
+  id            String           @id @default(uuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  legalPersonId String           @db.Uuid
+  type          GDPRTypeEnum
+  category      GDPRCategoryEnum
+  subType       GDPRSubTypeEnum?
+  legalPerson   LegalPerson      @relation(fields: [legalPersonId], references: [id])
 }
 
 model Config {

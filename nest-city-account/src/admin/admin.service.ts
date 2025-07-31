@@ -17,6 +17,7 @@ import {
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { decryptData } from '../utils/crypto'
 import {
+  CognitoGetUserData,
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
@@ -40,6 +41,8 @@ import {
 } from './utils/account-deactivate.utils'
 import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
+import { UserService } from '../user/user.service'
+import { AdminCronSubservice } from './subservices/admin-cron.subservice'
 
 @Injectable()
 export class AdminService {
@@ -50,7 +53,9 @@ export class AdminService {
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
-    private readonly taxSubservice: TaxSubservice
+    private readonly taxSubservice: TaxSubservice,
+    private readonly userService: UserService,
+    private readonly adminCronSubservice: AdminCronSubservice
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -117,6 +122,35 @@ export class AdminService {
     }
 
     return result
+  }
+
+  /**
+   * Activates Cron job for sync of cognito users to db.
+   * @returns void
+   */
+  async activateSyncCognitoToDb(): Promise<void> {
+    await this.prismaService.config.update({
+      where: { key: this.adminCronSubservice.cognitoSyncConfigDbkey },
+      data: { value: { active: true } },
+    })
+  }
+
+  /**
+   * Gets all users from cognito and calls getOrCreate for each user.
+   * @returns void
+   */
+  async syncCognitoToDb(): Promise<void> {
+    const cognitoUsers = await this.cognitoSubservice.getAllCognitoUsers()
+    if (!cognitoUsers) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        UserErrorsEnum.COGNITO_TYPE_ERROR,
+        UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+      )
+    }
+
+    for (const user of cognitoUsers) {
+      await this.userService.getOrCreateUser(user as CognitoGetUserData)
+    }
   }
 
   async checkUserVerifyState(email: string): Promise<UserVerifyState> {

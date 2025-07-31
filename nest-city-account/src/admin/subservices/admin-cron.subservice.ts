@@ -16,6 +16,10 @@ const ValidateEdeskConfigValueSchema = z.object({
   offset: z.number(),
 })
 
+const SyncCognitoToDbConfigValueSchema = z.object({
+  active: z.boolean(),
+})
+
 @Injectable()
 export class AdminCronSubservice {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminCronSubservice.name)
@@ -23,6 +27,8 @@ export class AdminCronSubservice {
   private readonly edeskCognitoConfigDbkey = 'VALIDATE_EDESK_FROM_COGNITO_DATA'
 
   private readonly edeskRfoConfigDbkey = 'VALIDATE_EDESK_FROM_RFO_DATA'
+
+  public readonly cognitoSyncConfigDbkey = 'SYNC_COGNITO_TO_DB'
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -161,5 +167,36 @@ export class AdminCronSubservice {
       })
     })
     this.logger.log(`New offset set: ${newOffset}`)
+  }
+
+  // even though this is a cron job, it only runs once at 3am then it deactivates itself
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  @HandleErrors('Cron Error')
+  async syncCognitoToDb(): Promise<void> {
+    const configDbResult = await this.prismaService.config.findUnique({
+      where: { key: this.cognitoSyncConfigDbkey },
+    })
+    if (!configDbResult) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'SYNC_COGNITO_TO_DB not found in database config.'
+      )
+    }
+    const config = SyncCognitoToDbConfigValueSchema.parse(configDbResult.value)
+    if (!config.active) {
+      return
+    }
+    this.logger.log(`${this.cognitoSyncConfigDbkey} turned ON, starting`)
+
+    const result = await this.adminService.syncCognitoToDb()
+
+    this.logger.log(`${this.cognitoSyncConfigDbkey} done: ${result}`)
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.config.update({
+        where: { key: this.cognitoSyncConfigDbkey },
+        data: { value: { active: false } },
+      })
+    })
   }
 }

@@ -61,7 +61,7 @@ $$
 
         -- Insert postal users
         INSERT INTO temp_delivery_data (id_user, delivery_method, priority, city_account_date)
-        SELECT DISTINCT ON (u.id) u.id,
+        SELECT DISTINCT ON (ugd."userId") u.id,
                                   'POSTAL'::"DeliveryMethodEnum",
                                   postal_priority,
                                   NULL

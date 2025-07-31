@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Param,
   Post,
   Res,
   StreamableFile,
@@ -20,7 +19,6 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { User, UserType } from '../auth-v2/types/user'
-import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
@@ -52,16 +50,15 @@ export default class ConvertController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Post('json-to-xml-v2/:formId')
+  @UseGuards(UserAuthGuard)
+  @Post('json-to-xml-v2')
   async convertJsonToXmlV2(
     @Body() data: JsonToXmlV2RequestDto,
-    @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<string> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
-      return await this.convertService.convertJsonToXmlV2(formId, data)
+      return await this.convertService.convertJsonToXmlV2(data, user)
     } catch (error) {
       const userId =
         user.type === UserType.Auth
@@ -71,9 +68,9 @@ export default class ConvertController {
         user.type === UserType.Auth ? user.cityAccountUser.email : undefined
 
       this.logger.log(
-        `Error during convertJsonToXmlV2, userId: ${userId}, email: ${email}, formId: ${formId}, data: ${JSON.stringify(
-          data.jsonData,
-        )}`,
+        `Error during convertJsonToXmlV2, userId: ${userId}, email: ${email}, formId: ${
+          data.formId
+        }, data: ${JSON.stringify(data.jsonData)}`,
       )
       throw error
     }
@@ -90,13 +87,13 @@ export default class ConvertController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Post('xml-to-json/:formId')
+  @UseGuards(UserAuthGuard)
+  @Post('xml-to-json')
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
-    @Param('formId') formId: string,
+    @GetUser() user: User,
   ): Promise<XmlToJsonResponseDto> {
-    return this.convertService.convertXmlToJson(formId, data)
+    return this.convertService.convertXmlToJson(data, user)
   }
 
   @ApiOperation({
@@ -110,13 +107,13 @@ export default class ConvertController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Post('pdf/:formId')
+  @UseGuards(UserAuthGuard)
+  @Post('pdf')
   async convertToPdf(
     @Res({ passthrough: true }) res: Response,
     @Body() data: ConvertToPdfRequestDto,
-    @Param('formId') formId: string,
+    @GetUser() user: User,
   ): Promise<StreamableFile> {
-    return this.convertService.convertToPdf(formId, data, res)
+    return this.convertService.convertToPdf(data, res, user)
   }
 }

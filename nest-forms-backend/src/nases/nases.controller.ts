@@ -37,6 +37,7 @@ import {
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
+  CreateFormRequestDto,
   EidUpdateSendFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -45,6 +46,7 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
+import { CreateFormResponseDto } from './dtos/responses.dto'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
@@ -118,16 +120,39 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Delete(':formId')
+  @UseGuards(UserAuthGuard)
+  @Delete(':id')
   async deleteForm(
-    @Param('formId') formId: string,
+    @Param('id') id: string,
+    @GetUser() user: User,
   ): Promise<FormDeleteResponseDto> {
-    await this.formsService.archiveForm(formId)
+    await this.formsService.archiveForm(id, user)
     return {
       archived: true,
-      formId,
+      formId: id,
     }
+  }
+
+  @ApiOperation({
+    summary: '',
+    description:
+      'Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES',
+  })
+  @ApiOkResponse({
+    description: 'Create form in db',
+    type: CreateFormResponseDto,
+  })
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
+  @Post('create-form')
+  async createForm(
+    @Body() data: CreateFormRequestDto,
+    @GetUser() user: User,
+  ): Promise<CreateFormResponseDto> {
+    const returnData = await this.nasesService.createForm(data, user)
+    return returnData
   }
 
   @ApiOperation({
@@ -142,14 +167,14 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Post('update-form/:formId')
+  @UseGuards(UserAuthGuard)
+  @Post('update-form/:id')
   async updateForm(
     @Body() data: UpdateFormRequestDto,
-    @Param('formId') formId: string,
+    @Param('id') id: string,
     @GetUser() user: User,
   ): Promise<Forms> {
-    const returnData = await this.nasesService.updateForm(formId, data, user)
+    const returnData = await this.nasesService.updateForm(id, data, user)
     return returnData
   }
 
@@ -165,16 +190,16 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Post('send-and-update-form/:formId')
+  @UseGuards(UserAuthGuard)
+  @Post('send-and-update-form/:id')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
-    @Param('formId') formId: string,
+    @Param('id') id: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    await this.nasesService.updateForm(formId, data, user)
+    await this.nasesService.updateForm(id, data, user)
 
-    const returnData = await this.nasesService.sendForm(formId, user)
+    const returnData = await this.nasesService.sendForm(id, user)
     return returnData
   }
 
@@ -190,11 +215,11 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Post('eid/send-and-update-form/:formId')
+  @UseGuards(UserAuthGuard)
+  @Post('eid/send-and-update-form/:id')
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,
-    @Param('formId') formId: string,
+    @Param('id') id: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
@@ -212,14 +237,14 @@ export default class NasesController {
 
     // TODO temp SEND_TO_NASES_ERROR log, remove
     this.logger.log(
-      `Signed data from request for formId ${formId} before send:`,
+      `Signed data from request for formId ${id} before send:`,
       updateData.formSignature,
     )
 
-    await this.nasesService.updateFormEid(formId, nasesUser, updateData, user)
+    await this.nasesService.updateFormEid(id, nasesUser, updateData, user)
 
     const returnData = await this.nasesService.sendFormEid(
-      formId,
+      id,
       data.eidToken,
       nasesUser,
       user,

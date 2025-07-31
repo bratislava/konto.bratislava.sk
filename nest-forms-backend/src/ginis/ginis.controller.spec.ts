@@ -5,10 +5,13 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 import { AxiosError } from 'axios'
 
+import {
+  AuthFixtureUser,
+  UserFixtureFactory,
+} from '../../test/fixtures/auth/user-fixture-factory'
 import { mockGinisDocumentData } from '../__tests__/ginisContants'
 import ClientsService from '../clients/clients.service'
 import FormsService from '../forms/forms.service'
-import { FormAccessService } from '../forms-v2/services/form-access.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisController from './ginis.controller'
 import GinisHelper from './subservices/ginis.helper'
@@ -19,6 +22,13 @@ jest.mock('../forms/forms.service')
 
 describe('GinisController', () => {
   let controller: GinisController
+  let userFixtureFactory: UserFixtureFactory
+  let authUser: AuthFixtureUser
+
+  beforeAll(() => {
+    userFixtureFactory = new UserFixtureFactory()
+    authUser = userFixtureFactory.createFoAuthUser()
+  })
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,10 +39,6 @@ describe('GinisController', () => {
         GinisHelper,
         FormsService,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
-        {
-          provide: FormAccessService,
-          useValue: createMock<FormAccessService>(),
-        },
       ],
     }).compile()
     controller = module.get<GinisController>(GinisController)
@@ -46,25 +52,22 @@ describe('GinisController', () => {
 
   // eslint-disable-next-line no-secrets/no-secrets
   describe('getGinisDocumentByFormId (GET :formId)', () => {
-    it('should throw error if form not found', async () => {
-      controller['formsService'].getUniqueForm = jest
-        .fn()
-        .mockResolvedValue(null)
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
-    })
-
     it('should throw error if getting form does', async () => {
-      controller['formsService'].getUniqueForm = jest
+      controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockRejectedValue(new Error('Error'))
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', authUser.user),
+      ).rejects.toThrow()
     })
 
     it('should throw error if the form has no ginis ID', async () => {
-      controller['formsService'].getUniqueForm = jest
+      controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockResolvedValue({} as Forms)
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', authUser.user),
+      ).rejects.toThrow()
     })
 
     it('should throw error if there is some error in the ginis api', async () => {
@@ -81,20 +84,24 @@ describe('GinisController', () => {
       axiosError.status = 404
       const ginisError = new GinisError('Error', axiosError)
 
-      controller['formsService'].getUniqueForm = jest
+      controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
         .mockRejectedValue(ginisError)
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', authUser.user),
+      ).rejects.toThrow()
       expect(notFoundSpy).toHaveBeenCalled()
 
       controller['ginisAPIService'].getDocumentDetail = jest.fn()
       controller['ginisAPIService'].getOwnerDetail = jest
         .fn()
         .mockRejectedValue(new GinisError('Error'))
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', authUser.user),
+      ).rejects.toThrow()
       expect(internalServerErrorSpy).toHaveBeenCalled()
 
       controller['ginisAPIService'].getOwnerDetail = jest.fn()
@@ -103,13 +110,15 @@ describe('GinisController', () => {
           throw new Error('Error')
         }),
       }))
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', authUser.user),
+      ).rejects.toThrow()
 
       // If th
     })
 
     it('should return GinisDocumentDetailResponseDto', async () => {
-      controller['formsService'].getUniqueForm = jest
+      controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
       controller['ginisAPIService'].getDocumentDetail = jest
@@ -127,14 +136,17 @@ describe('GinisController', () => {
         mapGinisHistory: jest.fn(),
       }))
 
-      const result = await controller.getGinisDocumentByFormId('123')
+      const result = await controller.getGinisDocumentByFormId(
+        '123',
+        authUser.user,
+      )
       expect(result.id).toBe('MAG0X03RZDEB')
       expect(result.ownerName).toBe('Jack Brown')
       expect(result.ownerEmail).toBe('') // email is not mandatory, not returned in mock
     })
 
     it('should sanitize ginis owner name', async () => {
-      controller['formsService'].getUniqueForm = jest
+      controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
       controller['ginisAPIService'].getDocumentDetail = jest
@@ -152,7 +164,10 @@ describe('GinisController', () => {
         mapGinisHistory: jest.fn(),
       }))
 
-      const result = await controller.getGinisDocumentByFormId('123')
+      const result = await controller.getGinisDocumentByFormId(
+        '123',
+        authUser.user,
+      )
       expect(result.ownerName).toBe('Jill Mary Black-Smith')
     })
   })

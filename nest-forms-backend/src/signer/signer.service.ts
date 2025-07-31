@@ -7,6 +7,7 @@ import {
   validateXml,
 } from 'forms-shared/slovensko-sk/validateXml'
 
+import { User } from '../auth-v2/types/user'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -49,16 +50,13 @@ export default class SignerService {
   }
 
   async getSignerData(
-    formId: string,
     data: SignerDataRequestDto,
+    user: User,
   ): Promise<SignerDataResponseDto> {
-    const form = await this.formsService.getUniqueForm(formId)
-    if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
-    }
+    const form = await this.formsService.getFormWithAccessCheck(
+      data.formId,
+      user,
+    )
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (formDefinition === null) {
@@ -82,7 +80,7 @@ export default class SignerService {
 
     const signerData = await getSignerData({
       formDefinition,
-      formId,
+      formId: data.formId,
       formData: data.formDataJson,
       jsonVersion: form.jsonVersion,
       validatorRegistry: this.formValidatorRegistryService.getRegistry(),

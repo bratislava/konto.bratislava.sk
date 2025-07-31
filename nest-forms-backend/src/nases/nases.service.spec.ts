@@ -26,6 +26,10 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import {
+  FormAccessService,
+  FormAccessType,
+} from '../forms-v2/services/form-access.service'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -93,6 +97,10 @@ describe('NasesService', () => {
           provide: ClientsService,
           useValue: createMock<ClientsService>(),
         },
+        {
+          provide: FormAccessService,
+          useValue: createMock<FormAccessService>(),
+        },
       ],
     }).compile()
 
@@ -129,8 +137,31 @@ describe('NasesService', () => {
       ).rejects.toThrow()
     })
 
+    it('should throw unauthorized', async () => {
+      service['formAccessService'].checkAccessByInstance = jest
+        .fn()
+        .mockReturnValue({ hasAccess: false })
+      prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
+
+      await expect(
+        service.updateForm(
+          '1',
+          { email: 'email' } as UpdateFormRequestDto,
+          authUser.user,
+        ),
+      ).rejects.toThrow()
+    })
+
     it('should correctly update', async () => {
       prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
+      service['formAccessService'].checkAccessByInstance = jest
+        .fn()
+        .mockReturnValue(
+          Promise.resolve({
+            hasAccess: true,
+            accessType: FormAccessType.UserAccess,
+          }),
+        )
       const spy = jest.spyOn(service['formsService'], 'updateForm')
 
       await service.updateForm(
@@ -182,6 +213,14 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
+      service['formAccessService'].checkAccessByInstance = jest
+        .fn()
+        .mockReturnValue(
+          Promise.resolve({
+            hasAccess: true,
+            accessType: FormAccessType.UserAccess,
+          }),
+        )
       service['nasesUtilsService'].createUserJwtToken = jest
         .fn()
         .mockReturnValue('mock-jwt')
@@ -232,6 +271,14 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
+      service['formAccessService'].checkAccessByInstance = jest
+        .fn()
+        .mockReturnValue(
+          Promise.resolve({
+            hasAccess: true,
+            accessType: FormAccessType.UserAccess,
+          }),
+        )
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -272,6 +319,14 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
+        .spyOn(service['formAccessService'], 'checkAccessByInstance')
+        .mockReturnValue(
+          Promise.resolve({
+            hasAccess: true,
+            accessType: FormAccessType.UserAccess,
+          }),
+        )
+      jest
         .spyOn(service['formsService'], 'updateForm')
         .mockResolvedValue(mockForm)
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
@@ -301,6 +356,20 @@ describe('NasesService', () => {
 
       await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DATA_INVALID,
+      )
+    })
+
+    it('should throw an error if user cannot send the form', async () => {
+      service['formAccessService'].checkAccessByInstance = jest
+        .fn()
+        .mockReturnValue(
+          Promise.resolve({
+            hasAccess: false,
+          }),
+        )
+
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+        NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     })
 

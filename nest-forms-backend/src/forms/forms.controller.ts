@@ -8,9 +8,9 @@ import {
 
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
+import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
-import { UserType } from '../auth-v2/types/user'
-import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
+import { User, UserType } from '../auth-v2/types/user'
 import { BumpJsonVersionResponseDto } from './dtos/forms.responses.dto'
 import FormsService from './forms.service'
 
@@ -31,15 +31,17 @@ export default class FormsController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Post(':formId/bump-version')
+  @UseGuards(UserAuthGuard)
+  @Post(':id/bump-version')
   async bumpJsonVersion(
-    @Param('formId') formId: string,
+    @Param('id') id: string,
+    @GetUser() user: User,
   ): Promise<BumpJsonVersionResponseDto> {
-    await this.formsService.bumpJsonVersion(formId)
+    const form = await this.formsService.getFormWithAccessCheck(id, user)
+    await this.formsService.bumpJsonVersion(form)
 
     return {
-      formId,
+      formId: id,
       success: true,
     }
   }

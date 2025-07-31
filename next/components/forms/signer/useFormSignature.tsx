@@ -75,8 +75,8 @@ const useGetContext = () => {
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
     mutationFn: (formDataRequest: GenericObjectType) =>
       formsClient.signerControllerGetSignerData(
-        formId,
         {
+          formId,
           formDataJson: formDataRequest,
         },
         {

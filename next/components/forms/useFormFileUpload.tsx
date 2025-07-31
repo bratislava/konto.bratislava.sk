@@ -227,9 +227,9 @@ export const useGetContext = () => {
   }
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const downloadFile = async (fileId: string) => {
+  const downloadFile = async (id: string) => {
     try {
-      const response = await formsClient.filesControllerDownloadToken(formId, fileId, {
+      const response = await formsClient.filesControllerDownloadToken(id, {
         authStrategy: 'authOrGuestWithToken',
       })
       const { jwt } = response.data

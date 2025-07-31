@@ -6,14 +6,11 @@ import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
+import { User } from '../auth-v2/types/user'
 import {
   isValidScanStatus,
   processingScanStatuses,
 } from '../common/utils/helpers'
-import {
-  FormsErrorsEnum,
-  FormsErrorsResponseEnum,
-} from '../forms/forms.errors.enum'
 // eslint-disable-next-line import/no-cycle
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
@@ -31,6 +28,7 @@ import {
   FormDataFileDto,
   FormFilesReadyResultDto,
   FormFilesWithMinio,
+  GetFileResponseDto,
   GetFileResponseReducedDto,
   PostFileResponseDto,
   UpdateFileStatusResponseDto,
@@ -79,6 +77,55 @@ export default class FilesService {
       throw this.throwerErrorGuard.NotFoundException(
         FilesErrorsEnum.FILE_NOT_FOUND_ERROR,
         `File with fileId: ${fileId} does not exist in the database.`,
+      )
+    }
+    return file
+  }
+
+  async getFileWithUserVerify(
+    fileId: string,
+    user: User,
+  ): Promise<GetFileResponseDto> {
+    // get file from database
+    let file
+    try {
+      file = await this.prisma.files.findFirst({
+        where: {
+          id: fileId,
+        },
+        include: {
+          forms: true,
+        },
+      })
+    } catch (error) {
+      if (error instanceof Error)
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.DATABASE_ERROR,
+          'Error while checking if file exists in the database.',
+          undefined,
+          error,
+        )
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.DATABASE_ERROR,
+        'Error while checking if file exists in the database.',
+        <string>error,
+      )
+    }
+    if (!file) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FilesErrorsEnum.FILE_NOT_FOUND_ERROR,
+        `File with fileId: ${fileId} does not exist in the database.`,
+      )
+    }
+
+    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
+      file.forms,
+      user,
+    )
+    if (!hasAccess) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        FilesErrorsEnum.FILE_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
+        FilesErrorsResponseEnum.FILE_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
       )
     }
     return file
@@ -200,6 +247,7 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
+    user: User,
   ): Promise<PostFileResponseDto> {
     const fileName = data.filename
     const fileId = data.id
@@ -234,14 +282,7 @@ export default class FilesService {
       )
     }
 
-    const form = await this.formsService.getUniqueForm(formId)
-
-    if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
-    }
+    const form = await this.formsService.getFormWithAccessCheck(formId, user)
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {
       throw this.throwerErrorGuard.NotAcceptableException(
@@ -367,33 +408,11 @@ export default class FilesService {
   }
 
   async downloadToken(
-    formId: string,
     fileId: string,
+    user: User,
   ): Promise<DownloadTokenResponseDataDto> {
     this.logger.log(`Received token download request for fileId ${fileId}.`)
-
-    const form = await this.formsService.getUniqueForm(formId)
-    if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
-    }
-
-    const file = await this.prisma.files.findFirst({
-      where: {
-        id: fileId,
-        formId,
-      },
-    })
-
-    if (!file) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FilesErrorsEnum.FILE_NOT_FOUND_ERROR,
-        `File with fileId: ${fileId} does not exist or does not belong to form ${formId}.`,
-      )
-    }
-
+    await this.getFileWithUserVerify(fileId, user)
     const payload = { fileId }
     const token = jwt.sign(payload, this.jwtSecret, { expiresIn: '30s' })
     return {

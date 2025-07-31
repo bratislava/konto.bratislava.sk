@@ -5,11 +5,12 @@ import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtract
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
-import { AuthUser } from '../auth-v2/types/user'
+import { AuthUser, User } from '../auth-v2/types/user'
 import { getUserIco } from '../auth-v2/utils/user-utils'
 // eslint-disable-next-line import/no-cycle
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
+import { FormAccessService } from '../forms-v2/services/form-access.service'
 import {
   GetFormResponseSimpleDto,
   GetFormsRequestDto,
@@ -42,8 +43,24 @@ export default class FormsService {
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FormsService')
+  }
+
+  async createForm(data: Prisma.FormsUncheckedCreateInput): Promise<Forms> {
+    try {
+      return await this.prisma.forms.create({
+        data,
+      })
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'There was an error when creating form.',
+        undefined,
+        error,
+      )
+    }
   }
 
   async updateForm(id: string, data: FormUpdateBodyDto): Promise<Forms> {
@@ -78,15 +95,8 @@ export default class FormsService {
     return formsResult
   }
 
-  async archiveForm(formId: string): Promise<void> {
-    const form = await this.getUniqueForm(formId)
-    if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${formId}`,
-      )
-    }
-
+  async archiveForm(id: string, user: User): Promise<void> {
+    const form = await this.getFormWithAccessCheck(id, user)
     if (!FormsHelper.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
@@ -97,7 +107,7 @@ export default class FormsService {
     try {
       await this.prisma.forms.update({
         where: {
-          id: formId,
+          id,
         },
         data: {
           archived: true,
@@ -314,8 +324,9 @@ export default class FormsService {
     return form
   }
 
-  async bumpJsonVersion(formId: string): Promise<void> {
+  async getFormWithAccessCheck(formId: string, user: User): Promise<Forms> {
     const form = await this.getUniqueForm(formId)
+
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
@@ -323,6 +334,21 @@ export default class FormsService {
       )
     }
 
+    const { hasAccess } = await this.formAccessService.checkAccessByInstance(
+      form,
+      user,
+    )
+    if (!hasAccess) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        FormsErrorsEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
+        FormsErrorsResponseEnum.FORM_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
+      )
+    }
+
+    return form
+  }
+
+  async bumpJsonVersion(form: Forms): Promise<void> {
     if (!FormsHelper.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,

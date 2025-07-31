@@ -1,9 +1,22 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator'
+import {
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator'
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
 export class JsonToXmlV2RequestDto {
+  @ApiProperty({
+    description: 'Form id',
+    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+  })
+  @IsUUID()
+  formId: string
+
   @IsObject()
   @ApiPropertyOptional({
     description:
@@ -16,6 +29,13 @@ export class JsonToXmlV2RequestDto {
 }
 
 export class XmlToJsonRequestDto {
+  @ApiProperty({
+    description: 'Form id',
+    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+  })
+  @IsUUID()
+  formId: string
+
   @ApiProperty({
     description: 'Form values in XML',
     example: XML_FORM_EXAMPLE,
@@ -58,6 +78,13 @@ class SimplifiedClientFileInfoDto {
 }
 
 export class ConvertToPdfRequestDto {
+  @ApiProperty({
+    description: 'Form id',
+    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+  })
+  @IsUUID()
+  formId: string
+
   @IsObject()
   @ApiPropertyOptional({
     description: 'Form values in JSON',

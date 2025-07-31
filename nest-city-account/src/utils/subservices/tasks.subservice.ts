@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import * as z from 'zod'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { GdprCategory, GdprSubType, GdprType } from '../../user/dtos/gdpr.user.dto'
@@ -11,18 +12,26 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
 import { TaxSubservice } from './tax.subservice'
+import { AdminService } from '../../admin/admin.service'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
+
+const SyncCognitoToDbConfigValueSchema = z.object({
+  active: z.boolean(),
+})
 
 @Injectable()
 export class TasksSubservice {
   private readonly logger: LineLoggerSubservice
 
+  public readonly cognitoSyncConfigDbkey = 'SYNC_COGNITO_TO_DB'
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly taxSubservice: TaxSubservice
+    private readonly taxSubservice: TaxSubservice,
+    private readonly adminService: AdminService
   ) {
     this.logger = new LineLoggerSubservice(TasksSubservice.name)
   }
@@ -239,6 +248,37 @@ export class TasksSubservice {
       data: {
         lastTaxDeliveryMethodsUpdateYear: currentYear,
       },
+    })
+  }
+
+  // even though this is a cron job, it only runs once at 3am then it deactivates itself
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  @HandleErrors('Cron Error')
+  async syncCognitoToDb(): Promise<void> {
+    const configDbResult = await this.prisma.config.findUnique({
+      where: { key: this.cognitoSyncConfigDbkey },
+    })
+    if (!configDbResult) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'SYNC_COGNITO_TO_DB not found in database config.'
+      )
+    }
+    const config = SyncCognitoToDbConfigValueSchema.parse(configDbResult.value)
+    if (!config.active) {
+      return
+    }
+    this.logger.log(`${this.cognitoSyncConfigDbkey} turned ON, starting`)
+
+    const result = await this.adminService.syncCognitoToDb()
+
+    this.logger.log(`${this.cognitoSyncConfigDbkey} done: ${result}`)
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.config.update({
+        where: { key: this.cognitoSyncConfigDbkey },
+        data: { value: { active: false } },
+      })
     })
   }
 }

@@ -242,16 +242,11 @@ export class CognitoSubservice {
     const params: ListUsersRequest = {
       UserPoolId: this.config.cognitoUserPoolId,
     }
-    const paginationCalls = async () => {
+    do {
       const { Users = [], PaginationToken } = await this.cognitoIdentity.listUsers(params).promise()
-      if (PaginationToken) {
-        params.PaginationToken = PaginationToken
-
-        await paginationCalls()
-      }
       result = [...result, ...Users]
-    }
-    await paginationCalls()
+      params.PaginationToken = PaginationToken
+    } while (params.PaginationToken)
 
     return result
   }

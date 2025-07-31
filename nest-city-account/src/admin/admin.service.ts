@@ -42,7 +42,7 @@ import {
 import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
-import { TasksSubservice } from '../utils/subservices/tasks.subservice'
+import { cognitoSyncConfigDbkey } from './utils/constants'
 
 @Injectable()
 export class AdminService {
@@ -54,8 +54,7 @@ export class AdminService {
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
     private readonly taxSubservice: TaxSubservice,
-    private readonly userService: UserService,
-    private readonly tasksSubservice: TasksSubservice
+    private readonly userService: UserService
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -130,7 +129,7 @@ export class AdminService {
    */
   async activateSyncCognitoToDb(): Promise<void> {
     await this.prismaService.config.update({
-      where: { key: this.tasksSubservice.cognitoSyncConfigDbkey },
+      where: { key: cognitoSyncConfigDbkey },
       data: { value: { active: true } },
     })
   }

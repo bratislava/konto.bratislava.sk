@@ -1,5 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { AdminService } from '../../admin/admin.service'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -8,6 +9,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
+import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { TasksService } from '../tasks.service'
 
 describe('TasksService', () => {
@@ -73,7 +75,7 @@ describe('TasksService', () => {
               birthNumber: '123456/7890',
             },
           },
-        ] as any)
+        ] as TaxWithTaxPayer[])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
         'trackEventUnpaidTaxReminder',
@@ -83,8 +85,8 @@ describe('TasksService', () => {
         .mockResolvedValue({
           '123456/7890': {
             externalId: 'external-id-123',
-          },
-        } as any)
+          } as ResponseUserByBirthNumberDto,
+        })
       jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
       await service.sendUnpaidTaxReminders()
@@ -123,7 +125,7 @@ describe('TasksService', () => {
               birthNumber: '123456/7892',
             },
           },
-        ] as any)
+        ] as TaxWithTaxPayer[])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
         'trackEventUnpaidTaxReminder',
@@ -133,11 +135,11 @@ describe('TasksService', () => {
         .mockResolvedValue({
           '123456/7890': {
             externalId: 'external-id-1',
-          },
+          } as ResponseUserByBirthNumberDto,
           '123456/7891': {
             externalId: 'external-id-2',
-          },
-        } as any)
+          } as ResponseUserByBirthNumberDto,
+        })
       jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
       await service.sendUnpaidTaxReminders()

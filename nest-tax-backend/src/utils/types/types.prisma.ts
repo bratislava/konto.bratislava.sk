@@ -39,6 +39,7 @@ export const transformDeliveryMethodToDatabaseType = (
     case DeliveryMethod.POSTAL:
       return DeliveryMethodNamed.POSTAL
 
+    case null:
     default:
       return null
   }

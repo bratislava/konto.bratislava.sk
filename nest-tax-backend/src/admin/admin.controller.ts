@@ -47,7 +47,7 @@ export class AdminController {
   async loadDataFromNorris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    return this.adminService.loadDataFromNoris(data)
+    return await this.adminService.loadDataFromNoris(data)
   }
 
   @HttpCode(200)
@@ -62,8 +62,10 @@ export class AdminController {
   @Post('update-data-from-norris')
   async updateDataFromNorris(
     @Body() data: RequestPostNorisLoadDataDto,
-  ): Promise<any> {
-    return this.adminService.updateDataFromNoris(data)
+  ): Promise<{
+    updated: number
+  }> {
+    return await this.adminService.updateDataFromNoris(data)
   }
 
   @HttpCode(200)
@@ -79,8 +81,11 @@ export class AdminController {
   @Post('payments-from-noris')
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
-  ): Promise<any> {
-    return this.adminService.updatePaymentsFromNoris({
+  ): Promise<{
+    created: number
+    alreadyCreated: number
+  }> {
+    return await this.adminService.updatePaymentsFromNoris({
       type: 'fromToDate',
       data,
     })
@@ -99,7 +104,7 @@ export class AdminController {
   async updateDeliveryMethodsInNoris(
     @Body() data: RequestUpdateNorisDeliveryMethodsDto,
   ): Promise<void> {
-    return this.adminService.updateDeliveryMethodsInNoris(data)
+    await this.adminService.updateDeliveryMethodsInNoris(data)
   }
 
   @HttpCode(200)
@@ -117,7 +122,7 @@ export class AdminController {
   async removeDeliveryMethodsFromNoris(
     @Param('birthNumber') birthNumber: string,
   ): Promise<void> {
-    return this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
+    await this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   @HttpCode(200)

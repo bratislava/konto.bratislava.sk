@@ -42,6 +42,11 @@ import {
 import { mapNorisToTaxDetailData } from './utils/tax-detail.helper'
 import { createTestingTaxMock } from './utils/testing-tax-mock'
 
+type ValidNorisPayment = Required<
+  Pick<NorisPaymentsDto, 'variabilny_symbol' | 'uhrazeno' | 'zbyva_uhradit'>
+> &
+  Partial<NorisPaymentsDto>
+
 @Injectable()
 export class AdminService {
   private readonly logger: LineLoggerSubservice
@@ -153,7 +158,7 @@ export class AdminService {
         },
       },
       where: {
-        year: +year,
+        year: Number(year),
         taxPayer: {
           birthNumber: {
             in: norisData.map((norisRecord) => norisRecord.ICO_RC),
@@ -300,14 +305,8 @@ export class AdminService {
                   taxId: taxExists.id,
                 },
               })
-              const userData = await this.insertTaxPayerDataToDatabase(
-                norisItem,
-                data.year,
-                tx,
-              )
-              if (userData) {
-                count += 1
-              }
+              await this.insertTaxPayerDataToDatabase(norisItem, data.year, tx)
+              count++
             })
           } catch (error) {
             this.logger.error(
@@ -414,15 +413,17 @@ export class AdminService {
     taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
-    const validPayments = norisPaymentData.filter(
-      (norisPayment) =>
-        norisPayment.variabilny_symbol !== undefined &&
-        norisPayment.uhrazeno !== undefined &&
-        norisPayment.zbyva_uhradit !== undefined,
-    )
+    const validPayments = norisPaymentData
+      .filter(
+        (norisPayment) =>
+          norisPayment.variabilny_symbol !== undefined &&
+          norisPayment.uhrazeno !== undefined &&
+          norisPayment.zbyva_uhradit !== undefined,
+      )
+      .map((norisPayment) => norisPayment as ValidNorisPayment)
 
     // Step 2: Process each payment separately
-    const paymentProcesses = validPayments.map((norisPayment) =>
+    const paymentProcesses = validPayments.map(async (norisPayment) =>
       this.processIndividualPayment(
         norisPayment,
         taxesDataByVsMap,
@@ -436,13 +437,13 @@ export class AdminService {
   }
 
   private async processIndividualPayment(
-    norisPayment: Partial<NorisPaymentsDto>,
+    norisPayment: ValidNorisPayment,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     try {
-      const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol!)
+      const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol)
 
       if (!taxData) {
         return 'NOT_EXIST'
@@ -452,18 +453,18 @@ export class AdminService {
         sum: 0,
         count: 0,
       }
-      const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!)
-      const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit!)
+      const paidFromNoris = this.formatAmount(norisPayment.uhrazeno)
+      const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit)
 
       // Early return if payment already recorded
-      if (payerData.sum !== null && payerData.sum >= paidFromNoris) {
+      if (payerData.sum >= paidFromNoris) {
         return 'ALREADY_CREATED'
       }
 
       await this.prismaService.$transaction(async (tx) => {
         const createdTaxPayment = await tx.taxPayment.create({
           data: {
-            amount: paidFromNoris - (payerData.sum ?? 0),
+            amount: paidFromNoris - payerData.sum,
             source: 'BANK_ACCOUNT',
             specificSymbol: norisPayment.specificky_symbol,
             taxId: taxData.id,
@@ -499,7 +500,10 @@ export class AdminService {
   private async trackPaymentIfNeeded(
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    userDataFromCityAccount: Record<
+      string,
+      ResponseUserByBirthNumberDto | undefined
+    >,
   ) {
     const userFromCityAccount =
       userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
@@ -635,7 +639,7 @@ export class AdminService {
       .filter(
         ([deliveryMethod, birthNumbers]) =>
           birthNumbers.length > 0 &&
-          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT,
+          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT.toString(),
       )
       .map(([deliveryMethod, birthNumbers]) => {
         return {
@@ -692,6 +696,7 @@ export class AdminService {
 
     await this.prismaService.$transaction(
       [...variableSymbolsToNonNullDateFromNoris.entries()].map(
+        // eslint-disable-next-line @typescript-eslint/promise-function-async
         ([variableSymbol, dateTaxRuling]) =>
           this.prismaService.tax.update({
             where: { id: variableSymbolToId.get(variableSymbol) },

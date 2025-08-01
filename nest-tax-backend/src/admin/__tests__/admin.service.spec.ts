@@ -56,7 +56,6 @@ describe('TasksService', () => {
     expect(service).toBeDefined()
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('updateDeliveryMethodsInNoris', () => {
     const mockDate1 = '2024-01-01'
     const mockDate2 = '2024-01-02'
@@ -375,11 +374,11 @@ describe('TasksService', () => {
         .mockResolvedValueOnce([])
       jest
         .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation((callback) => callback(prismaMock))
+        .mockImplementation(async (callback) => await callback(prismaMock))
 
       const insertSpy = jest
         .spyOn(service as any, 'insertTaxPayerDataToDatabase')
-        .mockImplementation((data) =>
+        .mockImplementation(async (data) =>
           Promise.resolve({ birthNumber: (data as NorisTaxPayersDto).ICO_RC }),
         )
       const bloomreachSpy = jest.spyOn(
@@ -423,11 +422,11 @@ describe('TasksService', () => {
         .mockResolvedValueOnce([])
       jest
         .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation((callback) => callback(prismaMock))
+        .mockImplementation(async (callback) => await callback(prismaMock))
 
       const insertSpy = jest
         .spyOn(service as any, 'insertTaxPayerDataToDatabase')
-        .mockImplementation((data) => {
+        .mockImplementation(async (data) => {
           if ((data as NorisTaxPayersDto).ICO_RC === '123456/789') {
             return Promise.reject(new Error('Insert failed'))
           }
@@ -487,11 +486,11 @@ describe('TasksService', () => {
         ] as unknown as Tax[])
       jest
         .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation((callback) => callback(prismaMock))
+        .mockImplementation(async (callback) => await callback(prismaMock))
 
       const insertSpy = jest
         .spyOn(service as any, 'insertTaxPayerDataToDatabase')
-        .mockImplementation((data) => {
+        .mockImplementation(async (data) => {
           return Promise.resolve({
             birthNumber: (data as NorisTaxPayersDto).ICO_RC,
           })
@@ -540,7 +539,7 @@ describe('TasksService', () => {
         .mockResolvedValueOnce([])
       jest
         .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation((callback) => callback(prismaMock))
+        .mockImplementation(async (callback) => await callback(prismaMock))
 
       const insertSpy = jest
         .spyOn(service as any, 'insertTaxPayerDataToDatabase')
@@ -664,12 +663,11 @@ describe('TasksService', () => {
     })
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('processIndividualPayment', () => {
     beforeEach(() => {
       jest
         .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation((callback) => callback(prismaMock))
+        .mockImplementation(async (callback) => await callback(prismaMock))
     })
 
     it('should process individual payment correctly', async () => {
@@ -705,7 +703,6 @@ describe('TasksService', () => {
         } as ResponseUserByBirthNumberDto,
       }
 
-      // eslint-disable-next-line no-secrets/no-secrets
       const result = await service['processIndividualPayment'](
         mockPayment,
         taxesDataByVsMap,
@@ -761,7 +758,6 @@ describe('TasksService', () => {
         } as ResponseUserByBirthNumberDto,
       }
 
-      // eslint-disable-next-line no-secrets/no-secrets
       const result = await service['processIndividualPayment'](
         mockPayment,
         taxesDataByVsMap,

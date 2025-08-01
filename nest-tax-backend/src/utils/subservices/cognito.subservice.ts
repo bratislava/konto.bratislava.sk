@@ -32,10 +32,11 @@ export class CognitoSubservice {
           Username: userId,
         },
         (err, data) => {
-          if (err === null) {
-            return data
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (err) {
+            return err
           }
-          return err
+          return data
         },
       )
       .promise()

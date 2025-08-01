@@ -72,7 +72,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (response.locals.middlewareUsed) {
       if (typeof exceptionResponse === 'object') {
         response.json({
-          ...symbolKeysToStrings(exceptionResponse),
+          ...symbolKeysToStrings(
+            exceptionResponse as Record<string | symbol, unknown>,
+          ),
           [errorTypeKeys.errorType]: 'HttpException',
           [errorTypeKeys.stack]: exception.stack,
         })

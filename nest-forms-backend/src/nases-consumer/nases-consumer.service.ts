@@ -14,7 +14,6 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import FilesService from '../files/files.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
@@ -46,7 +45,6 @@ export default class NasesConsumerService {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly formsService: FormsService,
-    private readonly filesService: FilesService,
     private readonly mailgunService: MailgunService,
     private readonly convertPdfService: ConvertPdfService,
     private readonly emailFormsSubservice: EmailFormsSubservice,

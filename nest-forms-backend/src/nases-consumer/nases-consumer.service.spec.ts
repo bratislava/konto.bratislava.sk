@@ -10,7 +10,6 @@ import {
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import FilesService from '../files/files.service'
 import FormsService from '../forms/forms.service'
 import {
   SendMessageNasesSender,
@@ -56,7 +55,6 @@ describe('NasesConsumerService', () => {
           useValue: createMock<RabbitmqClientService>(),
         },
         { provide: FormsService, useValue: createMock<FormsService>() },
-        { provide: FilesService, useValue: createMock<FilesService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
           provide: ConvertPdfService,

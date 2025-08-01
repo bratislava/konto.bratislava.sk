@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 import { PaymentStatus, TaxDetailareaType, TaxDetailType } from '@prisma/client'
 
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
@@ -269,8 +267,8 @@ describe('UnifiedTaxUtil', () => {
           const newOverallBalance = 6599
           draft.overallPaid = 1
           draft.overallBalance = newOverallBalance
-          draft.installmentPayment.installments![0].remainingAmount = 2199
-          draft.installmentPayment.installments![0].status =
+          draft.installmentPayment.installments![0]!.remainingAmount = 2199
+          draft.installmentPayment.installments![0]!.status =
             InstallmentPaidStatusEnum.PARTIALLY_PAID
           draft.installmentPayment.activeInstallment!.remainingAmount = 2199
           draft.installmentPayment.activeInstallment!.qrCode.amount = 2199
@@ -295,8 +293,8 @@ describe('UnifiedTaxUtil', () => {
           const newOverallBalance = 4400
           draft.overallPaid = 2200
           draft.overallBalance = newOverallBalance
-          draft.installmentPayment.installments![0].remainingAmount = 0
-          draft.installmentPayment.installments![0].status =
+          draft.installmentPayment.installments![0]!.remainingAmount = 0
+          draft.installmentPayment.installments![0]!.status =
             InstallmentPaidStatusEnum.PAID
           draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
             QrPaymentNoteEnum.QR_secondInstallment
@@ -321,11 +319,11 @@ describe('UnifiedTaxUtil', () => {
           const newOverallBalance = 4399
           draft.overallPaid = 2201
           draft.overallBalance = newOverallBalance
-          draft.installmentPayment.installments![0].remainingAmount = 0
-          draft.installmentPayment.installments![1].remainingAmount = 2199
-          draft.installmentPayment.installments![0].status =
+          draft.installmentPayment.installments![0]!.remainingAmount = 0
+          draft.installmentPayment.installments![1]!.remainingAmount = 2199
+          draft.installmentPayment.installments![0]!.status =
             InstallmentPaidStatusEnum.PAID
-          draft.installmentPayment.installments![1].status =
+          draft.installmentPayment.installments![1]!.status =
             InstallmentPaidStatusEnum.PARTIALLY_PAID
           draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
             QrPaymentNoteEnum.QR_secondInstallment
@@ -352,11 +350,11 @@ describe('UnifiedTaxUtil', () => {
           const newOverallBalance = 2200
           draft.overallPaid = 4400
           draft.overallBalance = newOverallBalance
-          draft.installmentPayment.installments![0].remainingAmount = 0
-          draft.installmentPayment.installments![1].remainingAmount = 0
-          draft.installmentPayment.installments![0].status =
+          draft.installmentPayment.installments![0]!.remainingAmount = 0
+          draft.installmentPayment.installments![1]!.remainingAmount = 0
+          draft.installmentPayment.installments![0]!.status =
             InstallmentPaidStatusEnum.PAID
-          draft.installmentPayment.installments![1].status =
+          draft.installmentPayment.installments![1]!.status =
             InstallmentPaidStatusEnum.PAID
           draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
             QrPaymentNoteEnum.QR_thirdInstallment
@@ -417,10 +415,10 @@ describe('UnifiedTaxUtil', () => {
           })
 
           const expected = createExpectedOutput((draft) => {
-            draft.installmentPayment.installments![0].status =
+            draft.installmentPayment.installments![0]!.status =
               InstallmentPaidStatusEnum.AFTER_DUE_DATE
-            draft.installmentPayment.installments![0].remainingAmount = 0
-            draft.installmentPayment.installments![1].remainingAmount = 4400
+            draft.installmentPayment.installments![0]!.remainingAmount = 0
+            draft.installmentPayment.installments![1]!.remainingAmount = 4400
             draft.installmentPayment.activeInstallment!.remainingAmount = 4400
             draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
             draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
@@ -438,11 +436,11 @@ describe('UnifiedTaxUtil', () => {
           })
 
           const expected = createExpectedOutput((draft) => {
-            draft.installmentPayment.installments![0].status =
+            draft.installmentPayment.installments![0]!.status =
               InstallmentPaidStatusEnum.AFTER_DUE_DATE
-            draft.installmentPayment.installments![0].remainingAmount = 0
-            draft.installmentPayment.installments![1].remainingAmount = 4399
-            draft.installmentPayment.installments![1].status =
+            draft.installmentPayment.installments![0]!.remainingAmount = 0
+            draft.installmentPayment.installments![1]!.remainingAmount = 4399
+            draft.installmentPayment.installments![1]!.status =
               InstallmentPaidStatusEnum.PARTIALLY_PAID
             draft.installmentPayment.activeInstallment!.remainingAmount = 4399
             draft.installmentPayment.activeInstallment!.qrCode.amount = 4399
@@ -469,12 +467,12 @@ describe('UnifiedTaxUtil', () => {
           })
 
           const expected = createExpectedOutput((draft) => {
-            draft.installmentPayment.installments![0].status =
+            draft.installmentPayment.installments![0]!.status =
               InstallmentPaidStatusEnum.PAID
-            draft.installmentPayment.installments![0].remainingAmount = 0
-            draft.installmentPayment.installments![1].status =
+            draft.installmentPayment.installments![0]!.remainingAmount = 0
+            draft.installmentPayment.installments![1]!.status =
               InstallmentPaidStatusEnum.NOT_PAID
-            draft.installmentPayment.installments![1].remainingAmount = 2200
+            draft.installmentPayment.installments![1]!.remainingAmount = 2200
             draft.installmentPayment.activeInstallment!.remainingAmount = 2200
             draft.installmentPayment.activeInstallment!.qrCode.amount = 2200
             draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
@@ -500,12 +498,12 @@ describe('UnifiedTaxUtil', () => {
           })
 
           const expected = createExpectedOutput((draft) => {
-            draft.installmentPayment.installments![0].status =
+            draft.installmentPayment.installments![0]!.status =
               InstallmentPaidStatusEnum.PAID
-            draft.installmentPayment.installments![0].remainingAmount = 0
-            draft.installmentPayment.installments![1].status =
+            draft.installmentPayment.installments![0]!.remainingAmount = 0
+            draft.installmentPayment.installments![1]!.status =
               InstallmentPaidStatusEnum.PAID
-            draft.installmentPayment.installments![1].remainingAmount = 0
+            draft.installmentPayment.installments![1]!.remainingAmount = 0
             draft.installmentPayment.activeInstallment!.remainingAmount = 2200
             draft.installmentPayment.activeInstallment!.qrCode.amount = 2200
             draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
@@ -532,10 +530,10 @@ describe('UnifiedTaxUtil', () => {
         })
 
         const expected = createExpectedOutput((draft) => {
-          draft.installmentPayment.installments![0].status =
+          draft.installmentPayment.installments![0]!.status =
             InstallmentPaidStatusEnum.AFTER_DUE_DATE
-          draft.installmentPayment.installments![0].remainingAmount = 0
-          draft.installmentPayment.installments![1].remainingAmount = 4400
+          draft.installmentPayment.installments![0]!.remainingAmount = 0
+          draft.installmentPayment.installments![1]!.remainingAmount = 4400
           draft.installmentPayment.activeInstallment!.remainingAmount = 4400
           draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
           draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
@@ -571,7 +569,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       const expected = createExpectedOutput((draft) => {
-        delete draft.installmentPayment.installments![0].dueDate
+        delete draft.installmentPayment.installments![0]!.dueDate
         delete draft.oneTimePayment.dueDate
       })
 

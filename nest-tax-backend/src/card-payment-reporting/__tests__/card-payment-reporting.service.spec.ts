@@ -9,24 +9,10 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
-import { CardPaymentReportingService } from '../card-payment-reporting.service'
-
-const csvColumnNames = [
-  'transactionType',
-  'terminalId',
-  'transactionId',
-  'transactionType_',
-  'date',
-  'totalPrice',
-  'provision',
-  'priceWithoutProvision',
-  'cashBack',
-  'authCode',
-  'cardNumber',
-  'cardType',
-  'closureId',
-  'orderId',
-] as const
+import {
+  CardPaymentReportingService,
+  csvColumnNames,
+} from '../card-payment-reporting.service'
 
 type CsvColumns = (typeof csvColumnNames)[number]
 
@@ -234,7 +220,8 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         csvData,
         variableSymbols,
       )
-      expect(result[0].variableSymbol).toBe('')
+      expect(result[0]).toBeDefined()
+      expect(result[0]!.variableSymbol).toBe('')
     })
   })
 })

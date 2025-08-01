@@ -57,7 +57,7 @@ describe('GpWebpaySubservice', () => {
         PAYMETHODS: 'CARD',
       }
 
-      const result = (service as any).getDataToSign(mockData)
+      const result = service['getDataToSign'](mockData)
       expect(result).toBe(
         '123|CREATE|456|100|EUR|1|http://example.com|Test order|test@example.com|CARD',
       )
@@ -74,7 +74,7 @@ describe('GpWebpaySubservice', () => {
         CURRENCY: 'EUR',
       }
 
-      const result = (service as any).getDataToSign(mockData)
+      const result = service['getDataToSign'](mockData)
       expect(result).toBe('123|CREATE|456|100|EUR|1|http://example.com')
     })
   })
@@ -96,37 +96,37 @@ describe('GpWebpaySubservice', () => {
 
   describe('getPaymentErrorMessage', () => {
     it('should return correct error status for direct PR codes', () => {
-      expect((service as any).getPaymentErrorMessage('32', '0')).toBe(
+      expect(service['getPaymentErrorMessage']('32', '0')).toBe(
         PaymentErrorStatus.incorrectData,
       )
-      expect((service as any).getPaymentErrorMessage('25', '0')).toBe(
+      expect(service['getPaymentErrorMessage']('25', '0')).toBe(
         PaymentErrorStatus.paymentDenied,
       )
-      expect((service as any).getPaymentErrorMessage('26', '0')).toBe(
+      expect(service['getPaymentErrorMessage']('26', '0')).toBe(
         PaymentErrorStatus.techProblem,
       )
-      expect((service as any).getPaymentErrorMessage(25, '0')).toBe(
+      expect(service['getPaymentErrorMessage'](25, '0')).toBe(
         PaymentErrorStatus.paymentDenied,
       )
-      expect((service as any).getPaymentErrorMessage('26', 0)).toBe(
+      expect(service['getPaymentErrorMessage']('26', 0)).toBe(
         PaymentErrorStatus.techProblem,
       )
-      expect((service as any).getPaymentErrorMessage(26, 0)).toBe(
+      expect(service['getPaymentErrorMessage'](26, 0)).toBe(
         PaymentErrorStatus.techProblem,
       )
     })
 
     it('should return correct error status for special cases', () => {
-      expect((service as any).getPaymentErrorMessage('28', '3000')).toBe(
+      expect(service['getPaymentErrorMessage']('28', '3000')).toBe(
         PaymentErrorStatus.incorrectData,
       )
-      expect((service as any).getPaymentErrorMessage('30', '1001')).toBe(
+      expect(service['getPaymentErrorMessage']('30', '1001')).toBe(
         PaymentErrorStatus.paymentDenied,
       )
     })
 
     it('should return unknown error for unmapped codes', () => {
-      expect((service as any).getPaymentErrorMessage('999', '999')).toBe(
+      expect(service['getPaymentErrorMessage']('999', '999')).toBe(
         PaymentErrorStatus.unknownError,
       )
     })
@@ -138,7 +138,7 @@ describe('GpWebpaySubservice', () => {
         write: jest.fn(),
         end: jest.fn(),
         sign: jest.fn().mockReturnValue('mock-signature'),
-      } as any)
+      } as unknown as crypto.Sign)
 
       const mockData: CreateOrderData = {
         MERCHANTNUMBER: '123',
@@ -164,7 +164,7 @@ describe('GpWebpaySubservice', () => {
         write: jest.fn(),
         end: jest.fn(),
         verify: jest.fn().mockReturnValue(true),
-      } as any)
+      } as unknown as crypto.Verify)
 
       const result = service.verifyData('test-data', 'test-digest')
       expect(result).toBe(true)

@@ -44,20 +44,26 @@ export default class SftpFileSubservice {
         : await this.filterAlreadyReportedFiles(sftpFiles)
 
       // Get contents of all new files
-      // eslint-disable-next-line no-restricted-syntax
-      for (const fileName of newFiles) {
+      const filePromises = newFiles.map(async (fileName) => {
         const filePath = path.join(
           this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
           fileName,
         )
 
-        // eslint-disable-next-line no-await-in-loop
         const fileContent = await sftp.get(filePath)
-        newFileContents.push({
-          name: fileName,
-          content: fileContent.toString('utf8'), // Assuming you want the content as a string
-        })
-      }
+        if (Buffer.isBuffer(fileContent)) {
+          return {
+            name: fileName,
+            content: fileContent.toString('utf8'),
+          }
+        }
+        // eslint-disable-next-line no-console
+        console.warn(`File content is not a buffer for file: ${fileName}`)
+        return null
+      })
+
+      const fileResults = await Promise.all(filePromises)
+      newFileContents.push(...fileResults.filter((result) => result !== null))
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

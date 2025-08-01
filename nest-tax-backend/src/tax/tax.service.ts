@@ -275,7 +275,7 @@ export class TaxService {
     )
 
     const detailWithoutQrCode = getTaxDetailPure({
-      taxYear: +year,
+      taxYear: Number(year),
       today: today.toDate(),
       overallAmount: tax.amount,
       paymentCalendarThreshold,

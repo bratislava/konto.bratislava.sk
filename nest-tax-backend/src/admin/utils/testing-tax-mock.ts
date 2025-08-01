@@ -30,7 +30,7 @@ export const createTestingTaxMock = (
 
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,
-    cislo_poradace: +taxAdministrator.externalId,
+    cislo_poradace: Number(taxAdministrator.externalId),
     vyb_id: taxAdministrator.id,
     vyb_nazov: taxAdministrator.name,
     vyb_telefon_prace: taxAdministrator.phoneNumber,
@@ -122,7 +122,7 @@ export const createTestingTaxMock = (
     // additional required fields
     sposob_dorucenia: 'TEST',
     cislo_subjektu: 123_456,
-    akt_datum: new Date().toISOString().split('T')[0],
+    akt_datum: new Date().toISOString().split('T')[0] as string,
     dan_stavby: '600,50',
     dan_stavby_viac: '300,25',
     dan_byty: norisData.taxTotal,
@@ -135,9 +135,9 @@ export const createTestingTaxMock = (
     obalka_stat: 'Slovensko',
 
     // money transfer data
-    pouk_cena_bez_hal: norisData.taxTotal.split(',')[0],
+    pouk_cena_bez_hal: norisData.taxTotal.split(',')[0] || '0',
     pouk_cena_hal: norisData.taxTotal.includes(',')
-      ? norisData.taxTotal.split(',')[1]
+      ? norisData.taxTotal.split(',')[1] || '00'
       : '00',
 
     // user attribute

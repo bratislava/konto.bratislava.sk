@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 export const queryPayersFromNoris = `
 SELECT
     lcs.dane21_doklad.sposob_dorucenia,
@@ -516,3 +517,4 @@ export const getNorisDataForUpdate = `
     WHERE rok_podkladu IN (@years)
     AND variabilny_symbol IN (@variable_symbols)
 `
+/* eslint-enable no-secrets/no-secrets */

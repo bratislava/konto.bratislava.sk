@@ -30,17 +30,14 @@ export function separateLogFromResponseObj<T extends object>(
   responseLog: { [K: string]: T[keyof T] }
   responseMessage: { [K: string]: T[keyof T] }
 } {
-  const responseLog: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
-  const responseMessage: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
+  const responseLog: { [K: string]: T[keyof T] } = {}
+  const responseMessage: { [K: string]: T[keyof T] } = {}
 
   Object.getOwnPropertyNames(obj).forEach((objKey) => {
     if (errorTypeStrings.includes(objKey)) {
       responseLog[objKey.slice(8)] = obj[objKey as keyof T]
     } else {
+      // eslint-disable-next-line security/detect-object-injection
       responseMessage[objKey] = obj[objKey as keyof T]
     }
   })
@@ -82,7 +79,7 @@ export function objToLogfmt(obj: object): string {
         formattedValue = escapeForLogfmt(formattedValue)
       }
 
-      return `${key}="${formattedValue}"`
+      return `${key}="${String(formattedValue)}"`
     })
     .join(' ')
 }
@@ -103,7 +100,7 @@ function httpExceptionToObj(
       method: methodName,
       stack: error.stack,
     }
-  } catch (parseError) {
+  } catch {
     return {
       errorType: error.name,
       message: error.message,
@@ -141,7 +138,8 @@ export function errorToLogfmt(
 }
 
 export function isLogfmt(input: string): boolean {
-  const regex = /((^| )\w+="([^\n"\\]|\\\\|\\"|\\n)*")+$/
+  // eslint-disable-next-line security/detect-unsafe-regex
+  const regex = /((^| )\w+="([^\n"\\]|\\\\|\\"|\\n)*")+$/u
   return regex.test(input)
 }
 
@@ -158,13 +156,18 @@ export function ToLogfmt(input: unknown): string {
   if (typeof input === 'string') {
     return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
   }
-  return `message="${escapeForLogfmt(input.toString())}"`
+  if (typeof input === 'number' || typeof input === 'boolean') {
+    return `message="${String(input)}"`
+  }
+  return `message="${escapeForLogfmt(JSON.stringify(input))}"`
 }
 
 /**
  * Converts keys in an object, that are `Symbol` into strings that start with '$Symbol-'
  */
-export function symbolKeysToStrings(obj: object): Record<string, unknown> {
+export function symbolKeysToStrings(
+  obj: Record<string | symbol, unknown>,
+): Record<string, unknown> {
   const response: Record<string, unknown> = { ...obj }
 
   const symbols = Object.getOwnPropertySymbols(obj)
@@ -172,9 +175,11 @@ export function symbolKeysToStrings(obj: object): Record<string, unknown> {
   symbols.forEach((symbol) => {
     const { description } = symbol
     if (description) {
-      const encodedKey = errorTypeKeys[description]
+      const encodedKey =
+        errorTypeKeys[description as keyof typeof errorTypeKeys]
       if (encodedKey) {
-        response[encodedKey] = (obj as any)[symbol]
+        // eslint-disable-next-line security/detect-object-injection
+        response[encodedKey] = obj[symbol]
       }
     }
   })

@@ -14,6 +14,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
+import { Response } from 'express'
 import pdf, { CreateOptions } from 'html-pdf'
 import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
@@ -101,7 +102,7 @@ export class TaxController {
   async getTaxByYearPdf(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year', ParseIntPipe) year: number,
-    @Res() res: any,
+    @Res() res: Response,
   ) {
     try {
       const pdfData = await this.taxService.generatePdf(
@@ -118,12 +119,14 @@ export class TaxController {
         },
       }
       pdf.create(pdfData, options).toBuffer((err, buffer) => {
-        if (err) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (err != null) {
           this.logger.error(err)
-        } else {
-          res.header('Content-type', 'application/pdf')
-          res.send(buffer)
+          res.status(500).send('Error generating PDF')
+          return
         }
+        res.header('Content-type', 'application/pdf')
+        res.send(buffer)
       })
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(

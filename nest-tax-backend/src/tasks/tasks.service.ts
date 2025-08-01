@@ -46,7 +46,7 @@ export class TasksService {
       variableSymbol: string
       id: number
       year: number
-    }[] = []
+    }[]
     try {
       variableSymbolsDb = await this.prismaService.$transaction(
         async (prisma) => {
@@ -291,7 +291,7 @@ export class TasksService {
 
   @Cron('0 9-17 1-23 12 1-5')
   @HandleErrors('Cron Error')
-  async sendAlertsIfHolidaysAreNotSet() {
+  sendAlertsIfHolidaysAreNotSet() {
     const nextYear = dayjs().year() + 1
 
     const stateHolidaysForNextYear = stateHolidays.some(

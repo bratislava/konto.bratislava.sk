@@ -3,6 +3,12 @@ import currency from 'currency.js'
 
 import { NorisTaxPayersDto } from '../../noris/noris.dto'
 
+interface TaxInstallmentsData {
+  taxId: number
+  amount: number
+  text: string
+}
+
 export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue
 }
@@ -63,7 +69,7 @@ export const mapNorisToTaxData = (
 export const mapNorisToTaxInstallmentsData = (
   data: NorisTaxPayersDto,
   taxId: number,
-): any[] => {
+): TaxInstallmentsData[] => {
   if (data.SPL4_2 === '') {
     return [
       {

@@ -51,28 +51,22 @@ export class ResponseErrorDto {
   errorName: CustomErrorEnums
 }
 
-export class ErrorSymbols {
-  static readonly alert: unique symbol = Symbol('alert')
+const errorSymbolNames = [
+  'alert',
+  'console',
+  'errorType',
+  'stack',
+  'errorCause',
+  'causedByMessage',
+] as const
 
-  static readonly console: unique symbol = Symbol('console')
+export const ErrorSymbols = Object.fromEntries(
+  errorSymbolNames.map((name) => [name, Symbol(name)]),
+) as { [K in (typeof errorSymbolNames)[number]]: symbol }
 
-  static readonly errorType: unique symbol = Symbol('errorType')
-
-  static readonly stack: unique symbol = Symbol('stack')
-
-  static readonly errorCause = Symbol('errorCause')
-
-  static readonly causedByMessage = Symbol('causedByMessage')
-}
-
-export const errorTypeKeys: Record<string, string> = {
-  alert: `$Symbol-alert`,
-  console: `$Symbol-console`,
-  errorType: `$Symbol-errorType`,
-  stack: `$Symbol-stack`,
-  errorCause: `$Symbol-errorCause`,
-  causedByMessage: `$Symbol-causedByMessage`,
-}
+export const errorTypeKeys = Object.fromEntries(
+  errorSymbolNames.map((name) => [name, `$Symbol-${name}`]),
+) as Record<(typeof errorSymbolNames)[number], string>
 
 export const errorTypeStrings = Object.values(errorTypeKeys)
 

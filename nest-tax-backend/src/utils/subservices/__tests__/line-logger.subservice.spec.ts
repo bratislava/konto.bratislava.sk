@@ -1,7 +1,7 @@
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerService', () => {
-  let service: any
+  let service: LineLoggerSubservice
   let consoleSpy: jest.SpyInstance
 
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('LineLoggerService', () => {
     ['verbose', 'VERBOSE'],
     ['fatal', 'FATAL'],
   ])('should print %s message with severity %s', (method, severity) => {
-    service[method]('test message')
+    service[method as keyof LineLoggerSubservice]('test message')
 
     const regex = new RegExp(
       `process="\\[Nest\\]" processPID="\\d+" datetime="\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z" severity="${severity}" context="LineLogger TEST" message="test message"`,

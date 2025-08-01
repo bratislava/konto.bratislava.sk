@@ -68,7 +68,7 @@ export class NorisService {
         .replaceAll('{%YEAR%}', data.year.toString())
         .replaceAll('{%BIRTHNUMBERS%}', birthNumbers),
     )
-    connection.close()
+    await connection.close()
     return norisData.recordset
   }
 
@@ -114,7 +114,7 @@ export class NorisService {
         .replaceAll('{%YEARS%}', `= ${data.year.toString()}`)
         .replaceAll('{%VARIABLE_SYMBOLS%}', ''),
     )
-    connection.close()
+    await connection.close()
     return norisData.recordset
   }
 
@@ -166,7 +166,7 @@ export class NorisService {
         )
         .replaceAll('{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}', ''),
     )
-    connection.close()
+    await connection.close()
     return norisData.recordset
   }
 

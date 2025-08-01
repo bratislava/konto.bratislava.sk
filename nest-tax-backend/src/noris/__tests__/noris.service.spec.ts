@@ -30,6 +30,7 @@ describe('NorisService', () => {
       MSSQL_HOST: 'mock-host',
       MSSQL_DB: 'mock-db',
       MSSQL_USERNAME: 'mock-username',
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
       MSSQL_PASSWORD: 'mock-password',
     }
   })
@@ -189,7 +190,7 @@ describe('NorisService', () => {
       const connectionPool = {
         connectedCalls: 0,
         get connected() {
-          connectedCheckCalls += 1
+          connectedCheckCalls++
           return isConnected
         },
       } as unknown as mssql.ConnectionPool

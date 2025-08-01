@@ -5,7 +5,7 @@ import HandleErrors from '../errorHandler.decorator'
 describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
 
-  beforeEach(async () => {
+  beforeEach(() => {
     consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(() => {})
   })
 
@@ -18,6 +18,7 @@ describe('HandleErrors', () => {
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
         throw new Error('This is a test error')
+        await Promise.resolve() // To ensure the method is async
       }
     }
 
@@ -46,6 +47,7 @@ describe('HandleErrors', () => {
           'Console error',
           new Error('Caused by error message test'),
         )
+        await Promise.resolve() // To ensure the method is async
       }
     }
 

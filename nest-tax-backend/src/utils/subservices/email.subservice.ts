@@ -61,10 +61,12 @@ export default class EmailSubservice {
         attachments,
       }
 
-      const info = await this.transporter.sendMail(emailOptions)
+      const info: { messageId?: string } = (await this.transporter.sendMail(
+        emailOptions,
+      )) as { messageId?: string }
 
       this.logger.log(
-        `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`,
+        `Report email sent successfully to ${to.join(', ')}: ${info.messageId ?? 'unknown'}`,
         { emailOptions },
       )
     } catch (error) {

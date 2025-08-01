@@ -18,6 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
+import { Response } from 'express'
 import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
@@ -184,7 +185,7 @@ export class PaymentController {
     type: ResponseInternalServerErrorDto,
   })
   @Get('cardpay/by-tax-id/:uuid')
-  async paymentByTaxId(@Param('uuid') uuid: string, @Res() res: any) {
+  async paymentByTaxId(@Param('uuid') uuid: string, @Res() res: Response) {
     try {
       const url = await this.paymentService.redirectToPayGateByTaxId(uuid)
       res.redirect(url)
@@ -235,7 +236,10 @@ export class PaymentController {
     type: ResponseErrorDto,
   })
   @Get('qrcode/email/:taxUuid')
-  async getQrCodeByTaxUuid(@Param('taxUuid') taxUuid: string, @Res() res: any) {
+  async getQrCodeByTaxUuid(
+    @Param('taxUuid') taxUuid: string,
+    @Res() res: Response,
+  ) {
     const qrBase64 = await this.paymentService.getQrCodeByTaxUuid(taxUuid)
     const buffer = Buffer.from(qrBase64, 'base64')
     res.writeHead(200, { 'Content-Type': 'image/png' })

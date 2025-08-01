@@ -20,15 +20,25 @@ export class TiersGuard implements CanActivate {
       TIERS_KEY,
       [context.getHandler(), context.getClass()],
     )
-    if (!requiredRoles) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!requiredRoles || requiredRoles.length === 0) {
       return true
     }
-    const { cognito_user } = context.switchToHttp().getRequest()
+    const { cognito_user }: { cognito_user?: { _username?: string } } = context
+      .switchToHttp()
+      .getRequest()
+
+    if (!cognito_user?._username) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        ErrorsEnum.FORBIDDEN_ERROR,
+        'Missing cognito user',
+      )
+    }
 
     const tier = await this.cognitoSubservice.getDataFromCognito(
       cognito_user._username,
     )
-    const result = requiredRoles.some((role) => [tier]?.includes(role))
+    const result = requiredRoles.some((role) => [tier].includes(role))
     if (!result) {
       throw this.throwerErrorGuard.ForbiddenException(
         ErrorsEnum.FORBIDDEN_ERROR,

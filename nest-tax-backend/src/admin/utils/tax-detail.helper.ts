@@ -42,7 +42,7 @@ const config: Record<
   },
 }
 
-type TaxDetail = {
+interface TaxDetail {
   taxId: number
   areaType: TaxDetailareaType
   type: AreaTypesEnum

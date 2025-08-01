@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
-import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
@@ -26,7 +25,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
     FormsModule,
     GinisModule,
     ConvertModule,
-    ConvertPdfModule,
     TaxModule,
     FormValidatorRegistryModule,
     ClientsModule,

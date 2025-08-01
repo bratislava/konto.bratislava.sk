@@ -6,6 +6,7 @@ import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   FormDefinitionEmail,
+  FormDefinitionSlovenskoSk,
   FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
@@ -22,17 +23,18 @@ import {
 } from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
 import ClientsService from '../clients/clients.service'
+import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
+import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -65,10 +67,6 @@ describe('NasesService', () => {
           useValue: createMock<FilesService>(),
         },
         {
-          provide: NasesConsumerService,
-          useValue: createMock<NasesConsumerService>(),
-        },
-        {
           provide: RabbitmqClientService,
           useValue: createMock<RabbitmqClientService>(),
         },
@@ -92,6 +90,10 @@ describe('NasesService', () => {
         {
           provide: ClientsService,
           useValue: createMock<ClientsService>(),
+        },
+        {
+          provide: ConvertPdfService,
+          useValue: createMock<ConvertPdfService>(),
         },
       ],
     }).compile()
@@ -196,9 +198,7 @@ describe('NasesService', () => {
       })
 
       // this is the important mock we're testing against
-      service['nasesConsumerService'].sendToNasesAndUpdateState = jest
-        .fn()
-        .mockReturnValue(false)
+      service.sendToNasesAndUpdateState = jest.fn().mockReturnValue(false)
 
       const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
 
@@ -422,6 +422,120 @@ describe('NasesService', () => {
       expect(() =>
         service['getFormSummaryOrThrow'](mockForm, mockFormDefinition),
       ).toThrow(NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR)
+    })
+  })
+
+  describe('sendToNasesAndUpdateState', () => {
+    it('should error handle if status is not 200', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 401 })
+
+      const convertSpy = jest.spyOn(
+        service['convertPdfService'],
+        'createPdfImageInFormFiles',
+      )
+      const spyLog = jest.spyOn(service['logger'], 'error')
+
+      await service.sendToNasesAndUpdateState(
+        '',
+        {} as Forms,
+        {
+          formId: '',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        {} as FormDefinitionSlovenskoSk,
+        { type: SendMessageNasesSenderType.Self },
+      )
+
+      expect(spyLog).toHaveBeenCalled()
+      expect(convertSpy).toHaveBeenCalled()
+    })
+
+    it('should start checking for nases delivery and not trigger any errors', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 200 })
+
+      const spyLog = jest.spyOn(service['logger'], 'error')
+      const spyDelay = jest.spyOn(service as any, 'queueDelayedForm')
+      const spyPublish = jest.spyOn(
+        service['rabbitmqClientService'],
+        'publishToGinis',
+      )
+
+      const convertSpy = jest.spyOn(
+        service['convertPdfService'],
+        'createPdfImageInFormFiles',
+      )
+      await service.sendToNasesAndUpdateState(
+        '',
+        {} as Forms,
+        {
+          formId: 'formIdVal',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        {
+          type: FormDefinitionType.SlovenskoSkGeneric,
+        } as FormDefinitionSlovenskoSk,
+        { type: SendMessageNasesSenderType.Self },
+      )
+
+      expect(spyLog).not.toHaveBeenCalled()
+      expect(spyDelay).not.toHaveBeenCalled()
+      expect(spyPublish).toHaveBeenCalledWith({
+        formId: 'formIdVal',
+        tries: 0,
+        userData: {
+          email: 'test.inovacie_at_bratislava.sk',
+          firstName: 'Tester',
+        },
+      })
+
+      expect(convertSpy).toHaveBeenCalled()
+    })
+
+    it('should pass additionalFormUpdates to formsService.updateForm', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 200 })
+
+      const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
+      const additionalFormUpdates = {
+        formSummary: {} as PrismaJson.FormSummary,
+      }
+
+      await service.sendToNasesAndUpdateState(
+        '',
+        {} as Forms,
+        {
+          formId: 'formIdVal',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        {
+          type: FormDefinitionType.SlovenskoSkGeneric,
+        } as FormDefinitionSlovenskoSk,
+        { type: SendMessageNasesSenderType.Self },
+        additionalFormUpdates,
+      )
+
+      expect(updateFormSpy).toHaveBeenCalledWith('formIdVal', {
+        state: FormState.DELIVERED_NASES,
+        error: FormError.NONE,
+        ...additionalFormUpdates,
+      })
     })
   })
 })

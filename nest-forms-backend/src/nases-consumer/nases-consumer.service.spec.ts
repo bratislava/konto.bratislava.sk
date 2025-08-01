@@ -9,8 +9,8 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
-import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FormsService from '../forms/forms.service'
+import NasesService from '../nases/nases.service'
 import {
   SendMessageNasesSender,
   SendMessageNasesSenderType,
@@ -30,7 +30,7 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 describe('NasesConsumerService', () => {
   let service: NasesConsumerService
   let formsService: FormsService
-  let convertPdfService: ConvertPdfService
+  let nasesService: NasesService
 
   beforeEach(async () => {
     jest.resetAllMocks()
@@ -57,10 +57,6 @@ describe('NasesConsumerService', () => {
         { provide: FormsService, useValue: createMock<FormsService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
-          provide: ConvertPdfService,
-          useValue: createMock<ConvertPdfService>(),
-        },
-        {
           provide: EmailFormsSubservice,
           useValue: createMock<EmailFormsSubservice>(),
         },
@@ -69,12 +65,13 @@ describe('NasesConsumerService', () => {
           useValue: createMock<WebhookSubservice>(),
         },
         { provide: PrismaService, useValue: createMock<PrismaService>() },
+        { provide: NasesService, useValue: createMock<NasesService>() },
       ],
     }).compile()
 
     service = app.get<NasesConsumerService>(NasesConsumerService)
     formsService = app.get<FormsService>(FormsService)
-    convertPdfService = app.get<ConvertPdfService>(ConvertPdfService)
+    nasesService = app.get<NasesService>(NasesService)
     Object.defineProperty(service, 'logger', {
       value: {
         error: jest.fn(),
@@ -93,120 +90,6 @@ describe('NasesConsumerService', () => {
   describe('should be defined', () => {
     it('should be defined', () => {
       expect(service).toBeDefined()
-    })
-  })
-
-  describe('sendToNasesAndUpdateState', () => {
-    it('should error handle if status is not 200', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
-        .fn()
-        .mockResolvedValue({ status: 401 })
-
-      const convertSpy = jest.spyOn(
-        convertPdfService,
-        'createPdfImageInFormFiles',
-      )
-      const spyLog = jest.spyOn(service['logger'], 'error')
-
-      await service.sendToNasesAndUpdateState(
-        '',
-        {} as Forms,
-        {
-          formId: '',
-          tries: 1,
-          userData: {
-            email: 'test.inovacie_at_bratislava.sk',
-            firstName: 'Tester',
-          },
-        },
-        {} as FormDefinitionSlovenskoSk,
-        { type: SendMessageNasesSenderType.Self },
-      )
-
-      expect(spyLog).toHaveBeenCalled()
-      expect(convertSpy).toHaveBeenCalled()
-    })
-
-    it('should start checking for nases delivery and not trigger any errors', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
-        .fn()
-        .mockResolvedValue({ status: 200 })
-
-      const spyLog = jest.spyOn(service['logger'], 'error')
-      const spyDelay = jest.spyOn(service as any, 'queueDelayedForm')
-      const spyPublish = jest.spyOn(
-        service['rabbitmqClientService'],
-        'publishToGinis',
-      )
-
-      const convertSpy = jest.spyOn(
-        convertPdfService,
-        'createPdfImageInFormFiles',
-      )
-      await service.sendToNasesAndUpdateState(
-        '',
-        {} as Forms,
-        {
-          formId: 'formIdVal',
-          tries: 1,
-          userData: {
-            email: 'test.inovacie_at_bratislava.sk',
-            firstName: 'Tester',
-          },
-        },
-        {
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as FormDefinitionSlovenskoSk,
-        { type: SendMessageNasesSenderType.Self },
-      )
-
-      expect(spyLog).not.toHaveBeenCalled()
-      expect(spyDelay).not.toHaveBeenCalled()
-      expect(spyPublish).toHaveBeenCalledWith({
-        formId: 'formIdVal',
-        tries: 0,
-        userData: {
-          email: 'test.inovacie_at_bratislava.sk',
-          firstName: 'Tester',
-        },
-      })
-
-      expect(convertSpy).toHaveBeenCalled()
-    })
-
-    it('should pass additionalFormUpdates to formsService.updateForm', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
-        .fn()
-        .mockResolvedValue({ status: 200 })
-
-      const updateFormSpy = jest.spyOn(formsService, 'updateForm')
-      const additionalFormUpdates = {
-        formSummary: {} as PrismaJson.FormSummary,
-      }
-
-      await service.sendToNasesAndUpdateState(
-        '',
-        {} as Forms,
-        {
-          formId: 'formIdVal',
-          tries: 1,
-          userData: {
-            email: 'test.inovacie_at_bratislava.sk',
-            firstName: 'Tester',
-          },
-        },
-        {
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as FormDefinitionSlovenskoSk,
-        { type: SendMessageNasesSenderType.Self },
-        additionalFormUpdates,
-      )
-
-      expect(updateFormSpy).toHaveBeenCalledWith('formIdVal', {
-        state: FormState.DELIVERED_NASES,
-        error: FormError.NONE,
-        ...additionalFormUpdates,
-      })
     })
   })
 
@@ -303,7 +186,7 @@ describe('NasesConsumerService', () => {
         .spyOn(service as any, 'handleEmailForm')
         .mockResolvedValue(new Nack(false))
       const sendToNasesAndUpdateStateSpy = jest
-        .spyOn(service, 'sendToNasesAndUpdateState')
+        .spyOn(nasesService, 'sendToNasesAndUpdateState')
         .mockResolvedValue(true)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
@@ -327,7 +210,7 @@ describe('NasesConsumerService', () => {
         .spyOn(service as any, 'handleWebhookForm')
         .mockResolvedValue(new Nack(false))
       const sendToNasesAndUpdateStateSpy = jest
-        .spyOn(service, 'sendToNasesAndUpdateState')
+        .spyOn(nasesService, 'sendToNasesAndUpdateState')
         .mockResolvedValue(true)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
@@ -349,12 +232,14 @@ describe('NasesConsumerService', () => {
       jest
         .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('mock-jwt')
-      jest.spyOn(service, 'sendToNasesAndUpdateState').mockResolvedValue(true)
+      jest
+        .spyOn(nasesService, 'sendToNasesAndUpdateState')
+        .mockResolvedValue(true)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
       expect(result).toEqual(new Nack(false))
-      expect(service.sendToNasesAndUpdateState).toHaveBeenCalledWith(
+      expect(nasesService.sendToNasesAndUpdateState).toHaveBeenCalledWith(
         'mock-jwt',
         mockForm,
         mockRabbitPayloadDto,
@@ -376,7 +261,9 @@ describe('NasesConsumerService', () => {
       jest
         .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('mock-jwt')
-      jest.spyOn(service, 'sendToNasesAndUpdateState').mockResolvedValue(false)
+      jest
+        .spyOn(nasesService, 'sendToNasesAndUpdateState')
+        .mockResolvedValue(false)
       jest.spyOn(service as any, 'queueDelayedForm').mockResolvedValue(null)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
@@ -404,7 +291,9 @@ describe('NasesConsumerService', () => {
       jest
         .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('mock-jwt')
-      jest.spyOn(service, 'sendToNasesAndUpdateState').mockResolvedValue(false)
+      jest
+        .spyOn(nasesService, 'sendToNasesAndUpdateState')
+        .mockResolvedValue(false)
       jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service.onQueueConsumption(mockPayload)

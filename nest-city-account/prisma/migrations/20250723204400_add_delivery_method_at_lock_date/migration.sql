@@ -15,9 +15,9 @@ CREATE TYPE "GDPRCategoryEnum" AS ENUM ('CITY', 'ESBS', 'SWIMMINGPOOLS', 'TAXES'
 
 -- AlterTable
 ALTER TABLE "User"
-    ADD COLUMN "taxDeliveryMethod"                "DeliveryMethodUserEnum",
-    ADD COLUMN "taxDeliveryMethodCityAccountDate" TIMESTAMP(3),
-    ADD COLUMN "taxDeliveryMethodAtLockDate"      "DeliveryMethodEnum",
+    ADD COLUMN "taxDeliveryMethod"                    "DeliveryMethodUserEnum",
+    ADD COLUMN "taxDeliveryMethodCityAccountDate"     TIMESTAMP(3),
+    ADD COLUMN "taxDeliveryMethodAtLockDate"          "DeliveryMethodEnum",
     ADD COLUMN "taxDeliveryMethodCityAccountLockDate" TIMESTAMP(3);
 
 -- Update
@@ -27,37 +27,30 @@ $$
         cutoff_date                       CONSTANT DATE                            := '2025-04-01';
         tax_category                      CONSTANT TEXT                            := 'TAXES';
         communication_type_city_account   CONSTANT TEXT                            := 'FORMAL_COMMUNICATION';
-        communication_type_postal         CONSTANT TEXT                            := 'POSTAL';
+        communication_type_postal         CONSTANT TEXT                            := 'FORMAL_COMMUNICATION';
         required_tier                     CONSTANT "CognitoUserAttributesTierEnum" := 'IDENTITY_CARD';
         eid_tier                          CONSTANT "CognitoUserAttributesTierEnum" := 'EID';
         subscription_subtype_city_account CONSTANT TEXT                            := 'subscribe';
         subscription_subtype_postal       CONSTANT TEXT                            := 'unsubscribe';
-        edesk_priority                    CONSTANT INT                             := 1;
-        city_account_priority             CONSTANT INT                             := 2;
-        postal_priority                   CONSTANT INT                             := 3;
-        updated_count                              INT;
     BEGIN
         -- Create temporary table for all delivery methods
         CREATE TEMPORARY TABLE temp_delivery_data_at_lock_date
         (
-            id_user           uuid,
-            delivery_method   "DeliveryMethodEnum",
-            priority          INTEGER,
-            city_account_date TIMESTAMP(3)
+            id_user              uuid,
+            delivery_method      "DeliveryMethodEnum",
+            delivery_method_date TIMESTAMP(3)
         );
         CREATE TEMPORARY TABLE temp_delivery_data_active
         (
-            id_user           uuid,
-            delivery_method   "DeliveryMethodUserEnum",
-            priority          INTEGER,
-            city_account_date TIMESTAMP(3)
+            id_user              uuid,
+            delivery_method      "DeliveryMethodUserEnum",
+            delivery_method_date TIMESTAMP(3)
         );
 
         -- Insert city account users
-        INSERT INTO temp_delivery_data_at_lock_date (id_user, delivery_method, priority, city_account_date)
+        INSERT INTO temp_delivery_data_at_lock_date (id_user, delivery_method, delivery_method_date)
         SELECT DISTINCT ON (ugd."userId") ugd."userId",
                                           'CITY_ACCOUNT'::"DeliveryMethodEnum",
-                                          city_account_priority,
                                           ugd."createdAt"
         FROM "UserGdprData" ugd
                  JOIN "User" u ON ugd."userId" = u.id
@@ -69,10 +62,9 @@ $$
           AND ugd."subType" = subscription_subtype_city_account
         ORDER BY ugd."userId", ugd."createdAt" DESC;
 
-        INSERT INTO temp_delivery_data_active (id_user, delivery_method, priority, city_account_date)
+        INSERT INTO temp_delivery_data_active (id_user, delivery_method, delivery_method_date)
         SELECT DISTINCT ON (ugd."userId") ugd."userId",
                                           'CITY_ACCOUNT'::"DeliveryMethodUserEnum",
-                                          city_account_priority,
                                           ugd."createdAt"
         FROM "UserGdprData" ugd
                  JOIN "User" u ON ugd."userId" = u.id
@@ -84,23 +76,21 @@ $$
         ORDER BY ugd."userId", ugd."createdAt" DESC;
 
         -- Insert e-desk users
-        INSERT INTO temp_delivery_data_at_lock_date (id_user, delivery_method, priority, city_account_date)
+        INSERT INTO temp_delivery_data_at_lock_date (id_user, delivery_method, delivery_method_date)
         SELECT pe."userId",
                'EDESK'::"DeliveryMethodEnum",
-               edesk_priority,
-               NULL
+               NOW()
         FROM "PhysicalEntity" pe
                  JOIN "User" u ON u.id = pe."userId"
-        WHERE pe."activeEdesk" = 'true'
+        WHERE pe."activeEdesk" = true
           AND (u."cognitoTier" = required_tier OR u."cognitoTier" = eid_tier)
           AND u."birthNumber" IS NOT NULL;
 
         -- Insert postal users
-        INSERT INTO temp_delivery_data_at_lock_date (id_user, delivery_method, priority, city_account_date)
+        INSERT INTO temp_delivery_data_at_lock_date (id_user, delivery_method, delivery_method_date)
         SELECT DISTINCT ON (ugd."userId") u.id,
                                           'POSTAL'::"DeliveryMethodEnum",
-                                          postal_priority,
-                                          NULL
+                                          ugd."createdAt"
         FROM "User" u
                  JOIN "UserGdprData" ugd ON ugd."userId" = u.id
         WHERE ugd."createdAt" < cutoff_date
@@ -111,11 +101,10 @@ $$
           AND ugd."subType" = subscription_subtype_postal
         ORDER BY ugd."userId", ugd."createdAt" DESC;
 
-        INSERT INTO temp_delivery_data_active (id_user, delivery_method, priority, city_account_date)
+        INSERT INTO temp_delivery_data_active (id_user, delivery_method, delivery_method_date)
         SELECT DISTINCT ON (ugd."userId") u.id,
                                           'POSTAL'::"DeliveryMethodUserEnum",
-                                          postal_priority,
-                                          NULL
+                                          ugd."createdAt"
         FROM "User" u
                  JOIN "UserGdprData" ugd ON ugd."userId" = u.id
         WHERE ugd."category" = tax_category
@@ -128,23 +117,29 @@ $$
 
         -- Perform the update with prioritized data
         UPDATE "User" u
-        SET "taxDeliveryMethodAtLockDate"      = delivery_data.delivery_method,
-            "taxDeliveryMethodCityAccountLockDate" = delivery_data.city_account_date
+        SET "taxDeliveryMethodAtLockDate"          = delivery_data.delivery_method,
+            "taxDeliveryMethodCityAccountLockDate" = CASE
+                                                         WHEN delivery_data.delivery_method = 'CITY_ACCOUNT'
+                                                             THEN delivery_data.delivery_method_date
+                END
         FROM (SELECT DISTINCT ON (id_user) id_user,
                                            delivery_method,
-                                           city_account_date
+                                           delivery_method_date
               FROM temp_delivery_data_at_lock_date
-              ORDER BY id_user, priority) delivery_data
+              ORDER BY id_user, delivery_method_date DESC) delivery_data
         WHERE u.id = delivery_data.id_user;
 
         UPDATE "User" u
-        SET "taxDeliveryMethod"      = delivery_data.delivery_method,
-            "taxDeliveryMethodCityAccountDate" = delivery_data.city_account_date
+        SET "taxDeliveryMethod"                = delivery_data.delivery_method,
+            "taxDeliveryMethodCityAccountDate" = CASE
+                                                     WHEN delivery_data.delivery_method = 'CITY_ACCOUNT'
+                                                         THEN delivery_data.delivery_method_date
+                END
         FROM (SELECT DISTINCT ON (id_user) id_user,
                                            delivery_method,
-                                           city_account_date
+                                           delivery_method_date
               FROM temp_delivery_data_active
-              ORDER BY id_user, priority) delivery_data
+              ORDER BY id_user, delivery_method_date DESC) delivery_data
         WHERE u.id = delivery_data.id_user;
 
         -- Cleanup
@@ -161,7 +156,6 @@ ALTER TABLE "User"
     ADD CONSTRAINT check_tax_delivery_method_date_lock
         CHECK ( "User"."taxDeliveryMethodAtLockDate" != 'CITY_ACCOUNT' OR
                 "User"."taxDeliveryMethodCityAccountLockDate" IS NOT NULL );
-
 
 
 -- Create temporary columns with enum types
@@ -222,7 +216,6 @@ SET "type_new"     = CASE
         END;
 
 
-
 -- Drop old columns and rename new ones
 ALTER TABLE "UserGdprData"
     DROP COLUMN "type",
@@ -236,8 +229,10 @@ ALTER TABLE "UserGdprData"
     RENAME COLUMN "subType_new" TO "subType";
 
 -- Delete rows where type_new or category_new are NULL before setting NOT NULL constraint
-DELETE FROM "UserGdprData"
-WHERE "type" IS NULL OR "category" IS NULL;
+DELETE
+FROM "UserGdprData"
+WHERE "type" IS NULL
+   OR "category" IS NULL;
 
 -- Add NOT NULL constraints
 ALTER TABLE "UserGdprData"
@@ -259,8 +254,10 @@ ALTER TABLE "LegalPersonGdprData"
     RENAME COLUMN "subType_new" TO "subType";
 
 -- Delete rows where type_new or category_new are NULL before setting NOT NULL constraint
-DELETE FROM "LegalPersonGdprData"
-WHERE "type" IS NULL OR "category" IS NULL;
+DELETE
+FROM "LegalPersonGdprData"
+WHERE "type" IS NULL
+   OR "category" IS NULL;
 
 -- Add NOT NULL constraints
 ALTER TABLE "LegalPersonGdprData"

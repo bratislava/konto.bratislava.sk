@@ -93,7 +93,7 @@ export class TasksSubservice {
       `${addedBirthNumbers.length} birth numbers are successfully added to tax backend.`
     )
 
-    // Mark birth numbers which are in tax backend.
+    // Mark birth numbers which are in the tax backend.
     await this.prisma.user.updateMany({
       where: {
         birthNumber: {
@@ -215,7 +215,7 @@ export class TasksSubservice {
         birthNumber: null,
       },
     })
-    // If someone was deactivated we should log the error with their birth numbers.
+    // If someone was deactivated, we should log the error with their birth numbers.
     if (deactivated.length > 0) {
       const deactivatedIds = deactivated.map((user) => user.id)
       const birthNumbersOfDeactivateUsers = users
@@ -230,7 +230,7 @@ export class TasksSubservice {
       )
     }
 
-    // If OK we should set the Users to have updated delivery methods in Noris for current year. Otherwise, the error will be thrown.
+    // If OK, we should set the Users to have updated delivery methods in Noris for the current year. Otherwise, the error will be thrown.
     await this.prisma.user.updateMany({
       where: {
         id: {

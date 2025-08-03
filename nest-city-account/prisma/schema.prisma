@@ -25,6 +25,7 @@ enum DeliveryMethodEnum {
   POSTAL
 }
 
+// Edesk is stored in PhysicalEntity and we do not want to duplicate it in User
 enum DeliveryMethodUserEnum {
   CITY_ACCOUNT
   POSTAL

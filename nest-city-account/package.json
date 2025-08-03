@@ -25,7 +25,7 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@golevelup/nestjs-rabbitmq": "^6.0.1",
+    "@golevelup/nestjs-rabbitmq": "^6.0.2",
     "@nestjs/common": "^11.1.5",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.5",

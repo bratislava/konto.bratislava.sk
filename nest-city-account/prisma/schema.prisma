@@ -37,7 +37,6 @@ enum GDPRTypeEnum {
   FORMAL_COMMUNICATION
   LICENSE
   MARKETING
-  // marketing
 }
 
 enum GDPRSubTypeEnum {
@@ -50,9 +49,7 @@ enum GDPRCategoryEnum {
   ESBS
   SWIMMINGPOOLS
   TAXES
-  // init
   INIT
-  // library
   LIBRARY
 }
 

@@ -383,7 +383,16 @@ export class DatabaseSubserviceUser {
       )
     }
 
-    if (user.taxDeliveryMethodAtLockDate && !user.taxDeliveryMethodCityAccountDate) {
+    if (
+      user.taxDeliveryMethodAtLockDate === DeliveryMethodEnum.CITY_ACCOUNT &&
+      !user.taxDeliveryMethodCityAccountDate
+    ) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+        SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+        undefined,
+        user
+      )
     }
 
     const locked = user.taxDeliveryMethodAtLockDate

@@ -344,9 +344,9 @@ export class DatabaseSubserviceUser {
         deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
         date: user.userGdprData[0].createdAt,
       }
-    } else {
-      return { deliveryMethod: DeliveryMethodEnum.POSTAL }
     }
+
+    return { deliveryMethod: DeliveryMethodEnum.POSTAL }
   }
 
   async getActiveAndLockedDeliveryMethodsWithDates(

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
-import { GdprCategory, GdprSubType, GdprType } from '../../user/dtos/gdpr.user.dto'
 import { addSlashToBirthNumber } from '../birthNumbers'
 import { getTaxDeadlineDate } from '../constants/tax-deadline'
 import HandleErrors from '../decorators/errorHandler.decorators'
@@ -11,7 +10,7 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
 import { TaxSubservice } from './tax.subservice'
-import { DeliveryMethodEnum } from '@prisma/client'
+import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 import { SubserviceErrorsEnum, SubserviceErrorsResponseEnum } from './subservice.errors.enum'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
@@ -258,8 +257,8 @@ export class TasksSubservice {
             createdAt: 'desc',
           },
           where: {
-            category: GdprCategory.TAXES,
-            type: GdprType.FORMAL_COMMUNICATION,
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
           },
           take: 1,
           select: {
@@ -283,7 +282,7 @@ export class TasksSubservice {
       if (user.physicalEntity?.activeEdesk) {
         return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
       }
-      if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
+      if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
         return {
           birthNumber,
           deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,

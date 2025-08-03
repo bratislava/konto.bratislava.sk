@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { User } from '@prisma/client'
+import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, User } from '@prisma/client'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 
 export class RequestGdprDataDto {
@@ -26,29 +26,13 @@ export class GdprDataDto {
     description: 'Type of Gdpr subscription',
     default: 'marketing',
   })
-  type!: GdprType
+  type!: GDPRTypeEnum
 
   @ApiProperty({
     description: 'Type of Gdpr category',
     default: 'library',
   })
-  category!: GdprCategory
-}
-
-export enum GdprCategory {
-  TAXES = 'TAXES',
-  ESBS = 'ESBS',
-}
-
-export enum GdprSubType {
-  UNSUB = 'unsubscribe',
-  SUB = 'subscribe',
-}
-
-export enum GdprType {
-  LICENSE = 'LICENSE',
-  MARKETING = 'MARKETING',
-  FORMAL_COMMUNICATION = 'FORMAL_COMMUNICATION',
+  category!: GDPRCategoryEnum
 }
 
 export enum UserOfficialCorrespondenceChannelEnum {
@@ -140,11 +124,11 @@ export class ResponseUserDataDto extends ResponseUserDataBasicDto {
 }
 
 export class ResponseGdprUserDataDto {
-  category!: GdprCategory
+  category!: GDPRCategoryEnum
 
-  type!: GdprType
+  type!: GDPRTypeEnum
 
-  subType!: GdprSubType
+  subType!: GDPRSubTypeEnum
 }
 
 export class ResponsePublicUnsubscribeDto {

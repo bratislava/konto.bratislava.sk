@@ -8,9 +8,6 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from '../../dtos/gdpr.legalperson.dto'
 import {
-  GdprCategory,
-  GdprSubType,
-  GdprType,
   ResponseGdprUserDataDto,
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
@@ -19,7 +16,16 @@ import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
-import { DeliveryMethodEnum, PhysicalEntity, Prisma, User, UserGdprData } from '@prisma/client'
+import {
+  DeliveryMethodEnum,
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+  PhysicalEntity,
+  Prisma,
+  User,
+  UserGdprData,
+} from '@prisma/client'
 import {
   SubserviceErrorsEnum,
   SubserviceErrorsResponseEnum,
@@ -70,14 +76,14 @@ export class DatabaseSubserviceUser {
         })
         await this.changeUserGdprData(user.id, [
           {
-            type: GdprType.LICENSE,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.LICENSE,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
           {
-            type: GdprType.MARKETING,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
         ])
         await this.bloomreachService.trackCustomer(externalId)
@@ -107,9 +113,9 @@ export class DatabaseSubserviceUser {
       })
       await this.changeUserGdprData(user.id, [
         {
-          type: GdprType.LICENSE,
-          category: GdprCategory.ESBS,
-          subType: GdprSubType.SUB,
+          type: GDPRTypeEnum.LICENSE,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
         },
       ])
       if (externalId) {
@@ -149,14 +155,14 @@ export class DatabaseSubserviceUser {
         })
         await this.changeLegalPersonGdprData(legalPerson.id, [
           {
-            type: GdprType.LICENSE,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.LICENSE,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
           {
-            type: GdprType.MARKETING,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
         ])
       } else if (legalPerson.email != email) {
@@ -185,9 +191,9 @@ export class DatabaseSubserviceUser {
       })
       await this.changeLegalPersonGdprData(legalPerson.id, [
         {
-          type: GdprType.LICENSE,
-          category: GdprCategory.ESBS,
-          subType: GdprSubType.SUB,
+          type: GDPRTypeEnum.LICENSE,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
         },
       ])
     }
@@ -307,14 +313,14 @@ export class DatabaseSubserviceUser {
     const lastSub = await this.prisma.userGdprData.findFirst({
       where: {
         userId,
-        category: GdprCategory.TAXES,
-        type: GdprType.FORMAL_COMMUNICATION,
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
       },
       orderBy: {
         createdAt: 'desc',
       },
     })
-    if (lastSub?.subType === GdprSubType.SUB) {
+    if (lastSub?.subType === GDPRSubTypeEnum.subscribe) {
       return UserOfficialCorrespondenceChannelEnum.EMAIL
     }
     return UserOfficialCorrespondenceChannelEnum.POSTAL
@@ -323,7 +329,9 @@ export class DatabaseSubserviceUser {
   private parseActiveDeliveryMethod(user: UserWithDeliveryData) {
     if (user.physicalEntity?.activeEdesk) {
       return { deliveryMethod: DeliveryMethodEnum.EDESK }
-    } else if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
+    }
+
+    if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
       if (!user.userGdprData[0].createdAt) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
@@ -352,8 +360,8 @@ export class DatabaseSubserviceUser {
             createdAt: 'desc',
           },
           where: {
-            category: GdprCategory.TAXES,
-            type: GdprType.FORMAL_COMMUNICATION,
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
           },
           take: 1,
           select: {
@@ -394,8 +402,8 @@ export class DatabaseSubserviceUser {
     const formalCommunicationSubscription = await this.prisma.userGdprData.findFirst({
       where: {
         userId,
-        type: GdprType.FORMAL_COMMUNICATION,
-        category: GdprCategory.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+        category: GDPRCategoryEnum.TAXES,
       },
       orderBy: {
         createdAt: 'desc',

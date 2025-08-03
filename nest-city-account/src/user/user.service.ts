@@ -140,7 +140,7 @@ export class UserService {
     const user = await this.databaseSubservice.getOrCreateUser(null, data.email)
     await this.databaseSubservice.changeUserGdprData(
       user.id,
-      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB }))
+      data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe }))
     )
     // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
     // If there is error it isn't blocker for futher process.

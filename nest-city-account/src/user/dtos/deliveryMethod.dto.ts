@@ -11,7 +11,6 @@ import {
 import { Type } from 'class-transformer'
 import { DeliveryMethodEnum } from '@prisma/client'
 
-
 /**
  * Decorator that enforces a property to be required when the delivery method is set to CITY_ACCOUNT.
  *
@@ -27,15 +26,18 @@ function IsRequiredForCityAccount(validationOptions?: ValidationOptions): Functi
       options: validationOptions,
       validator: {
         validate(value: any, args: ValidationArguments) {
-          const obj = args.object as DeliveryMethodDto;
-          return obj.deliveryMethod !== DeliveryMethodEnum.CITY_ACCOUNT || (value !== null && value !== undefined);
+          const obj = args.object as DeliveryMethodDto
+          return (
+            obj.deliveryMethod !== DeliveryMethodEnum.CITY_ACCOUNT ||
+            (value !== null && value !== undefined)
+          )
         },
         defaultMessage(args: ValidationArguments) {
-          return `${args.property} is required when delivery method is CITY_ACCOUNT`;
-        }
-      }
-    });
-  };
+          return `${args.property} is required when delivery method is CITY_ACCOUNT`
+        },
+      },
+    })
+  }
 }
 
 // Single unified delivery method class with validation

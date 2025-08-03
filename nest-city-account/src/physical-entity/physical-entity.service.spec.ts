@@ -135,9 +135,7 @@ describe('PhysicalEntityService', () => {
         userId: 'mock-user-id',
         birthNumber: 'mock-birth-number',
       }
-      const updateSpy = jest
-        .spyOn(service, 'update')
-        .mockResolvedValue(mockUpdated)
+      const updateSpy = jest.spyOn(service, 'update').mockResolvedValue(mockUpdated)
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const result = await service.updateUriAndEdeskFromUpvs(mockUpvsInput)

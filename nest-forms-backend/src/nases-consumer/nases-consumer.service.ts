@@ -117,6 +117,33 @@ export default class NasesConsumerService {
     return result
   }
 
+  private async sendFormSubmissionEmail(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSk,
+    emailSettings: {
+      template: MailgunTemplateEnum
+      to: string
+      firstName: string | null
+    },
+  ): Promise<void> {
+    const { template, to, firstName } = emailSettings
+    await this.mailgunService.sendEmail({
+      data: {
+        to,
+        template,
+        data: {
+          formId: form.id,
+          messageSubject: extractFormSubjectPlain(
+            formDefinition,
+            form.formDataJson,
+          ),
+          firstName,
+          slug: form.formDefinitionSlug,
+        },
+      },
+    })
+  }
+
   private async handleSlovenskoSkForm(
     form: Forms,
     data: RabbitPayloadDto,
@@ -133,20 +160,10 @@ export default class NasesConsumerService {
     if (isSent) {
       const toEmail = data.userData.email || form.email
       if (toEmail) {
-        await this.mailgunService.sendEmail({
-          data: {
-            to: toEmail,
-            template: MailgunTemplateEnum.NASES_SENT,
-            data: {
-              formId: form.id,
-              messageSubject: extractFormSubjectPlain(
-                formDefinition,
-                form.formDataJson,
-              ),
-              firstName: data.userData.firstName,
-              slug: form.formDefinitionSlug,
-            },
-          },
+        await this.sendFormSubmissionEmail(form, formDefinition, {
+          template: MailgunTemplateEnum.NASES_SENT,
+          to: toEmail,
+          firstName: data.userData.firstName,
         })
       }
       return new Nack(false)
@@ -154,20 +171,10 @@ export default class NasesConsumerService {
     if (data.tries <= 1) {
       const toEmail = data.userData.email || form.email
       if (data.tries === 1 && toEmail) {
-        await this.mailgunService.sendEmail({
-          data: {
-            to: toEmail,
-            template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
-            data: {
-              formId: form.id,
-              messageSubject: extractFormSubjectPlain(
-                formDefinition,
-                form.formDataJson,
-              ),
-              firstName: data.userData.firstName,
-              slug: form.formDefinitionSlug,
-            },
-          },
+        await this.sendFormSubmissionEmail(form, formDefinition, {
+          template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+          to: toEmail,
+          firstName: data.userData.firstName,
         })
       }
       await this.queueDelayedForm(

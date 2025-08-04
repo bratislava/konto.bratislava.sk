@@ -146,7 +146,8 @@ export class MagproxyService {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          JSON.stringify(error)
+          "Error is not an instance of AxiosError",
+          error
         )
       }
       if (error.response?.status === HttpStatus.UNAUTHORIZED) {

@@ -1,8 +1,9 @@
-import { ApiProperty, getSchemaPath } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import {
   IsDate,
   IsEnum,
   IsObject,
+  IsOptional,
   registerDecorator,
   ValidateNested,
   ValidationArguments,
@@ -27,10 +28,10 @@ function IsRequiredForCityAccount(validationOptions?: ValidationOptions): Functi
       validator: {
         validate(value: any, args: ValidationArguments) {
           const obj = args.object as DeliveryMethodDto
-          return (
-            obj.deliveryMethod !== DeliveryMethodEnum.CITY_ACCOUNT ||
-            (value !== null && value !== undefined)
-          )
+          if (obj.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT) {
+            return value !== null && value !== undefined
+          }
+          return true
         },
         defaultMessage(args: ValidationArguments) {
           return `${args.property} is required when delivery method is CITY_ACCOUNT`
@@ -53,7 +54,9 @@ export class DeliveryMethodDto {
     description: 'Date (required for CITY_ACCOUNT method)',
     type: Date,
     required: false,
+    example: '2025-12-01T00:00:00.000Z',
   })
+  @Type(() => Date)
   @IsDate()
   @IsRequiredForCityAccount()
   date?: Date
@@ -63,17 +66,20 @@ export class DeliveryMethodActiveAndLockedDto {
   @ApiProperty({
     description: 'Active delivery method',
     type: DeliveryMethodDto,
+    required: false,
   })
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => DeliveryMethodDto)
-  active: DeliveryMethodDto
+  active?: DeliveryMethodDto
 
   @ApiProperty({
     description: 'Delivery method at lock date this year.',
     type: DeliveryMethodDto,
     required: false,
   })
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => DeliveryMethodDto)

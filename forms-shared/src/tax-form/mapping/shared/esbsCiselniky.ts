@@ -922,7 +922,7 @@ export const katastralneUzemiaCodeAbbreviationMap: Record<
   '804096': 'SM',
   '805343': 'TR',
   '805700': 'VA',
-  '804380': 'VI',
+  '804380': 'VIN',
   '870293': 'VR',
   '871796': 'ZB',
 } as const

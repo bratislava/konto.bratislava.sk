@@ -82,7 +82,9 @@ import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamen
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
 import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPristupKInformaciam'
-import ziadostOUzemnoplanovaciuInformaciu from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
+import ziadostOUzemnoplanovaciuInformaciu, {
+  ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
+} from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -581,6 +583,9 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
+    subject: {
+      extractTechnical: ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
+    },
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A0ZV',
       ginisFunctionId: 'MAG0SF00ASI3',

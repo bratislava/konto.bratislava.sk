@@ -114,3 +114,11 @@ export interface NorisUpdateDto {
   variabilny_symbol: string
   datum_platnosti: string | null
 }
+
+type NorisDeliveryMethodsUpdateResultRecordset = {
+  cislo_subjektu: number
+}
+
+export interface NorisDeliveryMethodsUpdateResultDto {
+  recordset: NorisDeliveryMethodsUpdateResultRecordset[]
+}

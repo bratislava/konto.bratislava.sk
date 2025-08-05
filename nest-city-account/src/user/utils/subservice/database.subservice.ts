@@ -18,24 +18,12 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import {
   DeliveryMethodEnum,
+  DeliveryMethodUserEnum,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
-  PhysicalEntity,
   Prisma,
-  User,
-  UserGdprData,
 } from '@prisma/client'
-import {
-  SubserviceErrorsEnum,
-  SubserviceErrorsResponseEnum,
-} from '../../../utils/subservices/subservice.errors.enum'
-
-type UserWithDeliveryData = User & {
-  physicalEntity: Pick<PhysicalEntity, 'activeEdesk'> | null
-} & {
-  userGdprData: Pick<UserGdprData, 'subType' | 'createdAt'>[] | null
-}
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -302,51 +290,18 @@ export class DatabaseSubserviceUser {
   async getOfficialCorrespondenceChannel(
     userId: string
   ): Promise<UserOfficialCorrespondenceChannelEnum> {
-    const hasEdesk = await this.prisma.physicalEntity.findUnique({
-      where: {
-        userId,
-      },
-    })
-    if (hasEdesk?.activeEdesk) {
+    const delivery = await this.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
+    const active = delivery.active?.deliveryMethod
+    if (!active) {
+      return UserOfficialCorrespondenceChannelEnum.POSTAL
+    }
+    if (active === DeliveryMethodEnum.EDESK) {
       return UserOfficialCorrespondenceChannelEnum.EDESK
     }
-    const lastSub = await this.prisma.userGdprData.findFirst({
-      where: {
-        userId,
-        category: GDPRCategoryEnum.TAXES,
-        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
-    if (lastSub?.subType === GDPRSubTypeEnum.subscribe) {
+    if (active === DeliveryMethodEnum.CITY_ACCOUNT) {
       return UserOfficialCorrespondenceChannelEnum.EMAIL
     }
     return UserOfficialCorrespondenceChannelEnum.POSTAL
-  }
-
-  private parseActiveDeliveryMethod(user: UserWithDeliveryData) {
-    if (user.physicalEntity?.activeEdesk) {
-      return { deliveryMethod: DeliveryMethodEnum.EDESK }
-    }
-
-    if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
-      if (!user.userGdprData[0].createdAt) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          undefined,
-          user
-        )
-      }
-      return {
-        deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
-        date: user.userGdprData[0].createdAt,
-      }
-    }
-
-    return { deliveryMethod: DeliveryMethodEnum.POSTAL }
   }
 
   async getActiveAndLockedDeliveryMethodsWithDates(
@@ -355,20 +310,6 @@ export class DatabaseSubserviceUser {
     const user = await this.prisma.user.findUnique({
       where,
       include: {
-        userGdprData: {
-          orderBy: {
-            createdAt: 'desc',
-          },
-          where: {
-            category: GDPRCategoryEnum.TAXES,
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          },
-          take: 1,
-          select: {
-            subType: true,
-            createdAt: true,
-          },
-        },
         physicalEntity: {
           select: {
             activeEdesk: true,
@@ -383,39 +324,32 @@ export class DatabaseSubserviceUser {
       )
     }
 
-    if (
-      user.taxDeliveryMethodAtLockDate === DeliveryMethodEnum.CITY_ACCOUNT &&
-      !user.taxDeliveryMethodCityAccountDate
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-        SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-        undefined,
-        user
-      )
-    }
+    const active = user.physicalEntity?.activeEdesk
+      ? { deliveryMethod: DeliveryMethodEnum.EDESK }
+      : user.taxDeliveryMethod
+        ? {
+            deliveryMethod: user.taxDeliveryMethod as DeliveryMethodEnum,
+            date: user.taxDeliveryMethodCityAccountDate ?? undefined,
+          }
+        : undefined
 
     const locked = user.taxDeliveryMethodAtLockDate
       ? {
           deliveryMethod: user.taxDeliveryMethodAtLockDate,
-          date: user.taxDeliveryMethodCityAccountDate ?? undefined,
+          date: user.taxDeliveryMethodCityAccountLockDate ?? undefined,
         }
       : undefined
-
-    let active = this.parseActiveDeliveryMethod(user)
 
     return { active, locked }
   }
 
   async getShowEmailCommunicationBanner(userId: string): Promise<boolean> {
-    const formalCommunicationSubscription = await this.prisma.userGdprData.findFirst({
+    const formalCommunicationSubscription = await this.prisma.user.findFirst({
       where: {
-        userId,
-        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-        category: GDPRCategoryEnum.TAXES,
+        id: userId,
       },
-      orderBy: {
-        createdAt: 'desc',
+      select: {
+        taxDeliveryMethod: true,
       },
     })
     const hasEdesk = await this.prisma.physicalEntity.findUnique({
@@ -423,10 +357,31 @@ export class DatabaseSubserviceUser {
         userId,
       },
     })
-    if (formalCommunicationSubscription || hasEdesk?.activeEdesk) {
-      return false
-    }
-    return true
+    return !(formalCommunicationSubscription?.taxDeliveryMethod || hasEdesk?.activeEdesk)
+  }
+
+  private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
+    return (
+      elem.category === GDPRCategoryEnum.TAXES && elem.type === GDPRTypeEnum.FORMAL_COMMUNICATION
+    )
+  }
+
+  private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
+    const taxDeliveryData: DeliveryMethodUserEnum[] = []
+    const otherGdprData: ResponseGdprUserDataDto[] = []
+
+    gdprData.forEach((elem) => {
+      if (this.isTaxDeliveryData(elem)) {
+        if (elem.subType === GDPRSubTypeEnum.subscribe) {
+          taxDeliveryData.push(DeliveryMethodUserEnum.CITY_ACCOUNT)
+        }
+        taxDeliveryData.push(DeliveryMethodUserEnum.POSTAL)
+      } else {
+        otherGdprData.push(elem)
+      }
+    })
+
+    return { taxDeliveryData, otherGdprData }
   }
 
   async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
@@ -439,8 +394,31 @@ export class DatabaseSubserviceUser {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
+
+    // TODO we want to separate this into an endpoint
+    const { taxDeliveryData, otherGdprData } = this.separateTaxDeliveryData(gdprData)
+    if (taxDeliveryData.length > 1) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+        'Delivery method set more than once at the same time'
+      )
+    }
+
+    if (taxDeliveryData.length > 0) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          taxDeliveryMethod: taxDeliveryData[0],
+          ...(taxDeliveryData[0] === DeliveryMethodUserEnum.CITY_ACCOUNT && {
+            taxDeliveryMethodCityAccountDate: new Date(),
+          }),
+        },
+      })
+    }
+
     await this.prisma.userGdprData.createMany({
-      data: gdprData.map((elem) => ({
+      data: otherGdprData.map((elem) => ({
         type: elem.type,
         category: elem.category,
         subType: elem.subType,

@@ -89,7 +89,7 @@
     "app-root-dir": "^1.0.2",
     "archiver": "^7.0.1",
     "classnames": "^2.5.1",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.0.0",
     "glob": "^11.0.3",
     "inquirer": "^12.8.2",
     "jest-image-snapshot": "^6.5.1",

@@ -262,13 +262,6 @@ export default class NasesService {
       )
     }
 
-    if (isSlovenskoSkFormDefinition(formDefinition)) {
-      await this.convertPdfService.createPdfImageInFormFiles(
-        formId,
-        formDefinition,
-      )
-    }
-
     this.checkAttachments(
       await this.filesService.areFormAttachmentsReady(formId),
     )
@@ -486,7 +479,7 @@ export default class NasesService {
         error: FormError.NASES_SEND_ERROR,
       })
 
-      // TODO temp SEND_TO_NASES_ERROR log, remove
+      // TODO temp SEND_TO_NASES_ERROR log, remove. Should this be removed?
       this.logger.log(
         `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
           form.formSignature,
@@ -513,6 +506,8 @@ export default class NasesService {
         throw this.throwerErrorGuard.InternalServerErrorException(
           NasesErrorsEnum.SEND_TO_GINIS_ERROR,
           `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
+          undefined,
+          error,
         )
       }
     }

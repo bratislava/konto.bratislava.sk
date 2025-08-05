@@ -112,9 +112,7 @@ export class AdminService {
       update: taxData,
       create: {
         ...taxData,
-        deliveryMethod: transformDeliveryMethodToDatabaseType(
-          dataFromNoris.delivery_method,
-        ),
+        deliveryMethod: taxPayer.deliveryMethod,
       },
     })
 
@@ -193,9 +191,7 @@ export class AdminService {
                 {
                   amount: convertCurrencyToInt(norisItem.dan_spolu),
                   year,
-                  delivery_method: transformDeliveryMethodToDatabaseType(
-                    norisItem.delivery_method,
-                  ),
+                  delivery_method: userData.deliveryMethod,
                 },
                 userFromCityAccount.externalId ?? undefined,
               )
@@ -591,6 +587,35 @@ export class AdminService {
     )
   }
 
+  private async updateDeliveryMethodsInDatabase(
+    deliveryGroups: Record<
+      DeliveryMethod,
+      { birthNumber: string; date: string | null }[]
+    >,
+  ): Promise<void> {
+    // Update delivery methods in the database
+    await Promise.all(
+      Object.entries(deliveryGroups).map(
+        async ([deliveryMethod, birthNumbers]) => {
+          if (birthNumbers.length > 0) {
+            await this.prismaService.taxPayer.updateMany({
+              where: {
+                birthNumber: {
+                  in: birthNumbers.map((item) => item.birthNumber),
+                },
+              },
+              data: {
+                deliveryMethod: transformDeliveryMethodToDatabaseType(
+                  deliveryMethod as DeliveryMethod,
+                ),
+              },
+            })
+          }
+        },
+      ),
+    )
+  }
+
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
@@ -658,6 +683,8 @@ export class AdminService {
     if (updates.length > 0) {
       await this.norisService.updateDeliveryMethods(updates)
     }
+
+    await this.updateDeliveryMethodsInDatabase(deliveryGroups)
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

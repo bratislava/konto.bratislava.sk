@@ -8,7 +8,10 @@ import { step } from '../generator/functions/step'
 import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
-import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import {
+  esbsKatastralneUzemiaCiselnik,
+  katastralneUzemiaCodeAbbreviationMap,
+} from '../tax-form/mapping/shared/esbsCiselniky'
 import { object } from '../generator/object'
 import { textArea } from '../generator/functions/textArea'
 import {
@@ -231,11 +234,11 @@ export const stanoviskoKInvesticnemuZameruExtractTechnicalSubject: SchemalessFor
   {
     type: 'schemaless',
     extractFn: (formData) => {
-      const katastralneUzemiaNames = formData.stavba.katastralneUzemia.map(
-        (item) => esbsKatastralneUzemiaCiselnik.find(({ Code }) => Code === item)!.Name,
+      const katastralneUzemiaAbbreviations = formData.stavba.katastralneUzemia.map(
+        (item) => katastralneUzemiaCodeAbbreviationMap[item],
       )
 
-      return `e-SIZ ${formData.stavba.ulica} ${formData.stavba.nazov}, p.č. ${formData.stavba.parcelneCisla} kú ${katastralneUzemiaNames.join(', ')}`
+      return `e-SIZ ž. ${formData.stavba.ulica} ${formData.stavba.nazov}, p.č. ${formData.stavba.parcelneCisla}, kú ${katastralneUzemiaAbbreviations.join(', ')}`
     },
   }
 

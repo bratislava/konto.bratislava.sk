@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
-  FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
@@ -39,9 +38,7 @@ import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -265,6 +262,13 @@ export default class NasesService {
       )
     }
 
+    if (isSlovenskoSkFormDefinition(formDefinition)) {
+      await this.convertPdfService.createPdfImageInFormFiles(
+        formId,
+        formDefinition,
+      )
+    }
+
     this.checkAttachments(
       await this.filesService.areFormAttachmentsReady(formId),
     )
@@ -462,25 +466,20 @@ export default class NasesService {
         : undefined),
     })
 
-    // Send to nases
-    let isSent = false
-
     try {
-      isSent = await this.sendToNasesAndUpdateState(
-        jwt,
-        form,
-        data,
+      // create a pdf image of the form, upload it to minio and at it among form files
+      await this.convertPdfService.createPdfImageInFormFiles(
+        data.formId,
         formDefinition,
-        {
-          type: SendMessageNasesSenderType.Eid,
-          senderUri: nasesUser.sub,
-        },
       )
+
+      await this.sendToNasesAndUpdateState(jwt, form, data, {
+        type: SendMessageNasesSenderType.Eid,
+        senderUri: nasesUser.sub,
+      })
     } catch (error) {
       this.logger.error(`Error sending form to nases.`, error)
-    }
 
-    if (!isSent) {
       // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function
       await this.formsService.updateForm(data.formId, {
         state: FormState.DRAFT,
@@ -500,6 +499,22 @@ export default class NasesService {
         NasesErrorsEnum.SEND_TO_NASES_ERROR,
         NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
       )
+    }
+
+    // Send the form to ginis if should be sent
+    if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
+      try {
+        await this.rabbitmqClientService.publishToGinis({
+          formId: data.formId,
+          tries: 0,
+          userData: data.userData,
+        })
+      } catch (error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+          `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
+        )
+      }
     }
 
     return {
@@ -533,17 +548,9 @@ export default class NasesService {
     jwt: string,
     form: Forms,
     data: RabbitPayloadDto,
-    formDefinition: FormDefinitionSlovenskoSk,
     sender: SendMessageNasesSender,
     additionalFormUpdates?: FormUpdateBodyDto,
-  ): Promise<boolean> {
-    // TODO find a nicer place to do this
-    // create a pdf image of the form, upload it to minio and at it among form files
-    await this.convertPdfService.createPdfImageInFormFiles(
-      data.formId,
-      formDefinition,
-    )
-
+  ): Promise<void> {
     const sendData = await this.nasesUtilsService.sendMessageNases(
       jwt,
       form,
@@ -551,19 +558,20 @@ export default class NasesService {
     )
 
     if ((sendData && sendData.status !== 200) || !sendData) {
-      alertError(
-        `Unable send form ${form.id} to nases`,
-        this.logger,
-        JSON.stringify({
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
+        `${NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES} Received form id: ${
+          form.id
+        }, info: ${JSON.stringify({
           type: 'Unable send form to nases',
           status: sendData.status,
           formId: data.formId,
           error: FormError.NASES_SEND_ERROR,
           sendData: sendData.data,
-        }),
+        })}`,
       )
-      return false
     }
+
     // prisma update form status to DELIVERED_NASES
     await this.formsService.updateForm(data.formId, {
       state: FormState.DELIVERED_NASES,
@@ -571,22 +579,11 @@ export default class NasesService {
       ...additionalFormUpdates,
     })
 
-    // Send the form to ginis if should be sent
-    if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
-      // TODO if this throws, the flow breaks and requires manual intervention
-      await this.rabbitmqClientService.publishToGinis({
-        formId: data.formId,
-        tries: 0,
-        userData: data.userData,
-      })
-    }
-
     this.logger.log({
       type: 'ALL GOOD - 200',
       status: 200,
       formId: data.formId,
       sendData: sendData.data,
     })
-    return true
   }
 }

@@ -6,7 +6,6 @@ import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   FormDefinitionEmail,
-  FormDefinitionSlovenskoSk,
   FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
@@ -198,7 +197,9 @@ describe('NasesService', () => {
       })
 
       // this is the important mock we're testing against
-      service.sendToNasesAndUpdateState = jest.fn().mockReturnValue(false)
+      service.sendToNasesAndUpdateState = jest
+        .fn()
+        .mockRejectedValue(new Error('Nases error'))
 
       const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
 
@@ -426,34 +427,26 @@ describe('NasesService', () => {
   })
 
   describe('sendToNasesAndUpdateState', () => {
-    it('should error handle if status is not 200', async () => {
+    it('should throw if status is not 200', async () => {
       service['nasesUtilsService'].sendMessageNases = jest
         .fn()
         .mockResolvedValue({ status: 401 })
 
-      const convertSpy = jest.spyOn(
-        service['convertPdfService'],
-        'createPdfImageInFormFiles',
-      )
-      const spyLog = jest.spyOn(service['logger'], 'error')
-
-      await service.sendToNasesAndUpdateState(
-        '',
-        {} as Forms,
-        {
-          formId: '',
-          tries: 1,
-          userData: {
-            email: 'test.inovacie_at_bratislava.sk',
-            firstName: 'Tester',
+      await expect(
+        service.sendToNasesAndUpdateState(
+          '',
+          {} as Forms,
+          {
+            formId: '',
+            tries: 1,
+            userData: {
+              email: 'test.inovacie_at_bratislava.sk',
+              firstName: 'Tester',
+            },
           },
-        },
-        {} as FormDefinitionSlovenskoSk,
-        { type: SendMessageNasesSenderType.Self },
-      )
-
-      expect(spyLog).toHaveBeenCalled()
-      expect(convertSpy).toHaveBeenCalled()
+          { type: SendMessageNasesSenderType.Self },
+        ),
+      ).rejects.toThrow()
     })
 
     it('should start checking for nases delivery and not trigger any errors', async () => {
@@ -462,16 +455,6 @@ describe('NasesService', () => {
         .mockResolvedValue({ status: 200 })
 
       const spyLog = jest.spyOn(service['logger'], 'error')
-      const spyDelay = jest.spyOn(service as any, 'queueDelayedForm')
-      const spyPublish = jest.spyOn(
-        service['rabbitmqClientService'],
-        'publishToGinis',
-      )
-
-      const convertSpy = jest.spyOn(
-        service['convertPdfService'],
-        'createPdfImageInFormFiles',
-      )
       await service.sendToNasesAndUpdateState(
         '',
         {} as Forms,
@@ -483,24 +466,10 @@ describe('NasesService', () => {
             firstName: 'Tester',
           },
         },
-        {
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as FormDefinitionSlovenskoSk,
         { type: SendMessageNasesSenderType.Self },
       )
 
       expect(spyLog).not.toHaveBeenCalled()
-      expect(spyDelay).not.toHaveBeenCalled()
-      expect(spyPublish).toHaveBeenCalledWith({
-        formId: 'formIdVal',
-        tries: 0,
-        userData: {
-          email: 'test.inovacie_at_bratislava.sk',
-          firstName: 'Tester',
-        },
-      })
-
-      expect(convertSpy).toHaveBeenCalled()
     })
 
     it('should pass additionalFormUpdates to formsService.updateForm', async () => {
@@ -524,9 +493,6 @@ describe('NasesService', () => {
             firstName: 'Tester',
           },
         },
-        {
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as FormDefinitionSlovenskoSk,
         { type: SendMessageNasesSenderType.Self },
         additionalFormUpdates,
       )

@@ -9,6 +9,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
+import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FormsService from '../forms/forms.service'
 import NasesService from '../nases/nases.service'
 import {
@@ -66,6 +67,10 @@ describe('NasesConsumerService', () => {
         },
         { provide: PrismaService, useValue: createMock<PrismaService>() },
         { provide: NasesService, useValue: createMock<NasesService>() },
+        {
+          provide: ConvertPdfService,
+          useValue: createMock<ConvertPdfService>(),
+        },
       ],
     }).compile()
 
@@ -187,7 +192,7 @@ describe('NasesConsumerService', () => {
         .mockResolvedValue(new Nack(false))
       const sendToNasesAndUpdateStateSpy = jest
         .spyOn(nasesService, 'sendToNasesAndUpdateState')
-        .mockResolvedValue(true)
+        .mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -211,7 +216,7 @@ describe('NasesConsumerService', () => {
         .mockResolvedValue(new Nack(false))
       const sendToNasesAndUpdateStateSpy = jest
         .spyOn(nasesService, 'sendToNasesAndUpdateState')
-        .mockResolvedValue(true)
+        .mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -232,9 +237,7 @@ describe('NasesConsumerService', () => {
       jest
         .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('mock-jwt')
-      jest
-        .spyOn(nasesService, 'sendToNasesAndUpdateState')
-        .mockResolvedValue(true)
+      jest.spyOn(nasesService, 'sendToNasesAndUpdateState').mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -243,7 +246,6 @@ describe('NasesConsumerService', () => {
         'mock-jwt',
         mockForm,
         mockRabbitPayloadDto,
-        mockFormDefinition,
         mockSender,
       )
       expect(service['mailgunService'].sendEmail).toHaveBeenCalled()
@@ -263,7 +265,7 @@ describe('NasesConsumerService', () => {
         .mockReturnValue('mock-jwt')
       jest
         .spyOn(nasesService, 'sendToNasesAndUpdateState')
-        .mockResolvedValue(false)
+        .mockRejectedValue(new Error('Nases error'))
       jest.spyOn(service as any, 'queueDelayedForm').mockResolvedValue(null)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
@@ -293,7 +295,7 @@ describe('NasesConsumerService', () => {
         .mockReturnValue('mock-jwt')
       jest
         .spyOn(nasesService, 'sendToNasesAndUpdateState')
-        .mockResolvedValue(false)
+        .mockRejectedValue(new Error('Nases error'))
       jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service.onQueueConsumption(mockPayload)

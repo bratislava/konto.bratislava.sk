@@ -8,10 +8,12 @@ import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
   isSlovenskoSkFormDefinition,
+  isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
+import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import NasesService from '../nases/nases.service'
@@ -45,6 +47,7 @@ export default class NasesConsumerService {
     private readonly webhookSubservice: WebhookSubservice,
     private readonly prismaService: PrismaService,
     private readonly nasesService: NasesService,
+    private readonly convertPdfService: ConvertPdfService,
   ) {
     this.logger = new LineLoggerSubservice('NasesConsumerService')
   }
@@ -150,44 +153,58 @@ export default class NasesConsumerService {
     formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<Nack> {
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
-    const isSent = await this.nasesService.sendToNasesAndUpdateState(
-      jwt,
-      form,
-      data,
+
+    // create a pdf image of the form, upload it to minio and at it among form files
+    await this.convertPdfService.createPdfImageInFormFiles(
+      data.formId,
       formDefinition,
-      { type: SendMessageNasesSenderType.Self },
     )
-    if (isSent) {
-      const toEmail = data.userData.email || form.email
-      if (toEmail) {
-        await this.sendFormSubmissionEmail(form, formDefinition, {
-          template: MailgunTemplateEnum.NASES_SENT,
-          to: toEmail,
-          firstName: data.userData.firstName,
-        })
+
+    try {
+      await this.nasesService.sendToNasesAndUpdateState(jwt, form, data, {
+        type: SendMessageNasesSenderType.Self,
+      })
+    } catch (error) {
+      if (data.tries <= 1) {
+        const toEmail = data.userData.email || form.email
+        if (data.tries === 1 && toEmail) {
+          await this.sendFormSubmissionEmail(form, formDefinition, {
+            template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+            to: toEmail,
+            firstName: data.userData.firstName,
+          })
+        }
+        await this.queueDelayedForm(
+          data.formId,
+          data.tries,
+          FormError.NASES_SEND_ERROR,
+          data.userData,
+          FormState.QUEUED,
+        )
+        return new Nack(false)
       }
-      return new Nack(false)
+      const requeueFinal = await this.nackTrueWithWait(60_000)
+      return requeueFinal
     }
-    if (data.tries <= 1) {
-      const toEmail = data.userData.email || form.email
-      if (data.tries === 1 && toEmail) {
-        await this.sendFormSubmissionEmail(form, formDefinition, {
-          template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
-          to: toEmail,
-          firstName: data.userData.firstName,
-        })
-      }
-      await this.queueDelayedForm(
-        data.formId,
-        data.tries,
-        FormError.NASES_SEND_ERROR,
-        data.userData,
-        FormState.QUEUED,
-      )
-      return new Nack(false)
+
+    if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
+      // If this throws, the flow breaks and requires manual intervention
+      await this.rabbitmqClientService.publishToGinis({
+        formId: data.formId,
+        tries: 0,
+        userData: data.userData,
+      })
     }
-    const requeueFinal = await this.nackTrueWithWait(60_000)
-    return requeueFinal
+
+    const toEmail = data.userData.email || form.email
+    if (toEmail) {
+      await this.sendFormSubmissionEmail(form, formDefinition, {
+        template: MailgunTemplateEnum.NASES_SENT,
+        to: toEmail,
+        firstName: data.userData.firstName,
+      })
+    }
+    return new Nack(false)
   }
 
   private async queueDelayedForm(

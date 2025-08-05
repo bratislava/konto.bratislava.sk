@@ -127,12 +127,13 @@ export default class ThrowerErrorGuard {
   BadRequestException(
     errorEnum: CustomErrorEnums,
     message: string,
+    status?: string,
     console?: string,
     error?: Error | unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.BAD_REQUEST,
-      'Bad Request',
+      status || 'Bad Request',
       errorEnum,
       message,
       console,

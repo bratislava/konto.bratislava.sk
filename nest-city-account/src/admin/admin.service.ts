@@ -17,7 +17,6 @@ import {
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { decryptData } from '../utils/crypto'
 import {
-  CognitoGetUserData,
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
@@ -42,7 +41,7 @@ import {
 import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
-import { cognitoSyncConfigDbkey } from './utils/constants'
+import { cognitoSyncConfigDbKey } from './utils/constants'
 
 @Injectable()
 export class AdminService {
@@ -129,7 +128,7 @@ export class AdminService {
    */
   async activateSyncCognitoToDb(): Promise<void> {
     await this.prismaService.config.update({
-      where: { key: cognitoSyncConfigDbkey },
+      where: { key: cognitoSyncConfigDbKey },
       data: { value: { active: true } },
     })
   }
@@ -148,7 +147,11 @@ export class AdminService {
     }
 
     for (const user of cognitoUsers) {
-      await this.userService.getOrCreateUser(user as CognitoGetUserData)
+      await this.userService.getOrCreateUserOrLegalPerson(
+        user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+        user.sub,
+        user.email
+      )
     }
   }
 

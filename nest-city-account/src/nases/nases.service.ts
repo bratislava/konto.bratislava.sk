@@ -38,6 +38,7 @@ export class NasesService {
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
           undefined,
+          undefined,
           error
         )
       })

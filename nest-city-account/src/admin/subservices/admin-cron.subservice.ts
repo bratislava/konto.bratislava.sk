@@ -10,7 +10,11 @@ import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import { cognitoSyncConfigDbkey } from '../utils/constants'
+import {
+  cognitoSyncConfigDbKey,
+  edeskCognitoConfigDbKey,
+  edeskRfoConfigDbKey,
+} from '../utils/constants'
 
 const ValidateEdeskConfigValueSchema = z.object({
   active: z.boolean(),
@@ -25,10 +29,6 @@ const SyncCognitoToDbConfigValueSchema = z.object({
 export class AdminCronSubservice {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminCronSubservice.name)
 
-  private readonly edeskCognitoConfigDbkey = 'VALIDATE_EDESK_FROM_COGNITO_DATA'
-
-  private readonly edeskRfoConfigDbkey = 'VALIDATE_EDESK_FROM_RFO_DATA'
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
@@ -40,12 +40,12 @@ export class AdminCronSubservice {
   @HandleErrors('Cron Error')
   async validateEdeskFromCognitoData(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({
-      where: { key: this.edeskCognitoConfigDbkey },
+      where: { key: edeskCognitoConfigDbKey },
     })
     if (!configDbResult) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'VALIDATE_EDESK_FROM_COGNITO_DATA not found in database config.'
+        `${edeskCognitoConfigDbKey} not found in database config.`
       )
     }
 
@@ -54,7 +54,7 @@ export class AdminCronSubservice {
       return
     }
     this.logger.log(
-      `${this.edeskCognitoConfigDbkey} turned ON, starting, current offset: ${config.offset}`
+      `${edeskCognitoConfigDbKey} turned ON, starting, current offset: ${config.offset}`
     )
 
     const result = await this.adminService.validateEdeskWithUriFromCognito(config.offset)
@@ -65,7 +65,7 @@ export class AdminCronSubservice {
     const successData = result.entities.success.map(mappingFn)
     const failedData = result.entities.failed.map(mappingFn)
     this.logger.log(
-      `${this.edeskCognitoConfigDbkey} done: validatedUsers: ${validatedUsers} successData: ${successData} failedData: ${failedData}`
+      `${edeskCognitoConfigDbKey} done: validatedUsers: ${validatedUsers} successData: ${successData} failedData: ${failedData}`
     )
 
     if (failedData.length > 0) {
@@ -82,11 +82,11 @@ export class AdminCronSubservice {
       )
       await this.prismaService.$transaction(async (tx) => {
         const { value } = (await tx.config.findUnique({
-          where: { key: this.edeskCognitoConfigDbkey },
+          where: { key: edeskCognitoConfigDbKey },
         })) as Config // Existence in db is checked at the start of the function
         const validatedValue = ValidateEdeskConfigValueSchema.parse(value)
         await tx.config.update({
-          where: { key: this.edeskCognitoConfigDbkey },
+          where: { key: edeskCognitoConfigDbKey },
           data: { value: { ...validatedValue, offset: newOffset } },
         })
       })
@@ -98,12 +98,12 @@ export class AdminCronSubservice {
   @HandleErrors('Cron Error')
   async validateEdeskFromRfoData(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({
-      where: { key: this.edeskRfoConfigDbkey },
+      where: { key: edeskRfoConfigDbKey },
     })
     if (!configDbResult) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'VALIDATE_EDESK_FROM_RFO_DATA not found in database config.'
+        `${edeskRfoConfigDbKey} not found in database config.`
       )
     }
 
@@ -111,9 +111,7 @@ export class AdminCronSubservice {
     if (!config.active) {
       return
     }
-    this.logger.log(
-      `${this.edeskRfoConfigDbkey} turned ON, starting, current offset: ${config.offset}`
-    )
+    this.logger.log(`${edeskRfoConfigDbKey} turned ON, starting, current offset: ${config.offset}`)
 
     const entityFromDb = await this.prismaService.physicalEntity.findMany({
       // TODO in case we'd want to make sure users are first validated through cognito, replace with the line below
@@ -125,7 +123,7 @@ export class AdminCronSubservice {
     if (entityFromDb.length === 0) {
       this.logger.log(`No entities found for offset ${config.offset}, resetting offset`)
       await this.prismaService.config.update({
-        where: { key: this.edeskRfoConfigDbkey },
+        where: { key: edeskRfoConfigDbKey },
         data: { value: { ...config, offset: 0 } },
       })
       return
@@ -150,18 +148,18 @@ export class AdminCronSubservice {
     this.logger.log(`Attempt to set new offset: ${newOffset}`)
     await this.prismaService.$transaction(async (tx) => {
       const { value } = (await tx.config.findUnique({
-        where: { key: this.edeskRfoConfigDbkey },
+        where: { key: edeskRfoConfigDbKey },
       })) as Config // Existence in db is checked at the start of the function
       const validatedValue = ValidateEdeskConfigValueSchema.parse(value)
       // if offset was moved in between abort
       if (validatedValue.offset !== config.offset) {
         this.logger.warn(
-          `Offset was moved in between ${this.edeskRfoConfigDbkey} calls, previous: ${config.offset}, current ${validatedValue.offset}, aborting`
+          `Offset was moved in between ${edeskRfoConfigDbKey} calls, previous: ${config.offset}, current ${validatedValue.offset}, aborting`
         )
         return
       }
       await tx.config.update({
-        where: { key: this.edeskRfoConfigDbkey },
+        where: { key: edeskRfoConfigDbKey },
         data: { value: { ...validatedValue, offset: newOffset } },
       })
     })
@@ -173,29 +171,27 @@ export class AdminCronSubservice {
   @HandleErrors('Cron Error')
   async syncCognitoToDb(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({
-      where: { key: cognitoSyncConfigDbkey },
+      where: { key: cognitoSyncConfigDbKey },
     })
     if (!configDbResult) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'SYNC_COGNITO_TO_DB not found in database config.'
+        `${cognitoSyncConfigDbKey} not found in database config.`
       )
     }
     const config = SyncCognitoToDbConfigValueSchema.parse(configDbResult.value)
     if (!config.active) {
       return
     }
-    this.logger.log(`${cognitoSyncConfigDbkey} turned ON, starting`)
+    this.logger.log(`${cognitoSyncConfigDbKey} turned ON, starting`)
 
     const result = await this.adminService.syncCognitoToDb()
 
-    this.logger.log(`${cognitoSyncConfigDbkey} done: ${result}`)
+    this.logger.log(`${cognitoSyncConfigDbKey} done: ${result}`)
 
-    await this.prismaService.$transaction(async (tx) => {
-      await tx.config.update({
-        where: { key: cognitoSyncConfigDbkey },
-        data: { value: { active: false } },
-      })
+    await this.prismaService.config.update({
+      where: { key: cognitoSyncConfigDbKey },
+      data: { value: { active: false } },
     })
   }
 }

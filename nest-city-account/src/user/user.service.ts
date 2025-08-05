@@ -20,7 +20,7 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
-import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
+import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
 @Injectable()
 export class UserService {
@@ -264,16 +264,20 @@ export class UserService {
     }
   }
 
-  async getOrCreateUser(user: CognitoGetUserData) {
-    if (user['custom:account_type'] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const result = await this.databaseSubservice.getOrCreateUser(user.idUser, user.email)
+  async getOrCreateUserOrLegalPerson(
+    accountType: CognitoUserAccountTypesEnum,
+    idUser: string,
+    email: string
+  ) {
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      const result = await this.databaseSubservice.getOrCreateUser(idUser, email)
       return result
     }
     if (
-      user['custom:account_type'] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user['custom:account_type'] === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      const result = await this.databaseSubservice.getOrCreateLegalPerson(user.idUser, user.email)
+      const result = await this.databaseSubservice.getOrCreateLegalPerson(idUser, email)
       return result
     }
   }

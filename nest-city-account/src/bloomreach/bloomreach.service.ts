@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 
-import axios, { AxiosError } from 'axios'
+import axios, { isAxiosError } from 'axios'
 
 import {
   GdprCategory,
@@ -217,7 +217,7 @@ export class BloomreachService {
       }
       return AnonymizeResponse.SUCCESS
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === HttpStatus.NOT_FOUND) {
+      if (isAxiosError(error) && error.response?.status === HttpStatus.NOT_FOUND) {
         // User not found in bloomreach
         return AnonymizeResponse.NOT_FOUND
       }

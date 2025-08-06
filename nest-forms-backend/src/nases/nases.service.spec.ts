@@ -749,6 +749,72 @@ describe('NasesService', () => {
         ...additionalFormUpdates,
       })
     })
+
+    it('should update to ERROR an throw error if sending to NASES fails', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 500 })
+
+      const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
+
+      await expect(
+        service.sendToNasesAndUpdateState(
+          'jwt',
+          {} as Forms,
+          {
+            formId: 'formIdVal',
+            tries: 1,
+            userData: {
+              email: 'test.inovacie_at_bratislava.sk',
+              firstName: 'Tester',
+            },
+          },
+          { type: SendMessageNasesSenderType.Self },
+        ),
+      ).rejects.toThrow()
+
+      expect(updateFormSpy).toHaveBeenCalledWith('formIdVal', {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
+    })
+
+    it('should update to DELIVERED_NASES if sending to NASES is successful', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 200 })
+
+      const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
+
+      await service.sendToNasesAndUpdateState(
+        'jwt',
+        {} as Forms,
+        {
+          formId: 'formIdVal',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        { type: SendMessageNasesSenderType.Self },
+      )
+
+      expect(updateFormSpy).toHaveBeenCalledWith(
+        'formIdVal',
+        expect.objectContaining({
+          state: FormState.DELIVERED_NASES,
+          error: FormError.NONE,
+        }),
+      )
+      expect(updateFormSpy).not.toHaveBeenCalledWith(
+        'formIdVal',
+        expect.objectContaining({
+          state: FormState.DRAFT,
+          error: FormError.NASES_SEND_ERROR,
+        }),
+      )
+    })
   })
 })
 /* eslint-enable pii/no-email */

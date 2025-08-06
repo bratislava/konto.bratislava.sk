@@ -8,6 +8,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
+  extractEmailFormAddress,
   extractEmailFormEmail,
   extractEmailFormName,
   extractFormSubjectPlain,
@@ -66,6 +67,15 @@ export default class EmailFormsSubservice {
     const isProd =
       this.configService.get<string>('CLUSTER_ENV') === 'production'
     return isProd ? address.prod : address.test
+  }
+
+  private resolveMultipleAddresses(address: {
+    test: string[]
+    prod: string[]
+  }): string {
+    const isProd =
+      this.configService.get<string>('CLUSTER_ENV') === 'production'
+    return isProd ? address.prod.join(', ') : address.test.join(', ')
   }
 
   private getMailer(formDefinition: FormDefinitionEmail): Mailer {
@@ -230,9 +240,7 @@ export default class EmailFormsSubservice {
             slug: formDefinition.slug,
           },
         },
-        emailFrom: this.resolveAddress(
-          formDefinition.email.fromAddress ?? formDefinition.email.address,
-        ),
+        emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
         attachments,
       })
     } catch (error) {
@@ -275,8 +283,11 @@ export default class EmailFormsSubservice {
     // Get and validate the form
     const { form, formDefinition } = await this.getValidatedEmailForm(formId)
 
+    const resolvedRecipientAddresses = this.resolveMultipleAddresses(
+      extractEmailFormAddress(formDefinition, form.formDataJson),
+    )
     this.logger.log(
-      `Sending email of form ${formId} to ${this.resolveAddress(formDefinition.email.address)}.`,
+      `Sending email of form ${formId} to ${resolvedRecipientAddresses}.`,
     )
 
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
@@ -287,7 +298,7 @@ export default class EmailFormsSubservice {
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail({
       data: {
-        to: this.resolveAddress(formDefinition.email.address),
+        to: resolvedRecipientAddresses,
         template: formDefinition.email.newSubmissionTemplate,
         data: {
           formId: form.id,
@@ -305,9 +316,7 @@ export default class EmailFormsSubservice {
           }),
         },
       },
-      emailFrom: this.resolveAddress(
-        formDefinition.email.fromAddress ?? formDefinition.email.address,
-      ),
+      emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(
             formId,
@@ -328,12 +337,14 @@ export default class EmailFormsSubservice {
       form.formDataJson,
     )
 
-    await this.sendUserConfirmationEmail(
-      userConfirmationEmail,
-      form,
-      formDefinition,
-      userName,
-    )
+    if (userConfirmationEmail) {
+      await this.sendUserConfirmationEmail(
+        userConfirmationEmail,
+        form,
+        formDefinition,
+        userName,
+      )
+    }
 
     // Update form state to FINISHED
     await this.updateFormState(form)

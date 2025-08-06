@@ -83,7 +83,10 @@ import { MailgunTemplateEnum } from './emailFormTypes'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
 import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPristupKInformaciam'
 import ziadostOUzemnoplanovaciuInformaciu from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
-import nahlaseniePodnetuKElektrickymKolobezkam from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
+import nahlaseniePodnetuKElektrickymKolobezkam, {
+  nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
+} from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -236,7 +239,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: mimoriadnyOdvozAZhodnotenieOdpadu,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
       extractName: mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
@@ -255,7 +258,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: energetickeZhodnotenieOdpaduVZevo,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: zevoExtractEmail,
       extractName: zevoExtractName,
@@ -274,7 +277,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: uzatvorenieZmluvyONakladaniSOdpadom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: zevoExtractEmail,
       extractName: zevoExtractName,
@@ -293,7 +296,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: docisteniStanovistaZbernychNadob,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: docisteniStanovistaZbernychNadobExtractEmail,
       extractName: docisteniStanovistaZbernychNadobExtractName,
@@ -312,7 +315,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
       extractName: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
@@ -331,7 +334,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: koloTaxi,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'kolo@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['kolo@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'kolo@olo.sk', test: 'kolo@olo.sk' },
       extractEmail: koloTaxiExtractEmail,
       extractName: koloTaxiExtractName,
@@ -350,7 +353,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: oloTaxi,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: oloTaxiExtractEmail,
       extractName: oloTaxiExtractName,
@@ -369,7 +372,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: podnetyAPochvalyObcanov,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: podnetyAPochvalyObcanovExtractEmail,
       extractName: podnetyAPochvalyObcanovExtractName,
@@ -388,7 +391,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: odvozObjemnehoOdpaduValnikom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: odvozObjemnehoOdpaduValnikomExtractEmail,
       extractName: odvozObjemnehoOdpaduValnikomExtractName,
@@ -407,7 +410,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
       extractName: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
@@ -426,7 +429,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
       extractName: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
@@ -448,7 +451,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeQNdJ',
     email: {
-      address: { prod: 'wf-izs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-izs@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -473,7 +476,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeYNBT',
     email: {
-      address: { prod: 'wf-vs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-vs@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -498,7 +501,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeC4TS',
     email: {
-      address: { prod: 'wf-oskpd@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-oskpd@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -523,7 +526,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
     email: {
-      address: { prod: 'wf-ouz@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-ouz@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -597,12 +600,17 @@ export const formDefinitions: FormDefinition[] = [
     schema: nahlaseniePodnetuKElektrickymKolobezkam,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: '', test: '' }, // TODO: Implement multiple addresses + extractors
-      fromAddress: { prod: '', test: '' }, // TODO: Implement multiple addresses + extractors
-      extractEmail: {
-        type: 'schemaless',
-        extractFn: () => '',
-      }, // TODO: Implment optional extractEmail
+      address: {
+        prod: [
+          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
+          nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+        ],
+        test: ['inovacie.bratislava@gmail.com'],
+      }, // TODO: Implement multiple addresses + extractors
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.OLO_SENT_SUCCESS, // TODO: Implement Konto template
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION, // TODO: Implement Konto template

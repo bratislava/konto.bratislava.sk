@@ -6,6 +6,7 @@ import { step } from '../generator/functions/step'
 import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
+import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
 
 export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám' }, [
   step('podnet', { title: 'Podnet' }, [
@@ -97,3 +98,32 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
     ),
   ]),
 ])
+
+type ExtractFormData = {
+  podnet: {
+    poskytovatel: 'bolt' | 'dott' | 'svist'
+  }
+}
+
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      switch (formData.podnet.poskytovatel) {
+        case 'bolt':
+          return 'podnet@bolt.com'
+        case 'dott':
+          return 'podnet@dott.com'
+        case 'svist':
+          return 'podnet@svist.com'
+      }
+    },
+  }
+
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      return 'inovacie.bratislava@gmail.com' // TODO implement municipality email extraction by address field
+    },
+  }

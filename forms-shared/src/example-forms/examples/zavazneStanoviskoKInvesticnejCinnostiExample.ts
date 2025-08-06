@@ -13,8 +13,8 @@ const exampleForm: ExampleForm = {
       mesto: 'Bratislava',
       psc: '82108',
     },
-    investor: {
-      investorZiadatelom: false,
+    stavebnik: {
+      stavebnikZiadatelom: false,
       splnomocnenie: 'b9050ef5-0d98-41c4-aba1-b0fc5a65a442',
       ziadatelTyp: 'fyzickaOsoba',
       email: 'marta.novakova@priklad.sk',

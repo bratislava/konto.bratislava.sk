@@ -473,12 +473,6 @@ export default class NasesService {
     } catch (error) {
       this.logger.error(`Error sending form to nases.`, error)
 
-      // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function
-      await this.formsService.updateForm(data.formId, {
-        state: FormState.DRAFT,
-        error: FormError.NASES_SEND_ERROR,
-      })
-
       // TODO temp SEND_TO_NASES_ERROR log, remove. Should this be removed?
       this.logger.log(
         `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
@@ -553,6 +547,11 @@ export default class NasesService {
     )
 
     if ((sendData && sendData.status !== 200) || !sendData) {
+      await this.formsService.updateForm(data.formId, {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
+
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
         `${NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES} Received form id: ${

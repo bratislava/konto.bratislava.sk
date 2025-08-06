@@ -3,8 +3,10 @@ import { Nack } from '@golevelup/nestjs-rabbitmq'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
+  FormDefinitionSlovenskoSkTax,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -355,6 +357,230 @@ describe('NasesConsumerService', () => {
 
       expect(result).toEqual(new Nack(true))
       expect(service.nackTrueWithWait).toHaveBeenCalled()
+    })
+  })
+
+  describe('handleSlovenskoSkForm', () => {
+    let pdfServiceSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      pdfServiceSpy = jest.spyOn(
+        service['convertPdfService'],
+        'createPdfImageInFormFiles',
+      )
+    })
+
+    it('should requeue and send email if first try fails', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSk
+
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+      const queueDelayedFormSpy = jest.spyOn(service as any, 'queueDelayedForm')
+      jest
+        .spyOn(nasesService, 'sendToNasesAndUpdateState')
+        .mockRejectedValue(new Error('Nases error'))
+
+      const result = await service['handleSlovenskoSkForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(pdfServiceSpy).toHaveBeenCalled()
+      expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
+        template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+        to: mockRabbitPayloadDto.userData.email,
+        firstName: mockRabbitPayloadDto.userData.firstName,
+      })
+      expect(queueDelayedFormSpy).toHaveBeenCalled()
+      expect(result.requeue).toBeFalsy() // It is requeued via queueDelayedForm
+    })
+
+    it('should requeue with no email if second try fails', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 2,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSk
+
+      const queueDelayedFormSpy = jest.spyOn(service as any, 'queueDelayedForm')
+      jest
+        .spyOn(nasesService, 'sendToNasesAndUpdateState')
+        .mockRejectedValue(new Error('Nases error'))
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+      jest
+        .spyOn(service as any, 'nackTrueWithWait')
+        .mockResolvedValue(new Nack(true))
+
+      const result = await service['handleSlovenskoSkForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(pdfServiceSpy).toHaveBeenCalled()
+      expect(sendEmailSpy).not.toHaveBeenCalled() // No email sent on second try
+      expect(queueDelayedFormSpy).not.toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
+    })
+
+    it('should publish to ginis if it is generic slovensko.sk form', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSk
+
+      const publishToGinisSpy = jest.spyOn(
+        service['rabbitmqClientService'],
+        'publishToGinis',
+      )
+
+      const result = await service['handleSlovenskoSkForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(pdfServiceSpy).toHaveBeenCalled()
+      expect(result.requeue).toBeFalsy()
+      expect(publishToGinisSpy).toHaveBeenCalledWith({
+        formId: mockRabbitPayloadDto.formId,
+        tries: 0,
+        userData: mockRabbitPayloadDto.userData,
+      })
+    })
+
+    it('should not publish to ginis if it is not generic slovensko.sk form', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkTax, // Not a generic slovensko.sk form
+        schema: {},
+      } as FormDefinitionSlovenskoSkTax
+
+      const publishToGinisSpy = jest.spyOn(
+        service['rabbitmqClientService'],
+        'publishToGinis',
+      )
+
+      const result = await service['handleSlovenskoSkForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(pdfServiceSpy).toHaveBeenCalled()
+      expect(result.requeue).toBeFalsy()
+      expect(publishToGinisSpy).not.toHaveBeenCalled()
+    })
+
+    it('should send email if email is provided', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSk
+
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+
+      await service['handleSlovenskoSkForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
+        template: MailgunTemplateEnum.NASES_SENT,
+        to: mockRabbitPayloadDto.userData.email,
+        firstName: mockRabbitPayloadDto.userData.firstName,
+      })
+    })
+
+    it('should not send email if email is not provided', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: '',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSk
+
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+
+      await service['handleSlovenskoSkForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(sendEmailSpy).not.toHaveBeenCalled()
     })
   })
 })

@@ -75492,9 +75492,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
 
 exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > default form state should match snapshot 1`] = `
 {
-  "investor": {
-    "investorZiadatelom": true,
-  },
   "prilohy": {
     "projektovaDokumentacia": [],
   },
@@ -75503,6 +75500,9 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > default 
       "obsahujeByty": false,
     },
     "katastralneUzemia": [],
+  },
+  "stavebnik": {
+    "stavebnikZiadatelom": true,
   },
   "typZiadosti": {},
   "ziadatel": {
@@ -75878,17 +75878,17 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
     },
     {
       "properties": {
-        "investor": {
+        "stavebnik": {
           "allOf": [
             {
               "if": {
                 "properties": {
-                  "investorZiadatelom": {
+                  "stavebnikZiadatelom": {
                     "const": false,
                   },
                 },
                 "required": [
-                  "investorZiadatelom",
+                  "stavebnikZiadatelom",
                 ],
                 "type": "object",
               },
@@ -76190,7 +76190,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
-                        "helptext": "nahrajte splnomocnenie od investora",
+                        "helptext": "nahrajte splnomocnenie od stavebníka",
                         "type": "button",
                       },
                       "ui:widget": "FileUpload",
@@ -76258,11 +76258,11 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
-              "stepQueryParam": "investor",
+              "stepQueryParam": "stavebnik",
             },
           },
           "properties": {
-            "investorZiadatelom": {
+            "stavebnikZiadatelom": {
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
@@ -76286,19 +76286,19 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                 true,
                 false,
               ],
-              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "title": "Je stavebník rovnaká osoba ako žiadateľ?",
               "type": "boolean",
             },
           },
           "required": [
-            "investorZiadatelom",
+            "stavebnikZiadatelom",
           ],
-          "title": "Investor",
+          "title": "Stavebník",
           "type": "object",
         },
       },
       "required": [
-        "investor",
+        "stavebnik",
       ],
       "type": "object",
     },

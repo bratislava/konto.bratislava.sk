@@ -42,7 +42,6 @@ describe('HandleErrors', () => {
         throw this.throwerErrorGuard.BadRequestException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Error message',
-          undefined,
           'Console error',
           new Error('Caused by error message test')
         )

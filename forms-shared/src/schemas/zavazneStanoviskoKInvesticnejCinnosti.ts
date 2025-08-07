@@ -31,7 +31,7 @@ const addressFields = (title: string) => [
   input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
 ]
 
-const ziadatelStavebnikInvestorFields = [
+const ziadatelStavebnikFields = [
   radioGroup(
     'ziadatelTyp',
     {
@@ -84,13 +84,13 @@ export default schema(
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
   },
   [
-    step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikInvestorFields),
-    step('investor', { title: 'Investor' }, [
+    step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikFields),
+    step('stavebnik', { title: 'Stavebník' }, [
       radioGroup(
-        'investorZiadatelom',
+        'stavebnikZiadatelom',
         {
           type: 'boolean',
-          title: 'Je investor rovnaká osoba ako žiadateľ?',
+          title: 'Je stavebník rovnaká osoba ako žiadateľ?',
           required: true,
           items: [
             { value: true, label: 'Áno', isDefault: true },
@@ -102,7 +102,7 @@ export default schema(
           orientations: 'row',
         },
       ),
-      conditionalFields(createCondition([[['investorZiadatelom'], { const: false }]]), [
+      conditionalFields(createCondition([[['stavebnikZiadatelom'], { const: false }]]), [
         fileUpload(
           'splnomocnenie',
           {
@@ -111,10 +111,10 @@ export default schema(
           },
           {
             type: 'button',
-            helptext: 'nahrajte splnomocnenie od investora',
+            helptext: 'nahrajte splnomocnenie od stavebníka',
           },
         ),
-        ...ziadatelStavebnikInvestorFields,
+        ...ziadatelStavebnikFields,
       ]),
     ]),
     step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [

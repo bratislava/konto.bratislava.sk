@@ -1,3 +1,3 @@
-export const cognitoSyncConfigDbKey = 'SYNC_COGNITO_TO_DB'
-export const edeskRfoConfigDbKey = 'VALIDATE_EDESK_FROM_RFO_DATA'
-export const edeskCognitoConfigDbKey = 'VALIDATE_EDESK_FROM_COGNITO_DATA'
+export const COGNITO_SYNC_CONFIG_DB_KEY = 'SYNC_COGNITO_TO_DB'
+export const EDESK_RFO_CONFIG_DB_KEY = 'VALIDATE_EDESK_FROM_RFO_DATA'
+export const EDESK_COGNITO_CONFIG_DB_KEY = 'VALIDATE_EDESK_FROM_COGNITO_DATA'

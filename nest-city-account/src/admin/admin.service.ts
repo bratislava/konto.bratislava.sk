@@ -41,7 +41,7 @@ import {
 import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
-import { cognitoSyncConfigDbKey } from './utils/constants'
+import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 
 @Injectable()
 export class AdminService {
@@ -128,7 +128,7 @@ export class AdminService {
    */
   async activateSyncCognitoToDb(): Promise<void> {
     await this.prismaService.config.update({
-      where: { key: cognitoSyncConfigDbKey },
+      where: { key: COGNITO_SYNC_CONFIG_DB_KEY },
       data: { value: { active: true } },
     })
   }

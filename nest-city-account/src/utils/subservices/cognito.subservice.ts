@@ -19,7 +19,6 @@ import {
   SendToQueueErrorsEnum,
   SendToQueueErrorsResponseEnum,
 } from '../../user-verification/verification.errors.enum'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 @Injectable()
 export class CognitoSubservice {
@@ -244,21 +243,11 @@ export class CognitoSubservice {
       UserPoolId: this.config.cognitoUserPoolId,
     }
     do {
-      // const { Users = [], PaginationToken } = await this.cognitoIdentity.listUsers(params).promise()
+      // TODO: add proper error handling
       const cognitoData = await this.cognitoIdentity.listUsers(params).promise()
-      if (cognitoData.$response.error) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          cognitoData.$response.error.code,
-          cognitoData.$response.error.statusCode?.toString(),
-          undefined,
-          cognitoData.$response.error
-        )
-      } else {
-        const { Users = [], PaginationToken } = cognitoData
-        result = [...result, ...(Users as CognitoGetUserData[])]
-        params.PaginationToken = PaginationToken
-      }
+      const { Users = [], PaginationToken } = cognitoData
+      result = [...result, ...(Users as CognitoGetUserData[])]
+      params.PaginationToken = PaginationToken
     } while (params.PaginationToken)
 
     return result

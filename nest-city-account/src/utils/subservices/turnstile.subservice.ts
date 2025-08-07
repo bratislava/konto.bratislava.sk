@@ -34,7 +34,6 @@ export class TurnstileSubservice {
         VerificationErrorsEnum.INVALID_CAPTCHA,
         VerificationErrorsResponseEnum.INVALID_CAPTCHA,
         undefined,
-        undefined,
         error
       )
     }

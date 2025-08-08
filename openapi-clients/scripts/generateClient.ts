@@ -1,15 +1,16 @@
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { rimrafSync } from 'rimraf'
 import camelcase from 'camelcase'
 import { get as getAppRootDir } from 'app-root-dir'
 import fetch from 'node-fetch'
 import semver from 'semver'
+import { randomUUID } from 'node:crypto'
 
 interface GenerateClientOptions {
   rootDir?: string
-  localUrl?: string
+  useLocal?: boolean
 }
 
 export const validTypes = [
@@ -18,7 +19,7 @@ export const validTypes = [
   'city-account',
   'slovensko-sk',
   'clamav-scanner',
-  'magproxy'
+  'magproxy',
 ] as const
 export type ValidType = (typeof validTypes)[number]
 
@@ -28,14 +29,14 @@ export const endpoints: Record<ValidType, string> = {
   'city-account': 'https://nest-city-account.staging.bratislava.sk/api-json',
   'clamav-scanner': 'https://nest-clamav-scanner.staging.bratislava.sk/api-json',
   'slovensko-sk': 'https://fix.slovensko-sk-api.bratislava.sk/openapi.yaml',
-  'magproxy': 'https://new-magproxy.staging.bratislava.sk/api-json'
+  magproxy: 'https://new-magproxy.staging.bratislava.sk/api-json',
 }
 
-export const getLocalEndpoint = (type: ValidType, localUrl: string): string => {
-  if (type === 'slovensko-sk') {
-    return `http://${localUrl}/openapi.yaml`
-  }
-  return `http://${localUrl}/api-json`
+export const localFolders: Partial<Record<ValidType, string>> = {
+  forms: 'nest-forms-backend',
+  tax: 'nest-tax-backend',
+  'city-account': 'nest-city-account',
+  'clamav-scanner': 'nest-clamav-scanner',
 }
 
 const appRootDir = getAppRootDir()
@@ -195,14 +196,56 @@ const removeDocsAndCleanupFiles = (type: ValidType, outputDir: string) => {
   }
 }
 
+const generateLocalApiSpec = (type: ValidType): string => {
+  const folderName = localFolders[type]
+  if (!folderName) {
+    throw new Error(`Local API generation is not supported for type '${type}'`)
+  }
+
+  console.log('Generating local API spec...')
+
+  const tempDir = path.join(appRootDir, '.temp-specs')
+  mkdirSync(tempDir, { recursive: true })
+
+  const tempFileName = `api-spec-${randomUUID()}.json`
+  const tempFilePath = path.join(tempDir, tempFileName)
+
+  const env = { ...process.env, API_SPEC_OUTPUT_PATH: tempFilePath }
+
+  const backendDir = path.join(appRootDir, '..', folderName)
+  execSync('npm run generate-api-spec', {
+    cwd: backendDir,
+    stdio: 'inherit',
+    env,
+  })
+
+  return tempFilePath
+}
+
+const cleanupTempFile = (filePath: string) => {
+  try {
+    unlinkSync(filePath)
+    console.log('Cleaned up temporary API spec file')
+  } catch (error) {
+    console.warn('Failed to cleanup temporary file:', error)
+  }
+}
+
+const getSpecPath = (type: ValidType, options: GenerateClientOptions) => {
+  if (options.useLocal) {
+    return generateLocalApiSpec(type)
+  }
+  return endpoints[type]
+}
+
 export const generateClient = async (type: ValidType, options: GenerateClientOptions = {}) => {
   await checkOpenApiGeneratorVersion()
   const outputDir = path.join(options.rootDir ?? appRootDir, type)
-  const url = options.localUrl ? getLocalEndpoint(type, options.localUrl) : endpoints[type]
 
+  const specPath = getSpecPath(type, options)
   try {
     cleanupExistingClient(type, outputDir)
-    generateOpenApiClient(type, url, outputDir)
+    generateOpenApiClient(type, specPath, outputDir)
     removeDocsAndCleanupFiles(type, outputDir)
     generateClientFile(type, outputDir)
     updateIndexFile(type, outputDir)
@@ -213,6 +256,10 @@ export const generateClient = async (type: ValidType, options: GenerateClientOpt
   } catch (error) {
     console.error(`Error generating client for ${type}:`, error)
     throw error
+  } finally {
+    if (options.useLocal) {
+      cleanupTempFile(specPath)
+    }
   }
 }
 
@@ -228,7 +275,7 @@ if (require.main === module) {
       .name('generateClient')
       .description('Generate OpenAPI client for specified type')
       .argument('<type>', `Type of client to generate (${validTypes.join(', ')})`)
-      .option('--local-url <url>', 'Local URL to use (e.g., localhost:3000)')
+      .option('--local', 'Generate from local API spec')
       .action((type: string, options) => {
         if (!isValidType(type)) {
           console.error(`Invalid type: ${type}. Valid types are: ${validTypes.join(', ')}.`)
@@ -236,7 +283,7 @@ if (require.main === module) {
         }
 
         generateClient(type, {
-          localUrl: options.localUrl ? options.localUrl : undefined,
+          useLocal: options.local,
         }).catch(() => process.exit(1))
       })
 

@@ -34,6 +34,7 @@ jobs:
       directory: openapi-clients/
       build_image_no_registry: ''
       tag: '--tag=build-${{ github.sha }}'
+      build_arg: '--build_arg="GIT_COMMIT=${{ github.sha }}"'
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}

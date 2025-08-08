@@ -1,0 +1,677 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "description": "This endpoint checks if this service is running",
+        "operationId": "AppController_isStatusRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service running status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check status of this service",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "description": "See if nest is working!",
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns a hello message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Hello world!",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/status": {
+      "get": {
+        "description": "This endpoint checks all services status",
+        "operationId": "StatusController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All services status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServicesStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check all services status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/api/status/prisma": {
+      "get": {
+        "description": "This endpoint checks if prisma is running",
+        "operationId": "StatusController_isPrismaRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Prisma is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check prisma status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/api/status/minio": {
+      "get": {
+        "description": "This endpoint checks if minio is running",
+        "operationId": "StatusController_isMinioRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Minio is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check minio status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/api/status/forms": {
+      "get": {
+        "description": "This endpoint checks if forms backend is running",
+        "operationId": "StatusController_isFormsRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Forms backend is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check forms backend status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/api/status/clamav": {
+      "get": {
+        "description": "This endpoint checks if clamav is running",
+        "operationId": "StatusController_isClamavRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Clamav is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check clamav status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/api/status/clamav/version": {
+      "get": {
+        "description": "This endpoint shows clamav version",
+        "operationId": "StatusController_version",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Clamav version retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClamavVersionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Show clamav version",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/api/scan/files": {
+      "post": {
+        "description": "You have to provide list of files which are already uploaded to bucket and you want to scan them. Service will return list of files with status saying that files where accepted for scanning. If not then proper error will be propagated.",
+        "operationId": "ScannerController_scanFiles",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "List of files to scan.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/"
+                }
+              },
+              "examples": {
+                "oneFile": {
+                  "value": [
+                    {
+                      "fileUid": "name.jpg"
+                    }
+                  ]
+                },
+                "moreFiles": {
+                  "value": [
+                    {
+                      "fileUid": "name.jpg"
+                    },
+                    {
+                      "fileUid": "name2.jpg"
+                    },
+                    {
+                      "fileUid": "name3.jpg"
+                    }
+                  ]
+                },
+                "specifyBucket": {
+                  "value": [
+                    {
+                      "fileUid": "name.jpg",
+                      "bucketUid": "bucket-unique-name-or-uid"
+                    },
+                    {
+                      "fileUid": "name2.jpg"
+                    },
+                    {
+                      "fileUid": "name3.jpg",
+                      "bucketUid": "bucket-unique-name-or-uid"
+                    }
+                  ]
+                },
+                "specifyUserUid": {
+                  "value": [
+                    {
+                      "fileUid": "name.jpg",
+                      "bucketUid": "bucket-unique-name-or-uid",
+                      "userUid": "user-unique-name-or-uid"
+                    },
+                    {
+                      "fileUid": "name2.jpg",
+                      "userUid": "user-unique-name-or-uid"
+                    },
+                    {
+                      "fileUid": "name3.jpg",
+                      "bucketUid": "bucket-unique-name-or-uid"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Files has been accepted for scanning.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanFileResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong parameters provided."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Scan list of files in bucket via clamav scanner.",
+        "tags": [
+          "Scanner"
+        ]
+      }
+    },
+    "/api/scan/file": {
+      "post": {
+        "description": "You have to provide list of files which are already uploaded to bucket and you want to scan them. Service will return list of files with status saying that files where accepted for scanning. If not then proper error will be propagated.",
+        "operationId": "ScannerController_scanFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanFileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Files has been accepted for scanning.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanFileResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong parameters provided."
+          },
+          "404": {
+            "description": "File or bucket not found."
+          },
+          "410": {
+            "description": "File has already been processed."
+          },
+          "413": {
+            "description": "File for scanning is too large."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Scan list of files in bucket via clamav scanner.",
+        "tags": [
+          "Scanner"
+        ]
+      }
+    },
+    "/api/scan/file/{fileUid64}/{bucketUid64}": {
+      "get": {
+        "operationId": "ScannerController_getStatus",
+        "parameters": [
+          {
+            "name": "bucketUid64",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileUid64",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get status of scanned file. Params are in base64 format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanStatusDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "File did or bucket uid contains invalid parameters."
+          },
+          "404": {
+            "description": "File or bucket not found"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "tags": [
+          "Scanner"
+        ]
+      }
+    },
+    "/api/scan/file/{resourceId}": {
+      "get": {
+        "operationId": "ScannerController_getStatusById",
+        "parameters": [
+          {
+            "name": "resourceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get status of scanned file by record id or by fileUid in base64. When using fileUid (filename) in base64 we will use default bucket as default.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanStatusDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "File did or bucket uid contains invalid parameters."
+          },
+          "404": {
+            "description": "File not found"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "tags": [
+          "Scanner"
+        ]
+      },
+      "delete": {
+        "operationId": "ScannerController_deleteFileById",
+        "parameters": [
+          {
+            "name": "resourceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete scanned file by record id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanStatusDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "File did or bucket uid contains invalid parameters."
+          },
+          "404": {
+            "description": "File not found"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "tags": [
+          "Scanner"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Nest clamav scanner",
+    "description": "NestJS ClamAV Scanner using ClamAV.js for scanning files and streams.",
+    "version": "1.0",
+    "contact": {
+      "name": "Bratislava Innovations",
+      "url": "https://inovacie.bratislava.sk",
+      "email": "inovacie@bratislava.sk"
+    }
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    },
+    {
+      "url": "https://nest-clamav-scanner.dev.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-clamav-scanner.staging.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-clamav-scanner.bratislava.sk/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "basic": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Basic auth for communication with scanner backend"
+      }
+    },
+    "schemas": {
+      "ServiceRunningDto": {
+        "type": "object",
+        "properties": {
+          "running": {
+            "type": "boolean",
+            "description": "is service running?",
+            "example": "true"
+          }
+        },
+        "required": [
+          "running"
+        ]
+      },
+      "ClamavVersionDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "clamav version",
+            "example": "1.4.2"
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "ServicesStatusDto": {
+        "type": "object",
+        "properties": {
+          "prisma": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "minio": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "forms": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "clamav": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "clamavVersion": {
+            "$ref": "#/components/schemas/ClamavVersionDto"
+          }
+        },
+        "required": [
+          "prisma",
+          "minio",
+          "forms",
+          "clamav",
+          "clamavVersion"
+        ]
+      },
+      "ScanFileResponseDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "scan result",
+            "enum": [
+              "ACCEPTED",
+              "ERROR"
+            ],
+            "example": "ACCEPTED"
+          },
+          "id": {
+            "type": "string",
+            "description": "id of the record in db",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8"
+          },
+          "fileUid": {
+            "type": "string",
+            "description": "File Uid",
+            "example": "file name or file uid.pdf"
+          },
+          "message": {
+            "type": "string",
+            "description": "more info",
+            "example": "file is queued for scanning"
+          }
+        },
+        "required": [
+          "status",
+          "id",
+          "fileUid",
+          "message"
+        ]
+      },
+      "ScanFileDto": {
+        "type": "object",
+        "properties": {
+          "fileUid": {
+            "type": "string",
+            "description": "uid/name of the file ",
+            "example": "ffsdfsd89796.pdf"
+          },
+          "bucketUid": {
+            "type": "string",
+            "description": "uid/name of the bucket. If not set, default bucket will be used",
+            "example": "super-bucket"
+          }
+        },
+        "required": [
+          "fileUid"
+        ]
+      },
+      "ScanStatusDto": {
+        "type": "object",
+        "properties": {
+          "fileUid": {
+            "type": "string",
+            "description": "uid/name of the file",
+            "example": "ffsdfsd89796"
+          },
+          "bucketUid": {
+            "type": "string",
+            "description": "uid of the bucket",
+            "example": "ffsdfsd89796"
+          },
+          "fileSize": {
+            "type": "number",
+            "description": "File size in bytes",
+            "example": "123131"
+          },
+          "fileMimeType": {
+            "type": "string",
+            "description": "File mime type of file",
+            "example": "application/pdf"
+          },
+          "status": {
+            "type": "string",
+            "description": "scan result",
+            "enum": [
+              "ACCEPTED",
+              "QUEUED",
+              "SCANNING",
+              "SAFE",
+              "INFECTED",
+              "NOT FOUND",
+              "MOVE ERROR SAFE",
+              "MOVE ERROR INFECTED",
+              "SCAN ERROR",
+              "SCAN TIMEOUT"
+            ],
+            "example": "ACCEPTED"
+          },
+          "meta": {
+            "type": "object",
+            "description": "other meta data",
+            "example": "{ \"type\": \"TIE Fighter\"}"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "created at",
+            "example": "2021-05-05T12:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "updated at",
+            "example": "2021-05-05T12:00:00.000Z"
+          }
+        },
+        "required": [
+          "fileUid",
+          "bucketUid",
+          "fileSize",
+          "fileMimeType",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    }
+  }
+}

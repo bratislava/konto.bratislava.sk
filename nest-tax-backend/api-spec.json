@@ -1,0 +1,2107 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "description": "See if nest is working!",
+        "operationId": "AppController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Everything is working"
+          }
+        },
+        "summary": "Healthcheck",
+        "tags": [
+          "default"
+        ]
+      }
+    },
+    "/tax/get-tax-by-year": {
+      "get": {
+        "operationId": "TaxController_getActualTaxes",
+        "parameters": [
+          {
+            "name": "year",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Load tax data about user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTaxDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error to load tax data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get tax by year and how much is paid",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/tax/get-tax-pdf-by-year": {
+      "get": {
+        "deprecated": true,
+        "operationId": "TaxController_getTaxByYearPdf",
+        "parameters": [
+          {
+            "name": "year",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return pdf",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTaxDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error generate pdf",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get tax by year and how much is paid",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/tax/taxes": {
+      "get": {
+        "operationId": "TaxController_getArchivedTaxes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Load list of taxes by limit, default value 5",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseGetTaxesDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error to load tax data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all taxes (paid and not paid)",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/tax/get-tax-detail-by-year": {
+      "get": {
+        "operationId": "TaxControllerV2_getTaxDetailByYear",
+        "parameters": [
+          {
+            "name": "year",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Load tax detail about user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTaxSummaryDetailDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error to load tax data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get tax detail by year.",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/payment/cardpay/by-year/{year}": {
+      "post": {
+        "deprecated": true,
+        "description": "If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate",
+        "operationId": "PaymentController_payment",
+        "parameters": [
+          {
+            "name": "year",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create url to GP webpay with payment details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseGetPaymentUrlDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Custom error to create url",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate payment link to logged user for submitted year if there is no payment.",
+        "tags": [
+          "payment"
+        ]
+      }
+    },
+    "/payment/cardpay/full-payment/{year}": {
+      "post": {
+        "description": "Creates a payment link for paying the entire tax amount or remaining balance for the current year.",
+        "operationId": "PaymentController_generateFullPaymentLink",
+        "parameters": [
+          {
+            "name": "year",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create url to GP webpay with payment details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseGetPaymentUrlDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Custom error to create url",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate payment link for full tax payment for the current year.",
+        "tags": [
+          "payment"
+        ]
+      }
+    },
+    "/payment/cardpay/installment-payment/{year}": {
+      "post": {
+        "description": "Creates a payment link for making an installment payment for the specified year.",
+        "operationId": "PaymentController_generateInstallmentPaymentLink",
+        "parameters": [
+          {
+            "name": "year",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create url to GP webpay with payment details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseGetPaymentUrlDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Custom error to create url",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate payment link for installment tax payment.",
+        "tags": [
+          "payment"
+        ]
+      }
+    },
+    "/payment/cardpay/by-tax-id/{uuid}": {
+      "get": {
+        "deprecated": true,
+        "description": "If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate",
+        "operationId": "PaymentController_paymentByTaxId",
+        "parameters": [
+          {
+            "name": "uuid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "302": {
+            "description": "Redirect to GP webpay"
+          },
+          "422": {
+            "description": "Error to redirect",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Generate payment link and redirect to this link to gpwebpay.",
+        "tags": [
+          "payment"
+        ]
+      }
+    },
+    "/payment/cardpay/response": {
+      "get": {
+        "operationId": "PaymentController_paymentResponse",
+        "parameters": [
+          {
+            "name": "DIGEST",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DIGEST1",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "OPERATION",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ORDERNUMBER",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PRCODE",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SRCODE",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RESULTTEXT",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "302": {
+            "description": "Redirect to Frontend response"
+          },
+          "422": {
+            "description": "Error to redirect",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      }
+    },
+    "/payment/qrcode/email/{taxUuid}": {
+      "get": {
+        "operationId": "PaymentController_getQrCodeByTaxUuid",
+        "parameters": [
+          {
+            "name": "taxUuid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return image"
+          },
+          "422": {
+            "description": "Error to redirect"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      }
+    },
+    "/admin/create-data-from-noris": {
+      "post": {
+        "operationId": "AdminController_loadDataFromNorris",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPostNorisLoadDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Load data from noris",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBirthNumbersResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Integrate data from norris if not exists by birth numbers or all",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/update-data-from-norris": {
+      "post": {
+        "operationId": "AdminController_updateDataFromNorris",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPostNorisLoadDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Load data from noris"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Integrate data from norris",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/payments-from-noris": {
+      "post": {
+        "operationId": "AdminController_updatePaymentsFromNoris",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPostNorisPaymentDataLoadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Integrate Paid for day from Noris to our database from date of last integration to today"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Integrate Paid for day from - to.",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/update-delivery-methods-in-noris": {
+      "post": {
+        "operationId": "AdminController_updateDeliveryMethodsInNoris",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestUpdateNorisDeliveryMethodsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Records successfully updated in Noris"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Update delivery methods for given birth numbers and date.",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/remove-delivery-methods-from-noris/{birthNumber}": {
+      "post": {
+        "description": "Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.",
+        "operationId": "AdminController_removeDeliveryMethodsFromNoris",
+        "parameters": [
+          {
+            "name": "birthNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Records successfully updated in Noris"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Remove delivery methods for given birth number.",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/create-testing-tax": {
+      "post": {
+        "description": "Creates a testing tax record with specified details for development and testing purposes",
+        "operationId": "AdminController_createTestingTax",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestAdminCreateTestingTaxDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Testing tax record created successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Create a testing tax record",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/delete-tax": {
+      "post": {
+        "description": "Deletes a tax record for a specific birth number and year",
+        "operationId": "AdminController_deleteTax",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestAdminDeleteTaxDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tax record deleted successfully"
+          },
+          "500": {
+            "description": "Internal server error or tax payer not found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Delete a tax record",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/card-payment-reporting/send-report": {
+      "post": {
+        "operationId": "CardPaymentReportingController_sendReport",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPostReportingSendReport"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent."
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Send payment report to an email",
+        "tags": [
+          "card-payment-reporting"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Nest tax backend",
+    "description": "Backend for payment taxes and connection to Noris",
+    "version": "1.0",
+    "contact": {
+      "name": "Bratislava Inovations",
+      "url": "https://inovacie.bratislava.sk",
+      "email": "inovacie@bratislava.sk"
+    }
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    },
+    {
+      "url": "https://nest-tax-backend.dev.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-tax-backend.staging.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-tax-backend.bratislava.sk/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "apiKey"
+      },
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Get token from cognito",
+        "openIdConnectUrl": "TBD"
+      }
+    },
+    "schemas": {
+      "TaxPaidStatusEnum": {
+        "type": "string",
+        "enum": [
+          "NOT_PAID",
+          "PARTIALLY_PAID",
+          "PAID",
+          "OVER_PAID"
+        ],
+        "description": "Type of paid status"
+      },
+      "ResponseTaxPayerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Numeric id of tax payer",
+            "default": 1
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Uuid of tax payer",
+            "default": "15fc5751-d5e2-4e14-9f8d-dc4b3e1dec27"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Is tax payer active",
+            "default": true
+          },
+          "permanentResidenceAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "Permanent address of tax payer",
+            "default": "Bratislava, Hlavne námestie 1"
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of tax payer from Noris",
+            "default": "12345"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of taxpayer",
+            "default": "Bratislavčan Daňový"
+          },
+          "nameTxt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Text of description of name for pdf",
+            "default": "Meno daňovníka/ subjektu"
+          },
+          "permanentResidenceStreetTxt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Text of description of street for pdf",
+            "default": "Ulica trvalého pobytu"
+          },
+          "permanentResidenceStreet": {
+            "type": "string",
+            "nullable": true,
+            "description": "Street of permanent residence with number",
+            "default": "Uršulínska 6 3/6"
+          },
+          "permanentResidenceZip": {
+            "type": "string",
+            "nullable": true,
+            "description": "Zip of permanent residence with number",
+            "default": "811 01"
+          },
+          "permanentResidenceCity": {
+            "type": "string",
+            "nullable": true,
+            "description": "City of permanent residence with number",
+            "default": "Bratislava"
+          },
+          "birthNumber": {
+            "type": "string",
+            "description": "Birth number with slash",
+            "default": "920101/1111"
+          },
+          "taxAdministratorId": {
+            "type": "number",
+            "nullable": true,
+            "description": "Id of tax administrator - id is from Noris",
+            "default": 5172727
+          }
+        },
+        "required": [
+          "id",
+          "uuid",
+          "createdAt",
+          "updatedAt",
+          "active",
+          "permanentResidenceAddress",
+          "externalId",
+          "name",
+          "nameTxt",
+          "permanentResidenceStreetTxt",
+          "permanentResidenceStreet",
+          "permanentResidenceZip",
+          "permanentResidenceCity",
+          "birthNumber",
+          "taxAdministratorId"
+        ]
+      },
+      "ResponseTaxDetailInstallmentsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id of instalments, installments are ordered by this value",
+            "default": 1
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "taxId": {
+            "type": "number",
+            "description": "Numeric id of tax (foreign key)",
+            "default": 1
+          },
+          "order": {
+            "type": "string",
+            "nullable": true,
+            "description": "Order of installment",
+            "default": null
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount to pay of installment in cents - integer",
+            "default": 1000
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Text of number of installment",
+            "default": 1000
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "taxId",
+          "order",
+          "amount",
+          "text"
+        ]
+      },
+      "TaxDetailTypeEnum": {
+        "type": "string",
+        "enum": [
+          "APARTMENT",
+          "CONSTRUCTION",
+          "GROUND"
+        ],
+        "description": "Type of tax detail - object of tax"
+      },
+      "TaxDetailareaType": {
+        "type": "string",
+        "enum": [
+          "NONRESIDENTIAL",
+          "RESIDENTIAL",
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G",
+          "H",
+          "jH",
+          "jI",
+          "byt",
+          "nebyt"
+        ],
+        "description": "Area type of tax detail - exact type of object of tax"
+      },
+      "ResponseTaxDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Numeric id of tax detail",
+            "default": 1
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "taxId": {
+            "type": "number",
+            "description": "Numeric id of tax (foreign key)",
+            "default": 1
+          },
+          "type": {
+            "description": "Type of tax detail - object of tax",
+            "default": "GROUND",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaxDetailTypeEnum"
+              }
+            ]
+          },
+          "areaType": {
+            "description": "Area type of tax detail - exact type of object of tax",
+            "default": "byt",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaxDetailareaType"
+              }
+            ]
+          },
+          "area": {
+            "type": "string",
+            "nullable": true,
+            "description": "Area of tax detail - square meters",
+            "default": "0,00"
+          },
+          "base": {
+            "type": "number",
+            "description": "Base of tax pare meter",
+            "default": 0
+          },
+          "amount": {
+            "type": "number",
+            "description": "Real tax per area type tax detail",
+            "default": 0
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "taxId",
+          "type",
+          "areaType",
+          "area",
+          "base",
+          "amount"
+        ]
+      },
+      "DeliveryMethodNamed": {
+        "type": "string",
+        "enum": [
+          "EDESK",
+          "POSTAL",
+          "CITY_ACCOUNT"
+        ],
+        "description": "delivery_method"
+      },
+      "ResponseTaxAdministratorDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the tax administrator",
+            "example": "John Doe"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number of the tax administrator",
+            "example": "+421 123 456 789"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the tax administrator",
+            "example": "johndoe@example.com"
+          }
+        },
+        "required": [
+          "name",
+          "phoneNumber",
+          "email"
+        ]
+      },
+      "ResponseTaxDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Numeric id of tax",
+            "default": 1
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Uuid of tax",
+            "default": "15fc5751-d5e2-4e14-9f8d-dc4b3e1dec27"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at timestamp",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "year": {
+            "type": "number",
+            "description": "Year of tax",
+            "default": 2022
+          },
+          "taxPayerId": {
+            "type": "number",
+            "description": "Numeric id of taxpayer",
+            "default": 1
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount to pay in cents - integer",
+            "default": 1000
+          },
+          "paidAmount": {
+            "type": "number",
+            "description": "Amount which was already paid in cents - integer",
+            "default": 1000
+          },
+          "variableSymbol": {
+            "type": "string",
+            "description": "Variable symbol of payment",
+            "default": 12345678
+          },
+          "taxId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Tax Id from order of exact year",
+            "default": "1234"
+          },
+          "dateCreateTax": {
+            "type": "string",
+            "nullable": true,
+            "description": "Date of tax order.",
+            "default": "2022-01-01"
+          },
+          "dateTaxRuling": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true,
+            "description": "Date and time of tax ruling (právoplatnosť rozhodnutia)",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "taxLand": {
+            "type": "number",
+            "nullable": true,
+            "description": "Part of tax amount for lands in cents in Eur.",
+            "default": 1000
+          },
+          "taxConstructions": {
+            "type": "number",
+            "nullable": true,
+            "description": "Part of tax amount for constructions in cents in Eur.",
+            "default": 1000
+          },
+          "taxFlat": {
+            "type": "number",
+            "nullable": true,
+            "description": "Part of tax amount for flats in cents in Eur.",
+            "default": 1000
+          },
+          "qrCodeWeb": {
+            "type": "string",
+            "nullable": true,
+            "description": "Qr code use for pay in web in Base64 representing image of paybysquare QRcode",
+            "default": "somebase64string"
+          },
+          "qrCodeEmail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Qr code use for pay in email in Base64 representing image of paybysquare QRcode",
+            "default": "somebase64string"
+          },
+          "paidStatus": {
+            "description": "Type of paid status",
+            "example": "PARTIALLY_PAID",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaxPaidStatusEnum"
+              }
+            ]
+          },
+          "isPayable": {
+            "type": "boolean",
+            "description": "Is tax payable (is tax from this year), and frontend can show payment data?",
+            "example": true
+          },
+          "pdfExport": {
+            "type": "boolean",
+            "description": "Whether PDF export is available, since 2024 we stopped generating PDFs",
+            "default": false
+          },
+          "taxPayer": {
+            "description": "Tax payer data",
+            "default": {
+              "id": 1,
+              "uuid": "15fc5751-d5e2-4e14-9f8d-dc4b3e1dec27",
+              "createdAt": "2023-04-13T14:39:49.004Z",
+              "updatedAt": "2023-04-13T14:39:49.004Z",
+              "active": true,
+              "permanentResidenceAddress": "Bratislava, Hlavné námestie 1",
+              "externalId": "1234",
+              "name": "Bratislavčan Daňový",
+              "nameTxt": "Meno daňovníka",
+              "permanentResidenceStreetTxt": "Trvalý pobyt",
+              "permanentResidenceStreet": "Uršulínska 6 3/4",
+              "permanentResidenceZip": "811 01",
+              "permanentResidenceCity": "Bratislava"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseTaxPayerDto"
+              }
+            ]
+          },
+          "taxInstallments": {
+            "description": "Installments of payment tax - it can be array of 1 value or 3 values",
+            "default": [
+              {
+                "id": 1,
+                "createdAt": "2023-04-13T14:39:49.004Z",
+                "updatedAt": "2023-04-13T14:39:49.004Z",
+                "taxId": 1,
+                "order": null,
+                "amount": 1000,
+                "text": "Splátka 1"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseTaxDetailInstallmentsDto"
+            }
+          },
+          "taxDetails": {
+            "description": "Tax administrator",
+            "default": [
+              {
+                "id": 20,
+                "createdAt": "2023-04-13T14:39:49.004Z",
+                "updatedAt": "2023-04-13T14:39:49.004Z",
+                "taxId": 1,
+                "type": "APARTMENT",
+                "areaType": "nebyt",
+                "area": null,
+                "base": 0,
+                "amount": 0
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseTaxDetailsDto"
+            }
+          },
+          "lastCheckedPayments": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When were last checked payments for this tax with automatic task.",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "lastCheckedUpdates": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When were last checked updates for this tax with automatic task.",
+            "default": "2023-04-13T14:39:49.004Z"
+          },
+          "deliveryMethod": {
+            "nullable": true,
+            "description": "delivery_method",
+            "example": "CITY_ACCOUNT",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryMethodNamed"
+              }
+            ]
+          },
+          "bloomreachUnpaidTaxReminderSent": {
+            "type": "boolean",
+            "description": "Has the unpaid tax notification event been sent to Bloomreach for this tax",
+            "example": true
+          },
+          "taxAdministrator": {
+            "nullable": true,
+            "description": "Assigned tax administrator",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseTaxAdministratorDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "uuid",
+          "createdAt",
+          "updatedAt",
+          "year",
+          "taxPayerId",
+          "amount",
+          "paidAmount",
+          "variableSymbol",
+          "taxId",
+          "dateCreateTax",
+          "dateTaxRuling",
+          "taxLand",
+          "taxConstructions",
+          "taxFlat",
+          "qrCodeWeb",
+          "qrCodeEmail",
+          "paidStatus",
+          "isPayable",
+          "pdfExport",
+          "taxPayer",
+          "taxInstallments",
+          "taxDetails",
+          "lastCheckedPayments",
+          "lastCheckedUpdates",
+          "deliveryMethod",
+          "bloomreachUnpaidTaxReminderSent",
+          "taxAdministrator"
+        ]
+      },
+      "ResponseErrorDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "statusCode",
+            "default": 500
+          },
+          "status": {
+            "type": "string",
+            "description": "status",
+            "default": "Internal server error"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message about error",
+            "default": "Internal server error"
+          },
+          "errorName": {
+            "type": "object",
+            "description": "Name of the error",
+            "default": "INTERNAL_SERVER_ERROR"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "errorName"
+        ]
+      },
+      "ResponseInternalServerErrorDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "statusCode",
+            "default": 500
+          },
+          "message": {
+            "type": "string",
+            "description": "Message about error",
+            "default": "Internal server error"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message"
+        ]
+      },
+      "ResponseGetTaxesBodyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Numeric id of tax",
+            "default": 1
+          },
+          "uuid": {
+            "type": "string",
+            "description": "Uuid of tax",
+            "default": "00000000-0000-0000-0000-000000000000"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date of tax creation in backend",
+            "default": "2024-01-01"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount to paid in cents",
+            "default": 1000
+          },
+          "year": {
+            "type": "number",
+            "description": "Year of tax",
+            "default": 2022
+          },
+          "paidAmount": {
+            "type": "number",
+            "description": "Amount already paid",
+            "default": 900
+          },
+          "paidStatus": {
+            "description": "Type of paid status",
+            "example": "PARTIALLY_PAID",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaxPaidStatusEnum"
+              }
+            ]
+          },
+          "isPayable": {
+            "type": "boolean",
+            "description": "Is tax payable (is tax from this year), and frontend can show payment data?",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "uuid",
+          "createdAt",
+          "amount",
+          "year",
+          "paidAmount",
+          "paidStatus",
+          "isPayable"
+        ]
+      },
+      "ResponseGetTaxesDto": {
+        "type": "object",
+        "properties": {
+          "isInNoris": {
+            "type": "boolean",
+            "description": "Birth number of user is in Noris actual or historical Tax",
+            "example": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseGetTaxesBodyDto"
+            }
+          },
+          "taxAdministrator": {
+            "nullable": true,
+            "description": "Assigned tax administrator",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseTaxAdministratorDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "isInNoris",
+          "items",
+          "taxAdministrator"
+        ]
+      },
+      "ResponseTaxDetailItemizedDto": {
+        "type": "object",
+        "properties": {
+          "apartmentTotalAmount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Total amount of tax for apartment"
+          },
+          "constructionTotalAmount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Total amount of tax for construction"
+          },
+          "groundTotalAmount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Total amount of tax for ground"
+          },
+          "apartmentTaxDetail": {
+            "description": "Apartment tax itemized",
+            "example": [
+              {
+                "type": "byt",
+                "base": 100,
+                "amount": 100
+              }
+            ],
+            "items": {
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "groundTaxDetail": {
+            "description": "Ground tax itemized",
+            "example": [
+              {
+                "type": "A",
+                "area": "100m2",
+                "base": 100,
+                "amount": 100
+              }
+            ],
+            "items": {
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "constructionTaxDetail": {
+            "description": "Construction tax itemized",
+            "example": [
+              {
+                "type": "RESIDENTIAL",
+                "base": 100,
+                "amount": 100
+              }
+            ],
+            "items": {
+              "type": "array"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "apartmentTotalAmount",
+          "constructionTotalAmount",
+          "groundTotalAmount",
+          "apartmentTaxDetail",
+          "groundTaxDetail",
+          "constructionTaxDetail"
+        ]
+      },
+      "ResponseOneTimePaymentDetailsDto": {
+        "type": "object",
+        "properties": {
+          "isPossible": {
+            "type": "boolean",
+            "description": "Indicates if one-time payment is possible.",
+            "example": true
+          },
+          "type": {
+            "enum": [
+              "ONE_TIME_PAYMENT",
+              "REMAINING_AMOUNT_PAYMENT"
+            ],
+            "type": "string",
+            "description": "Type of payment"
+          },
+          "reasonNotPossible": {
+            "type": "string",
+            "enum": [
+              "ALREADY_PAID"
+            ],
+            "description": "Reason why payment is not possible"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Payment amount",
+            "example": 10050
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Due date",
+            "example": "2023-04-13"
+          },
+          "qrCode": {
+            "type": "string",
+            "description": "QR code for payment"
+          },
+          "variableSymbol": {
+            "type": "string",
+            "description": "Variable symbol for payment"
+          }
+        },
+        "required": [
+          "isPossible"
+        ]
+      },
+      "ResponseActiveInstallmentDto": {
+        "type": "object",
+        "properties": {
+          "remainingAmount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Remaining amount to pay in the installment",
+            "example": 50
+          },
+          "variableSymbol": {
+            "type": "string",
+            "description": "Variable symbol"
+          },
+          "qrCode": {
+            "type": "string",
+            "description": "QR code"
+          }
+        },
+        "required": [
+          "remainingAmount"
+        ]
+      },
+      "ResponseInstallmentPaymentDetailDto": {
+        "type": "object",
+        "properties": {
+          "isPossible": {
+            "type": "boolean",
+            "description": "Indicates if installment payment is possible",
+            "example": true
+          },
+          "reasonNotPossible": {
+            "enum": [
+              "BELOW_THRESHOLD",
+              "AFTER_DATE"
+            ],
+            "type": "string",
+            "description": "Reason why installment is not possible"
+          },
+          "installments": {
+            "description": "List of exactly 3 installments or none at all",
+            "example": [
+              {
+                "installmentNumber": 1,
+                "dueDate": "2023-04-13",
+                "status": "NOT_PAID",
+                "remainingAmount": 50
+              },
+              {
+                "installmentNumber": 2,
+                "dueDate": "2023-04-13",
+                "status": "NOT_PAID",
+                "remainingAmount": 50
+              },
+              {
+                "installmentNumber": 3,
+                "dueDate": "2023-04-13",
+                "status": "NOT_PAID",
+                "remainingAmount": 50
+              }
+            ],
+            "items": {
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "activeInstallment": {
+            "description": "Details of active installment",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseActiveInstallmentDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "isPossible"
+        ]
+      },
+      "ResponseTaxSummaryDetailDto": {
+        "type": "object",
+        "properties": {
+          "overallPaid": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Total amount paid",
+            "example": 150
+          },
+          "overallBalance": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Total remaining balance",
+            "example": 50
+          },
+          "overallAmount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Total tax amount",
+            "example": 200
+          },
+          "itemizedDetail": {
+            "description": "Itemized details",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseTaxDetailItemizedDto"
+            }
+          },
+          "oneTimePayment": {
+            "description": "One-time payment details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseOneTimePaymentDetailsDto"
+              }
+            ]
+          },
+          "installmentPayment": {
+            "description": "Installment payment details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseInstallmentPaymentDetailDto"
+              }
+            ]
+          },
+          "taxAdministrator": {
+            "nullable": true,
+            "description": "Assigned tax administrator",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseTaxAdministratorDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "overallPaid",
+          "overallBalance",
+          "overallAmount",
+          "itemizedDetail",
+          "oneTimePayment",
+          "installmentPayment",
+          "taxAdministrator"
+        ]
+      },
+      "ResponseGetPaymentUrlDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "url to redirect to GP webpay",
+            "default": "https://gpwebpay..."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "RequestPostNorisLoadDataDto": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number",
+            "description": "Year of tax",
+            "default": 2022
+          },
+          "birthNumbers": {
+            "type": "object",
+            "description": "Birth numbers or ALL",
+            "default": [
+              "000000/0000"
+            ]
+          }
+        },
+        "required": [
+          "year",
+          "birthNumbers"
+        ]
+      },
+      "CreateBirthNumbersResponseDto": {
+        "type": "object",
+        "properties": {
+          "birthNumbers": {
+            "description": "An array of birth numbers which were added to TaxPayers in this batch.",
+            "default": [
+              "000000/0000",
+              "000111/2222"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "birthNumbers"
+        ]
+      },
+      "RequestPostNorisPaymentDataLoadDto": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number",
+            "description": "Year of tax",
+            "default": 2022
+          },
+          "fromDate": {
+            "type": "string",
+            "description": "From date - if is not set, take one from database",
+            "default": "2022-01-01"
+          },
+          "toDate": {
+            "type": "string",
+            "description": "To date - if is not set, take one from database",
+            "default": "2022-01-02"
+          },
+          "overPayments": {
+            "type": "object",
+            "description": "If you want to count also overpayments.",
+            "default": false
+          }
+        },
+        "required": [
+          "year",
+          "fromDate",
+          "toDate",
+          "overPayments"
+        ]
+      },
+      "RequestUpdateNorisDeliveryMethodsDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "The new delivery methods for the birth numbers. For city account notification, date must be provided.",
+            "example": {
+              "010366/4554": {
+                "deliveryMethod": "E"
+              },
+              "010366/554": {
+                "deliveryMethod": "E"
+              },
+              "017766/2244": {
+                "deliveryMethod": "P"
+              },
+              "022176/2244": {
+                "deliveryMethod": "O",
+                "date": "2024-01-01"
+              }
+            },
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "deliveryMethod": {
+                      "type": "string",
+                      "enum": [
+                        "O"
+                      ]
+                    },
+                    "date": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  },
+                  "required": [
+                    "deliveryMethod",
+                    "date"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "deliveryMethod": {
+                      "type": "string",
+                      "enum": [
+                        "E",
+                        "P"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "deliveryMethod"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "RequestAdminCreateTestingTaxNorisData": {
+        "type": "object",
+        "properties": {
+          "deliveryMethod": {
+            "nullable": true,
+            "enum": [
+              "E",
+              "O",
+              "P"
+            ],
+            "type": "string",
+            "description": "Delivery method for the tax"
+          },
+          "fakeBirthNumber": {
+            "type": "string",
+            "description": "Birth number in format with slash",
+            "example": "000000/0000"
+          },
+          "nameSurname": {
+            "type": "string",
+            "description": "Full name and surname of the tax payer",
+            "example": "John Doe"
+          },
+          "taxTotal": {
+            "type": "string",
+            "description": "Total tax amount as string",
+            "example": "100.00"
+          },
+          "alreadyPaid": {
+            "type": "string",
+            "description": "Amount already paid as string",
+            "example": "0.00"
+          },
+          "dateTaxRuling": {
+            "type": "string",
+            "nullable": true,
+            "description": "Date of tax ruling (dátum právoplatnosti)",
+            "example": "2024-01-01"
+          }
+        },
+        "required": [
+          "deliveryMethod",
+          "fakeBirthNumber",
+          "nameSurname",
+          "taxTotal",
+          "alreadyPaid",
+          "dateTaxRuling"
+        ]
+      },
+      "RequestAdminCreateTestingTaxDto": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number",
+            "description": "Year of tax",
+            "default": 2022
+          },
+          "norisData": {
+            "description": "Fake Noris Data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RequestAdminCreateTestingTaxNorisData"
+              }
+            ]
+          }
+        },
+        "required": [
+          "year",
+          "norisData"
+        ]
+      },
+      "RequestAdminDeleteTaxDto": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number",
+            "description": "Year of tax",
+            "default": 2022
+          },
+          "birthNumber": {
+            "type": "string",
+            "description": "Birth number in format with slash",
+            "example": "000000/0000"
+          }
+        },
+        "required": [
+          "year",
+          "birthNumber"
+        ]
+      },
+      "RequestPostReportingSendReport": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date since when reports should be generated",
+            "default": 2022
+          },
+          "emailRecipients": {
+            "description": "Emails the report will be sent to",
+            "default": [
+              "test@bratislava.sk"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "required": [
+          "date",
+          "emailRecipients"
+        ]
+      }
+    }
+  }
+}

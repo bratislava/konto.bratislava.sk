@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+
 import { AxiosPromise, isAxiosError } from 'axios'
-import { UpdateFileStatusRequestDtoStatusEnum, UpdateFileStatusResponseDto } from 'openapi-clients/forms'
+import {
+  UpdateFileStatusRequestDtoStatusEnum,
+  UpdateFileStatusResponseDto,
+} from 'openapi-clients/forms'
 
 import ClientsService from '../clients/clients.service'
 

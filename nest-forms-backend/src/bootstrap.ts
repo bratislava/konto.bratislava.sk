@@ -47,8 +47,12 @@ function setupMiddleware(app: INestApplication) {
   app.use(json({ limit: '50mb' }))
 }
 
-function setupSwagger(app: INestApplication) {
+export function createSwaggerDocument(
+  app: INestApplication,
+  overridePort?: number,
+) {
   const baConfigService = app.get(BaConfigService)
+  const port = overridePort ?? baConfigService.self.port
 
   const config = new DocumentBuilder()
     .setTitle('Nest Forms Backend')
@@ -59,7 +63,7 @@ function setupSwagger(app: INestApplication) {
       'https://inovacie.bratislava.sk',
       INNOVATION_MAIL,
     )
-    .addServer(`http://localhost:${baConfigService.self.port}/`)
+    .addServer(`http://localhost:${port}/`)
     .addServer('https://nest-forms-backend.dev.bratislava.sk/')
     .addServer('https://nest-forms-backend.staging.bratislava.sk/')
     .addServer('https://nest-forms-backend.bratislava.sk/')
@@ -82,7 +86,12 @@ function setupSwagger(app: INestApplication) {
     })
     .build()
 
-  const document = SwaggerModule.createDocument(app, config)
+  return SwaggerModule.createDocument(app, config)
+}
+
+function setupSwagger(app: INestApplication) {
+  const document = createSwaggerDocument(app)
+
   SwaggerModule.setup('api', app, document)
   app
     .getHttpAdapter()

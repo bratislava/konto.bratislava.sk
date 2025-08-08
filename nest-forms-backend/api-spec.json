@@ -1,0 +1,2794 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "description": "See if nest is working!",
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Hello world!",
+        "tags": [
+          "Healthcheck"
+        ]
+      }
+    },
+    "/forms/migrations/prepare": {
+      "post": {
+        "operationId": "FormMigrationsController_prepareMigration",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrepareMigrationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareMigrationOutput"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareMigrationOutput"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Form Migrations"
+        ]
+      }
+    },
+    "/forms/migrations/claim/{formId}": {
+      "post": {
+        "operationId": "FormMigrationsController_claimMigration",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimMigrationOutput"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimMigrationOutput"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Form Migrations"
+        ]
+      }
+    },
+    "/forms-v2": {
+      "post": {
+        "operationId": "FormsV2Controller_createForm",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFormInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFormOutput"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFormOutput"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "forms-v2"
+        ]
+      }
+    },
+    "/nases/form/{formId}": {
+      "get": {
+        "description": "Return form by ID and by logged user",
+        "operationId": "NasesController_getForm",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return form",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFormResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "nases"
+        ]
+      }
+    },
+    "/nases/forms": {
+      "get": {
+        "description": "Get paginated forms",
+        "operationId": "NasesController_getForms",
+        "parameters": [
+          {
+            "name": "currentPage",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "example": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "pagination",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "example": 10,
+              "type": "string"
+            }
+          },
+          {
+            "name": "states",
+            "required": false,
+            "in": "query",
+            "description": "Forms in which states are searched - when omitted, all forms of the user are searched",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FormState"
+              }
+            }
+          },
+          {
+            "name": "userCanEdit",
+            "required": false,
+            "in": "query",
+            "description": "Get only forms in such a state, that user can still edit it.",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "formDefinitionSlug",
+            "required": false,
+            "in": "query",
+            "description": "Slug of the form definition",
+            "schema": {
+              "example": "zavazne-stanovisko-k-investicnej-cinnosti",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return forms",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFormsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get paginated forms",
+        "tags": [
+          "nases"
+        ]
+      }
+    },
+    "/nases/{formId}": {
+      "delete": {
+        "description": "Archive form (hide from user but keep in database)",
+        "operationId": "NasesController_deleteForm",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Form successfully deleted"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "nases"
+        ]
+      }
+    },
+    "/nases/update-form/{formId}": {
+      "post": {
+        "description": "Update form",
+        "operationId": "NasesController_updateForm",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFormRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return charging details - price and used free minutes / hours.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFormResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "nases"
+        ]
+      }
+    },
+    "/nases/send-and-update-form/{formId}": {
+      "post": {
+        "description": "This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES",
+        "operationId": "NasesController_sendAndUpdateForm",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFormRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Form was successfully send to rabbit, ant then to nases.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendFormResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendFormResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "nases"
+        ]
+      }
+    },
+    "/nases/eid/send-and-update-form/{formId}": {
+      "post": {
+        "description": "This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES",
+        "operationId": "NasesController_sendAndUpdateFormEid",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EidUpdateSendFormRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Form was successfully send to rabbit, ant then to nases.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendFormResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendFormResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "nases"
+        ]
+      }
+    },
+    "/forms/{formId}/bump-version": {
+      "post": {
+        "description": "Updates form JSON version if a newer version is available",
+        "operationId": "FormsController_bumpJsonVersion",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Version successfully bumped",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BumpJsonVersionResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BumpJsonVersionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "Bump form JSON version to latest available version",
+        "tags": [
+          "forms"
+        ]
+      }
+    },
+    "/files/forms/{formId}": {
+      "get": {
+        "description": "If you need list of files and their file statuses based on formId.",
+        "operationId": "FilesController_getFilesStatusByForm",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of files and their statuses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetFileResponseReducedDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "List of files and statuses based on formId",
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/files/scan/{scannerId}": {
+      "patch": {
+        "description": "You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.",
+        "operationId": "FilesController_updateFileStatusScannerId",
+        "parameters": [
+          {
+            "name": "scannerId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFileStatusRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated file status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateFileStatusResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Endpoint for updating file status from scanner.",
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/files/upload/{formId}": {
+      "post": {
+        "description": "You can upload file to form. ",
+        "operationId": "FilesController_uploadFile",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "filename": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFileResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFileResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "Upload file to form",
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/files/download/jwt/{formId}/{fileId}": {
+      "get": {
+        "description": "To be able to download file you need to obtain jwt token. ",
+        "operationId": "FilesController_downloadToken",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadTokenResponseDataDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "Obtain jwt token form file download",
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/files/download/file/{jwtToken}": {
+      "get": {
+        "description": "You can download file byt fileId. ",
+        "operationId": "FilesController_downloadFile",
+        "parameters": [
+          {
+            "name": "jwtToken",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filestream as output.",
+            "content": {
+              "application/octet-stream": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Download file by jwt token",
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/ginis/{formId}": {
+      "get": {
+        "description": "Return GINIS document by ID",
+        "operationId": "GinisController_getGinisDocumentByFormId",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GinisDocumentDetailResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "ginis"
+        ]
+      }
+    },
+    "/convert/json-to-xml-v2/{formId}": {
+      "post": {
+        "description": "Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.",
+        "operationId": "ConvertController_convertJsonToXmlV2",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonToXmlV2RequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return XML form",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "Convert JSON to XML",
+        "tags": [
+          "convert"
+        ]
+      }
+    },
+    "/convert/xml-to-json/{formId}": {
+      "post": {
+        "description": "Generates JSON form from given XML data and form ID",
+        "operationId": "ConvertController_convertXmlToJson",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/XmlToJsonRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return Json form",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/XmlToJsonResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/XmlToJsonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "Convert XML to JSON",
+        "tags": [
+          "convert"
+        ]
+      }
+    },
+    "/convert/pdf/{formId}": {
+      "post": {
+        "description": "Generates PDF for given form data.",
+        "operationId": "ConvertController_convertToPdf",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConvertToPdfRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return pdf file stream.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamableFile"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "convert"
+        ]
+      }
+    },
+    "/admin/technical-jwt": {
+      "get": {
+        "description": "Return technical account JWT token",
+        "operationId": "AdminController_getTechnicalJwt",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Generated JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/admin/administration-jwt": {
+      "get": {
+        "description": "Return administration account JWT token",
+        "operationId": "AdminController_getAdministrationJwt",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Generated JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/admin/eid-jwt": {
+      "get": {
+        "description": "Return eid user JWT token",
+        "operationId": "AdminController_getEidJwt",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Generated JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/status": {
+      "get": {
+        "description": "This endpoint checks all services status",
+        "operationId": "StatusController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Status of prisma, minio and scanner services.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check all services status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/status/prisma": {
+      "get": {
+        "description": "This endpoint checks if prisma is running",
+        "operationId": "StatusController_isPrismaRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Status of prisma.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check prisma status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/status/minio": {
+      "get": {
+        "description": "This endpoint checks if minio is running",
+        "operationId": "StatusController_isMinioRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Status of minio.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check minio status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/status/scanner": {
+      "get": {
+        "description": "This endpoint checks if forms backend is running",
+        "operationId": "StatusController_isFormsRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Status of scanner.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceRunningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check scanner backend status",
+        "tags": [
+          "Statuses"
+        ]
+      }
+    },
+    "/signer/get-signer-data/{formId}": {
+      "post": {
+        "description": "Generates signer data including XML and metadata for form signing",
+        "operationId": "SignerController_getSignerData",
+        "parameters": [
+          {
+            "name": "formId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignerDataRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return signer data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignerDataResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignerDataResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "cognitoGuestIdentityId": []
+          }
+        ],
+        "summary": "Get signer data",
+        "tags": [
+          "Signer"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Nest Forms Backend",
+    "description": "Backend od processing forms and handling the attachments",
+    "version": "1.0",
+    "contact": {
+      "name": "Bratislava Innovations",
+      "url": "https://inovacie.bratislava.sk",
+      "email": "inovacie@bratislava.sk"
+    }
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    },
+    {
+      "url": "https://nest-forms-backend.dev.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-forms-backend.staging.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-forms-backend.bratislava.sk/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Get token from cognito, use in normal requests without eid. Get token from slovensko.sk, use in endpoints with eid",
+        "openIdConnectUrl": "TBD"
+      },
+      "basic": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Basic auth for communication with scanner backend"
+      },
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "apiKey"
+      },
+      "cognitoGuestIdentityId": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Cognito-Guest-Identity-Id",
+        "description": "Cognito Guest Identity ID for unauthenticated user access"
+      }
+    },
+    "schemas": {
+      "PrepareMigrationInput": {
+        "type": "object",
+        "properties": {
+          "guestIdentityId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "guestIdentityId"
+        ]
+      },
+      "PrepareMigrationOutput": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ClaimMigrationOutput": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "CreateFormInput": {
+        "type": "object",
+        "properties": {
+          "formDefinitionSlug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "formDefinitionSlug"
+        ]
+      },
+      "CreateFormOutput": {
+        "type": "object",
+        "properties": {
+          "formId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "formId"
+        ]
+      },
+      "FormSignatureDto": {
+        "type": "object",
+        "properties": {
+          "signatureBase64": {
+            "type": "string",
+            "format": "base64",
+            "description": "Base64 encoded signature"
+          },
+          "pospID": {
+            "type": "string",
+            "description": "POSP ID of the form"
+          },
+          "pospVersion": {
+            "type": "string",
+            "description": "POSP version of the form"
+          },
+          "jsonVersion": {
+            "type": "string",
+            "description": "JSON version of the form"
+          },
+          "formDataHash": {
+            "type": "string",
+            "description": "Hash of the form data"
+          }
+        },
+        "required": [
+          "signatureBase64",
+          "pospID",
+          "pospVersion",
+          "jsonVersion",
+          "formDataHash"
+        ]
+      },
+      "GetFormResponseDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Change email, on which you can be contacted",
+            "default": "janko.mrkvicka@bratislava.sk"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of record",
+            "default": "f69559da-5eca-4ed7-80fd-370d09dc3632"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Create date of record",
+            "default": "2025-08-08T12:09:01.461Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Update date of record",
+            "default": "2025-08-08T12:09:01.461Z"
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of send form from other system, (probably ginis)",
+            "default": "12345"
+          },
+          "userExternalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID",
+            "default": "e5c84a71-5985-40c7-bb19-e4ad22eda41c"
+          },
+          "mainUri": {
+            "type": "string",
+            "nullable": true,
+            "description": "Uri for defining electronic sendbox, if person has it",
+            "default": "rc://sk/8808080000/jozko_mrkvicka"
+          },
+          "actorUri": {
+            "type": "string",
+            "nullable": true,
+            "description": "Uri for defining electronic sendbox, if person has it",
+            "default": "rc://sk/8808080000/jozko_mrkvicka"
+          },
+          "state": {
+            "type": "string",
+            "description": "State of form",
+            "default": "DRAFT",
+            "enum": [
+              "DRAFT",
+              "QUEUED",
+              "DELIVERED_NASES",
+              "DELIVERED_GINIS",
+              "SENDING_TO_SHAREPOINT",
+              "PROCESSING",
+              "FINISHED",
+              "REJECTED",
+              "ERROR"
+            ]
+          },
+          "error": {
+            "type": "string",
+            "description": "Specific error type",
+            "enum": [
+              "NONE",
+              "RABBITMQ_MAX_TRIES",
+              "FILES_NOT_YET_SCANNED",
+              "UNABLE_TO_SCAN_FILES",
+              "INFECTED_FILES",
+              "NASES_SEND_ERROR",
+              "GINIS_SEND_ERROR",
+              "SHAREPOINT_SEND_ERROR",
+              "EMAIL_SEND_ERROR",
+              "WEBHOOK_SEND_ERROR"
+            ],
+            "default": "NONE"
+          },
+          "formDataGinis": {
+            "type": "string",
+            "nullable": true,
+            "description": "Data from ginis saved in our db",
+            "default": "<XML ...>"
+          },
+          "ginisDocumentId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Ginis document id generated after registering the submission",
+            "default": "MAG0X03RZC97"
+          },
+          "formDataJson": {
+            "type": "object",
+            "nullable": true,
+            "description": "Data in JSON format",
+            "example": {
+              "mestoPSCstep": {
+                "mestoPSC": {
+                  "mesto": "Košice",
+                  "psc": "12345"
+                }
+              },
+              "dateTimePickerShowcase": {
+                "dateTimePicker": {
+                  "dateValue": "2023-07-20",
+                  "timeValue": "00:00"
+                }
+              },
+              "inputFields": {
+                "firstName": "Anton",
+                "lastName": "Peluha",
+                "textAreas": {
+                  "pros": "123123",
+                  "cons": "Defaultna hodnota"
+                }
+              },
+              "checkBoxes": {
+                "favouriteFruits": [
+                  "orange",
+                  "banana",
+                  "grape"
+                ]
+              },
+              "chooseOneOf": {
+                "chooseOneOfMore": "screen",
+                "chooseOneOfTwo": "Ano"
+              },
+              "fileUploads": {
+                "importButtonMultipleFiles": [
+                  "d232e2b3-3701-4046-80f9-012e7566aef3"
+                ],
+                "importDragAndDropMultipleFiles": []
+              },
+              "selectFields": {
+                "school": "stu_fei",
+                "diplomas": []
+              },
+              "dateFromToShowcase": {
+                "dateFromTo": {
+                  "startDate": "2023-07-13",
+                  "endDate": "2023-07-27"
+                }
+              },
+              "timeFromToShowcase": {
+                "timeFromTo": {
+                  "endTime": "00:00"
+                }
+              }
+            }
+          },
+          "formSubject": {
+            "type": "string",
+            "description": "Form subject"
+          },
+          "formSignature": {
+            "nullable": true,
+            "description": "Form signature with metadata",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FormSignatureDto"
+              }
+            ]
+          },
+          "senderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Technical NASES id of sender",
+            "default": "eba_1234"
+          },
+          "recipientId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Technical NASES id of recipient",
+            "default": "eba_1234"
+          },
+          "finishSubmission": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true,
+            "description": "end of submition",
+            "default": "2022-01-01 12:12:12"
+          },
+          "formDefinitionSlug": {
+            "type": "string",
+            "description": "Slug of the form definition",
+            "example": "zavazne-stanovisko-k-investicnej-cinnosti"
+          },
+          "jsonVersion": {
+            "type": "string",
+            "description": "JSON version",
+            "example": "1.0.0"
+          },
+          "requiresMigration": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "email",
+          "id",
+          "createdAt",
+          "updatedAt",
+          "externalId",
+          "userExternalId",
+          "mainUri",
+          "actorUri",
+          "state",
+          "error",
+          "formDataGinis",
+          "ginisDocumentId",
+          "formDataJson",
+          "formSubject",
+          "senderId",
+          "recipientId",
+          "finishSubmission",
+          "formDefinitionSlug",
+          "jsonVersion",
+          "requiresMigration"
+        ]
+      },
+      "FormState": {
+        "type": "string",
+        "enum": [
+          "DRAFT",
+          "QUEUED",
+          "DELIVERED_NASES",
+          "DELIVERED_GINIS",
+          "SENDING_TO_SHAREPOINT",
+          "PROCESSING",
+          "FINISHED",
+          "REJECTED",
+          "ERROR"
+        ]
+      },
+      "GetFormResponseSimpleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of record",
+            "default": "f69559da-5eca-4ed7-80fd-370d09dc3632"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Create date of record",
+            "default": "2025-08-08T12:09:01.461Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Update date of record",
+            "default": "2025-08-08T12:09:01.461Z"
+          },
+          "state": {
+            "type": "string",
+            "description": "State of form",
+            "default": "DRAFT",
+            "enum": [
+              "DRAFT",
+              "QUEUED",
+              "DELIVERED_NASES",
+              "DELIVERED_GINIS",
+              "SENDING_TO_SHAREPOINT",
+              "PROCESSING",
+              "FINISHED",
+              "REJECTED",
+              "ERROR"
+            ]
+          },
+          "error": {
+            "type": "string",
+            "description": "Specific error type",
+            "enum": [
+              "NONE",
+              "RABBITMQ_MAX_TRIES",
+              "FILES_NOT_YET_SCANNED",
+              "UNABLE_TO_SCAN_FILES",
+              "INFECTED_FILES",
+              "NASES_SEND_ERROR",
+              "GINIS_SEND_ERROR",
+              "SHAREPOINT_SEND_ERROR",
+              "EMAIL_SEND_ERROR",
+              "WEBHOOK_SEND_ERROR"
+            ],
+            "default": "NONE"
+          },
+          "formDataJson": {
+            "type": "object",
+            "nullable": true,
+            "description": "Data in JSON format",
+            "example": {
+              "mestoPSCstep": {
+                "mestoPSC": {
+                  "mesto": "Košice",
+                  "psc": "12345"
+                }
+              },
+              "dateTimePickerShowcase": {
+                "dateTimePicker": {
+                  "dateValue": "2023-07-20",
+                  "timeValue": "00:00"
+                }
+              },
+              "inputFields": {
+                "firstName": "Anton",
+                "lastName": "Peluha",
+                "textAreas": {
+                  "pros": "123123",
+                  "cons": "Defaultna hodnota"
+                }
+              },
+              "checkBoxes": {
+                "favouriteFruits": [
+                  "orange",
+                  "banana",
+                  "grape"
+                ]
+              },
+              "chooseOneOf": {
+                "chooseOneOfMore": "screen",
+                "chooseOneOfTwo": "Ano"
+              },
+              "fileUploads": {
+                "importButtonMultipleFiles": [
+                  "d232e2b3-3701-4046-80f9-012e7566aef3"
+                ],
+                "importDragAndDropMultipleFiles": []
+              },
+              "selectFields": {
+                "school": "stu_fei",
+                "diplomas": []
+              },
+              "dateFromToShowcase": {
+                "dateFromTo": {
+                  "startDate": "2023-07-13",
+                  "endDate": "2023-07-27"
+                }
+              },
+              "timeFromToShowcase": {
+                "timeFromTo": {
+                  "endTime": "00:00"
+                }
+              }
+            }
+          },
+          "formSubject": {
+            "type": "string",
+            "description": "Form subject"
+          },
+          "formDefinitionSlug": {
+            "type": "string",
+            "description": "Slug of the form definition",
+            "example": "zavazne-stanovisko-k-investicnej-cinnosti"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "state",
+          "error",
+          "formDataJson",
+          "formSubject",
+          "formDefinitionSlug"
+        ]
+      },
+      "GetFormMetaDto": {
+        "type": "object",
+        "properties": {
+          "countByState": {
+            "type": "object",
+            "description": "Number of forms for each state",
+            "example": {
+              "DRAFT": 10,
+              "ERROR": 2,
+              "QUEUED": 0
+            }
+          }
+        },
+        "required": [
+          "countByState"
+        ]
+      },
+      "GetFormsResponseDto": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "description": "actual page",
+            "default": 1
+          },
+          "pagination": {
+            "type": "number",
+            "description": "number of items in one page",
+            "default": 100
+          },
+          "countPages": {
+            "type": "number",
+            "description": "Total number of items",
+            "default": 100
+          },
+          "items": {
+            "description": "Items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetFormResponseSimpleDto"
+            }
+          },
+          "meta": {
+            "description": "Meta data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GetFormMetaDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "currentPage",
+          "pagination",
+          "countPages",
+          "items",
+          "meta"
+        ]
+      },
+      "UpdateFormRequestDto": {
+        "type": "object",
+        "properties": {
+          "formDataJson": {
+            "type": "object",
+            "description": "Send JSON body of form",
+            "default": {}
+          },
+          "formSignature": {
+            "description": "Form signature with metadata",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FormSignatureDto"
+              }
+            ]
+          }
+        }
+      },
+      "SendFormResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of record",
+            "default": "f69559da-5eca-4ed7-80fd-370d09dc3632"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message response regarding the process",
+            "default": "Form was sucessfully queued to rabbitmq."
+          },
+          "state": {
+            "type": "object",
+            "description": "Form state",
+            "default": "QUEUED"
+          }
+        },
+        "required": [
+          "id",
+          "message",
+          "state"
+        ]
+      },
+      "EidUpdateSendFormRequestDto": {
+        "type": "object",
+        "properties": {
+          "formDataJson": {
+            "type": "object",
+            "description": "Send JSON body of form",
+            "default": {}
+          },
+          "formSignature": {
+            "description": "Form signature with metadata",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FormSignatureDto"
+              }
+            ]
+          },
+          "eidToken": {
+            "type": "string",
+            "description": "EID token to send form",
+            "example": "***"
+          }
+        },
+        "required": [
+          "eidToken"
+        ]
+      },
+      "BumpJsonVersionResponseDto": {
+        "type": "object",
+        "properties": {
+          "formId": {
+            "type": "string",
+            "description": "UUID of the form.",
+            "example": "e5c84a71-5985-40c7-bb19-e4ad22eda41c"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "True if the form was successfully bumped.",
+            "example": true
+          }
+        },
+        "required": [
+          "formId",
+          "success"
+        ]
+      },
+      "GetFileResponseReducedDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "id of the record in db",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "Real file name of the file, but is used only for display",
+            "example": "invoice.pdf"
+          },
+          "fileSize": {
+            "type": "number",
+            "description": "File size in bytes",
+            "example": 83023423
+          },
+          "status": {
+            "type": "string",
+            "description": "scan result",
+            "enum": [
+              "UPLOADED",
+              "ACCEPTED",
+              "QUEUED",
+              "SCANNING",
+              "SAFE",
+              "INFECTED",
+              "NOT_FOUND",
+              "MOVE_ERROR_SAFE",
+              "MOVE_ERROR_INFECTED",
+              "SCAN_ERROR",
+              "SCAN_TIMEOUT",
+              "SCAN_NOT_SUCCESSFUL",
+              "FORM_ID_NOT_FOUND"
+            ],
+            "example": "ACCEPTED"
+          },
+          "ginisOrder": {
+            "type": "number",
+            "nullable": true,
+            "description": "order of this file in respective ginis submission",
+            "example": 10
+          },
+          "ginisUploaded": {
+            "type": "boolean",
+            "description": "If the file was uploaded to GINIS",
+            "example": false
+          }
+        },
+        "required": [
+          "id",
+          "fileName",
+          "fileSize",
+          "status",
+          "ginisOrder",
+          "ginisUploaded"
+        ]
+      },
+      "UpdateFileStatusRequestDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "scan result",
+            "enum": [
+              "UPLOADED",
+              "ACCEPTED",
+              "QUEUED",
+              "SCANNING",
+              "SAFE",
+              "INFECTED",
+              "NOT_FOUND",
+              "MOVE_ERROR_SAFE",
+              "MOVE_ERROR_INFECTED",
+              "SCAN_ERROR",
+              "SCAN_TIMEOUT",
+              "SCAN_NOT_SUCCESSFUL",
+              "FORM_ID_NOT_FOUND"
+            ],
+            "example": "ACCEPTED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "formUserInformationDto": {
+        "type": "object",
+        "properties": {
+          "userExternalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID",
+            "default": "e5c84a71-5985-40c7-bb19-e4ad22eda41c"
+          },
+          "mainUri": {
+            "type": "string",
+            "nullable": true,
+            "description": "Uri for defining electronic sendbox, if person has it",
+            "default": "rc://sk/8808080000/jozko_mrkvicka"
+          },
+          "actorUri": {
+            "type": "string",
+            "nullable": true,
+            "description": "Uri for defining electronic sendbox, if person has it",
+            "default": "rc://sk/8808080000/jozko_mrkvicka"
+          }
+        },
+        "required": [
+          "userExternalId",
+          "mainUri",
+          "actorUri"
+        ]
+      },
+      "UpdateFileStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "description": "Real file name of the file, but is used only for display",
+            "example": "invoice.pdf"
+          },
+          "minioFileName": {
+            "type": "string",
+            "description": "Name under which is file stored in minio",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8.pdf"
+          },
+          "pospId": {
+            "type": "string",
+            "description": "Form type",
+            "example": "esmao.eforms.bratislava.obec_082"
+          },
+          "formId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of sent form",
+            "example": "f69559da-5eca-4ed7-80fd-370d09dc3632"
+          },
+          "status": {
+            "type": "string",
+            "description": "scan result",
+            "enum": [
+              "UPLOADED",
+              "ACCEPTED",
+              "QUEUED",
+              "SCANNING",
+              "SAFE",
+              "INFECTED",
+              "NOT_FOUND",
+              "MOVE_ERROR_SAFE",
+              "MOVE_ERROR_INFECTED",
+              "SCAN_ERROR",
+              "SCAN_TIMEOUT",
+              "SCAN_NOT_SUCCESSFUL",
+              "FORM_ID_NOT_FOUND"
+            ],
+            "example": "ACCEPTED"
+          },
+          "fileSize": {
+            "type": "number",
+            "description": "File size in bytes",
+            "example": 83023423
+          },
+          "ginisOrder": {
+            "type": "number",
+            "nullable": true,
+            "description": "order of this file in respective ginis submission",
+            "example": 10
+          },
+          "ginisUploaded": {
+            "type": "boolean",
+            "description": "If the file was uploaded to GINIS",
+            "example": false
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "id of the record in db",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8"
+          },
+          "scannerId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "File id under which is file stored in the scanner",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date when file was created",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date when file was updated",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "forms": {
+            "description": "Info about user who sent the form",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/formUserInformationDto"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "more info",
+            "example": "file is queued for scanning"
+          }
+        },
+        "required": [
+          "fileName",
+          "minioFileName",
+          "pospId",
+          "formId",
+          "status",
+          "fileSize",
+          "ginisOrder",
+          "ginisUploaded",
+          "id",
+          "createdAt",
+          "updatedAt",
+          "message"
+        ]
+      },
+      "PostFileResponseDto": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "description": "Real file name of the file, but is used only for display",
+            "example": "invoice.pdf"
+          },
+          "minioFileName": {
+            "type": "string",
+            "description": "Name under which is file stored in minio",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8.pdf"
+          },
+          "pospId": {
+            "type": "string",
+            "description": "Form type",
+            "example": "esmao.eforms.bratislava.obec_082"
+          },
+          "formId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of sent form",
+            "example": "f69559da-5eca-4ed7-80fd-370d09dc3632"
+          },
+          "status": {
+            "type": "string",
+            "description": "scan result",
+            "enum": [
+              "UPLOADED",
+              "ACCEPTED",
+              "QUEUED",
+              "SCANNING",
+              "SAFE",
+              "INFECTED",
+              "NOT_FOUND",
+              "MOVE_ERROR_SAFE",
+              "MOVE_ERROR_INFECTED",
+              "SCAN_ERROR",
+              "SCAN_TIMEOUT",
+              "SCAN_NOT_SUCCESSFUL",
+              "FORM_ID_NOT_FOUND"
+            ],
+            "example": "ACCEPTED"
+          },
+          "fileSize": {
+            "type": "number",
+            "description": "File size in bytes",
+            "example": 83023423
+          },
+          "ginisOrder": {
+            "type": "number",
+            "nullable": true,
+            "description": "order of this file in respective ginis submission",
+            "example": 10
+          },
+          "ginisUploaded": {
+            "type": "boolean",
+            "description": "If the file was uploaded to GINIS",
+            "example": false
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "id of the record in db",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8"
+          },
+          "scannerId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "File id under which is file stored in the scanner",
+            "example": "d81d6e01-8196-45a1-bce2-e02877d9fbd8"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date when file was created",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date when file was updated",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "forms": {
+            "description": "Info about user who sent the form",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/formUserInformationDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "fileName",
+          "minioFileName",
+          "pospId",
+          "formId",
+          "status",
+          "fileSize",
+          "ginisOrder",
+          "ginisUploaded",
+          "id",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "DownloadTokenResponseDataDto": {
+        "type": "object",
+        "properties": {
+          "jwt": {
+            "type": "string",
+            "description": "Download jwt token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+          }
+        },
+        "required": [
+          "jwt"
+        ]
+      },
+      "GinisSdkHistorieDokumentuWithAssignedCategory": {
+        "type": "object",
+        "properties": {
+          "Id-dokumentu": {
+            "type": "string"
+          },
+          "Text-zmeny": {
+            "type": "string"
+          },
+          "Poznamka": {
+            "type": "string"
+          },
+          "Datum-zmeny": {
+            "type": "string"
+          },
+          "Id-zmenu-provedl": {
+            "type": "string"
+          },
+          "Id-ktg-zmeny": {
+            "type": "string"
+          },
+          "assignedCategory": {
+            "type": "string",
+            "enum": [
+              "DOCUMENT_CREATED"
+            ]
+          }
+        },
+        "required": [
+          "Id-dokumentu",
+          "Datum-zmeny",
+          "Id-zmenu-provedl",
+          "Id-ktg-zmeny",
+          "assignedCategory"
+        ]
+      },
+      "GinisDocumentDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dossierId": {
+            "type": "string"
+          },
+          "ownerName": {
+            "type": "string"
+          },
+          "ownerEmail": {
+            "type": "string"
+          },
+          "ownerPhone": {
+            "type": "string"
+          },
+          "documentHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GinisSdkHistorieDokumentuWithAssignedCategory"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "dossierId",
+          "ownerName",
+          "ownerEmail",
+          "ownerPhone",
+          "documentHistory"
+        ]
+      },
+      "JsonToXmlV2RequestDto": {
+        "type": "object",
+        "properties": {
+          "jsonData": {
+            "type": "object",
+            "description": "JSON form values, if not provided the form data from the database will be used.",
+            "example": {
+              "mestoPSCstep": {
+                "mestoPSC": {
+                  "mesto": "Košice",
+                  "psc": "12345"
+                }
+              },
+              "dateTimePickerShowcase": {
+                "dateTimePicker": {
+                  "dateValue": "2023-07-20",
+                  "timeValue": "00:00"
+                }
+              },
+              "inputFields": {
+                "firstName": "Anton",
+                "lastName": "Peluha",
+                "textAreas": {
+                  "pros": "123123",
+                  "cons": "Defaultna hodnota"
+                }
+              },
+              "checkBoxes": {
+                "favouriteFruits": [
+                  "orange",
+                  "banana",
+                  "grape"
+                ]
+              },
+              "chooseOneOf": {
+                "chooseOneOfMore": "screen",
+                "chooseOneOfTwo": "Ano"
+              },
+              "fileUploads": {
+                "importButtonMultipleFiles": [
+                  "d232e2b3-3701-4046-80f9-012e7566aef3"
+                ],
+                "importDragAndDropMultipleFiles": []
+              },
+              "selectFields": {
+                "school": "stu_fei",
+                "diplomas": []
+              },
+              "dateFromToShowcase": {
+                "dateFromTo": {
+                  "startDate": "2023-07-13",
+                  "endDate": "2023-07-27"
+                }
+              },
+              "timeFromToShowcase": {
+                "timeFromTo": {
+                  "endTime": "00:00"
+                }
+              }
+            }
+          }
+        }
+      },
+      "XmlToJsonRequestDto": {
+        "type": "object",
+        "properties": {
+          "xmlForm": {
+            "type": "string",
+            "description": "Form values in XML",
+            "example": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<E-form xmlns=\"http://schemas.gov.sk/doc/eform/form/0.1\" xsi:schemaLocation=\"http://schemas.gov.sk/doc/eform/form/0.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n  <Meta>\n    <ID>00603481.dopravneZnacenie.sk</ID>\n    <Name>Dopravné značenie</Name>\n    <Gestor/>\n    <RecipientId/>\n    <Version>0.2</Version>\n    <ZepRequired>false</ZepRequired>\n    <EformUuid>5ea0cad2-8759-4826-8d4c-c59c1d09ec29</EformUuid>\n    <SenderID>mailto:hruska@example.com</SenderID>\n  </Meta>\n<Body><MestoPSCstep><MestoPSC><Mesto>Košice</Mesto><Psc>12345</Psc></MestoPSC></MestoPSCstep><DateTimePickerShowcase><DateTimePicker><DateValue>2023-07-20</DateValue><TimeValue>00:00</TimeValue></DateTimePicker></DateTimePickerShowcase><TimeFromToShowcase><TimeFromTo><EndTime>00:00</EndTime></TimeFromTo></TimeFromToShowcase><DateFromToShowcase><DateFromTo><StartDate>2023-07-13</StartDate><EndDate>2023-07-27</EndDate></DateFromTo></DateFromToShowcase><InputFields><FirstName>Anton</FirstName><LastName>Peluha</LastName><TextAreas><Pros>123123</Pros><Cons>Defaultna hodnota</Cons></TextAreas></InputFields><SelectFields><School>stu_fei</School></SelectFields><FileUploads><ImportButtonMultipleFiles><Nazov>d232e2b3-3701-4046-80f9-012e7566aef3</Nazov><Prilozena>true</Prilozena></ImportButtonMultipleFiles></FileUploads><ChooseOneOf><ChooseOneOfMore>screen</ChooseOneOfMore><ChooseOneOfTwo>Ano</ChooseOneOfTwo></ChooseOneOf><CheckBoxes><FavouriteFruits>orange</FavouriteFruits><FavouriteFruits>banana</FavouriteFruits><FavouriteFruits>grape</FavouriteFruits></CheckBoxes></Body></E-form>"
+          }
+        },
+        "required": [
+          "xmlForm"
+        ]
+      },
+      "XmlToJsonResponseDto": {
+        "type": "object",
+        "properties": {
+          "formDataJson": {
+            "type": "object",
+            "description": "Form values in JSON",
+            "example": {
+              "mestoPSCstep": {
+                "mestoPSC": {
+                  "mesto": "Košice",
+                  "psc": "12345"
+                }
+              },
+              "dateTimePickerShowcase": {
+                "dateTimePicker": {
+                  "dateValue": "2023-07-20",
+                  "timeValue": "00:00"
+                }
+              },
+              "inputFields": {
+                "firstName": "Anton",
+                "lastName": "Peluha",
+                "textAreas": {
+                  "pros": "123123",
+                  "cons": "Defaultna hodnota"
+                }
+              },
+              "checkBoxes": {
+                "favouriteFruits": [
+                  "orange",
+                  "banana",
+                  "grape"
+                ]
+              },
+              "chooseOneOf": {
+                "chooseOneOfMore": "screen",
+                "chooseOneOfTwo": "Ano"
+              },
+              "fileUploads": {
+                "importButtonMultipleFiles": [
+                  "d232e2b3-3701-4046-80f9-012e7566aef3"
+                ],
+                "importDragAndDropMultipleFiles": []
+              },
+              "selectFields": {
+                "school": "stu_fei",
+                "diplomas": []
+              },
+              "dateFromToShowcase": {
+                "dateFromTo": {
+                  "startDate": "2023-07-13",
+                  "endDate": "2023-07-27"
+                }
+              },
+              "timeFromToShowcase": {
+                "timeFromTo": {
+                  "endTime": "00:00"
+                }
+              }
+            }
+          },
+          "requiresVersionConfirmation": {
+            "type": "boolean",
+            "description": "Indicates if version confirmation is required",
+            "example": true
+          }
+        },
+        "required": [
+          "formDataJson",
+          "requiresVersionConfirmation"
+        ]
+      },
+      "SimplifiedClientFileInfoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "file": {
+            "type": "object"
+          },
+          "status": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "file",
+          "status"
+        ]
+      },
+      "ConvertToPdfRequestDto": {
+        "type": "object",
+        "properties": {
+          "jsonData": {
+            "type": "object",
+            "description": "Form values in JSON",
+            "example": {
+              "mestoPSCstep": {
+                "mestoPSC": {
+                  "mesto": "Košice",
+                  "psc": "12345"
+                }
+              },
+              "dateTimePickerShowcase": {
+                "dateTimePicker": {
+                  "dateValue": "2023-07-20",
+                  "timeValue": "00:00"
+                }
+              },
+              "inputFields": {
+                "firstName": "Anton",
+                "lastName": "Peluha",
+                "textAreas": {
+                  "pros": "123123",
+                  "cons": "Defaultna hodnota"
+                }
+              },
+              "checkBoxes": {
+                "favouriteFruits": [
+                  "orange",
+                  "banana",
+                  "grape"
+                ]
+              },
+              "chooseOneOf": {
+                "chooseOneOfMore": "screen",
+                "chooseOneOfTwo": "Ano"
+              },
+              "fileUploads": {
+                "importButtonMultipleFiles": [
+                  "d232e2b3-3701-4046-80f9-012e7566aef3"
+                ],
+                "importDragAndDropMultipleFiles": []
+              },
+              "selectFields": {
+                "school": "stu_fei",
+                "diplomas": []
+              },
+              "dateFromToShowcase": {
+                "dateFromTo": {
+                  "startDate": "2023-07-13",
+                  "endDate": "2023-07-27"
+                }
+              },
+              "timeFromToShowcase": {
+                "timeFromTo": {
+                  "endTime": "00:00"
+                }
+              }
+            }
+          },
+          "clientFiles": {
+            "description": "Used only in the FE requests to display files not yet uploaded to the server.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimplifiedClientFileInfoDto"
+            }
+          }
+        }
+      },
+      "StreamableFile": {
+        "type": "object",
+        "properties": {}
+      },
+      "ServiceRunningDto": {
+        "type": "object",
+        "properties": {
+          "running": {
+            "type": "boolean",
+            "description": "is service running?",
+            "example": "true"
+          }
+        },
+        "required": [
+          "running"
+        ]
+      },
+      "StatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "prisma": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "minio": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "scanner": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          }
+        },
+        "required": [
+          "prisma",
+          "minio",
+          "scanner"
+        ]
+      },
+      "SignerDataRequestDto": {
+        "type": "object",
+        "properties": {
+          "formDataJson": {
+            "type": "object",
+            "description": "Form values in JSON",
+            "example": {
+              "mestoPSCstep": {
+                "mestoPSC": {
+                  "mesto": "Košice",
+                  "psc": "12345"
+                }
+              },
+              "dateTimePickerShowcase": {
+                "dateTimePicker": {
+                  "dateValue": "2023-07-20",
+                  "timeValue": "00:00"
+                }
+              },
+              "inputFields": {
+                "firstName": "Anton",
+                "lastName": "Peluha",
+                "textAreas": {
+                  "pros": "123123",
+                  "cons": "Defaultna hodnota"
+                }
+              },
+              "checkBoxes": {
+                "favouriteFruits": [
+                  "orange",
+                  "banana",
+                  "grape"
+                ]
+              },
+              "chooseOneOf": {
+                "chooseOneOfMore": "screen",
+                "chooseOneOfTwo": "Ano"
+              },
+              "fileUploads": {
+                "importButtonMultipleFiles": [
+                  "d232e2b3-3701-4046-80f9-012e7566aef3"
+                ],
+                "importDragAndDropMultipleFiles": []
+              },
+              "selectFields": {
+                "school": "stu_fei",
+                "diplomas": []
+              },
+              "dateFromToShowcase": {
+                "dateFromTo": {
+                  "startDate": "2023-07-13",
+                  "endDate": "2023-07-27"
+                }
+              },
+              "timeFromToShowcase": {
+                "timeFromTo": {
+                  "endTime": "00:00"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "formDataJson"
+        ]
+      },
+      "SignerDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "signatureId": {
+            "type": "string"
+          },
+          "objectId": {
+            "type": "string",
+            "example": "Vseobecna_agenda.xml"
+          },
+          "objectDescription": {
+            "type": "string",
+            "example": "Všeobecná agenda"
+          },
+          "objectFormatIdentifier": {
+            "type": "string",
+            "example": "http://schemas.gov.sk/form/Doc.GeneralAgenda/1.2"
+          },
+          "xdcXMLData": {
+            "type": "string"
+          },
+          "xdcIdentifier": {
+            "type": "string",
+            "example": "http://data.gov.sk/doc/eform/Doc.GeneralAgenda/1.2"
+          },
+          "xdcVersion": {
+            "type": "string",
+            "example": "1.2"
+          },
+          "xdcUsedXSD": {
+            "type": "string"
+          },
+          "xsdReferenceURI": {
+            "type": "string",
+            "example": "http://schemas.gov.sk/form/Doc.GeneralAgenda/1.2"
+          },
+          "xdcUsedXSLT": {
+            "type": "string"
+          },
+          "xslReferenceURI": {
+            "type": "string",
+            "example": "http://schemas.gov.sk/form/Doc.GeneralAgenda/1.2/form.xslt"
+          },
+          "xslMediaDestinationTypeDescription": {
+            "type": "string",
+            "example": "HTML"
+          },
+          "xslXSLTLanguage": {
+            "type": "string",
+            "example": "sk"
+          },
+          "xslTargetEnvironment": {
+            "type": "string",
+            "example": ""
+          },
+          "xdcIncludeRefs": {
+            "type": "boolean",
+            "example": true
+          },
+          "xdcNamespaceURI": {
+            "type": "string",
+            "example": "http://data.gov.sk/def/container/xmldatacontainer+xml/1.1"
+          }
+        },
+        "required": [
+          "signatureId",
+          "objectId",
+          "objectDescription",
+          "objectFormatIdentifier",
+          "xdcXMLData",
+          "xdcIdentifier",
+          "xdcVersion",
+          "xdcUsedXSD",
+          "xsdReferenceURI",
+          "xdcUsedXSLT",
+          "xslReferenceURI",
+          "xslMediaDestinationTypeDescription",
+          "xslXSLTLanguage",
+          "xslTargetEnvironment",
+          "xdcIncludeRefs",
+          "xdcNamespaceURI"
+        ]
+      }
+    }
+  }
+}

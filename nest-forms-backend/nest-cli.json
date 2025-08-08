@@ -2,6 +2,17 @@
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
+  "entryFile": "main",
+  "projects": {
+    "generate-api-spec": {
+      "type": "application",
+      "sourceRoot": "src",
+      "entryFile": "generate-api-spec",
+      "compilerOptions": {
+        "tsConfigPath": "tsconfig.build-generate-api-spec.json"
+      }
+    }
+  },
   "compilerOptions": {
     "plugins": [
       {

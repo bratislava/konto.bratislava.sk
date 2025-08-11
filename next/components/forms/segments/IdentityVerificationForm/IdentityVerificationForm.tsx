@@ -141,7 +141,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
           <InputField
             required
             helptext={t('rc_description')}
-            label={t('rc_label')}
+            label={t(isLegalEntity ? 'rc_label_legal_entity' : 'rc_label')}
             placeholder={t('rc_placeholder')}
             {...field}
             errorMessage={errors.rc}
@@ -154,7 +154,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
         render={({ field }) => (
           <InputField
             required
-            label={t('id_card_label')}
+            label={t(isLegalEntity ? 'id_card_label_legal_entity' : 'id_card_label')}
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
             {...field}

@@ -34,7 +34,7 @@
     "generate-and-build": "npm run generate && npm run build"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.21.3",
+    "@openapitools/openapi-generator-cli": "^2.21.4",
     "@types/app-root-dir": "^0.1.4",
     "@types/diff": "^8.0.0",
     "@types/fs-extra": "^11.0.4",

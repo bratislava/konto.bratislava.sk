@@ -11,6 +11,7 @@ import { useCounter, useTimeout } from 'usehooks-ts'
 import { environment } from '../../../../environment'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import { isBrowser } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
@@ -23,7 +24,6 @@ export interface VerificationFormData {
 
 interface Props {
   onSubmit: (data: VerificationFormData) => void
-  isLegalEntity: boolean
   error?: Error | null
 }
 
@@ -80,10 +80,11 @@ const foSchema = {
   required: ['rc', 'idCard', 'turnstileToken'],
 }
 
-const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => {
+const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
+  const { isLegalEntity } = useSsrAuth()
   const schema = isLegalEntity ? poSchema : foSchema
   const defaultValues = isLegalEntity ? { ico: '', rc: '', idCard: '' } : { rc: '', idCard: '' }
   const {

@@ -451,7 +451,7 @@ describe('PhysicalEntityService', () => {
     it('should throw BadRequestException if entity with the given ID does not exist', async () => {
       jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue(null)
 
-      await expect(service.updateFromRFO('non-existent-id')).rejects.toThrowError(
+      await expect(service.updateFromRFO('non-existent-id')).rejects.toThrow(
         new ThrowerErrorGuard().BadRequestException(
           ErrorsEnum.BAD_REQUEST_ERROR,
           'PhysicalEntity with id non-existent-id not found'
@@ -465,7 +465,7 @@ describe('PhysicalEntityService', () => {
         birthNumber: null,
       })
 
-      await expect(service.updateFromRFO(mockEntityID)).rejects.toThrowError(
+      await expect(service.updateFromRFO(mockEntityID)).rejects.toThrow(
         new ThrowerErrorGuard().NotFoundException(
           AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
           AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
@@ -477,7 +477,7 @@ describe('PhysicalEntityService', () => {
       jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue(mockPhysicalEntity)
       jest.spyOn(MagproxyServiceMock, 'rfoBirthNumberList').mockResolvedValue([])
 
-      await expect(service.updateFromRFO(mockEntityID)).rejects.toThrowError(
+      await expect(service.updateFromRFO(mockEntityID)).rejects.toThrow(
         new ThrowerErrorGuard().InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           ErrorsResponseEnum.INTERNAL_SERVER_ERROR,

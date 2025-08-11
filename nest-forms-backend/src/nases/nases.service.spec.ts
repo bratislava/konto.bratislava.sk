@@ -1,6 +1,5 @@
 /* eslint-disable pii/no-email */
 import { createMock } from '@golevelup/ts-jest'
-import { HttpException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
@@ -17,13 +16,15 @@ import {
 } from 'forms-shared/send-policy/sendPolicy'
 import { getFormSummary } from 'forms-shared/summary/summary'
 
+import {
+  AuthFixtureUser,
+  UserFixtureFactory,
+} from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
-import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
@@ -41,6 +42,13 @@ jest.mock('forms-shared/send-policy/sendPolicy')
 
 describe('NasesService', () => {
   let service: NasesService
+  let userFixtureFactory: UserFixtureFactory
+  let authUser: AuthFixtureUser
+
+  beforeAll(() => {
+    userFixtureFactory = new UserFixtureFactory()
+    authUser = userFixtureFactory.createFoAuthUser()
+  })
 
   beforeEach(async () => {
     jest.resetAllMocks()
@@ -55,10 +63,6 @@ describe('NasesService', () => {
         {
           provide: FilesService,
           useValue: createMock<FilesService>(),
-        },
-        {
-          provide: FormsHelper,
-          useValue: createMock<FormsHelper>(),
         },
         {
           provide: NasesConsumerService,
@@ -112,66 +116,6 @@ describe('NasesService', () => {
     })
   })
 
-  describe('migrateForm', () => {
-    it('should throw error', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue(null)
-
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-    })
-
-    it('should throw error if the form is already assigned to another user', async () => {
-      prismaMock.forms.findFirst
-        .mockResolvedValueOnce({
-          mainUri: null,
-          actorUri: null,
-          userExternalId: 'external',
-        } as Forms)
-        .mockResolvedValueOnce({
-          mainUri: 'uri',
-          actorUri: 'uri',
-          userExternalId: null,
-        } as Forms)
-      prismaMock.forms.update.mockResolvedValue({} as Forms)
-
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-    })
-
-    it('should correctly update', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue({
-        mainUri: null,
-        actorUri: null,
-        userExternalId: null,
-      } as Forms)
-      const spy = jest
-        .spyOn(prismaMock.forms, 'update')
-        .mockResolvedValue({} as Forms)
-
-      await service.migrateForm(
-        '1',
-        { sub: 'sub' } as CognitoGetUserData,
-        'ico1',
-      )
-      expect(spy).toHaveBeenCalled()
-      expect(spy).toHaveBeenCalledWith({
-        where: {
-          id: '1',
-        },
-        data: {
-          cognitoGuestIdentityId: null,
-          userExternalId: 'sub',
-          ico: 'ico1',
-        },
-      })
-    })
-  })
-
   describe('updateForm', () => {
     it('should throw not found', async () => {
       prismaMock.forms.findFirst.mockResolvedValue(null)
@@ -180,113 +124,28 @@ describe('NasesService', () => {
         service.updateForm(
           '1',
           { email: 'email' } as UpdateFormRequestDto,
-          'ico1',
-          { sub: 'subUser', email: 'emailUser' } as CognitoGetUserData,
-        ),
-      ).rejects.toThrow()
-    })
-
-    it('should throw unauthorized', async () => {
-      service['formsHelper'].isFormAccessGranted = jest
-        .fn()
-        .mockReturnValue(false)
-      prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
-
-      await expect(
-        service.updateForm(
-          '1',
-          { email: 'email' } as UpdateFormRequestDto,
-          'ico1',
-          { sub: 'subUser', email: 'emailUser' } as CognitoGetUserData,
+          authUser.user,
         ),
       ).rejects.toThrow()
     })
 
     it('should correctly update', async () => {
       prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
-      service['formsHelper'].isFormAccessGranted = jest
-        .fn()
-        .mockReturnValue(true)
       const spy = jest.spyOn(service['formsService'], 'updateForm')
 
       await service.updateForm(
         '1',
         { email: 'emailOverride', formDataXml: 'xml' } as UpdateFormRequestDto,
-        'ico1',
-        { email: 'emailUser', sub: 'subUser' } as CognitoGetUserData,
+        authUser.user,
       )
       expect(spy).toHaveBeenCalledWith('1', {
-        userExternalId: 'subUser',
+        userExternalId: authUser.sub,
+        cognitoGuestIdentityId: null,
+        ico: null,
+        ownerType: 'FO',
         email: 'emailOverride',
         formDataXml: 'xml',
-        ico: 'ico1',
       })
-    })
-  })
-
-  describe('canSendForm', () => {
-    it('should throw error if check form throws', async () => {
-      service['formsService'].checkFormBeforeSending = jest
-        .fn()
-        .mockRejectedValue(new HttpException('Error', 404))
-      await expect(
-        service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).rejects.toThrow()
-    })
-
-    it('should throw error if form send is not granted', async () => {
-      service['formsService'].checkFormBeforeSending = jest
-        .fn()
-        .mockResolvedValue({} as Forms)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(false)
-
-      await expect(
-        service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).rejects.toThrow()
-    })
-
-    it('should return the result of areFormAttachmentsReady otherwise', async () => {
-      service['formsService'].checkFormBeforeSending = jest
-        .fn()
-        .mockResolvedValue({} as Forms)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(true)
-
-      service['filesService'].areFormAttachmentsReady = jest
-        .fn()
-        .mockResolvedValue({ filesReady: false })
-      expect(
-        await service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).toBeFalsy()
-      service['filesService'].areFormAttachmentsReady = jest
-        .fn()
-        .mockResolvedValue({ filesReady: true })
-      expect(
-        await service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).toBeTruthy()
     })
   })
 
@@ -302,7 +161,6 @@ describe('NasesService', () => {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayloadDto
-      const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
       const mockFormDefinition: FormDefinition = {
         jsonVersion: '1.0.0',
         schema: {},
@@ -324,9 +182,6 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(true)
       service['nasesUtilsService'].createUserJwtToken = jest
         .fn()
         .mockReturnValue('mock-jwt')
@@ -349,7 +204,7 @@ describe('NasesService', () => {
 
       // Execute and assert
       await expect(
-        service.sendFormEid('1', 'mock-obo-token', mockUser, mockCognitoUser),
+        service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
       ).rejects.toThrow(NasesErrorsResponseEnum.SEND_TO_NASES_ERROR)
       expect(updateFormSpy).toHaveBeenCalledWith('1', {
         state: FormState.DRAFT,
@@ -377,9 +232,6 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(true)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -389,7 +241,7 @@ describe('NasesService', () => {
 
       // Execute and assert
       await expect(
-        service.sendFormEid('1', 'mock-obo-token', mockUser),
+        service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
       ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
     })
   })
@@ -420,9 +272,6 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['formsHelper'], 'userCanSendForm')
-        .mockReturnValue(true)
-      jest
         .spyOn(service['formsService'], 'updateForm')
         .mockResolvedValue(mockForm)
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
@@ -434,7 +283,7 @@ describe('NasesService', () => {
     it('should throw an error if form definition is not found', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
       )
     })
@@ -450,18 +299,8 @@ describe('NasesService', () => {
           }),
         })
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DATA_INVALID,
-      )
-    })
-
-    it('should throw an error if user cannot send the form', async () => {
-      jest
-        .spyOn(service['formsHelper'], 'userCanSendForm')
-        .mockReturnValue(false)
-
-      await expect(service.sendForm('1')).rejects.toThrow(
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     })
 
@@ -471,7 +310,7 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     })
@@ -482,7 +321,7 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     })
@@ -492,13 +331,13 @@ describe('NasesService', () => {
         .spyOn(service['rabbitmqClientService'], 'publishDelay')
         .mockRejectedValue(new Error('RabbitMQ error'))
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
       )
     })
 
     it('should queue the form', async () => {
-      const result = await service.sendForm('1')
+      const result = await service.sendForm('1', authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -512,7 +351,7 @@ describe('NasesService', () => {
         ...mockFormDefinitionEmail,
       })
 
-      const result = await service.sendForm('1')
+      const result = await service.sendForm('1', authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -527,7 +366,7 @@ describe('NasesService', () => {
         .spyOn(service as any, 'getFormSummaryOrThrow')
         .mockReturnValue(mockSummary)
 
-      await service.sendForm('1')
+      await service.sendForm('1', authUser.user)
 
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
@@ -542,7 +381,7 @@ describe('NasesService', () => {
           throw new Error('Summary generation failed')
         })
 
-      await expect(service.sendForm('1')).rejects.toThrow()
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow()
     })
   })
 

@@ -9,8 +9,12 @@ import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { arrayField } from '../generator/functions/arrayField'
 import { object } from '../generator/object'
+import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
 import { match, P } from 'ts-pattern'
-import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import {
+  esbsKatastralneUzemiaCiselnik,
+  katastralneUzemiaCodeAbbreviationMap,
+} from '../tax-form/mapping/shared/esbsCiselniky'
 
 const addressFields = (title: string) => [
   input(
@@ -199,7 +203,7 @@ export default schema(
           {
             title: 'Informácie o lokalite',
             description:
-              'V jednej žiadosti môžete žiadať o informáciu maximálne k 5 parcelám. Každá lokalita predstavuje jedno parcelné číslo. Všetky lokality musia byť umiestnené v jednom katastrálnom území vybranom vyššie',
+              'V jednej žiadosti môžete žiadať o informáciu maximálne k 5 parcelám. Každá lokalita predstavuje jedno parcelné číslo. Všetky lokality musia byť umiestnené v jednom katastrálnom území vybranom vyššie.',
             objectDisplay: 'boxed',
           },
           [
@@ -238,8 +242,8 @@ export default schema(
                     title: 'Register parcely',
                     required: true,
                     items: [
-                      { value: 'register-c-kn', label: 'register C-KN' },
-                      { value: 'register-e-kn', label: 'register E-KN' },
+                      { value: 'registerCKn', label: 'register C-KN' },
+                      { value: 'registerEKn', label: 'register E-KN' },
                     ],
                   },
                   {
@@ -271,7 +275,7 @@ export default schema(
             required: true,
             items: [
               { value: 'planovanyInvesticnyZamer', label: 'Planovaný investičný zámer' },
-              { value: 'kupaPredan', label: 'Kúpa/predaj/nájom' },
+              { value: 'kupaPredajNajom', label: 'Kúpa, predaj alebo nájom nehnuteľnosti' },
               { value: 'sudnoznaleckyPosudok', label: 'Súdnoznalecký posudok' },
               { value: 'informativnyZamer', label: 'Informatívny zámer' },
               { value: 'ine', label: 'Iné' },
@@ -302,10 +306,38 @@ export default schema(
           helptext: `Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11), kde nájdete požadované záujmové územie.
 
 **Ako vytvoriť zákres?**
-Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Pri položke „Meranie 1“ kliknite na ikonu troch bodiek v pravom hornom rohu a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.`,
+Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.`,
           helptextMarkdown: true,
         },
       ),
     ]),
   ],
 )
+
+type ExtractTechnicalSubjectFormData = {
+  detailAUcel: {
+    katastralneUzemie: (typeof esbsKatastralneUzemiaCiselnik)[number]['Code']
+    informacieOLokalite: {
+      lokality: {
+        parcelneCislo: string
+        ulicaACislo: string
+      }[]
+    }
+  }
+}
+
+export const ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractTechnicalSubjectFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      const katastralneUzemieAbbreviation =
+        katastralneUzemiaCodeAbbreviationMap[formData.detailAUcel.katastralneUzemie]
+      const ulica = formData.detailAUcel.informacieOLokalite.lokality[0].ulicaACislo
+      const parcelneCisla = formData.detailAUcel.informacieOLokalite.lokality
+        .slice(0, 2)
+        .map(({ parcelneCislo }) => parcelneCislo)
+        .join(', ')
+
+      return `e-UPI ž. ${ulica}, p.č. ${parcelneCisla}, kú ${katastralneUzemieAbbreviation}`
+    },
+  }

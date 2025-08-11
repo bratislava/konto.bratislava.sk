@@ -2,14 +2,23 @@
 
 import { PaymentStatus, TaxDetailareaType, TaxDetailType } from '@prisma/client'
 
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
+import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../../dtos/error.dto'
 import {
   InstallmentPaidStatusEnum,
   InstallmentPaymentReasonNotPossibleEnum,
   OneTimePaymentReasonNotPossibleEnum,
   OneTimePaymentTypeEnum,
 } from '../../dtos/response.tax.dto'
-import { getTaxDetailPure } from '../unified-tax.util'
+import {
+  getTaxDetailPure,
+  getTaxDetailPureForInstallmentGenerator,
+  getTaxDetailPureForOneTimeGenerator,
+} from '../unified-tax.util'
 
 const defaultInput = {
   taxYear: 2025,
@@ -568,5 +577,189 @@ describe('UnifiedTaxUtil', () => {
 
       expectEqualAsJsonStringsWithDates(output, expected)
     })
+  })
+})
+
+describe('getTaxDetailPureForInstallmentGenerator', () => {
+  const baseOptions = {
+    taxId: 123,
+    taxYear: 2025,
+    today: new Date('2025-01-01'),
+    overallAmount: 6600,
+    paymentCalendarThreshold: 6600,
+    variableSymbol: '1234567890',
+    dateOfValidity: new Date('2025-01-01'),
+    installments: [
+      { order: '1', amount: 2200 },
+      { order: '2', amount: 2200 },
+      { order: '3', amount: 2200 },
+    ],
+    specificSymbol: '2025200000',
+    taxPayments: [],
+  }
+
+  it('should generate payment for the first installment', () => {
+    const output = getTaxDetailPureForInstallmentGenerator(baseOptions)
+
+    expect(output).toEqual({
+      amount: 2200,
+      taxId: 123,
+      description: 'Platba 1. splátky za dane pre BA s id dane 123',
+    })
+  })
+
+  it('should generate payment for a partially paid installment', () => {
+    const options = {
+      ...baseOptions,
+      taxPayments: [{ amount: 1, status: PaymentStatus.SUCCESS }],
+    }
+    const output = getTaxDetailPureForInstallmentGenerator(options)
+
+    expect(output).toEqual({
+      amount: 2199,
+      taxId: 123,
+      description: 'Platba zostatku 1. splátky za dane pre BA s id dane 123',
+    })
+  })
+
+  it('should throw an error if all installments are fully paid', () => {
+    const options = {
+      ...baseOptions,
+      taxPayments: [{ amount: 6600, status: PaymentStatus.SUCCESS }],
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.ALREADY_PAID,
+        CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      ),
+    )
+  })
+
+  it('should throw an error if payment is after the due date', () => {
+    const options = {
+      ...baseOptions,
+      today: new Date('2025-09-01'),
+      taxPayments: [],
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
+        CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
+      ),
+    )
+  })
+
+  it('should throw an error if below threshold', () => {
+    const options = {
+      ...baseOptions,
+      overallAmount: 100,
+      paymentCalendarThreshold: 200,
+      taxPayments: [],
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
+        CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+      ),
+    )
+  })
+
+  it('should handle an internal unexpected error for missing active installment', () => {
+    const options = {
+      ...baseOptions,
+      installments: [],
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().InternalServerErrorException(
+        CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      ),
+    )
+  })
+})
+
+describe('getTaxDetailPureForOneTimeGenerator', () => {
+  const options: {
+    taxId: number
+    overallAmount: number // suma na zaplatenie
+    taxPayments: {
+      amount: number
+      status: PaymentStatus
+    }[]
+  } = {
+    taxId: 123,
+    overallAmount: 6600,
+    taxPayments: [],
+  }
+  it('should generate full payment', () => {
+    const output = getTaxDetailPureForOneTimeGenerator(options)
+
+    expect(output).toEqual({
+      amount: 6600,
+      taxId: 123,
+      description: 'Platba za dane pre BA s id dane 123',
+    })
+  })
+
+  it('should generate partial payment', () => {
+    const output = getTaxDetailPureForOneTimeGenerator({
+      ...options,
+      taxPayments: [
+        { amount: 1, status: PaymentStatus.NEW },
+        { amount: 1, status: PaymentStatus.FAIL },
+        {
+          amount: 1,
+          status: PaymentStatus.SUCCESS,
+        },
+      ],
+    })
+
+    expect(output).toEqual({
+      amount: 6599,
+      taxId: 123,
+      description: 'Platba zostatku za dane pre BA s id dane 123',
+    })
+  })
+
+  it('should handle already paid tax', () => {
+    expect(() => {
+      getTaxDetailPureForOneTimeGenerator({
+        ...options,
+        taxPayments: [
+          {
+            amount: 6600,
+            status: PaymentStatus.SUCCESS,
+          },
+        ],
+      })
+    }).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.ALREADY_PAID,
+        CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      ),
+    )
+  })
+
+  it('should handle overpaid tax', () => {
+    expect(() => {
+      getTaxDetailPureForOneTimeGenerator({
+        ...options,
+        taxPayments: [
+          {
+            amount: 999_999,
+            status: PaymentStatus.SUCCESS,
+          },
+        ],
+      })
+    }).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.ALREADY_PAID,
+        CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      ),
+    )
   })
 })

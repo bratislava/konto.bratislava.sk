@@ -1,4 +1,11 @@
-import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Logger,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -6,13 +13,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import {
-  UserInfo,
-  UserInfoResponse,
-} from '../auth/decorators/user-info.decorator'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import CognitoGuard from '../auth/guards/cognito.guard'
-import { User } from '../utils/decorators/request.decorator'
+import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
+import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
+import { GetUser } from '../auth-v2/decorators/get-user.decorator'
+import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
+import { User, UserType } from '../auth-v2/types/user'
+import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import SignerService from './signer.service'
 
@@ -35,23 +41,31 @@ export default class SignerController {
     description: 'Return signer data',
     type: SignerDataResponseDto,
   })
-  @UseGuards(new CognitoGuard(true))
-  @Post('get-signer-data')
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Post('get-signer-data/:formId')
   async getSignerData(
     @Body() data: SignerDataRequestDto,
-    @User() user: CognitoGetUserData | undefined,
-    @UserInfo() userInfo: UserInfoResponse,
+    @Param('formId') formId: string,
+    @GetUser() user: User,
   ): Promise<SignerDataResponseDto> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
-      return await this.signerService.getSignerData(
-        data,
-        userInfo?.ico ?? null,
-        user,
-      )
+      return await this.signerService.getSignerData(formId, data)
     } catch (error) {
+      const userId =
+        user.type === UserType.Auth
+          ? user.cognitoJwtPayload.sub
+          : user.cognitoIdentityId
+      const email =
+        user.type === UserType.Auth ? user.cityAccountUser.email : undefined
+
       this.logger.log(
-        `Error during getSignerData, userId: ${user?.sub}, email: ${user?.email}, formId: ${data.formId}, data: ${JSON.stringify(data.formDataJson)}`,
+        `Error during getSignerData, userId: ${userId}, email: ${email}, formId: ${formId}, data: ${JSON.stringify(
+          data.formDataJson,
+        )}`,
       )
       throw error
     }

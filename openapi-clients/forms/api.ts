@@ -72,12 +72,6 @@ export interface ClaimMigrationOutput {
  */
 export interface ConvertToPdfRequestDto {
   /**
-   * Form id
-   * @type {string}
-   * @memberof ConvertToPdfRequestDto
-   */
-  formId: string
-  /**
    * Form values in JSON
    * @type {object}
    * @memberof ConvertToPdfRequestDto
@@ -119,32 +113,6 @@ export interface CreateFormOutput {
 /**
  *
  * @export
- * @interface CreateFormRequestDto
- */
-export interface CreateFormRequestDto {
-  /**
-   * Slug of the form definition
-   * @type {string}
-   * @memberof CreateFormRequestDto
-   */
-  formDefinitionSlug: string
-}
-/**
- *
- * @export
- * @interface CreateFormResponseDto
- */
-export interface CreateFormResponseDto {
-  /**
-   * ID of form
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  formId: string
-}
-/**
- *
- * @export
  * @interface DownloadTokenResponseDataDto
  */
 export interface DownloadTokenResponseDataDto {
@@ -173,36 +141,6 @@ export interface EidUpdateSendFormRequestDto {
    * @memberof EidUpdateSendFormRequestDto
    */
   formSignature?: FormSignatureDto | null
-  /**
-   * State of form
-   * @type {object}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  state?: object
-  /**
-   * Data from ginis saved in our db
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  formDataGinis?: string
-  /**
-   * Date time, when submission was finished in ginis
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  finishSubmission?: string
-  /**
-   * ID of person, who is sending this (URI)
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  recipientId?: string
-  /**
-   * Ginis document id generated after registering the submission
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  ginisDocumentId?: string
   /**
    * EID token to send form
    * @type {string}
@@ -256,7 +194,6 @@ export interface FormSignatureDto {
 export const FormState = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
-  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -495,12 +432,17 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   jsonVersion: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof GetFormResponseDto
+   */
+  requiresMigration: boolean
 }
 
 export const GetFormResponseDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
-  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -587,7 +529,6 @@ export interface GetFormResponseSimpleDto {
 export const GetFormResponseSimpleDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
-  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
@@ -759,36 +700,11 @@ export type GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
  */
 export interface JsonToXmlV2RequestDto {
   /**
-   * Form id
-   * @type {string}
-   * @memberof JsonToXmlV2RequestDto
-   */
-  formId: string
-  /**
    * JSON form values, if not provided the form data from the database will be used.
    * @type {object}
    * @memberof JsonToXmlV2RequestDto
    */
   jsonData?: object
-}
-/**
- *
- * @export
- * @interface MigrateFormResponseDto
- */
-export interface MigrateFormResponseDto {
-  /**
-   * ID of form
-   * @type {string}
-   * @memberof MigrateFormResponseDto
-   */
-  formId: string
-  /**
-   * True if the form was successfully migrated.
-   * @type {boolean}
-   * @memberof MigrateFormResponseDto
-   */
-  success: boolean
 }
 /**
  *
@@ -965,12 +881,6 @@ export interface ServiceRunningDto {
  * @interface SignerDataRequestDto
  */
 export interface SignerDataRequestDto {
-  /**
-   * Form id
-   * @type {string}
-   * @memberof SignerDataRequestDto
-   */
-  formId: string
   /**
    * Form values in JSON
    * @type {object}
@@ -1293,36 +1203,6 @@ export interface UpdateFormRequestDto {
    * @memberof UpdateFormRequestDto
    */
   formSignature?: FormSignatureDto | null
-  /**
-   * State of form
-   * @type {object}
-   * @memberof UpdateFormRequestDto
-   */
-  state?: object
-  /**
-   * Data from ginis saved in our db
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  formDataGinis?: string
-  /**
-   * Date time, when submission was finished in ginis
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  finishSubmission?: string
-  /**
-   * ID of person, who is sending this (URI)
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  recipientId?: string
-  /**
-   * Ginis document id generated after registering the submission
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  ginisDocumentId?: string
 }
 /**
  *
@@ -1330,12 +1210,6 @@ export interface UpdateFormRequestDto {
  * @interface XmlToJsonRequestDto
  */
 export interface XmlToJsonRequestDto {
-  /**
-   * Form id
-   * @type {string}
-   * @memberof XmlToJsonRequestDto
-   */
-  formId: string
   /**
    * Form values in XML
    * @type {string}
@@ -1663,21 +1537,28 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
      * @summary Convert JSON to XML
+     * @param {string} formId
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXmlV2: async (
+      formId: string,
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('convertControllerConvertJsonToXmlV2', 'formId', formId)
       // verify required parameter 'jsonToXmlV2RequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertJsonToXmlV2',
         'jsonToXmlV2RequestDto',
         jsonToXmlV2RequestDto,
       )
-      const localVarPath = `/convert/json-to-xml-v2`
+      const localVarPath = `/convert/json-to-xml-v2/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1688,6 +1569,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -1716,21 +1600,28 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates PDF for given form data.
      * @summary
+     * @param {string} formId
      * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertToPdf: async (
+      formId: string,
       convertToPdfRequestDto: ConvertToPdfRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('convertControllerConvertToPdf', 'formId', formId)
       // verify required parameter 'convertToPdfRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertToPdf',
         'convertToPdfRequestDto',
         convertToPdfRequestDto,
       )
-      const localVarPath = `/convert/pdf`
+      const localVarPath = `/convert/pdf/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1741,6 +1632,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -1769,21 +1663,28 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates JSON form from given XML data and form ID
      * @summary Convert XML to JSON
+     * @param {string} formId
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson: async (
+      formId: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('convertControllerConvertXmlToJson', 'formId', formId)
       // verify required parameter 'xmlToJsonRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertXmlToJson',
         'xmlToJsonRequestDto',
         xmlToJsonRequestDto,
       )
-      const localVarPath = `/convert/xml-to-json`
+      const localVarPath = `/convert/xml-to-json/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1794,6 +1695,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -1832,15 +1736,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
      * @summary Convert JSON to XML
+     * @param {string} formId
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertJsonToXmlV2(
+      formId: string,
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXmlV2(
+        formId,
         jsonToXmlV2RequestDto,
         options,
       )
@@ -1860,15 +1767,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates PDF for given form data.
      * @summary
+     * @param {string} formId
      * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertToPdf(
+      formId: string,
       convertToPdfRequestDto: ConvertToPdfRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
+        formId,
         convertToPdfRequestDto,
         options,
       )
@@ -1888,15 +1798,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates JSON form from given XML data and form ID
      * @summary Convert XML to JSON
+     * @param {string} formId
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertXmlToJson(
+      formId: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertXmlToJson(
+        formId,
         xmlToJsonRequestDto,
         options,
       )
@@ -1930,46 +1843,52 @@ export const ConvertApiFactory = function (
     /**
      * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
      * @summary Convert JSON to XML
+     * @param {string} formId
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXmlV2(
+      formId: string,
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
-        .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
+        .convertControllerConvertJsonToXmlV2(formId, jsonToXmlV2RequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Generates PDF for given form data.
      * @summary
+     * @param {string} formId
      * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertToPdf(
+      formId: string,
       convertToPdfRequestDto: ConvertToPdfRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<object> {
       return localVarFp
-        .convertControllerConvertToPdf(convertToPdfRequestDto, options)
+        .convertControllerConvertToPdf(formId, convertToPdfRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Generates JSON form from given XML data and form ID
      * @summary Convert XML to JSON
+     * @param {string} formId
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson(
+      formId: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
-        .convertControllerConvertXmlToJson(xmlToJsonRequestDto, options)
+        .convertControllerConvertXmlToJson(formId, xmlToJsonRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -1985,51 +1904,57 @@ export class ConvertApi extends BaseAPI {
   /**
    * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
    * @summary Convert JSON to XML
+   * @param {string} formId
    * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertJsonToXmlV2(
+    formId: string,
     jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
+      .convertControllerConvertJsonToXmlV2(formId, jsonToXmlV2RequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * Generates PDF for given form data.
    * @summary
+   * @param {string} formId
    * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertToPdf(
+    formId: string,
     convertToPdfRequestDto: ConvertToPdfRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertToPdf(convertToPdfRequestDto, options)
+      .convertControllerConvertToPdf(formId, convertToPdfRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * Generates JSON form from given XML data and form ID
    * @summary Convert XML to JSON
+   * @param {string} formId
    * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertXmlToJson(
+    formId: string,
     xmlToJsonRequestDto: XmlToJsonRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertXmlToJson(xmlToJsonRequestDto, options)
+      .convertControllerConvertXmlToJson(formId, xmlToJsonRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -2088,20 +2013,23 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * To be able to download file you need to obtain jwt token.
      * @summary Obtain jwt token form file download
+     * @param {string} formId
      * @param {string} fileId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     filesControllerDownloadToken: async (
+      formId: string,
       fileId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('filesControllerDownloadToken', 'formId', formId)
       // verify required parameter 'fileId' is not null or undefined
       assertParamExists('filesControllerDownloadToken', 'fileId', fileId)
-      const localVarPath = `/files/download/jwt/{fileId}`.replace(
-        `{${'fileId'}}`,
-        encodeURIComponent(String(fileId)),
-      )
+      const localVarPath = `/files/download/jwt/{formId}/{fileId}`
+        .replace(`{${'formId'}}`, encodeURIComponent(String(formId)))
+        .replace(`{${'fileId'}}`, encodeURIComponent(String(fileId)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2112,6 +2040,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2157,6 +2088,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2274,6 +2208,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarQueryParameter = {} as any
       const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -2346,17 +2283,20 @@ export const FilesApiFp = function (configuration?: Configuration) {
     /**
      * To be able to download file you need to obtain jwt token.
      * @summary Obtain jwt token form file download
+     * @param {string} formId
      * @param {string} fileId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async filesControllerDownloadToken(
+      formId: string,
       fileId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DownloadTokenResponseDataDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDownloadToken(
+        formId,
         fileId,
         options,
       )
@@ -2504,16 +2444,18 @@ export const FilesApiFactory = function (
     /**
      * To be able to download file you need to obtain jwt token.
      * @summary Obtain jwt token form file download
+     * @param {string} formId
      * @param {string} fileId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     filesControllerDownloadToken(
+      formId: string,
       fileId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<DownloadTokenResponseDataDto> {
       return localVarFp
-        .filesControllerDownloadToken(fileId, options)
+        .filesControllerDownloadToken(formId, fileId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2596,14 +2538,19 @@ export class FilesApi extends BaseAPI {
   /**
    * To be able to download file you need to obtain jwt token.
    * @summary Obtain jwt token form file download
+   * @param {string} formId
    * @param {string} fileId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof FilesApi
    */
-  public filesControllerDownloadToken(fileId: string, options?: RawAxiosRequestConfig) {
+  public filesControllerDownloadToken(
+    formId: string,
+    fileId: string,
+    options?: RawAxiosRequestConfig,
+  ) {
     return FilesApiFp(this.configuration)
-      .filesControllerDownloadToken(fileId, options)
+      .filesControllerDownloadToken(formId, fileId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2920,19 +2867,19 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Updates form JSON version if a newer version is available
      * @summary Bump form JSON version to latest available version
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     formsControllerBumpJsonVersion: async (
-      id: string,
+      formId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('formsControllerBumpJsonVersion', 'id', id)
-      const localVarPath = `/forms/{id}/bump-version`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formsControllerBumpJsonVersion', 'formId', formId)
+      const localVarPath = `/forms/{formId}/bump-version`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -2944,6 +2891,9 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2975,18 +2925,18 @@ export const FormsApiFp = function (configuration?: Configuration) {
     /**
      * Updates form JSON version if a newer version is available
      * @summary Bump form JSON version to latest available version
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async formsControllerBumpJsonVersion(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<BumpJsonVersionResponseDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerBumpJsonVersion(
-        id,
+        formId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3019,16 +2969,16 @@ export const FormsApiFactory = function (
     /**
      * Updates form JSON version if a newer version is available
      * @summary Bump form JSON version to latest available version
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     formsControllerBumpJsonVersion(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<BumpJsonVersionResponseDto> {
       return localVarFp
-        .formsControllerBumpJsonVersion(id, options)
+        .formsControllerBumpJsonVersion(formId, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -3044,14 +2994,14 @@ export class FormsApi extends BaseAPI {
   /**
    * Updates form JSON version if a newer version is available
    * @summary Bump form JSON version to latest available version
-   * @param {string} id
+   * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof FormsApi
    */
-  public formsControllerBumpJsonVersion(id: string, options?: RawAxiosRequestConfig) {
+  public formsControllerBumpJsonVersion(formId: string, options?: RawAxiosRequestConfig) {
     return FormsApiFp(this.configuration)
-      .formsControllerBumpJsonVersion(id, options)
+      .formsControllerBumpJsonVersion(formId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -3475,71 +3425,22 @@ export class HealthcheckApi extends BaseAPI {
 export const NasesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary
-     * @param {CreateFormRequestDto} createFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerCreateForm: async (
-      createFormRequestDto: CreateFormRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'createFormRequestDto' is not null or undefined
-      assertParamExists('nasesControllerCreateForm', 'createFormRequestDto', createFormRequestDto)
-      const localVarPath = `/nases/create-form`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication cognitoGuestIdentityId required
-      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        createFormRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerDeleteForm: async (
-      id: string,
+      formId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerDeleteForm', 'id', id)
-      const localVarPath = `/nases/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerDeleteForm', 'formId', formId)
+      const localVarPath = `/nases/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -3550,6 +3451,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3595,6 +3499,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3682,74 +3589,29 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerMigrateForm: async (
-      id: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerMigrateForm', 'id', id)
-      const localVarPath = `/nases/migrate-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateForm: async (
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerSendAndUpdateForm', 'id', id)
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerSendAndUpdateForm', 'formId', formId)
       // verify required parameter 'updateFormRequestDto' is not null or undefined
       assertParamExists(
         'nasesControllerSendAndUpdateForm',
         'updateFormRequestDto',
         updateFormRequestDto,
       )
-      const localVarPath = `/nases/send-and-update-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      const localVarPath = `/nases/send-and-update-form/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3761,6 +3623,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3789,27 +3654,27 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateFormEid: async (
-      id: string,
+      formId: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerSendAndUpdateFormEid', 'id', id)
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerSendAndUpdateFormEid', 'formId', formId)
       // verify required parameter 'eidUpdateSendFormRequestDto' is not null or undefined
       assertParamExists(
         'nasesControllerSendAndUpdateFormEid',
         'eidUpdateSendFormRequestDto',
         eidUpdateSendFormRequestDto,
       )
-      const localVarPath = `/nases/eid/send-and-update-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      const localVarPath = `/nases/eid/send-and-update-form/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3821,6 +3686,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3849,23 +3717,23 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Update form
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerUpdateForm: async (
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerUpdateForm', 'id', id)
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerUpdateForm', 'formId', formId)
       // verify required parameter 'updateFormRequestDto' is not null or undefined
       assertParamExists('nasesControllerUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
-      const localVarPath = `/nases/update-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      const localVarPath = `/nases/update-form/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3877,6 +3745,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3913,45 +3784,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
   return {
     /**
-     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary
-     * @param {CreateFormRequestDto} createFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerCreateForm(
-      createFormRequestDto: CreateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateForm(
-        createFormRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerCreateForm']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerDeleteForm(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerDeleteForm(
-        id,
+        formId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -4031,47 +3875,20 @@ export const NasesApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerMigrateForm(
-      id: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MigrateFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerMigrateForm(
-        id,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerMigrateForm']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerSendAndUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(
-        id,
+        formId,
         updateFormRequestDto,
         options,
       )
@@ -4091,18 +3908,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerSendAndUpdateFormEid(
-      id: string,
+      formId: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
-        id,
+        formId,
         eidUpdateSendFormRequestDto,
         options,
       )
@@ -4122,18 +3939,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
     /**
      * Update form
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateForm(
-        id,
+        formId,
         updateFormRequestDto,
         options,
       )
@@ -4164,30 +3981,15 @@ export const NasesApiFactory = function (
   const localVarFp = NasesApiFp(configuration)
   return {
     /**
-     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary
-     * @param {CreateFormRequestDto} createFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerCreateForm(
-      createFormRequestDto: CreateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<CreateFormResponseDto> {
-      return localVarFp
-        .nasesControllerCreateForm(createFormRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerDeleteForm(id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerDeleteForm(formId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
-        .nasesControllerDeleteForm(id, options)
+        .nasesControllerDeleteForm(formId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4236,69 +4038,54 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerMigrateForm(
-      id: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<MigrateFormResponseDto> {
-      return localVarFp
-        .nasesControllerMigrateForm(id, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
-        .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
+        .nasesControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateFormEid(
-      id: string,
+      formId: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
-        .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
+        .nasesControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Update form
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
-        .nasesControllerUpdateForm(id, updateFormRequestDto, options)
+        .nasesControllerUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -4312,33 +4099,16 @@ export const NasesApiFactory = function (
  */
 export class NasesApi extends BaseAPI {
   /**
-   * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-   * @summary
-   * @param {CreateFormRequestDto} createFormRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerCreateForm(
-    createFormRequestDto: CreateFormRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerCreateForm(createFormRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * Archive form (hide from user but keep in database)
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerDeleteForm(id: string, options?: RawAxiosRequestConfig) {
+  public nasesControllerDeleteForm(formId: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
-      .nasesControllerDeleteForm(id, options)
+      .nasesControllerDeleteForm(formId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -4389,73 +4159,59 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Assign form with no assigned user to the authenticated user
-   * @summary
-   * @param {string} id
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerMigrateForm(id: string, options?: RawAxiosRequestConfig) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerMigrateForm(id, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
   public nasesControllerSendAndUpdateForm(
-    id: string,
+    formId: string,
     updateFormRequestDto: UpdateFormRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
+      .nasesControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
   public nasesControllerSendAndUpdateFormEid(
-    id: string,
+    formId: string,
     eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
+      .nasesControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * Update form
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
   public nasesControllerUpdateForm(
-    id: string,
+    formId: string,
     updateFormRequestDto: UpdateFormRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerUpdateForm(id, updateFormRequestDto, options)
+      .nasesControllerUpdateForm(formId, updateFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -4469,21 +4225,28 @@ export const SignerApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      * Generates signer data including XML and metadata for form signing
      * @summary Get signer data
+     * @param {string} formId
      * @param {SignerDataRequestDto} signerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     signerControllerGetSignerData: async (
+      formId: string,
       signerDataRequestDto: SignerDataRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('signerControllerGetSignerData', 'formId', formId)
       // verify required parameter 'signerDataRequestDto' is not null or undefined
       assertParamExists(
         'signerControllerGetSignerData',
         'signerDataRequestDto',
         signerDataRequestDto,
       )
-      const localVarPath = `/signer/get-signer-data`
+      const localVarPath = `/signer/get-signer-data/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -4494,6 +4257,9 @@ export const SignerApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -4532,15 +4298,18 @@ export const SignerApiFp = function (configuration?: Configuration) {
     /**
      * Generates signer data including XML and metadata for form signing
      * @summary Get signer data
+     * @param {string} formId
      * @param {SignerDataRequestDto} signerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async signerControllerGetSignerData(
+      formId: string,
       signerDataRequestDto: SignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SignerDataResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.signerControllerGetSignerData(
+        formId,
         signerDataRequestDto,
         options,
       )
@@ -4574,16 +4343,18 @@ export const SignerApiFactory = function (
     /**
      * Generates signer data including XML and metadata for form signing
      * @summary Get signer data
+     * @param {string} formId
      * @param {SignerDataRequestDto} signerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     signerControllerGetSignerData(
+      formId: string,
       signerDataRequestDto: SignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<SignerDataResponseDto> {
       return localVarFp
-        .signerControllerGetSignerData(signerDataRequestDto, options)
+        .signerControllerGetSignerData(formId, signerDataRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -4599,17 +4370,19 @@ export class SignerApi extends BaseAPI {
   /**
    * Generates signer data including XML and metadata for form signing
    * @summary Get signer data
+   * @param {string} formId
    * @param {SignerDataRequestDto} signerDataRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof SignerApi
    */
   public signerControllerGetSignerData(
+    formId: string,
     signerDataRequestDto: SignerDataRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return SignerApiFp(this.configuration)
-      .signerControllerGetSignerData(signerDataRequestDto, options)
+      .signerControllerGetSignerData(formId, signerDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

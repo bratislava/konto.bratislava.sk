@@ -96,6 +96,9 @@ export const environment = {
     'IFRAME_RESIZER_PUBLIC_PATH',
     process.env.IFRAME_RESIZER_PUBLIC_PATH,
   ),
+  gtmId: process.env.NEXT_PUBLIC_GTM_ID,
+  gtmAuth: process.env.NEXT_PUBLIC_GTM_AUTH,
+  gtmPreview: process.env.NEXT_PUBLIC_GTM_PREVIEW,
   featureToggles: {
     developmentForms:
       assertEnv(

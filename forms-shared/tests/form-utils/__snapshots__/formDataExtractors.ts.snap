@@ -92,16 +92,20 @@ exports[`formDataExtractors > extractFormSubjectPlain > ziadostONajomBytuExample
 
 exports[`formDataExtractors > extractFormSubjectPlain > ziadostOSlobodnyPristupKInformaciamExample form subject should match snapshot 1`] = `"Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."`;
 
+exports[`formDataExtractors > extractFormSubjectPlain > ziadostOUzemnoplanovaciuInformaciuExample form subject should match snapshot 1`] = `"Žiadosť o územnoplánovaciu informáciu"`;
+
 exports[`formDataExtractors > extractFormSubjectTechnical > komunitneZahradyExample GINIS subject should match snapshot 1`] = `"Žiadosť o komunitnú záhradu - odporúčaný mestský pozemok"`;
 
 exports[`formDataExtractors > extractFormSubjectTechnical > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample GINIS subject should match snapshot 1`] = `"Oznámenie o poplatkovej povinnosti za komunálne odpady"`;
 
 exports[`formDataExtractors > extractFormSubjectTechnical > predzahradkyExample GINIS subject should match snapshot 1`] = `"Registrácia novej predzáhradky"`;
 
-exports[`formDataExtractors > extractFormSubjectTechnical > stanoviskoKInvesticnemuZameruExample GINIS subject should match snapshot 1`] = `"e-SIZ Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > stanoviskoKInvesticnemuZameruExample GINIS subject should match snapshot 1`] = `"e-SIZ ž. Dunajská Nový Bytový Dom, p.č. 56789, kú KV, DU"`;
 
-exports[`formDataExtractors > extractFormSubjectTechnical > zavazneStanoviskoKInvesticnejCinnostiExample GINIS subject should match snapshot 1`] = `"e-ZST Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > zavazneStanoviskoKInvesticnejCinnostiExample GINIS subject should match snapshot 1`] = `"e-ZST ž. Dunajská Nový Bytový Dom, p.č. 56789, kú KV, DU"`;
 
 exports[`formDataExtractors > extractFormSubjectTechnical > ziadostONajomBytuExample GINIS subject should match snapshot 1`] = `"Žiadosť o nájom bytu"`;
 
 exports[`formDataExtractors > extractFormSubjectTechnical > ziadostOSlobodnyPristupKInformaciamExample GINIS subject should match snapshot 1`] = `"Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."`;
+
+exports[`formDataExtractors > extractFormSubjectTechnical > ziadostOUzemnoplanovaciuInformaciuExample GINIS subject should match snapshot 1`] = `"e-UPI ž. Tomášikova 32, p.č. 1245/2, kú CU"`;

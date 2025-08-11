@@ -32,7 +32,7 @@ export class CardPaymentReportingController {
     @Body() data: RequestPostReportingSendReport,
   ): Promise<void> {
     return this.cardPaymentReportingService.generateAndSendPaymentReport(
-      data.email,
+      data.emailRecipients,
       new Date(data.date),
     )
   }

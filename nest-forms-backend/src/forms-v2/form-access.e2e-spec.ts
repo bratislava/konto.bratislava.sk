@@ -554,6 +554,7 @@ describe('Form access', () => {
 
     it('should work with partial form object', async () => {
       const partialForm = {
+        formDefinitionSlug: 'mock-form-definition',
         id: formForAuthUser1.id,
         userExternalId: formForAuthUser1.userExternalId,
         cognitoGuestIdentityId: formForAuthUser1.cognitoGuestIdentityId,

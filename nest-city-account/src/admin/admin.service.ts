@@ -40,6 +40,8 @@ import {
 } from './utils/account-deactivate.utils'
 import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
+import { UserService } from '../user/user.service'
+import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 
 @Injectable()
 export class AdminService {
@@ -50,7 +52,8 @@ export class AdminService {
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
-    private readonly taxSubservice: TaxSubservice
+    private readonly taxSubservice: TaxSubservice,
+    private readonly userService: UserService
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -117,6 +120,39 @@ export class AdminService {
     }
 
     return result
+  }
+
+  /**
+   * Activates Cron job for sync of cognito users to db.
+   * @returns void
+   */
+  async activateSyncCognitoToDb(): Promise<void> {
+    await this.prismaService.config.update({
+      where: { key: COGNITO_SYNC_CONFIG_DB_KEY },
+      data: { value: { active: true } },
+    })
+  }
+
+  /**
+   * Gets all users from cognito and calls getOrCreate for each user.
+   * @returns void
+   */
+  async syncCognitoToDb(): Promise<void> {
+    const cognitoUsers = await this.cognitoSubservice.getAllCognitoUsers()
+    if (!cognitoUsers) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        UserErrorsEnum.COGNITO_TYPE_ERROR,
+        UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+      )
+    }
+
+    for (const user of cognitoUsers) {
+      await this.userService.getOrCreateUserOrLegalPerson(
+        user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+        user.sub,
+        user.email
+      )
+    }
   }
 
   async checkUserVerifyState(email: string): Promise<UserVerifyState> {

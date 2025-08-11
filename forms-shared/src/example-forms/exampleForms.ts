@@ -23,6 +23,7 @@ import oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample from './exa
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample from './examples/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample'
 import ziadostOSlobodnyPristupKInformaciamExample from './examples/ziadostOSlobodnyPristupKInformaciamExample'
 import priznanieKDaniZNehnutelnostiExample5NoCalculators from './examples/priznanieKDaniZNehnutelnostiExample5NoCalculators'
+import ziadostOUzemnoplanovaciuInformaciuExample from './examples/ziadostOUzemnoplanovaciuInformaciuExample'
 
 export const exampleForms: Record<string, ExampleForm[]> = {
   'stanovisko-k-investicnemu-zameru': [stanoviskoKInvesticnemuZameruExample],
@@ -59,6 +60,7 @@ export const exampleForms: Record<string, ExampleForm[]> = {
     oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample,
   ],
   'ziadost-o-slobodny-pristup-k-informaciam': [ziadostOSlobodnyPristupKInformaciamExample],
+  'ziadost-o-uzemnoplanovaciu-informaciu': [ziadostOUzemnoplanovaciuInformaciuExample],
 }
 
 export const exampleDevForms: Record<string, ExampleForm[]> = {}

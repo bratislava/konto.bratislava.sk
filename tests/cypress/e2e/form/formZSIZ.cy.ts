@@ -70,7 +70,7 @@ xdescribe('F02 -', { testIsolation: false }, () => {
           })
         })
 
-        it('4. Filling out the "Investor" step', () => {
+        it('4. Filling out the "Stavebník" step', () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).should('be.checked')

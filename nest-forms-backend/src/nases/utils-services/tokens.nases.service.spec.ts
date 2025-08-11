@@ -305,7 +305,7 @@ describe('NasesUtilsService', () => {
             `          <SenderId>example_sender</SenderId>\n` +
             `          <RecipientId>example_recipient</RecipientId>\n` +
             `          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
-            `          <MessageSubject>e-SIZ Ulica1 StavbaA, p.č. 1234/56 kú Ružinov, Trnávka</MessageSubject>\n` +
+            `          <MessageSubject>e-SIZ ž. Ulica1 StavbaA, p.č. 1234/56, kú RZ, TR</MessageSubject>\n` +
             `          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n` +
             `            <eform>\n` +
             `              <tag1 attribute="value1"/>\n` +

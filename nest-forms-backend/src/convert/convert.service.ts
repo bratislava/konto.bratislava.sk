@@ -29,7 +29,6 @@ import {
 } from 'forms-shared/versioning/version-compare'
 import { chromium } from 'playwright'
 
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -157,15 +156,17 @@ export default class ConvertService {
   }
 
   async convertJsonToXmlV2(
+    formId: string,
     data: JsonToXmlV2RequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
   ): Promise<string> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      data.formId,
-      user?.sub ?? null,
-      ico,
-    )
+    const form = await this.formsService.getUniqueForm(formId)
+
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
 
     const xmlObject = await this.convertJsonToXmlObjectForForm(
       form,
@@ -175,15 +176,17 @@ export default class ConvertService {
   }
 
   async convertXmlToJson(
+    formId: string,
     data: XmlToJsonRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
   ): Promise<XmlToJsonResponseDto> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      data.formId,
-      user?.sub ?? null,
-      ico,
-    )
+    const form = await this.formsService.getUniqueForm(formId)
+
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -361,16 +364,18 @@ export default class ConvertService {
   }
 
   async convertToPdf(
+    formId: string,
     data: ConvertToPdfRequestDto,
-    ico: string | null,
     res: Response,
-    user?: CognitoGetUserData,
   ): Promise<StreamableFile> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      data.formId,
-      user?.sub ?? null,
-      ico,
-    )
+    const form = await this.formsService.getUniqueForm(formId)
+
+    if (!form) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -391,7 +396,7 @@ export default class ConvertService {
 
     const file = await this.generatePdf(
       formJsonData,
-      data.formId,
+      formId,
       formDefinition,
       data.clientFiles as ClientFileInfo[],
     )

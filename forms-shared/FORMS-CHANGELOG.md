@@ -37,6 +37,10 @@
 - Changed enum values to use camel case
 - Replaced hardcoded list of katastrálne územia with reference to a centralized enumeration (`esbsKatastralneUzemiaCiselnik`)
 
+### 3.0.0 (06-08-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/3148)
+
+- Renamed "Investor" to "Stavebník"
+
 ## Komunitné záhrady (komunitne-zahrady)
 
 ### 2.0.0 (27-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2532)

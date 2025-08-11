@@ -2558,8 +2558,8 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <FormId>f47ac10b-58cc-4372-a567-0e02b2c3d479</FormId>
-  <JsonVersion>2.0.0</JsonVersion>
-  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","idStavby":"BYT-2024-001","ulica":"Dunajská","supisneCislo":"1234","parcelneCisla":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03","obsahujeByty":true,"pocetBytovCelkovo":24,"pocet1IzbovychBytov":6,"pocet2IzbovychBytov":12,"pocet3IzbovychBytov":4,"pocet4IzbovychBytov":2,"pocetViacAko4IzbovychBytov":0}},"typZiadosti":{"typ":"stavebnyZamerNavrhovanaStavba"},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
+  <JsonVersion>3.0.0</JsonVersion>
+  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"stavebnik":{"stavebnikZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","idStavby":"BYT-2024-001","ulica":"Dunajská","supisneCislo":"1234","parcelneCisla":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03","obsahujeByty":true,"pocetBytovCelkovo":24,"pocet1IzbovychBytov":6,"pocet2IzbovychBytov":12,"pocet3IzbovychBytov":4,"pocet4IzbovychBytov":2,"pocetViacAko4IzbovychBytov":0}},"typZiadosti":{"typ":"stavebnyZamerNavrhovanaStavba"},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
   <Summary>
     <Form title="Žiadosť o záväzné stanovisko k investičnej činnosti">
       <Step id="root_ziadatel" title="Žiadateľ">
@@ -2588,35 +2588,35 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
           <StringValue>+421905987654</StringValue>
         </Field>
       </Step>
-      <Step id="root_investor" title="Investor">
-        <Field id="root_investor_investorZiadatelom" label="Je investor rovnaká osoba ako žiadateľ?">
+      <Step id="root_stavebnik" title="Stavebník">
+        <Field id="root_stavebnik_stavebnikZiadatelom" label="Je stavebník rovnaká osoba ako žiadateľ?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_investor_splnomocnenie" label="Splnomocnenie na zastupovanie">
+        <Field id="root_stavebnik_splnomocnenie" label="Splnomocnenie na zastupovanie">
           <FileValue id="b9050ef5-0d98-41c4-aba1-b0fc5a65a442">splnomocnenie.pdf</FileValue>
         </Field>
-        <Field id="root_investor_ziadatelTyp" label="Žiadate ako">
+        <Field id="root_stavebnik_ziadatelTyp" label="Žiadate ako">
           <StringValue>Fyzická osoba</StringValue>
         </Field>
-        <Field id="root_investor_meno" label="Meno">
+        <Field id="root_stavebnik_meno" label="Meno">
           <StringValue>Marta</StringValue>
         </Field>
-        <Field id="root_investor_priezvisko" label="Priezvisko">
+        <Field id="root_stavebnik_priezvisko" label="Priezvisko">
           <StringValue>Nováková</StringValue>
         </Field>
-        <Field id="root_investor_ulicaACislo" label="Korešpondenčná adresa">
+        <Field id="root_stavebnik_ulicaACislo" label="Korešpondenčná adresa">
           <StringValue>Šancová 56</StringValue>
         </Field>
-        <Field id="root_investor_mesto" label="Mesto">
+        <Field id="root_stavebnik_mesto" label="Mesto">
           <StringValue>Bratislava</StringValue>
         </Field>
-        <Field id="root_investor_psc" label="PSČ">
+        <Field id="root_stavebnik_psc" label="PSČ">
           <StringValue>83104</StringValue>
         </Field>
-        <Field id="root_investor_email" label="Email">
+        <Field id="root_stavebnik_email" label="Email">
           <StringValue>marta.novakova@priklad.sk</StringValue>
         </Field>
-        <Field id="root_investor_telefon" label="Telefónne číslo">
+        <Field id="root_stavebnik_telefon" label="Telefónne číslo">
           <StringValue>+421902123456</StringValue>
         </Field>
       </Step>
@@ -2802,6 +2802,91 @@ exports[`slovenskoSkForm > ziadost-o-slobodny-pristup-k-informaciam > schema XSD
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.3"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.3" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FormId" type="xs:string"/>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm > ziadost-o-uzemnoplanovaciu-informaciu > schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostOUzemnoplanovaciuInformaciu/1.3"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.ziadostOUzemnoplanovaciuInformaciu/1.3" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 
@@ -3279,6 +3364,78 @@ exports[`slovenskoSkForm > ziadostOSlobodnyPristupKInformaciamExample > XML shou
         </Field>
         <Field id="root_sposobSpristupnenia_emailSpristupnenia" label="Email">
           <StringValue>martin.kovac@example.com</StringValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm > ziadostOUzemnoplanovaciuInformaciuExample > XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/00603481.ziadostOUzemnoplanovaciuInformaciu/1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FormId>f47ac10b-58cc-4372-a567-0e02b2c3d479</FormId>
+  <JsonVersion>1.0.0</JsonVersion>
+  <Json>{"ziadatel":{"typZiadatela":"fyzickaOsoba","meno":"Jana","priezvisko":"Svobodová","ulicaCislo":"Ružinovská 15","mesto":"Bratislava","psc":"82109","kontaktneUdaje":{"email":"jana.svobodova@priklad.sk","telefon":"+421917654321"},"formaDorucovania":"email"},"detailAUcel":{"katastralneUzemie":"809985","informacieOLokalite":{"lokality":[{"parcelneCislo":"1245/2","registerParcely":"registerCKn","ulicaACislo":"Tomášikova 32"}]},"ucelUzemnoplanovacichiInformacii":"planovanyInvesticnyZamer","popisZameru":"Plánovaná výstavba rodinného domu s garážou na parcele č. 1245/2 v katastrálnom území Ružinov."},"prilohy":{"zakresZaujmovychParciel":["2eb663ad-8ea7-423b-958a-c1830f656d52"]}}</Json>
+  <Summary>
+    <Form title="Žiadosť o územnoplánovaciu informáciu">
+      <Step id="root_ziadatel" title="Žiadateľ">
+        <Field id="root_ziadatel_typZiadatela" label="Žiadate ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_ziadatel_meno" label="Meno">
+          <StringValue>Jana</StringValue>
+        </Field>
+        <Field id="root_ziadatel_priezvisko" label="Priezvisko">
+          <StringValue>Svobodová</StringValue>
+        </Field>
+        <Field id="root_ziadatel_ulicaCislo" label="Adresa pobytu">
+          <StringValue>Ružinovská 15</StringValue>
+        </Field>
+        <Field id="root_ziadatel_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_ziadatel_psc" label="PSČ">
+          <StringValue>82109</StringValue>
+        </Field>
+        <Field id="root_ziadatel_kontaktneUdaje_email" label="Email">
+          <StringValue>jana.svobodova@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_ziadatel_kontaktneUdaje_telefon" label="Telefónne číslo">
+          <StringValue>+421917654321</StringValue>
+        </Field>
+        <Field id="root_ziadatel_formaDorucovania" label="Akou formou chcete doručiť územnoplánovaciu informáciu?">
+          <StringValue>Email</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_detailAUcel" title="Detail a účel">
+        <Field id="root_detailAUcel_katastralneUzemie" label="Katastrálne územie">
+          <StringValue>Čunovo</StringValue>
+        </Field>
+        <Field id="root_detailAUcel_ucelUzemnoplanovacichiInformacii" label="Účel územnoplánovacej informácie">
+          <StringValue>Planovaný investičný zámer</StringValue>
+        </Field>
+        <Field id="root_detailAUcel_popisZameru" label="Popíšte zámer, pre ktorý žiadate o územnoplánovaciu informáciu.">
+          <StringValue>Plánovaná výstavba rodinného domu s garážou na parcele č. 1245/2 v katastrálnom území Ružinov.</StringValue>
+        </Field>
+        <Array id="root_detailAUcel_informacieOLokalite_lokality" title="Lokality">
+          <ArrayItem id="root_detailAUcel_informacieOLokalite_lokality_0" title="Lokalita č. 1">
+            <Field id="root_detailAUcel_informacieOLokalite_lokality_0_parcelneCislo" label="Parcelné číslo">
+              <StringValue>1245/2</StringValue>
+            </Field>
+            <Field id="root_detailAUcel_informacieOLokalite_lokality_0_registerParcely" label="Register parcely">
+              <StringValue>register C-KN</StringValue>
+            </Field>
+            <Field id="root_detailAUcel_informacieOLokalite_lokality_0_ulicaACislo" label="Ulica a číslo / popis lokality">
+              <StringValue>Tomášikova 32</StringValue>
+            </Field>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_prilohy" title="Prílohy">
+        <Field id="root_prilohy_zakresZaujmovychParciel" label="Zákres záujmových parciel do kópie katastrálnej mapy">
+          <FileValue id="2eb663ad-8ea7-423b-958a-c1830f656d52">zakres-zaujmovych-parciel.pdf</FileValue>
         </Field>
       </Step>
     </Form>

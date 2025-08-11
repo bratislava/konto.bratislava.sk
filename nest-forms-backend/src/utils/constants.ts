@@ -16,10 +16,6 @@ export const RABBIT_NASES = {
   QUEUE: 'nases_check_delivery',
 }
 
-export const RABBIT_GINIS_AUTOMATION = {
-  EXCHANGE: 'ginis-automation',
-}
-
 export const DEFAULT_PAGE = 1
 export const DEFAULT_PAGE_SIZE = 10
 

@@ -73,7 +73,10 @@ export class TasksService {
         ...ACTIVE_USER_FILTER,
       },
       orderBy: {
-        lastTaxBackendUploadTry: 'asc',
+        lastTaxBackendUploadTry: {
+          sort: 'asc',
+          nulls: 'first',
+        },
       },
       take: UPLOAD_BIRTHNUMBERS_BATCH,
     })

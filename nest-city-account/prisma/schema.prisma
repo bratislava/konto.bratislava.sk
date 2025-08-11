@@ -36,7 +36,7 @@ model User {
   userGdprData                     UserGdprData[]
   physicalEntity                   PhysicalEntity?
   lastTaxYear                      Int?
-  lastTaxBackendUploadTry          DateTime                       @default(now())
+  lastTaxBackendUploadTry          DateTime?
   lastTaxDeliveryMethodsUpdateYear Int?
   cognitoTier                      CognitoUserAttributesTierEnum?
   userIdCardVerify                 UserIdCardVerify[]

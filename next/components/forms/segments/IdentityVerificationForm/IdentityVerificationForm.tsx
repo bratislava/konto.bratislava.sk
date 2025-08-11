@@ -9,6 +9,7 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { environment } from '../../../../environment'
+import { AccountType } from '../../../../frontend/dtos/accountDto'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
@@ -84,7 +85,9 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
-  const { isLegalEntity } = useSsrAuth()
+  const { isLegalEntity, accountType } = useSsrAuth()
+  const isFoOrFop =
+    accountType === AccountType.FyzickaOsoba || accountType === AccountType.FyzickaOsobaPodnikatel
   const schema = isLegalEntity ? poSchema : foSchema
   const defaultValues = isLegalEntity ? { ico: '', rc: '', idCard: '' } : { rc: '', idCard: '' }
   const {
@@ -142,7 +145,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
           <InputField
             required
             helptext={t('rc_description')}
-            label={t(isLegalEntity ? 'rc_label_legal_entity' : 'rc_label')}
+            label={t(isFoOrFop ? 'rc_label' : 'rc_label_legal_entity')}
             placeholder={t('rc_placeholder')}
             {...field}
             errorMessage={errors.rc}
@@ -155,7 +158,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            label={t(isLegalEntity ? 'id_card_label_legal_entity' : 'id_card_label')}
+            label={t(isFoOrFop ? 'id_card_label' : 'id_card_label_legal_entity')}
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
             {...field}

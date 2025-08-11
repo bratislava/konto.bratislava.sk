@@ -168,8 +168,8 @@ export class AdminCronSubservice {
     this.logger.log(`New offset set: ${newOffset}`)
   }
 
-  // even though this is a cron job, it only runs once at 3am then it deactivates itself
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  // even though this is a cron job, it only runs once at 3am (gmt+2) then it deactivates itself
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async syncCognitoToDb(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({

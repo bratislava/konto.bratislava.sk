@@ -981,36 +981,12 @@ export class ResponseInstallmentPaymentDetailDto {
 
 export class ResponseTaxPayerReducedDto {
   @ApiProperty({
-    description: 'Permanent address of tax payer',
-    default: 'Bratislava, Hlavne námestie 1',
-  })
-  @IsString()
-  @IsOptional()
-  permanentResidenceAddress: string | null
-
-  @ApiProperty({
     description: 'Name of taxpayer',
     default: 'Bratislavčan Daňový',
   })
   @IsString()
   @IsOptional()
   name: string | null
-
-  @ApiProperty({
-    description: 'Text of description of name for pdf',
-    default: 'Meno daňovníka/ subjektu',
-  })
-  @IsString()
-  @IsOptional()
-  nameTxt: string | null
-
-  @ApiProperty({
-    description: 'Text of description of street for pdf',
-    default: 'Ulica trvalého pobytu',
-  })
-  @IsString()
-  @IsOptional()
-  permanentResidenceStreetTxt: string | null
 
   @ApiProperty({
     description: 'Street of permanent residence with number',
@@ -1037,11 +1013,12 @@ export class ResponseTaxPayerReducedDto {
   permanentResidenceCity: string | null
 
   @ApiProperty({
-    description: 'Birth number with slash',
-    default: '920101/1111',
+    description: 'Id of tax payer from Noris',
+    default: '12345',
   })
   @IsString()
-  birthNumber: string
+  @IsOptional()
+  externalId: string | null
 }
 
 export class ResponseTaxSummaryDetailDto {

@@ -37,6 +37,26 @@ const bratislavaTimeZone = 'Europe/Bratislava'
 
 export const stateHolidays = [
   {
+    year: 2023,
+    dates: [
+      dayjs.tz('2023-01-01', bratislavaTimeZone),
+      dayjs.tz('2023-01-06', bratislavaTimeZone),
+      dayjs.tz('2023-04-07', bratislavaTimeZone),
+      dayjs.tz('2023-04-10', bratislavaTimeZone),
+      dayjs.tz('2023-05-01', bratislavaTimeZone),
+      dayjs.tz('2023-05-08', bratislavaTimeZone),
+      dayjs.tz('2023-07-05', bratislavaTimeZone),
+      dayjs.tz('2023-08-29', bratislavaTimeZone),
+      dayjs.tz('2023-09-01', bratislavaTimeZone),
+      dayjs.tz('2023-09-15', bratislavaTimeZone),
+      dayjs.tz('2023-11-01', bratislavaTimeZone),
+      dayjs.tz('2023-11-17', bratislavaTimeZone),
+      dayjs.tz('2023-12-24', bratislavaTimeZone),
+      dayjs.tz('2023-12-25', bratislavaTimeZone),
+      dayjs.tz('2023-12-26', bratislavaTimeZone),
+    ],
+  },
+  {
     year: 2024,
     dates: [
       dayjs.tz('2024-01-01', bratislavaTimeZone),

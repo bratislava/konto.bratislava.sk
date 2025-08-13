@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next'
 import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'
@@ -82,11 +83,12 @@ const schema = {
 
 interface FormProps {
   onSubmit: ({ data }: { data: FormData }) => void
-  defaultValues: FormData
+  defaultValues: Partial<FormData>
   agreementContent: string
 }
 
 const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
+  const { t } = useTranslation('account')
   const {
     watch,
     setValue,
@@ -120,24 +122,23 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
           <RadioGroup
             required
             onChange={(value) => field.onChange(value === 'true')}
-            value={field.value ? 'true' : 'false'}
-            label="Vyberte spôsob"
+            value={field.value === undefined ? undefined : field.value ? 'true' : 'false'}
+            label={t('delivery_method_change_modal_label')}
             orientation="vertical"
           >
-            {/* TODO: Translations */}
-            <Radio
-              value="false"
-              variant="boxed"
-              description="Bude Vám doručené štandardné rozhodnutie prostredníctvom pošty. Vaša daň bude vyrubená týmto rozhodnutím a je splatná v lehote do 15 dní odo dňa nadobudnutia právoplatnosti rozhodnutia."
-            >
-              Rozhodnutie doručované prostredníctvom pošty do vlastných rúk
-            </Radio>
             <Radio
               value="true"
               variant="boxed"
-              description="Nebude vám doručované štandardné papierové rozhodnutie prostredníctvom pošty. Všetky potrebné informácie a možnosti platby dane z nehnuteľností sa dozviete z oznámenia vo svojom Bratislavskom konte. Toto oznámenie dostanete aj e-mailom, v zašifrovanej podobe."
+              description={t('delivery_method_change_modal_description_true')}
             >
-              Oznámenie v Bratislavskom konte
+              {t('delivery_method_change_modal_description_true_title')}
+            </Radio>
+            <Radio
+              value="false"
+              variant="boxed"
+              description={t('delivery_method_change_modal_description_false')}
+            >
+              {t('delivery_method_change_modal_description_false_title')}
             </Radio>
           </RadioGroup>
         )}
@@ -152,7 +153,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
                 onScrollToBottom={() => field.onChange(true)}
                 agreementContent={agreementContent}
               />
-              <p className="text-p2">Pre pokračovanie je nutné prečítať celý text súhlasu.</p>
+              <p className="text-p2">{t('delivery_method_change_modal_agreement_text')}</p>
             </div>
           )}
         />
@@ -164,8 +165,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
         isDisabled={isSubmitting || !isValid}
         isLoading={isSubmitting}
       >
-        {/* TODO: Translation */}
-        Potvrdzujem a súhlasím
+        {t('delivery_method_change_modal_button_text')}
       </ButtonNew>
     </form>
   )
@@ -180,20 +180,23 @@ const TaxesFeesDeliveryMethodChangeModal = ({
   onOpenChange,
   agreementContent,
 }: TaxesFeesDeliveryMethodChangeModalProps) => {
-  const { isSubscribed, changeSubscription } = useUserSubscription({
+  const { isSubscribed, isSubscribtionExists, changeSubscription } = useUserSubscription({
     category: GdprDataDtoCategoryEnum.Taxes,
     type: GdprDataDtoTypeEnum.FormalCommunication,
   })
+  const { t } = useTranslation('account')
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
   const handleSubmit = async ({ data }: { data: FormData }) => {
     return changeSubscription(data.isSubscribed, {
       onSuccess: () => {
         onOpenChange?.(false)
+        openSnackbarSuccess(t('delivery_method_change_success'))
       },
       onError: (error) => {
         logger.error(error)
-        openSnackbarError('Nepodarilo sa zmeniť spôsob doručovania.')
+        openSnackbarError(t('delivery_method_change_error'))
       },
     })
   }
@@ -207,12 +210,11 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       mobileFullScreen
     >
       <Heading slot="title" className="mb-2 text-h3">
-        {/* TODO: Translation */}
-        Spôsob doručovania miestnych daní a poplatkov
+        {t('delivery_method_change_modal_title')}
       </Heading>
       <Form
         defaultValues={{
-          isSubscribed,
+          isSubscribed: isSubscribtionExists ? isSubscribed : undefined,
           scrolledToBottom: false,
         }}
         onSubmit={handleSubmit}

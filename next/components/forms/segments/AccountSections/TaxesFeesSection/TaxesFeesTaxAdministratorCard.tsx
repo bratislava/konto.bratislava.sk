@@ -31,24 +31,18 @@ const TaxesFeesTaxAdministratorCard = ({
   if (!taxAdministrator) {
     return null
   }
-
   return (
-    <div className="flex w-full items-start gap-4 rounded-lg border-2 border-gray-200 p-5">
-      <div className="hidden rounded-lg border-2 border-gray-200 p-3 sm:block">
-        <PhoneIcon className="size-6 text-main-700" />
-      </div>
+    <div className="flex w-full items-center justify-between gap-4 rounded-lg border-2 border-gray-200 p-5">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <span className="text-p2">Kontaktná osoba pre daň z nehnuteľností</span>
           <span className="text-p1-semibold">{taxAdministrator.name}</span>
         </div>
-        <div className="flex flex-wrap content-center items-center gap-x-3 gap-y-2 self-stretch">
+        <div className="flex flex-wrap content-center items-center gap-x-5 gap-y-2 self-stretch">
           <span className="flex items-center gap-x-2">
             <PhoneIcon className="size-5" />
             <MLinkNew href={`tel:${taxAdministrator.phone}`} variant="underlined-medium">
               {taxAdministrator.phone}
             </MLinkNew>
-            <span> • </span>
           </span>
 
           <span className="flex items-center gap-x-2">
@@ -56,7 +50,6 @@ const TaxesFeesTaxAdministratorCard = ({
             <MLinkNew href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
               {taxAdministrator.email}
             </MLinkNew>
-            <span> • </span>
           </span>
 
           <span className="flex items-center gap-x-2">
@@ -69,6 +62,9 @@ const TaxesFeesTaxAdministratorCard = ({
             </MLinkNew>
           </span>
         </div>
+      </div>
+      <div className="hidden rounded-lg border-2 border-gray-200 p-3 sm:block">
+        <PhoneIcon className="size-6 text-main-700" />
       </div>
     </div>
   )

@@ -248,18 +248,37 @@
   },
   "account_section_payment": {
     "title": "Dane a poplatky",
+    "tax_overview_title": "Prehľad daní",
+    "property_tax_title": "Daň z nehnuteľností",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
     "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú postupne v kontách pribúdať od <strong>28. apríla. do 20. mája</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
-    "error_card_title": "Zatiaľ vás nevidíme medzi daňovníkmi a daňovníčkami",
+    "searching_card_title": "Hľadáme vašu daň",
+    "searching_card_text": "Ak za uplynulý rok vlastníte nehnuteľnosť, ku ktorej je naviazaná daň, vaša daň sa v konte objaví hneď ako bude spracovaná. O nahraní dane do konta vás budeme notifikovať e-mailom.",
+    "error_card_title": "Neevidujeme žiadnu daň z nehnuteľností",
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href={{url}}>Overiť identitu</a>),</li>",
-        "other": "<li>vaše daňové priznanie ešte nebolo spracované, nevlastníte nehnuteľnosť,</li><li>za platbu dane zodpovedá spoluvlastník či spoluvlastníčka nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>za platbu dane je zodpovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>nie ste vlastník/čkou nehnuteľnosti,</li><li>nepodali ste priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
     },
-    "tax_card_title": "Daň z nehnuteľností"
+    "tax_card_title": "Daň z nehnuteľností za rok {{year}}",
+    "tax_card_delivered": "Doručená do konta",
+    "tax_card_amount": "Suma na úhradu",
+    "tax_card_status": "Stav",
+    "tax_card_status_waiting_for_processing": "Čaká na spracovanie",
+    "tax_card_status_not_paid": "Neuhradená",
+    "tax_card_status_partially_paid": "Čiastočne uhradená",
+    "tax_card_status_paid": "Uhradená",
+    "tax_card_status_overpaid": "Preplatok",
+    "tax_form_alert_title": "Predali ste alebo darovali ste nehnuteľnosť?",
+    "tax_form_alert_text": "Ak ste v minulom roku predali alebo darovali nehnuteľnosť, je potrebné podať daňové priznanie na základe, ktorého vám bude vyrubená daň z nehnuteľnosti.",
+    "tax_form_alert_link_text": "Podať daňové priznanie",
+    "effective_next_year_link_text": "Zistiť viac",
+    "set_delivery_method": "Nastaviť doručovanie",
+    "verify_and_set": "Overiť a nastaviť",
+    "tax_administrator": "Správca dane"
   },
   "account_section_help": {
     "navigation": "Pomoc",
@@ -324,6 +343,9 @@
     "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
   "to_pay": "Prejsť na platbu",
+  "pay_installments": "Uhradiť splátkou",
+  "pay_rest": "Uhradiť zvyšnú sumu",
+  "pay_all": "Uhradiť celú sumu",
   "back_to_list": "Späť na zoznam",
   "city": "Mesto",
   "tax_created": "Vytvorená",
@@ -345,8 +367,6 @@
   "qr_code": "QR kód",
   "download_image": "Stiahnuť obrázok",
   "use_one_of_ibans_to_pay": "Pri bankovom prevode použite na úhradu jeden z nasledujúcich IBAN účtov:",
-  "you_will_be_redirected_to_the_payment_gateway": "Budete presmerovaný na platobnú bránu.",
-  "payment_not_possible": "Platba touto možnosťou je dostupná len pre úhradu celej sumy dane z nehnuteľností, prosím využite QR kód alebo prevod.",
   "use_your_banking_app_to_load": "Na načítanie použite bankovú aplikáciu.",
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
@@ -400,6 +420,16 @@
     "csob": "ČSOB, a.s.",
     "csob_iban": "SK31 7500 0000 0000 2574 7653"
   },
+  "delivery_method_change_modal_label": "Vyberte spôsob",
+  "delivery_method_change_success": "Zmena spôsobu doručenia bola uložená",
+  "delivery_method_change_modal_description_true": "Nebude vám doručované štandardné papierové rozhodnutie prostredníctvom pošty. Všetky potrebné informácie a možnosti platby dane z nehnuteľností sa dozviete z oznámenia vo svojom Bratislavskom konte. Toto oznámenie dostanete aj e-mailom, v zašifrovanej podobe.",
+  "delivery_method_change_modal_description_true_title": "Oznámenie v Bratislavskom konte",
+  "delivery_method_change_modal_description_false": "Bude Vám doručené štandardné rozhodnutie prostredníctvom pošty. Vaša daň bude vyrubená týmto rozhodnutím a je splatná v lehote do 15 dní odo dňa nadobudnutia právoplatnosti rozhodnutia.",
+  "delivery_method_change_modal_description_false_title": "Rozhodnutie doručované prostredníctvom pošty do vlastných rúk",
+  "delivery_method_change_error": "Nepodarilo sa zmeniť spôsob doručovania.",
+  "delivery_method_change_modal_title": "Spôsob doručovania miestnych daní a poplatkov",
+  "delivery_method_change_modal_agreement_text": "Pre pokračovanie je nutné prečítať celý text súhlasu.",
+  "delivery_method_change_modal_button_text": "Potvrdzujem a súhlasím",
   "tax_due_multiple_installments": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
   "tax_due_email_channel": "Daň je splatná v termíne <strong>do 15 dní od doručenia notifikačného emailu o dani z nehnuteľností</strong>.",
   "tax_due_standard": "Daň je splatná v termíne do 15 dní <strong>odo dňa právoplatnosti rozhodnutia.</strong>",

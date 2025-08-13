@@ -2,13 +2,12 @@ import Icon from '@assets/images/mestske-konto-situacia-2-1.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 
-const TaxesFeesErrorCard = () => {
+const TaxesFeesSearchingCard = () => {
   const { t } = useTranslation('account')
 
   const content = `
-  <h3>${t('account_section_payment.error_card_title')}</h3>
-  <div>${t('account_section_payment.error_card_content.title')}
-  <ul>${t('account_section_payment.error_card_content.list.other')}</ul><br /></div>
+  <h3>${t('account_section_payment.searching_card_title')}</h3>
+  <div>${t('account_section_payment.searching_card_text')}</div>
   `
 
   return (
@@ -24,4 +23,4 @@ const TaxesFeesErrorCard = () => {
   )
 }
 
-export default TaxesFeesErrorCard
+export default TaxesFeesSearchingCard

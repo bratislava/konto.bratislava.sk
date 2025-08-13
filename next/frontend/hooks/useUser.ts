@@ -58,6 +58,9 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   const subType = currentGdprData?.subType
   const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe
 
+  // TODO change for better naming
+  const isSubscribtionExists = subType !== undefined
+
   const { mutateAsync: changeSubscription, isPending: subscriptionChangePending } = useMutation<
     AxiosResponse<UserControllerGetOrCreateUser200Response>,
     AxiosError,
@@ -85,7 +88,13 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
     networkMode: 'always',
   })
 
-  return { subType, isSubscribed, changeSubscription, subscriptionChangePending }
+  return {
+    subType,
+    isSubscribed,
+    isSubscribtionExists,
+    changeSubscription,
+    subscriptionChangePending,
+  }
 }
 
 export const useUserUpdateBloomreachData = () => {

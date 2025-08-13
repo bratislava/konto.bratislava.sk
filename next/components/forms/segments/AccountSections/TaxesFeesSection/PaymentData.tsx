@@ -1,4 +1,6 @@
 import { DownloadIcon } from '@assets/ui-icons'
+import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
+import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { TaxPaidStatusEnum } from 'openapi-clients/tax'
@@ -10,22 +12,31 @@ import Button from '../../../simple-components/Button'
 import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
-import TaxesFeesDeliveryMethodBanner from './TaxesFeesDeliveryMethodBanner'
+import TaxesFeesVerifyAndSetDeliveryBanner from './TaxesFeesVerifyAndSetDeliveryBanner'
 import { useStrapiTax } from './useStrapiTax'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
-const Details = () => {
-  const { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode } =
-    useTaxFeeSection()
+type DetailsProps = {
+  paymentMethod: PaymentMethodType
+}
+
+const Details = ({ paymentMethod }: DetailsProps) => {
+  const {
+    taxData,
+    redirectToFullPayment,
+    redirectToInstallmentPayment,
+    redirectToFullPaymentIsPending,
+    redirectToInstallmentPaymentIsPending,
+    downloadQrCodeOneTimePayment: downloadQrCode,
+  } = useTaxFeeSection()
   const strapiTax = useStrapiTax()
   const { channelCurrentYearEffective } = useTaxChannel()
 
   const { t } = useTranslation('account')
-  const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
-  const hasMultipleInstallments = taxData.taxInstallments.length > 1
+  const qrCodeBase64 = `data:image/png;base64,${taxData.oneTimePayment.qrCode}`
+  const hasMultipleInstallments = taxData.installmentPayment.isPossible
   const { channelChangeEffectiveNextYear } = useTaxChannel()
-  const cardPaymentDisabled = taxData.paidStatus !== TaxPaidStatusEnum.NotPaid
   const taxDueTextKey = (() => {
     if (hasMultipleInstallments) {
       return 'tax_due_multiple_installments'
@@ -36,6 +47,10 @@ const Details = () => {
 
     return 'tax_due_standard'
   })()
+  const variableSymbol =
+    paymentMethod === PaymentMethod.Installments
+      ? taxData?.installmentPayment.activeInstallment?.variableSymbol
+      : taxData?.oneTimePayment.variableSymbol
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -73,9 +88,9 @@ const Details = () => {
             <div className="isolate flex flex-col items-start gap-1 self-stretch">
               <div className="text-p2">{t('variable_symbol')}</div>
               <div className="flex w-full">
-                <div className="grow text-16-semibold">{taxData?.variableSymbol}</div>
+                <div className="grow text-16-semibold">{variableSymbol}</div>
                 <div className="hidden size-6 cursor-pointer sm:block">
-                  <ClipboardCopy copyText={taxData?.variableSymbol} />
+                  {variableSymbol && <ClipboardCopy copyText={variableSymbol} />}
                 </div>
               </div>
             </div>
@@ -96,18 +111,20 @@ const Details = () => {
           <div className="flex w-full flex-col items-start gap-6 rounded-lg bg-gray-50 p-4 lg:flex-row lg:items-center lg:px-6 lg:py-8">
             <div className="flex grow flex-col items-start gap-2">
               <div className="text-h4">{t('card_payment')}</div>
-              <div className="text-16">
-                {cardPaymentDisabled
-                  ? t('payment_not_possible')
-                  : t('you_will_be_redirected_to_the_payment_gateway')}
-              </div>
             </div>
             <ButtonNew
               variant="black-solid"
-              onPress={() => redirectToPayment()}
-              isLoading={redirectToPaymentIsPending}
+              onPress={() =>
+                paymentMethod === PaymentMethod.Installments
+                  ? redirectToInstallmentPayment()
+                  : redirectToFullPayment()
+              }
+              isLoading={
+                paymentMethod === PaymentMethod.Installments
+                  ? redirectToInstallmentPaymentIsPending
+                  : redirectToFullPaymentIsPending
+              }
               isLoadingText={t('redirect_to_payment_loading')}
-              isDisabled={cardPaymentDisabled}
               fullWidthMobile
             >
               {t('to_pay')}
@@ -156,6 +173,8 @@ const PaymentData = () => {
   const { setOfficialCorrespondenceChannelModalOpen } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const { showEmailCommunicationBanner } = useTaxChannel()
+  const searchParams = useSearchParams()
+  const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
@@ -163,12 +182,12 @@ const PaymentData = () => {
       {showEmailCommunicationBanner ? (
         <div className="flex flex-col gap-6">
           <Alert type="warning" fullWidth message={t('payment_method_access_prompt')} />
-          <TaxesFeesDeliveryMethodBanner
+          <TaxesFeesVerifyAndSetDeliveryBanner
             onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
           />
         </div>
       ) : (
-        <Details />
+        <Details paymentMethod={paymentMethodParam} />
       )}
     </div>
   )

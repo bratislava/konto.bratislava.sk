@@ -625,6 +625,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     )
   }
   // Create description based on the installment status
+  // data that goes to payment gateway should not contain diacritics
   const description =
     activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
       ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`

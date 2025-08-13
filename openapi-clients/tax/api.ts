@@ -1022,29 +1022,11 @@ export interface ResponseTaxPayerDto {
  */
 export interface ResponseTaxPayerReducedDto {
   /**
-   * Permanent address of tax payer
-   * @type {string}
-   * @memberof ResponseTaxPayerReducedDto
-   */
-  permanentResidenceAddress: string | null
-  /**
    * Name of taxpayer
    * @type {string}
    * @memberof ResponseTaxPayerReducedDto
    */
   name: string | null
-  /**
-   * Text of description of name for pdf
-   * @type {string}
-   * @memberof ResponseTaxPayerReducedDto
-   */
-  nameTxt: string | null
-  /**
-   * Text of description of street for pdf
-   * @type {string}
-   * @memberof ResponseTaxPayerReducedDto
-   */
-  permanentResidenceStreetTxt: string | null
   /**
    * Street of permanent residence with number
    * @type {string}
@@ -1064,11 +1046,11 @@ export interface ResponseTaxPayerReducedDto {
    */
   permanentResidenceCity: string | null
   /**
-   * Birth number with slash
+   * Id of tax payer from Noris
    * @type {string}
    * @memberof ResponseTaxPayerReducedDto
    */
-  birthNumber: string
+  externalId: string | null
 }
 /**
  *

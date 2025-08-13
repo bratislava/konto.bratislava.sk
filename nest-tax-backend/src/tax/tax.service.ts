@@ -135,7 +135,13 @@ export class TaxService {
     }
 
     // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
-    const taxInstallments = fixInstallmentTexts(tax.taxInstallments, tax.year)
+    const taxInstallments = fixInstallmentTexts(
+      tax.taxInstallments,
+      tax.year,
+    ).map((installment) => ({
+      ...installment,
+      order: installment.order.toString(),
+    }))
 
     const paidStatus = getTaxStatus(tax.amount, paidAmount)
 
@@ -236,7 +242,13 @@ export class TaxService {
     try {
       const user = await this.getTaxByYear(year, birthNumber)
       const taxDetails = taxDetailsToPdf(user.taxDetails)
-      const totals = taxTotalsToPdf(user, user.taxInstallments)
+      const totals = taxTotalsToPdf(
+        user,
+        user.taxInstallments.map((data) => ({
+          ...data,
+          order: data.order ? +data.order : 1,
+        })),
+      )
       return await ejs.renderFile('public/tax-pdf.ejs', {
         user,
         logo: path.resolve('public/logoBaTax.png'),

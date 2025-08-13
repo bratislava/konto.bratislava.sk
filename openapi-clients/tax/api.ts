@@ -3067,6 +3067,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      *
      * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     taxControllerGetArchivedTaxes: async (
@@ -3194,6 +3195,44 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary Get all taxes (paid and not paid)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerV2GetTaxesListV2: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v2/tax/taxes`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -3235,6 +3274,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
      *
      * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async taxControllerGetArchivedTaxes(
@@ -3312,6 +3352,29 @@ export const TaxApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     *
+     * @summary Get all taxes (paid and not paid)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async taxControllerV2GetTaxesListV2(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetTaxesDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.taxControllerV2GetTaxesListV2(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerV2GetTaxesListV2']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -3345,6 +3408,7 @@ export const TaxApiFactory = function (
      *
      * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     taxControllerGetArchivedTaxes(
@@ -3385,6 +3449,19 @@ export const TaxApiFactory = function (
         .taxControllerV2GetTaxDetailByYearV2(year, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     *
+     * @summary Get all taxes (paid and not paid)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerV2GetTaxesListV2(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseGetTaxesDto> {
+      return localVarFp
+        .taxControllerV2GetTaxesListV2(options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -3413,6 +3490,7 @@ export class TaxApi extends BaseAPI {
    *
    * @summary Get all taxes (paid and not paid)
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof TaxApi
    */
@@ -3448,6 +3526,19 @@ export class TaxApi extends BaseAPI {
   public taxControllerV2GetTaxDetailByYearV2(year: number, options?: RawAxiosRequestConfig) {
     return TaxApiFp(this.configuration)
       .taxControllerV2GetTaxDetailByYearV2(year, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get all taxes (paid and not paid)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof TaxApi
+   */
+  public taxControllerV2GetTaxesListV2(options?: RawAxiosRequestConfig) {
+    return TaxApiFp(this.configuration)
+      .taxControllerV2GetTaxesListV2(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

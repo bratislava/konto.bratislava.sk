@@ -28,9 +28,9 @@ const defaultInput = {
   variableSymbol: '1234567890',
   dateOfValidity: new Date('2025-01-01'),
   installments: [
-    { order: '1', amount: 2200 },
-    { order: '2', amount: 2200 },
-    { order: '3', amount: 2200 },
+    { order: 1, amount: 2200 },
+    { order: 2, amount: 2200 },
+    { order: 3, amount: 2200 },
   ],
   taxDetails: [
     {
@@ -590,9 +590,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     variableSymbol: '1234567890',
     dateOfValidity: new Date('2025-01-01'),
     installments: [
-      { order: '1', amount: 2200 },
-      { order: '2', amount: 2200 },
-      { order: '3', amount: 2200 },
+      { order: 1, amount: 2200 },
+      { order: 2, amount: 2200 },
+      { order: 3, amount: 2200 },
     ],
     specificSymbol: '2025200000',
     taxPayments: [],

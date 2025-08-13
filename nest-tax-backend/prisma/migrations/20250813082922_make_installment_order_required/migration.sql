@@ -12,6 +12,8 @@
 
 */
 
+BEGIN;
+
 -- Convert column type from String to Integer (NULL values convert safely)
 ALTER TABLE "TaxInstallment"
     ALTER COLUMN "order" TYPE INTEGER USING "order"::INTEGER;
@@ -29,3 +31,5 @@ SET "order" = CASE
 -- Make column required now that all rows have valid values
 ALTER TABLE "TaxInstallment"
     ALTER COLUMN "order" SET NOT NULL;
+
+COMMIT;

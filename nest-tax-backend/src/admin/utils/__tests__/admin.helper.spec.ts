@@ -191,19 +191,16 @@ describe('admin.helper', () => {
       expect(result).toEqual([
         {
           taxId: 1,
-          order: '1',
           amount: 3000,
           text: 'First Payment',
         },
         {
           taxId: 1,
-          order: '2',
           amount: 5000,
           text: 'Second Payment',
         },
         {
           taxId: 1,
-          order: '3',
           amount: 2000,
           text: 'Third Payment',
         },

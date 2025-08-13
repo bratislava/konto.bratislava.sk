@@ -78,19 +78,16 @@ export const mapNorisToTaxInstallmentsData = (
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_1),
-      order: '1',
       text: data.TXTSPL4_1,
     },
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_2),
-      order: '2',
       text: data.TXTSPL4_2,
     },
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_3),
-      order: '3',
       text: data.TXTSPL4_3,
     },
   ]

@@ -1,8 +1,10 @@
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import { ROUTES } from 'frontend/api/constants'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import ContactInformationSection from './ContactInformation'
-import PaymentData from './PaymentData'
 import TaxDetails from './TaxDetails'
 import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
 import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethodChangeModal'
@@ -12,6 +14,8 @@ import { useStrapiTax } from './useStrapiTax'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxFeeSection = () => {
+  const { t } = useTranslation('account')
+
   const {
     taxData,
     officialCorrespondenceChannelModalOpen,
@@ -41,7 +45,23 @@ const TaxFeeSection = () => {
           </div>
           <ContactInformationSection />
           <TaxDetails />
-          {taxData.isPayable && <PaymentData />}
+
+          <ButtonNew
+            variant="black-solid"
+            href={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}
+            fullWidthMobile
+          >
+            {t('pay_all')}
+            {t('pay_rest')}
+          </ButtonNew>
+          <ButtonNew
+            variant="black-solid"
+            href={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=splatky`}
+            fullWidthMobile
+          >
+            {t('pay_installments')}
+          </ButtonNew>
+
           <TaxFooter />
         </div>
       </div>

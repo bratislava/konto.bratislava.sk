@@ -1,4 +1,5 @@
 import { ChevronRightIcon } from '@assets/ui-icons'
+import { TaxPaidStatusAllType } from 'frontend/types/types'
 import { useTranslation } from 'next-i18next'
 import { ResponseGetTaxesBodyDto, TaxPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
@@ -10,34 +11,52 @@ import MLinkNew from '../../../simple-components/MLinkNew'
 import TaxPaidStatus from './TaxPaidStatus'
 
 type TaxesFeesCardProps = {
-  taxData: ResponseGetTaxesBodyDto
+  taxData: Partial<Omit<ResponseGetTaxesBodyDto, 'paidStatus' | 'amount' | 'paidAmount'>> & {
+    paidStatus: TaxPaidStatusAllType
+    amount: number | null
+    paidAmount: number | null
+    year: number
+  }
+  isActiveLink: boolean
 }
 
-const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
+const TaxesFeesCard = ({ taxData, isActiveLink }: TaxesFeesCardProps) => {
   const { year, paidStatus, createdAt, paidAmount, amount } = taxData
   const { t } = useTranslation('account')
 
+  // TODO: change appearence of this card, check figma
   return (
     <>
       {/* Desktop */}
       <div className="relative hidden h-[104px] w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex">
         <div className="flex w-full items-center justify-between">
-          <div className="flex w-full flex-col pl-6">
-            <MLinkNew href={ROUTES.TAXES_AND_FEES_YEAR(year)} variant="unstyled" stretched>
-              <h3 className="mb-1 text-20-semibold">
-                {t('account_section_payment.tax_card_title')}
+          <div className="flex w-full max-w-[450px] flex-col pl-6">
+            {isActiveLink ? (
+              <MLinkNew href={ROUTES.TAXES_AND_FEES_YEAR(year)} variant="unstyled" stretched>
+                <h3 className="mb-1 text-16-semibold">
+                  {t('account_section_payment.tax_card_title', { year })}
+                </h3>
+              </MLinkNew>
+            ) : (
+              <h3 className="mb-1 text-16-semibold">
+                {t('account_section_payment.tax_card_title', { year })}
               </h3>
-              <span className="text-p3">{`za rok ${year}`}</span>
-            </MLinkNew>
+            )}
           </div>
-          <div className="flex w-full items-center justify-end">
+          <div className="flex w-full items-center">
             <div className="flex flex-col px-10">
-              <span className="mb-1 text-16-semibold">Vytvorená</span>
-              <span className="w-max">{formatDate(createdAt)}</span>
+              <span className="mb-1 text-p3-semibold">
+                {t('account_section_payment.tax_card_delivered')}
+              </span>
+              <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
             </div>
-            <div className="flex flex-col border-x-2 px-10">
-              <span className="mb-1 text-16-semibold">Suma</span>
-              {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
+            <div className="flex flex-col px-10">
+              <span className="mb-1 text-p3-semibold">
+                {t('account_section_payment.tax_card_amount')}
+              </span>
+              {amount === null ? (
+                <span>-</span>
+              ) : paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
                 <span className="flex w-max items-center">
                   <FormatCurrencyFromCents value={paidAmount} /> /{' '}
                   <FormatCurrencyFromCents value={amount} />
@@ -48,47 +67,60 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
                 </span>
               )}
             </div>
-            <div className="flex flex-col items-center px-10">
+            <div className="flex flex-col px-10">
+              <span className="mb-1 text-p3-semibold">
+                {t('account_section_payment.tax_card_status')}
+              </span>
               <TaxPaidStatus status={paidStatus} />
             </div>
           </div>
         </div>
-        <div className="h-full w-16 min-w-[64px] cursor-pointer border-l-2">
-          <div className="flex size-full items-center justify-center">
-            <ChevronRightIcon />
+        {isActiveLink && (
+          <div className="h-full w-16 min-w-[64px] cursor-pointer">
+            <div className="flex size-full items-center justify-center">
+              <ChevronRightIcon />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {/* Mobile */}
       <div className="relative flex h-24 w-full items-center justify-between border-b-2 border-gray-200 bg-white lg:hidden">
         <div className="flex w-full items-start justify-between">
           <div className="flex flex-col">
-            <MLinkNew
-              href={ROUTES.TAXES_AND_FEES_YEAR(year)}
-              variant="unstyled"
-              stretched
-              className="mb-1 text-p2-semibold leading-5"
-            >{`${t('account_section_payment.tax_card_title')} za rok ${year}`}</MLinkNew>
+            {isActiveLink ? (
+              <MLinkNew
+                href={ROUTES.TAXES_AND_FEES_YEAR(year)}
+                variant="unstyled"
+                stretched
+                className="mb-1 text-p2-semibold leading-5"
+              >{`${t('account_section_payment.tax_card_title', { year })}`}</MLinkNew>
+            ) : (
+              <span className="mb-1 text-p2-semibold leading-5">{`${t('account_section_payment.tax_card_title', { year })}`}</span>
+            )}
             <div className="flex flex-wrap items-center">
-              {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
+              {amount !== null && paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount && (
                 <span className="flex w-max items-center text-p3">
                   <FormatCurrencyFromCents value={paidAmount} /> /{' '}
                   <FormatCurrencyFromCents value={amount} />
                 </span>
-              ) : (
-                <span className="text-p3">
-                  <FormatCurrencyFromCents value={amount} />
-                </span>
               )}
+              {amount !== null &&
+                (paidStatus !== TaxPaidStatusEnum.PartiallyPaid || !paidAmount) && (
+                  <span className="text-p3">
+                    <FormatCurrencyFromCents value={amount} />
+                  </span>
+                )}
               <div className="flex items-center">
-                <span className="mx-3 size-1 rounded-full bg-gray-700" />
+                {amount !== null && <span className="mx-3 size-1 rounded-full bg-gray-700" />}
                 <TaxPaidStatus status={paidStatus} />
               </div>
             </div>
           </div>
-          <span className="flex size-5 items-center justify-center">
-            <ChevronRightIcon />
-          </span>
+          {isActiveLink && (
+            <span className="flex size-5 items-center justify-center">
+              <ChevronRightIcon />
+            </span>
+          )}
         </div>
       </div>
     </>

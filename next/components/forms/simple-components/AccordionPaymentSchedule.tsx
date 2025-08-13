@@ -52,7 +52,7 @@ const PaymentScheduleView = () => {
           {/* /> */}
         </div>
         <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-4 lg:gap-6 lg:p-6">
-          {taxData.taxInstallments?.map((taxInstallment, index) => (
+          {taxData.installmentPayment.installments?.map((taxInstallment, index) => (
             <>
               {index !== 0 && <div className="h-0.5 w-full bg-gray-200" />}
               <div

@@ -1022,6 +1022,18 @@ export interface ResponseTaxPayerDto {
  */
 export interface ResponseTaxSummaryDetailDto {
   /**
+   * Payment status
+   * @type {TaxPaidStatusEnum}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  paidStatus: TaxPaidStatusEnum
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  year: number
+  /**
    * Total amount paid
    * @type {number}
    * @memberof ResponseTaxSummaryDetailDto
@@ -1064,6 +1076,7 @@ export interface ResponseTaxSummaryDetailDto {
    */
   taxAdministrator: ResponseTaxAdministratorDto | null
 }
+
 /**
  * Type of tax detail - object of tax
  * @export

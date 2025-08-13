@@ -628,8 +628,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
       ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
       : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
 
-  // const description = `Platba za dane pre BA s id dane ${taxId}`
-
   return {
     amount: activeInstallmentInfo.remainingAmount,
     taxId,

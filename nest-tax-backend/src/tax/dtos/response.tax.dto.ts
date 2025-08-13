@@ -979,6 +979,71 @@ export class ResponseInstallmentPaymentDetailDto {
   activeInstallment?: ResponseActiveInstallmentDto
 }
 
+export class ResponseTaxPayerReducedDto {
+  @ApiProperty({
+    description: 'Permanent address of tax payer',
+    default: 'Bratislava, Hlavne námestie 1',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceAddress: string | null
+
+  @ApiProperty({
+    description: 'Name of taxpayer',
+    default: 'Bratislavčan Daňový',
+  })
+  @IsString()
+  @IsOptional()
+  name: string | null
+
+  @ApiProperty({
+    description: 'Text of description of name for pdf',
+    default: 'Meno daňovníka/ subjektu',
+  })
+  @IsString()
+  @IsOptional()
+  nameTxt: string | null
+
+  @ApiProperty({
+    description: 'Text of description of street for pdf',
+    default: 'Ulica trvalého pobytu',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceStreetTxt: string | null
+
+  @ApiProperty({
+    description: 'Street of permanent residence with number',
+    default: 'Uršulínska 6 3/6',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceStreet: string | null
+
+  @ApiProperty({
+    description: 'Zip of permanent residence with number',
+    default: '811 01',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceZip: string | null
+
+  @ApiProperty({
+    description: 'City of permanent residence with number',
+    default: 'Bratislava',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceCity: string | null
+
+  @ApiProperty({
+    description: 'Birth number with slash',
+    default: '920101/1111',
+  })
+  @IsString()
+  birthNumber: string
+}
+
 export class ResponseTaxSummaryDetailDto {
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()
@@ -1032,4 +1097,10 @@ export class ResponseTaxSummaryDetailDto {
   @Type(() => ResponseTaxAdministratorDto)
   @IsOptional()
   taxAdministrator: ResponseTaxAdministratorDto | null
+
+  @ApiProperty({
+    description: 'Tax payer data',
+    type: ResponseTaxPayerReducedDto
+  })
+  taxPayer: ResponseTaxPayerReducedDto
 }

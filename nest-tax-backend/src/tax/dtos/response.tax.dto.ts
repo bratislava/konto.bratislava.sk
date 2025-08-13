@@ -1077,7 +1077,10 @@ export class ResponseTaxSummaryDetailDto {
 
   @ApiProperty({
     description: 'Tax payer data',
-    type: ResponseTaxPayerReducedDto
+    type: ResponseTaxPayerReducedDto,
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxPayerReducedDto)
   taxPayer: ResponseTaxPayerReducedDto
 }

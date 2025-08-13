@@ -980,6 +980,20 @@ export class ResponseInstallmentPaymentDetailDto {
 }
 
 export class ResponseTaxSummaryDetailDto {
+  @ApiProperty({
+    description: 'Payment status',
+    example: TaxPaidStatusEnum.PAID,
+    enumName: 'TaxPaidStatusEnum',
+    enum: TaxPaidStatusEnum,
+  })
+  @IsEnum(TaxPaidStatusEnum)
+  paidStatus: TaxPaidStatusEnum
+
+  @ApiProperty({ description: 'Year of tax', example: 2024 })
+  @IsNumber()
+  @IsPositive()
+  year: number
+
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()
   @IsPositive()

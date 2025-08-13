@@ -320,9 +320,15 @@ export class TaxService {
     }
 
     const { taxAdministrator } = tax.taxPayer
+    const paidStatus = getTaxStatus(
+      detailWithoutQrCode.overallAmount,
+      detailWithoutQrCode.overallPaid,
+    )
 
     return {
       ...detailWithoutQrCode,
+      year,
+      paidStatus,
       oneTimePayment,
       installmentPayment,
       taxAdministrator,

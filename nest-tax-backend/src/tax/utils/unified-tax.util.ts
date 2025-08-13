@@ -174,9 +174,7 @@ const calculateInstallmentAmounts = (
   }
 
   const amounts = [1, 2, 3].map((order) => {
-    const installment = installments.find(
-      (item) => item.order === order,
-    )
+    const installment = installments.find((item) => item.order === order)
     if (!installment) {
       throw new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,

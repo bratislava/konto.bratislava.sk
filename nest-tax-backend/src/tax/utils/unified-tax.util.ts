@@ -163,7 +163,7 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
 }
 
 const calculateInstallmentAmounts = (
-  installments: { order: string | null; amount: number }[],
+  installments: { order: number; amount: number }[],
   overallPaid: number,
 ): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
   if (installments.length !== 3) {
@@ -174,9 +174,7 @@ const calculateInstallmentAmounts = (
   }
 
   const amounts = [1, 2, 3].map((order) => {
-    const installment = installments.find(
-      (item) => item.order === order.toString(),
-    )
+    const installment = installments.find((item) => item.order === order)
     if (!installment) {
       throw new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
@@ -220,7 +218,7 @@ const calculateInstallmentPaymentDetails = (options: {
   taxYear: number
   paymentCalendarThreshold: number
   dueDate?: Dayjs
-  installments: { order: string | null; amount: number }[]
+  installments: { order: number; amount: number }[]
   variableSymbol: string
   specificSymbol: any
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
@@ -400,7 +398,7 @@ export const getTaxDetailPure = (options: {
   paymentCalendarThreshold: number // splátková hranica (66 Eur)
   variableSymbol: string
   dateOfValidity: Date | null // dátum právoplatnosti
-  installments: { order: string | null; amount: number }[]
+  installments: { order: number; amount: number }[]
   taxDetails: TaxDetail[]
   taxConstructions: number
   taxFlat: number
@@ -521,7 +519,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   paymentCalendarThreshold: number
   variableSymbol: string
   dateOfValidity: Date | null
-  installments: { order: string | null; amount: number }[]
+  installments: { order: number; amount: number }[]
   specificSymbol: string
   taxPayments: {
     amount: number

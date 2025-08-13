@@ -322,14 +322,11 @@ export class TaxService {
 
     const { taxAdministrator } = tax.taxPayer
     const taxPayer: ResponseTaxPayerReducedDto = {
-      birthNumber: tax.taxPayer.birthNumber,
       name: tax.taxPayer.name,
-      nameTxt: tax.taxPayer.nameTxt,
-      permanentResidenceAddress: tax.taxPayer.permanentResidenceAddress,
-      permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
       permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,
-      permanentResidenceStreetTxt: tax.taxPayer.permanentResidenceStreetTxt,
       permanentResidenceZip: tax.taxPayer.permanentResidenceZip,
+      permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
+      externalId: tax.taxPayer.externalId,
     }
 
     return {

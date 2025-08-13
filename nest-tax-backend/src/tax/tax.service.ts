@@ -340,9 +340,15 @@ export class TaxService {
       permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
       externalId: tax.taxPayer.externalId,
     }
+    const paidStatus = getTaxStatus(
+      detailWithoutQrCode.overallAmount,
+      detailWithoutQrCode.overallPaid,
+    )
 
     return {
       ...detailWithoutQrCode,
+      year,
+      paidStatus,
       oneTimePayment,
       installmentPayment,
       taxAdministrator,

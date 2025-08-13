@@ -37,6 +37,26 @@ const bratislavaTimeZone = 'Europe/Bratislava'
 
 export const stateHolidays = [
   {
+    year: 2024,
+    dates: [
+      dayjs.tz('2024-01-01', bratislavaTimeZone),
+      dayjs.tz('2024-01-06', bratislavaTimeZone),
+      dayjs.tz('2024-03-29', bratislavaTimeZone),
+      dayjs.tz('2024-04-01', bratislavaTimeZone),
+      dayjs.tz('2024-05-01', bratislavaTimeZone),
+      dayjs.tz('2024-05-08', bratislavaTimeZone),
+      dayjs.tz('2024-07-05', bratislavaTimeZone),
+      dayjs.tz('2024-08-29', bratislavaTimeZone),
+      dayjs.tz('2024-09-01', bratislavaTimeZone),
+      dayjs.tz('2024-09-15', bratislavaTimeZone),
+      dayjs.tz('2024-11-01', bratislavaTimeZone),
+      dayjs.tz('2024-11-17', bratislavaTimeZone),
+      dayjs.tz('2024-12-24', bratislavaTimeZone),
+      dayjs.tz('2024-12-25', bratislavaTimeZone),
+      dayjs.tz('2024-12-26', bratislavaTimeZone),
+    ],
+  },
+  {
     year: 2025,
     dates: [
       dayjs.tz('2025-01-01', bratislavaTimeZone),
@@ -602,12 +622,13 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
     )
   }
-
   // Create description based on the installment status
   const description =
     activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
-      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
-      : `Platba ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
+      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+      : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+
+  // const description = `Platba za dane pre BA s id dane ${taxId}`
 
   return {
     amount: activeInstallmentInfo.remainingAmount,

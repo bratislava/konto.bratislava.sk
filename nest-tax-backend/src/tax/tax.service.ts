@@ -21,6 +21,7 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDto,
+  ResponseTaxPayerReducedDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
@@ -320,12 +321,20 @@ export class TaxService {
     }
 
     const { taxAdministrator } = tax.taxPayer
+    const taxPayer: ResponseTaxPayerReducedDto = {
+      name: tax.taxPayer.name,
+      permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,
+      permanentResidenceZip: tax.taxPayer.permanentResidenceZip,
+      permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
+      externalId: tax.taxPayer.externalId,
+    }
 
     return {
       ...detailWithoutQrCode,
       oneTimePayment,
       installmentPayment,
       taxAdministrator,
+      taxPayer,
     }
   }
 

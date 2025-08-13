@@ -1018,6 +1018,43 @@ export interface ResponseTaxPayerDto {
 /**
  *
  * @export
+ * @interface ResponseTaxPayerReducedDto
+ */
+export interface ResponseTaxPayerReducedDto {
+  /**
+   * Name of taxpayer
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  name: string | null
+  /**
+   * Street of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceStreet: string | null
+  /**
+   * Zip of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceZip: string | null
+  /**
+   * City of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceCity: string | null
+  /**
+   * Id of tax payer from Noris
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  externalId: string | null
+}
+/**
+ *
+ * @export
  * @interface ResponseTaxSummaryDetailDto
  */
 export interface ResponseTaxSummaryDetailDto {
@@ -1063,6 +1100,12 @@ export interface ResponseTaxSummaryDetailDto {
    * @memberof ResponseTaxSummaryDetailDto
    */
   taxAdministrator: ResponseTaxAdministratorDto | null
+  /**
+   * Tax payer data
+   * @type {ResponseTaxPayerReducedDto}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  taxPayer: ResponseTaxPayerReducedDto
 }
 /**
  * Type of tax detail - object of tax

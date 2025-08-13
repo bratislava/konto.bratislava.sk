@@ -33,6 +33,20 @@ export enum TaxPaidStatusEnum {
   OVER_PAID = 'OVER_PAID',
 }
 
+export enum TaxStatusEnum {
+  NOT_PAID = 'NOT_PAID',
+  PARTIALLY_PAID = 'PARTIALLY_PAID',
+  PAID = 'PAID',
+  OVER_PAID = 'OVER_PAID',
+  AWAITING_PROCESSING = 'AWAITING_PROCESSING',
+}
+
+export enum TaxAvailabilityStatus {
+  AVAILABLE = 'AVAILABLE',
+  LOOKING_FOR_YOUR_TAX = 'LOOKING_FOR_YOUR_TAX',
+  TAX_NOT_ON_RECORD = 'TAX_NOT_ON_RECORD',
+}
+
 export enum OneTimePaymentReasonNotPossibleEnum {
   ALREADY_PAID = 'ALREADY_PAID',
 }

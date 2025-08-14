@@ -139,6 +139,7 @@ export class TaxController {
   @HttpCode(200)
   @ApiOperation({
     summary: 'Get all taxes (paid and not paid)',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,

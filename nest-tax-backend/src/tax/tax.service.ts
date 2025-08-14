@@ -40,8 +40,10 @@ const paymentCalendarThreshold = 6600
 
 const specificSymbol = '2025200000'
 
-const waitForTaxFromMonth = 3
-const waitForTaxTilMonth = 4
+const lookingForTaxDate = {
+  from: { month: 2, day: 1 },
+  to: { month: 7, day: 1 },
+}
 
 @Injectable()
 export class TaxService {
@@ -300,15 +302,19 @@ export class TaxService {
         year: true,
       },
     })
-    const currentYear = new Date().getFullYear()
-    const currentMonth = new Date().getMonth()
-    const createdAtLessThanAWeekAgo = taxPayer
-      ? dayjs(taxPayer.createdAt).isAfter(dayjs().subtract(1, 'week'))
-      : false
+
+    const currentTime = dayjs().tz('Europe/Bratislava')
+    const displayFrom = dayjs.tz(
+      `${currentTime.year()}-${lookingForTaxDate.from.month}-${lookingForTaxDate.from.day}`,
+      'Europe/Bratislava',
+    )
+    const displayTo = dayjs.tz(
+      `${currentTime.year()}-${lookingForTaxDate.to.month}-${lookingForTaxDate.to.day}`,
+      'Europe/Bratislava',
+    )
 
     const shouldAddCurrentYear =
-      createdAtLessThanAWeekAgo ||
-      (currentMonth >= waitForTaxFromMonth && currentMonth < waitForTaxTilMonth)
+      currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
 
     if (taxes.length === 0) {
       const availabilityStatus = shouldAddCurrentYear
@@ -335,11 +341,13 @@ export class TaxService {
       }),
     )
 
-    const currentYearTaxExists = items.some((item) => item.year === currentYear)
+    const currentYearTaxExists = items.some(
+      (item) => item.year === currentTime.year(),
+    )
 
     if (!currentYearTaxExists && shouldAddCurrentYear) {
       items.unshift({
-        year: currentYear,
+        year: currentTime.year(),
         status: TaxStatusEnum.AWAITING_PROCESSING,
       })
     }

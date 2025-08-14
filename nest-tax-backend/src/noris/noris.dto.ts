@@ -1,5 +1,3 @@
-import { DeliveryMethod } from './noris.types'
-
 export interface NorisTaxPayersDto {
   adresa_tp_sidlo: string
   sposob_dorucenia: string
@@ -100,7 +98,6 @@ export interface NorisTaxPayersDto {
   uzivatelsky_atribut: string
   uhrazeno: string
   zbyva_uhradit: string
-  delivery_method: DeliveryMethod | null
 }
 
 export interface NorisPaymentsDto {

@@ -21,6 +21,7 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDto,
+  ResponseTaxPayerReducedDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
@@ -134,7 +135,13 @@ export class TaxService {
     }
 
     // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
-    const taxInstallments = fixInstallmentTexts(tax.taxInstallments, tax.year)
+    const taxInstallments = fixInstallmentTexts(
+      tax.taxInstallments,
+      tax.year,
+    ).map((installment) => ({
+      ...installment,
+      order: installment.order.toString(),
+    }))
 
     const paidStatus = getTaxStatus(tax.amount, paidAmount)
 
@@ -235,7 +242,13 @@ export class TaxService {
     try {
       const user = await this.getTaxByYear(year, birthNumber)
       const taxDetails = taxDetailsToPdf(user.taxDetails)
-      const totals = taxTotalsToPdf(user, user.taxInstallments)
+      const totals = taxTotalsToPdf(
+        user,
+        user.taxInstallments.map((data) => ({
+          ...data,
+          order: data.order ? +data.order : 1,
+        })),
+      )
       return await ejs.renderFile('public/tax-pdf.ejs', {
         user,
         logo: path.resolve('public/logoBaTax.png'),
@@ -324,6 +337,13 @@ export class TaxService {
       detailWithoutQrCode.overallAmount,
       detailWithoutQrCode.overallPaid,
     )
+    const taxPayer: ResponseTaxPayerReducedDto = {
+      name: tax.taxPayer.name,
+      permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,
+      permanentResidenceZip: tax.taxPayer.permanentResidenceZip,
+      permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
+      externalId: tax.taxPayer.externalId,
+    }
 
     return {
       ...detailWithoutQrCode,
@@ -332,6 +352,7 @@ export class TaxService {
       oneTimePayment,
       installmentPayment,
       taxAdministrator,
+      taxPayer,
     }
   }
 

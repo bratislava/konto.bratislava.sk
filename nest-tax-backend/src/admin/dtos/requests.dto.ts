@@ -174,7 +174,7 @@ export class RequestAdminCreateTestingTaxNorisData {
 
   @ApiProperty({
     description: 'Date of tax ruling (dátum právoplatnosti)',
-    example: '2024-01-01',
+    example: '2024-01-01T07:31:39.916Z',
   })
   @IsString()
   @IsOptional()

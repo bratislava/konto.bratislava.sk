@@ -604,7 +604,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     expect(output).toEqual({
       amount: 2200,
       taxId: 123,
-      description: 'Platba 1. splátky za dane pre BA s id dane 123',
+      description: 'Platba 1. splatky za dane pre BA s id dane 123',
     })
   })
 
@@ -618,7 +618,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     expect(output).toEqual({
       amount: 2199,
       taxId: 123,
-      description: 'Platba zostatku 1. splátky za dane pre BA s id dane 123',
+      description: 'Platba zostatku 1. splatky za dane pre BA s id dane 123',
     })
   })
 

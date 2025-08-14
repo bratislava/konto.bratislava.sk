@@ -7,7 +7,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
-import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenuContext'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
@@ -94,14 +93,13 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
         <meta name="theme-color" content="#ffffff" />
         {/* Prevents automatic zooming on input fields on safari, which some users consider a bug. Source: https://stackoverflow.com/a/46254706 */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
         <style>{`
           :root {
             --inter-font: ${inter.style.fontFamily};
           }
         `}</style>
       </Head>
-      {environment.gtmId ? (
+      {environment.gtmId && allowCookies ? (
         <GoogleTagManager
           gtmId={environment.gtmId}
           auth={environment.gtmAuth}
@@ -128,7 +126,6 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                       <div id="root">
                         <Component {...pageProps} />
                       </div>
-                      {allowCookies ? <CookieConsent /> : null}
                     </NuqsAdapter>
                   </NavMenuContextProvider>
                 </PlausibleProvider>

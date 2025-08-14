@@ -3,6 +3,7 @@ import { randomBytes } from 'node:crypto'
 import { TaxAdministrator } from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
+import { NorisTaxPayersDto } from '../../noris/noris.dto'
 
 /**
  * Creates a mock Noris tax record for testing purposes based on user input
@@ -11,7 +12,13 @@ export const createTestingTaxMock = (
   norisData: RequestAdminCreateTestingTaxNorisData,
   taxAdministrator: TaxAdministrator,
   year: number,
-) => {
+): NorisTaxPayersDto => {
+  // This is not exact, but makes sure the total will be correct
+  const total = parseFloat(norisData.taxTotal.replace(',', '.'))
+  const spl1 = total / 3
+  const spl2  = (total - spl1) / 2
+  const spl3 = total - spl1 - spl2
+
   return {
     ICO_RC: norisData.fakeBirthNumber,
     subjekt_nazev: norisData.nameSurname,
@@ -53,19 +60,19 @@ export const createTestingTaxMock = (
     TXTSPL1: 'TEST: Daň za rok je splatná do xx.yy',
     SPL1: norisData.taxTotal,
     TXTSPL4_1: 'Test splatka1',
-    SPL4_1: (parseFloat(norisData.taxTotal.replace(',', '.')) / 4)
+    SPL4_1: spl1
       .toFixed(2)
       .replace('.', ','),
     TXTSPL4_2: 'Test splatka2',
-    SPL4_2: (parseFloat(norisData.taxTotal.replace(',', '.')) / 4)
+    SPL4_2: spl2
       .toFixed(2)
       .replace('.', ','),
     TXTSPL4_3: 'Test splatka3',
-    SPL4_3: (parseFloat(norisData.taxTotal.replace(',', '.')) / 4)
+    SPL4_3: spl3
       .toFixed(2)
       .replace('.', ','),
-    TXTSPL4_4: 'Test splatka4',
-    SPL4_4: (parseFloat(norisData.taxTotal.replace(',', '.')) / 4)
+    TXTSPL4_4: '',
+    SPL4_4: 0
       .toFixed(2)
       .replace('.', ','),
 

@@ -24,7 +24,6 @@ import {
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import {
-  ResponseGetTaxesDto,
   ResponseGetTaxesListDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
@@ -73,7 +72,7 @@ export class TaxControllerV2 {
   @ApiResponse({
     status: 200,
     description: 'Load list of taxes by limit, default value 5',
-    type: ResponseGetTaxesDto,
+    type: ResponseGetTaxesListDto,
   })
   @ApiResponse({
     status: 422,

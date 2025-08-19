@@ -16,8 +16,9 @@ import {
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
-import { ResponseTaxSummaryDetailDto } from './dtos/response.tax.dto'
+import { DeliveryMethodTaxDto, ResponseTaxSummaryDetailDto } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
+import { CustomErrorTaxTypesResponseEnum } from './dtos/error.dto'
 
 @ApiTags('tax')
 @ApiBearerAuth()
@@ -53,5 +54,40 @@ export class TaxControllerV2 {
     @Query('year') year: number,
   ) {
     return this.taxService.getTaxDetail(baUser.birthNumber, year)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get delivery method by year.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Get delivery method of user.',
+    type: DeliveryMethodTaxDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+    type: ResponseErrorDto,
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Error to load tax data',
+    type: ResponseErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @UseGuards(TiersGuard)
+  @UseGuards(AuthenticationGuard)
+  @Get('get-delivery-method')
+  async getDeliveryMethod(
+    @BratislavaUser() baUser: BratislavaUserDto,
+    @Query('year') year: number,
+  ) {
+    return this.taxService.getDeliveryMethod(baUser.birthNumber, year)
   }
 }

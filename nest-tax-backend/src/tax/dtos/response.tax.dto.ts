@@ -26,6 +26,7 @@ export enum TaxDetailTypeEnum {
   GROUND = 'GROUND',
 }
 
+// TODO deprecated enum
 export enum TaxPaidStatusEnum {
   NOT_PAID = 'NOT_PAID',
   PARTIALLY_PAID = 'PARTIALLY_PAID',

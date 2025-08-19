@@ -83,7 +83,7 @@ export class CityAccountSubservice {
     return result
   }
 
-  async getDeliveryMethod(
+  async getDeliveryMethods(
     birthNumber: string,
   ) {
     const birthNumberWithoutSlash = birthNumber.replace('/', '')

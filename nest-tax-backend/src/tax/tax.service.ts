@@ -1,7 +1,7 @@
 import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
-import { PaymentStatus } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus } from '@prisma/client'
 import dayjs from 'dayjs'
 import ejs from 'ejs'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -16,6 +16,7 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
+  DeliveryMethodTaxDto,
   OneTimePaymentTypeEnum,
   ResponseGetTaxesBodyDto,
   ResponseGetTaxesDto,
@@ -295,14 +296,37 @@ export class TaxService {
 
     const { taxAdministrator } = tax.taxPayer
 
-    const deliveryMethod = await this.cityAccountSubservice.getDeliveryMethod(birthNumber)
-
     return {
       ...detailWithoutQrCode,
       oneTimePayment,
       installmentPayment,
       taxAdministrator,
-      deliveryMethod,
     }
+  }
+
+  async getDeliveryMethod(
+    birthNumber: string,
+    year: number,
+  ): Promise<DeliveryMethodTaxDto> {
+    const deliveryMethods =
+      await this.cityAccountSubservice.getDeliveryMethods(birthNumber)
+
+    if (!deliveryMethods?.active) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      )
+    }
+
+    const tax = await this.fetchTaxData(birthNumber, year)
+
+    const currentYear = dayjs().tz('Europe/Bratislava').year()
+
+    const locked: DeliveryMethodNamed | undefined =
+      tax.deliveryMethod || currentYear === year
+        ? deliveryMethods?.locked?.deliveryMethod
+        : undefined
+
+    return { locked, active: deliveryMethods?.active.deliveryMethod }
   }
 }

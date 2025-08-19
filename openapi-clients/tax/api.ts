@@ -443,6 +443,64 @@ export interface ResponseGetTaxesDto {
 /**
  *
  * @export
+ * @interface ResponseGetTaxesListBodyDto
+ */
+export interface ResponseGetTaxesListBodyDto {
+  /**
+   * Date of tax delivery to city account
+   * @type {string}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  createdAt?: string
+  /**
+   * Amount to be paid in cents
+   * @type {number}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  amountToBePaid?: number
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  year: number
+  /**
+   * Type of paid status
+   * @type {TaxStatusEnum}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  status: TaxStatusEnum
+}
+
+/**
+ *
+ * @export
+ * @interface ResponseGetTaxesListDto
+ */
+export interface ResponseGetTaxesListDto {
+  /**
+   * Tax availability status
+   * @type {TaxAvailabilityStatus}
+   * @memberof ResponseGetTaxesListDto
+   */
+  availabilityStatus: TaxAvailabilityStatus
+  /**
+   *
+   * @type {Array<ResponseGetTaxesListBodyDto>}
+   * @memberof ResponseGetTaxesListDto
+   */
+  items: Array<ResponseGetTaxesListBodyDto>
+  /**
+   * Assigned tax administrator
+   * @type {ResponseTaxAdministratorDto}
+   * @memberof ResponseGetTaxesListDto
+   */
+  taxAdministrator: ResponseTaxAdministratorDto | null
+}
+
+/**
+ *
+ * @export
  * @interface ResponseInstallmentPaymentDetailDto
  */
 export interface ResponseInstallmentPaymentDetailDto {
@@ -1108,6 +1166,21 @@ export interface ResponseTaxSummaryDetailDto {
   taxPayer: ResponseTaxPayerReducedDto
 }
 /**
+ * Tax availability status
+ * @export
+ * @enum {string}
+ */
+
+export const TaxAvailabilityStatus = {
+  Available: 'AVAILABLE',
+  LookingForYourTax: 'LOOKING_FOR_YOUR_TAX',
+  TaxNotOnRecord: 'TAX_NOT_ON_RECORD',
+} as const
+
+export type TaxAvailabilityStatus =
+  (typeof TaxAvailabilityStatus)[keyof typeof TaxAvailabilityStatus]
+
+/**
  * Type of tax detail - object of tax
  * @export
  * @enum {string}
@@ -1160,6 +1233,22 @@ export const TaxPaidStatusEnum = {
 } as const
 
 export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
+
+/**
+ * Type of paid status
+ * @export
+ * @enum {string}
+ */
+
+export const TaxStatusEnum = {
+  NotPaid: 'NOT_PAID',
+  PartiallyPaid: 'PARTIALLY_PAID',
+  Paid: 'PAID',
+  OverPaid: 'OVER_PAID',
+  AwaitingProcessing: 'AWAITING_PROCESSING',
+} as const
+
+export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]
 
 /**
  * AdminApi - axios parameter creator
@@ -3360,7 +3449,9 @@ export const TaxApiFp = function (configuration?: Configuration) {
      */
     async taxControllerV2GetTaxesListV2(
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetTaxesDto>> {
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetTaxesListDto>
+    > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.taxControllerV2GetTaxesListV2(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3457,7 +3548,7 @@ export const TaxApiFactory = function (
      */
     taxControllerV2GetTaxesListV2(
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseGetTaxesDto> {
+    ): AxiosPromise<ResponseGetTaxesListDto> {
       return localVarFp
         .taxControllerV2GetTaxesListV2(options)
         .then((request) => request(axios, basePath))

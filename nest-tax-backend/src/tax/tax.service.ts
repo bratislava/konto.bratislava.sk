@@ -29,7 +29,12 @@ import {
   TaxStatusEnum,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
-import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
+import {
+  checkTaxDateInclusion,
+  fixInstallmentTexts,
+  getExistingTaxStatus,
+  getTaxStatus,
+} from './utils/helpers/tax.helper'
 import {
   getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
@@ -247,25 +252,6 @@ export class TaxService {
     }
   }
 
-  getExistingTaxStatus = (
-    taxAmount: number,
-    paidAmount: number,
-  ): TaxStatusEnum => {
-    if (paidAmount === 0) {
-      return TaxStatusEnum.NOT_PAID
-    }
-
-    if (paidAmount === taxAmount) {
-      return TaxStatusEnum.PAID
-    }
-
-    if (paidAmount > taxAmount) {
-      return TaxStatusEnum.OVER_PAID
-    }
-
-    return TaxStatusEnum.PARTIALLY_PAID
-  }
-
   async getListOfTaxesByBirthnumber(
     birthNumber: string,
   ): Promise<ResponseGetTaxesListDto> {
@@ -302,19 +288,12 @@ export class TaxService {
         year: true,
       },
     })
-
     const currentTime = dayjs().tz('Europe/Bratislava')
-    const displayFrom = dayjs.tz(
-      `${currentTime.year()}-${lookingForTaxDate.from.month}-${lookingForTaxDate.from.day}`,
-      'Europe/Bratislava',
-    )
-    const displayTo = dayjs.tz(
-      `${currentTime.year()}-${lookingForTaxDate.to.month}-${lookingForTaxDate.to.day}`,
-      'Europe/Bratislava',
-    )
 
-    const shouldAddCurrentYear =
-      currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
+    const shouldAddCurrentYear = checkTaxDateInclusion(
+      currentTime,
+      lookingForTaxDate,
+    )
 
     if (taxes.length === 0) {
       const availabilityStatus = shouldAddCurrentYear
@@ -331,7 +310,7 @@ export class TaxService {
       taxes.map(async (tax) => {
         const paid = await this.getAmountAlreadyPaidByTaxId(tax.id)
         const amountToBePaid = tax.amount - paid
-        const status = this.getExistingTaxStatus(tax.amount, paid)
+        const status = getExistingTaxStatus(tax.amount, paid)
         return {
           createdAt: tax.createdAt,
           year: tax.year,

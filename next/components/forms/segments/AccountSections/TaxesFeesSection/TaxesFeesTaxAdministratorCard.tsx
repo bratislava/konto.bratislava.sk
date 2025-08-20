@@ -1,5 +1,6 @@
 import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import { useTranslation } from 'next-i18next'
 import { ResponseTaxAdministratorDto } from 'openapi-clients/tax'
 
 import MLinkNew from '../../../simple-components/MLinkNew'
@@ -7,6 +8,7 @@ import MLinkNew from '../../../simple-components/MLinkNew'
 type TaxesFeesTaxAdministratorCardProps = {
   beTaxAdministrator: ResponseTaxAdministratorDto | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
+  withTitle?: boolean
 }
 
 const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorDto) => {
@@ -23,7 +25,9 @@ const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorD
 const TaxesFeesTaxAdministratorCard = ({
   beTaxAdministrator,
   strapiTaxAdministrator,
+  withTitle = true,
 }: TaxesFeesTaxAdministratorCardProps) => {
+  const { t } = useTranslation('account')
   const taxAdministrator = beTaxAdministrator
     ? normalizeBeTaxAdministrator(beTaxAdministrator)
     : strapiTaxAdministrator
@@ -32,9 +36,14 @@ const TaxesFeesTaxAdministratorCard = ({
     return null
   }
   return (
-    <div className="flex w-full items-center justify-between gap-4 rounded-lg border-2 border-gray-200 p-5">
+    <div className="flex w-full items-center items-start justify-between gap-4 rounded-lg border-2 border-gray-200 p-5">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
+          {withTitle && (
+            <div className="flex flex-col gap-1">
+              {t('account_section_payment.your_tax_administrator')}
+            </div>
+          )}
           <span className="text-p1-semibold">{taxAdministrator.name}</span>
         </div>
         <div className="flex flex-wrap content-center items-center gap-x-5 gap-y-2 self-stretch">
@@ -58,13 +67,14 @@ const TaxesFeesTaxAdministratorCard = ({
               href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky"
               variant="underlined-medium"
             >
-              Stránkové hodiny
+              {t('working_hours')}
             </MLinkNew>
           </span>
         </div>
       </div>
-      <div className="hidden rounded-lg border-2 border-gray-200 p-3 sm:block">
-        <PhoneIcon className="size-6 text-main-700" />
+      {/* TODO: this icon is used /dane-a-poplatky icon in the middle and /dane-a-poplatky/2025 icon in the top */}
+      <div className="hidden rounded-lg bg-gray-100 p-3 sm:block">
+        <PhoneIcon className="size-6" />
       </div>
     </div>
   )

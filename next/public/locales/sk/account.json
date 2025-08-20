@@ -278,7 +278,10 @@
     "effective_next_year_link_text": "Zistiť viac",
     "set_delivery_method": "Nastaviť doručovanie",
     "verify_and_set": "Overiť a nastaviť",
-    "tax_administrator": "Správca dane"
+    "tax_administrator": "Správca dane",
+    "your_tax_administrator": "Váš správca dane",
+    "tax_paid": "Daň z nehnuteľností je uhradená. Ďakujeme",
+    "tax_payment_year_over": "Nakoľko je po termíne možnosti poslednej úhrady splátkou, daň je možné uhradiť len plnou úhradou."
   },
   "account_section_help": {
     "navigation": "Pomoc",
@@ -342,6 +345,14 @@
     "title": "Doplnenie telefónneho čísla",
     "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
+  "communication_channel": {
+    "email": "Oznámenie cez Bratislavské konto",
+    "postal": "Rozhodnutie poštou do vlastných rúk",
+    "edesk": "Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte"
+  },
+  "communication_channel_info_title": "Spôsob doručovania na rok {{year}}",
+  "communication_channel_info_change_link_text": "Spôsob doručenia zmeníte na stránke <a href={{url}}>Dane a poplatky</a>. <br /> Zaplatiť daň môžete cez túto stránku.",
+  "working_hours": "Stránkové hodiny",
   "to_pay": "Prejsť na platbu",
   "pay_installments": "Uhradiť splátkou",
   "pay_rest": "Uhradiť zvyšnú sumu",
@@ -351,23 +362,22 @@
   "tax_created": "Vytvorená",
   "tax_paid": "Uhradená",
   "download_pdf": "Stiahnuť PDF",
-  "personal_info": "Osobné informácie",
+  "personal_info": "Daňovník",
   "name_and_surname": "Meno a priezvisko",
   "permanent_address": "Adresa trvalého pobytu",
   "correspondence_address": "Korešpondenčná adresa",
   "taxpayer_id": "Osobný identifikátor daňovníka",
   "contact": "Kontakt",
   "tax_liability_breakdown": "Rozpis daňovej povinnosti",
+  "tax": "Daň",
   "land_tax": "Daň z pozemkov",
   "apartments_tax": "Daň z bytov",
-  "payment_data": "Platobné metódy a spôsob oznámenia výšky dane",
+  "payment_data": "Platobné metódy",
   "variable_symbol": "Variabilný symbol",
-  "tax_due": "Splatnosť dane",
   "card_payment": "Platba kartou",
   "qr_code": "QR kód",
-  "download_image": "Stiahnuť obrázok",
-  "use_one_of_ibans_to_pay": "Pri bankovom prevode použite na úhradu jeden z nasledujúcich IBAN účtov:",
-  "use_your_banking_app_to_load": "Na načítanie použite bankovú aplikáciu.",
+  "download_qr_code": "Stiahnuť QR kód",
+  "use_your_banking_app_to_load": "Načítajte kód v bankovej aplikácii alebo nahrajte stiahnutý kód v aplikácii.",
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
   "thank_you": {
@@ -430,9 +440,6 @@
   "delivery_method_change_modal_title": "Spôsob doručovania miestnych daní a poplatkov",
   "delivery_method_change_modal_agreement_text": "Pre pokračovanie je nutné prečítať celý text súhlasu.",
   "delivery_method_change_modal_button_text": "Potvrdzujem a súhlasím",
-  "tax_due_multiple_installments": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
-  "tax_due_email_channel": "Daň je splatná v termíne <strong>do 15 dní od doručenia notifikačného emailu o dani z nehnuteľností</strong>.",
-  "tax_due_standard": "Daň je splatná v termíne do 15 dní <strong>odo dňa právoplatnosti rozhodnutia.</strong>",
   "payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností Vám sprístupníme platobné metódy.",
   "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "redirect_to_payment_loading": "Presmerovávam…",
@@ -456,6 +463,9 @@
   },
   "tax_detail_section": {
     "title": "Daň z nehnuteľností za rok {{year}}",
+    "title_payment_all": "Jednorazová úhrada",
+    "title_payment_rest": "Úhrada zvyšnej sumy",
+    "title_payment_installments": "Úhrada splátkou",
     "tax_status": {
       "negative": "Neuhradená",
       "warning": "Čiastočne uhradená",
@@ -465,6 +475,12 @@
     "tax_total": "Daň z nehnuteľností celkom",
     "tax_already_paid": "Uhradené / Preplatok z minulého roka",
     "tax_to_pay": "Zostáva uhradiť",
+    "tax_detail_fees_link": "Sadzby dane z nehnuteľností",
+    "tax_payment_methods": "Spôsob úhrady",
+    "tax_payment_rest": "<strong>Úhrada celej zvyšnej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
+    "tax_payment_rest_subtitle": "Úhrada do {{date}}",
+    "tax_payment_installment": "<strong>Úhrada splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
+    "tax_payment_installment_subtitle": "Úhrada nasledujúcej splátky do {{date}}",
     "tax_type": {
       "GROUND": {
         "title": "Daň z pozemkov",

@@ -12,6 +12,7 @@ const TaxesFeesAdministratorCardWrapper = () => {
     <div className="flex flex-col gap-4">
       <h2 className="text-h5-semibold">{t('account_section_payment.tax_administrator')}</h2>
       <TaxesFeesTaxAdministratorCard
+        withTitle={false}
         beTaxAdministrator={taxesData.taxAdministrator}
         strapiTaxAdministrator={strapiTaxAdministrator}
       />

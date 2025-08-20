@@ -1,3 +1,5 @@
+import { ExportIcon } from '@assets/ui-icons'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import groupBy from 'lodash/groupBy'
 import mapValues from 'lodash/mapValues'
 import reduce from 'lodash/reduce'
@@ -12,11 +14,18 @@ import AccordionTableTaxContent from '../../../simple-components/AccordionTableT
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxDetails = () => {
-  const { taxData } = useTaxFeeSection()
+  // change for taxData after Jakub chenges types
+  const { taxData, taxDataOld } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
+  console.log('taxData.itemizedDetail', taxData.itemizedDetail)
 
-  const groupedTaxDetails = groupBy(taxData.taxDetails, 'type')
+  // implement when fixed types
+  // console.log('taxData', "get-tax-detail-by-year".data.itemizedDetail[0].apartmentTotalAmount)
+  // console.log('taxData', taxData.itemizedDetail[0].apartmentTotalAmount)
+  // console.log('taxData', taxData.itemizedDetail[0].constructionTotalAmount)
+  // console.log('taxData', taxData.itemizedDetail[0].groundTaxDetail)
+  const groupedTaxDetails = groupBy(taxDataOld.taxDetails, 'type')
   // TODO use data from root obj
   const sums = mapValues(groupedTaxDetails, (taxDetails) => {
     return reduce(
@@ -30,8 +39,20 @@ const TaxDetails = () => {
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
-      <div className="text-h3">{t('tax_liability_breakdown')}</div>
+      <div className="flex w-full justify-between">
+        <span className="text-h3">{t('tax_liability_breakdown')}</span>
+        <div className="flex items-center justify-between gap-2">
+          <ButtonNew
+            href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti"
+            variant="black-link"
+          >
+            {t('tax_detail_section.tax_detail_fees_link')}
+            <ExportIcon />
+          </ButtonNew>
+        </div>
+      </div>
       <div className="flex w-full flex-col gap-4">
+        {/* this requires complex changes to the accordion component which is used by multiple components */}
         {Object.keys(groupedTaxDetails).map((key) => {
           return (
             <AccordionTableTaxContent
@@ -44,40 +65,24 @@ const TaxDetails = () => {
           )
         })}
       </div>
-      <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-4 lg:gap-6 lg:px-8 lg:py-6">
-        <div className="flex w-full flex-col items-start gap-3 lg:gap-5">
-          {Object.keys(groupedTaxDetails).map((key) => (
-            <div className="flex w-full flex-row items-start gap-6" key={key}>
-              <div className="grow text-p2">{t(`tax_detail_section.tax_type.${key}.title`)}</div>
-              <div className="text-p2">
-                <FormatCurrencyFromCents value={sums[key]} />
-              </div>
-            </div>
-          ))}
+      <div className="flex w-full flex-col rounded-lg border-2 border-gray-200 bg-gray-100 px-6 py-2">
+        <div className="flex w-full justify-between border-b-2 border-gray-200 py-4">
+          <span className="text-h4">{t('tax')}</span>
+          <span className="text-h4-semibold">
+            <FormatCurrencyFromCents value={taxData.overallAmount} />
+          </span>
         </div>
-        <div className="h-0.5 w-full bg-gray-200" />
-        <div className="flex w-full flex-col items-start gap-3">
-          <div className="flex w-full flex-col gap-1 xs:flex-row">
-            <div className="w-full grow text-p2 xs:w-min">{t('tax_detail_section.tax_total')}</div>
-            <div className="w-max text-p2">
-              <FormatCurrencyFromCents value={taxData.amount} />
-            </div>
-          </div>
-          <div className="flex w-full flex-col gap-1 xs:flex-row">
-            <div className="w-full grow text-p2 xs:w-min">
-              {t('tax_detail_section.tax_already_paid')}
-            </div>
-            <div className="w-max text-p2">
-              <FormatCurrencyFromCents value={taxData.paidAmount} />
-            </div>
-          </div>
+        <div className="flex w-full justify-between border-b-2 border-gray-200 py-4">
+          <span className="text-h4">{t('tax_detail_section.tax_to_pay')}</span>
+          <span className="text-h4-semibold text-error">
+            <FormatCurrencyFromCents value={taxData.overallBalance} />
+          </span>
         </div>
-        <div className="h-0.5 w-full bg-gray-800" />
-        <div className="flex w-full flex-col gap-2 xs:flex-row lg:gap-6">
-          <div className="w-full grow text-h4 xs:w-min">{t('tax_detail_section.tax_to_pay')}</div>
-          <div className="w-max text-h4">
-            <FormatCurrencyFromCents value={taxData.amount - taxData.paidAmount} />
-          </div>
+        <div className="flex w-full justify-between py-4">
+          <span className="text-h4">{t('tax_detail_section.tax_already_paid')}</span>
+          <span className="text-h4-semibold text-success-700">
+            <FormatCurrencyFromCents value={taxData.overallPaid} />
+          </span>
         </div>
       </div>
     </div>

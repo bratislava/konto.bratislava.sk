@@ -2,7 +2,7 @@ import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
 import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
+import { ResponseTaxDto, ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
@@ -11,10 +11,15 @@ import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxSummaryDetailDto
+  taxDataOld: ResponseTaxDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
-const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({
+  taxDataOld,
+  taxData,
+  strapiTaxAdministrator,
+}: TaxFeeSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
@@ -92,6 +97,8 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
   }
 
   return {
+    // change for new endpoint taxData after https://github.com/bratislava/konto.bratislava.sk/pull/3171
+    taxDataOld,
     taxData,
     redirectToFullPayment,
     redirectToFullPaymentIsPending,

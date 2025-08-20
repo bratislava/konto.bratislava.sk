@@ -68,6 +68,7 @@ const PaymentScheduleView = () => {
                   />
                 </div>
                 <div className="text-p1-semibold">
+                  {/* waiting for jakub to fix types */}
                   <FormatCurrencyFromCents value={taxInstallment.amount} />
                 </div>
               </div>

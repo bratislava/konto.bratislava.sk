@@ -1,4 +1,5 @@
 import { Castle48PxIcon } from '@assets/ui-icons'
+import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
@@ -12,18 +13,17 @@ type TaxesFeesDeliveryMethodCardProps = {
 const TaxesFeesDeliveryMethodCard = ({
   onDeliveryMethodChange,
 }: TaxesFeesDeliveryMethodCardProps) => {
+  const { t } = useTranslation('account')
   const { channel, canChangeChannel } = useTaxChannel()
 
   if (!channel) {
     return null
   }
 
-  // TODO: Translations
   const type = {
-    [UserOfficialCorrespondenceChannelEnum.Email]: 'Oznámenie cez Bratislavské konto',
-    [UserOfficialCorrespondenceChannelEnum.Postal]: 'Rozhodnutie poštou do vlastných rúk',
-    [UserOfficialCorrespondenceChannelEnum.Edesk]:
-      'Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte',
+    [UserOfficialCorrespondenceChannelEnum.Email]: t('communication_channel.email'),
+    [UserOfficialCorrespondenceChannelEnum.Postal]: t('communication_channel.postal'),
+    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('communication_channel.edesk'),
   }[channel]
 
   return (

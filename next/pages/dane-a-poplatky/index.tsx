@@ -22,7 +22,7 @@ import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
-  taxesData: ResponseGetTaxesDto
+  taxesDataOld: ResponseGetTaxesDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
@@ -60,7 +60,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [taxesData, strapiTaxAdministrator, strapiTax, accountType] = await Promise.all([
+      const [taxesDataOld, strapiTaxAdministrator, strapiTax, accountType] = await Promise.all([
+        // TODO change when ready https://github.com/bratislava/konto.bratislava.sk/pull/3173
         getTaxes(fetchAuthSession),
         getTaxAdministratorForUser(amplifyContextSpec),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
@@ -83,7 +84,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
       return {
         props: {
-          taxesData,
+          taxesDataOld,
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           strapiTax,
@@ -103,7 +104,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 )
 
 const AccountTaxesFeesPage = ({
-  taxesData,
+  taxesDataOld: taxesData,
   strapiTaxAdministrator,
   strapiTax,
   dehydratedState,

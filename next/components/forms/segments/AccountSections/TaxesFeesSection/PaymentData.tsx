@@ -1,4 +1,4 @@
-import { DownloadIcon } from '@assets/ui-icons'
+import { DownloadIcon, PaymentHandIcon } from '@assets/ui-icons'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
@@ -31,22 +31,11 @@ const Details = ({ paymentMethod }: DetailsProps) => {
     downloadQrCodeOneTimePayment: downloadQrCode,
   } = useTaxFeeSection()
   const strapiTax = useStrapiTax()
-  const { channelCurrentYearEffective } = useTaxChannel()
 
   const { t } = useTranslation('account')
   const qrCodeBase64 = `data:image/png;base64,${taxData.oneTimePayment.qrCode}`
   const hasMultipleInstallments = taxData.installmentPayment.isPossible
   const { channelChangeEffectiveNextYear } = useTaxChannel()
-  const taxDueTextKey = (() => {
-    if (hasMultipleInstallments) {
-      return 'tax_due_multiple_installments'
-    }
-    if (channelCurrentYearEffective === UserOfficialCorrespondenceChannelEnum.Email) {
-      return 'tax_due_email_channel'
-    }
-
-    return 'tax_due_standard'
-  })()
   const variableSymbol =
     paymentMethod === PaymentMethod.Installments
       ? taxData?.installmentPayment.activeInstallment?.variableSymbol
@@ -57,79 +46,66 @@ const Details = ({ paymentMethod }: DetailsProps) => {
       {channelChangeEffectiveNextYear && (
         <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
       )}
+      <div className="flex w-full flex-col items-start gap-6 rounded-lg bg-gray-50 p-4 lg:flex-row lg:items-center lg:px-6 lg:py-8">
+        <div className="flex grow flex-row items-start gap-2">
+          <PaymentHandIcon className="size-5" />
+          <div className="text-h4">{t('card_payment')}</div>
+        </div>
+        <ButtonNew
+          variant="black-solid"
+          onPress={() =>
+            paymentMethod === PaymentMethod.Installments
+              ? redirectToInstallmentPayment()
+              : redirectToFullPayment()
+          }
+          isLoading={
+            paymentMethod === PaymentMethod.Installments
+              ? redirectToInstallmentPaymentIsPending
+              : redirectToFullPaymentIsPending
+          }
+          isLoadingText={t('redirect_to_payment_loading')}
+          fullWidthMobile
+        >
+          {t('to_pay')}
+        </ButtonNew>
+      </div>
       <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-8">
-        <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-4 sm:py-5 md:w-[488px] lg:px-6">
-          <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
-          {taxData.paidStatus === TaxPaidStatusEnum.Paid ? null : (
-            <div className="rounded-[5px] bg-warning-100 p-3 text-p2">
-              {t('tax_bank_transfer_slow_info')}
-            </div>
-          )}
-          <div className="flex flex-col items-start gap-4">
-            <div className="isolate flex flex-col items-start gap-1 self-stretch">
-              <div className="text-p2">{t('bank_info.slovak_sporitelna')}</div>
-              <div className="flex w-full">
-                <div className="grow text-16-semibold">{t('bank_info.slovak_sporitelna_iban')}</div>
-                <div className="hidden size-6 cursor-pointer sm:block">
+        <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-4 sm:py-5 lg:px-6">
+          <div className="flex w-full flex-col justify-between gap-4">
+            <div className="isolate flex items-start justify-between gap-1 self-stretch">
+              <span className="text-p2">{t('bank_info.slovak_sporitelna')}</span>
+              <span className="flex items-center gap-2">
+                <span className="grow text-16-semibold">
+                  {t('bank_info.slovak_sporitelna_iban')}
+                </span>
+                <span className="hidden size-6 cursor-pointer sm:inline">
                   <ClipboardCopy copyText={t('bank_info.slovak_sporitelna_iban')} />
-                </div>
-              </div>
+                </span>
+              </span>
             </div>
-            <div className="isolate flex flex-col items-start gap-1 self-stretch">
-              <div className="text-p2">{t('bank_info.csob')}</div>
-              <div className="flex w-full">
-                <div className="grow text-16-semibold">{t('bank_info.csob_iban')}</div>
-                <div className="hidden size-6 cursor-pointer sm:block">
+            <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
+            <div className="isolate flex items-start justify-between gap-1 self-stretch">
+              <span className="text-p2">{t('bank_info.csob')}</span>
+              <span className="flex items-center gap-2">
+                <span className="grow text-16-semibold">{t('bank_info.csob_iban')}</span>
+                <span className="hidden size-6 cursor-pointer sm:inline">
                   <ClipboardCopy copyText={t('bank_info.csob_iban')} />
-                </div>
-              </div>
+                </span>
+              </span>
             </div>
             <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
-            <div className="isolate flex flex-col items-start gap-1 self-stretch">
-              <div className="text-p2">{t('variable_symbol')}</div>
-              <div className="flex w-full">
-                <div className="grow text-16-semibold">{variableSymbol}</div>
-                <div className="hidden size-6 cursor-pointer sm:block">
+            <div className="isolate flex items-start justify-between gap-1 self-stretch">
+              <span className="text-p2">{t('variable_symbol')}</span>
+              <span className="flex items-center gap-2">
+                <span className="grow text-16-semibold">{variableSymbol}</span>
+                <span className="hidden size-6 cursor-pointer sm:inline">
                   {variableSymbol && <ClipboardCopy copyText={variableSymbol} />}
-                </div>
-              </div>
-            </div>
-            <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
-            <div className="flex w-full flex-col items-start gap-2">
-              <div className="text-16-semibold">{t('tax_due')}</div>
-              <div className="text-16">
-                <Trans
-                  ns="account"
-                  i18nKey={taxDueTextKey}
-                  components={{ strong: <span className="text-16-semibold" /> }}
-                />
-              </div>
+                </span>
+              </span>
             </div>
           </div>
         </div>
         <div className="flex grow flex-col gap-4">
-          <div className="flex w-full flex-col items-start gap-6 rounded-lg bg-gray-50 p-4 lg:flex-row lg:items-center lg:px-6 lg:py-8">
-            <div className="flex grow flex-col items-start gap-2">
-              <div className="text-h4">{t('card_payment')}</div>
-            </div>
-            <ButtonNew
-              variant="black-solid"
-              onPress={() =>
-                paymentMethod === PaymentMethod.Installments
-                  ? redirectToInstallmentPayment()
-                  : redirectToFullPayment()
-              }
-              isLoading={
-                paymentMethod === PaymentMethod.Installments
-                  ? redirectToInstallmentPaymentIsPending
-                  : redirectToFullPaymentIsPending
-              }
-              isLoadingText={t('redirect_to_payment_loading')}
-              fullWidthMobile
-            >
-              {t('to_pay')}
-            </ButtonNew>
-          </div>
           <div className="flex grow flex-col gap-4 self-stretch rounded-lg border-2 border-solid border-gray-200 p-4 lg:flex-row lg:p-6">
             <div className="flex w-full grow flex-col items-start justify-between gap-2 self-stretch">
               <div className="flex flex-col items-start gap-2">
@@ -140,7 +116,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
               <Button
                 startIcon={<DownloadIcon className="size-5" />}
                 variant="black-outline"
-                text={t('download_image')}
+                text={t('download_qr_code')}
                 size="sm"
                 className="hidden lg:block"
                 onPress={downloadQrCode}
@@ -156,7 +132,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
             <Button
               startIcon={<DownloadIcon className="size-5" />}
               variant="black-outline"
-              text={t('download_image')}
+              text={t('download_qr_code')}
               size="sm"
               className="block min-w-full lg:hidden"
               onPress={downloadQrCode}

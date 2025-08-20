@@ -1,29 +1,26 @@
 import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
+import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
+import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { TaxPaidStatusEnum } from 'openapi-clients/tax'
 
 import { ROUTES } from '../../../../frontend/api/constants'
-import {
-  FormatCurrencyFromCents,
-  useCurrencyFromCentsFormatter,
-} from '../../../../frontend/utils/formatCurrency'
-import { formatDate } from '../../../../frontend/utils/general'
 import Button from '../../simple-components/Button'
-import TaxPaidStatus from '../AccountSections/TaxesFeesSection/TaxPaidStatus'
 import { useTaxFeeSection } from '../AccountSections/TaxesFeesSection/useTaxFeeSection'
 
 const TaxFeeSectionHeader = () => {
   const { taxData, downloadPdf } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const router = useRouter()
-
-  const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
+  const searchParams = useSearchParams()
+  const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
+  const isSinglePayment = taxData.overallAmount === taxData.overallBalance
 
   return (
     <div className="h-full bg-gray-50 px-4 lg:px-0">
       <div className="m-auto flex max-w-(--breakpoint-lg) flex-col gap-4 py-6">
         <div className="flex cursor-pointer items-center gap-0.5">
+          {/* TODO: navigation 2025 */}
           <div className="flex size-5 items-center justify-center">
             <ChevronLeftIcon className="size-5" />
           </div>
@@ -39,10 +36,18 @@ const TaxFeeSectionHeader = () => {
           <div className="flex size-full flex-col items-start gap-4">
             <div className="flex w-full flex-row items-center gap-4">
               <div className="grow text-h1">
-                {t('tax_detail_section.title', { year: taxData?.year })}
+                {paymentMethodParam === PaymentMethod.Installments &&
+                  t('tax_detail_section.title_payment_installments')}
+                {paymentMethodParam === PaymentMethod.RemainingAmount &&
+                  !isSinglePayment &&
+                  t('tax_detail_section.title_payment_rest')}
+                {paymentMethodParam === PaymentMethod.RemainingAmount &&
+                  isSinglePayment &&
+                  t('tax_detail_section.title_payment_all')}
               </div>
 
-              {taxData.pdfExport && (
+              {/* depends if we provide pdf export right now we don't */}
+              {/* {taxData.pdfExport && (
                 <Button
                   startIcon={<DownloadIcon className="size-5" />}
                   variant="black-outline"
@@ -51,50 +56,8 @@ const TaxFeeSectionHeader = () => {
                   className="hidden md:block"
                   onPress={downloadPdf}
                 />
-              )}
+              )} */}
             </div>
-            <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-4">
-              <div className="flex gap-2">
-                <div className="text-p3-semibold lg:text-p2-semibold">{t('tax_created')}</div>
-                <div className="text-p3 lg:text-p2">{formatDate(taxData?.createdAt)}</div>
-              </div>
-              <div className="hidden size-1.5 rounded-full bg-black md:block" />
-              <div className="text-p3 lg:text-p2-semibold">
-                <FormatCurrencyFromCents value={taxData.amount} />
-                {taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid && (
-                  <span className="text-p3 lg:text-p2">
-                    {t('tax_detail_section.tax_remainder_text', {
-                      amount: currencyFromCentsFormatter.format(
-                        taxData.amount - taxData.paidAmount,
-                      ),
-                    })}
-                  </span>
-                )}
-              </div>
-              <div className="hidden size-1.5 rounded-full bg-black md:block" />
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <TaxPaidStatus status={taxData.paidStatus} mobileIcon />
-                  {/* <div className="lg:text-p2 text-p3">{formatDate(tax?.updatedAt)}</div> */}
-                </div>
-              </div>
-            </div>
-
-            {/* for mobile version */}
-            {taxData.pdfExport && (
-              <div className="block w-full md:hidden">
-                <div className="flex flex-col gap-3">
-                  <Button
-                    startIcon={<DownloadIcon className="size-5" />}
-                    variant="black-outline"
-                    text={t('download_pdf')}
-                    size="sm"
-                    className="min-w-full"
-                    onPress={downloadPdf}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

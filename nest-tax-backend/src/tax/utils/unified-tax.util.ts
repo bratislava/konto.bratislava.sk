@@ -67,7 +67,6 @@ export const stateHolidays = [
       dayjs.tz('2024-05-08', bratislavaTimeZone),
       dayjs.tz('2024-07-05', bratislavaTimeZone),
       dayjs.tz('2024-08-29', bratislavaTimeZone),
-      dayjs.tz('2024-09-01', bratislavaTimeZone),
       dayjs.tz('2024-09-15', bratislavaTimeZone),
       dayjs.tz('2024-11-01', bratislavaTimeZone),
       dayjs.tz('2024-11-17', bratislavaTimeZone),

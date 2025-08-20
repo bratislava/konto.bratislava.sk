@@ -19,18 +19,6 @@ enum CognitoUserAttributesTierEnum {
   EID
 }
 
-enum DeliveryMethodEnum {
-  EDESK
-  CITY_ACCOUNT
-  POSTAL
-}
-
-// Edesk is stored in PhysicalEntity and we do not want to duplicate it in User
-enum DeliveryMethodUserEnum {
-  CITY_ACCOUNT
-  POSTAL
-}
-
 enum GDPRTypeEnum {
   ANALYTICS
   DATAPROCESSING

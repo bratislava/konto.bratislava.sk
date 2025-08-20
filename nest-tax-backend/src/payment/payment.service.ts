@@ -96,6 +96,7 @@ export class PaymentService {
     }
 
     try {
+      // data that goes to payment gateway should not contain diacritics
       const requestData = {
         MERCHANTNUMBER: this.configService.getOrThrow<string>(
           'PAYGATE_MERCHANT_NUMBER',

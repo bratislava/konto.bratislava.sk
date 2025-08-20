@@ -29,6 +29,8 @@ model TaxPayer {
   permanentResidenceZip       String?
   permanentResidenceCity      String?
 
+  removeIfNotInCityAccountMigrated Boolean @default(false) // Temporary field used in removeTaxPayersNotInCityAccount task
+
   taxes Tax[]
 
   @@unique([birthNumber])

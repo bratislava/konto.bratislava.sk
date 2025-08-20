@@ -362,5 +362,9 @@ export class TasksService {
       where: { id: { in: allTaxPayerIds } },
       data: { removeIfNotInCityAccountMigrated: true },
     })
+
+    this.logger.log(
+      `Removed ${idsToRemove.length} tax payers not in city account: ${JSON.stringify(idsToRemove)}`,
+    )
   }
 }

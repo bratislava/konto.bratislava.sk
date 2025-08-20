@@ -170,9 +170,9 @@ export class DatabaseSubserviceUser {
       })
       await this.changeLegalPersonGdprData(legalPerson.id, [
         {
-          type: GdprType.LICENSE,
-          category: GdprCategory.ESBS,
-          subType: GdprSubType.SUB,
+          type: GDPRTypeEnum.LICENSE,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
         },
       ])
     }
@@ -291,14 +291,14 @@ export class DatabaseSubserviceUser {
     const lastSub = await this.prisma.userGdprData.findFirst({
       where: {
         userId,
-        category: GdprCategory.TAXES,
-        type: GdprType.FORMAL_COMMUNICATION,
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
       },
       orderBy: {
         createdAt: 'desc',
       },
     })
-    if (lastSub?.subType === GdprSubType.SUB) {
+    if (lastSub?.subType === GDPRSubTypeEnum.subscribe) {
       return UserOfficialCorrespondenceChannelEnum.EMAIL
     }
     return UserOfficialCorrespondenceChannelEnum.POSTAL
@@ -308,8 +308,8 @@ export class DatabaseSubserviceUser {
     const formalCommunicationSubscription = await this.prisma.userGdprData.findFirst({
       where: {
         userId,
-        type: GdprType.FORMAL_COMMUNICATION,
-        category: GdprCategory.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+        category: GDPRCategoryEnum.TAXES,
       },
       orderBy: {
         createdAt: 'desc',

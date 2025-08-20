@@ -40,7 +40,7 @@ export class GdprDataSubscriptionDto extends GdprDataDto {
     description: 'Type of subType - unsubscribe or subscribe',
     default: 'unsubscribe',
   })
-  subType!: GdprSubType
+  subType!: GDPRSubTypeEnum
 }
 
 export enum GdprCategory {

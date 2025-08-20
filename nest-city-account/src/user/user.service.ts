@@ -148,7 +148,7 @@ export class UserService {
     )
 
     await this.bloomreachService.trackEventConsents(
-      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB })),
+      data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe })),
       user.externalId,
       user.id,
       false
@@ -185,7 +185,7 @@ export class UserService {
     }
 
     await this.bloomreachService.trackEventConsents(
-      gdprData.map((elem) => ({ ...elem, subType: GdprSubType.UNSUB })),
+      gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe })),
       user.externalId,
       user.id,
       false

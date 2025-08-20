@@ -19,6 +19,40 @@ enum CognitoUserAttributesTierEnum {
   EID
 }
 
+enum DeliveryMethodEnum {
+  EDESK
+  CITY_ACCOUNT
+  POSTAL
+}
+
+// Edesk is stored in PhysicalEntity and we do not want to duplicate it in User
+enum DeliveryMethodUserEnum {
+  CITY_ACCOUNT
+  POSTAL
+}
+
+enum GDPRTypeEnum {
+  ANALYTICS
+  DATAPROCESSING
+  FORMAL_COMMUNICATION
+  LICENSE
+  MARKETING
+}
+
+enum GDPRSubTypeEnum {
+  subscribe
+  unsubscribe
+}
+
+enum GDPRCategoryEnum {
+  CITY
+  ESBS
+  SWIMMINGPOOLS
+  TAXES
+  INIT
+  LIBRARY
+}
+
 model User {
   id                               String                         @id @default(uuid()) @db.Uuid
   createdAt                        DateTime                       @default(now())
@@ -120,25 +154,25 @@ model LegalPerson {
 }
 
 model UserGdprData {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @db.Uuid
-  type      String
-  category  String
-  subType   String?
-  user      User     @relation(fields: [userId], references: [id])
+  id        String           @id @default(uuid())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  userId    String           @db.Uuid
+  type      GDPRTypeEnum
+  category  GDPRCategoryEnum
+  subType   GDPRSubTypeEnum?
+  user      User             @relation(fields: [userId], references: [id])
 }
 
 model LegalPersonGdprData {
-  id            String      @id @default(uuid())
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  legalPersonId String      @db.Uuid
-  type          String
-  category      String
-  subType       String?
-  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id])
+  id            String           @id @default(uuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  legalPersonId String           @db.Uuid
+  type          GDPRTypeEnum
+  category      GDPRCategoryEnum
+  subType       GDPRSubTypeEnum?
+  legalPerson   LegalPerson      @relation(fields: [legalPersonId], references: [id])
 }
 
 model Config {

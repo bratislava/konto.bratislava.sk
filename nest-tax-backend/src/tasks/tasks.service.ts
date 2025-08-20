@@ -315,6 +315,13 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async removeTaxPayersNotInCityAccount() {
+    const configFlags = await this.databaseSubservice.getConfigByKeys([
+      'REMOVE_TAX_PAYERS_NOT_IN_CITY_ACCOUNT_FLAG',
+    ])
+    if (configFlags.REMOVE_TAX_PAYERS_NOT_IN_CITY_ACCOUNT_FLAG !== 'true') {
+      return
+    }
+
     const taxPayersToMigrate = await this.prismaService.taxPayer.findMany({
       select: {
         id: true,
@@ -345,21 +352,15 @@ export class TasksService {
       .map(([, id]) => id)
     const allTaxPayerIds = taxPayersToMigrate.map((tp) => tp.id)
 
-    const taxPayerUpdateQuery = {
+    if (idsToRemove.length > 0) {
+      await this.prismaService.taxPayer.deleteMany({
+        where: { id: { in: idsToRemove } },
+      })
+    }
+
+    await this.prismaService.taxPayer.updateMany({
       where: { id: { in: allTaxPayerIds } },
       data: { removeIfNotInCityAccountMigrated: true },
-    }
-
-    if (idsToRemove.length === 0) {
-      await this.prismaService.taxPayer.updateMany(taxPayerUpdateQuery)
-      return
-    }
-
-    await this.prismaService.$transaction([
-      this.prismaService.taxPayer.deleteMany({
-        where: { id: { in: idsToRemove } },
-      }),
-      this.prismaService.taxPayer.updateMany(taxPayerUpdateQuery),
-    ])
+    })
   }
 }

@@ -1,7 +1,7 @@
 import { TaxDetail, TaxDetailType, TaxInstallment } from '@prisma/client'
+import dayjs, { Dayjs } from 'dayjs'
 
 import { TaxPaidStatusEnum, TaxStatusEnum } from '../../dtos/response.tax.dto'
-import dayjs, { Dayjs } from 'dayjs'
 
 export const getTaxStatus = (
   desiredPayment: number,

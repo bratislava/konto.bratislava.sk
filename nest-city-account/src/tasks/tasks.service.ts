@@ -12,20 +12,35 @@ import { LineLoggerSubservice } from './line-logger.subservice'
 import { TaxSubservice } from './tax.subservice'
 import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 import { SubserviceErrorsEnum, SubserviceErrorsResponseEnum } from './subservice.errors.enum'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
+import { GdprCategory, GdprSubType, GdprType } from '../user/dtos/gdpr.user.dto'
+import { addSlashToBirthNumber } from '../utils/birthNumbers'
+import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+import HandleErrors from '../utils/decorators/errorHandler.decorators'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { DeliveryMethod } from '../utils/types/tax.types'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
+import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
+import { PhysicalEntity } from '@prisma/client'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
+const EDESK_UPDATE_LOOK_BACK_HOURS = 96
+
 @Injectable()
-export class TasksSubservice {
+export class TasksService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly taxSubservice: TaxSubservice
+    private readonly taxSubservice: TaxSubservice,
+    private readonly physicalEntityService: PhysicalEntityService
   ) {
-    this.logger = new LineLoggerSubservice(TasksSubservice.name)
+    this.logger = new LineLoggerSubservice(TasksService.name)
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
@@ -34,7 +49,7 @@ export class TasksSubservice {
     const today = new Date()
     const oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1))
 
-    await this.prisma.userIdCardVerify.deleteMany({
+    await this.prismaService.userIdCardVerify.deleteMany({
       where: {
         verifyStart: {
           lt: oneMonthAgo,
@@ -42,7 +57,7 @@ export class TasksSubservice {
       },
     })
 
-    await this.prisma.legalPersonIcoIdCardVerify.deleteMany({
+    await this.prismaService.legalPersonIcoIdCardVerify.deleteMany({
       where: {
         verifyStart: {
           lt: oneMonthAgo,
@@ -57,7 +72,7 @@ export class TasksSubservice {
     this.logger.log('Starting loadTaxesForUsers task')
 
     const year = new Date().getFullYear()
-    const birthNumbersFromDb = await this.prisma.user.findMany({
+    const birthNumbersFromDb = await this.prismaService.user.findMany({
       select: {
         birthNumber: true,
       },
@@ -69,7 +84,10 @@ export class TasksSubservice {
         ...ACTIVE_USER_FILTER,
       },
       orderBy: {
-        lastTaxBackendUploadTry: 'asc',
+        lastTaxBackendUploadTry: {
+          sort: 'asc',
+          nulls: 'first',
+        },
       },
       take: UPLOAD_BIRTHNUMBERS_BATCH,
     })
@@ -94,7 +112,7 @@ export class TasksSubservice {
     )
 
     // Mark birth numbers which are in the tax backend.
-    await this.prisma.user.updateMany({
+    await this.prismaService.user.updateMany({
       where: {
         birthNumber: {
           in: addedBirthNumbers,
@@ -107,7 +125,7 @@ export class TasksSubservice {
     })
 
     // Set current datetime as the last try for the upload of the birth number to tax backend.
-    await this.prisma.user.updateMany({
+    await this.prismaService.user.updateMany({
       where: {
         birthNumber: {
           in: birthNumbers.map((birthNumber) => birthNumber.replaceAll('/', '')),
@@ -135,7 +153,7 @@ export class TasksSubservice {
     const currentYear = new Date().getFullYear()
     const taxDeadlineDate = getTaxDeadlineDate()
 
-    const users = await this.prisma.user.findMany({
+    const users = await this.prismaService.user.findMany({
       where: {
         birthNumber: {
           not: null,
@@ -204,7 +222,7 @@ export class TasksSubservice {
 
     // Now we should check if some user was not deactivated during his update in Noris.
     // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However, it is an edge case.
-    const deactivated = await this.prisma.user.findMany({
+    const deactivated = await this.prismaService.user.findMany({
       select: {
         id: true,
       },
@@ -230,8 +248,8 @@ export class TasksSubservice {
       )
     }
 
-    // If OK, we should set the Users to have updated delivery methods in Noris for the current year. Otherwise, the error will be thrown.
-    await this.prisma.user.updateMany({
+    // If OK, we should set the Users to have updated delivery methods in Noris for the current year. Otherwise the error will be thrown.
+    await this.prismaService.user.updateMany({
       where: {
         id: {
           in: users.map((user) => user.id),
@@ -240,6 +258,58 @@ export class TasksSubservice {
       data: {
         lastTaxDeliveryMethodsUpdateYear: currentYear,
       },
+    })
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  @HandleErrors('CronError')
+  async updateEdesk(): Promise<void> {
+    const lookBackDate = new Date()
+    lookBackDate.setHours(lookBackDate.getHours() - EDESK_UPDATE_LOOK_BACK_HOURS)
+
+    const entitiesToUpdate = await this.prismaService.$queryRaw<PhysicalEntity[]>`
+      SELECT e.*
+      FROM "PhysicalEntity" e
+      WHERE "userId" IS NOT NULL
+        AND "uri" IS NOT NULL
+        AND ("activeEdeskUpdatedAt" IS NULL OR "activeEdeskUpdatedAt" < ${lookBackDate})
+        AND ("activeEdeskUpdateFailedAt" IS NULL OR
+             "activeEdeskUpdateFailCount" = 0 OR
+             ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate}))
+      
+      ORDER BY "activeEdeskUpdatedAt" NULLS FIRST
+      LIMIT 5;
+    `
+
+    if (entitiesToUpdate.length === 0) {
+      this.logger.log('No physical entities to update edesk.')
+      return
+    }
+
+    const entityIdArray = entitiesToUpdate.map((entity) => entity.id)
+
+    await this.physicalEntityService.updateEdeskFromUpvs({ id: { in: entityIdArray } })
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_9AM)
+  @HandleErrors('CronError')
+  async alertFailingEdeskUpdate(): Promise<void> {
+    const entitiesFailedToUpdate = await this.prismaService.physicalEntity.findMany({
+      where: { activeEdeskUpdateFailCount: { gte: 7 } },
+      select: {
+        id: true,
+        birthNumber: true,
+        activeEdeskUpdateFailCount: true,
+      },
+    })
+
+    if (entitiesFailedToUpdate.length === 0) {
+      return
+    }
+
+    this.logger.error('Entities that failed to update at least 7 times in a row: ', {
+      entities: entitiesFailedToUpdate,
+      alert: 1,
     })
   }
 

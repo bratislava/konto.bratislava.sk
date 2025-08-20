@@ -1,4 +1,11 @@
-import { Controller, Get, HttpCode, Query, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  HttpCode,
+  ParseIntPipe,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -51,7 +58,7 @@ export class TaxControllerV2 {
   @Get('get-tax-detail-by-year')
   async getTaxDetailByYear(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year') year: number,
+    @Query('year', ParseIntPipe) year: number,
   ) {
     return this.taxService.getTaxDetail(baUser.birthNumber, year)
   }

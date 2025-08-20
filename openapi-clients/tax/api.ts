@@ -595,12 +595,6 @@ export interface ResponseOneTimePaymentDetailsDto {
    * @memberof ResponseOneTimePaymentDetailsDto
    */
   variableSymbol?: string
-  /**
-   * Link to payment gateway (only when type is ONE_TIME_PAYMENT)
-   * @type {string}
-   * @memberof ResponseOneTimePaymentDetailsDto
-   */
-  paymentGatewayLink?: string
 }
 
 export const ResponseOneTimePaymentDetailsDtoTypeEnum = {
@@ -1072,6 +1066,43 @@ export interface ResponseTaxPayerDto {
 /**
  *
  * @export
+ * @interface ResponseTaxPayerReducedDto
+ */
+export interface ResponseTaxPayerReducedDto {
+  /**
+   * Name of taxpayer
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  name: string | null
+  /**
+   * Street of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceStreet: string | null
+  /**
+   * Zip of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceZip: string | null
+  /**
+   * City of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceCity: string | null
+  /**
+   * Id of tax payer from Noris
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  externalId: string | null
+}
+/**
+ *
+ * @export
  * @interface ResponseTaxSummaryDetailDto
  */
 export interface ResponseTaxSummaryDetailDto {
@@ -1117,6 +1148,12 @@ export interface ResponseTaxSummaryDetailDto {
    * @memberof ResponseTaxSummaryDetailDto
    */
   taxAdministrator: ResponseTaxAdministratorDto | null
+  /**
+   * Tax payer data
+   * @type {ResponseTaxPayerReducedDto}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  taxPayer: ResponseTaxPayerReducedDto
   /**
    * Delivery methods bot locked and latest.
    * @type {DeliveryMethodActiveAndLockedDtoClass}
@@ -2275,6 +2312,96 @@ export class DefaultApi extends BaseAPI {
 export const PaymentApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
+     * Creates a payment link for paying the entire tax amount or remaining balance for the current year.
+     * @summary Generate payment link for full tax payment for the current year.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paymentControllerGenerateFullPaymentLink: async (
+      year: number,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'year' is not null or undefined
+      assertParamExists('paymentControllerGenerateFullPaymentLink', 'year', year)
+      const localVarPath = `/payment/cardpay/full-payment/{year}`.replace(
+        `{${'year'}}`,
+        encodeURIComponent(String(year)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Creates a payment link for making an installment payment for the specified year.
+     * @summary Generate payment link for installment tax payment.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paymentControllerGenerateInstallmentPaymentLink: async (
+      year: number,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'year' is not null or undefined
+      assertParamExists('paymentControllerGenerateInstallmentPaymentLink', 'year', year)
+      const localVarPath = `/payment/cardpay/installment-payment/{year}`.replace(
+        `{${'year'}}`,
+        encodeURIComponent(String(year)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      *
      * @param {string} taxUuid
      * @param {*} [options] Override http request option.
@@ -2319,6 +2446,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     paymentControllerPayment: async (
@@ -2364,6 +2492,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     paymentControllerPaymentByTaxId: async (
@@ -2500,6 +2629,65 @@ export const PaymentApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = PaymentApiAxiosParamCreator(configuration)
   return {
     /**
+     * Creates a payment link for paying the entire tax amount or remaining balance for the current year.
+     * @summary Generate payment link for full tax payment for the current year.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async paymentControllerGenerateFullPaymentLink(
+      year: number,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetPaymentUrlDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.paymentControllerGenerateFullPaymentLink(year, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PaymentApi.paymentControllerGenerateFullPaymentLink']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Creates a payment link for making an installment payment for the specified year.
+     * @summary Generate payment link for installment tax payment.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async paymentControllerGenerateInstallmentPaymentLink(
+      year: number,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetPaymentUrlDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.paymentControllerGenerateInstallmentPaymentLink(
+          year,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PaymentApi.paymentControllerGenerateInstallmentPaymentLink']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      *
      * @param {string} taxUuid
      * @param {*} [options] Override http request option.
@@ -2531,6 +2719,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async paymentControllerPayment(
@@ -2560,6 +2749,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async paymentControllerPaymentByTaxId(
@@ -2643,6 +2833,36 @@ export const PaymentApiFactory = function (
   const localVarFp = PaymentApiFp(configuration)
   return {
     /**
+     * Creates a payment link for paying the entire tax amount or remaining balance for the current year.
+     * @summary Generate payment link for full tax payment for the current year.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paymentControllerGenerateFullPaymentLink(
+      year: number,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseGetPaymentUrlDto> {
+      return localVarFp
+        .paymentControllerGenerateFullPaymentLink(year, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Creates a payment link for making an installment payment for the specified year.
+     * @summary Generate payment link for installment tax payment.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paymentControllerGenerateInstallmentPaymentLink(
+      year: number,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseGetPaymentUrlDto> {
+      return localVarFp
+        .paymentControllerGenerateInstallmentPaymentLink(year, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      *
      * @param {string} taxUuid
      * @param {*} [options] Override http request option.
@@ -2661,6 +2881,7 @@ export const PaymentApiFactory = function (
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     paymentControllerPayment(
@@ -2676,6 +2897,7 @@ export const PaymentApiFactory = function (
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     paymentControllerPaymentByTaxId(
@@ -2732,6 +2954,37 @@ export const PaymentApiFactory = function (
  */
 export class PaymentApi extends BaseAPI {
   /**
+   * Creates a payment link for paying the entire tax amount or remaining balance for the current year.
+   * @summary Generate payment link for full tax payment for the current year.
+   * @param {number} year
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PaymentApi
+   */
+  public paymentControllerGenerateFullPaymentLink(year: number, options?: RawAxiosRequestConfig) {
+    return PaymentApiFp(this.configuration)
+      .paymentControllerGenerateFullPaymentLink(year, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Creates a payment link for making an installment payment for the specified year.
+   * @summary Generate payment link for installment tax payment.
+   * @param {number} year
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PaymentApi
+   */
+  public paymentControllerGenerateInstallmentPaymentLink(
+    year: number,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return PaymentApiFp(this.configuration)
+      .paymentControllerGenerateInstallmentPaymentLink(year, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    *
    * @param {string} taxUuid
    * @param {*} [options] Override http request option.
@@ -2749,6 +3002,7 @@ export class PaymentApi extends BaseAPI {
    * @summary Generate payment link to logged user for submitted year if there is no payment.
    * @param {string} year
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof PaymentApi
    */
@@ -2763,6 +3017,7 @@ export class PaymentApi extends BaseAPI {
    * @summary Generate payment link and redirect to this link to gpwebpay.
    * @param {string} uuid
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof PaymentApi
    */

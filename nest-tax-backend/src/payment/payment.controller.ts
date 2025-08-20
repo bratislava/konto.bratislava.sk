@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpException,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   Redirect,
@@ -47,6 +48,7 @@ export class PaymentController {
       'Generate payment link to logged user for submitted year if there is no payment.',
     description:
       'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -81,9 +83,91 @@ export class PaymentController {
 
   @HttpCode(200)
   @ApiOperation({
+    summary: 'Generate payment link for full tax payment for the current year.',
+    description:
+      'Creates a payment link for paying the entire tax amount or remaining balance for the current year.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Create url to GP webpay with payment details',
+    type: ResponseGetPaymentUrlDto,
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Custom error to create url',
+    type: ResponseErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @ApiBearerAuth()
+  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @UseGuards(TiersGuard)
+  @UseGuards(AuthenticationGuard)
+  @Post('cardpay/full-payment/:year')
+  async generateFullPaymentLink(
+    @BratislavaUser() baUser: BratislavaUserDto,
+    @Param('year', ParseIntPipe) year: number,
+  ) {
+    const urlToRedirect = await this.paymentService.generateFullPaymentLink(
+      {
+        birthNumber: baUser.birthNumber,
+      },
+      year,
+    )
+
+    return { url: urlToRedirect }
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Generate payment link for installment tax payment.',
+    description:
+      'Creates a payment link for making an installment payment for the specified year.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Create url to GP webpay with payment details',
+    type: ResponseGetPaymentUrlDto,
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Custom error to create url',
+    type: ResponseErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @ApiBearerAuth()
+  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @UseGuards(TiersGuard)
+  @UseGuards(AuthenticationGuard)
+  @Post('cardpay/installment-payment/:year')
+  async generateInstallmentPaymentLink(
+    @BratislavaUser() baUser: BratislavaUserDto,
+    @Param('year', ParseIntPipe) year: number,
+  ) {
+    const urlToRedirect =
+      await this.paymentService.generateInstallmentPaymentLink(
+        {
+          birthNumber: baUser.birthNumber,
+        },
+        year,
+      )
+
+    return { url: urlToRedirect }
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
     summary: 'Generate payment link and redirect to this link to gpwebpay.',
     description:
       'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
+    deprecated: true,
   })
   @ApiResponse({
     status: 302,

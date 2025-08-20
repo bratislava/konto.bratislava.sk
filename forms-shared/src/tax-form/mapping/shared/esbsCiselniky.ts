@@ -900,3 +900,29 @@ export const esbsKatastralneUzemiaCiselnik = [
   { Code: '870293', Name: 'Vrakuňa', WsEnumCode: 'ICL0079' },
   { Code: '871796', Name: 'Záhorská Bystrica', WsEnumCode: 'ICL0079' },
 ] as const
+
+export const katastralneUzemiaCodeAbbreviationMap: Record<
+  (typeof esbsKatastralneUzemiaCiselnik)[number]['Code'],
+  string
+> = {
+  '809985': 'CU',
+  '805301': 'DE',
+  '810649': 'DNV',
+  '806099': 'DU',
+  '822256': 'JA',
+  '805211': 'KV',
+  '806005': 'LA',
+  '804274': 'NI',
+  '804690': 'NM',
+  '804959': 'PE',
+  '847755': 'PB',
+  '805866': 'RA',
+  '853771': 'RU',
+  '805556': 'RZ',
+  '804096': 'SM',
+  '805343': 'TR',
+  '805700': 'VA',
+  '804380': 'VIN',
+  '870293': 'VR',
+  '871796': 'ZB',
+} as const

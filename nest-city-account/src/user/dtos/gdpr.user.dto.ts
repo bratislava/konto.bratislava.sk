@@ -35,6 +35,30 @@ export class GdprDataDto {
   category!: GDPRCategoryEnum
 }
 
+export class GdprDataSubscriptionDto extends GdprDataDto {
+  @ApiProperty({
+    description: 'Type of subType - unsubscribe or subscribe',
+    default: 'unsubscribe',
+  })
+  subType!: GdprSubType
+}
+
+export enum GdprCategory {
+  TAXES = 'TAXES',
+  ESBS = 'ESBS',
+}
+
+export enum GdprSubType {
+  UNSUB = 'unsubscribe',
+  SUB = 'subscribe',
+}
+
+export enum GdprType {
+  LICENSE = 'LICENSE',
+  MARKETING = 'MARKETING',
+  FORMAL_COMMUNICATION = 'FORMAL_COMMUNICATION',
+}
+
 export enum UserOfficialCorrespondenceChannelEnum {
   POSTAL = 'POSTAL',
   EDESK = 'EDESK',

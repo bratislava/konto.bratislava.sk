@@ -71,7 +71,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       endIcon,
       hrefIconHidden,
       fullWidth,
-      form,
       loading,
       hrefTarget,
       ...rest
@@ -287,7 +286,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         type="button"
         ref={ref as Ref<HTMLButtonElement>}
         className={style}
-        form={form}
         {...buttonProps}
         disabled={disabled || loading}
       >

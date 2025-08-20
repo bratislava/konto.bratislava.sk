@@ -7,7 +7,7 @@ import { Stream } from 'node:stream'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
-import { AxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
@@ -602,7 +602,7 @@ export default class NasesUtilsService {
 
       return { status: 200, data: response.data }
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.data) {
+      if (isAxiosError(error) && error.response?.data) {
         return { status: error.response.status, data: error.response.data }
       }
       // TODO temp SEND_TO_NASES_ERROR log, remove

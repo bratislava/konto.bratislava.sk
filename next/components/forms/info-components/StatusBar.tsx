@@ -1,116 +1,89 @@
-/** A react component with state provided through context
- * which shows a red status bar with white text on top of the page
- */
 import { CrossIcon } from '@assets/ui-icons'
+import { strapiClient } from '@clients/graphql-strapi'
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, forwardRef, ReactNode, useContext, useState } from 'react'
-import { useEffectOnce, useLocalStorage } from 'usehooks-ts'
+import objectHash from 'object-hash'
+import React from 'react'
+import { useLocalStorage } from 'usehooks-ts'
 
 import { environment } from '../../../environment'
-import cn from '../../../frontend/cn'
 import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 import Button from '../simple-components/ButtonNew'
 
-type StatusBarVariantBase = 'warning' | 'error' | 'info'
+const fetchAlert = async () => {
+  try {
+    const alertsQuery = await strapiClient.Alerts()
+    const alerts =
+      alertsQuery.general?.data?.attributes?.alerts?.filter((alert) => alert != null) ?? []
 
-type StatusBarConfigurationBase = {
-  content: React.ReactNode
-  variant: StatusBarVariantBase
-}
+    const now = new Date()
 
-const StatusBarContext = createContext<{
-  statusBarConfiguration: StatusBarConfigurationBase
-  setStatusBarConfiguration: React.Dispatch<React.SetStateAction<StatusBarConfigurationBase>>
-}>({
-  statusBarConfiguration: {
-    content: null,
-    variant: 'warning',
-  },
-  setStatusBarConfiguration: () => {},
-})
+    const validAlerts = alerts.filter((alert) => {
+      const { dateFrom, dateTo } = alert
+      const fromDate = dateFrom ? new Date(dateFrom) : null
+      const toDate = dateTo ? new Date(dateTo) : null
 
-interface StatusBarProviderProps {
-  children?: React.ReactNode
-}
+      const isAfterFromDate = !fromDate || now >= fromDate
+      const isBeforeToDate = !toDate || now <= toDate
 
-export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }) => {
-  const [statusBarConfiguration, setStatusBarConfiguration] = useState<StatusBarConfigurationBase>({
-    content: null,
-    variant: 'warning',
-  })
-  const { t } = useTranslation(['common'])
-  useEffectOnce(() => {
-    // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence
-    // TODO rethink the status bar approach on product side
-    // TODO here set to whatever is the 'global' error
-    setStatusBarConfiguration({
-      // If translation is empty, status bar will be hidden
-      content: t('common:statusBarContent'),
-      variant: 'warning',
+      return isAfterFromDate && isBeforeToDate
     })
-  })
 
-  return (
-    <StatusBarContext.Provider
-      value={{
-        statusBarConfiguration,
-        setStatusBarConfiguration,
-      }}
-    >
-      {children}
-    </StatusBarContext.Provider>
-  )
+    const validAlert = validAlerts.length > 0 ? validAlerts[0] : null
+    if (validAlert) {
+      return { ...validAlert, uniqueId: objectHash(validAlert) }
+    }
+
+    return null
+  } catch (error) {
+    // Handle error gracefully
+    return null
+  }
 }
 
-export const useStatusBarContext = () => useContext(StatusBarContext)
-
-export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
+export const StatusBar = () => {
   const { t } = useTranslation('common')
-  const [statusBarTextDissmissed, setStatusBarTextDissmissed] = useLocalStorage<null | ReactNode>(
-    'StatusBarText',
-    null,
-  )
 
-  const { statusBarConfiguration } = useStatusBarContext()
+  const { data: alertData } = useQuery({
+    queryKey: ['alert'],
+    queryFn: fetchAlert,
+    staleTime: Infinity,
+  })
+  const [dismissedAlerts, setDismissedAlerts] = useLocalStorage<string[]>('dismissedAlerts', [])
 
-  const displayStatusBar =
-    statusBarConfiguration.content &&
-    statusBarTextDissmissed !== statusBarConfiguration.content &&
-    !environment.featureToggles.hideStatusbar
+  const shouldShowAlert = alertData && !dismissedAlerts.includes(alertData.uniqueId)
+  const displayStatusBar = shouldShowAlert && !environment.featureToggles.hideStatusbar
+
   if (!displayStatusBar) {
     return null
   }
 
+  const handleDismiss = () => {
+    if (alertData && !dismissedAlerts.includes(alertData.uniqueId)) {
+      setDismissedAlerts((prev) => [...prev, alertData.uniqueId])
+    }
+  }
+
   return (
-    <div
-      ref={forwardedRef}
-      className={cn('w-full text-white', {
-        'bg-negative-700': statusBarConfiguration.variant === 'error',
-        'bg-warning-700': statusBarConfiguration.variant === 'warning',
-        'bg-gray-700': statusBarConfiguration.variant === 'info',
-      })}
-    >
+    <div className="w-full bg-warning-700 text-white">
       <SectionContainer>
         <div className="flex justify-between py-4">
           <div className="flex">
             <span className="mr-3">
               <WarningIcon solid className="size-5" />
             </span>
-            <AccountMarkdown
-              variant="statusBar"
-              content={statusBarConfiguration.content as string}
-            />
+            <AccountMarkdown variant="statusBar" content={alertData.content} />
           </div>
           <Button
             className="h-fit shrink-0"
             icon={<CrossIcon />}
             aria-label={t('ariaCloseStatusBar') ?? ''}
-            onPress={() => setStatusBarTextDissmissed(statusBarConfiguration.content || null)}
+            onPress={handleDismiss}
           />
         </div>
       </SectionContainer>
     </div>
   )
-})
+}

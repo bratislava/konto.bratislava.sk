@@ -8,7 +8,10 @@ import { step } from '../generator/functions/step'
 import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
-import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import {
+  esbsKatastralneUzemiaCiselnik,
+  katastralneUzemiaCodeAbbreviationMap,
+} from '../tax-form/mapping/shared/esbsCiselniky'
 import { textArea } from '../generator/functions/textArea'
 import { object } from '../generator/object'
 import { number } from '../generator/functions/number'
@@ -28,7 +31,7 @@ const addressFields = (title: string) => [
   input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
 ]
 
-const ziadatelStavebnikInvestorFields = [
+const ziadatelStavebnikFields = [
   radioGroup(
     'ziadatelTyp',
     {
@@ -81,13 +84,13 @@ export default schema(
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
   },
   [
-    step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikInvestorFields),
-    step('investor', { title: 'Investor' }, [
+    step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikFields),
+    step('stavebnik', { title: 'Stavebník' }, [
       radioGroup(
-        'investorZiadatelom',
+        'stavebnikZiadatelom',
         {
           type: 'boolean',
-          title: 'Je investor rovnaká osoba ako žiadateľ?',
+          title: 'Je stavebník rovnaká osoba ako žiadateľ?',
           required: true,
           items: [
             { value: true, label: 'Áno', isDefault: true },
@@ -99,7 +102,7 @@ export default schema(
           orientations: 'row',
         },
       ),
-      conditionalFields(createCondition([[['investorZiadatelom'], { const: false }]]), [
+      conditionalFields(createCondition([[['stavebnikZiadatelom'], { const: false }]]), [
         fileUpload(
           'splnomocnenie',
           {
@@ -108,10 +111,10 @@ export default schema(
           },
           {
             type: 'button',
-            helptext: 'nahrajte splnomocnenie od investora',
+            helptext: 'nahrajte splnomocnenie od stavebníka',
           },
         ),
-        ...ziadatelStavebnikInvestorFields,
+        ...ziadatelStavebnikFields,
       ]),
     ]),
     step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
@@ -380,11 +383,11 @@ export const zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject: Schem
   {
     type: 'schemaless',
     extractFn: (formData) => {
-      const katastralneUzemiaNames = formData.stavba.katastralneUzemia.map(
-        (item) => esbsKatastralneUzemiaCiselnik.find(({ Code }) => Code === item)!.Name,
+      const katastralneUzemiaAbbreviations = formData.stavba.katastralneUzemia.map(
+        (item) => katastralneUzemiaCodeAbbreviationMap[item],
       )
 
-      return `e-ZST ${formData.stavba.ulica} ${formData.stavba.nazov}, p.č. ${formData.stavba.parcelneCisla} kú ${katastralneUzemiaNames.join(', ')}`
+      return `e-ZST ž. ${formData.stavba.ulica} ${formData.stavba.nazov}, p.č. ${formData.stavba.parcelneCisla}, kú ${katastralneUzemiaAbbreviations.join(', ')}`
     },
   }
 

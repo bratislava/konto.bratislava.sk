@@ -2558,8 +2558,8 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <FormId>f47ac10b-58cc-4372-a567-0e02b2c3d479</FormId>
-  <JsonVersion>2.0.0</JsonVersion>
-  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","idStavby":"BYT-2024-001","ulica":"Dunajská","supisneCislo":"1234","parcelneCisla":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03","obsahujeByty":true,"pocetBytovCelkovo":24,"pocet1IzbovychBytov":6,"pocet2IzbovychBytov":12,"pocet3IzbovychBytov":4,"pocet4IzbovychBytov":2,"pocetViacAko4IzbovychBytov":0}},"typZiadosti":{"typ":"stavebnyZamerNavrhovanaStavba"},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
+  <JsonVersion>3.0.0</JsonVersion>
+  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"stavebnik":{"stavebnikZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","idStavby":"BYT-2024-001","ulica":"Dunajská","supisneCislo":"1234","parcelneCisla":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03","obsahujeByty":true,"pocetBytovCelkovo":24,"pocet1IzbovychBytov":6,"pocet2IzbovychBytov":12,"pocet3IzbovychBytov":4,"pocet4IzbovychBytov":2,"pocetViacAko4IzbovychBytov":0}},"typZiadosti":{"typ":"stavebnyZamerNavrhovanaStavba"},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
   <Summary>
     <Form title="Žiadosť o záväzné stanovisko k investičnej činnosti">
       <Step id="root_ziadatel" title="Žiadateľ">
@@ -2588,35 +2588,35 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
           <StringValue>+421905987654</StringValue>
         </Field>
       </Step>
-      <Step id="root_investor" title="Investor">
-        <Field id="root_investor_investorZiadatelom" label="Je investor rovnaká osoba ako žiadateľ?">
+      <Step id="root_stavebnik" title="Stavebník">
+        <Field id="root_stavebnik_stavebnikZiadatelom" label="Je stavebník rovnaká osoba ako žiadateľ?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_investor_splnomocnenie" label="Splnomocnenie na zastupovanie">
+        <Field id="root_stavebnik_splnomocnenie" label="Splnomocnenie na zastupovanie">
           <FileValue id="b9050ef5-0d98-41c4-aba1-b0fc5a65a442">splnomocnenie.pdf</FileValue>
         </Field>
-        <Field id="root_investor_ziadatelTyp" label="Žiadate ako">
+        <Field id="root_stavebnik_ziadatelTyp" label="Žiadate ako">
           <StringValue>Fyzická osoba</StringValue>
         </Field>
-        <Field id="root_investor_meno" label="Meno">
+        <Field id="root_stavebnik_meno" label="Meno">
           <StringValue>Marta</StringValue>
         </Field>
-        <Field id="root_investor_priezvisko" label="Priezvisko">
+        <Field id="root_stavebnik_priezvisko" label="Priezvisko">
           <StringValue>Nováková</StringValue>
         </Field>
-        <Field id="root_investor_ulicaACislo" label="Korešpondenčná adresa">
+        <Field id="root_stavebnik_ulicaACislo" label="Korešpondenčná adresa">
           <StringValue>Šancová 56</StringValue>
         </Field>
-        <Field id="root_investor_mesto" label="Mesto">
+        <Field id="root_stavebnik_mesto" label="Mesto">
           <StringValue>Bratislava</StringValue>
         </Field>
-        <Field id="root_investor_psc" label="PSČ">
+        <Field id="root_stavebnik_psc" label="PSČ">
           <StringValue>83104</StringValue>
         </Field>
-        <Field id="root_investor_email" label="Email">
+        <Field id="root_stavebnik_email" label="Email">
           <StringValue>marta.novakova@priklad.sk</StringValue>
         </Field>
-        <Field id="root_investor_telefon" label="Telefónne číslo">
+        <Field id="root_stavebnik_telefon" label="Telefónne číslo">
           <StringValue>+421902123456</StringValue>
         </Field>
       </Step>

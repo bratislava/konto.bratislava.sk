@@ -70,7 +70,7 @@ model User {
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
   lastTaxYear                          Int?
-  lastTaxBackendUploadTry              DateTime                       @default(now())
+  lastTaxBackendUploadTry              DateTime?
   lastTaxDeliveryMethodsUpdateYear     Int?
   taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery
@@ -110,17 +110,19 @@ model LegalPersonIcoIdCardVerify {
 // consolidates data from magproxy / NASES
 // a physicalEntity record may or may not be linked to exactly one User record, and vice versa
 model PhysicalEntity {
-  id                String              @id @default(uuid()) @db.Uuid
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  user              User?               @relation(fields: [userId], references: [id])
-  userId            String?             @unique @db.Uuid
-  uri               String?             @unique
-  // is ifo unique ? should we store it here ?
-  ifo               String?             @unique
-  birthNumber       String?
-  activeEdesk       Boolean?
-  UpvsIdentityByUri UpvsIdentityByUri[]
+  id                         String              @id @default(uuid()) @db.Uuid
+  createdAt                  DateTime            @default(now())
+  updatedAt                  DateTime            @updatedAt
+  user                       User?               @relation(fields: [userId], references: [id])
+  userId                     String?             @unique @db.Uuid
+  uri                        String?             @unique
+  ifo                        String?             @unique
+  birthNumber                String?
+  activeEdesk                Boolean?
+  activeEdeskUpdatedAt       DateTime?
+  activeEdeskUpdateFailedAt  DateTime?
+  activeEdeskUpdateFailCount Int                 @default(0)
+  UpvsIdentityByUri          UpvsIdentityByUri[]
 }
 
 // stores (filtered) requests from nases

@@ -103,6 +103,18 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
+    summary: 'Will activate one time sync of all users from cognito to db at 3am ',
+    description:
+      'This endpoint is intended to be used manually to trigger a sync of all users from cognito and then call getOrCreate for each user.',
+  })
+  @UseGuards(AdminGuard)
+  @Get('activate-sync-cognito-to-db')
+  async syncCognitoToDb(): Promise<void> {
+    await this.adminService.activateSyncCognitoToDb()
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
     summary: "Get user's verify state",
     description: 'Return the state of user verifying.',
   })

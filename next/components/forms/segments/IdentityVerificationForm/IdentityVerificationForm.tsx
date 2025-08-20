@@ -9,8 +9,10 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { environment } from '../../../../environment'
+import { AccountType } from '../../../../frontend/dtos/accountDto'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import { isBrowser } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
@@ -23,7 +25,6 @@ export interface VerificationFormData {
 
 interface Props {
   onSubmit: (data: VerificationFormData) => void
-  isLegalEntity: boolean
   error?: Error | null
 }
 
@@ -80,10 +81,13 @@ const foSchema = {
   required: ['rc', 'idCard', 'turnstileToken'],
 }
 
-const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => {
+const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
+  const { isLegalEntity, accountType } = useSsrAuth()
+  const isFoOrFop =
+    accountType === AccountType.FyzickaOsoba || accountType === AccountType.FyzickaOsobaPodnikatel
   const schema = isLegalEntity ? poSchema : foSchema
   const defaultValues = isLegalEntity ? { ico: '', rc: '', idCard: '' } : { rc: '', idCard: '' }
   const {
@@ -141,7 +145,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
           <InputField
             required
             helptext={t('rc_description')}
-            label={t(isLegalEntity ? 'rc_label_legal_entity' : 'rc_label')}
+            label={t(isFoOrFop ? 'rc_label' : 'rc_label_legal_entity')}
             placeholder={t('rc_placeholder')}
             {...field}
             errorMessage={errors.rc}
@@ -154,7 +158,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
         render={({ field }) => (
           <InputField
             required
-            label={t(isLegalEntity ? 'id_card_label_legal_entity' : 'id_card_label')}
+            label={t(isFoOrFop ? 'id_card_label' : 'id_card_label_legal_entity')}
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
             {...field}

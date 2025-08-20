@@ -426,21 +426,7 @@ export class DatabaseSubserviceUser {
       })),
     })
 
-    for (const elem of gdprData) {
-      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-      // If there is error it isn't blocker for futher process.
-      // TODO Data will be also uploaded from database to bloomreach every day.
-      this.bloomreachService.trackEventConsent(
-        elem.subType,
-        [
-          {
-            category: elem.category,
-            type: elem.type,
-          },
-        ],
-        user.externalId
-      )
-    }
+    await this.bloomreachService.trackEventConsents(gdprData, user.externalId, user.id, false)
   }
 
   async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
@@ -462,20 +448,11 @@ export class DatabaseSubserviceUser {
       })),
     })
 
-    for (const elem of gdprData) {
-      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-      // If there is error it isn't blocker for futher process.
-      // TODO Data will be also uploaded from database to bloomreach every day.
-      this.bloomreachService.trackEventConsent(
-        elem.subType,
-        [
-          {
-            category: elem.category,
-            type: elem.type,
-          },
-        ],
-        legalPerson.externalId
-      )
-    }
+    await this.bloomreachService.trackEventConsents(
+      gdprData,
+      legalPerson.externalId,
+      legalPerson.id,
+      true
+    )
   }
 }

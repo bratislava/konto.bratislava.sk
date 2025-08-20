@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { AxiosError, AxiosPromise } from 'axios'
+import { AxiosPromise, isAxiosError } from 'axios'
 import { UpdateFileStatusRequestDtoStatusEnum, UpdateFileStatusResponseDto } from 'openapi-clients/forms'
 
 import ClientsService from '../clients/clients.service'
@@ -59,7 +59,7 @@ export class FormsClientService {
         },
       )
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === 404) {
+      if (isAxiosError(error) && error.response?.status === 404) {
         this.logger.error(
           `File not found in forms backend. Removing from DB: ${error.message}`,
         )

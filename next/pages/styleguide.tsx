@@ -23,7 +23,6 @@ import ServiceCardShowCase from '../components/styleguide/showcases/ServiceCardS
 import SingleCheckboxShowCase from '../components/styleguide/showcases/SingleCheckboxShowCase'
 import SnackbarShowCase from '../components/styleguide/showcases/SnackbarShowCase'
 import SpinnerShowCase from '../components/styleguide/showcases/SpinnerShowCase'
-import StatusBarShowCase from '../components/styleguide/showcases/StatusBarShowCase'
 import SummaryRowShowCase from '../components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '../components/styleguide/showcases/TagShowCase'
 import TextAreaFieldShowCase from '../components/styleguide/showcases/TextAreaFieldShowCase'
@@ -46,7 +45,6 @@ const Styleguide = () => {
       <StyleGuideWrapper>
         {/* HERE ADD SHOWCASES */}
         <IconShowCase />
-        <StatusBarShowCase />
         <TagShowCase />
         <TooltipShowCase />
         <FieldHeaderShowCase />

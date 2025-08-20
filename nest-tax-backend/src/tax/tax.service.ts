@@ -1,7 +1,7 @@
 import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
-import { DeliveryMethodNamed, PaymentStatus } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 import ejs from 'ejs'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -9,7 +9,7 @@ import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
-import { PaymentService } from '../payment/payment.service'
+import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import {
   CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
@@ -23,11 +23,16 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDto,
+  ResponseTaxPayerReducedDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
-import { getTaxDetailPure } from './utils/unified-tax.util'
+import {
+  getTaxDetailPure,
+  getTaxDetailPureForInstallmentGenerator,
+  getTaxDetailPureForOneTimeGenerator,
+} from './utils/unified-tax.util'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 
 const paymentCalendarThreshold = 6600
@@ -40,28 +45,37 @@ export class TaxService {
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
-    private readonly paymentService: PaymentService,
     private readonly cityAccountSubservice: CityAccountSubservice,
   ) {}
 
-  private async fetchTaxData(birthNumber: string, year: number) {
-    const tax = await this.prisma.tax.findFirst({
+  async fetchTaxData<T extends Prisma.TaxInclude>(
+    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    include: T,
+    year: number,
+  ) {
+    const taxPayer = await this.prisma.taxPayer.findUnique({
+      where: taxPayerWhereUniqueInput,
+      select: { id: true },
+    })
+
+    if (!taxPayer) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      )
+    }
+
+    const tax = await this.prisma.tax.findUnique<{
+      where: Prisma.TaxWhereUniqueInput
+      include: T
+    }>({
       where: {
-        year: +year,
-        taxPayer: {
-          birthNumber,
+        taxPayerId_year: {
+          year,
+          taxPayerId: taxPayer.id,
         },
       },
-      include: {
-        taxInstallments: true,
-        taxPayer: {
-          include: {
-            taxAdministrator: true,
-          },
-        },
-        taxDetails: true,
-        taxPayments: true,
-      },
+      include,
     })
 
     if (!tax) {
@@ -98,7 +112,21 @@ export class TaxService {
         CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
       )
     }
-    const tax = await this.fetchTaxData(birthNumber, year)
+
+    const tax = await this.fetchTaxData(
+      { birthNumber },
+      {
+        taxInstallments: true,
+        taxPayer: {
+          include: {
+            taxAdministrator: true,
+          },
+        },
+        taxDetails: true,
+        taxPayments: true,
+      },
+      year,
+    )
 
     const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
 
@@ -111,7 +139,13 @@ export class TaxService {
     }
 
     // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
-    const taxInstallments = fixInstallmentTexts(tax.taxInstallments, tax.year)
+    const taxInstallments = fixInstallmentTexts(
+      tax.taxInstallments,
+      tax.year,
+    ).map((installment) => ({
+      ...installment,
+      order: installment.order.toString(),
+    }))
 
     const paidStatus = getTaxStatus(tax.amount, paidAmount)
 
@@ -212,7 +246,13 @@ export class TaxService {
     try {
       const user = await this.getTaxByYear(year, birthNumber)
       const taxDetails = taxDetailsToPdf(user.taxDetails)
-      const totals = taxTotalsToPdf(user, user.taxInstallments)
+      const totals = taxTotalsToPdf(
+        user,
+        user.taxInstallments.map((data) => ({
+          ...data,
+          order: data.order ? +data.order : 1,
+        })),
+      )
       return await ejs.renderFile('public/tax-pdf.ejs', {
         user,
         logo: path.resolve('public/logoBaTax.png'),
@@ -236,7 +276,20 @@ export class TaxService {
   ): Promise<ResponseTaxSummaryDetailDto> {
     const today = dayjs().tz('Europe/Bratislava')
 
-    const tax = await this.fetchTaxData(birthNumber, year)
+    const tax = await this.fetchTaxData(
+      { birthNumber },
+      {
+        taxInstallments: true,
+        taxPayer: {
+          include: {
+            taxAdministrator: true,
+          },
+        },
+        taxDetails: true,
+        taxPayments: true,
+      },
+      year,
+    )
 
     const detailWithoutQrCode = getTaxDetailPure({
       taxYear: +year,
@@ -254,16 +307,6 @@ export class TaxService {
       taxPayments: tax.taxPayments,
     })
 
-    const paymentGatewayLink =
-      detailWithoutQrCode.oneTimePayment.isPossible &&
-      detailWithoutQrCode.oneTimePayment.type ===
-        OneTimePaymentTypeEnum.ONE_TIME_PAYMENT
-        ? await this.paymentService.getPayGateUrlByUserAndYear(
-            year.toString(),
-            birthNumber,
-          )
-        : undefined
-
     let oneTimePaymentQrCode: string | undefined
     if (detailWithoutQrCode.oneTimePayment.qrCode) {
       oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
@@ -273,7 +316,6 @@ export class TaxService {
     const oneTimePayment: ResponseOneTimePaymentDetailsDto = {
       ...detailWithoutQrCode.oneTimePayment,
       qrCode: oneTimePaymentQrCode,
-      paymentGatewayLink,
     }
 
     const installmentPayment: ResponseInstallmentPaymentDetailDto = {
@@ -295,13 +337,64 @@ export class TaxService {
     }
 
     const { taxAdministrator } = tax.taxPayer
+    const taxPayer: ResponseTaxPayerReducedDto = {
+      name: tax.taxPayer.name,
+      permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,
+      permanentResidenceZip: tax.taxPayer.permanentResidenceZip,
+      permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
+      externalId: tax.taxPayer.externalId,
+    }
 
     return {
       ...detailWithoutQrCode,
       oneTimePayment,
       installmentPayment,
       taxAdministrator,
+      taxPayer,
     }
+  }
+
+  async getOneTimePaymentGenerator(
+    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    year: number,
+  ): Promise<PaymentGateURLGeneratorDto> {
+    const tax = await this.fetchTaxData(
+      taxPayerWhereUniqueInput,
+      { taxPayments: true },
+      year,
+    )
+
+    return getTaxDetailPureForOneTimeGenerator({
+      taxId: tax.id,
+      overallAmount: tax.amount,
+      taxPayments: tax.taxPayments,
+    })
+  }
+
+  async getInstallmentPaymentGenerator(
+    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    year: number,
+  ): Promise<PaymentGateURLGeneratorDto> {
+    const today = dayjs().tz('Europe/Bratislava').toDate()
+
+    const tax = await this.fetchTaxData(
+      taxPayerWhereUniqueInput,
+      { taxInstallments: true, taxPayments: true },
+      year,
+    )
+
+    return getTaxDetailPureForInstallmentGenerator({
+      taxId: tax.id,
+      taxYear: year,
+      today,
+      overallAmount: tax.amount,
+      paymentCalendarThreshold,
+      variableSymbol: tax.variableSymbol,
+      dateOfValidity: tax.dateTaxRuling,
+      installments: tax.taxInstallments,
+      specificSymbol,
+      taxPayments: tax.taxPayments,
+    })
   }
 
   async getDeliveryMethod(

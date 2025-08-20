@@ -9,8 +9,12 @@ import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { arrayField } from '../generator/functions/arrayField'
 import { object } from '../generator/object'
+import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
 import { match, P } from 'ts-pattern'
-import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import {
+  esbsKatastralneUzemiaCiselnik,
+  katastralneUzemiaCodeAbbreviationMap,
+} from '../tax-form/mapping/shared/esbsCiselniky'
 
 const addressFields = (title: string) => [
   input(
@@ -309,3 +313,31 @@ Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/katas
     ]),
   ],
 )
+
+type ExtractTechnicalSubjectFormData = {
+  detailAUcel: {
+    katastralneUzemie: (typeof esbsKatastralneUzemiaCiselnik)[number]['Code']
+    informacieOLokalite: {
+      lokality: {
+        parcelneCislo: string
+        ulicaACislo: string
+      }[]
+    }
+  }
+}
+
+export const ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractTechnicalSubjectFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      const katastralneUzemieAbbreviation =
+        katastralneUzemiaCodeAbbreviationMap[formData.detailAUcel.katastralneUzemie]
+      const ulica = formData.detailAUcel.informacieOLokalite.lokality[0].ulicaACislo
+      const parcelneCisla = formData.detailAUcel.informacieOLokalite.lokality
+        .slice(0, 2)
+        .map(({ parcelneCislo }) => parcelneCislo)
+        .join(', ')
+
+      return `e-UPI ž. ${ulica}, p.č. ${parcelneCisla}, kú ${katastralneUzemieAbbreviation}`
+    },
+  }

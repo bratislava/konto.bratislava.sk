@@ -876,14 +876,6 @@ export class ResponseOneTimePaymentDetailsDto {
   @IsString()
   @IsOptional()
   variableSymbol?: string
-
-  @ApiPropertyOptional({
-    description: 'Link to payment gateway (only when type is ONE_TIME_PAYMENT)',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  paymentGatewayLink?: string
 }
 
 export class ResponseInstallmentItemDto {
@@ -993,6 +985,48 @@ export class ResponseInstallmentPaymentDetailDto {
   activeInstallment?: ResponseActiveInstallmentDto
 }
 
+export class ResponseTaxPayerReducedDto {
+  @ApiProperty({
+    description: 'Name of taxpayer',
+    default: 'Bratislavčan Daňový',
+  })
+  @IsString()
+  @IsOptional()
+  name: string | null
+
+  @ApiProperty({
+    description: 'Street of permanent residence with number',
+    default: 'Uršulínska 6 3/6',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceStreet: string | null
+
+  @ApiProperty({
+    description: 'Zip of permanent residence with number',
+    default: '811 01',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceZip: string | null
+
+  @ApiProperty({
+    description: 'City of permanent residence with number',
+    default: 'Bratislava',
+  })
+  @IsString()
+  @IsOptional()
+  permanentResidenceCity: string | null
+
+  @ApiProperty({
+    description: 'Id of tax payer from Noris',
+    default: '12345',
+  })
+  @IsString()
+  @IsOptional()
+  externalId: string | null
+}
+
 export class DeliveryMethodTaxDto
 {
   @ApiProperty({
@@ -1063,4 +1097,13 @@ export class ResponseTaxSummaryDetailDto {
   @Type(() => ResponseTaxAdministratorDto)
   @IsOptional()
   taxAdministrator: ResponseTaxAdministratorDto | null
+
+  @ApiProperty({
+    description: 'Tax payer data',
+    type: ResponseTaxPayerReducedDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxPayerReducedDto)
+  taxPayer: ResponseTaxPayerReducedDto
 }

@@ -21,6 +21,7 @@ import {
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { DeliveryMethodActiveAndLockedDto } from './dtos/deliveryMethod.dto'
 import { GDPRSubTypeEnum } from '@prisma/client'
+import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
 @Injectable()
 export class UserService {
@@ -100,10 +101,14 @@ export class UserService {
       user.id,
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
-    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-    // If there is error it isn't blocker for futher process.
-    // TODO Data will be also uploaded from database to bloomreach every day.
-    this.bloomreachService.trackEventConsent(gdprSubType, gdprData, user.externalId)
+
+    await this.bloomreachService.trackEventConsents(
+      gdprData.map((elem) => ({ ...elem, subType: gdprSubType })),
+      user.externalId,
+      user.id,
+      false
+    )
+
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
@@ -142,13 +147,12 @@ export class UserService {
       user.id,
       data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe }))
     )
-    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-    // If there is error it isn't blocker for futher process.
-    // TODO Data will be also uploaded from database to bloomreach every day.
-    this.bloomreachService.trackEventConsent(
-      GDPRSubTypeEnum.subscribe,
-      data.gdprData,
-      user.externalId
+
+    await this.bloomreachService.trackEventConsents(
+      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB })),
+      user.externalId,
+      user.id,
+      false
     )
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
@@ -180,10 +184,14 @@ export class UserService {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
-    // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-    // If there is error it isn't blocker for futher process.
-    // TODO Data will be also uploaded from database to bloomreach every day.
-    this.bloomreachService.trackEventConsent(GDPRSubTypeEnum.unsubscribe, gdprData, user.externalId)
+
+    await this.bloomreachService.trackEventConsents(
+      gdprData.map((elem) => ({ ...elem, subType: GdprSubType.UNSUB })),
+      user.externalId,
+      user.id,
+      false
+    )
+
     return { id: id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
   }
 
@@ -254,6 +262,24 @@ export class UserService {
         undefined,
         error
       )
+    }
+  }
+
+  async getOrCreateUserOrLegalPerson(
+    accountType: CognitoUserAccountTypesEnum,
+    idUser: string,
+    email: string
+  ) {
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      const result = await this.databaseSubservice.getOrCreateUser(idUser, email)
+      return result
+    }
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      const result = await this.databaseSubservice.getOrCreateLegalPerson(idUser, email)
+      return result
     }
   }
 

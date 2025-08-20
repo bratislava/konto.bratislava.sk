@@ -1,13 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { LegalPerson } from '@prisma/client'
-import { GdprCategory, GdprSubType, GdprType } from './gdpr.user.dto'
+import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, LegalPerson } from '@prisma/client'
 
 export class ResponseGdprLegalPersonDataDto {
-  category!: GdprCategory
+  category!: GDPRCategoryEnum
 
-  type!: GdprType
+  type!: GDPRTypeEnum
 
-  subType!: GdprSubType
+  subType!: GDPRSubTypeEnum
 }
 
 export class ResponseLegalPersonDataSimpleDto {

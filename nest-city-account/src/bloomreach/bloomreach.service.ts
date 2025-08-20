@@ -7,6 +7,7 @@ import {
   GdprDataSubscriptionDto,
   GdprSubType,
   GdprType,
+  GdprDataDto
 } from '../user/dtos/gdpr.user.dto'
 import {
   AnonymizeResponse,
@@ -17,7 +18,12 @@ import {
 } from './bloomreach.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import {
+  CognitoUserAttributesTierEnum,
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+} from '@prisma/client'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -50,25 +56,25 @@ export class BloomreachService {
   }
 
   private createBloomreachConsentCategory(
-    category: GdprCategory,
-    type: GdprType,
-    subType: GdprSubType
+    category: GDPRCategoryEnum,
+    type: GDPRTypeEnum,
+    subType: GDPRSubTypeEnum
   ): ConsentBloomreachDataDto {
     const result: ConsentBloomreachDataDto = {
       action: BloomreachConsentActionEnum.ACCEPT,
       category: `${category}-${type}`,
       valid_until: 'unlimited',
     }
-    if (subType === GdprSubType.UNSUB) {
+    if (subType === GDPRSubTypeEnum.unsubscribe) {
       result.action = BloomreachConsentActionEnum.REJECT
     }
-    if (category === GdprCategory.ESBS && type === GdprType.LICENSE) {
+    if (category === GDPRCategoryEnum.ESBS && type === GDPRTypeEnum.LICENSE) {
       result.category = BloomreachConsentCategoryEnum.ESBS_LICENSE
     }
-    if (category === GdprCategory.ESBS && type === GdprType.MARKETING) {
+    if (category === GDPRCategoryEnum.ESBS && type === GDPRTypeEnum.MARKETING) {
       result.category = BloomreachConsentCategoryEnum.ESBS_MARKETING
     }
-    if (category === GdprCategory.TAXES && type === GdprType.FORMAL_COMMUNICATION) {
+    if (category === GDPRCategoryEnum.TAXES && type === GDPRTypeEnum.FORMAL_COMMUNICATION) {
       result.category = BloomreachConsentCategoryEnum.TAX_COMMUNICATION
     }
     return result

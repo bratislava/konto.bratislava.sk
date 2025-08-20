@@ -8,15 +8,20 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from '../../dtos/gdpr.legalperson.dto'
 import {
-  GdprCategory,
-  GdprSubType,
-  GdprType,
   ResponseGdprUserDataDto,
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
+import {
+  DeliveryMethodEnum,
+  DeliveryMethodUserEnum,
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+  Prisma,
+} from '@prisma/client'
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -57,14 +62,14 @@ export class DatabaseSubserviceUser {
         })
         await this.changeUserGdprData(user.id, [
           {
-            type: GdprType.LICENSE,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.LICENSE,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
           {
-            type: GdprType.MARKETING,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
         ])
         await this.bloomreachService.trackCustomer(externalId)
@@ -94,9 +99,9 @@ export class DatabaseSubserviceUser {
       })
       await this.changeUserGdprData(user.id, [
         {
-          type: GdprType.LICENSE,
-          category: GdprCategory.ESBS,
-          subType: GdprSubType.SUB,
+          type: GDPRTypeEnum.LICENSE,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
         },
       ])
       if (externalId) {
@@ -136,14 +141,14 @@ export class DatabaseSubserviceUser {
         })
         await this.changeLegalPersonGdprData(legalPerson.id, [
           {
-            type: GdprType.LICENSE,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.LICENSE,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
           {
-            type: GdprType.MARKETING,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
         ])
       } else if (legalPerson.email != email) {

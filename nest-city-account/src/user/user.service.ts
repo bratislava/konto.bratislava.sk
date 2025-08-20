@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common'
 
 import {
   GdprDataDto,
-  GdprSubType,
   RequestPublicSubscriptionDto,
   ResponsePublicUnsubscribeDto,
   ResponseUserDataBasicDto,
@@ -20,6 +19,7 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { GDPRSubTypeEnum } from '@prisma/client'
 import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
 @Injectable()
@@ -91,7 +91,7 @@ export class UserService {
 
   async subUnsubUser(
     externalId: string,
-    gdprSubType: GdprSubType,
+    gdprSubType: GDPRSubTypeEnum,
     email: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponseUserDataDto> {
@@ -124,7 +124,7 @@ export class UserService {
 
   async subUnsubLegalPerson(
     externalId: string,
-    gdprSubType: GdprSubType,
+    gdprSubType: GDPRSubTypeEnum,
     email: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponseLegalPersonDataDto> {
@@ -144,7 +144,7 @@ export class UserService {
     const user = await this.databaseSubservice.getOrCreateUser(null, data.email)
     await this.databaseSubservice.changeUserGdprData(
       user.id,
-      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB }))
+      data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe }))
     )
 
     await this.bloomreachService.trackEventConsents(
@@ -173,7 +173,7 @@ export class UserService {
   ): Promise<ResponsePublicUnsubscribeDto> {
     await this.databaseSubservice.changeUserGdprData(
       id,
-      gdprData.map((elem) => ({ ...elem, subType: GdprSubType.UNSUB }))
+      gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe }))
     )
     const getGdprData = await this.databaseSubservice.getUserGdprData(id)
     const user = await this.databaseSubservice.getUserById(id)

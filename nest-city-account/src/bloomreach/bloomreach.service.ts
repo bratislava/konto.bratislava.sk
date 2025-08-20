@@ -2,13 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 
 import axios, { isAxiosError } from 'axios'
 
-import {
-  GdprCategory,
-  GdprDataSubscriptionDto,
-  GdprSubType,
-  GdprType,
-  GdprDataDto
-} from '../user/dtos/gdpr.user.dto'
+import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import {
   AnonymizeResponse,
   BloomreachConsentActionEnum,

@@ -6,7 +6,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import { GoogleTagManager } from '@next/third-parties/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenuContext'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
@@ -109,29 +108,26 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
 
       <AmplifyClientProvider>
         <I18nProvider locale="sk-SK">
-          <StatusBarProvider>
-            <QueryClientProvider client={queryClient}>
-              <SnackbarProvider>
-                <PlausibleProvider
-                  domain={
-                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
-                  }
-                  taggedEvents
-                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                  // trackLocalhost
-                >
-                  <NavMenuContextProvider>
-                    <NuqsAdapter>
-                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                      <div id="root">
-                        <Component {...pageProps} />
-                      </div>
-                    </NuqsAdapter>
-                  </NavMenuContextProvider>
-                </PlausibleProvider>
-              </SnackbarProvider>
-            </QueryClientProvider>
-          </StatusBarProvider>
+          <QueryClientProvider client={queryClient}>
+            <SnackbarProvider>
+              <PlausibleProvider
+                domain={isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'}
+                taggedEvents
+                // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                // trackLocalhost
+              >
+                <NavMenuContextProvider>
+                  <NuqsAdapter>
+                    {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                    <div id="root">
+                      <Component {...pageProps} />
+                    </div>
+
+                  </NuqsAdapter>
+                </NavMenuContextProvider>
+              </PlausibleProvider>
+            </SnackbarProvider>
+          </QueryClientProvider>
         </I18nProvider>
       </AmplifyClientProvider>
     </>

@@ -21,12 +21,15 @@ export const getExistingTaxStatus = (
   if (paidAmount === 0) {
     return TaxStatusEnum.NOT_PAID
   }
+
   if (paidAmount === taxAmount) {
     return TaxStatusEnum.PAID
   }
+
   if (paidAmount > taxAmount) {
     return TaxStatusEnum.OVER_PAID
   }
+
   return TaxStatusEnum.PARTIALLY_PAID
 }
 export const checkTaxDateInclusion = (
@@ -44,9 +47,7 @@ export const checkTaxDateInclusion = (
     `${currentTime.year()}-${lookingForTaxDate.to.month}-${lookingForTaxDate.to.day}`,
     'Europe/Bratislava',
   )
-  const shouldAddCurrentYear =
-    currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
-  return shouldAddCurrentYear
+  return currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
 }
 
 export const fixInstallmentTexts = (

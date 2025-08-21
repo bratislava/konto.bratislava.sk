@@ -17,7 +17,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",
-    "test": "jest --passWithNoTests",
+    "test": "jest --passWithNoTests --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",

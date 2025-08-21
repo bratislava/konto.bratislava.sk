@@ -311,6 +311,28 @@ export class DatabaseSubserviceUser {
     return !(formalCommunicationSubscription?.taxDeliveryMethod || hasEdesk?.activeEdesk)
   }
 
+  private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
+    return elem.category === GdprCategory.TAXES && elem.type === GdprType.FORMAL_COMMUNICATION
+  }
+
+  private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
+    const taxDeliveryData: DeliveryMethodUserEnum[] = []
+    const otherGdprData: ResponseGdprUserDataDto[] = []
+
+    gdprData.forEach((elem) => {
+      if (this.isTaxDeliveryData(elem)) {
+        if (elem.subType === GdprSubType.SUB) {
+          taxDeliveryData.push(DeliveryMethodUserEnum.CITY_ACCOUNT)
+        }
+        taxDeliveryData.push(DeliveryMethodUserEnum.POSTAL)
+      } else {
+        otherGdprData.push(elem)
+      }
+    })
+
+    return { taxDeliveryData, otherGdprData }
+  }
+
   async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -321,8 +343,31 @@ export class DatabaseSubserviceUser {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
+
+    // TODO we want to separate this into an endpoint
+    const { taxDeliveryData, otherGdprData } = this.separateTaxDeliveryData(gdprData)
+    if (taxDeliveryData.length > 1) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+        'Delivery method set more than once at the same time'
+      )
+    }
+
+    if (taxDeliveryData.length > 0) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          taxDeliveryMethod: taxDeliveryData[0],
+          ...(taxDeliveryData[0] === DeliveryMethodUserEnum.CITY_ACCOUNT && {
+            taxDeliveryMethodCityAccountDate: new Date(),
+          }),
+        },
+      })
+    }
+
     await this.prisma.userGdprData.createMany({
-      data: gdprData.map((elem) => ({
+      data: otherGdprData.map((elem) => ({
         type: elem.type,
         category: elem.category,
         subType: elem.subType,

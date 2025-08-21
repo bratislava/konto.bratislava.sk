@@ -190,6 +190,52 @@ export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
   (typeof DeactivateAccountResponseDtoBloomreachRemovedEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedEnum]
 
 /**
+ * Type of Gdpr category
+ * @export
+ * @enum {string}
+ */
+
+export const GDPRCategoryEnum = {
+  City: 'CITY',
+  Esbs: 'ESBS',
+  Swimmingpools: 'SWIMMINGPOOLS',
+  Taxes: 'TAXES',
+  Init: 'INIT',
+  Library: 'LIBRARY',
+} as const
+
+export type GDPRCategoryEnum = (typeof GDPRCategoryEnum)[keyof typeof GDPRCategoryEnum]
+
+/**
+ * Type of subType - unsubscribe or subscribe
+ * @export
+ * @enum {string}
+ */
+
+export const GDPRSubTypeEnum = {
+  Subscribe: 'subscribe',
+  Unsubscribe: 'unsubscribe',
+} as const
+
+export type GDPRSubTypeEnum = (typeof GDPRSubTypeEnum)[keyof typeof GDPRSubTypeEnum]
+
+/**
+ * Type of Gdpr subscription
+ * @export
+ * @enum {string}
+ */
+
+export const GDPRTypeEnum = {
+  Analytics: 'ANALYTICS',
+  Dataprocessing: 'DATAPROCESSING',
+  FormalCommunication: 'FORMAL_COMMUNICATION',
+  License: 'LICENSE',
+  Marketing: 'MARKETING',
+} as const
+
+export type GDPRTypeEnum = (typeof GDPRTypeEnum)[keyof typeof GDPRTypeEnum]
+
+/**
  *
  * @export
  * @interface GdprDataDto
@@ -197,17 +243,18 @@ export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
 export interface GdprDataDto {
   /**
    * Type of Gdpr subscription
-   * @type {object}
+   * @type {GDPRTypeEnum}
    * @memberof GdprDataDto
    */
-  type: object
+  type: GDPRTypeEnum
   /**
    * Type of Gdpr category
-   * @type {object}
+   * @type {GDPRCategoryEnum}
    * @memberof GdprDataDto
    */
-  category: object
+  category: GDPRCategoryEnum
 }
+
 /**
  *
  * @export
@@ -599,24 +646,25 @@ export interface ResponseGdprLegalPersonDataDto {
  */
 export interface ResponseGdprUserDataDto {
   /**
-   *
-   * @type {object}
+   * Type of Gdpr category
+   * @type {GDPRCategoryEnum}
    * @memberof ResponseGdprUserDataDto
    */
-  category: object
+  category: GDPRCategoryEnum
   /**
-   *
-   * @type {object}
+   * Type of Gdpr subscription
+   * @type {GDPRTypeEnum}
    * @memberof ResponseGdprUserDataDto
    */
-  type: object
+  type: GDPRTypeEnum
   /**
-   *
-   * @type {object}
+   * Type of subType - unsubscribe or subscribe
+   * @type {GDPRSubTypeEnum}
    * @memberof ResponseGdprUserDataDto
    */
-  subType: object
+  subType: GDPRSubTypeEnum
 }
+
 /**
  *
  * @export
@@ -3505,15 +3553,15 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
-     * @param {object} type Type of Gdpr subscription
-     * @param {object} category Type of Gdpr category
+     * @param {GDPRTypeEnum} type Type of Gdpr subscription
+     * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUser: async (
       id: string,
-      type: object,
-      category: object,
+      type: GDPRTypeEnum,
+      category: GDPRCategoryEnum,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
@@ -3542,15 +3590,11 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       if (type !== undefined) {
-        for (const [key, value] of Object.entries(type)) {
-          localVarQueryParameter[key] = value
-        }
+        localVarQueryParameter['type'] = type
       }
 
       if (category !== undefined) {
-        for (const [key, value] of Object.entries(category)) {
-          localVarQueryParameter[key] = value
-        }
+        localVarQueryParameter['category'] = category
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -3570,15 +3614,15 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
-     * @param {object} type Type of Gdpr subscription
-     * @param {object} category Type of Gdpr category
+     * @param {GDPRTypeEnum} type Type of Gdpr subscription
+     * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUserByExternalId: async (
       id: string,
-      type: object,
-      category: object,
+      type: GDPRTypeEnum,
+      category: GDPRCategoryEnum,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
@@ -3607,15 +3651,11 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       if (type !== undefined) {
-        for (const [key, value] of Object.entries(type)) {
-          localVarQueryParameter[key] = value
-        }
+        localVarQueryParameter['type'] = type
       }
 
       if (category !== undefined) {
-        for (const [key, value] of Object.entries(category)) {
-          localVarQueryParameter[key] = value
-        }
+        localVarQueryParameter['category'] = category
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -3834,15 +3874,15 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
-     * @param {object} type Type of Gdpr subscription
-     * @param {object} category Type of Gdpr category
+     * @param {GDPRTypeEnum} type Type of Gdpr subscription
+     * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async userControllerUnsubscribePublicUser(
       id: string,
-      type: object,
-      category: object,
+      type: GDPRTypeEnum,
+      category: GDPRCategoryEnum,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUnsubscribePublicUser(
@@ -3868,15 +3908,15 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
-     * @param {object} type Type of Gdpr subscription
-     * @param {object} category Type of Gdpr category
+     * @param {GDPRTypeEnum} type Type of Gdpr subscription
+     * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async userControllerUnsubscribePublicUserByExternalId(
       id: string,
-      type: object,
-      category: object,
+      type: GDPRTypeEnum,
+      category: GDPRCategoryEnum,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs =
@@ -4011,15 +4051,15 @@ export const UsersManipulationApiFactory = function (
      * unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
-     * @param {object} type Type of Gdpr subscription
-     * @param {object} category Type of Gdpr category
+     * @param {GDPRTypeEnum} type Type of Gdpr subscription
+     * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUser(
       id: string,
-      type: object,
-      category: object,
+      type: GDPRTypeEnum,
+      category: GDPRCategoryEnum,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
@@ -4030,15 +4070,15 @@ export const UsersManipulationApiFactory = function (
      * unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
-     * @param {object} type Type of Gdpr subscription
-     * @param {object} category Type of Gdpr category
+     * @param {GDPRTypeEnum} type Type of Gdpr subscription
+     * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUserByExternalId(
       id: string,
-      type: object,
-      category: object,
+      type: GDPRTypeEnum,
+      category: GDPRCategoryEnum,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
@@ -4148,16 +4188,16 @@ export class UsersManipulationApi extends BaseAPI {
    * unsubscribe any user by uuid with different categories of subscription
    * @summary Unsubscribe user by uuid
    * @param {string} id
-   * @param {object} type Type of Gdpr subscription
-   * @param {object} category Type of Gdpr category
+   * @param {GDPRTypeEnum} type Type of Gdpr subscription
+   * @param {GDPRCategoryEnum} category Type of Gdpr category
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
   public userControllerUnsubscribePublicUser(
     id: string,
-    type: object,
-    category: object,
+    type: GDPRTypeEnum,
+    category: GDPRCategoryEnum,
     options?: RawAxiosRequestConfig,
   ) {
     return UsersManipulationApiFp(this.configuration)
@@ -4169,16 +4209,16 @@ export class UsersManipulationApi extends BaseAPI {
    * unsubscribe any user by external Id from cognito with different categories of subscription
    * @summary Unsubscribe user by external Id
    * @param {string} id
-   * @param {object} type Type of Gdpr subscription
-   * @param {object} category Type of Gdpr category
+   * @param {GDPRTypeEnum} type Type of Gdpr subscription
+   * @param {GDPRCategoryEnum} category Type of Gdpr category
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
   public userControllerUnsubscribePublicUserByExternalId(
     id: string,
-    type: object,
-    category: object,
+    type: GDPRTypeEnum,
+    category: GDPRCategoryEnum,
     options?: RawAxiosRequestConfig,
   ) {
     return UsersManipulationApiFp(this.configuration)

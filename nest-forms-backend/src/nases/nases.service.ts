@@ -473,7 +473,7 @@ export default class NasesService {
     } catch (error) {
       this.logger.error(`Error sending form to nases.`, error)
 
-      // TODO temp SEND_TO_NASES_ERROR log, remove. Should this be removed?
+      // TODO temp SEND_TO_NASES_ERROR log, remove.
       this.logger.log(
         `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
           form.formSignature,

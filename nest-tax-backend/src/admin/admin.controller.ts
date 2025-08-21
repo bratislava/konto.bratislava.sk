@@ -14,8 +14,8 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
-import { AdminGuard } from 'src/auth/guards/admin.guard'
 
+import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
 import { AdminService } from './admin.service'
 import {

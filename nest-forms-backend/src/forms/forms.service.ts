@@ -186,9 +186,24 @@ export default class FormsService {
               },
             }
 
+    const ico = getUserIco(user)
+
+    const identityCondition: Prisma.FormsWhereInput =
+      ico == null
+        ? { userExternalId: user.cognitoJwtPayload.sub }
+        : {
+            OR: [{ userExternalId: user.cognitoJwtPayload.sub }, { ico }],
+          }
+
+    const editabilityCondition: Prisma.FormsWhereInput | undefined =
+      userCanEdit === undefined
+        ? undefined
+        : userCanEdit
+          ? { OR: editableStates }
+          : { NOT: editableStates }
+
     const where: Prisma.FormsWhereInput = {
       ...statesFilter,
-      userExternalId: user.cognitoJwtPayload.sub,
       archived: false,
       formDefinitionSlug,
       formDataJson: {
@@ -201,22 +216,10 @@ export default class FormsService {
           equals: this.prisma.forms.fields.createdAt,
         },
       },
-      OR:
-        userCanEdit === undefined
-          ? undefined
-          : userCanEdit
-            ? editableStates
-            : [
-                {
-                  NOT: editableStates,
-                },
-              ],
-    }
-
-    const ico = getUserIco(user)
-    if (ico != null) {
-      where.userExternalId = undefined
-      where.ico = ico
+      AND: [
+        identityCondition,
+        ...(editabilityCondition ? [editabilityCondition] : []),
+      ],
     }
 
     const data = await this.prisma.forms.findMany({

@@ -3,13 +3,15 @@ import path from 'node:path'
 import { Injectable } from '@nestjs/common'
 import { PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import ejs from 'ejs'
-import { PrismaService } from 'src/prisma/prisma.service'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
-import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
+import { PrismaService } from '../prisma/prisma.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { computeIsPayableYear } from '../utils/helpers/payment.helper'
+import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
@@ -40,6 +42,9 @@ import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const paymentCalendarThreshold = 6600
 
@@ -440,9 +445,15 @@ export class TaxService {
       permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
       externalId: tax.taxPayer.externalId,
     }
+    const paidStatus = getTaxStatus(
+      detailWithoutQrCode.overallAmount,
+      detailWithoutQrCode.overallPaid,
+    )
 
     return {
       ...detailWithoutQrCode,
+      year,
+      paidStatus,
       oneTimePayment,
       installmentPayment,
       taxAdministrator,

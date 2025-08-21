@@ -6,8 +6,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import { GoogleTagManager } from '@next/third-parties/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
-import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenuContext'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
@@ -94,14 +92,13 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
         <meta name="theme-color" content="#ffffff" />
         {/* Prevents automatic zooming on input fields on safari, which some users consider a bug. Source: https://stackoverflow.com/a/46254706 */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
         <style>{`
           :root {
             --inter-font: ${inter.style.fontFamily};
           }
         `}</style>
       </Head>
-      {environment.gtmId ? (
+      {environment.gtmId && allowCookies ? (
         <GoogleTagManager
           gtmId={environment.gtmId}
           auth={environment.gtmAuth}
@@ -111,30 +108,26 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
 
       <AmplifyClientProvider>
         <I18nProvider locale="sk-SK">
-          <StatusBarProvider>
-            <QueryClientProvider client={queryClient}>
-              <SnackbarProvider>
-                <PlausibleProvider
-                  domain={
-                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
-                  }
-                  taggedEvents
-                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                  // trackLocalhost
-                >
-                  <NavMenuContextProvider>
-                    <NuqsAdapter>
-                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                      <div id="root">
-                        <Component {...pageProps} />
-                      </div>
-                      {allowCookies ? <CookieConsent /> : null}
-                    </NuqsAdapter>
-                  </NavMenuContextProvider>
-                </PlausibleProvider>
-              </SnackbarProvider>
-            </QueryClientProvider>
-          </StatusBarProvider>
+          <QueryClientProvider client={queryClient}>
+            <SnackbarProvider>
+              <PlausibleProvider
+                domain={isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'}
+                taggedEvents
+                // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                // trackLocalhost
+              >
+                <NavMenuContextProvider>
+                  <NuqsAdapter>
+                    {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                    <div id="root">
+                      <Component {...pageProps} />
+                    </div>
+
+                  </NuqsAdapter>
+                </NavMenuContextProvider>
+              </PlausibleProvider>
+            </SnackbarProvider>
+          </QueryClientProvider>
         </I18nProvider>
       </AmplifyClientProvider>
     </>

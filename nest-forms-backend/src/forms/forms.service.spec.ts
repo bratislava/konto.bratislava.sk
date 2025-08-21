@@ -112,7 +112,6 @@ describe('FormsService', () => {
         },
         where: {
           archived: false,
-          userExternalId: authUser.sub,
           formDataJson: {
             not: {
               equals: null,
@@ -124,6 +123,7 @@ describe('FormsService', () => {
             },
           },
           state: { in: [FormState.DRAFT, FormState.PROCESSING] },
+          AND: [{ userExternalId: authUser.sub }],
         },
         orderBy: [
           {

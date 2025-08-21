@@ -497,11 +497,14 @@ export default class NasesService {
           userData: data.userData,
         })
       } catch (error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.SEND_TO_GINIS_ERROR,
-          `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
-          undefined,
-          error,
+        // We do not want to show the user error when the submission was already delivered to Nases. Therefore Ginis errors should only be logged for us.
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+            `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
+            undefined,
+            error,
+          ),
         )
       }
     }

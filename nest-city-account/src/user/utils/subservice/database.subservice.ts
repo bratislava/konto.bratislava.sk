@@ -295,14 +295,12 @@ export class DatabaseSubserviceUser {
   }
 
   async getShowEmailCommunicationBanner(userId: string): Promise<boolean> {
-    const formalCommunicationSubscription = await this.prisma.userGdprData.findFirst({
+    const formalCommunicationSubscription = await this.prisma.user.findFirst({
       where: {
-        userId,
-        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-        category: GDPRCategoryEnum.TAXES,
+        id: userId,
       },
-      orderBy: {
-        createdAt: 'desc',
+      select: {
+        taxDeliveryMethod: true,
       },
     })
     const hasEdesk = await this.prisma.physicalEntity.findUnique({
@@ -310,10 +308,7 @@ export class DatabaseSubserviceUser {
         userId,
       },
     })
-    if (formalCommunicationSubscription || hasEdesk?.activeEdesk) {
-      return false
-    }
-    return true
+    return !(formalCommunicationSubscription?.taxDeliveryMethod || hasEdesk?.activeEdesk)
   }
 
   async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {

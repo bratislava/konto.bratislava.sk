@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, User } from '@prisma/client'
-import { IsEmail, IsNotEmpty } from 'class-validator'
+import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator'
 
 export class RequestGdprDataDto {
   gdprData!: GdprDataDto[]
@@ -25,13 +25,19 @@ export class GdprDataDto {
   @ApiProperty({
     description: 'Type of Gdpr subscription',
     default: 'marketing',
+    enum: GDPRTypeEnum,
+    enumName: 'GDPRTypeEnum',
   })
+  @IsEnum(GDPRTypeEnum)
   type!: GDPRTypeEnum
 
   @ApiProperty({
     description: 'Type of Gdpr category',
     default: 'library',
+    enum: GDPRCategoryEnum,
+    enumName: 'GDPRCategoryEnum',
   })
+  @IsEnum(GDPRCategoryEnum)
   category!: GDPRCategoryEnum
 }
 
@@ -39,7 +45,10 @@ export class GdprDataSubscriptionDto extends GdprDataDto {
   @ApiProperty({
     description: 'Type of subType - unsubscribe or subscribe',
     default: 'unsubscribe',
+    enum: GDPRSubTypeEnum,
+    enumName: 'GDPRSubTypeEnum',
   })
+  @IsEnum(GDPRSubTypeEnum)
   subType!: GDPRSubTypeEnum
 }
 
@@ -132,10 +141,31 @@ export class ResponseUserDataDto extends ResponseUserDataBasicDto {
 }
 
 export class ResponseGdprUserDataDto {
+  @ApiProperty({
+    description: 'Type of Gdpr category',
+    default: 'library',
+    enum: GDPRCategoryEnum,
+    enumName: 'GDPRCategoryEnum',
+  })
+  @IsEnum(GDPRCategoryEnum)
   category!: GDPRCategoryEnum
 
+  @ApiProperty({
+    description: 'Type of Gdpr subscription',
+    default: 'marketing',
+    enum: GDPRTypeEnum,
+    enumName: 'GDPRTypeEnum',
+  })
+  @IsEnum(GDPRTypeEnum)
   type!: GDPRTypeEnum
 
+  @ApiProperty({
+    description: 'Type of subType - unsubscribe or subscribe',
+    default: 'unsubscribe',
+    enum: GDPRSubTypeEnum,
+    enumName: 'GDPRSubTypeEnum',
+  })
+  @IsEnum(GDPRSubTypeEnum)
   subType!: GDPRSubTypeEnum
 }
 

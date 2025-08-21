@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
+import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../frontend/hooks/useUser'
@@ -10,8 +10,8 @@ import UserProfileSectionHeader from './UserProfileSectionHeader'
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
   const { isSubscribed, changeSubscription, subscriptionChangePending } = useUserSubscription({
-    category: GdprDataDtoCategoryEnum.Esbs,
-    type: GdprDataDtoTypeEnum.Marketing,
+    category: GDPRCategoryEnum.Esbs,
+    type: GDPRTypeEnum.Marketing,
   })
 
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })

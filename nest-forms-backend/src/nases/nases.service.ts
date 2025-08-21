@@ -540,6 +540,7 @@ export default class NasesService {
     sender: SendMessageNasesSender,
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<void> {
+    // sendMessageNases is implemented in a way that it does not throw. Therefore this is not in try-catch block.
     const sendData = await this.nasesUtilsService.sendMessageNases(
       jwt,
       form,

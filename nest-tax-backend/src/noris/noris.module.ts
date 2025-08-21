@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
-import { PrismaModule } from 'src/prisma/prisma.module'
 
+import { PrismaModule } from '../prisma/prisma.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NorisService } from './noris.service'
 

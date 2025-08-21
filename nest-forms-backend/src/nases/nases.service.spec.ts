@@ -332,7 +332,7 @@ describe('NasesService', () => {
       )
     })
 
-    it('should throw if sending to GINIS throws', async () => {
+    it('should just log if sending to GINIS throws', async () => {
       jest
         .spyOn(service['formsService'], 'checkFormBeforeSending')
         .mockResolvedValue({
@@ -364,12 +364,11 @@ describe('NasesService', () => {
         .spyOn(service['rabbitmqClientService'], 'publishToGinis')
         .mockRejectedValue(new Error('Ginis error'))
 
-      await expect(
-        service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
-      ).rejects.toThrow()
+      await service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user)
+
       expect(sendToNasesSpy).toHaveBeenCalled()
       expect(publishToGinisSpy).toHaveBeenCalled()
-      expect(service['logger'].error).not.toHaveBeenCalled() // It throws, not logs
+      expect(service['logger'].error).toHaveBeenCalled()
       expect(updateSpy).toHaveBeenCalledWith(
         '1',
         expect.objectContaining({

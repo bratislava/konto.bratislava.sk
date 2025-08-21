@@ -280,25 +280,15 @@ export class DatabaseSubserviceUser {
   async getOfficialCorrespondenceChannel(
     userId: string
   ): Promise<UserOfficialCorrespondenceChannelEnum> {
-    const hasEdesk = await this.prisma.physicalEntity.findUnique({
-      where: {
-        userId,
-      },
-    })
-    if (hasEdesk?.activeEdesk) {
+    const delivery = await this.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
+    const active = delivery.active?.deliveryMethod
+    if (!active) {
+      return UserOfficialCorrespondenceChannelEnum.POSTAL
+    }
+    if (active === DeliveryMethodEnum.EDESK) {
       return UserOfficialCorrespondenceChannelEnum.EDESK
     }
-    const lastSub = await this.prisma.userGdprData.findFirst({
-      where: {
-        userId,
-        category: GDPRCategoryEnum.TAXES,
-        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
-    if (lastSub?.subType === GDPRSubTypeEnum.subscribe) {
+    if (active === DeliveryMethodEnum.CITY_ACCOUNT) {
       return UserOfficialCorrespondenceChannelEnum.EMAIL
     }
     return UserOfficialCorrespondenceChannelEnum.POSTAL

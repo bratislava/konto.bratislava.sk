@@ -183,9 +183,7 @@ SELECT
         left(replace (cast(floor( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), len(replace (cast(floor( (  view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''))-2) pouk_cena_bez_hal, 
         right(replace (cast(( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), 2) pouk_cena_hal,     
     lcs.dane21_doklad.specificky_symbol,
-    lcs.nf_valuace_atributu(21276, 0, 'lcs.dane21_doklad.uzivatelsky_atribut', lcs.dane21_doklad.uzivatelsky_atribut) as uzivatelsky_atribut,
-    uda_21_organizacia_mag.dkba_sposob_dorucovania as delivery_method
-
+    lcs.nf_valuace_atributu(21276, 0, 'lcs.dane21_doklad.uzivatelsky_atribut', lcs.dane21_doklad.uzivatelsky_atribut) as uzivatelsky_atribut
 FROM 
     lcs.dane21_doklad  
 

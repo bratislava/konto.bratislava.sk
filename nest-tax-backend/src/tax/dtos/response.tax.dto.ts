@@ -26,11 +26,26 @@ export enum TaxDetailTypeEnum {
   GROUND = 'GROUND',
 }
 
+// TODO deprecated enum
 export enum TaxPaidStatusEnum {
   NOT_PAID = 'NOT_PAID',
   PARTIALLY_PAID = 'PARTIALLY_PAID',
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
+}
+
+export enum TaxStatusEnum {
+  NOT_PAID = 'NOT_PAID',
+  PARTIALLY_PAID = 'PARTIALLY_PAID',
+  PAID = 'PAID',
+  OVER_PAID = 'OVER_PAID',
+  AWAITING_PROCESSING = 'AWAITING_PROCESSING',
+}
+
+export enum TaxAvailabilityStatus {
+  AVAILABLE = 'AVAILABLE',
+  LOOKING_FOR_YOUR_TAX = 'LOOKING_FOR_YOUR_TAX',
+  TAX_NOT_ON_RECORD = 'TAX_NOT_ON_RECORD',
 }
 
 export enum OneTimePaymentReasonNotPossibleEnum {
@@ -641,6 +656,71 @@ export class ResponseGetTaxesDto {
   @ValidateNested({ each: true })
   @Type(() => ResponseGetTaxesBodyDto)
   items: ResponseGetTaxesBodyDto[]
+
+  @ApiProperty({
+    description: 'Assigned tax administrator',
+    type: ResponseTaxAdministratorDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxAdministratorDto)
+  @IsOptional()
+  taxAdministrator: ResponseTaxAdministratorDto | null
+}
+
+export class ResponseGetTaxesListBodyDto {
+  @ApiPropertyOptional({
+    description: 'Date of tax delivery to city account',
+    default: '2024-01-01',
+  })
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  createdAt?: Date
+
+  @ApiPropertyOptional({
+    description: 'Amount to be paid in cents',
+    default: 1000,
+  })
+  @IsNumber()
+  @IsOptional()
+  amountToBePaid?: number
+
+  @ApiProperty({
+    description: 'Year of tax',
+    default: 2022,
+  })
+  @IsNumber()
+  year: number
+
+  @ApiProperty({
+    description: 'Type of paid status',
+    example: TaxStatusEnum.PARTIALLY_PAID,
+    enumName: 'TaxStatusEnum',
+    enum: TaxStatusEnum,
+  })
+  @IsEnum(TaxStatusEnum)
+  status: TaxStatusEnum
+}
+
+export class ResponseGetTaxesListDto {
+  @ApiProperty({
+    description: 'Tax availability status',
+    example: TaxAvailabilityStatus.AVAILABLE,
+    enumName: 'TaxAvailabilityStatus',
+    enum: TaxAvailabilityStatus,
+  })
+  @IsEnum(TaxAvailabilityStatus)
+  availabilityStatus: TaxAvailabilityStatus
+
+  @ApiProperty({
+    isArray: true,
+    type: ResponseGetTaxesListBodyDto,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseGetTaxesListBodyDto)
+  items: ResponseGetTaxesListBodyDto[]
 
   @ApiProperty({
     description: 'Assigned tax administrator',

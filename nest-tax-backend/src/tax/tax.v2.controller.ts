@@ -23,7 +23,10 @@ import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
 } from '../utils/guards/dtos/error.dto'
-import { ResponseTaxSummaryDetailDto } from './dtos/response.tax.dto'
+import {
+  ResponseGetTaxesListDto,
+  ResponseTaxSummaryDetailDto,
+} from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
 @ApiTags('tax')
@@ -60,5 +63,38 @@ export class TaxControllerV2 {
     @Query('year', ParseIntPipe) year: number,
   ) {
     return this.taxService.getTaxDetail(baUser.birthNumber, year)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get all taxes (paid and not paid)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Load list of taxes by limit, default value 5',
+    type: ResponseGetTaxesListDto,
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Error to load tax data',
+    type: ResponseErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @UseGuards(TiersGuard)
+  @UseGuards(AuthenticationGuard)
+  @Get('taxes')
+  async getTaxesList(
+    @BratislavaUser() baUser: BratislavaUserDto,
+  ): Promise<ResponseGetTaxesListDto> {
+    // TODO - pagination - but it will be issue after in year 2040 :D
+    const response = await this.taxService.getListOfTaxesByBirthnumber(
+      baUser.birthNumber,
+    )
+    return response
   }
 }

@@ -43,22 +43,6 @@ export class GdprDataSubscriptionDto extends GdprDataDto {
   subType!: GDPRSubTypeEnum
 }
 
-export enum GdprCategory {
-  TAXES = 'TAXES',
-  ESBS = 'ESBS',
-}
-
-export enum GdprSubType {
-  UNSUB = 'unsubscribe',
-  SUB = 'subscribe',
-}
-
-export enum GdprType {
-  LICENSE = 'LICENSE',
-  MARKETING = 'MARKETING',
-  FORMAL_COMMUNICATION = 'FORMAL_COMMUNICATION',
-}
-
 export enum UserOfficialCorrespondenceChannelEnum {
   POSTAL = 'POSTAL',
   EDESK = 'EDESK',

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
-import { GdprCategory, GdprSubType, GdprType } from '../user/dtos/gdpr.user.dto'
 import { addSlashToBirthNumber } from '../utils/birthNumbers'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import HandleErrors from '../utils/decorators/errorHandler.decorators'
@@ -12,7 +11,7 @@ import { DeliveryMethod } from '../utils/types/tax.types'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
-import { PhysicalEntity } from '@prisma/client'
+import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, PhysicalEntity } from '@prisma/client'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
@@ -159,8 +158,8 @@ export class TasksService {
             createdAt: 'desc',
           },
           where: {
-            category: GdprCategory.TAXES,
-            type: GdprType.FORMAL_COMMUNICATION,
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
             createdAt: {
               lt: taxDeadlineDate,
             },
@@ -194,7 +193,7 @@ export class TasksService {
           acc[birthNumber] = { deliveryMethod: DeliveryMethod.EDESK }
           return acc
         }
-        if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
+        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
           acc[birthNumber] = {
             deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
             date: user.userGdprData[0].createdAt.toISOString().slice(0, 10),

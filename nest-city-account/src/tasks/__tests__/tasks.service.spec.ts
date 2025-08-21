@@ -1,10 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Prisma, User } from '@prisma/client'
+import { GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
 import prismaMock from '../../../test/singleton'
 import { AdminApi } from 'openapi-clients/tax'
 import { PrismaService } from '../../prisma/prisma.service'
-import { GdprSubType } from '../../user/dtos/gdpr.user.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { DeliveryMethod } from '../../utils/types/tax.types'
 import { TasksService } from '../tasks.service'
@@ -70,7 +69,7 @@ describe('TasksService', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2023-01-03'),
               },
             ],
@@ -80,7 +79,7 @@ describe('TasksService', () => {
             id: '2',
             userGdprData: [
               {
-                subType: GdprSubType.UNSUB,
+                subType: GDPRSubTypeEnum.unsubscribe,
                 createdAt: new Date('2023-01-02'),
               },
             ],
@@ -93,7 +92,7 @@ describe('TasksService', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2023-08-03'),
               },
             ],
@@ -110,7 +109,7 @@ describe('TasksService', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.UNSUB,
+                subType: GDPRSubTypeEnum.unsubscribe,
                 createdAt: new Date('2023-01-03'),
               },
             ],
@@ -123,7 +122,7 @@ describe('TasksService', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.UNSUB,
+                subType: GDPRSubTypeEnum.unsubscribe,
                 createdAt: new Date('2024-01-03'),
               },
             ],
@@ -133,7 +132,7 @@ describe('TasksService', () => {
             id: '7',
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2020-01-03'),
               },
             ],
@@ -213,7 +212,7 @@ describe('TasksService', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2023-01-03'),
               },
             ],

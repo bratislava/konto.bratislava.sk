@@ -621,24 +621,25 @@ export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
  */
 export interface ResponseGdprLegalPersonDataDto {
   /**
-   *
-   * @type {object}
+   * Type of Gdpr subscription
+   * @type {GDPRTypeEnum}
    * @memberof ResponseGdprLegalPersonDataDto
    */
-  category: object
+  type: GDPRTypeEnum
   /**
-   *
-   * @type {object}
+   * Type of Gdpr category
+   * @type {GDPRCategoryEnum}
    * @memberof ResponseGdprLegalPersonDataDto
    */
-  type: object
+  category: GDPRCategoryEnum
   /**
-   *
-   * @type {object}
+   * Type of subType - unsubscribe or subscribe
+   * @type {GDPRSubTypeEnum}
    * @memberof ResponseGdprLegalPersonDataDto
    */
-  subType: object
+  subType: GDPRSubTypeEnum
 }
+
 /**
  *
  * @export

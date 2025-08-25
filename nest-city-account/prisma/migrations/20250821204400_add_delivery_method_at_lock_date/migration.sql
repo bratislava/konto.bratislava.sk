@@ -15,13 +15,13 @@ ALTER TABLE "User"
 DO
 $$
     DECLARE
-        cutoff_date                       CONSTANT DATE := '2025-04-01';
-        communication_type_city_account   CONSTANT "GDPRTypeEnum" := 'FORMAL_COMMUNICATION'::"GDPRTypeEnum";
-        communication_type_postal         CONSTANT "GDPRTypeEnum" := 'FORMAL_COMMUNICATION'::"GDPRTypeEnum";
+        cutoff_date                       CONSTANT DATE                            := '2025-04-01';
+        communication_type_city_account   CONSTANT "GDPRTypeEnum"                  := 'FORMAL_COMMUNICATION'::"GDPRTypeEnum";
+        communication_type_postal         CONSTANT "GDPRTypeEnum"                  := 'FORMAL_COMMUNICATION'::"GDPRTypeEnum";
         required_tier_text                CONSTANT "CognitoUserAttributesTierEnum" := 'IDENTITY_CARD'::"CognitoUserAttributesTierEnum";
         eid_tier_text                     CONSTANT "CognitoUserAttributesTierEnum" := 'EID'::"CognitoUserAttributesTierEnum";
-        subscription_subtype_city_account CONSTANT "GDPRSubTypeEnum" := 'subscribe'::"GDPRSubTypeEnum";
-        subscription_subtype_postal       CONSTANT "GDPRSubTypeEnum" := 'unsubscribe'::"GDPRSubTypeEnum";
+        subscription_subtype_city_account CONSTANT "GDPRSubTypeEnum"               := 'subscribe'::"GDPRSubTypeEnum";
+        subscription_subtype_postal       CONSTANT "GDPRSubTypeEnum"               := 'unsubscribe'::"GDPRSubTypeEnum";
     BEGIN
         -- Create temporary table for all delivery methods
         CREATE TEMPORARY TABLE temp_delivery_data_at_lock_date

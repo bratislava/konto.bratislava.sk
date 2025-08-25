@@ -4,6 +4,9 @@ import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { IMailgunClient } from 'mailgun.js/Interfaces'
 
+import { ErrorsEnum } from '../../global-enums/errors.enum'
+import ThrowerErrorGuard from '../../guards/thrower-error.guard'
+import { toLogfmt } from '../../logging'
 import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
 import { MAILGUN_CONFIG } from './mailgun.constants'
@@ -15,7 +18,10 @@ export default class MailgunService implements Mailer {
 
   logger: LineLoggerSubservice
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+  ) {
     if (
       !process.env.MAILGUN_API_KEY ||
       !process.env.MAILGUN_HOST ||
@@ -55,10 +61,32 @@ export default class MailgunService implements Mailer {
           attachment: mailgunAttachments,
         },
       )
-      if (mailgunResponse.status !== 200)
-        this.logger.warn(`Mailgun message was not sent for email `)
+      if (mailgunResponse.status !== 200) {
+        this.logger.warn(
+          `Mailgun message was not sent for email.`,
+          toLogfmt({
+            formId: data.data.formId,
+            emailFrom,
+            subject,
+            mailgunResponse,
+            filenames: attachments?.map((attachment) => attachment.filename),
+          }),
+        )
+      }
     } catch (error) {
-      this.logger.error('ERROR to send mailgun message', error)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'ERROR to send mailgun message',
+          toLogfmt({
+            formId: data.data.formId,
+            emailFrom,
+            subject,
+            filenames: attachments?.map((attachment) => attachment.filename),
+          }),
+          error,
+        ),
+      )
     }
   }
 }

@@ -11,8 +11,19 @@ import { DeliveryMethodNoris } from '../utils/types/tax.types'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
-import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, PhysicalEntity } from '@prisma/client'
+import {
+  DeliveryMethodEnum,
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+  PhysicalEntity,
+} from '@prisma/client'
 import { DeliveryMethodCodec } from '../utils/norisCodec'
+
+import {
+  SubserviceErrorsEnum,
+  SubserviceErrorsResponseEnum,
+} from '../utils/subservices/subservice.errors.enum'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
@@ -295,7 +306,7 @@ export class TasksService {
   @Cron('0 0 1 4 *')
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {
-    const users = await this.prisma.user.findMany({
+    const users = await this.prismaService.user.findMany({
       where: {
         cognitoTier: 'IDENTITY_CARD',
         birthNumber: { not: null },
@@ -343,7 +354,7 @@ export class TasksService {
     this.logger.log(JSON.stringify(data, null, 2))
 
     const updatePromises = data.map((entry) => {
-      return this.prisma.user.update({
+      return this.prismaService.user.update({
         where: { birthNumber: entry.birthNumber },
         data: {
           taxDeliveryMethodAtLockDate: entry.deliveryMethod,

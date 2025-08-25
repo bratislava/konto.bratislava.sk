@@ -5,7 +5,7 @@ import prismaMock from '../../../test/singleton'
 import { AdminApi } from 'openapi-clients/tax'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { DeliveryMethod } from '../../utils/types/tax.types'
+import { DeliveryMethodNoris } from '../../utils/types/tax.types'
 import { TasksService } from '../tasks.service'
 import { TaxSubservice } from '../../utils/subservices/tax.subservice'
 import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
@@ -152,30 +152,30 @@ describe('TasksService', () => {
       expect(adminApiUpdateSpy).toHaveBeenCalledWith({
         data: {
           '1234562020': {
-            deliveryMethod: DeliveryMethod.EDESK,
+            deliveryMethod: DeliveryMethodNoris.EDESK,
           },
           '1234564848': {
-            deliveryMethod: DeliveryMethod.POSTAL,
+            deliveryMethod: DeliveryMethodNoris.POSTAL,
           },
           '1234561234': {
-            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+            deliveryMethod: DeliveryMethodNoris.CITY_ACCOUNT,
             date: '2023-08-03',
           },
           '1234569999': {
-            deliveryMethod: DeliveryMethod.POSTAL,
+            deliveryMethod: DeliveryMethodNoris.POSTAL,
           },
           '1234567777': {
-            deliveryMethod: DeliveryMethod.EDESK,
+            deliveryMethod: DeliveryMethodNoris.EDESK,
           },
           '1234564646': {
-            deliveryMethod: DeliveryMethod.POSTAL,
+            deliveryMethod: DeliveryMethodNoris.POSTAL,
           },
           '1234564649': {
-            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+            deliveryMethod: DeliveryMethodNoris.CITY_ACCOUNT,
             date: '2020-01-03',
           },
           '1234564521': {
-            deliveryMethod: DeliveryMethod.POSTAL,
+            deliveryMethod: DeliveryMethodNoris.POSTAL,
           },
         },
       })

@@ -291,4 +291,67 @@ export class TasksService {
       alert: 1,
     })
   }
+
+  @Cron('0 0 1 4 *')
+  @HandleErrors('Cron')
+  async lockDeliveryMethods(): Promise<void> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        cognitoTier: 'IDENTITY_CARD',
+        birthNumber: { not: null },
+      },
+      include: {
+        userGdprData: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          where: {
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+          },
+          take: 1,
+          select: {
+            subType: true,
+            createdAt: true,
+          },
+        },
+        physicalEntity: {
+          select: {
+            activeEdesk: true,
+          },
+        },
+      },
+    })
+
+    const data = users.map((user) => {
+      // We know that birthNumber is not null from the query.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const birthNumber: string = user.birthNumber!
+
+      if (user.physicalEntity?.activeEdesk) {
+        return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
+      }
+      if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
+        return {
+          birthNumber,
+          deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
+          date: user.userGdprData[0].createdAt,
+        }
+      }
+      return { birthNumber, deliveryMethod: DeliveryMethodEnum.POSTAL, date: undefined }
+    }, {})
+    this.logger.log(JSON.stringify(data, null, 2))
+
+    const updatePromises = data.map((entry) => {
+      return this.prisma.user.update({
+        where: { birthNumber: entry.birthNumber },
+        data: {
+          taxDeliveryMethodAtLockDate: entry.deliveryMethod,
+          taxDeliveryMethodCityAccountDate: entry.date,
+        },
+      })
+    })
+
+    await Promise.all(updatePromises)
+  }
 }

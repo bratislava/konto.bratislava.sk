@@ -294,6 +294,45 @@ export class DatabaseSubserviceUser {
     return UserOfficialCorrespondenceChannelEnum.POSTAL
   }
 
+  async getActiveAndLockedDeliveryMethodsWithDates(
+    where: Prisma.UserWhereUniqueInput
+  ): Promise<DeliveryMethodActiveAndLockedDto> {
+    const user = await this.prisma.user.findUnique({
+      where,
+      include: {
+        physicalEntity: {
+          select: {
+            activeEdesk: true,
+          },
+        },
+      },
+    })
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        ErrorsEnum.NOT_FOUND_ERROR,
+        ErrorsResponseEnum.NOT_FOUND_ERROR
+      )
+    }
+
+    const active = user.physicalEntity?.activeEdesk
+      ? { deliveryMethod: DeliveryMethodEnum.EDESK }
+      : user.taxDeliveryMethod
+        ? {
+            deliveryMethod: user.taxDeliveryMethod as DeliveryMethodEnum,
+            date: user.taxDeliveryMethodCityAccountDate ?? undefined,
+          }
+        : undefined
+
+    const locked = user.taxDeliveryMethodAtLockDate
+      ? {
+          deliveryMethod: user.taxDeliveryMethodAtLockDate,
+          date: user.taxDeliveryMethodCityAccountLockDate ?? undefined,
+        }
+      : undefined
+
+    return { active, locked }
+  }
+
   async getShowEmailCommunicationBanner(userId: string): Promise<boolean> {
     const formalCommunicationSubscription = await this.prisma.user.findFirst({
       where: {

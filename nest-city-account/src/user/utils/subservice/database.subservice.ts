@@ -15,6 +15,9 @@ import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.sub
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
+import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
+import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
+import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
 
 @Injectable()
 export class DatabaseSubserviceUser {

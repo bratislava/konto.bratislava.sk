@@ -354,7 +354,7 @@ export class DatabaseSubserviceUser {
   }
 
   private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
-    return elem.category === GdprCategory.TAXES && elem.type === GdprType.FORMAL_COMMUNICATION
+    return elem.category === GDPRCategoryEnum.TAXES && elem.type === GDPRTypeEnum.FORMAL_COMMUNICATION
   }
 
   private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
@@ -363,7 +363,7 @@ export class DatabaseSubserviceUser {
 
     gdprData.forEach((elem) => {
       if (this.isTaxDeliveryData(elem)) {
-        if (elem.subType === GdprSubType.SUB) {
+        if (elem.subType === GDPRSubTypeEnum.subscribe) {
           taxDeliveryData.push(DeliveryMethodUserEnum.CITY_ACCOUNT)
         }
         taxDeliveryData.push(DeliveryMethodUserEnum.POSTAL)

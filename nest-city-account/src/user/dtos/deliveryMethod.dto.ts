@@ -16,24 +16,24 @@ import { DeliveryMethodEnum } from '@prisma/client'
  * Decorator that enforces a property to be required when the delivery method is set to CITY_ACCOUNT.
  *
  * @param {ValidationOptions} [validationOptions] - Additional validation options to customize the behavior of the decorator.
- * @return {Function} A decorator function that validates the specified property based on the given conditions.
+ * @return {PropertyDecorator} A decorator function that validates the specified property based on the given conditions.
  */
-function IsRequiredForCityAccount(validationOptions?: ValidationOptions): Function {
-  return function (object: Object, propertyName: string) {
+function IsRequiredForCityAccount(validationOptions?: ValidationOptions): PropertyDecorator {
+  return function (target: object, propertyName: string | symbol) {
     registerDecorator({
       name: 'isRequiredForCityAccount',
-      target: object.constructor,
-      propertyName: propertyName,
+      target: target.constructor,
+      propertyName: propertyName as string,
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: unknown, args: ValidationArguments): boolean {
           const obj = args.object as DeliveryMethodDto
           if (obj.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT) {
-            return value !== null && value !== undefined
+            return value !== null && value !== undefined && value !== ''
           }
           return true
         },
-        defaultMessage(args: ValidationArguments) {
+        defaultMessage(args: ValidationArguments): string {
           return `${args.property} is required when delivery method is CITY_ACCOUNT`
         },
       },

@@ -1,14 +1,11 @@
-import { Expose } from 'class-transformer'
 import {
-  IsBoolean,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsString,
-  IsUrl,
-  Max,
-  Min,
-} from 'class-validator'
+  EnvBoolean,
+  EnvEnum,
+  EnvInt,
+  EnvPort,
+  EnvString,
+  EnvUrl,
+} from './environment-decorators'
 
 export enum NodeEnv {
   Development = 'development',
@@ -23,324 +20,192 @@ export enum ClusterEnv {
 }
 
 export default class EnvironmentVariables {
-  @Expose()
-  @IsEnum(NodeEnv)
-  @IsNotEmpty()
+  @EnvEnum(NodeEnv)
   NODE_ENV: NodeEnv
 
-  @Expose()
-  @IsEnum(ClusterEnv)
-  @IsNotEmpty()
+  @EnvEnum(ClusterEnv)
   CLUSTER_ENV: ClusterEnv
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   SELF_URL: string
 
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  @Min(0)
-  @Max(65_535)
+  @EnvPort()
   PORT: number
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   NEST_FORMS_BACKEND_USERNAME: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   NEST_FORMS_BACKEND_PASSWORD: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   DATABASE_URL: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   ADMIN_APP_SECRET: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   JWT_SECRET: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   AWS_COGNITO_CLIENT_ID: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   AWS_COGNITO_USERPOOL_ID: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   AWS_COGNITO_REGION: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   AWS_COGNITO_ACCESS: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   AWS_COGNITO_SECRET: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   AWS_ACCOUNT_ID: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   AWS_UNAUTH_ROLE_NAME: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   RABBIT_MQ_URI: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MAILGUN_API_KEY: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MAILGUN_DOMAIN: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   MAILGUN_HOST: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MAILGUN_EMAIL_FROM: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   SLOVENSKO_SK_CONTAINER_URI: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   API_TOKEN_PRIVATE: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   OBO_TOKEN_PUBLIC: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   SUB_NASES_TECHNICAL_ACCOUNT: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   NASES_SENDER_URI: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   NASES_RECIPIENT_URI: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   FRONTEND_URL: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   USER_ACCOUNT_API: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   NEST_CLAMAV_SCANNER: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   NEST_CLAMAV_SCANNER_USERNAME: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   NEST_CLAMAV_SCANNER_PASSWORD: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   GINIS_USERNAME: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   GINIS_PASSWORD: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   GINIS_SSL_HOST: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   GINIS_SSL_MTOM_HOST: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   GINIS_GIN_HOST: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   GINIS_FORM_ID_PROPERTY_ID: string
 
-  @Expose()
-  @IsBoolean()
-  @IsNotEmpty()
+  @EnvBoolean()
   GINIS_SHOULD_REGISTER: boolean
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   OLO_SMTP_USERNAME: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   OLO_SMTP_PASSWORD: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   OLO_FRONTEND_URL: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   SHAREPOINT_DOMAIN: string
 
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
+  @EnvUrl()
   SHAREPOINT_URL: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   SHAREPOINT_CLIENT_ID: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   SHAREPOINT_CLIENT_SECRET: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   SHAREPOINT_TENANT_ID: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MINIO_ACCESS_KEY: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MINIO_ENDPOINT: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MINIO_HOST: string
 
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  @Min(0)
-  @Max(65_535)
+  @EnvPort()
   MINIO_PORT: number
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MINIO_SECRET_KEY: string
 
-  @Expose()
-  @IsBoolean()
-  @IsNotEmpty()
+  @EnvBoolean()
   MINIO_USE_SSL: boolean
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MINIO_UNSCANNED_BUCKET: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MINIO_SAFE_BUCKET: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   MINIO_INFECTED_BUCKET: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   REDIS_SERVICE: string
 
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  @Min(0)
-  @Max(65_535)
+  @EnvPort()
   REDIS_PORT: number
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   REDIS_USER: string
 
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
+  @EnvString()
   REDIS_PASSWORD: string
 
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
+  @EnvInt()
   TAX_PDF_JOB_CONCURRENCY: number
 
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
+  @EnvInt()
   TAX_PDF_JOB_TIMEOUT: number
 
-  @Expose()
-  @IsBoolean()
-  @IsNotEmpty()
+  @EnvBoolean()
   FEATURE_TOGGLE_VERSIONING: boolean
 }

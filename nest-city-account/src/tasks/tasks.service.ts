@@ -12,6 +12,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, PhysicalEntity } from '@prisma/client'
+import { DeliveryMethodCodec } from '../utils/norisCodec'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
@@ -136,6 +137,9 @@ export class TasksService {
         birthNumber: {
           not: null,
         },
+        taxDeliveryMethodAtLockDate: {
+          not: null,
+        },
         OR: [
           {
             lastTaxDeliveryMethodsUpdateYear: {
@@ -152,29 +156,11 @@ export class TasksService {
         },
         ...ACTIVE_USER_FILTER,
       },
-      include: {
-        userGdprData: {
-          orderBy: {
-            createdAt: 'desc',
-          },
-          where: {
-            category: GDPRCategoryEnum.TAXES,
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-            createdAt: {
-              lt: taxDeadlineDate,
-            },
-          },
-          take: 1,
-          select: {
-            subType: true,
-            createdAt: true,
-          },
-        },
-        physicalEntity: {
-          select: {
-            activeEdesk: true,
-          },
-        },
+      select: {
+        id: true,
+        birthNumber: true,
+        taxDeliveryMethodAtLockDate: true,
+        taxDeliveryMethodCityAccountDate: true,
       },
       take: UPLOAD_TAX_DELIVERY_METHOD_BATCH,
     })
@@ -188,19 +174,24 @@ export class TasksService {
         // We know that birthNumber is not null from the query.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const birthNumber: string = user.birthNumber!
-
-        if (user.physicalEntity?.activeEdesk) {
-          acc[birthNumber] = { deliveryMethod: DeliveryMethod.EDESK }
-          return acc
-        }
-        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
-          acc[birthNumber] = {
-            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-            date: user.userGdprData[0].createdAt.toISOString().slice(0, 10),
+        const deliveryMethod = DeliveryMethodCodec.decode(user.taxDeliveryMethodAtLockDate)
+        const date: string | undefined = user.taxDeliveryMethodCityAccountDate
+          ? user.taxDeliveryMethodCityAccountDate.toISOString().substring(0, 10)
+          : undefined
+        if (date) {
+          acc[birthNumber] = { deliveryMethod, date }
+        } else {
+          if (deliveryMethod === DeliveryMethodNoris.CITY_ACCOUNT) {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              undefined,
+              user
+            )
           }
-          return acc
+
+          acc[birthNumber] = { deliveryMethod }
         }
-        acc[birthNumber] = { deliveryMethod: DeliveryMethod.POSTAL }
         return acc
       },
       {}

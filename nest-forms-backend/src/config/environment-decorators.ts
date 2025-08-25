@@ -1,5 +1,5 @@
 import { applyDecorators } from '@nestjs/common'
-import { Expose } from 'class-transformer'
+import { Expose, Transform } from 'class-transformer'
 import {
   IsBoolean,
   IsEnum,
@@ -14,6 +14,27 @@ import {
 export function EnvBoolean(required = true) {
   return applyDecorators(
     Expose(),
+    Transform(
+      ({ obj, key }) => {
+        const raw = obj[key]
+        if (typeof raw === 'boolean') {
+          return raw
+        }
+        const value = String(raw).toLowerCase()
+        switch (value) {
+          case 'true':
+            return true
+
+          case 'false':
+            return false
+
+          default:
+            // this should fail the boolean validation later
+            return raw
+        }
+      },
+      { toClassOnly: true },
+    ),
     IsBoolean(),
     ...(required ? [IsNotEmpty()] : []),
   )

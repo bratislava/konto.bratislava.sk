@@ -147,11 +147,13 @@ export class AdminService {
     }
 
     for (const user of cognitoUsers) {
-      await this.userService.getOrCreateUserOrLegalPerson(
-        user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
-        user.sub,
-        user.email
-      )
+      if (!user.accountType || !user.sub || !user.email) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+      }
+      await this.userService.getOrCreateUserOrLegalPerson(user.accountType, user.sub, user.email)
     }
   }
 

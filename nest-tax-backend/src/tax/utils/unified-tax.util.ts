@@ -629,6 +629,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
           CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
         )
 
+      case undefined:
       default:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,

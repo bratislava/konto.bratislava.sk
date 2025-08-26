@@ -144,7 +144,6 @@ export default tseslint.config(
       '@darraghor/nestjs-typed/injectable-should-be-provided': 'off',
       '@darraghor/nestjs-typed/api-property-returning-array-should-set-array':
         'off', // extra typing, little value, we're used to style without this
-      // TODO enforce relative imports (not in packages)
     },
   },
   {
@@ -154,6 +153,7 @@ export default tseslint.config(
     },
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       'dot-notation': 'off', // to test private methods
       '@typescript-eslint/unbound-method': 'off', // jest spies on methods, so this is not useful

@@ -350,8 +350,9 @@ export class TaxService {
       const totals = taxTotalsToPdf(
         user,
         user.taxInstallments.map((data) => ({
+          // eslint-disable-next-line @typescript-eslint/no-misused-spread
           ...data,
-          order: data.order ? +data.order : 1,
+          order: data.order ? Number(data.order) : 1,
         })),
       )
       return await ejs.renderFile('public/tax-pdf.ejs', {
@@ -393,7 +394,7 @@ export class TaxService {
     )
 
     const detailWithoutQrCode = getTaxDetailPure({
-      taxYear: Number(year),
+      taxYear: year,
       today: today.toDate(),
       overallAmount: tax.amount,
       paymentCalendarThreshold,

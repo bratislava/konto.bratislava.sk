@@ -158,7 +158,7 @@ export class AdminService {
         },
       },
       where: {
-        year: Number(year),
+        year,
         taxPayer: {
           birthNumber: {
             in: norisData.map((norisRecord) => norisRecord.ICO_RC),
@@ -639,7 +639,7 @@ export class AdminService {
       .filter(
         ([deliveryMethod, birthNumbers]) =>
           birthNumbers.length > 0 &&
-          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT.toString(),
+          (deliveryMethod as DeliveryMethod) !== DeliveryMethod.CITY_ACCOUNT,
       )
       .map(([deliveryMethod, birthNumbers]) => {
         return {

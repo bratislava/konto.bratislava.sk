@@ -7,6 +7,7 @@ interface TaxInstallmentsData {
   taxId: number
   amount: number
   text: string
+  order: number
 }
 
 export const convertCurrencyToInt = (value: string): number => {

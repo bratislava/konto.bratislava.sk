@@ -11,30 +11,35 @@ import {
   Min,
 } from 'class-validator'
 
+function BooleanTransform() {
+  return Transform(({ value }) => {
+    if (typeof value === 'string') {
+      const lower = value.toLowerCase()
+      if (lower === 'true') {
+        return true
+      }
+      if (lower === 'false') {
+        return false
+      }
+    }
+    return value
+  })
+}
+
+function NumberTransform() {
+  return Transform(({ value }) => {
+    if (typeof value === 'string' && value.trim() !== '') {
+      const num = Number(value)
+      return Number.isNaN(num) ? value : num
+    }
+    return value
+  })
+}
+
 export function EnvBoolean(required = true) {
   return applyDecorators(
     Expose(),
-    Transform(
-      ({ obj, key }) => {
-        const raw = obj[key]
-        if (typeof raw === 'boolean') {
-          return raw
-        }
-        const value = String(raw).toLowerCase()
-        switch (value) {
-          case 'true':
-            return true
-
-          case 'false':
-            return false
-
-          default:
-            // this should fail the boolean validation later
-            return raw
-        }
-      },
-      { toClassOnly: true },
-    ),
+    BooleanTransform(),
     IsBoolean(),
     ...(required ? [IsNotEmpty()] : []),
   )
@@ -43,6 +48,7 @@ export function EnvBoolean(required = true) {
 export function EnvInt(min?: number, max?: number, required = true) {
   return applyDecorators(
     Expose(),
+    NumberTransform(),
     IsInt(),
     ...(required ? [IsNotEmpty()] : []),
     ...(min === undefined ? [] : [Min(min)]),

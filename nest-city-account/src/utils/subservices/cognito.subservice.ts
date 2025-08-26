@@ -235,7 +235,7 @@ export class CognitoSubservice {
 
   /**
    * Returns all formatted users from cognito user pool
-   * @returns { sub: string; accountType: CognitoUserAccountTypesEnum; email: string }[]
+   * @returns { sub: string | undefined; accountType: CognitoUserAccountTypesEnum | undefined; email: string | undefined }[]
    */
   async getAllCognitoUsers(): Promise<
     { sub?: string; accountType?: CognitoUserAccountTypesEnum; email?: string }[]

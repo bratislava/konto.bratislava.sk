@@ -11,11 +11,9 @@ export const removeAllCookiesAndClearLocalStorage = () => {
   const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
   cookies.forEach((cookie) => {
     const cookieName = cookie.split('=')[0]
-    if (cookieName !== 'gdpr-consents') {
-      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-      logger.info(`[AUTH] Removed cookie: ${cookieName}`)
-    }
+    // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+    logger.info(`[AUTH] Removed cookie: ${cookieName}`)
   })
   localStorage.clear()
 }

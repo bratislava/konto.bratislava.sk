@@ -49,6 +49,45 @@ const bratislavaTimeZone = 'Europe/Bratislava'
 
 export const stateHolidays = [
   {
+    year: 2023,
+    dates: [
+      dayjs.tz('2023-01-01', bratislavaTimeZone),
+      dayjs.tz('2023-01-06', bratislavaTimeZone),
+      dayjs.tz('2023-04-07', bratislavaTimeZone),
+      dayjs.tz('2023-04-10', bratislavaTimeZone),
+      dayjs.tz('2023-05-01', bratislavaTimeZone),
+      dayjs.tz('2023-05-08', bratislavaTimeZone),
+      dayjs.tz('2023-07-05', bratislavaTimeZone),
+      dayjs.tz('2023-08-29', bratislavaTimeZone),
+      dayjs.tz('2023-09-01', bratislavaTimeZone),
+      dayjs.tz('2023-09-15', bratislavaTimeZone),
+      dayjs.tz('2023-11-01', bratislavaTimeZone),
+      dayjs.tz('2023-11-17', bratislavaTimeZone),
+      dayjs.tz('2023-12-24', bratislavaTimeZone),
+      dayjs.tz('2023-12-25', bratislavaTimeZone),
+      dayjs.tz('2023-12-26', bratislavaTimeZone),
+    ],
+  },
+  {
+    year: 2024,
+    dates: [
+      dayjs.tz('2024-01-01', bratislavaTimeZone),
+      dayjs.tz('2024-01-06', bratislavaTimeZone),
+      dayjs.tz('2024-03-29', bratislavaTimeZone),
+      dayjs.tz('2024-04-01', bratislavaTimeZone),
+      dayjs.tz('2024-05-01', bratislavaTimeZone),
+      dayjs.tz('2024-05-08', bratislavaTimeZone),
+      dayjs.tz('2024-07-05', bratislavaTimeZone),
+      dayjs.tz('2024-08-29', bratislavaTimeZone),
+      dayjs.tz('2024-09-15', bratislavaTimeZone),
+      dayjs.tz('2024-11-01', bratislavaTimeZone),
+      dayjs.tz('2024-11-17', bratislavaTimeZone),
+      dayjs.tz('2024-12-24', bratislavaTimeZone),
+      dayjs.tz('2024-12-25', bratislavaTimeZone),
+      dayjs.tz('2024-12-26', bratislavaTimeZone),
+    ],
+  },
+  {
     year: 2025,
     dates: [
       dayjs.tz('2025-01-01', bratislavaTimeZone),
@@ -175,7 +214,7 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
 }
 
 const calculateInstallmentAmounts = (
-  installments: { order: string | null; amount: number }[],
+  installments: { order: number; amount: number }[],
   overallPaid: number,
 ): ThreeInstallments => {
   if (installments.length !== 3) {
@@ -186,9 +225,7 @@ const calculateInstallmentAmounts = (
   }
 
   const amounts = [1, 2, 3].map((order) => {
-    const installment = installments.find(
-      (item) => item.order === order.toString(),
-    )
+    const installment = installments.find((item) => item.order === order)
     if (!installment) {
       throw new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
@@ -227,7 +264,7 @@ const calculateInstallmentPaymentDetails = (options: {
   taxYear: number
   paymentCalendarThreshold: number
   dueDate?: Dayjs
-  installments: { order: string | null; amount: number }[]
+  installments: { order: number; amount: number }[]
   variableSymbol: string
   specificSymbol: string
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
@@ -409,7 +446,7 @@ export const getTaxDetailPure = (options: {
   paymentCalendarThreshold: number // splátková hranica (66 Eur)
   variableSymbol: string
   dateOfValidity: Date | null // dátum právoplatnosti
-  installments: { order: string | null; amount: number }[]
+  installments: { order: number; amount: number }[]
   taxDetails: TaxDetail[]
   taxConstructions: number
   taxFlat: number
@@ -530,7 +567,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   paymentCalendarThreshold: number
   variableSymbol: string
   dateOfValidity: Date | null
-  installments: { order: string | null; amount: number }[]
+  installments: { order: number; amount: number }[]
   specificSymbol: string
   taxPayments: {
     amount: number
@@ -613,12 +650,12 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
     )
   }
-
   // Create description based on the installment status
+  // data that goes to payment gateway should not contain diacritics
   const description =
     activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
-      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
-      : `Platba ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
+      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+      : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
 
   return {
     amount: activeInstallmentInfo.remainingAmount,

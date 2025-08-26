@@ -1,16 +1,16 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Prisma, User } from '@prisma/client'
-import prismaMock from '../../../../test/singleton'
+import { GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
+import prismaMock from '../../../test/singleton'
 import { AdminApi } from 'openapi-clients/tax'
-import { PrismaService } from '../../../prisma/prisma.service'
-import { GdprSubType } from '../../../user/dtos/gdpr.user.dto'
-import ThrowerErrorGuard from '../../guards/errors.guard'
-import { DeliveryMethod } from '../../types/tax.types'
-import { TasksSubservice } from '../tasks.subservice'
-import { TaxSubservice } from '../tax.subservice'
+import { PrismaService } from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { DeliveryMethod } from '../../utils/types/tax.types'
+import { TasksService } from '../tasks.service'
+import { TaxSubservice } from '../../utils/subservices/tax.subservice'
+import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
 
-jest.mock('../../decorators/errorHandler.decorators', () => {
+jest.mock('../../utils/decorators/errorHandler.decorators', () => {
   return jest.fn(() => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value
 
@@ -32,22 +32,23 @@ type UserWithRelations = Prisma.UserGetPayload<{
   }
 }>
 
-describe('TasksSubservice', () => {
-  let service: TasksSubservice
+describe('TasksService', () => {
+  let service: TasksService
 
   let throwerErrorGuard: ThrowerErrorGuard
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        TasksSubservice,
+        TasksService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
+        { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
         ThrowerErrorGuard,
       ],
     }).compile()
 
-    service = module.get<TasksSubservice>(TasksSubservice)
+    service = module.get<TasksService>(TasksService)
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
     Object.defineProperty(service, 'taxBackendAdminApi', { value: createMock<AdminApi>() }) // It is not injected so has to be set this way
   })
@@ -68,7 +69,7 @@ describe('TasksSubservice', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2023-01-03'),
               },
             ],
@@ -78,7 +79,7 @@ describe('TasksSubservice', () => {
             id: '2',
             userGdprData: [
               {
-                subType: GdprSubType.UNSUB,
+                subType: GDPRSubTypeEnum.unsubscribe,
                 createdAt: new Date('2023-01-02'),
               },
             ],
@@ -91,7 +92,7 @@ describe('TasksSubservice', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2023-08-03'),
               },
             ],
@@ -108,7 +109,7 @@ describe('TasksSubservice', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.UNSUB,
+                subType: GDPRSubTypeEnum.unsubscribe,
                 createdAt: new Date('2023-01-03'),
               },
             ],
@@ -121,7 +122,7 @@ describe('TasksSubservice', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.UNSUB,
+                subType: GDPRSubTypeEnum.unsubscribe,
                 createdAt: new Date('2024-01-03'),
               },
             ],
@@ -131,7 +132,7 @@ describe('TasksSubservice', () => {
             id: '7',
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2020-01-03'),
               },
             ],
@@ -211,7 +212,7 @@ describe('TasksSubservice', () => {
             },
             userGdprData: [
               {
-                subType: GdprSubType.SUB,
+                subType: GDPRSubTypeEnum.subscribe,
                 createdAt: new Date('2023-01-03'),
               },
             ],

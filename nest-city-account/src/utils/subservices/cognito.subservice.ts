@@ -3,6 +3,7 @@ import AWS from 'aws-sdk'
 
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { fromPairs } from 'lodash'
+import { ListUsersRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import {
   CognitoGetUserAttributesData,
@@ -230,5 +231,25 @@ export class CognitoSubservice {
         HttpStatus.BAD_REQUEST
       )
     }
+  }
+
+  /**
+   * Returns all users from cognito user pool
+   * @returns CognitoGetUserData[]
+   */
+  async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
+    let result: CognitoGetUserData[] = []
+    const params: ListUsersRequest = {
+      UserPoolId: this.config.cognitoUserPoolId,
+    }
+    do {
+      // TODO: add proper error handling
+      const cognitoData = await this.cognitoIdentity.listUsers(params).promise()
+      const { Users = [], PaginationToken } = cognitoData
+      result = [...result, ...(Users as CognitoGetUserData[])]
+      params.PaginationToken = PaginationToken
+    } while (params.PaginationToken)
+
+    return result
   }
 }

@@ -443,6 +443,64 @@ export interface ResponseGetTaxesDto {
 /**
  *
  * @export
+ * @interface ResponseGetTaxesListBodyDto
+ */
+export interface ResponseGetTaxesListBodyDto {
+  /**
+   * Date of tax delivery to city account
+   * @type {string}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  createdAt?: string
+  /**
+   * Amount to be paid in cents
+   * @type {number}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  amountToBePaid?: number
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  year: number
+  /**
+   * Type of paid status
+   * @type {TaxStatusEnum}
+   * @memberof ResponseGetTaxesListBodyDto
+   */
+  status: TaxStatusEnum
+}
+
+/**
+ *
+ * @export
+ * @interface ResponseGetTaxesListDto
+ */
+export interface ResponseGetTaxesListDto {
+  /**
+   * Tax availability status
+   * @type {TaxAvailabilityStatus}
+   * @memberof ResponseGetTaxesListDto
+   */
+  availabilityStatus: TaxAvailabilityStatus
+  /**
+   *
+   * @type {Array<ResponseGetTaxesListBodyDto>}
+   * @memberof ResponseGetTaxesListDto
+   */
+  items: Array<ResponseGetTaxesListBodyDto>
+  /**
+   * Assigned tax administrator
+   * @type {ResponseTaxAdministratorDto}
+   * @memberof ResponseGetTaxesListDto
+   */
+  taxAdministrator: ResponseTaxAdministratorDto | null
+}
+
+/**
+ *
+ * @export
  * @interface ResponseInstallmentPaymentDetailDto
  */
 export interface ResponseInstallmentPaymentDetailDto {
@@ -1018,9 +1076,58 @@ export interface ResponseTaxPayerDto {
 /**
  *
  * @export
+ * @interface ResponseTaxPayerReducedDto
+ */
+export interface ResponseTaxPayerReducedDto {
+  /**
+   * Name of taxpayer
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  name: string | null
+  /**
+   * Street of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceStreet: string | null
+  /**
+   * Zip of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceZip: string | null
+  /**
+   * City of permanent residence with number
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  permanentResidenceCity: string | null
+  /**
+   * Id of tax payer from Noris
+   * @type {string}
+   * @memberof ResponseTaxPayerReducedDto
+   */
+  externalId: string | null
+}
+/**
+ *
+ * @export
  * @interface ResponseTaxSummaryDetailDto
  */
 export interface ResponseTaxSummaryDetailDto {
+  /**
+   * Payment status
+   * @type {TaxPaidStatusEnum}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  paidStatus: TaxPaidStatusEnum
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  year: number
   /**
    * Total amount paid
    * @type {number}
@@ -1063,7 +1170,29 @@ export interface ResponseTaxSummaryDetailDto {
    * @memberof ResponseTaxSummaryDetailDto
    */
   taxAdministrator: ResponseTaxAdministratorDto | null
+  /**
+   * Tax payer data
+   * @type {ResponseTaxPayerReducedDto}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  taxPayer: ResponseTaxPayerReducedDto
 }
+
+/**
+ * Tax availability status
+ * @export
+ * @enum {string}
+ */
+
+export const TaxAvailabilityStatus = {
+  Available: 'AVAILABLE',
+  LookingForYourTax: 'LOOKING_FOR_YOUR_TAX',
+  TaxNotOnRecord: 'TAX_NOT_ON_RECORD',
+} as const
+
+export type TaxAvailabilityStatus =
+  (typeof TaxAvailabilityStatus)[keyof typeof TaxAvailabilityStatus]
+
 /**
  * Type of tax detail - object of tax
  * @export
@@ -1117,6 +1246,22 @@ export const TaxPaidStatusEnum = {
 } as const
 
 export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
+
+/**
+ * Type of paid status
+ * @export
+ * @enum {string}
+ */
+
+export const TaxStatusEnum = {
+  NotPaid: 'NOT_PAID',
+  PartiallyPaid: 'PARTIALLY_PAID',
+  Paid: 'PAID',
+  OverPaid: 'OVER_PAID',
+  AwaitingProcessing: 'AWAITING_PROCESSING',
+} as const
+
+export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]
 
 /**
  * AdminApi - axios parameter creator
@@ -3024,6 +3169,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      *
      * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     taxControllerGetArchivedTaxes: async (
@@ -3151,6 +3297,44 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary Get all taxes (paid and not paid)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerV2GetTaxesListV2: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v2/tax/taxes`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -3192,6 +3376,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
      *
      * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async taxControllerGetArchivedTaxes(
@@ -3269,6 +3454,31 @@ export const TaxApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     *
+     * @summary Get all taxes (paid and not paid)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async taxControllerV2GetTaxesListV2(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetTaxesListDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.taxControllerV2GetTaxesListV2(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerV2GetTaxesListV2']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -3302,6 +3512,7 @@ export const TaxApiFactory = function (
      *
      * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     taxControllerGetArchivedTaxes(
@@ -3342,6 +3553,19 @@ export const TaxApiFactory = function (
         .taxControllerV2GetTaxDetailByYearV2(year, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     *
+     * @summary Get all taxes (paid and not paid)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerV2GetTaxesListV2(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseGetTaxesListDto> {
+      return localVarFp
+        .taxControllerV2GetTaxesListV2(options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -3370,6 +3594,7 @@ export class TaxApi extends BaseAPI {
    *
    * @summary Get all taxes (paid and not paid)
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof TaxApi
    */
@@ -3405,6 +3630,19 @@ export class TaxApi extends BaseAPI {
   public taxControllerV2GetTaxDetailByYearV2(year: number, options?: RawAxiosRequestConfig) {
     return TaxApiFp(this.configuration)
       .taxControllerV2GetTaxDetailByYearV2(year, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get all taxes (paid and not paid)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof TaxApi
+   */
+  public taxControllerV2GetTaxesListV2(options?: RawAxiosRequestConfig) {
+    return TaxApiFp(this.configuration)
+      .taxControllerV2GetTaxesListV2(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

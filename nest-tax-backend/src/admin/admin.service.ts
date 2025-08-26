@@ -766,31 +766,14 @@ export class AdminService {
       )
     }
 
-    await this.prismaService.$transaction([
-      this.prismaService.taxPayment.deleteMany({
-        where: {
-          taxId: tax.id,
+    await this.prismaService.tax.delete({
+      where: {
+        taxPayerId_year: {
+          taxPayerId: taxPayer.id,
+          year,
         },
-      }),
-      this.prismaService.taxInstallment.deleteMany({
-        where: {
-          taxId: tax.id,
-        },
-      }),
-      this.prismaService.taxDetail.deleteMany({
-        where: {
-          taxId: tax.id,
-        },
-      }),
-      this.prismaService.tax.delete({
-        where: {
-          taxPayerId_year: {
-            taxPayerId: taxPayer.id,
-            year,
-          },
-        },
-      }),
-    ])
+      },
+    })
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdmin(birthNumber)

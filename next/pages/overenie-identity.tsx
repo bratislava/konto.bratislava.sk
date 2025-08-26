@@ -114,14 +114,12 @@ const IdentityVerificationPage = () => {
       <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
         {tierStatus.isIdentityVerificationNotYetAttempted && (
           <IdentityVerificationForm
-            isLegalEntity={isLegalEntity}
             onSubmit={verifyIdentityAndRefreshUserData}
             error={identityVerificationError}
           />
         )}
         {tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD && (
           <IdentityVerificationForm
-            isLegalEntity={isLegalEntity}
             onSubmit={verifyIdentityAndRefreshUserData}
             error={identityVerificationError}
           />

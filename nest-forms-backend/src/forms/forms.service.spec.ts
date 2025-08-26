@@ -112,7 +112,6 @@ describe('FormsService', () => {
         },
         where: {
           archived: false,
-          userExternalId: authUser.sub,
           formDataJson: {
             not: {
               equals: null,
@@ -124,6 +123,7 @@ describe('FormsService', () => {
             },
           },
           state: { in: [FormState.DRAFT, FormState.PROCESSING] },
+          AND: [{ userExternalId: authUser.sub }],
         },
         orderBy: [
           {
@@ -211,52 +211,68 @@ describe('FormsService', () => {
   })
 
   describe('bumpJsonVersion', () => {
+    it('should throw error if form not found', async () => {
+      const formId = '123e4567-e89b-12d3-a456-426614174000'
+      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(null)
+
+      await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
+    })
+
     it('should throw error if form is not editable', async () => {
+      const formId = '123e4567-e89b-12d3-a456-426614174000'
       const form = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
+        id: formId,
         state: FormState.PROCESSING,
       } as Forms
+      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
       FormsHelper.isEditable = jest.fn().mockReturnValue(false)
 
-      await expect(service.bumpJsonVersion(form)).rejects.toThrow()
+      await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
     })
 
     it('should throw error if form definition is not found', async () => {
+      const formId = '123e4567-e89b-12d3-a456-426614174000'
       const form = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
+        id: formId,
         state: FormState.DRAFT,
         formDefinitionSlug: 'non-existent',
       } as Forms
+      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
       FormsHelper.isEditable = jest.fn().mockReturnValue(true)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
-      await expect(service.bumpJsonVersion(form)).rejects.toThrow()
+      await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
     })
 
     it('should throw error if version bump is not possible', async () => {
+      const formId = '123e4567-e89b-12d3-a456-426614174001'
       const form = {
-        id: '123e4567-e89b-12d3-a456-426614174001',
+        id: formId,
         state: FormState.DRAFT,
         formDefinitionSlug: 'test-form',
         jsonVersion: '1.0.0',
       } as Forms
+      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         jsonVersion: '2.0.0',
         schema: { type: 'object' },
       })
 
-      await expect(service.bumpJsonVersion(form)).rejects.toThrow()
+      await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
     })
 
     it('should update form version and data when bump is possible', async () => {
+      const formId = '123e4567-e89b-12d3-a456-426614174002'
       const formDataJson = { existingData: true, dataToRemove: true }
       const form = {
-        id: '123e4567-e89b-12d3-a456-426614174002',
+        id: formId,
         state: FormState.DRAFT,
         formDefinitionSlug: 'test-form',
         jsonVersion: '1.0.0',
         formDataJson,
       } as Partial<Forms> as Forms
+
+      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
 
       const mockRegistry = {}
       ;(
@@ -271,7 +287,7 @@ describe('FormsService', () => {
       })
 
       const updateSpy = jest.spyOn(prismaMock.forms, 'update')
-      await service.bumpJsonVersion(form)
+      await service.bumpJsonVersion(formId)
 
       expect(omitExtraData).toHaveBeenCalledWith(
         { type: 'object' },

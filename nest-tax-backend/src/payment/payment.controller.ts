@@ -19,17 +19,17 @@ import {
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import { Response } from 'express'
-import { TiersGuard } from 'src/auth/guards/tiers.guard'
-import { Tiers } from 'src/utils/decorators/tier.decorator'
-import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
+
+import { BratislavaUser } from '../auth/decorators/user-info.decorator'
+import { TiersGuard } from '../auth/guards/tiers.guard'
+import { Tiers } from '../utils/decorators/tier.decorator'
+import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import { CognitoTiersEnum } from '../utils/global-dtos/cognito.dto'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
-} from 'src/utils/guards/dtos/error.dto'
-import { PaymentResponseQueryDto } from 'src/utils/subservices/dtos/gpwebpay.dto'
-
-import { BratislavaUser } from '../auth/decorators/user-info.decorator'
-import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+} from '../utils/guards/dtos/error.dto'
+import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ResponseGetPaymentUrlDto } from './dtos/requests.payment.dto'
 import { PaymentService } from './payment.service'

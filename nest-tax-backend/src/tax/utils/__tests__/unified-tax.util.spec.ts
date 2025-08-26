@@ -26,9 +26,9 @@ const defaultInput = {
   variableSymbol: '1234567890',
   dateOfValidity: new Date('2025-01-01'),
   installments: [
-    { order: '1', amount: 2200 },
-    { order: '2', amount: 2200 },
-    { order: '3', amount: 2200 },
+    { order: 1, amount: 2200 },
+    { order: 2, amount: 2200 },
+    { order: 3, amount: 2200 },
   ],
   taxDetails: [
     {
@@ -588,9 +588,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     variableSymbol: '1234567890',
     dateOfValidity: new Date('2025-01-01'),
     installments: [
-      { order: '1', amount: 2200 },
-      { order: '2', amount: 2200 },
-      { order: '3', amount: 2200 },
+      { order: 1, amount: 2200 },
+      { order: 2, amount: 2200 },
+      { order: 3, amount: 2200 },
     ],
     specificSymbol: '2025200000',
     taxPayments: [],
@@ -602,7 +602,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     expect(output).toEqual({
       amount: 2200,
       taxId: 123,
-      description: 'Platba 1. splátky za dane pre BA s id dane 123',
+      description: 'Platba 1. splatky za dane pre BA s id dane 123',
     })
   })
 
@@ -616,7 +616,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     expect(output).toEqual({
       amount: 2199,
       taxId: 123,
-      description: 'Platba zostatku 1. splátky za dane pre BA s id dane 123',
+      description: 'Platba zostatku 1. splatky za dane pre BA s id dane 123',
     })
   })
 

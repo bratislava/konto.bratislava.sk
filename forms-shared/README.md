@@ -1,6 +1,6 @@
 # Forms shared
 
-This package contains all forms-related code that may or may not be shared between FE and BE. The code primarily consists of pure, testable functions that create a interconnected suite for working with forms. Because of that, some of the code might be used only in one place, but for easier testability (compared to testing a React/Nest.js app) or higher code visibility (related things are in the same place) it might belong here (especially if it's a pure utility function).
+This package contains all forms-related code that may or may not be shared between FE and BE. The code primarily consists of pure, testable functions that create an interconnected suite for working with forms. Because of that, some of the code might be used only in one place, but for easier testability (compared to testing a React/Nest.js app) or higher code visibility (related things are in the same place) it might belong here (especially if it's a pure utility function).
 
 Core components of forms shared package are _form generator_, _form summary_, and _form definitions_.
 
@@ -19,7 +19,10 @@ The important functionality of the application is not only the part where the us
 
 ## Form definitions
 
-The definitions are concrete forms that are implemented via form generator. The `formDefinitions.ts` file is a single source of truth for all forms, therefore each committed change affects the existing systems. Some changes (e.g., changing a form type) might lead to unexpected behavior. Each change of the existing form must be evaluated regarding the impact on other parts of the system!
+The definitions are concrete forms that are implemented via form generator. The `formDefinitions.ts` file is a single source of truth for all forms, therefore each committed change affects the existing systems.
+
+> [!CAUTION]
+> Some changes (e.g., changing a form type) might lead to an unexpected behavior. Each change of the existing form must be evaluated regarding the impact on other parts of the system!
 
 Currently, there are two types of the forms:
 
@@ -40,7 +43,7 @@ npm run generate-slovensko-sk
 
 #### Tax form
 
-It's a special case of Slovensko.sk form. Historically, this form was available on the old form solution (esluzby.bratislava.sk), and it had its own XML schemas. Because of compatibility requirements (mainly because it is processed by NORIS, not GINIS), for this form we don't use the universal XML schema, but instead map form data to the old schema. Besides that, the PDFs generated are not the summary but government tax forms which users can print.
+It's a special case of Slovensko.sk form. Historically, this form was available on the old form solution ([esluzby.bratislava.sk](https://esluzby.bratislava.sk/)), and it had its own XML schemas. Because of compatibility requirements (mainly because it is processed by NORIS, not GINIS), for this form we don't use the universal XML schema, but instead map form data to the old schema. Besides that, the PDFs generated are not the summary but government tax forms which users can print.
 
 ### Creating a new form
 
@@ -50,51 +53,52 @@ The best way to create a new form definition is to look at already existing ones
 npm run create-ai-prompt
 ```
 
-Use Slovak language for all property names and select options in the form data! Many of the properties are not easily translatable which leads to mixed usage of languages or horrible translations.
+> [!IMPORTANT]
+> Use Slovak language for all property names and select options in the form data! Many of the properties are not easily translatable which leads to a mixed usage of languages or horrible translations.
 
 ## Prerequisites
 
 ### Installation
 
 First, you need to install required prerequisites on macOS:
-https://github.com/Automattic/node-canvas/wiki/Installation%3A-Mac-OS-X
+<https://github.com/Automattic/node-canvas/wiki/Installation%3A-Mac-OS-X>
 
 ```bash
-  brew install pkg-config cairo pango libpng jpeg giflib librsvg
+brew install pkg-config cairo pango libpng jpeg giflib librsvg
 ```
 
 Then to install node dependencies on macOS:
 
 ```bash
-  npm install
+npm install
 ```
 
 If you are having problems with npm installation, you likely need to relink brew libraries:
 
 ```bash
-  export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
-  brew install glib
-  brew link glib
-  # if command above not working use: brew link --overwrite glib
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+brew install glib
+brew link glib
+# if command above not working use: brew link --overwrite glib
 ```
 
 On Windows just use npm install as the binaries are included in the npm packages:
 
 ```bash
-  npm install
+npm install
 ```
 
 Installing on Windows under WSL Ubuntu might need similar dependencies as macOS, so if the install throws errors, run:
 
 ```bash
-  sudo apt-get update
-  sudo apt-get install pkg-config libcairo2-dev libpango1.0-dev libpng-dev libjpeg-dev libgif-dev librsvg2-dev
+sudo apt-get update
+sudo apt-get install pkg-config libcairo2-dev libpango1.0-dev libpng-dev libjpeg-dev libgif-dev librsvg2-dev
 ```
 
 And then proceed to npm install as usual:
 
 ```bash
-  npm install
+npm install
 ```
 
 ## Testing
@@ -115,5 +119,5 @@ npm run docker:test:update
 
 ## Notes
 
-- `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json
-- `react-markdown` is fixed on version 6, until we use a compiler, see https://stackoverflow.com/a/69469619
+- `ts-config` based on <https://github.com/tsconfig/bases/blob/main/bases/node-lts.json>
+- `react-markdown` is fixed on version 6, until we use a compiler, see <https://stackoverflow.com/a/69469619>

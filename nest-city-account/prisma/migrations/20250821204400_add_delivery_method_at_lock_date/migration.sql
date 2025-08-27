@@ -18,8 +18,6 @@ $$
         cutoff_date                       CONSTANT DATE                            := '2025-04-01';
         communication_type_city_account   CONSTANT "GDPRTypeEnum"                  := 'FORMAL_COMMUNICATION'::"GDPRTypeEnum";
         communication_type_postal         CONSTANT "GDPRTypeEnum"                  := 'FORMAL_COMMUNICATION'::"GDPRTypeEnum";
-        required_tier_text                CONSTANT "CognitoUserAttributesTierEnum" := 'IDENTITY_CARD'::"CognitoUserAttributesTierEnum";
-        eid_tier_text                     CONSTANT "CognitoUserAttributesTierEnum" := 'EID'::"CognitoUserAttributesTierEnum";
         subscription_subtype_city_account CONSTANT "GDPRSubTypeEnum"               := 'subscribe'::"GDPRSubTypeEnum";
         subscription_subtype_postal       CONSTANT "GDPRSubTypeEnum"               := 'unsubscribe'::"GDPRSubTypeEnum";
     BEGIN
@@ -47,7 +45,6 @@ $$
         WHERE ugd."createdAt" < cutoff_date
           AND ugd.category = 'TAXES'::"GDPRCategoryEnum"
           AND ugd.type = communication_type_city_account
-          AND u."cognitoTier" = required_tier_text
           AND u."birthNumber" IS NOT NULL
           AND ugd."subType" = subscription_subtype_city_account
         ORDER BY ugd."userId", ugd."createdAt" DESC;
@@ -60,7 +57,6 @@ $$
                  JOIN "User" u ON ugd."userId" = u.id
         WHERE ugd.category = 'TAXES'::"GDPRCategoryEnum"
           AND ugd.type = communication_type_city_account
-          AND u."cognitoTier" = required_tier_text
           AND u."birthNumber" IS NOT NULL
           AND ugd."subType" = subscription_subtype_city_account
         ORDER BY ugd."userId", ugd."createdAt" DESC;
@@ -73,8 +69,6 @@ $$
         FROM "PhysicalEntity" pe
                  JOIN "User" u ON u.id = pe."userId"
         WHERE pe."activeEdesk" = true
-          AND (u."cognitoTier" = required_tier_text OR
-               u."cognitoTier" = eid_tier_text)
           AND u."birthNumber" IS NOT NULL;
 
         -- Insert postal users
@@ -87,7 +81,6 @@ $$
         WHERE ugd."createdAt" < cutoff_date
           AND ugd.category = 'TAXES'::"GDPRCategoryEnum"
           AND ugd.type = communication_type_postal
-          AND u."cognitoTier" = required_tier_text
           AND u."birthNumber" IS NOT NULL
           AND ugd."subType" = subscription_subtype_postal
         ORDER BY ugd."userId", ugd."createdAt" DESC;
@@ -100,7 +93,6 @@ $$
                  JOIN "UserGdprData" ugd ON ugd."userId" = u.id
         WHERE ugd.category = 'TAXES'::"GDPRCategoryEnum"
           AND ugd.type = communication_type_postal
-          AND u."cognitoTier" = required_tier_text
           AND u."birthNumber" IS NOT NULL
           AND ugd."subType" = subscription_subtype_postal
         ORDER BY ugd."userId", ugd."createdAt" DESC;

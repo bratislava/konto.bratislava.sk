@@ -337,7 +337,7 @@ export class DatabaseSubserviceUser {
   }
 
   async getShowEmailCommunicationBanner(userId: string): Promise<boolean> {
-    const formalCommunicationSubscription = await this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         id: userId,
       },
@@ -350,7 +350,7 @@ export class DatabaseSubserviceUser {
         userId,
       },
     })
-    return !(formalCommunicationSubscription?.taxDeliveryMethod || hasEdesk?.activeEdesk)
+    return !(user?.taxDeliveryMethod || hasEdesk?.activeEdesk)
   }
 
   private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
@@ -366,7 +366,9 @@ export class DatabaseSubserviceUser {
         if (elem.subType === GDPRSubTypeEnum.subscribe) {
           taxDeliveryData.push(DeliveryMethodUserEnum.CITY_ACCOUNT)
         }
-        taxDeliveryData.push(DeliveryMethodUserEnum.POSTAL)
+        else {
+          taxDeliveryData.push(DeliveryMethodUserEnum.POSTAL)
+        }
       } else {
         otherGdprData.push(elem)
       }

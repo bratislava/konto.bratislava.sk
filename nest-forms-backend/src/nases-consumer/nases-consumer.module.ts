@@ -16,7 +16,6 @@ import OloMailerService from '../utils/global-services/mailer/olo-mailer.service
 import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import NasesConsumerHelper from './nases-consumer.helper'
 import NasesConsumerService from './nases-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
@@ -37,7 +36,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
   providers: [
     NasesConsumerService,
     NasesUtilsService,
-    NasesConsumerHelper,
     ThrowerErrorGuard,
     MailgunHelper,
     MailgunService,
@@ -46,6 +44,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
     EmailFormsSubservice,
     WebhookSubservice,
   ],
-  exports: [NasesConsumerService, NasesConsumerHelper],
+  exports: [NasesConsumerService],
 })
 export default class NasesConsumerModule {}

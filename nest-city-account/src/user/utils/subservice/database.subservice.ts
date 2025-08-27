@@ -321,7 +321,7 @@ export class DatabaseSubserviceUser {
       ? { deliveryMethod: DeliveryMethodEnum.EDESK }
       : user.taxDeliveryMethod
         ? {
-            deliveryMethod: user.taxDeliveryMethod as DeliveryMethodEnum,
+            deliveryMethod: user.taxDeliveryMethod,
             date: user.taxDeliveryMethodCityAccountDate ?? undefined,
           }
         : undefined
@@ -411,7 +411,7 @@ export class DatabaseSubserviceUser {
     }
 
     await this.prisma.userGdprData.createMany({
-      data: otherGdprData.map((elem) => ({
+      data: gdprData.map((elem) => ({
         type: elem.type,
         category: elem.category,
         subType: elem.subType,

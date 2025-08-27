@@ -7,6 +7,7 @@ import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
+import NasesModule from '../nases/nases.module'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
@@ -31,6 +32,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
     ClientsModule,
     UserInfoPipeModule,
     ConvertPdfModule,
+    NasesModule,
   ],
   providers: [
     NasesConsumerService,

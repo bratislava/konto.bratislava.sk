@@ -9,21 +9,21 @@ import {
   TaxPaymentSource,
 } from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
-import { BloomreachService } from 'src/bloomreach/bloomreach.service'
-import { PrismaService } from 'src/prisma/prisma.service'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
-import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
-import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
-import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
 
+import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
 import { TaxService } from '../tax/tax.service'
 import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { computeIsPayableYear } from '../utils/helpers/payment.helper'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
+import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
+import { TaxPaymentWithTaxYear } from '../utils/types/types.prisma'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,

@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
+import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'
 import { Controller } from 'react-hook-form'
@@ -181,8 +181,8 @@ const TaxesFeesDeliveryMethodChangeModal = ({
   agreementContent,
 }: TaxesFeesDeliveryMethodChangeModalProps) => {
   const { isSubscribed, isSubscribtionExists, changeSubscription } = useUserSubscription({
-    category: GdprDataDtoCategoryEnum.Taxes,
-    type: GdprDataDtoTypeEnum.FormalCommunication,
+    category: GDPRCategoryEnum.Taxes,
+    type: GDPRTypeEnum.FormalCommunication,
   })
   const { t } = useTranslation('account')
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })

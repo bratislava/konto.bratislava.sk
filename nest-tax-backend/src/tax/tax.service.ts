@@ -3,13 +3,15 @@ import path from 'node:path'
 import { Injectable } from '@nestjs/common'
 import { PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import ejs from 'ejs'
-import { PrismaService } from 'src/prisma/prisma.service'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
-import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
+import { PrismaService } from '../prisma/prisma.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { computeIsPayableYear } from '../utils/helpers/payment.helper'
+import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
@@ -18,23 +20,40 @@ import {
 import {
   ResponseGetTaxesBodyDto,
   ResponseGetTaxesDto,
+  ResponseGetTaxesListBodyDto,
+  ResponseGetTaxesListDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDto,
   ResponseTaxPayerReducedDto,
   ResponseTaxSummaryDetailDto,
+  TaxAvailabilityStatus,
+  TaxStatusEnum,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
-import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
+import {
+  checkTaxDateInclusion,
+  fixInstallmentTexts,
+  getExistingTaxStatus,
+  getTaxStatus,
+} from './utils/helpers/tax.helper'
 import {
   getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 const paymentCalendarThreshold = 6600
 
 const specificSymbol = '2025200000'
+
+const lookingForTaxDate = {
+  from: { month: 2, day: 1 },
+  to: { month: 7, day: 1 },
+}
 
 @Injectable()
 export class TaxService {
@@ -235,6 +254,92 @@ export class TaxService {
       isInNoris: items.length > 0,
       items,
       taxAdministrator: taxPayer ? taxPayer.taxAdministrator : null,
+    }
+  }
+
+  async getListOfTaxesByBirthnumber(
+    birthNumber: string,
+  ): Promise<ResponseGetTaxesListDto> {
+    if (!birthNumber) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
+        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+      )
+    }
+
+    const taxPayer = await this.prisma.taxPayer.findUnique({
+      where: {
+        birthNumber,
+      },
+      include: {
+        taxAdministrator: true,
+      },
+    })
+    const taxAdministrator = taxPayer ? taxPayer.taxAdministrator : null
+
+    const taxes = await this.prisma.tax.findMany({
+      where: {
+        taxPayer: {
+          birthNumber,
+        },
+      },
+      orderBy: {
+        year: 'desc',
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        amount: true,
+        year: true,
+      },
+    })
+    const currentTime = dayjs().tz('Europe/Bratislava')
+
+    const shouldAddCurrentYear = checkTaxDateInclusion(
+      currentTime,
+      lookingForTaxDate,
+    )
+
+    if (taxes.length === 0) {
+      const availabilityStatus = shouldAddCurrentYear
+        ? TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX
+        : TaxAvailabilityStatus.TAX_NOT_ON_RECORD
+      return {
+        availabilityStatus,
+        items: [],
+        taxAdministrator,
+      }
+    }
+
+    const items: ResponseGetTaxesListBodyDto[] = await Promise.all(
+      taxes.map(async (tax) => {
+        const paid = await this.getAmountAlreadyPaidByTaxId(tax.id)
+        const amountToBePaid = tax.amount - paid
+        const status = getExistingTaxStatus(tax.amount, paid)
+        return {
+          createdAt: tax.createdAt,
+          year: tax.year,
+          amountToBePaid,
+          status,
+        }
+      }),
+    )
+
+    const currentYearTaxExists = items.some(
+      (item) => item.year === currentTime.year(),
+    )
+
+    if (!currentYearTaxExists && shouldAddCurrentYear) {
+      items.unshift({
+        year: currentTime.year(),
+        status: TaxStatusEnum.AWAITING_PROCESSING,
+      })
+    }
+
+    return {
+      availabilityStatus: TaxAvailabilityStatus.AVAILABLE,
+      items,
+      taxAdministrator,
     }
   }
 

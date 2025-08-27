@@ -307,4 +307,64 @@ export class TasksService {
       )
     }
   }
+
+  /**
+   * This is a temporary task to remove all tax payers from tax backend database, who are not in city account.
+   * https://github.com/bratislava/private-konto.bratislava.sk/issues/958
+   */
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
+  async removeTaxPayersNotInCityAccount() {
+    const configFlags = await this.databaseSubservice.getConfigByKeys([
+      'REMOVE_TAX_PAYERS_NOT_IN_CITY_ACCOUNT_FLAG',
+    ])
+    if (configFlags.REMOVE_TAX_PAYERS_NOT_IN_CITY_ACCOUNT_FLAG !== 'true') {
+      return
+    }
+
+    const taxPayersToMigrate = await this.prismaService.taxPayer.findMany({
+      select: {
+        id: true,
+        birthNumber: true,
+      },
+      where: {
+        removeIfNotInCityAccountMigrated: false,
+      },
+      take: 100,
+    })
+
+    if (taxPayersToMigrate.length === 0) {
+      this.logger.warn('No tax payers to migrate')
+      return
+    }
+
+    const birthNumberToId = Object.fromEntries(
+      taxPayersToMigrate.map((tp) => [tp.birthNumber, tp.id]),
+    )
+
+    const cityAccountData =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        Object.keys(birthNumberToId),
+      )
+
+    const idsToRemove = Object.entries(birthNumberToId)
+      .filter(([birthNumber]) => !cityAccountData[birthNumber])
+      .map(([, id]) => id)
+    const allTaxPayerIds = taxPayersToMigrate.map((tp) => tp.id)
+
+    if (idsToRemove.length > 0) {
+      await this.prismaService.taxPayer.deleteMany({
+        where: { id: { in: idsToRemove } },
+      })
+    }
+
+    await this.prismaService.taxPayer.updateMany({
+      where: { id: { in: allTaxPayerIds } },
+      data: { removeIfNotInCityAccountMigrated: true },
+    })
+
+    this.logger.log(
+      `Removed ${idsToRemove.length} tax payers not in city account: ${JSON.stringify(idsToRemove)}`,
+    )
+  }
 }

@@ -145,7 +145,7 @@ export function isLogfmt(input: string): boolean {
   return regex.test(input)
 }
 
-export function ToLogfmt(input: unknown): string {
+export function toLogfmt(input: unknown): string {
   if (!input) {
     return ''
   }

@@ -4,7 +4,7 @@ import { AuthSession } from 'aws-amplify/auth'
 import { AxiosError, AxiosResponse } from 'axios'
 import {
   GdprDataDto,
-  ResponseGdprUserDataDtoSubTypeEnum,
+  GDPRSubTypeEnum,
   UserControllerGetOrCreateUser200Response,
 } from 'openapi-clients/city-account'
 
@@ -56,7 +56,7 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   )
 
   const subType = currentGdprData?.subType
-  const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe
+  const isSubscribed = subType === GDPRSubTypeEnum.Subscribe
 
   // TODO change for better naming
   const isSubscribtionExists = subType !== undefined

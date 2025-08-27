@@ -171,7 +171,7 @@ export class TasksService {
         id: true,
         birthNumber: true,
         taxDeliveryMethodAtLockDate: true,
-        taxDeliveryMethodCityAccountDate: true,
+        taxDeliveryMethodCityAccountLockDate: true,
       },
       take: UPLOAD_TAX_DELIVERY_METHOD_BATCH,
     })
@@ -186,8 +186,8 @@ export class TasksService {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const birthNumber: string = user.birthNumber!
         const deliveryMethod = DeliveryMethodCodec.decode(user.taxDeliveryMethodAtLockDate)
-        const date: string | undefined = user.taxDeliveryMethodCityAccountDate
-          ? user.taxDeliveryMethodCityAccountDate.toISOString().substring(0, 10)
+        const date: string | undefined = user.taxDeliveryMethodCityAccountLockDate
+          ? user.taxDeliveryMethodCityAccountLockDate.toISOString().substring(0, 10)
           : undefined
         if (date) {
           acc[birthNumber] = { deliveryMethod, date }

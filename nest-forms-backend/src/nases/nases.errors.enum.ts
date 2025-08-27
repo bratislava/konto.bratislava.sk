@@ -13,6 +13,8 @@ export enum NasesErrorsEnum {
   FORM_VERSION_NOT_COMPATIBLE = 'FORM_VERSION_NOT_COMPATIBLE',
   SEND_POLICY_NOT_POSSIBLE = 'SEND_POLICY_NOT_POSSIBLE',
   SEND_POLICY_NOT_ALLOWED_FOR_USER = 'SEND_POLICY_NOT_ALLOWED_FOR_USER',
+  UNABLE_SEND_FORM_TO_NASES = 'UNABLE_SEND_FORM_TO_NASES',
+  SEND_TO_GINIS_ERROR = 'SEND_TO_GINIS_ERROR',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -30,6 +32,8 @@ export enum NasesErrorsResponseEnum {
   FORM_VERSION_NOT_COMPATIBLE = 'Form version is not compatible for sending.',
   SEND_POLICY_NOT_POSSIBLE = 'Sending is not possible for this form.',
   SEND_POLICY_NOT_ALLOWED_FOR_USER = 'Sending is not allowed for this user.',
+  UNABLE_SEND_FORM_TO_NASES = 'Unable to send form to NASES.',
+  SEND_TO_GINIS_ERROR = 'There was an error when sending to Ginis.',
 }
 
 export enum NasesErrorCodesEnum {

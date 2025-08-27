@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
+import { DeliveryMethodEnum, GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
 import prismaMock from '../../../test/singleton'
 import { AdminApi } from 'openapi-clients/tax'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -64,38 +64,18 @@ describe('TasksService', () => {
           {
             birthNumber: '1234562020',
             id: '1',
-            physicalEntity: {
-              activeEdesk: true,
-            },
-            userGdprData: [
-              {
-                subType: GDPRSubTypeEnum.subscribe,
-                createdAt: new Date('2023-01-03'),
-              },
-            ],
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK
           },
           {
             birthNumber: '1234564848',
             id: '2',
-            userGdprData: [
-              {
-                subType: GDPRSubTypeEnum.unsubscribe,
-                createdAt: new Date('2023-01-02'),
-              },
-            ],
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL
           },
           {
             birthNumber: '1234561234',
             id: '3',
-            physicalEntity: {
-              activeEdesk: false,
-            },
-            userGdprData: [
-              {
-                subType: GDPRSubTypeEnum.subscribe,
-                createdAt: new Date('2023-08-03'),
-              },
-            ],
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
+            taxDeliveryMethodCityAccountLockDate: new Date('2023-08-03'),
           },
           {
             birthNumber: '1234569999',
@@ -104,43 +84,22 @@ describe('TasksService', () => {
           {
             birthNumber: '1234567777',
             id: '5',
-            physicalEntity: {
-              activeEdesk: true,
-            },
-            userGdprData: [
-              {
-                subType: GDPRSubTypeEnum.unsubscribe,
-                createdAt: new Date('2023-01-03'),
-              },
-            ],
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK
           },
           {
             birthNumber: '1234564646',
             id: '6',
-            physicalEntity: {
-              activeEdesk: false,
-            },
-            userGdprData: [
-              {
-                subType: GDPRSubTypeEnum.unsubscribe,
-                createdAt: new Date('2024-01-03'),
-              },
-            ],
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL
           },
           {
             birthNumber: '1234564649',
             id: '7',
-            userGdprData: [
-              {
-                subType: GDPRSubTypeEnum.subscribe,
-                createdAt: new Date('2020-01-03'),
-              },
-            ],
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
+            taxDeliveryMethodCityAccountLockDate: new Date('2020-01-03'),
           },
           {
             birthNumber: '1234564521',
             id: '8',
-            userGdprData: [],
           },
         ] as unknown as UserWithRelations[])
         .mockResolvedValueOnce([])

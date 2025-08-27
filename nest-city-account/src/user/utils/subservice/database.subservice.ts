@@ -285,16 +285,16 @@ export class DatabaseSubserviceUser {
   ): Promise<UserOfficialCorrespondenceChannelEnum> {
     const delivery = await this.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
     const active = delivery.active?.deliveryMethod
-    if (!active) {
-      return UserOfficialCorrespondenceChannelEnum.POSTAL
+    switch (active) {
+      case DeliveryMethodEnum.EDESK:
+        return UserOfficialCorrespondenceChannelEnum.EDESK
+      case DeliveryMethodEnum.CITY_ACCOUNT:
+        return UserOfficialCorrespondenceChannelEnum.EMAIL
+      case DeliveryMethodEnum.POSTAL:
+        return UserOfficialCorrespondenceChannelEnum.POSTAL
+      default:
+        return UserOfficialCorrespondenceChannelEnum.POSTAL
     }
-    if (active === DeliveryMethodEnum.EDESK) {
-      return UserOfficialCorrespondenceChannelEnum.EDESK
-    }
-    if (active === DeliveryMethodEnum.CITY_ACCOUNT) {
-      return UserOfficialCorrespondenceChannelEnum.EMAIL
-    }
-    return UserOfficialCorrespondenceChannelEnum.POSTAL
   }
 
   async getActiveAndLockedDeliveryMethodsWithDates(

@@ -5,13 +5,12 @@ import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
-import FilesHelper from '../files/files.helper'
 import FilesModule from '../files/files.module'
-import FilesService from '../files/files.service'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
+import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaModule from '../prisma/prisma.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import ScannerClientService from '../scanner-client/scanner-client.service'
@@ -40,11 +39,10 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
   ],
   providers: [
     NasesService,
+    NasesConsumerHelper,
     NasesUtilsService,
     ThrowerErrorGuard,
     FormsHelper,
-    FilesService,
-    FilesHelper,
     ScannerClientService,
     MinioClientSubservice,
     LineLoggerSubservice,

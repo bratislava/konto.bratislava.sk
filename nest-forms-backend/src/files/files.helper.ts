@@ -2,12 +2,16 @@ import { createHash } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
+import { Files, FileStatus, FormError, Forms, Prisma } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
 
-import { isValidScanStatus } from '../common/utils/helpers'
+import {
+  finalErrorScanStatuses,
+  infectedScanStatuses,
+  isValidScanStatus,
+} from '../common/utils/helpers'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -22,7 +26,9 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
@@ -219,6 +225,56 @@ export default class FilesHelper {
         error,
       )
     }
+  }
+
+  async checkInfectedFiles(formId: string): Promise<boolean> {
+    const infectedFiles: Array<Files> = await this.prisma.files.findMany({
+      where: {
+        formId,
+        status: {
+          in: infectedScanStatuses,
+        },
+      },
+    })
+
+    if (infectedFiles.length > 0) {
+      // here we should send notification to user and to our notification service
+      this.logger.warn({
+        type: 'Form contains infected files.',
+        formId,
+        error: FormError.INFECTED_FILES,
+        infectedFiles,
+      })
+      return true
+    }
+    return false
+  }
+
+  async checkErrorFiles(formId: string): Promise<boolean> {
+    const errorFiles: Array<Files> = await this.prisma.files.findMany({
+      where: {
+        formId,
+        status: {
+          in: finalErrorScanStatuses,
+        },
+      },
+    })
+
+    if (errorFiles.length > 0) {
+      // here we should send notification to user and to our notification service
+      alertError(
+        'There was an error with files scanning service.',
+        this.logger,
+        JSON.stringify({
+          type: 'There was an error with files scanning service.',
+          formId,
+          error: FormError.UNABLE_TO_SCAN_FILES,
+          errorFiles,
+        }),
+      )
+      return false
+    }
+    return false
   }
 
   async notifyScannerClient(

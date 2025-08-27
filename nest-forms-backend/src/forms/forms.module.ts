@@ -7,7 +7,6 @@ import FilesModule from '../files/files.module'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
-import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaModule from '../prisma/prisma.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -31,7 +30,6 @@ import FormsTaskSubservice from './subservices/forms-task.subservice'
     FormsService,
     FormsHelper,
     FilesService,
-    NasesConsumerHelper,
     ThrowerErrorGuard,
     MinioClientSubservice,
     FormsTaskSubservice,

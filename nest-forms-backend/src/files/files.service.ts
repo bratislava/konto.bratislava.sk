@@ -17,7 +17,6 @@ import {
 // eslint-disable-next-line import/no-cycle
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
-import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -51,7 +50,6 @@ export default class FilesService {
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nasesConsumerHelper: NasesConsumerHelper,
     private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FilesService')
@@ -429,7 +427,7 @@ export default class FilesService {
     }
 
     // if there are files in virus state, requeue message
-    if (await this.nasesConsumerHelper.checkInfectedFiles(formId)) {
+    if (await this.filesHelper.checkInfectedFiles(formId)) {
       this.logger.warn(`Form with id ${formId} has infected files.`)
       const result = {
         filesReady: false,
@@ -442,7 +440,7 @@ export default class FilesService {
     }
 
     // if there are files in error state notify developers, and set form to error state
-    if (await this.nasesConsumerHelper.checkErrorFiles(formId)) {
+    if (await this.filesHelper.checkErrorFiles(formId)) {
       const result = {
         filesReady: false,
         requeue: false,

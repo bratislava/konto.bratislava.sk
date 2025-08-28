@@ -5,6 +5,7 @@ import {
   IsObject,
   IsOptional,
   registerDecorator,
+  ValidateIf,
   ValidateNested,
   ValidationArguments,
   ValidationOptions,
@@ -57,6 +58,10 @@ export class DeliveryMethodDto {
     example: '2025-12-01T00:00:00.000Z',
   })
   @Type(() => Date)
+  @ValidateIf((obj: DeliveryMethodDto) =>
+    obj.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT ||
+    (obj.date !== undefined && obj.date !== null)
+  )
   @IsDate()
   @IsRequiredForCityAccount()
   date?: Date

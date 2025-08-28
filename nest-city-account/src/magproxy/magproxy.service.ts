@@ -146,7 +146,7 @@ export class MagproxyService {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          "Error is not an instance of AxiosError",
+          'Error is not an instance of AxiosError',
           error
         )
       }

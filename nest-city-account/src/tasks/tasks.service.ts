@@ -306,7 +306,7 @@ export class TasksService {
     })
   }
 
-  @Cron('0 0 1 4 *')
+  @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`)
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {
     this.logger.log('Starting lockDeliveryMethods task')

@@ -321,7 +321,7 @@ export class TasksService {
         where: {
           birthNumber: { not: null },
           // Ignore users who may sign up as this job runs
-          createdAt: {lt: jobStartTime}
+          createdAt: { lt: jobStartTime },
         },
         include: {
           userGdprData: {
@@ -376,32 +376,36 @@ export class TasksService {
       })
 
       // Group users by delivery method
-      const edeskUsers = data.filter(entry => entry.deliveryMethod === DeliveryMethodEnum.EDESK)
-      const postalUsers = data.filter(entry => entry.deliveryMethod === DeliveryMethodEnum.POSTAL)
-      const cityAccountUsers = data.filter(entry => entry.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT)
+      const edeskUsers = data.filter((entry) => entry.deliveryMethod === DeliveryMethodEnum.EDESK)
+      const postalUsers = data.filter((entry) => entry.deliveryMethod === DeliveryMethodEnum.POSTAL)
+      const cityAccountUsers = data.filter(
+        (entry) => entry.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT
+      )
 
-// Batch updates for users with same delivery method
+      // Batch updates for users with same delivery method
       const updatePromises = [
         // EDESK users - all have undefined date
-        edeskUsers.length > 0 && this.prismaService.user.updateMany({
-          where: { birthNumber: { in: edeskUsers.map(u => u.birthNumber) } },
-          data: {
-            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
-            taxDeliveryMethodCityAccountDate: null
-          }
-        }),
+        edeskUsers.length > 0 &&
+          this.prismaService.user.updateMany({
+            where: { birthNumber: { in: edeskUsers.map((u) => u.birthNumber) } },
+            data: {
+              taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
+              taxDeliveryMethodCityAccountDate: null,
+            },
+          }),
 
         // POSTAL users - all have undefined date
-        postalUsers.length > 0 && this.prismaService.user.updateMany({
-          where: { birthNumber: { in: postalUsers.map(u => u.birthNumber) } },
-          data: {
-            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
-            taxDeliveryMethodCityAccountDate: null
-          }
-        }),
+        postalUsers.length > 0 &&
+          this.prismaService.user.updateMany({
+            where: { birthNumber: { in: postalUsers.map((u) => u.birthNumber) } },
+            data: {
+              taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
+              taxDeliveryMethodCityAccountDate: null,
+            },
+          }),
 
         // CITY_ACCOUNT users still need individual updates due to different dates
-        ...cityAccountUsers.map(entry =>
+        ...cityAccountUsers.map((entry) =>
           this.prismaService.user.update({
             where: { birthNumber: entry.birthNumber },
             data: {
@@ -409,7 +413,8 @@ export class TasksService {
               taxDeliveryMethodCityAccountDate: entry.date,
             },
           })
-        )
+        ),
+        // If postalUsers.length > 0 or edeskUsers.length > 0 evaluates to false, we want to filter out this result
       ].filter(Boolean)
 
       await Promise.all(updatePromises)
@@ -422,7 +427,7 @@ export class TasksService {
       // Break between batches (except for the last one)
       if (users.length === LOCK_DELIVERY_METHODS_BATCH) {
         this.logger.log(`Waiting ${BATCH_DELAY_MS}ms before next batch...`)
-        await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS))
+        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
         batchNumber++
       }
       // let's break when zero users are

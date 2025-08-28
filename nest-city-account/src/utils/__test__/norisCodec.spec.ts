@@ -2,15 +2,6 @@ import { DeliveryMethodCodec} from "../norisCodec";
 import { DeliveryMethodEnum } from '@prisma/client'
 import { DeliveryMethodNoris} from "../types/tax.types";
 
-// Mock the @prisma/client enum for testing
-jest.mock('@prisma/client', () => ({
-  DeliveryMethodEnum: {
-    CITY_ACCOUNT: 'CITY_ACCOUNT',
-    EDESK: 'EDESK',
-    POSTAL: 'POSTAL',
-  }
-}))
-
 describe('DeliveryMethodCodec', () => {
   describe('`decode`', () => {
     it('should decode CITY_ACCOUNT correctly', () => {

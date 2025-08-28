@@ -1,6 +1,6 @@
-import { DeliveryMethodCodec} from "../norisCodec";
+import { DeliveryMethodCodec } from '../norisCodec'
 import { DeliveryMethodEnum } from '@prisma/client'
-import { DeliveryMethodNoris} from "../types/tax.types";
+import { DeliveryMethodNoris } from '../types/tax.types'
 
 describe('DeliveryMethodCodec', () => {
   describe('`decode`', () => {
@@ -81,7 +81,7 @@ describe('DeliveryMethodCodec', () => {
     it('should correctly map all DeliveryMethodEnum values', () => {
       const allEnumValues = Object.values(DeliveryMethodEnum)
 
-      allEnumValues.forEach(enumValue => {
+      allEnumValues.forEach((enumValue) => {
         const decoded = DeliveryMethodCodec.decode(enumValue)
         expect(Object.values(DeliveryMethodNoris)).toContain(decoded)
       })
@@ -90,7 +90,7 @@ describe('DeliveryMethodCodec', () => {
     it('should correctly reverse map all DeliveryMethodNoris values', () => {
       const allNorisValues = Object.values(DeliveryMethodNoris)
 
-      allNorisValues.forEach(norisValue => {
+      allNorisValues.forEach((norisValue) => {
         const encoded = DeliveryMethodCodec.encode(norisValue)
         expect(encoded).not.toBe(null)
         expect(Object.values(DeliveryMethodEnum)).toContain(encoded)

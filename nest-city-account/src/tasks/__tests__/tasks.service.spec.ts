@@ -64,12 +64,12 @@ describe('TasksService', () => {
           {
             birthNumber: '1234562020',
             id: '1',
-            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
           },
           {
             birthNumber: '1234564848',
             id: '2',
-            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
           },
           {
             birthNumber: '1234561234',
@@ -84,12 +84,12 @@ describe('TasksService', () => {
           {
             birthNumber: '1234567777',
             id: '5',
-            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
           },
           {
             birthNumber: '1234564646',
             id: '6',
-            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
           },
           {
             birthNumber: '1234564649',

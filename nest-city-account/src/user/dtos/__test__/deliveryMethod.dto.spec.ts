@@ -1,10 +1,7 @@
 import { validate } from 'class-validator'
 import { plainToInstance } from 'class-transformer'
 import { DeliveryMethodEnum } from '@prisma/client'
-import {
-  DeliveryMethodDto,
-  DeliveryMethodActiveAndLockedDto,
-} from '../deliveryMethod.dto'
+import { DeliveryMethodDto, DeliveryMethodActiveAndLockedDto } from '../deliveryMethod.dto'
 
 describe('DeliveryMethodDto', () => {
   describe('IsRequiredForCityAccount Decorator', () => {
@@ -57,9 +54,7 @@ describe('DeliveryMethodDto', () => {
       expect(errors).toHaveLength(1)
       const dateError = errors.find((error) => error.property === 'date')
       expect(dateError).toBeDefined()
-      expect(dateError?.constraints?.isDate).toBe(
-        'date must be a Date instance'
-      )
+      expect(dateError?.constraints?.isDate).toBe('date must be a Date instance')
     })
 
     it('should pass validation when delivery method is not CITY_ACCOUNT and date is null', async () => {
@@ -232,9 +227,7 @@ describe('Custom Decorator Edge Cases', () => {
       if (testCase.shouldFail) {
         expect(errors.length).toBeGreaterThan(0)
         const dateError = errors.find((error) => error.property === 'date')
-        expect(dateError?.constraints?.isDate).toBe(
-          'date must be a Date instance'
-        )
+        expect(dateError?.constraints?.isDate).toBe('date must be a Date instance')
       } else {
         expect(errors).toHaveLength(0)
       }

@@ -249,8 +249,6 @@ export class CognitoSubservice {
       params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
 
-    const formatedResult = result.map((user) => this.attributesToObject(user.Attributes ?? []))
-
-    return formatedResult
+    return result.map((user) => this.attributesToObject(user.Attributes ?? []))
   }
 }

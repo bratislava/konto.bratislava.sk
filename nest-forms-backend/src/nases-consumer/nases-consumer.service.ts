@@ -165,6 +165,7 @@ export default class NasesConsumerService {
         type: SendMessageNasesSenderType.Self,
       })
     } catch (error) {
+      this.logger.error(error)
       if (data.tries <= 1) {
         const toEmail = data.userData.email || form.email
         if (data.tries === 1 && toEmail) {

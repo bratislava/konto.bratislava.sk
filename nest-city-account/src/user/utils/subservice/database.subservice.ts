@@ -389,7 +389,7 @@ export class DatabaseSubserviceUser {
     }
 
     // TODO we want to separate this into an endpoint
-    const { taxDeliveryData, otherGdprData } = this.separateTaxDeliveryData(gdprData)
+    const { taxDeliveryData } = this.separateTaxDeliveryData(gdprData)
     if (taxDeliveryData.length > 1) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

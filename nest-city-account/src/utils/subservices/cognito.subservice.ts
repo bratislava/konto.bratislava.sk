@@ -234,22 +234,21 @@ export class CognitoSubservice {
   }
 
   /**
-   * Returns all users from cognito user pool
-   * @returns CognitoGetUserData[]
+   * Returns all formatted users from cognito user pool
+   * @returns CognitoGetUserAttributesData[]
    */
-  async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
-    let result: CognitoGetUserData[] = []
+  async getAllCognitoUsers(): Promise<CognitoGetUserAttributesData[]> {
+    const result: AWS.CognitoIdentityServiceProvider.UsersListType = []
     const params: ListUsersRequest = {
       UserPoolId: this.config.cognitoUserPoolId,
     }
     do {
       // TODO: add proper error handling
       const cognitoData = await this.cognitoIdentity.listUsers(params).promise()
-      const { Users = [], PaginationToken } = cognitoData
-      result = [...result, ...(Users as CognitoGetUserData[])]
-      params.PaginationToken = PaginationToken
+      result.push(...(cognitoData.Users ?? []))
+      params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
 
-    return result
+    return result.map((user) => this.attributesToObject(user.Attributes ?? []))
   }
 }

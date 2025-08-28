@@ -430,7 +430,6 @@ export class TasksService {
         await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
         batchNumber++
       }
-      // let's break when zero users are
     }
 
     this.logger.log(`Completed lockDeliveryMethods task. Total processed: ${processedCount} users`)

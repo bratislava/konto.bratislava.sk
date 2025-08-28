@@ -42,6 +42,7 @@ import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
+import { toLogfmt } from '../utils/logging'
 
 @Injectable()
 export class AdminService {
@@ -147,13 +148,15 @@ export class AdminService {
     }
 
     for (const user of cognitoUsers) {
-      if (!user.accountType || !user.sub || !user.email) {
+      const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+      if (!accountType || !user.sub || !user.email) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          toLogfmt(user)
         )
       }
-      await this.userService.getOrCreateUserOrLegalPerson(user.accountType, user.sub, user.email)
+      await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
     }
   }
 

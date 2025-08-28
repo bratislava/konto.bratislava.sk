@@ -235,35 +235,21 @@ export class CognitoSubservice {
 
   /**
    * Returns all formatted users from cognito user pool
-   * @returns { sub: string | undefined; accountType: CognitoUserAccountTypesEnum | undefined; email: string | undefined }[]
+   * @returns CognitoGetUserAttributesData[]
    */
-  async getAllCognitoUsers(): Promise<
-    { sub?: string; accountType?: CognitoUserAccountTypesEnum; email?: string }[]
-  > {
-    let result: AWS.CognitoIdentityServiceProvider.UsersListType = []
+  async getAllCognitoUsers(): Promise<CognitoGetUserAttributesData[]> {
+    const result: AWS.CognitoIdentityServiceProvider.UsersListType = []
     const params: ListUsersRequest = {
       UserPoolId: this.config.cognitoUserPoolId,
     }
     do {
       // TODO: add proper error handling
       const cognitoData = await this.cognitoIdentity.listUsers(params).promise()
-      const { Users = [], PaginationToken } = cognitoData
-      result = [...result, ...Users]
-      params.PaginationToken = PaginationToken
+      result.push(...(cognitoData.Users ?? []))
+      params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
 
-    const formatedResult = result.map((user) => {
-      const sub = user.Attributes?.find((attribute) => attribute.Name === 'sub')?.Value
-      const accountType = user.Attributes?.find(
-        (attribute) => attribute.Name === CognitoUserAttributesEnum.ACCOUNT_TYPE
-      )?.Value as CognitoUserAccountTypesEnum
-      const email = user.Attributes?.find((attribute) => attribute.Name === 'email')?.Value
-      return {
-        sub,
-        accountType,
-        email,
-      }
-    })
+    const formatedResult = result.map((user) => this.attributesToObject(user.Attributes ?? []))
 
     return formatedResult
   }

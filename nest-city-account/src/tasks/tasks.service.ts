@@ -312,7 +312,6 @@ export class TasksService {
     this.logger.log('Starting lockDeliveryMethods task')
     const jobStartTime = new Date()
 
-
     let skip = 0
     let processedCount = 0
     let batchNumber = 1

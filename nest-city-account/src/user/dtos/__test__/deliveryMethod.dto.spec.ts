@@ -1,4 +1,4 @@
-import { validate, ValidationError } from 'class-validator'
+import { validate } from 'class-validator'
 import { plainToInstance } from 'class-transformer'
 import { DeliveryMethodEnum } from '@prisma/client'
 import {

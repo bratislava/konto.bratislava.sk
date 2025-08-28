@@ -110,43 +110,37 @@ describe('DeliveryMethodCodec', () => {
   describe('edge cases', () => {
     it('should throw when decoding empty string', () => {
       expect(() => {
-        // @ts-ignore - Testing runtime behavior
-        DeliveryMethodCodec.decode('' as any)
+        DeliveryMethodCodec.decode('' as DeliveryMethodEnum)
       }).toThrow()
     })
 
     it('should throw when decoding numeric input', () => {
       expect(() => {
-        // @ts-ignore - Testing runtime behavior
-        DeliveryMethodCodec.decode(123 as any)
+        DeliveryMethodCodec.decode(123 as unknown as DeliveryMethodEnum)
       }).toThrow()
     })
 
     it('should throw when decoding object input', () => {
       expect(() => {
-        // @ts-ignore - Testing runtime behavior
-        DeliveryMethodCodec.decode({} as any)
+        DeliveryMethodCodec.decode({} as DeliveryMethodEnum)
       }).toThrow()
     })
 
     it('should throw when decoding empty string', () => {
       expect(() => {
-        // @ts-ignore - Testing runtime behavior
-        DeliveryMethodCodec.encode('' as any)
+        DeliveryMethodCodec.encode('' as DeliveryMethodNoris)
       }).toThrow()
     })
 
     it('should throw when decoding numeric input', () => {
       expect(() => {
-        // @ts-ignore - Testing runtime behavior
-        DeliveryMethodCodec.encode(123 as any)
+        DeliveryMethodCodec.encode(123 as unknown as DeliveryMethodNoris)
       }).toThrow()
     })
 
     it('should throw when decoding object input', () => {
       expect(() => {
-        // @ts-ignore - Testing runtime behavior
-        DeliveryMethodCodec.encode({} as any)
+        DeliveryMethodCodec.encode({} as DeliveryMethodNoris)
       }).toThrow()
     })
   })

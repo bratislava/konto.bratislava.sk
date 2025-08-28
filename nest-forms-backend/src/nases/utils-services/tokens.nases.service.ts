@@ -538,6 +538,35 @@ export default class NasesUtilsService {
     throw new Error('Invalid sender type')
   }
 
+  private async validateEform(form: Forms) {
+    const validateEformJwtToken = this.createTechnicalAccountJwtToken()
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw new Error(
+        `Form definition not found for slug: ${form.formDefinitionSlug}`,
+      )
+    }
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw new Error(
+        `Form definition is not of Slovensko.sk type: ${form.formDefinitionSlug}`,
+      )
+    }
+
+    const validated =
+      await this.clientsService.slovenskoSkApi.apiEformStatusGet(
+        formDefinition.pospID,
+        formDefinition.pospVersion,
+        {
+          headers: {
+            Authorization: `Bearer ${validateEformJwtToken}`,
+          },
+        },
+      )
+    if (validated.data.status !== 'Publikovaný') {
+      throw new Error(`Form is not published: ${form.formDefinitionSlug}`)
+    }
+  }
+
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
@@ -555,6 +584,18 @@ export default class NasesUtilsService {
         },
       }
     }
+
+    try {
+      await this.validateEform(data)
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          message: `Failed to validate eForm: ${(error as Error)?.message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
+        },
+      }
+    }
+
     try {
       const response = await this.getSendMessageNasesEndpoint(sender)(
         {
@@ -566,6 +607,9 @@ export default class NasesUtilsService {
           },
         },
       )
+
+      console.log('RESPONSE')
+      console.log(response.data)
 
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove

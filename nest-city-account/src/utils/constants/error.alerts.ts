@@ -5,7 +5,7 @@ import {
 } from '../../user-verification/verification.errors.enum'
 import { UserErrorsEnum } from '../../user/user.error.enum'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
-import { SubserviceErrorsEnum } from '../subservices/subservice.errors.enum'
+import { DeliveryMethodErrorsEnum } from '../guards/dtos/delivery-method.error'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.
@@ -28,5 +28,5 @@ export default [
   VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
   VerificationErrorsEnum.EMPTY_RFO_RESPONSE,
   VerificationErrorsEnum.EMPTY_RPO_RESPONSE,
-  SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+  DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
 ] as string[]

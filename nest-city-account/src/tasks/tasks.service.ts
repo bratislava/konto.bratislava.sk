@@ -21,9 +21,9 @@ import {
 import { DeliveryMethodCodec } from '../utils/norisCodec'
 
 import {
-  SubserviceErrorsEnum,
-  SubserviceErrorsResponseEnum,
-} from '../utils/subservices/subservice.errors.enum'
+  DeliveryMethodErrorsEnum,
+  DeliveryMethodErrorsResponseEnum,
+} from '../utils/guards/dtos/delivery-method.error'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
@@ -194,8 +194,8 @@ export class TasksService {
         } else {
           if (deliveryMethod === DeliveryMethodNoris.CITY_ACCOUNT) {
             throw this.throwerErrorGuard.InternalServerErrorException(
-              SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-              SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
               undefined,
               user
             )

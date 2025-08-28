@@ -552,18 +552,27 @@ export default class NasesUtilsService {
       )
     }
 
-    const validated =
-      await this.clientsService.slovenskoSkApi.apiEformStatusGet(
-        formDefinition.pospID,
-        formDefinition.pospVersion,
-        {
-          headers: {
-            Authorization: `Bearer ${validateEformJwtToken}`,
+    try {
+      const validated =
+        await this.clientsService.slovenskoSkApi.apiEformStatusGet(
+          formDefinition.pospID,
+          formDefinition.pospVersion,
+          {
+            headers: {
+              Authorization: `Bearer ${validateEformJwtToken}`,
+            },
           },
-        },
-      )
-    if (validated.data.status !== 'Publikovaný') {
-      throw new Error(`Form is not published: ${form.formDefinitionSlug}`)
+        )
+      if (validated.data.status !== 'Publikovaný') {
+        throw new Error(`Form is not published: ${form.formDefinitionSlug}`)
+      }
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 404) {
+        throw new Error(
+          `Form not found in Slovensko.sk: ${form.formDefinitionSlug}`,
+        )
+      }
+      throw new Error((error as Error)?.message || 'Unknown error')
     }
   }
 
@@ -591,7 +600,7 @@ export default class NasesUtilsService {
       return {
         status: 500,
         data: {
-          message: `Failed to validate eForm: ${(error as Error)?.message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
+          message: `Failed to validate eForm: ${(error as Error)?.message || 'Unknown error'}.`,
         },
       }
     }
@@ -607,9 +616,6 @@ export default class NasesUtilsService {
           },
         },
       )
-
-      console.log('RESPONSE')
-      console.log(response.data)
 
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove

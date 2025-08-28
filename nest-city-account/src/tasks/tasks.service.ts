@@ -28,6 +28,9 @@ import {
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
+const LOCK_DELIVERY_METHODS_BATCH = 100
+const BATCH_DELAY_MS = 1000
+
 const EDESK_UPDATE_LOOK_BACK_HOURS = 96
 
 @Injectable()
@@ -306,63 +309,126 @@ export class TasksService {
   @Cron('0 0 1 4 *')
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {
-    const users = await this.prismaService.user.findMany({
-      where: {
-        cognitoTier: 'IDENTITY_CARD',
-        birthNumber: { not: null },
-      },
-      include: {
-        userGdprData: {
-          orderBy: {
-            createdAt: 'desc',
+    this.logger.log('Starting lockDeliveryMethods task')
+    const jobStartTime = new Date()
+
+
+    let skip = 0
+    let processedCount = 0
+    let batchNumber = 1
+
+    while (true) {
+      const users = await this.prismaService.user.findMany({
+        where: {
+          birthNumber: { not: null },
+          // Ignore users who may sign up as this job runs
+          createdAt: {lt: jobStartTime}
+        },
+        include: {
+          userGdprData: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            where: {
+              category: GDPRCategoryEnum.TAXES,
+              type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            },
+            take: 1,
+            select: {
+              subType: true,
+              createdAt: true,
+            },
           },
-          where: {
-            category: GDPRCategoryEnum.TAXES,
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          },
-          take: 1,
-          select: {
-            subType: true,
-            createdAt: true,
+          physicalEntity: {
+            select: {
+              activeEdesk: true,
+            },
           },
         },
-        physicalEntity: {
-          select: {
-            activeEdesk: true,
-          },
-        },
-      },
-    })
-
-    const data = users.map((user) => {
-      // We know that birthNumber is not null from the query.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const birthNumber: string = user.birthNumber!
-
-      if (user.physicalEntity?.activeEdesk) {
-        return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
-      }
-      if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
-        return {
-          birthNumber,
-          deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
-          date: user.userGdprData[0].createdAt,
-        }
-      }
-      return { birthNumber, deliveryMethod: DeliveryMethodEnum.POSTAL, date: undefined }
-    }, {})
-    this.logger.log(JSON.stringify(data, null, 2))
-
-    const updatePromises = data.map((entry) => {
-      return this.prismaService.user.update({
-        where: { birthNumber: entry.birthNumber },
-        data: {
-          taxDeliveryMethodAtLockDate: entry.deliveryMethod,
-          taxDeliveryMethodCityAccountDate: entry.date,
+        skip,
+        take: LOCK_DELIVERY_METHODS_BATCH,
+        orderBy: {
+          id: 'asc', // Ensure consistent ordering
         },
       })
-    })
 
-    await Promise.all(updatePromises)
+      if (users.length === 0) {
+        break
+      }
+
+      this.logger.log(`Processing batch ${batchNumber} with ${users.length} users`)
+
+      const data = users.map((user) => {
+        // We know that birthNumber is not null from the query.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const birthNumber: string = user.birthNumber!
+
+        if (user.physicalEntity?.activeEdesk) {
+          return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
+        }
+        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
+          return {
+            birthNumber,
+            deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
+            date: user.userGdprData[0].createdAt,
+          }
+        }
+        return { birthNumber, deliveryMethod: DeliveryMethodEnum.POSTAL, date: undefined }
+      })
+
+      // Group users by delivery method
+      const edeskUsers = data.filter(entry => entry.deliveryMethod === DeliveryMethodEnum.EDESK)
+      const postalUsers = data.filter(entry => entry.deliveryMethod === DeliveryMethodEnum.POSTAL)
+      const cityAccountUsers = data.filter(entry => entry.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT)
+
+// Batch updates for users with same delivery method
+      const updatePromises = [
+        // EDESK users - all have undefined date
+        edeskUsers.length > 0 && this.prismaService.user.updateMany({
+          where: { birthNumber: { in: edeskUsers.map(u => u.birthNumber) } },
+          data: {
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
+            taxDeliveryMethodCityAccountDate: null
+          }
+        }),
+
+        // POSTAL users - all have undefined date
+        postalUsers.length > 0 && this.prismaService.user.updateMany({
+          where: { birthNumber: { in: postalUsers.map(u => u.birthNumber) } },
+          data: {
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
+            taxDeliveryMethodCityAccountDate: null
+          }
+        }),
+
+        // CITY_ACCOUNT users still need individual updates due to different dates
+        ...cityAccountUsers.map(entry =>
+          this.prismaService.user.update({
+            where: { birthNumber: entry.birthNumber },
+            data: {
+              taxDeliveryMethodAtLockDate: entry.deliveryMethod,
+              taxDeliveryMethodCityAccountDate: entry.date,
+            },
+          })
+        )
+      ].filter(Boolean)
+
+      await Promise.all(updatePromises)
+
+      processedCount += users.length
+      skip += LOCK_DELIVERY_METHODS_BATCH
+
+      this.logger.log(`Completed batch ${batchNumber}. Total processed: ${processedCount} users`)
+
+      // Break between batches (except for the last one)
+      if (users.length === LOCK_DELIVERY_METHODS_BATCH) {
+        this.logger.log(`Waiting ${BATCH_DELAY_MS}ms before next batch...`)
+        await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS))
+        batchNumber++
+      }
+      // let's break when zero users are
+    }
+
+    this.logger.log(`Completed lockDeliveryMethods task. Total processed: ${processedCount} users`)
   }
 }

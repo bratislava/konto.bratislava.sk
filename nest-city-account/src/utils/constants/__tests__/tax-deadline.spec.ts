@@ -1,6 +1,14 @@
 import { getTaxDeadlineDate } from '../tax-deadline'
 
 describe('tax-deadline', () => {
+  beforeAll(() => {
+    process.env = {
+      ...process.env,
+      MUNICIPAL_TAX_LOCK_MONTH: '04',
+      MUNICIPAL_TAX_LOCK_DAY: '01',
+    }
+  })
+
   describe('each date to 1st of April should be before deadline, each date from it should be after', () => {
     const year = new Date().getFullYear()
     const afterDeadline = [

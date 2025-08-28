@@ -33,6 +33,18 @@ type ReplaceQrCodeWithGeneratorDto<T extends object> = {
   [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
 }
 
+interface InstallmentStatus {
+  toPay: number
+  paid: number
+  status: InstallmentPaidStatusEnum
+}
+
+type ThreeInstallments = [
+  InstallmentStatus,
+  InstallmentStatus,
+  InstallmentStatus,
+]
+
 const bratislavaTimeZone = 'Europe/Bratislava'
 
 export const stateHolidays = [
@@ -204,7 +216,7 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
-): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
+): ThreeInstallments => {
   if (installments.length !== 3) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
@@ -223,14 +235,9 @@ const calculateInstallmentAmounts = (
     return installment.amount
   })
 
-  const result: {
-    toPay: number
-    paid: number
-    status: InstallmentPaidStatusEnum
-  }[] = []
   let remainingPaid = overallPaid
 
-  amounts.forEach((amount) => {
+  const result = amounts.map((amount) => {
     const paid = Math.min(amount, remainingPaid)
     const toPay = amount - paid
 
@@ -243,9 +250,9 @@ const calculateInstallmentAmounts = (
       status = InstallmentPaidStatusEnum.PARTIALLY_PAID
     }
 
-    result.push({ toPay, paid, status })
     remainingPaid -= paid
-  })
+    return { toPay, paid, status }
+  }) as ThreeInstallments
 
   return result
 }
@@ -259,7 +266,7 @@ const calculateInstallmentPaymentDetails = (options: {
   dueDate?: Dayjs
   installments: { order: number; amount: number }[]
   variableSymbol: string
-  specificSymbol: any
+  specificSymbol: string
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
@@ -273,7 +280,7 @@ const calculateInstallmentPaymentDetails = (options: {
     installments,
     variableSymbol,
     specificSymbol,
-  } = options
+  } = options as typeof options & { specificSymbol: string | null }
   if (overallAmount - overallPaid <= 0) {
     return {
       isPossible: false,
@@ -364,7 +371,9 @@ const calculateInstallmentPaymentDetails = (options: {
     paymentNote = QrPaymentNoteEnum.QR_firstInstallment
   } else if (active.installmentNumber === 2) {
     paymentNote =
-      installmentDetails[0].status === InstallmentPaidStatusEnum.AFTER_DUE_DATE
+      // We know it has at least one installment, because of how we created the array
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      installmentDetails[0]!.status === InstallmentPaidStatusEnum.AFTER_DUE_DATE
         ? QrPaymentNoteEnum.QR_firstSecondInstallment
         : QrPaymentNoteEnum.QR_secondInstallment
   } else {
@@ -620,6 +629,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
           CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
         )
 
+      case undefined:
       default:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,

@@ -18,7 +18,7 @@ export class GpWebpaySubservice {
   }
 
   private readonly getDataToSign = (data: CreateOrderData): string => {
-    const digestData: Array<keyof CreateOrderData> = [
+    const digestData: (keyof CreateOrderData)[] = [
       'MERCHANTNUMBER',
       'OPERATION',
       'ORDERNUMBER',
@@ -55,8 +55,8 @@ export class GpWebpaySubservice {
   }
 
   private readonly getPaymentErrorMessage = (
-    PRCODE: any,
-    SRCODE: any,
+    PRCODE: string | number,
+    SRCODE: string | number,
   ): PaymentErrorStatus => {
     const pr = Number(PRCODE)
     const sr = Number(SRCODE)

@@ -59,7 +59,7 @@ export class RequestPostNorisPaymentDataLoadDto {
     description: 'If you want to count also overpayments.',
     default: false,
   })
-  overPayments: Boolean
+  overPayments: boolean
 }
 
 export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
@@ -80,11 +80,11 @@ export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
   variableSymbols: string[]
 }
 
-export type RequestUpdateNorisDeliveryMethodsData = {
-  [key: string]:
-    | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
-    | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
-}
+export type RequestUpdateNorisDeliveryMethodsData = Record<
+  string,
+  | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
+  | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
+>
 
 export class RequestUpdateNorisDeliveryMethodsDto {
   @ApiProperty({

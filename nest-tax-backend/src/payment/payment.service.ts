@@ -223,7 +223,7 @@ export class PaymentService {
   }
 
   async redirectToPayGateByTaxId(uuid: string) {
-    let tax: Tax | null = null
+    let tax: Tax | null
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
@@ -252,7 +252,7 @@ export class PaymentService {
   }
 
   async getPayGateUrlByUserAndYear(year: string, birthNumber: string) {
-    let taxPayer: TaxPayer | null = null
+    let taxPayer: TaxPayer | null
     try {
       taxPayer = await this.prisma.taxPayer.findUnique({
         where: { birthNumber },
@@ -275,13 +275,13 @@ export class PaymentService {
       )
     }
 
-    let tax: Tax | null = null
+    let tax: Tax | null
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
           taxPayerId_year: {
             taxPayerId: taxPayer.id,
-            year: +year,
+            year: Number(year),
           },
         },
       })

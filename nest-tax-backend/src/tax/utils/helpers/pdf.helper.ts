@@ -22,9 +22,11 @@ type TaxDetailsToPdfResponse = {
 export const taxDetailsToPdf = (taxDetails: TaxDetail[]) => {
   const response: TaxDetailsToPdfResponse = {}
   taxDetails.forEach((taxDetail) => {
-    if (taxDetail.type in response === false) {
+    if (!(taxDetail.type in response)) {
       response[taxDetail.type] = {}
     }
+    // The areaType is guaranteed to be defined in the TaxDetail type
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     response[taxDetail.type]![taxDetail.areaType] = {
       area: taxDetail.area,
       base: currency(taxDetail.base, { fromCents: true })

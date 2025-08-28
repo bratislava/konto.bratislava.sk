@@ -223,9 +223,9 @@ describe('admin.helper', () => {
 
       const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
 
-      expect(result[0].amount).toBe(1025)
-      expect(result[1].amount).toBe(2575)
-      expect(result[2].amount).toBe(1550)
+      expect(result[0]!.amount).toBe(1025)
+      expect(result[1]!.amount).toBe(2575)
+      expect(result[2]!.amount).toBe(1550)
     })
   })
 })

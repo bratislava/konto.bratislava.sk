@@ -77,7 +77,10 @@ export class CityAccountSubservice {
     const result: Record<string, ResponseUserByBirthNumberDto> = {}
     Object.keys(userDataResult.data.users).forEach((birthNumber) => {
       const modifiedKey = addSlashToBirthNumber(birthNumber)
-      result[modifiedKey] = userDataResult.data.users[birthNumber]
+      const userData = userDataResult.data.users[birthNumber]
+      if (userData) {
+        result[modifiedKey] = userData
+      }
     })
 
     return result

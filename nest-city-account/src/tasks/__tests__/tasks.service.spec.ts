@@ -37,6 +37,14 @@ describe('TasksService', () => {
 
   let throwerErrorGuard: ThrowerErrorGuard
 
+  beforeAll(() => {
+    process.env = {
+      ...process.env,
+      MUNICIPAL_TAX_LOCK_MONTH: '04',
+      MUNICIPAL_TAX_LOCK_DAY: '01',
+    }
+  })
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [

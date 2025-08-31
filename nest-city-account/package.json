@@ -36,7 +36,7 @@
     "@prisma/client": "6.14.0",
     "@types/express": "^5.0.3",
     "amqp-connection-manager": "^4.1.11",
-    "amqplib": "^0.10.3",
+    "amqplib": "^0.10.9",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.11.0",
     "cf-turnstile": "^1.0.8",

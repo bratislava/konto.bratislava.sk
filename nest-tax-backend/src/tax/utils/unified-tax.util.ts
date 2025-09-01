@@ -204,7 +204,7 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
-): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
+) => {
   if (installments.length !== 3) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
@@ -226,6 +226,7 @@ const calculateInstallmentAmounts = (
   const result: {
     toPay: number
     paid: number
+    total: number
     status: InstallmentPaidStatusEnum
   }[] = []
   let remainingPaid = overallPaid
@@ -243,7 +244,7 @@ const calculateInstallmentAmounts = (
       status = InstallmentPaidStatusEnum.PARTIALLY_PAID
     }
 
-    result.push({ toPay, paid, status })
+    result.push({ toPay, paid, total: amount, status})
     remainingPaid -= paid
   })
 
@@ -291,6 +292,14 @@ const calculateInstallmentPaymentDetails = (options: {
     bratislavaTimeZone,
   )
 
+  if (overallAmount - overallPaid <= 0) {
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+      dueDateLastPayment: dueDateThirdPayment.toDate(),
+    }
+  }
+
   if (dayjs(today) > dueDateThirdPayment) {
     return {
       isPossible: false,
@@ -325,6 +334,7 @@ const calculateInstallmentPaymentDetails = (options: {
         ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
         : installmentAmounts[0].status,
       remainingAmount: isFirstInstallmentLate ? 0 : installmentAmounts[0].toPay,
+      totalAmount: installmentAmounts[0].total, // TODO
     },
     {
       installmentNumber: 2,
@@ -335,12 +345,14 @@ const calculateInstallmentPaymentDetails = (options: {
       remainingAmount: isFirstInstallmentLate
         ? installmentAmounts[1].toPay + installmentAmounts[0].toPay
         : installmentAmounts[1].toPay,
+      totalAmount: installmentAmounts[1].total, // TODO
     },
     {
       installmentNumber: 3,
       dueDate: dueDateThirdPayment.toDate(),
       status: installmentAmounts[2].status,
       remainingAmount: installmentAmounts[2].toPay,
+      totalAmount: installmentAmounts[2].total, // TODO
     },
   ]
 

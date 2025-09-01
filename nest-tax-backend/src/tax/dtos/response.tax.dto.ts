@@ -980,6 +980,11 @@ export class ResponseInstallmentItemDto {
   @IsNumber()
   @IsPositive()
   remainingAmount: number
+
+  @ApiProperty({ description: 'Total amount to pay', example: 50 })
+  @IsNumber()
+  @IsPositive()
+  totalAmount: number
 }
 
 export class ResponseActiveInstallmentDto {
@@ -1027,18 +1032,21 @@ export class ResponseInstallmentPaymentDetailDto {
         dueDate: '2023-04-13',
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 50,
+        totalAmount: 50,
       },
       {
         installmentNumber: 2,
         dueDate: '2023-04-13',
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 50,
+        totalAmount: 50,
       },
       {
         installmentNumber: 3,
         dueDate: '2023-04-13',
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 50,
+        totalAmount: 50,
       },
     ],
   })

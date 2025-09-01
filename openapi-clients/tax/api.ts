@@ -532,7 +532,8 @@ export interface ResponseInstallmentPaymentDetailDto {
 
 export const ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum = {
   BelowThreshold: 'BELOW_THRESHOLD',
-  AfterDate: 'AFTER_DATE',
+  AfterDueDate: 'AFTER_DUE_DATE',
+  AlreadyPaid: 'ALREADY_PAID',
 } as const
 
 export type ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum =

@@ -1023,6 +1023,16 @@ export class ResponseInstallmentPaymentDetailDto {
   reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum
 
   @ApiPropertyOptional({
+    description: 'Latest possible due date.',
+    required: false,
+    example: '2023-04-13',
+  })
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  dueDateLastPayment?: Date
+
+  @ApiPropertyOptional({
     description: 'List of exactly 3 installments or none at all',
     type: [ResponseInstallmentItemDto],
     isArray: true,

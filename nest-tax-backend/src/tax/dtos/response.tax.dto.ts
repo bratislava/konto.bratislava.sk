@@ -1010,7 +1010,7 @@ export class ResponseInstallmentPaymentDetailDto {
 
   @ApiPropertyOptional({
     description: 'Reason why installment is not possible',
-    enum: ['BELOW_THRESHOLD', 'AFTER_DATE'],
+    enum: InstallmentPaymentReasonNotPossibleEnum,
     required: false,
   })
   @IsEnum(InstallmentPaymentReasonNotPossibleEnum)

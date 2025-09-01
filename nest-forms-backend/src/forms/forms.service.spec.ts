@@ -15,7 +15,6 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { GetFormsRequestDto } from '../nases/dtos/requests.dto'
-import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -31,7 +30,6 @@ jest.mock('./forms.helper')
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
 jest.mock('../utils/subservices/minio-client.subservice')
-jest.mock('../nases-consumer/nases-consumer.helper')
 jest.mock('../scanner-client/scanner-client.service')
 jest.mock('forms-shared/form-utils/omitExtraData', () => ({
   omitExtraData: jest.fn(),
@@ -56,7 +54,6 @@ describe('FormsService', () => {
         FilesService,
         FilesHelper,
         MinioClientSubservice,
-        NasesConsumerHelper,
         ScannerClientService,
         ThrowerErrorGuard,
         FormsHelper,

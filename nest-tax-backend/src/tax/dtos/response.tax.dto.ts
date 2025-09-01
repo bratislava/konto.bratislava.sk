@@ -1029,16 +1029,16 @@ export class ResponseInstallmentPaymentDetailDto {
     example: [
       {
         installmentNumber: 1,
-        dueDate: '2023-04-13',
-        status: InstallmentPaidStatusEnum.NOT_PAID,
-        remainingAmount: 50,
+        dueDate: '2025-08-01',
+        status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+        remainingAmount: 30,
         totalAmount: 50,
       },
       {
         installmentNumber: 2,
         dueDate: '2023-04-13',
         status: InstallmentPaidStatusEnum.NOT_PAID,
-        remainingAmount: 50,
+        remainingAmount: 80,
         totalAmount: 50,
       },
       {

@@ -291,7 +291,7 @@ const calculateInstallmentPaymentDetails = (options: {
     bratislavaTimeZone,
   )
 
-  if (dayjs(today) > dueDateSecondPayment) {
+  if (dayjs(today) > dueDateThirdPayment) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,

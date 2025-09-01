@@ -1046,14 +1046,14 @@ export class ResponseInstallmentPaymentDetailDto {
       },
       {
         installmentNumber: 2,
-        dueDate: '2023-04-13',
+        dueDate: '2025-09-01',
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 80,
         totalAmount: 50,
       },
       {
         installmentNumber: 3,
-        dueDate: '2023-04-13',
+        dueDate: '2025-11-01',
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 50,
         totalAmount: 50,

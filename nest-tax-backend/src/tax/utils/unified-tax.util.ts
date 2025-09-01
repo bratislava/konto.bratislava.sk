@@ -275,12 +275,6 @@ const calculateInstallmentPaymentDetails = (options: {
     variableSymbol,
     specificSymbol,
   } = options
-  if (overallAmount - overallPaid <= 0) {
-    return {
-      isPossible: false,
-      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-    }
-  }
 
   // Midnight start of the next day
   const dueDateSecondPayment = dayjs.tz(
@@ -304,6 +298,7 @@ const calculateInstallmentPaymentDetails = (options: {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+      dueDateLastPayment: dueDateThirdPayment.toDate(),
     }
   }
 
@@ -396,6 +391,7 @@ const calculateInstallmentPaymentDetails = (options: {
 
   return {
     isPossible: true,
+    dueDateLastPayment: dueDateThirdPayment.toDate(),
     installments: installmentDetails,
     activeInstallment,
   }

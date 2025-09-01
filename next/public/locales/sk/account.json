@@ -272,9 +272,9 @@
     "tax_card_status_partially_paid": "Čiastočne uhradená",
     "tax_card_status_paid": "Uhradená",
     "tax_card_status_overpaid": "Preplatok",
-    "tax_form_alert_title": "Predali ste alebo darovali ste nehnuteľnosť?",
-    "tax_form_alert_text": "Ak ste v minulom roku predali alebo darovali nehnuteľnosť, je potrebné podať daňové priznanie na základe, ktorého vám bude vyrubená daň z nehnuteľnosti.",
-    "tax_form_alert_link_text": "Podať daňové priznanie",
+    "tax_form_change_ownership_alert_title": "Predali ste alebo darovali ste nehnuteľnosť?",
+    "tax_form_change_ownership_alert_text": "Ak ste v minulom roku predali alebo darovali nehnuteľnosť, je potrebné podať daňové priznanie na základe, ktorého vám bude vyrubená daň z nehnuteľnosti.",
+    "tax_form_change_ownership_alert_link_text": "Podať daňové priznanie",
     "effective_next_year_link_text": "Zistiť viac",
     "set_delivery_method": "Nastaviť doručovanie",
     "verify_and_set": "Overiť a nastaviť",
@@ -346,9 +346,11 @@
     "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
   "communication_channel": {
+    "title": "Spôsob doručovania daní a poplatkov",
     "email": "Oznámenie cez Bratislavské konto",
     "postal": "Rozhodnutie poštou do vlastných rúk",
-    "edesk": "Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte"
+    "edesk": "Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte",
+    "change_button": "Zmeniť"
   },
   "communication_channel_info_title": "Spôsob doručovania na rok {{year}}",
   "communication_channel_info_change_link_text": "Spôsob doručenia zmeníte na stránke <a href={{url}}>Dane a poplatky</a>. <br /> Zaplatiť daň môžete cez túto stránku.",
@@ -373,10 +375,13 @@
   "land_tax": "Daň z pozemkov",
   "apartments_tax": "Daň z bytov",
   "payment_data": "Platobné metódy",
+  "payment_data_installments": "Rozpis splátok",
   "variable_symbol": "Variabilný symbol",
+  "qr_code_and_bank_transfer": "QR kód alebo bankový prevod",
   "card_payment": "Platba kartou",
   "qr_code": "QR kód",
   "download_qr_code": "Stiahnuť QR kód",
+  "sum": "Suma",
   "use_your_banking_app_to_load": "Načítajte kód v bankovej aplikácii alebo nahrajte stiahnutý kód v aplikácii.",
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
@@ -466,6 +471,12 @@
     "title_payment_all": "Jednorazová úhrada",
     "title_payment_rest": "Úhrada zvyšnej sumy",
     "title_payment_installments": "Úhrada splátkou",
+    "installments": {
+      "0": "Prvá splátka do {{date}}",
+      "1": "Druhá splátka do {{date}}",
+      "2": "Tretia splátka do {{date}}",
+      "3": "Štvrtá splátka do {{date}}"
+    },
     "tax_status": {
       "negative": "Neuhradená",
       "warning": "Čiastočne uhradená",
@@ -481,6 +492,7 @@
     "tax_payment_rest_subtitle": "Úhrada do {{date}}",
     "tax_payment_installment": "<strong>Úhrada splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_installment_subtitle": "Úhrada nasledujúcej splátky do {{date}}",
+    "tax_payment_installment_alert_before_next_payment": "Pred termínom úhrady nasledujúcej splátky vám zašleme notifikáciu na <strong>meno@priezvisko.sk</strong>",
     "tax_type": {
       "GROUND": {
         "title": "Daň z pozemkov",

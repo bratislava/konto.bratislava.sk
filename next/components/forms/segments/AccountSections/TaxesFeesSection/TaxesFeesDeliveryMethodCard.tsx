@@ -1,4 +1,4 @@
-import { Castle48PxIcon } from '@assets/ui-icons'
+import { MailIcon, SettingsIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
@@ -27,25 +27,26 @@ const TaxesFeesDeliveryMethodCard = ({
   }[channel]
 
   return (
-    <div className="flex w-full items-center justify-between gap-4 rounded-lg border-2 border-gray-200 p-4 lg:p-5">
+    <div className="flex w-full items-center justify-between gap-4 p-4 lg:p-0">
       <div className="flex items-center gap-4">
-        <div className="hidden rounded-lg border-2 border-gray-200 p-3 sm:block">
-          {/* TODO: Icon */}
-          <Castle48PxIcon className="size-6 text-main-700" />
+        <div className="hidden rounded-lg bg-gray-100 p-3 sm:block">
+          <MailIcon className="size-6 text-main-700" />
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
-            {/* TODO: Translations */}
-            <span className="text-p2">Spôsob doručovania daní a poplatkov</span>
+            <span className="text-p2">{t('communication_channel.title')}</span>
             <span className="text-p1-semibold">{type}</span>
           </div>
         </div>
       </div>
       {canChangeChannel && (
         <div>
-          <ButtonNew onPress={onDeliveryMethodChange} variant="black-link">
-            {/* TODO: Translations */}
-            Zmeniť
+          <ButtonNew
+            onPress={onDeliveryMethodChange}
+            variant="black-link"
+            startIcon={<SettingsIcon />}
+          >
+            {t('communication_channel.change_button')}
           </ButtonNew>
         </div>
       )}

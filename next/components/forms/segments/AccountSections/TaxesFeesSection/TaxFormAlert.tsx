@@ -15,10 +15,12 @@ const TaxFormAlert = () => {
       fullWidth
       message={
         <>
-          <span className="text-h6">{t('account_section_payment.tax_form_alert_title')}</span>
+          <span className="text-h6">
+            {t('account_section_payment.tax_form_change_ownership_alert_title')}
+          </span>
 
           <AccountMarkdown
-            content={t('account_section_payment.tax_form_alert_text')}
+            content={t('account_section_payment.tax_form_change_ownership_alert_text')}
             variant="sm"
           />
           <div className="mt-2">
@@ -26,7 +28,7 @@ const TaxFormAlert = () => {
               href={ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti')}
               variant="underlined-medium"
             >
-              {t('account_section_payment.tax_form_alert_link_text')}
+              {t('account_section_payment.tax_form_change_ownership_alert_link_text')}
             </MLinkNew>
           </div>
         </>

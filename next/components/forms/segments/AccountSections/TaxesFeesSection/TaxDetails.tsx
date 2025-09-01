@@ -45,9 +45,9 @@ const TaxDetails = () => {
           <ButtonNew
             href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti"
             variant="black-link"
+            endIcon={<ExportIcon />}
           >
             {t('tax_detail_section.tax_detail_fees_link')}
-            <ExportIcon />
           </ButtonNew>
         </div>
       </div>

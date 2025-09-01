@@ -60,10 +60,17 @@ export const mapNorisToTaxData = (
   }
 }
 
+type TaxInstallment = {
+  taxId: number
+  amount: number
+  text: string | null
+  order: number
+}
+
 export const mapNorisToTaxInstallmentsData = (
   data: NorisTaxPayersDto,
   taxId: number,
-): any[] => {
+): TaxInstallment[] => {
   if (data.SPL4_2 === '') {
     return [
       {

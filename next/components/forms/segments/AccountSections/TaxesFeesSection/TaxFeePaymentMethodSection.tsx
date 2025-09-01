@@ -4,6 +4,7 @@ import { ROUTES } from 'frontend/api/constants'
 import cn from 'frontend/cn'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { Trans, useTranslation } from 'next-i18next'
+import { ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import { useTaxFeeSection } from './useTaxFeeSection'
@@ -55,14 +56,22 @@ const PaymentMethodSection = () => {
   const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
 
-  // TODO: hook this if last payment date has passed
-  const showAlertPaymentYearOver = false
+  // TODO: check if this works
+  const showAlertPaymentYearOver =
+    taxData.installmentPayment?.isPossible === false &&
+    taxData.installmentPayment?.reasonNotPossible ===
+      ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.AfterDueDate
+
   // TODO: if installment payment is more than 66 euros and it is not past payment date,
-  const showAlertPaymentInstallment = true
+  // TODO: check if this works
+  const showAlertPaymentInstallment =
+    taxData.installmentPayment?.isPossible &&
+    taxData.installmentPayment?.reasonNotPossible ===
+      ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold
   // const showAlertPaymentInstallment = !taxData.installmentPayment?.activeInstallment?.remainingAmount ||
   // taxData.installmentPayment?.activeInstallment?.remainingAmount === 0 + payment date is not past
 
-  const isSinglePayment = showAlertPaymentYearOver || showAlertPaymentInstallment
+  const isSinglePayment = !taxData.installmentPayment?.isPossible
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 lg:px-0">

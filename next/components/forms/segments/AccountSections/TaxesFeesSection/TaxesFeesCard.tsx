@@ -1,7 +1,6 @@
 import { ChevronRightIcon } from '@assets/ui-icons'
-import { TaxPaidStatusAllType } from 'frontend/types/types'
 import { useTranslation } from 'next-i18next'
-import { ResponseGetTaxesBodyDto, TaxPaidStatusEnum } from 'openapi-clients/tax'
+import { ResponseGetTaxesListBodyDto, TaxStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
@@ -11,20 +10,15 @@ import MLinkNew from '../../../simple-components/MLinkNew'
 import TaxPaidStatus from './TaxPaidStatus'
 
 type TaxesFeesCardProps = {
-  taxData: Partial<Omit<ResponseGetTaxesBodyDto, 'paidStatus' | 'amount' | 'paidAmount'>> & {
-    paidStatus: TaxPaidStatusAllType
-    amount: number | null
-    paidAmount: number | null
-    year: number
-  }
-  isActiveLink: boolean
+  taxData: ResponseGetTaxesListBodyDto
 }
 
-const TaxesFeesCard = ({ taxData, isActiveLink }: TaxesFeesCardProps) => {
-  const { year, paidStatus, createdAt, paidAmount, amount } = taxData
+const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
+  const { year, status, createdAt, amountToBePaid } = taxData
   const { t } = useTranslation('account')
 
-  // TODO: change appearence of this card, check figma
+  const isActiveLink = status !== TaxStatusEnum.AwaitingProcessing
+
   return (
     <>
       {/* Desktop */}
@@ -54,16 +48,11 @@ const TaxesFeesCard = ({ taxData, isActiveLink }: TaxesFeesCardProps) => {
               <span className="mb-1 text-p3-semibold">
                 {t('account_section_payment.tax_card_amount')}
               </span>
-              {amount === null ? (
+              {amountToBePaid === undefined ? (
                 <span>-</span>
-              ) : paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
-                <span className="flex w-max items-center">
-                  <FormatCurrencyFromCents value={paidAmount} /> /{' '}
-                  <FormatCurrencyFromCents value={amount} />
-                </span>
               ) : (
                 <span>
-                  <FormatCurrencyFromCents value={amount} />
+                  <FormatCurrencyFromCents value={amountToBePaid} />
                 </span>
               )}
             </div>
@@ -71,7 +60,7 @@ const TaxesFeesCard = ({ taxData, isActiveLink }: TaxesFeesCardProps) => {
               <span className="mb-1 text-p3-semibold">
                 {t('account_section_payment.tax_card_status')}
               </span>
-              <TaxPaidStatus status={paidStatus} />
+              <TaxPaidStatus status={status} />
             </div>
           </div>
         </div>
@@ -98,21 +87,17 @@ const TaxesFeesCard = ({ taxData, isActiveLink }: TaxesFeesCardProps) => {
               <span className="mb-1 text-p2-semibold leading-5">{`${t('account_section_payment.tax_card_title', { year })}`}</span>
             )}
             <div className="flex flex-wrap items-center">
-              {amount !== null && paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount && (
+              {amountToBePaid === undefined ? (
                 <span className="flex w-max items-center text-p3">
-                  <FormatCurrencyFromCents value={paidAmount} /> /{' '}
-                  <FormatCurrencyFromCents value={amount} />
+                  <span>-</span>
+                </span>
+              ) : (
+                <span className="text-p3">
+                  <FormatCurrencyFromCents value={amountToBePaid} />
                 </span>
               )}
-              {amount !== null &&
-                (paidStatus !== TaxPaidStatusEnum.PartiallyPaid || !paidAmount) && (
-                  <span className="text-p3">
-                    <FormatCurrencyFromCents value={amount} />
-                  </span>
-                )}
               <div className="flex items-center">
-                {amount !== null && <span className="mx-3 size-1 rounded-full bg-gray-700" />}
-                <TaxPaidStatus status={paidStatus} />
+                <TaxPaidStatus status={status} />
               </div>
             </div>
           </div>

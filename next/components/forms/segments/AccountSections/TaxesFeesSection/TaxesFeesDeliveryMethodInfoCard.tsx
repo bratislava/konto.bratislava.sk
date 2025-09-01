@@ -29,6 +29,7 @@ const TaxesFeesDeliveryMethodInfoCard = () => {
         <div className="flex flex-col">
           <div className="flex flex-col gap-1">
             <span className="text-p2">
+              {/* check with Zdenko if this should show delivery method for year of this tax or currently set delivery method */}
               {t('communication_channel_info_title', { year: taxData.year })}
             </span>
             <span className="text-p1-semibold">{type}</span>

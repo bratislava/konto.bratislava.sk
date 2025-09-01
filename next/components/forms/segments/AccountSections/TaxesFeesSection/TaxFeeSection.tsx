@@ -1,6 +1,7 @@
 import Alert from 'components/forms/info-components/Alert'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import { useTranslation } from 'next-i18next'
+import { TaxStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import ContactInformationSection from './ContactInformation'
@@ -32,10 +33,12 @@ const TaxFeeSection = () => {
       <div className="flex flex-col">
         <TaxFeeSectionHeader />
         <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-12 lg:py-12">
-          {/* success alert when we have types and state of order */}
-          <div className="w-full">
-            <Alert type="success" fullWidth message={t('account_section_payment.tax_paid')} />
-          </div>
+          {(taxData.paidStatus === TaxStatusEnum.Paid ||
+            taxData.paidStatus === TaxStatusEnum.OverPaid) && (
+            <div className="w-full">
+              <Alert type="success" fullWidth message={t('account_section_payment.tax_paid')} />
+            </div>
+          )}
           <div className="flex w-full flex-col gap-4 px-4 lg:flex-row lg:px-0">
             <TaxesFeesDeliveryMethodInfoCard />
             <TaxesFeesTaxAdministratorCard
@@ -45,8 +48,8 @@ const TaxFeeSection = () => {
           </div>
           <ContactInformationSection />
           <TaxDetails />
-          {/* show only if not paid */}
-          <PaymentMethodSection />
+          {taxData.paidStatus !== TaxStatusEnum.Paid &&
+            taxData.paidStatus !== TaxStatusEnum.OverPaid && <PaymentMethodSection />}
         </div>
       </div>
     </>

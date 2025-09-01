@@ -79,7 +79,7 @@
     "@types/node": "^24.2.1",
     "@types/object-hash": "^3.0.6",
     "@types/prompts": "^2.4.9",
-    "@types/react": "19.1.11",
+    "@types/react": "19.1.12",
     "@types/react-dom": "19.1.7",
     "@types/remove-markdown": "^0.3.4",
     "@types/semver": "^7.7.0",

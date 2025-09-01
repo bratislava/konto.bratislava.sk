@@ -58,7 +58,7 @@
     "mailgun.js": "^11.1.0",
     "mime-types": "3.0.1",
     "nestjs-minio-client": "^2.2.0",
-    "nodemailer": "7.0.5",
+    "nodemailer": "7.0.6",
     "openapi-clients": "file:../openapi-clients",
     "passport-custom": "^1.1.1",
     "passport-headerapikey": "^1.2.2",

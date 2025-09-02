@@ -204,7 +204,7 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
-): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
+) => {
   if (installments.length !== 3) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
@@ -226,6 +226,7 @@ const calculateInstallmentAmounts = (
   const result: {
     toPay: number
     paid: number
+    total: number
     status: InstallmentPaidStatusEnum
   }[] = []
   let remainingPaid = overallPaid
@@ -243,11 +244,72 @@ const calculateInstallmentAmounts = (
       status = InstallmentPaidStatusEnum.PARTIALLY_PAID
     }
 
-    result.push({ toPay, paid, status })
+    result.push({ toPay, paid, total: amount, status })
     remainingPaid -= paid
   })
 
   return result
+}
+
+const calculateInstallmentStatus = (
+  dueDate: dayjs.Dayjs | undefined,
+  today: Date,
+  dueDateSecondPayment: dayjs.Dayjs,
+  installmentAmounts: {
+    toPay: number
+    paid: number
+    total: number
+    status: InstallmentPaidStatusEnum
+  }[],
+) => {
+  const dueDateFirstInstallmentInFuture = !dueDate || dueDate > dayjs(today)
+  const dueDateSecondInstallmentInFuture = dueDateSecondPayment > dayjs(today)
+  const isFirstInstallmentLate =
+    !dueDateFirstInstallmentInFuture &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+  const isSecondInstallmentLate =
+    !dueDateSecondInstallmentInFuture &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.OVER_PAID
+
+  // Second installment status logic
+  let secondInstallmentStatus: InstallmentPaidStatusEnum
+  let secondInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    secondInstallmentStatus = InstallmentPaidStatusEnum.AFTER_DUE_DATE
+    secondInstallmentRemainingAmount = 0
+  } else if (isFirstInstallmentLate) {
+    secondInstallmentStatus = installmentAmounts[0].status
+    secondInstallmentRemainingAmount =
+      installmentAmounts[1].toPay + installmentAmounts[0].toPay
+  } else {
+    secondInstallmentStatus = installmentAmounts[1].status
+    secondInstallmentRemainingAmount = installmentAmounts[1].toPay
+  }
+
+  // Third installment status logic
+  let thirdInstallmentStatus: InstallmentPaidStatusEnum
+  let thirdInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    thirdInstallmentStatus = installmentAmounts[1].status
+    thirdInstallmentRemainingAmount = installmentAmounts.reduce(
+      (agg, i) => i.toPay + agg,
+      0,
+    )
+  } else {
+    thirdInstallmentStatus = installmentAmounts[2].status
+    thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
+  }
+  return {
+    isFirstInstallmentLate,
+    secondInstallmentStatus,
+    secondInstallmentRemainingAmount,
+    thirdInstallmentStatus,
+    thirdInstallmentRemainingAmount,
+  }
 }
 
 const calculateInstallmentPaymentDetails = (options: {
@@ -274,12 +336,6 @@ const calculateInstallmentPaymentDetails = (options: {
     variableSymbol,
     specificSymbol,
   } = options
-  if (overallAmount - overallPaid <= 0) {
-    return {
-      isPossible: false,
-      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-    }
-  }
 
   // Midnight start of the next day
   const dueDateSecondPayment = dayjs.tz(
@@ -291,10 +347,19 @@ const calculateInstallmentPaymentDetails = (options: {
     bratislavaTimeZone,
   )
 
-  if (dayjs(today) > dueDateSecondPayment) {
+  if (overallAmount - overallPaid <= 0) {
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+      dueDateLastPayment: dueDateThirdPayment.toDate(),
+    }
+  }
+
+  if (dayjs(today) > dueDateThirdPayment) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+      dueDateLastPayment: dueDateThirdPayment.toDate(),
     }
   }
 
@@ -311,11 +376,18 @@ const calculateInstallmentPaymentDetails = (options: {
     overallPaid,
   )
 
-  const dueDateInFuture = !dueDate || dueDate > dayjs(today)
-  const isFirstInstallmentLate =
-    !dueDateInFuture &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+  const {
+    isFirstInstallmentLate,
+    secondInstallmentStatus,
+    secondInstallmentRemainingAmount,
+    thirdInstallmentStatus,
+    thirdInstallmentRemainingAmount,
+  } = calculateInstallmentStatus(
+    dueDate,
+    today,
+    dueDateSecondPayment,
+    installmentAmounts,
+  )
 
   const installmentDetails: ResponseInstallmentItemDto[] = [
     {
@@ -325,22 +397,21 @@ const calculateInstallmentPaymentDetails = (options: {
         ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
         : installmentAmounts[0].status,
       remainingAmount: isFirstInstallmentLate ? 0 : installmentAmounts[0].toPay,
+      totalInstallmentAmount: installmentAmounts[0].total,
     },
     {
       installmentNumber: 2,
       dueDate: dueDateSecondPayment.toDate(),
-      status: isFirstInstallmentLate
-        ? installmentAmounts[0].status
-        : installmentAmounts[1].status,
-      remainingAmount: isFirstInstallmentLate
-        ? installmentAmounts[1].toPay + installmentAmounts[0].toPay
-        : installmentAmounts[1].toPay,
+      status: secondInstallmentStatus,
+      remainingAmount: secondInstallmentRemainingAmount,
+      totalInstallmentAmount: installmentAmounts[1].total,
     },
     {
       installmentNumber: 3,
       dueDate: dueDateThirdPayment.toDate(),
-      status: installmentAmounts[2].status,
-      remainingAmount: installmentAmounts[2].toPay,
+      status: thirdInstallmentStatus,
+      remainingAmount: thirdInstallmentRemainingAmount,
+      totalInstallmentAmount: installmentAmounts[2].total,
     },
   ]
 
@@ -384,6 +455,7 @@ const calculateInstallmentPaymentDetails = (options: {
 
   return {
     isPossible: true,
+    dueDateLastPayment: dueDateThirdPayment.toDate(),
     installments: installmentDetails,
     activeInstallment,
   }

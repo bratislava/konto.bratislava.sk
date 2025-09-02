@@ -251,6 +251,67 @@ const calculateInstallmentAmounts = (
   return result
 }
 
+const calculateInstallmentStatus = (
+  dueDate: dayjs.Dayjs | undefined,
+  today: Date,
+  dueDateSecondPayment: dayjs.Dayjs,
+  installmentAmounts: {
+    toPay: number
+    paid: number
+    total: number
+    status: InstallmentPaidStatusEnum
+  }[],
+) => {
+  const dueDateFirstInstallmentInFuture = !dueDate || dueDate > dayjs(today)
+  const dueDateSecondInstallmentInFuture = dueDateSecondPayment > dayjs(today)
+  const isFirstInstallmentLate =
+    !dueDateFirstInstallmentInFuture &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+  const isSecondInstallmentLate =
+    !dueDateSecondInstallmentInFuture &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.OVER_PAID
+
+  // Second installment status logic
+  let secondInstallmentStatus: InstallmentPaidStatusEnum
+  let secondInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    secondInstallmentStatus = InstallmentPaidStatusEnum.AFTER_DUE_DATE
+    secondInstallmentRemainingAmount = 0
+  } else if (isFirstInstallmentLate) {
+    secondInstallmentStatus = installmentAmounts[0].status
+    secondInstallmentRemainingAmount =
+      installmentAmounts[1].toPay + installmentAmounts[0].toPay
+  } else {
+    secondInstallmentStatus = installmentAmounts[1].status
+    secondInstallmentRemainingAmount = installmentAmounts[1].toPay
+  }
+
+  // Third installment status logic
+  let thirdInstallmentStatus: InstallmentPaidStatusEnum
+  let thirdInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    thirdInstallmentStatus = installmentAmounts[1].status
+    thirdInstallmentRemainingAmount = installmentAmounts.reduce(
+      (agg, i) => i.toPay + agg,
+      0,
+    )
+  } else {
+    thirdInstallmentStatus = installmentAmounts[2].status
+    thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
+  }
+  return {
+    isFirstInstallmentLate,
+    secondInstallmentStatus,
+    secondInstallmentRemainingAmount,
+    thirdInstallmentStatus,
+    thirdInstallmentRemainingAmount,
+  }
+}
+
 const calculateInstallmentPaymentDetails = (options: {
   overallAmount: number
   overallPaid: number
@@ -315,44 +376,18 @@ const calculateInstallmentPaymentDetails = (options: {
     overallPaid,
   )
 
-  const dueDateFirstInstallmentInFuture = !dueDate || dueDate > dayjs(today)
-  const dueDateSecondInstallmentInFuture = dueDateSecondPayment > dayjs(today)
-  const isFirstInstallmentLate =
-    !dueDateFirstInstallmentInFuture &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
-  const isSecondInstallmentLate =
-    !dueDateSecondInstallmentInFuture &&
-    installmentAmounts[1].status !== InstallmentPaidStatusEnum.PAID &&
-    installmentAmounts[1].status !== InstallmentPaidStatusEnum.OVER_PAID
-
-  // Second installment status logic
-  let secondInstallmentStatus: InstallmentPaidStatusEnum
-  let secondInstallmentRemainingAmount: number
-
-  if (isSecondInstallmentLate) {
-    secondInstallmentStatus = InstallmentPaidStatusEnum.AFTER_DUE_DATE
-    secondInstallmentRemainingAmount = 0
-  } else if (isFirstInstallmentLate) {
-    secondInstallmentStatus = installmentAmounts[0].status
-    secondInstallmentRemainingAmount =
-      installmentAmounts[1].toPay + installmentAmounts[0].toPay
-  } else {
-    secondInstallmentStatus = installmentAmounts[1].status
-    secondInstallmentRemainingAmount = installmentAmounts[1].toPay
-  }
-
-  // Third installment status logic
-  let thirdInstallmentStatus: InstallmentPaidStatusEnum
-  let thirdInstallmentRemainingAmount: number
-
-  if (isSecondInstallmentLate) {
-    thirdInstallmentStatus = installmentAmounts[1].status
-    thirdInstallmentRemainingAmount = installmentAmounts.reduce((agg, i) => i.toPay+agg,0)
-  } else {
-    thirdInstallmentStatus = installmentAmounts[2].status
-    thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
-  }
+  const {
+    isFirstInstallmentLate,
+    secondInstallmentStatus,
+    secondInstallmentRemainingAmount,
+    thirdInstallmentStatus,
+    thirdInstallmentRemainingAmount,
+  } = calculateInstallmentStatus(
+    dueDate,
+    today,
+    dueDateSecondPayment,
+    installmentAmounts,
+  )
 
   const installmentDetails: ResponseInstallmentItemDto[] = [
     {

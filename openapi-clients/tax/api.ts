@@ -65,6 +65,18 @@ export type DeliveryMethodNamed = (typeof DeliveryMethodNamed)[keyof typeof Deli
  * @export
  * @interface RequestAdminCreateTestingTaxDto
  */
+
+export const InstallmentPaidStatusEnum = {
+  NotPaid: 'NOT_PAID',
+  PartiallyPaid: 'PARTIALLY_PAID',
+  Paid: 'PAID',
+  OverPaid: 'OVER_PAID',
+  AfterDueDate: 'AFTER_DUE_DATE',
+} as const
+
+export type InstallmentPaidStatusEnum =
+  (typeof InstallmentPaidStatusEnum)[keyof typeof InstallmentPaidStatusEnum]
+
 export interface RequestAdminCreateTestingTaxDto {
   /**
    * Year of tax
@@ -307,19 +319,42 @@ export interface ResponseActiveInstallmentDto {
    * @type {string}
    * @memberof ResponseActiveInstallmentDto
    */
-  variableSymbol?: string
+  variableSymbol: string
   /**
    * QR code
-   * @type {string}
-   * @memberof ResponseActiveInstallmentDto
    */
-  qrCode?: string
+  qrCode: string
 }
-/**
- *
- * @export
- * @interface ResponseErrorDto
- */
+export interface ResponseApartmentTaxDetailDto {
+  /**
+   * Type of apartment
+   */
+  type: TaxDetailareaType
+  /**
+   * Base of tax in m^2
+   */
+  base: number
+  /**
+   * Amount of tax in Eur
+   */
+  amount: number
+}
+
+export interface ResponseConstructionTaxDetailDto {
+  /**
+   * Type of construction
+   */
+  type: TaxDetailareaType
+  /**
+   * Base of tax in m^2
+   */
+  base: number
+  /**
+   * Amount of tax in Eur
+   */
+  amount: number
+}
+
 export interface ResponseErrorDto {
   /**
    * statusCode
@@ -498,11 +533,48 @@ export interface ResponseGetTaxesListDto {
   taxAdministrator: ResponseTaxAdministratorDto | null
 }
 
-/**
- *
- * @export
- * @interface ResponseInstallmentPaymentDetailDto
- */
+export interface ResponseGroundTaxDetailDto {
+  /**
+   * Type of area
+   */
+  type: TaxDetailareaType
+  /**
+   * Area of taxed ground in m^2
+   */
+  area?: string
+  /**
+   * Base of tax in Eur
+   */
+  base: number
+  /**
+   * Amount of tax in Eur
+   */
+  amount: number
+}
+
+export interface ResponseInstallmentItemDto {
+  /**
+   * Installment number
+   */
+  installmentNumber: number
+  /**
+   * Due date
+   */
+  dueDate?: string
+  /**
+   * Payment status
+   */
+  status: InstallmentPaidStatusEnum
+  /**
+   * Remaining amount to pay
+   */
+  remainingAmount: number
+  /**
+   * Total amount to pay
+   */
+  totalInstallmentAmount: number
+}
+
 export interface ResponseInstallmentPaymentDetailDto {
   /**
    * Indicates if installment payment is possible
@@ -517,11 +589,15 @@ export interface ResponseInstallmentPaymentDetailDto {
    */
   reasonNotPossible?: ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum
   /**
+   * Latest possible due date.
+   */
+  dueDateLastPayment?: string
+  /**
    * List of exactly 3 installments or none at all
    * @type {Array<Array<string>>}
    * @memberof ResponseInstallmentPaymentDetailDto
    */
-  installments?: Array<Array<string>>
+  installments?: Array<ResponseInstallmentItemDto>
   /**
    * Details of active installment
    * @type {ResponseActiveInstallmentDto}
@@ -725,19 +801,19 @@ export interface ResponseTaxDetailItemizedDto {
    * @type {Array<Array<string>>}
    * @memberof ResponseTaxDetailItemizedDto
    */
-  apartmentTaxDetail: Array<Array<string>>
+  apartmentTaxDetail: Array<ResponseApartmentTaxDetailDto>
   /**
    * Ground tax itemized
    * @type {Array<Array<string>>}
    * @memberof ResponseTaxDetailItemizedDto
    */
-  groundTaxDetail: Array<Array<string>>
+  groundTaxDetail: Array<ResponseGroundTaxDetailDto>
   /**
    * Construction tax itemized
    * @type {Array<Array<string>>}
    * @memberof ResponseTaxDetailItemizedDto
    */
-  constructionTaxDetail: Array<Array<string>>
+  constructionTaxDetail: Array<ResponseConstructionTaxDetailDto>
 }
 /**
  *

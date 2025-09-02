@@ -329,7 +329,7 @@ const calculateInstallmentPaymentDetails = (options: {
         ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
         : installmentAmounts[0].status,
       remainingAmount: isFirstInstallmentLate ? 0 : installmentAmounts[0].toPay,
-      totalAmount: installmentAmounts[0].total, // TODO
+      totalInstallmentAmount: installmentAmounts[0].total, // TODO
     },
     {
       installmentNumber: 2,
@@ -340,14 +340,14 @@ const calculateInstallmentPaymentDetails = (options: {
       remainingAmount: isFirstInstallmentLate
         ? installmentAmounts[1].toPay + installmentAmounts[0].toPay
         : installmentAmounts[1].toPay,
-      totalAmount: installmentAmounts[1].total, // TODO
+      totalInstallmentAmount: installmentAmounts[1].total, // TODO
     },
     {
       installmentNumber: 3,
       dueDate: dueDateThirdPayment.toDate(),
       status: installmentAmounts[2].status,
       remainingAmount: installmentAmounts[2].toPay,
-      totalAmount: installmentAmounts[2].total, // TODO
+      totalInstallmentAmount: installmentAmounts[2].total, // TODO
     },
   ]
 

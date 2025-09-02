@@ -148,24 +148,28 @@ const defaultOutput: ReturnType<typeof getTaxDetailPure> = {
   },
   installmentPayment: {
     isPossible: true,
+    dueDateLastPayment: new Date('2025-10-31T23:00:00.000Z'),
     installments: [
       {
         installmentNumber: 1,
         dueDate: new Date('2025-01-21T23:00:00.000Z'),
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 2200,
+        totalInstallmentAmount: 2200,
       },
       {
         installmentNumber: 2,
         dueDate: new Date('2025-08-31T22:00:00.000Z'),
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 2200,
+        totalInstallmentAmount: 2200,
       },
       {
         installmentNumber: 3,
         dueDate: new Date('2025-10-31T23:00:00.000Z'),
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 2200,
+        totalInstallmentAmount: 2200,
       },
     ],
     activeInstallment: {
@@ -244,8 +248,16 @@ function expectEqualAsJsonStringsWithDates(
   received: ReturnType<typeof getTaxDetailPure>,
   expected: ReturnType<typeof getTaxDetailPure>,
 ) {
-  const stringifiedOutput = JSON.stringify(received, undefined, 2)
-  const stringifiedExpected = JSON.stringify(expected, undefined, 2)
+  const stringifiedOutput = JSON.stringify(
+    received,
+    Object.keys(received).sort(),
+    2,
+  )
+  const stringifiedExpected = JSON.stringify(
+    expected,
+    Object.keys(expected).sort(),
+    2,
+  )
 
   expect(stringifiedOutput).toEqual(stringifiedExpected)
 }
@@ -384,6 +396,7 @@ describe('UnifiedTaxUtil', () => {
             isPossible: false,
             reasonNotPossible:
               InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+            dueDateLastPayment: new Date('2025-10-31T23:00:00.000Z'),
           }
           draft.oneTimePayment = {
             isPossible: false,
@@ -553,11 +566,54 @@ describe('UnifiedTaxUtil', () => {
         })
 
         const expected = createExpectedOutput((draft) => {
-          delete draft.installmentPayment.installments
+          draft.installmentPayment.activeInstallment = {
+            remainingAmount: 6600,
+            variableSymbol:
+              draft.installmentPayment.activeInstallment!.variableSymbol,
+            qrCode: {
+              ...draft.installmentPayment.activeInstallment!.qrCode,
+              amount: draft.overallAmount,
+              paymentNote: QrPaymentNoteEnum.QR_thirdInstallment,
+            },
+          }
+          draft.installmentPayment.installments = [
+            {
+              ...draft.installmentPayment.installments![0],
+              status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+              remainingAmount: 0,
+            },
+            {
+              ...draft.installmentPayment.installments![1],
+              status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+              remainingAmount: 0,
+            },
+            {
+              ...draft.installmentPayment.installments![2],
+              status: InstallmentPaidStatusEnum.NOT_PAID,
+              remainingAmount: 6600,
+            },
+          ]
+        })
+
+        expectEqualAsJsonStringsWithDates(output, expected)
+      })
+
+      it('after third payment due threshold', () => {
+        const output = getTaxDetailPure({
+          ...defaultInput,
+          taxPayments: [],
+          today: new Date('2025-11-01'),
+        })
+
+        const expected = createExpectedOutput((draft) => {
           delete draft.installmentPayment.activeInstallment
-          draft.installmentPayment.isPossible = false
-          draft.installmentPayment.reasonNotPossible =
-            InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE
+          delete draft.installmentPayment.installments
+          draft.installmentPayment = {
+            ...draft.installmentPayment,
+            isPossible: false,
+            reasonNotPossible:
+              InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+          }
         })
 
         expectEqualAsJsonStringsWithDates(output, expected)
@@ -639,7 +695,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
   it('should throw an error if payment is after the due date', () => {
     const options = {
       ...baseOptions,
-      today: new Date('2025-09-01'),
+      today: new Date('2025-10-31T23:00:01Z'),
       taxPayments: [],
     }
 

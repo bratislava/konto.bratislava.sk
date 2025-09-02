@@ -315,11 +315,44 @@ const calculateInstallmentPaymentDetails = (options: {
     overallPaid,
   )
 
-  const dueDateInFuture = !dueDate || dueDate > dayjs(today)
+  const dueDateFirstInstallmentInFuture = !dueDate || dueDate > dayjs(today)
+  const dueDateSecondInstallmentInFuture = dueDateSecondPayment > dayjs(today)
   const isFirstInstallmentLate =
-    !dueDateInFuture &&
+    !dueDateFirstInstallmentInFuture &&
     installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
     installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+  const isSecondInstallmentLate =
+    !dueDateSecondInstallmentInFuture &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.OVER_PAID
+
+  // Second installment status logic
+  let secondInstallmentStatus: InstallmentPaidStatusEnum
+  let secondInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    secondInstallmentStatus = InstallmentPaidStatusEnum.AFTER_DUE_DATE
+    secondInstallmentRemainingAmount = 0
+  } else if (isFirstInstallmentLate) {
+    secondInstallmentStatus = installmentAmounts[0].status
+    secondInstallmentRemainingAmount =
+      installmentAmounts[1].toPay + installmentAmounts[0].toPay
+  } else {
+    secondInstallmentStatus = installmentAmounts[1].status
+    secondInstallmentRemainingAmount = installmentAmounts[1].toPay
+  }
+
+  // Third installment status logic
+  let thirdInstallmentStatus: InstallmentPaidStatusEnum
+  let thirdInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    thirdInstallmentStatus = installmentAmounts[1].status
+    thirdInstallmentRemainingAmount = installmentAmounts.reduce((agg, i) => i.toPay+agg,0)
+  } else {
+    thirdInstallmentStatus = installmentAmounts[2].status
+    thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
+  }
 
   const installmentDetails: ResponseInstallmentItemDto[] = [
     {
@@ -329,25 +362,21 @@ const calculateInstallmentPaymentDetails = (options: {
         ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
         : installmentAmounts[0].status,
       remainingAmount: isFirstInstallmentLate ? 0 : installmentAmounts[0].toPay,
-      totalInstallmentAmount: installmentAmounts[0].total, // TODO
+      totalInstallmentAmount: installmentAmounts[0].total,
     },
     {
       installmentNumber: 2,
       dueDate: dueDateSecondPayment.toDate(),
-      status: isFirstInstallmentLate
-        ? installmentAmounts[0].status
-        : installmentAmounts[1].status,
-      remainingAmount: isFirstInstallmentLate
-        ? installmentAmounts[1].toPay + installmentAmounts[0].toPay
-        : installmentAmounts[1].toPay,
-      totalInstallmentAmount: installmentAmounts[1].total, // TODO
+      status: secondInstallmentStatus,
+      remainingAmount: secondInstallmentRemainingAmount,
+      totalInstallmentAmount: installmentAmounts[1].total,
     },
     {
       installmentNumber: 3,
       dueDate: dueDateThirdPayment.toDate(),
-      status: installmentAmounts[2].status,
-      remainingAmount: installmentAmounts[2].toPay,
-      totalInstallmentAmount: installmentAmounts[2].total, // TODO
+      status: thirdInstallmentStatus,
+      remainingAmount: thirdInstallmentRemainingAmount,
+      totalInstallmentAmount: installmentAmounts[2].total,
     },
   ]
 

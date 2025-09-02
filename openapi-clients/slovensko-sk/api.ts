@@ -36,165 +36,80 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-/**
- *
- * @export
- * @interface AdministrationCertificatesIdGet200Response
- */
 export interface AdministrationCertificatesIdGet200Response {
-  /**
-   *
-   * @type {string}
-   * @memberof AdministrationCertificatesIdGet200Response
-   */
   certificate: string
-  /**
-   *
-   * @type {string}
-   * @memberof AdministrationCertificatesIdGet200Response
-   */
   fingerprint: string
-  /**
-   *
-   * @type {string}
-   * @memberof AdministrationCertificatesIdGet200Response
-   */
   not_after: string
-  /**
-   *
-   * @type {string}
-   * @memberof AdministrationCertificatesIdGet200Response
-   */
   subject: string
 }
-/**
- *
- * @export
- * @interface AdministrationCertificatesPostRequest
- */
 export interface AdministrationCertificatesPostRequest {
   /**
    * Identifikátor certifikátu.
-   * @type {string}
-   * @memberof AdministrationCertificatesPostRequest
    */
   id: string
   /**
    * Identifikačné číslo organizácie.
-   * @type {string}
-   * @memberof AdministrationCertificatesPostRequest
    */
   cin: string
 }
-/**
- *
- * @export
- * @interface ApiCepAddTimestampPost200Response
- */
 export interface ApiCepAddTimestampPost200Response {
   /**
    * Výsledok pridania časovej pečiatky, hodnota `0` znamená úspešné pridanie časovej pečiatky.
-   * @type {string}
-   * @memberof ApiCepAddTimestampPost200Response
    */
   add_timestamp_result?: string
   /**
    * Popis výsledku.
-   * @type {string}
-   * @memberof ApiCepAddTimestampPost200Response
    */
   add_timestamp_description?: string
   /**
    * Dáta rozšírené o kvalifikovanú časovú pečiatku.
-   * @type {Base64}
-   * @memberof ApiCepAddTimestampPost200Response
    */
   timestamped_data?: Base64
 }
-/**
- *
- * @export
- * @interface ApiCepAddTimestampPostRequest
- */
 export interface ApiCepAddTimestampPostRequest {
   /**
    * Base64 kódovaná štruktúra jednoduchého podpisu XAdES, zloženého podpisu XAdES, CAdES, PAdES alebo ASIC obálky.
-   * @type {string}
-   * @memberof ApiCepAddTimestampPostRequest
    */
   content: string
 }
-/**
- *
- * @export
- * @interface ApiCepSignPost200Response
- */
 export interface ApiCepSignPost200Response {
   /**
    * Identifikátor požiadavky.
-   * @type {string}
-   * @memberof ApiCepSignPost200Response
    */
   request_id?: string
   /**
    * Kód výsledku podpísania.
-   * @type {number}
-   * @memberof ApiCepSignPost200Response
    */
   sign_result: number
   /**
    * Popis výsledku podpísania.
-   * @type {string}
-   * @memberof ApiCepSignPost200Response
    */
   sign_description: string
   /**
    * Podpísané objekty.
-   * @type {Array<CepSignedObject>}
-   * @memberof ApiCepSignPost200Response
    */
   signed_objects?: Array<CepSignedObject>
 }
-/**
- *
- * @export
- * @interface ApiCepSignPostRequest
- */
 export interface ApiCepSignPostRequest {
   /**
    * Identifikátor požiadavky.
-   * @type {string}
-   * @memberof ApiCepSignPostRequest
    */
   request_id?: string
   /**
    * Verzia profilu XAdES-ZEP 1.0, 1.1 alebo 2.0 podpisu.
-   * @type {string}
-   * @memberof ApiCepSignPostRequest
    */
   signature_version?: ApiCepSignPostRequestSignatureVersionEnum
-  /**
-   *
-   * @type {Array<ApiCepSignPostRequestObjectsInner>}
-   * @memberof ApiCepSignPostRequest
-   */
   objects: Array<ApiCepSignPostRequestObjectsInner>
   /**
    * Typ podpisovej vizualizácie. Poznámka, v prípade hodnoty `XML` sa použije `TXT` vizualizácia.
-   * @type {string}
-   * @memberof ApiCepSignPostRequest
    */
   visualization_type?: ApiCepSignPostRequestVisualizationTypeEnum
   /**
    * Identifikátor podpisovej vizualizácie.
-   * @type {string}
-   * @memberof ApiCepSignPostRequest
    */
   visualization_uri?: string
   /**
    * Indikátor overenia obsahu objektu podľa štandardu PDF/A-1a.
-   * @type {boolean}
-   * @memberof ApiCepSignPostRequest
    */
   pdf_verification?: boolean
 }
@@ -216,94 +131,61 @@ export const ApiCepSignPostRequestVisualizationTypeEnum = {
 export type ApiCepSignPostRequestVisualizationTypeEnum =
   (typeof ApiCepSignPostRequestVisualizationTypeEnum)[keyof typeof ApiCepSignPostRequestVisualizationTypeEnum]
 
-/**
- *
- * @export
- * @interface ApiCepSignPostRequestObjectsInner
- */
 export interface ApiCepSignPostRequestObjectsInner {
   /**
    * Identifikátor objektu.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   id?: string
   /**
    * Názov objektu.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   name?: string | null
   /**
    * Popis objektu.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   description?: string | null
   /**
    * Typ objektu v súlade s [Dokumentáciou funkčnosti Centrálnej elektronickej podateľne](https://www.slovensko.sk/_img/CMS4/Dokumentacia_funkcnosti_CEP.pdf).
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   class: string
   /**
    * Indikátor či je obsah objektu podpísaný.
-   * @type {boolean}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   signed?: boolean | null
   /**
    * Typ internetového média v súlade s typom a obsahom objektu.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   mime_type: string
   /**
    * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   encoding: ApiCepSignPostRequestObjectsInnerEncodingEnum
   /**
    * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   content: string
   /**
    * Typ výberu podpisového certifikátu:   - `Issuer` znamená výber certifikátu podľa vydavateľa a sériového čísla, ktoré sú uvedené v atribúte `certificate_issuer`,   - `Subject` znamená výber certifikátu podľa subjektu v certifikáte, ktorý je uvedený v atribúte `certificate_subject`,   - `UPVS` znamená výber certifikátu podateľne,   - `URI` znamená výber certifikátu podľa URI evidovaného na strane ÚPVS, ktorý je uvedený v atribúte `certificate_uri`.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   certificate_type: ApiCepSignPostRequestObjectsInnerCertificateTypeEnum
   /**
    * Vydavateľ podpisového certifikátu, iba pre typ `Issuer`.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   certificate_issuer?: string
   /**
    * Sériové číslo podpisového certifikátu, iba pre typ `Issuer`.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   certificate_serial_number?: string
   /**
    * Subjekt podpisového certifikátu, iba pre typ `Subject`.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   certificate_subject?: string
   /**
    * URI podpisového certifikátu, iba pre typ `URI`.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   certificate_uri?: string
   /**
    * Typ podpisu.
-   * @type {string}
-   * @memberof ApiCepSignPostRequestObjectsInner
    */
   signature_type: ApiCepSignPostRequestObjectsInnerSignatureTypeEnum
 }
@@ -335,103 +217,59 @@ export const ApiCepSignPostRequestObjectsInnerSignatureTypeEnum = {
 export type ApiCepSignPostRequestObjectsInnerSignatureTypeEnum =
   (typeof ApiCepSignPostRequestObjectsInnerSignatureTypeEnum)[keyof typeof ApiCepSignPostRequestObjectsInnerSignatureTypeEnum]
 
-/**
- *
- * @export
- * @interface ApiCepSignV2Post200Response
- */
 export interface ApiCepSignV2Post200Response {
   /**
    * Kód výsledku podpísania.
-   * @type {number}
-   * @memberof ApiCepSignV2Post200Response
    */
   sign_result: number
   /**
    * Popis výsledku podpísania.
-   * @type {string}
-   * @memberof ApiCepSignV2Post200Response
    */
   sign_description: string
   /**
    * Podpísané objekty.
-   * @type {Array<CepSignedObjectGroup>}
-   * @memberof ApiCepSignV2Post200Response
    */
   signed_object_groups?: Array<CepSignedObjectGroup>
 }
-/**
- *
- * @export
- * @interface ApiCepSignV2PostRequest
- */
 export interface ApiCepSignV2PostRequest {
   /**
    * Skupiny objektov, ktoré sa majú podpisovať spolu.
-   * @type {Array<CepSigningV2ObjectGroup>}
-   * @memberof ApiCepSignV2PostRequest
    */
   object_groups: Array<CepSigningV2ObjectGroup>
   /**
    * Indikátor overenia obsahu objektu podľa štandardu PDF/A-1a.
-   * @type {boolean}
-   * @memberof ApiCepSignV2PostRequest
    */
   pdf_verification?: boolean
 }
-/**
- *
- * @export
- * @interface ApiCepSignaturesInfoPost200Response
- */
 export interface ApiCepSignaturesInfoPost200Response {
   /**
    * Výsledok zistenie prítomnosti podpisu.
-   * @type {boolean}
-   * @memberof ApiCepSignaturesInfoPost200Response
    */
   is_signed: boolean
   /**
    * Popis výsledku.
-   * @type {string}
-   * @memberof ApiCepSignaturesInfoPost200Response
    */
   description: string
   /**
    * MimeType podpisovej obálky.
-   * @type {string}
-   * @memberof ApiCepSignaturesInfoPost200Response
    */
   mime_type?: string
-  /**
-   *
-   * @type {Array<ApiCepSignaturesInfoPost200ResponseSignaturesInner>}
-   * @memberof ApiCepSignaturesInfoPost200Response
-   */
   signatures?: Array<ApiCepSignaturesInfoPost200ResponseSignaturesInner>
 }
 /**
  * Objekt podpisu.
- * @export
- * @interface ApiCepSignaturesInfoPost200ResponseSignaturesInner
  */
 export interface ApiCepSignaturesInfoPost200ResponseSignaturesInner {
   /**
    * Typ podpisu.
-   * @type {string}
-   * @memberof ApiCepSignaturesInfoPost200ResponseSignaturesInner
    */
   type?: ApiCepSignaturesInfoPost200ResponseSignaturesInnerTypeEnum
   /**
    * Formát podpisu.
-   * @type {string}
-   * @memberof ApiCepSignaturesInfoPost200ResponseSignaturesInner
    */
   format?: ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum
   /**
    * Príznak, či ide o formát podpisu obsahujúci časovú pečiatku (bez ohľadu na jej platnosť).
-   * @type {boolean}
-   * @memberof ApiCepSignaturesInfoPost200ResponseSignaturesInner
    */
   with_timestamp?: boolean
 }
@@ -469,47 +307,28 @@ export const ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum = {
 export type ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum =
   (typeof ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum)[keyof typeof ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum]
 
-/**
- *
- * @export
- * @interface ApiCepSignaturesInfoPostRequest
- */
 export interface ApiCepSignaturesInfoPostRequest {
   /**
    * Obsah objektu zakódovaný podľa Base64. Môže ísť o objekt XADES_ZEP-DataEnvelope, XADES_ZEP-DataSignatures, ZEPfZIP, PAdES alebo ASIC.
-   * @type {string}
-   * @memberof ApiCepSignaturesInfoPostRequest
    */
   content: string
 }
-/**
- *
- * @export
- * @interface ApiCepVerifyPost200Response
- */
 export interface ApiCepVerifyPost200Response {
   /**
    * Kód výsledku overenia.
-   * @type {number}
-   * @memberof ApiCepVerifyPost200Response
    */
   verify_result: number
   /**
    * Popis výsledku overenia.
-   * @type {string}
-   * @memberof ApiCepVerifyPost200Response
    */
   verify_description: string
   /**
    * Overené objekty.
-   * @type {Array<ApiCepVerifyPost200ResponseVerifiedObjectsInner>}
-   * @memberof ApiCepVerifyPost200Response
    */
   verified_objects?: Array<ApiCepVerifyPost200ResponseVerifiedObjectsInner>
 }
 /**
  * @type ApiCepVerifyPost200ResponseVerifiedObjectsInner
- * @export
  */
 export type ApiCepVerifyPost200ResponseVerifiedObjectsInner =
   | CepVerifiedAsicCadesObject
@@ -518,185 +337,77 @@ export type ApiCepVerifyPost200ResponseVerifiedObjectsInner =
   | CepVerifiedPadesObject
   | CepVerifiedXadesObject
 
-/**
- *
- * @export
- * @interface ApiCepVerifyPostRequest
- */
 export interface ApiCepVerifyPostRequest {
   /**
    * Obsah objektu zakódovaný podľa Base64. Môže ísť o objekt ASiC-E CAdES, ASiC-E XAdES, CAdES, PAdES, XAdES alebo MessageContainer.
-   * @type {string}
-   * @memberof ApiCepVerifyPostRequest
    */
   content: string
 }
-/**
- *
- * @export
- * @interface ApiEdeskMessagesIdAuthorizePost200Response
- */
 export interface ApiEdeskMessagesIdAuthorizePost200Response {
   /**
    * Identifikátor prevzatej správy.
-   * @type {number}
-   * @memberof ApiEdeskMessagesIdAuthorizePost200Response
    */
   authorized_message_id: number
 }
-/**
- *
- * @export
- * @interface ApiEdeskMessagesIdPatchRequest
- */
 export interface ApiEdeskMessagesIdPatchRequest {
   /**
    * Identifikátor cieľového priečinka v schránke.
-   * @type {number}
-   * @memberof ApiEdeskMessagesIdPatchRequest
    */
   folder_id: number
 }
-/**
- *
- * @export
- * @interface ApiEformFormTemplateRelatedDocumentGet200Response
- */
 export interface ApiEformFormTemplateRelatedDocumentGet200Response {
-  /**
-   *
-   * @type {string}
-   * @memberof ApiEformFormTemplateRelatedDocumentGet200Response
-   */
   document: string
 }
-/**
- *
- * @export
- * @interface ApiEformStatusGet200Response
- */
 export interface ApiEformStatusGet200Response {
-  /**
-   *
-   * @type {string}
-   * @memberof ApiEformStatusGet200Response
-   */
   status: string
 }
-/**
- *
- * @export
- * @interface ApiEformValidatePost200Response
- */
 export interface ApiEformValidatePost200Response {
-  /**
-   *
-   * @type {boolean}
-   * @memberof ApiEformValidatePost200Response
-   */
   valid: boolean
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof ApiEformValidatePost200Response
-   */
   errors?: Array<string>
 }
-/**
- *
- * @export
- * @interface ApiEformValidatePostRequest
- */
 export interface ApiEformValidatePostRequest {
   /**
    * Dáta formuláru vo formáte XML.
-   * @type {string}
-   * @memberof ApiEformValidatePostRequest
    */
   form: string
 }
 /**
  * @type ApiIamIdentitiesIdGet200Response
- * @export
  */
 export type ApiIamIdentitiesIdGet200Response = UpvsCorporateBody | UpvsNaturalPerson
 
-/**
- *
- * @export
- * @interface ApiIamIdentitiesSearchPostRequest
- */
 export interface ApiIamIdentitiesSearchPostRequest {
   /**
    * ID identít.
-   * @type {Array<string>}
-   * @memberof ApiIamIdentitiesSearchPostRequest
    */
   ids?: Array<string>
   /**
    * URI identít.
-   * @type {Array<string>}
-   * @memberof ApiIamIdentitiesSearchPostRequest
    */
   uris?: Array<string>
   /**
    * Identifikátor schránky.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequest
    */
   en?: string
   /**
    * Typ identity:   - `natural_person` fyzická osoba,   - `legal_entity` právnická osoba,   - `technical_account` technický účet,   - `employee_of_public_administration` zamestnanec verejnej správy,   - `institution_of_public_administration` orgán verejnej moci.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequest
    */
   type?: ApiIamIdentitiesSearchPostRequestTypeEnum
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequest
-   */
   email?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequest
-   */
   phone?: string
-  /**
-   *
-   * @type {ApiIamIdentitiesSearchPostRequestAddress}
-   * @memberof ApiIamIdentitiesSearchPostRequest
-   */
   address?: ApiIamIdentitiesSearchPostRequestAddress
-  /**
-   *
-   * @type {ApiIamIdentitiesSearchPostRequestLegalEntity}
-   * @memberof ApiIamIdentitiesSearchPostRequest
-   */
   legal_entity?: ApiIamIdentitiesSearchPostRequestLegalEntity
-  /**
-   *
-   * @type {ApiIamIdentitiesSearchPostRequestNaturalPerson}
-   * @memberof ApiIamIdentitiesSearchPostRequest
-   */
   natural_person?: ApiIamIdentitiesSearchPostRequestNaturalPerson
   /**
    * Spôsob vyhľadávania atribútov `corporate_body.name`, `natural_person.given_name` a `natural_person.family_name`.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequest
    */
   match?: ApiIamIdentitiesSearchPostRequestMatchEnum
   /**
    * Číslo stránky zoznamu identít.
-   * @type {number}
-   * @memberof ApiIamIdentitiesSearchPostRequest
    */
   page?: number
   /**
    * Počet identít na stránke zoznamu.
-   * @type {number}
-   * @memberof ApiIamIdentitiesSearchPostRequest
    */
   per_page?: number
 }
@@ -724,50 +435,25 @@ export type ApiIamIdentitiesSearchPostRequestMatchEnum =
 
 /**
  * Adresa trvalého pobytu alebo kontaktná adresa.
- * @export
- * @interface ApiIamIdentitiesSearchPostRequestAddress
  */
 export interface ApiIamIdentitiesSearchPostRequestAddress {
   /**
    * Typ adresy:   - `contact` kontaktná adresa,   - `resident` adresa trvalého pobytu.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddress
    */
   type: ApiIamIdentitiesSearchPostRequestAddressTypeEnum
-  /**
-   *
-   * @type {ApiIamIdentitiesSearchPostRequestAddressCountry}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddress
-   */
   country?: ApiIamIdentitiesSearchPostRequestAddressCountry
-  /**
-   *
-   * @type {ApiIamIdentitiesSearchPostRequestAddressDistrict}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddress
-   */
   district?: ApiIamIdentitiesSearchPostRequestAddressDistrict
-  /**
-   *
-   * @type {ApiIamIdentitiesSearchPostRequestAddressMunicipality}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddress
-   */
   municipality?: ApiIamIdentitiesSearchPostRequestAddressMunicipality
   /**
    * Ulica.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddress
    */
   street?: string
   /**
    * Orientačné číslo budovy.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddress
    */
   building_number?: string
   /**
    * Súpisné číslo budovy.
-   * @type {number}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddress
    */
   registration_number?: number
 }
@@ -782,275 +468,130 @@ export type ApiIamIdentitiesSearchPostRequestAddressTypeEnum =
 
 /**
  * Krajina podľa číselníka ŠÚSR 0086
- * @export
- * @interface ApiIamIdentitiesSearchPostRequestAddressCountry
  */
 export interface ApiIamIdentitiesSearchPostRequestAddressCountry {
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddressCountry
-   */
   id?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddressCountry
-   */
   name?: string
 }
 /**
  * Okres podľa číselníka ŠÚSR 0024.
- * @export
- * @interface ApiIamIdentitiesSearchPostRequestAddressDistrict
  */
 export interface ApiIamIdentitiesSearchPostRequestAddressDistrict {
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddressDistrict
-   */
   id?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddressDistrict
-   */
   name?: string
 }
 /**
  * Obec podľa číselníka ŠÚSR 0025.
- * @export
- * @interface ApiIamIdentitiesSearchPostRequestAddressMunicipality
  */
 export interface ApiIamIdentitiesSearchPostRequestAddressMunicipality {
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddressMunicipality
-   */
   id?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestAddressMunicipality
-   */
   name?: string
 }
 /**
  * Právnická osoba.
- * @export
- * @interface ApiIamIdentitiesSearchPostRequestLegalEntity
  */
 export interface ApiIamIdentitiesSearchPostRequestLegalEntity {
   /**
    * IČO.
-   * @type {number}
-   * @memberof ApiIamIdentitiesSearchPostRequestLegalEntity
    */
   cin?: number
   /**
    * DIČ.
-   * @type {number}
-   * @memberof ApiIamIdentitiesSearchPostRequestLegalEntity
    */
   tin?: number
   /**
    * Názov.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestLegalEntity
    */
   name?: string
 }
 /**
  * Fyzická osoba.
- * @export
- * @interface ApiIamIdentitiesSearchPostRequestNaturalPerson
  */
 export interface ApiIamIdentitiesSearchPostRequestNaturalPerson {
   /**
    * Meno. Pozri `match`.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestNaturalPerson
    */
   given_name?: string
   /**
    * Priezvisko. Pozri `match`.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestNaturalPerson
    */
   family_name?: string
   /**
    * Dátum narodenia.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestNaturalPerson
    */
   date_of_birth?: string
   /**
    * Miesto narodenia.
-   * @type {string}
-   * @memberof ApiIamIdentitiesSearchPostRequestNaturalPerson
    */
   place_of_birth?: string
 }
-/**
- *
- * @export
- * @interface ApiMdurzRecordsIdDeleteRequest
- */
 export interface ApiMdurzRecordsIdDeleteRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsIdDeleteRequest
-   */
   message_id: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsIdDeleteRequest
-   */
   correlation_id: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsIdDeleteRequest
-   */
   sender_uri: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsIdDeleteRequest
-   */
   recipient_uri: string
 }
-/**
- *
- * @export
- * @interface ApiMdurzRecordsPostRequest
- */
 export interface ApiMdurzRecordsPostRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsPostRequest
-   */
   message_id: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsPostRequest
-   */
   correlation_id: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsPostRequest
-   */
   sender_uri: string
-  /**
-   *
-   * @type {string}
-   * @memberof ApiMdurzRecordsPostRequest
-   */
   recipient_uri: string
-  /**
-   *
-   * @type {Array<EdeskMessageObject>}
-   * @memberof ApiMdurzRecordsPostRequest
-   */
   objects: Array<EdeskMessageObject>
 }
-/**
- *
- * @export
- * @interface ApiSktalkReceivePostRequest
- */
 export interface ApiSktalkReceivePostRequest {
   /**
    * SKTalk správa vo formáte XML.
-   * @type {string}
-   * @memberof ApiSktalkReceivePostRequest
    */
   message: string
 }
-/**
- *
- * @export
- * @interface ApiUsrPostRequest
- */
 export interface ApiUsrPostRequest {
   /**
    * Názov služby.
-   * @type {string}
-   * @memberof ApiUsrPostRequest
    */
   service: string
   /**
    * Požiadavka služby vo formáte XML.
-   * @type {string}
-   * @memberof ApiUsrPostRequest
    */
   request: string
 }
 /**
  * Podpísaný objekt v rámci modulu CEP. Napríklad ASiC-E kontajner.
- * @export
- * @interface CepSignedObject
  */
 export interface CepSignedObject {
   /**
    * Certifikát časovej pečiatky podpisu objektu.
-   * @type {string}
-   * @memberof CepSignedObject
    */
   timestamp_certificate: string
   /**
    * Identifikátor objektu.
-   * @type {string}
-   * @memberof CepSignedObject
    */
   id: string
   /**
    * Názov objektu.
-   * @type {string}
-   * @memberof CepSignedObject
    */
   name?: string | null
   /**
    * Popis objektu.
-   * @type {string}
-   * @memberof CepSignedObject
    */
   description?: string | null
   /**
    * Typ objektu v súlade s [Dokumentáciou funkčnosti Centrálnej elektronickej podateľne](https://www.slovensko.sk/_img/CMS4/Dokumentacia_funkcnosti_CEP.pdf).
-   * @type {string}
-   * @memberof CepSignedObject
    */
   class: string
   /**
    * Indikátor či je obsah objektu podpísaný.
-   * @type {boolean}
-   * @memberof CepSignedObject
    */
   signed?: boolean | null
   /**
    * Typ internetového média v súlade s typom a obsahom objektu.
-   * @type {string}
-   * @memberof CepSignedObject
    */
   mime_type: string
   /**
    * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
-   * @type {string}
-   * @memberof CepSignedObject
    */
   encoding: CepSignedObjectEncodingEnum
   /**
    * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
-   * @type {string}
-   * @memberof CepSignedObject
    */
   content: string
 }
@@ -1065,69 +606,47 @@ export type CepSignedObjectEncodingEnum =
 
 /**
  * Podpísaná množina objektov ako ASiC kontajner.
- * @export
- * @interface CepSignedObjectGroup
  */
 export interface CepSignedObjectGroup {
   /**
    * Identifikátor podpisového konatjnera.
-   * @type {string}
-   * @memberof CepSignedObjectGroup
    */
   id?: string
   /**
    * MimeType podpisového kontajnera.
-   * @type {string}
-   * @memberof CepSignedObjectGroup
    */
   mime_type?: string
   /**
    * Obsah ASiC kontajnera zakódovaný v base64.
-   * @type {string}
-   * @memberof CepSignedObjectGroup
    */
   data?: string
   /**
    * Certifikát poslednej časovej pečiatky v base64.
-   * @type {string}
-   * @memberof CepSignedObjectGroup
    */
   timestamp_certificate?: string
 }
 /**
  * Štruktúra pre výber podpisového certifkátu.
- * @export
- * @interface CepSigningCertificate
  */
 export interface CepSigningCertificate {
   /**
    * Typ výberu podpisového certifikátu:   - `Issuer` znamená výber certifikátu podľa vydavateľa a sériového čísla, ktoré sú uvedené v atribúte `issuer`,   - `Subject` znamená výber certifikátu podľa subjektu v certifikáte, ktorý je uvedený v atribúte `subject`,   - `URI` znamená výber certifikátu podľa URI evidovaného na strane ÚPVS, ktorý je uvedený v atribúte `uri`.
-   * @type {string}
-   * @memberof CepSigningCertificate
    */
   type: CepSigningCertificateTypeEnum
   /**
    * Vydavateľ podpisového certifikátu, iba pre typ `Issuer`.
-   * @type {string}
-   * @memberof CepSigningCertificate
    */
   issuer?: string
   /**
    * Sériové číslo podpisového certifikátu, iba pre typ `Issuer`.
-   * @type {string}
-   * @memberof CepSigningCertificate
    */
   issuer_serial_number?: string
   /**
    * Subjekt podpisového certifikátu, iba pre typ `Subject`.
-   * @type {string}
-   * @memberof CepSigningCertificate
    */
   subject?: string
   /**
    * URI podpisového certifikátu, iba pre typ `URI`.
-   * @type {string}
-   * @memberof CepSigningCertificate
    */
   uri?: string
 }
@@ -1143,56 +662,38 @@ export type CepSigningCertificateTypeEnum =
 
 /**
  * Podpisovaný objekt v rámci modulu CEP. Napríklad PDF príloha alebo XML formulár.
- * @export
- * @interface CepSigningObject
  */
 export interface CepSigningObject {
   /**
    * Identifikátor objektu.
-   * @type {string}
-   * @memberof CepSigningObject
    */
   id?: string
   /**
    * Názov objektu.
-   * @type {string}
-   * @memberof CepSigningObject
    */
   name?: string | null
   /**
    * Popis objektu.
-   * @type {string}
-   * @memberof CepSigningObject
    */
   description?: string | null
   /**
    * Typ objektu v súlade s [Dokumentáciou funkčnosti Centrálnej elektronickej podateľne](https://www.slovensko.sk/_img/CMS4/Dokumentacia_funkcnosti_CEP.pdf).
-   * @type {string}
-   * @memberof CepSigningObject
    */
   class: string
   /**
    * Indikátor či je obsah objektu podpísaný.
-   * @type {boolean}
-   * @memberof CepSigningObject
    */
   signed?: boolean | null
   /**
    * Typ internetového média v súlade s typom a obsahom objektu.
-   * @type {string}
-   * @memberof CepSigningObject
    */
   mime_type: string
   /**
    * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
-   * @type {string}
-   * @memberof CepSigningObject
    */
   encoding: CepSigningObjectEncodingEnum
   /**
    * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
-   * @type {string}
-   * @memberof CepSigningObject
    */
   content: string
 }
@@ -1207,313 +708,186 @@ export type CepSigningObjectEncodingEnum =
 
 /**
  * Objekt na podpis v rámci modulu CEP pre volanie metódy `POST /api/cep/sign_v2`.
- * @export
- * @interface CepSigningObjectV2
  */
 export interface CepSigningObjectV2 {
   /**
    * Identifikátor objektu v tvare URI. Hodnota z evidencie dátových objektov.
-   * @type {string}
-   * @memberof CepSigningObjectV2
    */
   id: string
   /**
    * Obsah objektu zakódovaný podľa hodnoty v base64.
-   * @type {string}
-   * @memberof CepSigningObjectV2
    */
   data: string
   /**
    * Názov objektu.
-   * @type {string}
-   * @memberof CepSigningObjectV2
    */
   name?: string | null
   /**
    * Identifikátor podpisovej vizualizácie.
-   * @type {string}
-   * @memberof CepSigningObjectV2
    */
   visualization_uri?: string
 }
 /**
  * Množina objektov, ktoré majú byť spoločne podpísané.
- * @export
- * @interface CepSigningV2ObjectGroup
  */
 export interface CepSigningV2ObjectGroup {
-  /**
-   *
-   * @type {CepSigningCertificate}
-   * @memberof CepSigningV2ObjectGroup
-   */
   signing_certificate: CepSigningCertificate
-  /**
-   *
-   * @type {Array<CepSigningObjectV2>}
-   * @memberof CepSigningV2ObjectGroup
-   */
   unsigned_objects?: Array<CepSigningObjectV2>
   /**
    * Už podpísaný ASiC kontajner určený na podpis - obsah ASiC kontajnera zakódovaný v base64
-   * @type {string}
-   * @memberof CepSigningV2ObjectGroup
    */
   signed_object?: string
   /**
    * Identifikátor množiny objektov.
-   * @type {string}
-   * @memberof CepSigningV2ObjectGroup
    */
   id: string
 }
 /**
  * Overený ASiC CAdES objekt v rámci modulu CEP.
- * @export
- * @interface CepVerifiedAsicCadesObject
  */
 export interface CepVerifiedAsicCadesObject {
   /**
    * Autorizácie objektu.
-   * @type {Array<object>}
-   * @memberof CepVerifiedAsicCadesObject
    */
   authorizations?: Array<object>
   /**
    * Identifikátor objektu v rámci MessageContainer.
-   * @type {string}
-   * @memberof CepVerifiedAsicCadesObject
    */
   id?: string | null
 }
 /**
  * Overený ASiC XAdES objekt v rámci modulu CEP.
- * @export
- * @interface CepVerifiedAsicXadesObject
  */
 export interface CepVerifiedAsicXadesObject {
   /**
    * Autorizácie objektu.
-   * @type {Array<object>}
-   * @memberof CepVerifiedAsicXadesObject
    */
   authorizations?: Array<object>
   /**
    * Identifikátor objektu v rámci MessageContainer.
-   * @type {string}
-   * @memberof CepVerifiedAsicXadesObject
    */
   id?: string | null
 }
 /**
  * Overený CAdES objekt v rámci modulu CEP.
- * @export
- * @interface CepVerifiedCadesObject
  */
 export interface CepVerifiedCadesObject {
   /**
    * Autorizácie objektu.
-   * @type {Array<object>}
-   * @memberof CepVerifiedCadesObject
    */
   authorizations?: Array<object>
   /**
    * Identifikátor objektu v rámci MessageContainer.
-   * @type {string}
-   * @memberof CepVerifiedCadesObject
    */
   id?: string | null
 }
 /**
  * Overený objekt v rámci modulu CEP.
- * @export
- * @interface CepVerifiedObject
  */
 export interface CepVerifiedObject {
   /**
    * Identifikátor objektu v rámci MessageContainer.
-   * @type {string}
-   * @memberof CepVerifiedObject
    */
   id?: string | null
   /**
    * Autorizácie objektu.
-   * @type {Array<CepVerifiedObjectAuthorizationsInner>}
-   * @memberof CepVerifiedObject
    */
   authorizations?: Array<CepVerifiedObjectAuthorizationsInner>
 }
-/**
- *
- * @export
- * @interface CepVerifiedObjectAuthorizationsInner
- */
 export interface CepVerifiedObjectAuthorizationsInner {
-  /**
-   *
-   * @type {CepVerifiedObjectAuthorizationsInnerSignature}
-   * @memberof CepVerifiedObjectAuthorizationsInner
-   */
   signature?: CepVerifiedObjectAuthorizationsInnerSignature
-  /**
-   *
-   * @type {CepVerifiedObjectAuthorizationsInnerTimestamp}
-   * @memberof CepVerifiedObjectAuthorizationsInner
-   */
   timestamp?: CepVerifiedObjectAuthorizationsInnerTimestamp
-  /**
-   *
-   * @type {CepVerifiedObjectAuthorizationsInnerVerification}
-   * @memberof CepVerifiedObjectAuthorizationsInner
-   */
   verification?: CepVerifiedObjectAuthorizationsInnerVerification
   /**
    * Podpísané objekty.
-   * @type {Array<object>}
-   * @memberof CepVerifiedObjectAuthorizationsInner
    */
   objects?: Array<object>
 }
 /**
  * Podpis objektu.
- * @export
- * @interface CepVerifiedObjectAuthorizationsInnerSignature
  */
 export interface CepVerifiedObjectAuthorizationsInnerSignature {
   /**
    * Typ podpisu. Pozri [Dokumentáciou funkčnosti Centrálnej elektronickej podateľne](https://www.slovensko.sk/_img/CMS4/Dokumentacia_funkcnosti_CEP.pdf).
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignature
    */
   type?: string
   /**
    * Formát podpisu. Pozri [Dokumentáciou funkčnosti Centrálnej elektronickej podateľne](https://www.slovensko.sk/_img/CMS4/Dokumentacia_funkcnosti_CEP.pdf).
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignature
    */
   format?: string
-  /**
-   *
-   * @type {CepVerifiedObjectAuthorizationsInnerSignatureCertificate}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignature
-   */
   certificate?: CepVerifiedObjectAuthorizationsInnerSignatureCertificate
   /**
    * Indikátor či podpis obsahuje časovú pečiatku.
-   * @type {boolean}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignature
    */
   timestamped?: boolean
   /**
    * Čas vytvorenia podpisu.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignature
    */
   signed_at?: string
 }
 /**
  * Podpisový certifikát.
- * @export
- * @interface CepVerifiedObjectAuthorizationsInnerSignatureCertificate
  */
 export interface CepVerifiedObjectAuthorizationsInnerSignatureCertificate {
   /**
    * Sériové číslo podpisového certifikátu.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignatureCertificate
    */
   serial_number?: string
   /**
    * Vydavateľ podpisového certifikátu.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignatureCertificate
    */
   issuer?: string
   /**
    * Subjekt podpisového certifikátu.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignatureCertificate
    */
   subject?: string
   /**
    * Informácie o mandáte podpisového certifikátu.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerSignatureCertificate
    */
   mandate?: string
 }
 /**
  * Časová pečiatka podpisu objektu.
- * @export
- * @interface CepVerifiedObjectAuthorizationsInnerTimestamp
  */
 export interface CepVerifiedObjectAuthorizationsInnerTimestamp {
-  /**
-   *
-   * @type {CepVerifiedObjectAuthorizationsInnerTimestampCertificate}
-   * @memberof CepVerifiedObjectAuthorizationsInnerTimestamp
-   */
   certificate?: CepVerifiedObjectAuthorizationsInnerTimestampCertificate | null
   /**
    * Čas vytvorenia časovej pečiatky.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerTimestamp
    */
   timestamped_at?: string | null
 }
 /**
  * Certifikát časovej pečiatky.
- * @export
- * @interface CepVerifiedObjectAuthorizationsInnerTimestampCertificate
  */
 export interface CepVerifiedObjectAuthorizationsInnerTimestampCertificate {
   /**
    * Sériové číslo certifikátu časovej pečiatky.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerTimestampCertificate
    */
   serial_number?: string
   /**
    * Vydavateľ certifikátu časovej pečiatky.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerTimestampCertificate
    */
   issuer?: string
   /**
    * Subjekt certifikátu časovej pečiatky.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerTimestampCertificate
    */
   subject?: string
 }
 /**
  * Overenie objektu.
- * @export
- * @interface CepVerifiedObjectAuthorizationsInnerVerification
  */
 export interface CepVerifiedObjectAuthorizationsInnerVerification {
   /**
    * Kód výsledku overenia:   - `1` platná,   - `2` neplatná,   - `3` predbežne platná,   - `4` pravdepodobne platná,   - `5` neoverená.
-   * @type {number}
-   * @memberof CepVerifiedObjectAuthorizationsInnerVerification
    */
   result?: number
   /**
    * Popis výsledku overenia.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerVerification
    */
   description?: CepVerifiedObjectAuthorizationsInnerVerificationDescriptionEnum
-  /**
-   *
-   * @type {CepVerifiedObjectAuthorizationsInnerVerificationVerifier}
-   * @memberof CepVerifiedObjectAuthorizationsInnerVerification
-   */
   verifier?: CepVerifiedObjectAuthorizationsInnerVerificationVerifier
   /**
    * Čas overenia podpisu.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerVerification
    */
   verified_at?: string
 }
@@ -1531,401 +905,256 @@ export type CepVerifiedObjectAuthorizationsInnerVerificationDescriptionEnum =
 
 /**
  * Výstup z overovača.
- * @export
- * @interface CepVerifiedObjectAuthorizationsInnerVerificationVerifier
  */
 export interface CepVerifiedObjectAuthorizationsInnerVerificationVerifier {
   /**
    * Kód výsledku z overovača na základe ktorého bol stanovený výsledok overenia.
-   * @type {number}
-   * @memberof CepVerifiedObjectAuthorizationsInnerVerificationVerifier
    */
   result?: number
   /**
    * Popis výsledku z overovača na základe ktorého bol stanovený výsledok overenia.
-   * @type {string}
-   * @memberof CepVerifiedObjectAuthorizationsInnerVerificationVerifier
    */
   description?: string
 }
 /**
  * Overený PAdES objekt v rámci modulu CEP.
- * @export
- * @interface CepVerifiedPadesObject
  */
 export interface CepVerifiedPadesObject {
   /**
    * Autorizácie objektu.
-   * @type {Array<object>}
-   * @memberof CepVerifiedPadesObject
    */
   authorizations?: Array<object>
   /**
    * Identifikátor objektu v rámci MessageContainer.
-   * @type {string}
-   * @memberof CepVerifiedPadesObject
    */
   id?: string | null
 }
 /**
  * Overený XAdES objekt v rámci modulu CEP.
- * @export
- * @interface CepVerifiedXadesObject
  */
 export interface CepVerifiedXadesObject {
   /**
    * Autorizácie objektu.
-   * @type {Array<object>}
-   * @memberof CepVerifiedXadesObject
    */
   authorizations?: Array<object>
   /**
    * Identifikátor objektu v rámci MessageContainer.
-   * @type {string}
-   * @memberof CepVerifiedXadesObject
    */
   id?: string | null
 }
 /**
  * Doručenka na prevzatie správy.
- * @export
- * @interface EdeskDeliveryNotification
  */
 export interface EdeskDeliveryNotification {
   /**
    * URL na autorizáciu doručenky.
-   * @type {string}
-   * @memberof EdeskDeliveryNotification
    */
   authorize_url: string
   /**
    * Lehota na prevzatie správy v dňoch.
-   * @type {number}
-   * @memberof EdeskDeliveryNotification
    */
   delivery_period?: number | null
   /**
    * Čas vypršania lehoty na prevzatie správy.
-   * @type {string}
-   * @memberof EdeskDeliveryNotification
    */
   delivery_period_end_at?: string | null
   /**
    * Čas doručenia doručenky.
-   * @type {string}
-   * @memberof EdeskDeliveryNotification
    */
   received_at?: string | null
-  /**
-   *
-   * @type {EdeskDeliveryNotificationConsignment}
-   * @memberof EdeskDeliveryNotification
-   */
   consignment: EdeskDeliveryNotificationConsignment
 }
 /**
  * Informácie o správe na prevzatie.
- * @export
- * @interface EdeskDeliveryNotificationConsignment
  */
 export interface EdeskDeliveryNotificationConsignment {
   /**
    * SKTalk identifikátor správy na prevzatie.
-   * @type {string}
-   * @memberof EdeskDeliveryNotificationConsignment
    */
   message_id: string
   /**
    * Typ správy na prevzatie.
-   * @type {string}
-   * @memberof EdeskDeliveryNotificationConsignment
    */
   message_type: string
   /**
    * Predmet správy na prevzatie.
-   * @type {string}
-   * @memberof EdeskDeliveryNotificationConsignment
    */
   message_subject: string
   /**
    * Prílohy správy na prevzatie.
-   * @type {Array<EdeskDeliveryNotificationConsignmentAttachmentsInner>}
-   * @memberof EdeskDeliveryNotificationConsignment
    */
   attachments: Array<EdeskDeliveryNotificationConsignmentAttachmentsInner>
   /**
    * Poznámka k doručenke. Obsahuje napríklad informáciu, či sa uplatňuje fikcia doručenia.
-   * @type {string}
-   * @memberof EdeskDeliveryNotificationConsignment
    */
   note?: string | null
 }
-/**
- *
- * @export
- * @interface EdeskDeliveryNotificationConsignmentAttachmentsInner
- */
 export interface EdeskDeliveryNotificationConsignmentAttachmentsInner {
   /**
    * Identifikátor prílohy v správe na prevzatie.
-   * @type {string}
-   * @memberof EdeskDeliveryNotificationConsignmentAttachmentsInner
    */
   id: string
   /**
    * Názov prílohy v správe na prevzatie.
-   * @type {string}
-   * @memberof EdeskDeliveryNotificationConsignmentAttachmentsInner
    */
   name: string
 }
 /**
  * Priečinok v schránke.
- * @export
- * @interface EdeskFolder
  */
 export interface EdeskFolder {
   /**
    * eDesk identifikátor priečinka.
-   * @type {number}
-   * @memberof EdeskFolder
    */
   id: number
   /**
    * eDesk identifikátor rodičovského priečinka.
-   * @type {number}
-   * @memberof EdeskFolder
    */
   parent_id?: number | null
   /**
    * Názov priečinka.
-   * @type {string}
-   * @memberof EdeskFolder
    */
   name: string
   /**
    * Indikátor či ide o systémový priečinok alebo priečinok vytvorený používateľom.
-   * @type {boolean}
-   * @memberof EdeskFolder
    */
   system: boolean
 }
 /**
  * Správa v schránke bez obsahu a extrahovaných príloh.
- * @export
- * @interface EdeskHeader
  */
 export interface EdeskHeader {
   /**
    * eDesk identifikátor správy.
-   * @type {number}
-   * @memberof EdeskHeader
    */
   id: number
   /**
    * SKTalk trieda správy.
-   * @type {string}
-   * @memberof EdeskHeader
    */
   class: string
   /**
    * SKTalk identifikátor správy. Správa odoslaná viacerým adresátom má rovnaké `message_id`, no rôzne eDesk `id` u každého adresáta.
-   * @type {string}
-   * @memberof EdeskHeader
    */
   message_id: string
   /**
    * SKTalk identifikátor vlákna správ.
-   * @type {string}
-   * @memberof EdeskHeader
    */
   correlation_id: string
   /**
    * Predmet správy.
-   * @type {string}
-   * @memberof EdeskHeader
    */
   subject: string
   /**
    * Čas doručenia správy.
-   * @type {string}
-   * @memberof EdeskHeader
    */
   delivered_at: string
 }
 /**
  * Správa v schránke s obsahom a extrahovanými prílohami.
- * @export
- * @interface EdeskMessage
  */
 export interface EdeskMessage {
   /**
    * SKTalk identifikátor referenčnej správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   reference_id?: string | null
   /**
    * Identifikátor obsiahnutého formulára správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   posp_id?: string | null
   /**
    * Verzia obsiahnutého formulára správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   posp_version?: string | null
   /**
    * Identifikátor odosielateľa správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   sender_uri?: string | null
   /**
    * Identifikátor prijímateľa správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   recipient_uri?: string | null
   /**
    * Typ správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   type?: string | null
-  /**
-   *
-   * @type {string}
-   * @memberof EdeskMessage
-   */
   sender_business_reference?: string | null
-  /**
-   *
-   * @type {string}
-   * @memberof EdeskMessage
-   */
   recipient_business_reference?: string | null
-  /**
-   *
-   * @type {EdeskDeliveryNotification}
-   * @memberof EdeskMessage
-   */
   delivery_notification?: EdeskDeliveryNotification
   /**
    * Extrahované prílohy správy.
-   * @type {Array<EdeskMessageObject>}
-   * @memberof EdeskMessage
    */
   objects: Array<EdeskMessageObject>
   /**
    * HTML vizualizácia správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   original_html: string
   /**
    * Pôvodný obsah správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   original_xml: string
   /**
    * Indikátor či došlo k chybe pri spracovaní správy na strane komponentu.
-   * @type {boolean}
-   * @memberof EdeskMessage
    */
   parse_error: boolean
   /**
    * eDesk identifikátor správy.
-   * @type {number}
-   * @memberof EdeskMessage
    */
   id: number
   /**
    * SKTalk trieda správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   class: string
   /**
    * SKTalk identifikátor správy. Správa odoslaná viacerým adresátom má rovnaké `message_id`, no rôzne eDesk `id` u každého adresáta.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   message_id: string
   /**
    * SKTalk identifikátor vlákna správ.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   correlation_id: string
   /**
    * Predmet správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   subject: string
   /**
    * Čas doručenia správy.
-   * @type {string}
-   * @memberof EdeskMessage
    */
   delivered_at: string
 }
 /**
  * Objekt v správe. Napríklad PDF príloha, podpísaný kontajner (ASiC, ZEP) alebo XML formulár.
- * @export
- * @interface EdeskMessageObject
  */
 export interface EdeskMessageObject {
   /**
    * Identifikátor objektu.
-   * @type {string}
-   * @memberof EdeskMessageObject
    */
   id: string
   /**
    * Názov objektu.
-   * @type {string}
-   * @memberof EdeskMessageObject
    */
   name?: string | null
   /**
    * Popis objektu.
-   * @type {string}
-   * @memberof EdeskMessageObject
    */
   description?: string | null
   /**
    * Typ objektu.
-   * @type {string}
-   * @memberof EdeskMessageObject
    */
   class: EdeskMessageObjectClassEnum
   /**
    * Indikátor či je obsah objektu podpísaný.
-   * @type {boolean}
-   * @memberof EdeskMessageObject
    */
   signed?: boolean | null
   /**
    * Typ internetového média v súlade s typom a obsahom objektu.
-   * @type {string}
-   * @memberof EdeskMessageObject
    */
   mime_type: string
   /**
    * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
-   * @type {string}
-   * @memberof EdeskMessageObject
    */
   encoding: EdeskMessageObjectEncodingEnum
   /**
    * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
-   * @type {string}
-   * @memberof EdeskMessageObject
    */
   content: string
 }
@@ -1947,58 +1176,34 @@ export type EdeskMessageObjectEncodingEnum =
 
 /**
  * Porucha ÚPVS integrácie.
- * @export
- * @interface ErrorFault
  */
 export interface ErrorFault {
   /**
    * Kód poruchy ÚPVS integrácie.
-   * @type {string}
-   * @memberof ErrorFault
    */
   code?: string | null
   /**
    * Dôvod poruchy ÚPVS integrácie.
-   * @type {string}
-   * @memberof ErrorFault
    */
   reason?: string | null
 }
 /**
  * Zdravie komponentu.
- * @export
- * @interface Health
  */
 export interface Health {
   /**
    * Názov komponentu.
-   * @type {string}
-   * @memberof Health
    */
   description?: string
   /**
    * Verzia komponentu.
-   * @type {string}
-   * @memberof Health
    */
   version?: string
   /**
    * Stav komponentu.
-   * @type {string}
-   * @memberof Health
    */
   status?: HealthStatusEnum
-  /**
-   *
-   * @type {HealthChecks}
-   * @memberof Health
-   */
   checks?: HealthChecks
-  /**
-   *
-   * @type {HealthLinks}
-   * @memberof Health
-   */
   links?: HealthLinks
 }
 
@@ -2012,286 +1217,179 @@ export type HealthStatusEnum = (typeof HealthStatusEnum)[keyof typeof HealthStat
 
 /**
  * Kontroly komponentu.
- * @export
- * @interface HealthChecks
  */
 export interface HealthChecks {
   /**
    * Kontrola premenných prostredia.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'environment:variables'?: any
   /**
    * Kontrola spojenia s PostgreSQL databázou.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'postgresql:connection'?: any
   /**
    * Kontrola spojenia s Redis úložiskom.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'redis:connection'?: any
   /**
    * Kontrola autentifikátora API tokenov.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'authenticator:api'?: any
   /**
    * Kontrola autentifikátora OBO tokenov. Vykoná sa iba ak je podpora ÚPVS SSO zapnutá.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'authenticator:obo'?: any
   /**
    * Kontrola expirácie STS certifikátu pre synchronizáciu formulárov. Vykoná sa iba ak je nastavená premenná `EFORM_SYNC_SUBJECT`.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'eform:sync_certificate'?: any
   /**
    * Kontrola vykonávania synchronizácie formulárov. Vykoná sa iba ak je nastavená premenná `EFORM_SYNC_SUBJECT`.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'eform:sync_task'?: any
   /**
    * Kontrola expirácie SSO SP certifikátu. Vykoná sa iba ak je podpora ÚPVS SSO zapnutá.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'sso:sp_certificate'?: any
   /**
    * Kontrola expirácie SSO STS certifikátu pre OBO prístup. Vykoná sa iba ak je podpora ÚPVS SSO zapnutá.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'sso:proxy_certificate'?: any
   /**
    * Kontrola expirácie STS certifikátu pre kontrolu spojenia s ÚPVS. Vykoná sa iba ak je nastavená premenná `STS_HEALTH_SUBJECT`.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'sts:certificate'?: any
   /**
    * Kontrola času prvotného vytvorenia objektu pre komunikáciu s ÚPVS. Vykoná sa iba ak je nastavená premenná `STS_HEALTH_SUBJECT`.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'sts:creation_time'?: any
   /**
    * Kontrola času STS autentifikácie v rámci požiadavky na zistenie stavu formulára. Vykoná sa iba ak je nastavená premenná `STS_HEALTH_SUBJECT`.
-   * @type {any}
-   * @memberof HealthChecks
    */
   'sts:response_time'?: any
 }
 /**
  * Odkazy súvisiace s komponentom.
- * @export
- * @interface HealthLinks
  */
 export interface HealthLinks {
   /**
    * Odkaz na inštalačnú príručku komponentu.
-   * @type {string}
-   * @memberof HealthLinks
    */
   installation?: string
   /**
    * Odkaz na špecifikáciu API komponentu.
-   * @type {string}
-   * @memberof HealthLinks
    */
   documentation?: string
 }
-/**
- *
- * @export
- * @interface LoginPost200Response
- */
 export interface LoginPost200Response {
-  /**
-   *
-   * @type {any}
-   * @memberof LoginPost200Response
-   */
   token: any
 }
-/**
- *
- * @export
- * @interface LoginPostRequest
- */
 export interface LoginPostRequest {
   /**
    * Base64 SAML assertion získaná z ÚPVS.
-   * @type {string}
-   * @memberof LoginPostRequest
    */
   saml_assertion: string
 }
 /**
  * Chyba.
- * @export
- * @interface ModelError
  */
 export interface ModelError {
   /**
    * Správa.
-   * @type {string}
-   * @memberof ModelError
    */
   message: string
-  /**
-   *
-   * @type {ErrorFault}
-   * @memberof ModelError
-   */
   fault?: ErrorFault
 }
 /**
  * Výsledok odoslania SKTalk správy a uloženia medzi odoslané správy.
- * @export
- * @interface SktalkReceiveAndSaveToOutboxResult
  */
 export interface SktalkReceiveAndSaveToOutboxResult {
   /**
    * Výsledok odoslania správy, hodnota `0` znamená úspešné prijatie správy na odoslanie.
-   * @type {number}
-   * @memberof SktalkReceiveAndSaveToOutboxResult
    */
   receive_result: number | null
   /**
    * Indikátor či pri odoslaní správy prišlo k vypršaniu času požiadavky na ÚPVS.
-   * @type {boolean}
-   * @memberof SktalkReceiveAndSaveToOutboxResult
    */
   receive_timeout: boolean
   /**
    * Výsledok uloženia správy medzi odoslané správy, hodnota `0` znamená úspešné prijatie správy na uloženie medzi odoslané správy.
-   * @type {number}
-   * @memberof SktalkReceiveAndSaveToOutboxResult
    */
   save_to_outbox_result: number | null
   /**
    * Indikátor či pri uložení správy medzi odoslané správy prišlo k vypršaniu času požiadavky na ÚPVS.
-   * @type {boolean}
-   * @memberof SktalkReceiveAndSaveToOutboxResult
    */
   save_to_outbox_timeout: boolean | null
 }
 /**
  * Výsledok odoslania SKTalk správy.
- * @export
- * @interface SktalkReceiveResult
  */
 export interface SktalkReceiveResult {
   /**
    * Výsledok odoslania správy, hodnota `0` znamená úspešné prijatie správy na odoslanie.
-   * @type {number}
-   * @memberof SktalkReceiveResult
    */
   receive_result: number
 }
 /**
  * Výsledok uloženia SKTalk správy medzi odoslané správy.
- * @export
- * @interface SktalkSaveToOutboxResult
  */
 export interface SktalkSaveToOutboxResult {
   /**
    * Výsledok uloženia správy medzi odoslané správy, hodnota `0` znamená úspešné prijatie správy na uloženie medzi odoslané správy.
-   * @type {number}
-   * @memberof SktalkSaveToOutboxResult
    */
   save_to_outbox_result: number
 }
 /**
  * ÚPVS identita právnickej osoby.
- * @export
- * @interface UpvsCorporateBody
  */
 export interface UpvsCorporateBody {
   /**
    * Právnická osoba.
-   * @type {object}
-   * @memberof UpvsCorporateBody
    */
   corporate_body?: object
   /**
    * Sektorové identifikátory.
-   * @type {Array<UpvsIdentityIdsInner>}
-   * @memberof UpvsCorporateBody
    */
   ids?: Array<UpvsIdentityIdsInner>
   /**
    * URI identifikátor.
-   * @type {string}
-   * @memberof UpvsCorporateBody
    */
   uri?: string
   /**
    * Číslo eDesk schránky.
-   * @type {string}
-   * @memberof UpvsCorporateBody
    */
   en?: string
   /**
    * Typ:   - `natural_person` fyzická osoba,   - `legal_entity` právnická osoba,   - `technical_account` technický účet,   - `employee_of_public_administration` zamestnanec verejnej správy,   - `institution_of_public_administration` orgán verejnej moci.
-   * @type {string}
-   * @memberof UpvsCorporateBody
    */
   type?: UpvsCorporateBodyTypeEnum
   /**
    * Stav:   - `registered` registrovaný,   - `activated` aktivovaný,   - `verified` overený,   - `blocked` blokovaný,   - `deactivated` deaktivovaný.
-   * @type {string}
-   * @memberof UpvsCorporateBody
    */
   status?: UpvsCorporateBodyStatusEnum
   /**
    * Názov alebo meno.
-   * @type {string}
-   * @memberof UpvsCorporateBody
    */
   name?: string
   /**
    * Sufix.
-   * @type {string}
-   * @memberof UpvsCorporateBody
    */
   suffix?: string
   /**
    * Rôzne identifikátory.
-   * @type {Array<UpvsIdentityVariousIdsInner>}
-   * @memberof UpvsCorporateBody
    */
   various_ids?: Array<UpvsIdentityVariousIdsInner>
-  /**
-   *
-   * @type {UpvsIdentityUpvs}
-   * @memberof UpvsCorporateBody
-   */
   upvs?: UpvsIdentityUpvs
   /**
    * Fyzické adresy.
-   * @type {Array<UpvsIdentityAddressesInner>}
-   * @memberof UpvsCorporateBody
    */
   addresses?: Array<UpvsIdentityAddressesInner>
   /**
    * E-mailové adresy.
-   * @type {Array<UpvsIdentityEmailsInner>}
-   * @memberof UpvsCorporateBody
    */
   emails?: Array<UpvsIdentityEmailsInner>
   /**
    * Telefónne čísla.
-   * @type {Array<UpvsIdentityPhonesInner>}
-   * @memberof UpvsCorporateBody
    */
   phones?: Array<UpvsIdentityPhonesInner>
 }
@@ -2319,105 +1417,68 @@ export type UpvsCorporateBodyStatusEnum =
 
 /**
  * Hodnota podľa číselníka.
- * @export
- * @interface UpvsEnumeration
  */
 export interface UpvsEnumeration {
   /**
    * Identifikátor hodnoty.
-   * @type {string}
-   * @memberof UpvsEnumeration
    */
   id?: string
   /**
    * Názov hodnoty.
-   * @type {string}
-   * @memberof UpvsEnumeration
    */
   name?: string
   /**
    * Popis hodnoty.
-   * @type {string}
-   * @memberof UpvsEnumeration
    */
   description?: string
 }
 /**
  * ÚPVS identita.
- * @export
- * @interface UpvsIdentity
  */
 export interface UpvsIdentity {
   /**
    * Sektorové identifikátory.
-   * @type {Array<UpvsIdentityIdsInner>}
-   * @memberof UpvsIdentity
    */
   ids?: Array<UpvsIdentityIdsInner>
   /**
    * URI identifikátor.
-   * @type {string}
-   * @memberof UpvsIdentity
    */
   uri?: string
   /**
    * Číslo eDesk schránky.
-   * @type {string}
-   * @memberof UpvsIdentity
    */
   en?: string
   /**
    * Typ:   - `natural_person` fyzická osoba,   - `legal_entity` právnická osoba,   - `technical_account` technický účet,   - `employee_of_public_administration` zamestnanec verejnej správy,   - `institution_of_public_administration` orgán verejnej moci.
-   * @type {string}
-   * @memberof UpvsIdentity
    */
   type?: UpvsIdentityTypeEnum
   /**
    * Stav:   - `registered` registrovaný,   - `activated` aktivovaný,   - `verified` overený,   - `blocked` blokovaný,   - `deactivated` deaktivovaný.
-   * @type {string}
-   * @memberof UpvsIdentity
    */
   status?: UpvsIdentityStatusEnum
   /**
    * Názov alebo meno.
-   * @type {string}
-   * @memberof UpvsIdentity
    */
   name?: string
   /**
    * Sufix.
-   * @type {string}
-   * @memberof UpvsIdentity
    */
   suffix?: string
   /**
    * Rôzne identifikátory.
-   * @type {Array<UpvsIdentityVariousIdsInner>}
-   * @memberof UpvsIdentity
    */
   various_ids?: Array<UpvsIdentityVariousIdsInner>
-  /**
-   *
-   * @type {UpvsIdentityUpvs}
-   * @memberof UpvsIdentity
-   */
   upvs?: UpvsIdentityUpvs
   /**
    * Fyzické adresy.
-   * @type {Array<UpvsIdentityAddressesInner>}
-   * @memberof UpvsIdentity
    */
   addresses?: Array<UpvsIdentityAddressesInner>
   /**
    * E-mailové adresy.
-   * @type {Array<UpvsIdentityEmailsInner>}
-   * @memberof UpvsIdentity
    */
   emails?: Array<UpvsIdentityEmailsInner>
   /**
    * Telefónne čísla.
-   * @type {Array<UpvsIdentityPhonesInner>}
-   * @memberof UpvsIdentity
    */
   phones?: Array<UpvsIdentityPhonesInner>
 }
@@ -2442,100 +1503,62 @@ export const UpvsIdentityStatusEnum = {
 export type UpvsIdentityStatusEnum =
   (typeof UpvsIdentityStatusEnum)[keyof typeof UpvsIdentityStatusEnum]
 
-/**
- *
- * @export
- * @interface UpvsIdentityAddressesInner
- */
 export interface UpvsIdentityAddressesInner {
   /**
    * Typ adresy:   - `resident` adresa trvalého pobytu alebo sídla,   - `contact` kontaktná adresa,   - `post_office_box` adresa poštovej schránky,   - `military` vojenská adresa,   - `undefined` nedefinovaná adresa.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   type?: UpvsIdentityAddressesInnerTypeEnum
   /**
    * Formátovaná adresa.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   inline?: string
   /**
    * Krajina podľa číselníka ŠÚSR 0086.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsIdentityAddressesInner
    */
   country?: UpvsEnumeration
   /**
    * Kraj.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   region?: string
   /**
    * Okres podľa číselníka ŠÚSR 0024.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsIdentityAddressesInner
    */
   district?: UpvsEnumeration
   /**
    * Obec podľa číselníka ŠÚSR 0025.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsIdentityAddressesInner
    */
   municipality?: UpvsEnumeration
   /**
    * Časť obce.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   part?: string
   /**
    * Ulica.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   street?: string
   /**
    * Orientačné číslo.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   building_number?: string
   /**
    * Súpisné číslo.
-   * @type {number}
-   * @memberof UpvsIdentityAddressesInner
    */
   registration_number?: number
   /**
    * Časť budovy.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   unit?: string
   /**
    * Index budovy.
-   * @type {number}
-   * @memberof UpvsIdentityAddressesInner
    */
   building_index?: number
-  /**
-   *
-   * @type {UpvsIdentityAddressesInnerDeliveryAddress}
-   * @memberof UpvsIdentityAddressesInner
-   */
   delivery_address?: UpvsIdentityAddressesInnerDeliveryAddress
   /**
    * Záznam v registri adries.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInner
    */
   ra_entry?: string
   /**
    * Indikátor či ide o špecifikovanú adresu, ktorá bude nastavená.
-   * @type {boolean}
-   * @memberof UpvsIdentityAddressesInner
    */
   specified?: boolean
 }
@@ -2553,249 +1576,151 @@ export type UpvsIdentityAddressesInnerTypeEnum =
 
 /**
  * Doručovacia adresa.
- * @export
- * @interface UpvsIdentityAddressesInnerDeliveryAddress
  */
 export interface UpvsIdentityAddressesInnerDeliveryAddress {
   /**
    * Poštové smerové číslo.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddress
    */
   postal_code?: string
   /**
    * Poštová schránka.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddress
    */
   post_office_box?: string
-  /**
-   *
-   * @type {UpvsIdentityAddressesInnerDeliveryAddressRecipient}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddress
-   */
   recipient?: UpvsIdentityAddressesInnerDeliveryAddressRecipient
 }
 /**
  * Príjemca.
- * @export
- * @interface UpvsIdentityAddressesInnerDeliveryAddressRecipient
  */
 export interface UpvsIdentityAddressesInnerDeliveryAddressRecipient {
-  /**
-   *
-   * @type {UpvsIdentityAddressesInnerDeliveryAddressRecipientCorporateBody}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddressRecipient
-   */
   corporate_body?: UpvsIdentityAddressesInnerDeliveryAddressRecipientCorporateBody
-  /**
-   *
-   * @type {UpvsIdentityAddressesInnerDeliveryAddressRecipientNaturalPerson}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddressRecipient
-   */
   natural_person?: UpvsIdentityAddressesInnerDeliveryAddressRecipientNaturalPerson
   /**
    * Poznámka.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddressRecipient
    */
   note?: string
 }
 /**
  * Právnická osoba.
- * @export
- * @interface UpvsIdentityAddressesInnerDeliveryAddressRecipientCorporateBody
  */
 export interface UpvsIdentityAddressesInnerDeliveryAddressRecipientCorporateBody {
   /**
    * Organizačná jednotka.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddressRecipientCorporateBody
    */
   organization_unit?: string
   /**
    * Názov.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddressRecipientCorporateBody
    */
   name?: string
 }
 /**
  * Fyzická osoba.
- * @export
- * @interface UpvsIdentityAddressesInnerDeliveryAddressRecipientNaturalPerson
  */
 export interface UpvsIdentityAddressesInnerDeliveryAddressRecipientNaturalPerson {
   /**
    * Meno.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDeliveryAddressRecipientNaturalPerson
    */
   name?: string
 }
-/**
- *
- * @export
- * @interface UpvsIdentityEmailsInner
- */
 export interface UpvsIdentityEmailsInner {
   /**
    * Formátovaná adresa.
-   * @type {string}
-   * @memberof UpvsIdentityEmailsInner
    */
   address?: string
   /**
    * DSig KeyInfo.
-   * @type {string}
-   * @memberof UpvsIdentityEmailsInner
    */
   dsig_key_info?: string
 }
-/**
- *
- * @export
- * @interface UpvsIdentityIdsInner
- */
 export interface UpvsIdentityIdsInner {
   /**
    * Typ identifikátora.
-   * @type {string}
-   * @memberof UpvsIdentityIdsInner
    */
   type?: string
   /**
    * Hodnota identifikátora.
-   * @type {string}
-   * @memberof UpvsIdentityIdsInner
    */
   value?: string
 }
-/**
- *
- * @export
- * @interface UpvsIdentityPhonesInner
- */
 export interface UpvsIdentityPhonesInner {
   /**
    * Typ telefónu podľa číselníka ŠÚSR 4005.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsIdentityPhonesInner
    */
   type?: UpvsEnumeration
   /**
    * Formátované číslo.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInner
    */
   number?: string
   /**
    * Medzinárodné smerové číslo.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInner
    */
   international_country_code?: string
   /**
    * Národné číslo.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInner
    */
   national_number?: string
   /**
    * Smerové číslo.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInner
    */
   area_city_code?: string
   /**
    * Účastnícke číslo.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInner
    */
   subscriber_number?: string
   /**
    * Sublinka.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInner
    */
   extension?: string
 }
 /**
  * ÚPVS atribúty.
- * @export
- * @interface UpvsIdentityUpvs
  */
 export interface UpvsIdentityUpvs {
   /**
    * Číslo eDesk schránky.
-   * @type {string}
-   * @memberof UpvsIdentityUpvs
    */
   edesk_number?: string
   /**
    * Stav eDesk schránky:   - `nonexistent` neexistujúca schránka,   - `created` vytvorená schránka (okrem prijímania správ),   - `active` aktivovaná schránka (okrem prijímania doručeniek),   - `deliverable` aktivovaná schránka na doručovanie (vrátane prijímania doručeniek),   - `disabled` deaktivovaná schránka (okrem prijímania doručeniek),   - `deleted` zrušená schránka.
-   * @type {string}
-   * @memberof UpvsIdentityUpvs
    */
   edesk_status?: UpvsIdentityUpvsEdeskStatusEnum
   /**
    * URI adresa vzdialenej eDesk schránky.
-   * @type {string}
-   * @memberof UpvsIdentityUpvs
    */
   edesk_remote_uri?: string | null
   /**
    * Indikátor či do eDesk schránky budú doručované CUET správy.
-   * @type {boolean}
-   * @memberof UpvsIdentityUpvs
    */
   edesk_cuet_delivery_enabled?: boolean
   /**
    * Indikátor či je doručovanie do eDesk schránky obmedzené.
-   * @type {boolean}
-   * @memberof UpvsIdentityUpvs
    */
   edesk_delivery_limited?: boolean
   /**
    * Preferovaný kanál prijímania správ.
-   * @type {string}
-   * @memberof UpvsIdentityUpvs
    */
   enotify_preferred_channel?: UpvsIdentityUpvsEnotifyPreferredChannelEnum
   /**
    * Preferovaný kalendár odosielania správ.
-   * @type {string}
-   * @memberof UpvsIdentityUpvs
    */
   enotify_preferred_calendar?: string
   /**
    * Indikátor či je odosielanie núdzových správ povolené.
-   * @type {boolean}
-   * @memberof UpvsIdentityUpvs
    */
   enotify_emergency_allowed?: boolean
   /**
    * Indikátor či je odosielanie e-mailov povolené.
-   * @type {boolean}
-   * @memberof UpvsIdentityUpvs
    */
   enotify_email_allowed?: boolean
   /**
    * Indikátor či je odosielanie SMS povolené.
-   * @type {boolean}
-   * @memberof UpvsIdentityUpvs
    */
   enotify_sms_allowed?: boolean
   /**
    * Preferovaný jazyk.
-   * @type {string}
-   * @memberof UpvsIdentityUpvs
    */
   preferred_language?: string
   /**
    * Identifikátor v pôvodnom RE IAM.
-   * @type {string}
-   * @memberof UpvsIdentityUpvs
    */
   re_iam_identity_id?: string
 }
@@ -2819,113 +1744,71 @@ export const UpvsIdentityUpvsEnotifyPreferredChannelEnum = {
 export type UpvsIdentityUpvsEnotifyPreferredChannelEnum =
   (typeof UpvsIdentityUpvsEnotifyPreferredChannelEnum)[keyof typeof UpvsIdentityUpvsEnotifyPreferredChannelEnum]
 
-/**
- *
- * @export
- * @interface UpvsIdentityVariousIdsInner
- */
 export interface UpvsIdentityVariousIdsInner {
   /**
    * Typ identifikátora.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsIdentityVariousIdsInner
    */
   type?: UpvsEnumeration
   /**
    * Hodnota identifikátora.
-   * @type {string}
-   * @memberof UpvsIdentityVariousIdsInner
    */
   value?: string
   /**
    * Indikátor či ide o špecifikovaný identifikátor, ktorý bude nastavený.
-   * @type {boolean}
-   * @memberof UpvsIdentityVariousIdsInner
    */
   specified?: boolean
 }
 /**
  * ÚPVS identita fyzickej osoby.
- * @export
- * @interface UpvsNaturalPerson
  */
 export interface UpvsNaturalPerson {
   /**
    * Fyzická osoba.
-   * @type {object}
-   * @memberof UpvsNaturalPerson
    */
   natural_person?: object
   /**
    * Sektorové identifikátory.
-   * @type {Array<UpvsIdentityIdsInner>}
-   * @memberof UpvsNaturalPerson
    */
   ids?: Array<UpvsIdentityIdsInner>
   /**
    * URI identifikátor.
-   * @type {string}
-   * @memberof UpvsNaturalPerson
    */
   uri?: string
   /**
    * Číslo eDesk schránky.
-   * @type {string}
-   * @memberof UpvsNaturalPerson
    */
   en?: string
   /**
    * Typ:   - `natural_person` fyzická osoba,   - `legal_entity` právnická osoba,   - `technical_account` technický účet,   - `employee_of_public_administration` zamestnanec verejnej správy,   - `institution_of_public_administration` orgán verejnej moci.
-   * @type {string}
-   * @memberof UpvsNaturalPerson
    */
   type?: UpvsNaturalPersonTypeEnum
   /**
    * Stav:   - `registered` registrovaný,   - `activated` aktivovaný,   - `verified` overený,   - `blocked` blokovaný,   - `deactivated` deaktivovaný.
-   * @type {string}
-   * @memberof UpvsNaturalPerson
    */
   status?: UpvsNaturalPersonStatusEnum
   /**
    * Názov alebo meno.
-   * @type {string}
-   * @memberof UpvsNaturalPerson
    */
   name?: string
   /**
    * Sufix.
-   * @type {string}
-   * @memberof UpvsNaturalPerson
    */
   suffix?: string
   /**
    * Rôzne identifikátory.
-   * @type {Array<UpvsIdentityVariousIdsInner>}
-   * @memberof UpvsNaturalPerson
    */
   various_ids?: Array<UpvsIdentityVariousIdsInner>
-  /**
-   *
-   * @type {UpvsIdentityUpvs}
-   * @memberof UpvsNaturalPerson
-   */
   upvs?: UpvsIdentityUpvs
   /**
    * Fyzické adresy.
-   * @type {Array<UpvsIdentityAddressesInner>}
-   * @memberof UpvsNaturalPerson
    */
   addresses?: Array<UpvsIdentityAddressesInner>
   /**
    * E-mailové adresy.
-   * @type {Array<UpvsIdentityEmailsInner>}
-   * @memberof UpvsNaturalPerson
    */
   emails?: Array<UpvsIdentityEmailsInner>
   /**
    * Telefónne čísla.
-   * @type {Array<UpvsIdentityPhonesInner>}
-   * @memberof UpvsNaturalPerson
    */
   phones?: Array<UpvsIdentityPhonesInner>
 }
@@ -2953,20 +1836,14 @@ export type UpvsNaturalPersonStatusEnum =
 
 /**
  * Afix fyzickej osoby.
- * @export
- * @interface UpvsNaturalPersonAffix
  */
 export interface UpvsNaturalPersonAffix {
   /**
    * Typ afixu:   - `aristocratic` aristokratický titul,   - `generation` generačný titul,   - `military` vojenský titul,   - `qualification` kvalifikačný titul.
-   * @type {string}
-   * @memberof UpvsNaturalPersonAffix
    */
   type?: UpvsNaturalPersonAffixTypeEnum
   /**
    * Afix.
-   * @type {string}
-   * @memberof UpvsNaturalPersonAffix
    */
   value?: string
 }
@@ -2983,70 +1860,49 @@ export type UpvsNaturalPersonAffixTypeEnum =
 
 /**
  * Priezvisko fyzickej osoby.
- * @export
- * @interface UpvsNaturalPersonFamilyName
  */
 export interface UpvsNaturalPersonFamilyName {
   /**
    * Indikátor či ide o hlavné priezvisko.
-   * @type {boolean}
-   * @memberof UpvsNaturalPersonFamilyName
    */
   primary?: boolean
   /**
    * Prefix priezviska.
-   * @type {string}
-   * @memberof UpvsNaturalPersonFamilyName
    */
   prefix?: string
   /**
    * Priezvisko.
-   * @type {string}
-   * @memberof UpvsNaturalPersonFamilyName
    */
   value?: string
 }
 /**
  * Existenčná udalosť fyzickej osoby.
- * @export
- * @interface UpvsNaturalPersonVitalEvent
  */
 export interface UpvsNaturalPersonVitalEvent {
   /**
    * Dátum udalosti.
-   * @type {string}
-   * @memberof UpvsNaturalPersonVitalEvent
    */
   date?: string
   /**
    * Krajina udalosti podľa číselníka ŠÚSR 0086.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsNaturalPersonVitalEvent
    */
   country?: UpvsEnumeration
   /**
    * Okres udalosti podľa číselníka ŠÚSR 0024.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsNaturalPersonVitalEvent
    */
   district?: UpvsEnumeration
   /**
    * Obec udalosti podľa číselníka ŠÚSR 0025.
-   * @type {UpvsEnumeration}
-   * @memberof UpvsNaturalPersonVitalEvent
    */
   municipality?: UpvsEnumeration
   /**
    * Časť obce udalosti.
-   * @type {string}
-   * @memberof UpvsNaturalPersonVitalEvent
    */
   part?: string
 }
 
 /**
  * CentrlnaRadnTabuaDostupnLenPreOVMApi - axios parameter creator
- * @export
  */
 export const CentrlnaRadnTabuaDostupnLenPreOVMApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -3386,7 +2242,6 @@ export const CentrlnaRadnTabuaDostupnLenPreOVMApiAxiosParamCreator = function (
 
 /**
  * CentrlnaRadnTabuaDostupnLenPreOVMApi - functional programming interface
- * @export
  */
 export const CentrlnaRadnTabuaDostupnLenPreOVMApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator =
@@ -3560,7 +2415,6 @@ export const CentrlnaRadnTabuaDostupnLenPreOVMApiFp = function (configuration?: 
 
 /**
  * CentrlnaRadnTabuaDostupnLenPreOVMApi - factory interface
- * @export
  */
 export const CentrlnaRadnTabuaDostupnLenPreOVMApiFactory = function (
   configuration?: Configuration,
@@ -3700,9 +2554,6 @@ export const CentrlnaRadnTabuaDostupnLenPreOVMApiFactory = function (
 
 /**
  * CentrlnaRadnTabuaDostupnLenPreOVMApi - object-oriented interface
- * @export
- * @class CentrlnaRadnTabuaDostupnLenPreOVMApi
- * @extends {BaseAPI}
  */
 export class CentrlnaRadnTabuaDostupnLenPreOVMApi extends BaseAPI {
   /**
@@ -3721,7 +2572,6 @@ export class CentrlnaRadnTabuaDostupnLenPreOVMApi extends BaseAPI {
    * @param {string} [publishedDays] Počet dní počas ktorých má byť dokument zverejnený.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof CentrlnaRadnTabuaDostupnLenPreOVMApi
    */
   public apiCuetDocumentsDeliverByPublishingPost(
     requestId: string,
@@ -3765,7 +2615,6 @@ export class CentrlnaRadnTabuaDostupnLenPreOVMApi extends BaseAPI {
    * @param {ApiMdurzRecordsIdDeleteRequest} apiMdurzRecordsIdDeleteRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof CentrlnaRadnTabuaDostupnLenPreOVMApi
    */
   public apiCuetDocumentsIdPatch(
     id: string,
@@ -3803,7 +2652,6 @@ export class CentrlnaRadnTabuaDostupnLenPreOVMApi extends BaseAPI {
    * @param {string} [publishedDays] Počet dní počas ktorých má byť dokument zverejnený.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof CentrlnaRadnTabuaDostupnLenPreOVMApi
    */
   public apiCuetDocumentsPublishDocumentPost(
     requestId: string,
@@ -3840,7 +2688,6 @@ export class CentrlnaRadnTabuaDostupnLenPreOVMApi extends BaseAPI {
 
 /**
  * DlhodobLoiskoApi - axios parameter creator
- * @export
  */
 export const DlhodobLoiskoApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -4278,7 +3125,6 @@ export const DlhodobLoiskoApiAxiosParamCreator = function (configuration?: Confi
 
 /**
  * DlhodobLoiskoApi - functional programming interface
- * @export
  */
 export const DlhodobLoiskoApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DlhodobLoiskoApiAxiosParamCreator(configuration)
@@ -4500,7 +3346,6 @@ export const DlhodobLoiskoApiFp = function (configuration?: Configuration) {
 
 /**
  * DlhodobLoiskoApi - factory interface
- * @export
  */
 export const DlhodobLoiskoApiFactory = function (
   configuration?: Configuration,
@@ -4667,9 +3512,6 @@ export const DlhodobLoiskoApiFactory = function (
 
 /**
  * DlhodobLoiskoApi - object-oriented interface
- * @export
- * @class DlhodobLoiskoApi
- * @extends {BaseAPI}
  */
 export class DlhodobLoiskoApi extends BaseAPI {
   /**
@@ -4681,7 +3523,6 @@ export class DlhodobLoiskoApi extends BaseAPI {
    * @param {ApiMdurzRecordsIdDeleteRequest} apiMdurzRecordsIdDeleteRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DlhodobLoiskoApi
    */
   public apiMdurzRecordsIdDelete(
     id: string,
@@ -4704,7 +3545,6 @@ export class DlhodobLoiskoApi extends BaseAPI {
    * @param {ApiMdurzRecordsIdDeleteRequest} apiMdurzRecordsIdDeleteRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DlhodobLoiskoApi
    */
   public apiMdurzRecordsIdDisseminatePost(
     id: string,
@@ -4733,7 +3573,6 @@ export class DlhodobLoiskoApi extends BaseAPI {
    * @param {ApiMdurzRecordsIdDeleteRequest} apiMdurzRecordsIdDeleteRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DlhodobLoiskoApi
    */
   public apiMdurzRecordsIdExtendPatch(
     id: string,
@@ -4765,7 +3604,6 @@ export class DlhodobLoiskoApi extends BaseAPI {
    * @param {ApiMdurzRecordsIdDeleteRequest} apiMdurzRecordsIdDeleteRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DlhodobLoiskoApi
    */
   public apiMdurzRecordsIdPatch(
     id: string,
@@ -4803,7 +3641,6 @@ export class DlhodobLoiskoApi extends BaseAPI {
    * @param {ApiMdurzRecordsPostRequest} apiMdurzRecordsPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DlhodobLoiskoApi
    */
   public apiMdurzRecordsPost(
     requestId: string,
@@ -4830,27 +3667,18 @@ export class DlhodobLoiskoApi extends BaseAPI {
   }
 }
 
-/**
- * @export
- */
 export const ApiMdurzRecordsIdDeleteDestinationEnum = {
   Edesk: 'EDESK',
   None: 'NONE',
 } as const
 export type ApiMdurzRecordsIdDeleteDestinationEnum =
   (typeof ApiMdurzRecordsIdDeleteDestinationEnum)[keyof typeof ApiMdurzRecordsIdDeleteDestinationEnum]
-/**
- * @export
- */
 export const ApiMdurzRecordsIdDisseminatePostDestinationEnum = {
   Edesk: 'EDESK',
   None: 'NONE',
 } as const
 export type ApiMdurzRecordsIdDisseminatePostDestinationEnum =
   (typeof ApiMdurzRecordsIdDisseminatePostDestinationEnum)[keyof typeof ApiMdurzRecordsIdDisseminatePostDestinationEnum]
-/**
- * @export
- */
 export const ApiMdurzRecordsIdExtendPatchRetentionPeriodEnum = {
   R1: 'R1',
   R3: 'R3',
@@ -4858,27 +3686,18 @@ export const ApiMdurzRecordsIdExtendPatchRetentionPeriodEnum = {
 } as const
 export type ApiMdurzRecordsIdExtendPatchRetentionPeriodEnum =
   (typeof ApiMdurzRecordsIdExtendPatchRetentionPeriodEnum)[keyof typeof ApiMdurzRecordsIdExtendPatchRetentionPeriodEnum]
-/**
- * @export
- */
 export const ApiMdurzRecordsIdPatchAccessEnum = {
   Public: 'PUBLIC',
   Private: 'PRIVATE',
 } as const
 export type ApiMdurzRecordsIdPatchAccessEnum =
   (typeof ApiMdurzRecordsIdPatchAccessEnum)[keyof typeof ApiMdurzRecordsIdPatchAccessEnum]
-/**
- * @export
- */
 export const ApiMdurzRecordsPostAccessEnum = {
   Public: 'PUBLIC',
   Private: 'PRIVATE',
 } as const
 export type ApiMdurzRecordsPostAccessEnum =
   (typeof ApiMdurzRecordsPostAccessEnum)[keyof typeof ApiMdurzRecordsPostAccessEnum]
-/**
- * @export
- */
 export const ApiMdurzRecordsPostRetentionPeriodEnum = {
   R1: 'R1',
   R3: 'R3',
@@ -4889,7 +3708,6 @@ export type ApiMdurzRecordsPostRetentionPeriodEnum =
 
 /**
  * InformcieOPrihlsenomPouvateoviApi - axios parameter creator
- * @export
  */
 export const InformcieOPrihlsenomPouvateoviApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -4981,7 +3799,6 @@ export const InformcieOPrihlsenomPouvateoviApiAxiosParamCreator = function (
 
 /**
  * InformcieOPrihlsenomPouvateoviApi - functional programming interface
- * @export
  */
 export const InformcieOPrihlsenomPouvateoviApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator =
@@ -5040,7 +3857,6 @@ export const InformcieOPrihlsenomPouvateoviApiFp = function (configuration?: Con
 
 /**
  * InformcieOPrihlsenomPouvateoviApi - factory interface
- * @export
  */
 export const InformcieOPrihlsenomPouvateoviApiFactory = function (
   configuration?: Configuration,
@@ -5075,9 +3891,6 @@ export const InformcieOPrihlsenomPouvateoviApiFactory = function (
 
 /**
  * InformcieOPrihlsenomPouvateoviApi - object-oriented interface
- * @export
- * @class InformcieOPrihlsenomPouvateoviApi
- * @extends {BaseAPI}
  */
 export class InformcieOPrihlsenomPouvateoviApi extends BaseAPI {
   /**
@@ -5086,7 +3899,6 @@ export class InformcieOPrihlsenomPouvateoviApi extends BaseAPI {
    * @param {string} accept
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InformcieOPrihlsenomPouvateoviApi
    */
   public apiUpvsAssertionGet(accept: string, options?: RawAxiosRequestConfig) {
     return InformcieOPrihlsenomPouvateoviApiFp(this.configuration)
@@ -5099,7 +3911,6 @@ export class InformcieOPrihlsenomPouvateoviApi extends BaseAPI {
    * @summary Vráti identitu prihláseného používateľa
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InformcieOPrihlsenomPouvateoviApi
    */
   public apiUpvsIdentityGet(options?: RawAxiosRequestConfig) {
     return InformcieOPrihlsenomPouvateoviApiFp(this.configuration)
@@ -5110,7 +3921,6 @@ export class InformcieOPrihlsenomPouvateoviApi extends BaseAPI {
 
 /**
  * ManamentAutentifikanchCertifiktovAdministrciaApi - axios parameter creator
- * @export
  */
 export const ManamentAutentifikanchCertifiktovAdministrciaApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -5264,7 +4074,6 @@ export const ManamentAutentifikanchCertifiktovAdministrciaApiAxiosParamCreator =
 
 /**
  * ManamentAutentifikanchCertifiktovAdministrciaApi - functional programming interface
- * @export
  */
 export const ManamentAutentifikanchCertifiktovAdministrciaApiFp = function (
   configuration?: Configuration,
@@ -5366,7 +4175,6 @@ export const ManamentAutentifikanchCertifiktovAdministrciaApiFp = function (
 
 /**
  * ManamentAutentifikanchCertifiktovAdministrciaApi - factory interface
- * @export
  */
 export const ManamentAutentifikanchCertifiktovAdministrciaApiFactory = function (
   configuration?: Configuration,
@@ -5425,9 +4233,6 @@ export const ManamentAutentifikanchCertifiktovAdministrciaApiFactory = function 
 
 /**
  * ManamentAutentifikanchCertifiktovAdministrciaApi - object-oriented interface
- * @export
- * @class ManamentAutentifikanchCertifiktovAdministrciaApi
- * @extends {BaseAPI}
  */
 export class ManamentAutentifikanchCertifiktovAdministrciaApi extends BaseAPI {
   /**
@@ -5436,7 +4241,6 @@ export class ManamentAutentifikanchCertifiktovAdministrciaApi extends BaseAPI {
    * @param {string} id Identifikátor certifikátu.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManamentAutentifikanchCertifiktovAdministrciaApi
    */
   public administrationCertificatesIdDelete(id: string, options?: RawAxiosRequestConfig) {
     return ManamentAutentifikanchCertifiktovAdministrciaApiFp(this.configuration)
@@ -5450,7 +4254,6 @@ export class ManamentAutentifikanchCertifiktovAdministrciaApi extends BaseAPI {
    * @param {string} id Identifikátor certifikátu.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManamentAutentifikanchCertifiktovAdministrciaApi
    */
   public administrationCertificatesIdGet(id: string, options?: RawAxiosRequestConfig) {
     return ManamentAutentifikanchCertifiktovAdministrciaApiFp(this.configuration)
@@ -5464,7 +4267,6 @@ export class ManamentAutentifikanchCertifiktovAdministrciaApi extends BaseAPI {
    * @param {AdministrationCertificatesPostRequest} administrationCertificatesPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManamentAutentifikanchCertifiktovAdministrciaApi
    */
   public administrationCertificatesPost(
     administrationCertificatesPostRequest: AdministrationCertificatesPostRequest,
@@ -5478,7 +4280,6 @@ export class ManamentAutentifikanchCertifiktovAdministrciaApi extends BaseAPI {
 
 /**
  * ManipulciaSoSchrnkouApi - axios parameter creator
- * @export
  */
 export const ManipulciaSoSchrnkouApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -5835,7 +4636,6 @@ export const ManipulciaSoSchrnkouApiAxiosParamCreator = function (configuration?
 
 /**
  * ManipulciaSoSchrnkouApi - functional programming interface
- * @export
  */
 export const ManipulciaSoSchrnkouApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ManipulciaSoSchrnkouApiAxiosParamCreator(configuration)
@@ -6053,7 +4853,6 @@ export const ManipulciaSoSchrnkouApiFp = function (configuration?: Configuration
 
 /**
  * ManipulciaSoSchrnkouApi - factory interface
- * @export
  */
 export const ManipulciaSoSchrnkouApiFactory = function (
   configuration?: Configuration,
@@ -6170,9 +4969,6 @@ export const ManipulciaSoSchrnkouApiFactory = function (
 
 /**
  * ManipulciaSoSchrnkouApi - object-oriented interface
- * @export
- * @class ManipulciaSoSchrnkouApi
- * @extends {BaseAPI}
  */
 export class ManipulciaSoSchrnkouApi extends BaseAPI {
   /**
@@ -6180,7 +4976,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
    * @summary Vráti zoznam priečinkov v schránke
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManipulciaSoSchrnkouApi
    */
   public apiEdeskFoldersGet(options?: RawAxiosRequestConfig) {
     return ManipulciaSoSchrnkouApiFp(this.configuration)
@@ -6196,7 +4991,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
    * @param {number} [perPage] Počet správ na stránke zoznamu.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManipulciaSoSchrnkouApi
    */
   public apiEdeskFoldersIdMessagesGet(
     id: number,
@@ -6215,7 +5009,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
    * @param {number} id eDesk identifikátor správy.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManipulciaSoSchrnkouApi
    */
   public apiEdeskMessagesIdAuthorizePost(id: number, options?: RawAxiosRequestConfig) {
     return ManipulciaSoSchrnkouApiFp(this.configuration)
@@ -6229,7 +5022,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
    * @param {number} id eDesk identifikátor správy.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManipulciaSoSchrnkouApi
    */
   public apiEdeskMessagesIdDelete(id: number, options?: RawAxiosRequestConfig) {
     return ManipulciaSoSchrnkouApiFp(this.configuration)
@@ -6243,7 +5035,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
    * @param {number} id eDesk identifikátor správy.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManipulciaSoSchrnkouApi
    */
   public apiEdeskMessagesIdGet(id: number, options?: RawAxiosRequestConfig) {
     return ManipulciaSoSchrnkouApiFp(this.configuration)
@@ -6258,7 +5049,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
    * @param {ApiEdeskMessagesIdPatchRequest} apiEdeskMessagesIdPatchRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManipulciaSoSchrnkouApi
    */
   public apiEdeskMessagesIdPatch(
     id: number,
@@ -6278,7 +5068,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
    * @param {number} [perPage] Počet správ na stránke zoznamu.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManipulciaSoSchrnkouApi
    */
   public apiEdeskMessagesSearchGet(
     correlationId: Uuid,
@@ -6294,7 +5083,6 @@ export class ManipulciaSoSchrnkouApi extends BaseAPI {
 
 /**
  * PodpisovanieApi - axios parameter creator
- * @export
  */
 export const PodpisovanieApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -6556,7 +5344,6 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
 
 /**
  * PodpisovanieApi - functional programming interface
- * @export
  */
 export const PodpisovanieApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = PodpisovanieApiAxiosParamCreator(configuration)
@@ -6712,7 +5499,6 @@ export const PodpisovanieApiFp = function (configuration?: Configuration) {
 
 /**
  * PodpisovanieApi - factory interface
- * @export
  */
 export const PodpisovanieApiFactory = function (
   configuration?: Configuration,
@@ -6801,9 +5587,6 @@ export const PodpisovanieApiFactory = function (
 
 /**
  * PodpisovanieApi - object-oriented interface
- * @export
- * @class PodpisovanieApi
- * @extends {BaseAPI}
  */
 export class PodpisovanieApi extends BaseAPI {
   /**
@@ -6812,7 +5595,6 @@ export class PodpisovanieApi extends BaseAPI {
    * @param {ApiCepAddTimestampPostRequest} apiCepAddTimestampPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PodpisovanieApi
    */
   public apiCepAddTimestampPost(
     apiCepAddTimestampPostRequest: ApiCepAddTimestampPostRequest,
@@ -6829,7 +5611,6 @@ export class PodpisovanieApi extends BaseAPI {
    * @param {ApiCepSignPostRequest} apiCepSignPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PodpisovanieApi
    */
   public apiCepSignPost(
     apiCepSignPostRequest: ApiCepSignPostRequest,
@@ -6846,7 +5627,6 @@ export class PodpisovanieApi extends BaseAPI {
    * @param {ApiCepSignV2PostRequest} apiCepSignV2PostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PodpisovanieApi
    */
   public apiCepSignV2Post(
     apiCepSignV2PostRequest: ApiCepSignV2PostRequest,
@@ -6863,7 +5643,6 @@ export class PodpisovanieApi extends BaseAPI {
    * @param {ApiCepSignaturesInfoPostRequest} apiCepSignaturesInfoPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PodpisovanieApi
    */
   public apiCepSignaturesInfoPost(
     apiCepSignaturesInfoPostRequest: ApiCepSignaturesInfoPostRequest,
@@ -6880,7 +5659,6 @@ export class PodpisovanieApi extends BaseAPI {
    * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PodpisovanieApi
    */
   public apiCepVerifyPost(
     apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
@@ -6894,7 +5672,6 @@ export class PodpisovanieApi extends BaseAPI {
 
 /**
  * PrihlasovaniePomocouEIDApi - axios parameter creator
- * @export
  */
 export const PrihlasovaniePomocouEIDApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -7022,7 +5799,6 @@ export const PrihlasovaniePomocouEIDApiAxiosParamCreator = function (
 
 /**
  * PrihlasovaniePomocouEIDApi - functional programming interface
- * @export
  */
 export const PrihlasovaniePomocouEIDApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = PrihlasovaniePomocouEIDApiAxiosParamCreator(configuration)
@@ -7100,7 +5876,6 @@ export const PrihlasovaniePomocouEIDApiFp = function (configuration?: Configurat
 
 /**
  * PrihlasovaniePomocouEIDApi - factory interface
- * @export
  */
 export const PrihlasovaniePomocouEIDApiFactory = function (
   configuration?: Configuration,
@@ -7147,9 +5922,6 @@ export const PrihlasovaniePomocouEIDApiFactory = function (
 
 /**
  * PrihlasovaniePomocouEIDApi - object-oriented interface
- * @export
- * @class PrihlasovaniePomocouEIDApi
- * @extends {BaseAPI}
  */
 export class PrihlasovaniePomocouEIDApi extends BaseAPI {
   /**
@@ -7157,7 +5929,6 @@ export class PrihlasovaniePomocouEIDApi extends BaseAPI {
    * @summary Prihlási používateľa pomocou eID
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PrihlasovaniePomocouEIDApi
    */
   public loginGet(options?: RawAxiosRequestConfig) {
     return PrihlasovaniePomocouEIDApiFp(this.configuration)
@@ -7171,7 +5942,6 @@ export class PrihlasovaniePomocouEIDApi extends BaseAPI {
    * @param {LoginPostRequest} loginPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PrihlasovaniePomocouEIDApi
    */
   public loginPost(loginPostRequest: LoginPostRequest, options?: RawAxiosRequestConfig) {
     return PrihlasovaniePomocouEIDApiFp(this.configuration)
@@ -7184,7 +5954,6 @@ export class PrihlasovaniePomocouEIDApi extends BaseAPI {
    * @summary Odhlási používateľa
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PrihlasovaniePomocouEIDApi
    */
   public logoutGet(options?: RawAxiosRequestConfig) {
     return PrihlasovaniePomocouEIDApiFp(this.configuration)
@@ -7195,7 +5964,6 @@ export class PrihlasovaniePomocouEIDApi extends BaseAPI {
 
 /**
  * StavKomponentuMonitoringApi - axios parameter creator
- * @export
  */
 export const StavKomponentuMonitoringApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -7238,7 +6006,6 @@ export const StavKomponentuMonitoringApiAxiosParamCreator = function (
 
 /**
  * StavKomponentuMonitoringApi - functional programming interface
- * @export
  */
 export const StavKomponentuMonitoringApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = StavKomponentuMonitoringApiAxiosParamCreator(configuration)
@@ -7270,7 +6037,6 @@ export const StavKomponentuMonitoringApiFp = function (configuration?: Configura
 
 /**
  * StavKomponentuMonitoringApi - factory interface
- * @export
  */
 export const StavKomponentuMonitoringApiFactory = function (
   configuration?: Configuration,
@@ -7293,9 +6059,6 @@ export const StavKomponentuMonitoringApiFactory = function (
 
 /**
  * StavKomponentuMonitoringApi - object-oriented interface
- * @export
- * @class StavKomponentuMonitoringApi
- * @extends {BaseAPI}
  */
 export class StavKomponentuMonitoringApi extends BaseAPI {
   /**
@@ -7303,7 +6066,6 @@ export class StavKomponentuMonitoringApi extends BaseAPI {
    * @summary Vráti stav komponentu
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StavKomponentuMonitoringApi
    */
   public healthGet(options?: RawAxiosRequestConfig) {
     return StavKomponentuMonitoringApiFp(this.configuration)
@@ -7314,7 +6076,6 @@ export class StavKomponentuMonitoringApi extends BaseAPI {
 
 /**
  * UniverzlneSynchrnneRozhranieSluiebPVSApi - axios parameter creator
- * @export
  */
 export const UniverzlneSynchrnneRozhranieSluiebPVSApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -7381,7 +6142,6 @@ export const UniverzlneSynchrnneRozhranieSluiebPVSApiAxiosParamCreator = functio
 
 /**
  * UniverzlneSynchrnneRozhranieSluiebPVSApi - functional programming interface
- * @export
  */
 export const UniverzlneSynchrnneRozhranieSluiebPVSApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator =
@@ -7423,7 +6183,6 @@ export const UniverzlneSynchrnneRozhranieSluiebPVSApiFp = function (configuratio
 
 /**
  * UniverzlneSynchrnneRozhranieSluiebPVSApi - factory interface
- * @export
  */
 export const UniverzlneSynchrnneRozhranieSluiebPVSApiFactory = function (
   configuration?: Configuration,
@@ -7454,9 +6213,6 @@ export const UniverzlneSynchrnneRozhranieSluiebPVSApiFactory = function (
 
 /**
  * UniverzlneSynchrnneRozhranieSluiebPVSApi - object-oriented interface
- * @export
- * @class UniverzlneSynchrnneRozhranieSluiebPVSApi
- * @extends {BaseAPI}
  */
 export class UniverzlneSynchrnneRozhranieSluiebPVSApi extends BaseAPI {
   /**
@@ -7466,7 +6222,6 @@ export class UniverzlneSynchrnneRozhranieSluiebPVSApi extends BaseAPI {
    * @param {ApiUsrPostRequest} apiUsrPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UniverzlneSynchrnneRozhranieSluiebPVSApi
    */
   public apiUsrPost(
     accept: string,
@@ -7481,7 +6236,6 @@ export class UniverzlneSynchrnneRozhranieSluiebPVSApi extends BaseAPI {
 
 /**
  * VyhadvanieIdenttDostupnLenPreOVMApi - axios parameter creator
- * @export
  */
 export const VyhadvanieIdenttDostupnLenPreOVMApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -7590,7 +6344,6 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiAxiosParamCreator = function (
 
 /**
  * VyhadvanieIdenttDostupnLenPreOVMApi - functional programming interface
- * @export
  */
 export const VyhadvanieIdenttDostupnLenPreOVMApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator =
@@ -7661,7 +6414,6 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiFp = function (configuration?: C
 
 /**
  * VyhadvanieIdenttDostupnLenPreOVMApi - factory interface
- * @export
  */
 export const VyhadvanieIdenttDostupnLenPreOVMApiFactory = function (
   configuration?: Configuration,
@@ -7705,9 +6457,6 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiFactory = function (
 
 /**
  * VyhadvanieIdenttDostupnLenPreOVMApi - object-oriented interface
- * @export
- * @class VyhadvanieIdenttDostupnLenPreOVMApi
- * @extends {BaseAPI}
  */
 export class VyhadvanieIdenttDostupnLenPreOVMApi extends BaseAPI {
   /**
@@ -7716,7 +6465,6 @@ export class VyhadvanieIdenttDostupnLenPreOVMApi extends BaseAPI {
    * @param {string} id ID identity.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof VyhadvanieIdenttDostupnLenPreOVMApi
    */
   public apiIamIdentitiesIdGet(id: string, options?: RawAxiosRequestConfig) {
     return VyhadvanieIdenttDostupnLenPreOVMApiFp(this.configuration)
@@ -7730,7 +6478,6 @@ export class VyhadvanieIdenttDostupnLenPreOVMApi extends BaseAPI {
    * @param {ApiIamIdentitiesSearchPostRequest} apiIamIdentitiesSearchPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof VyhadvanieIdenttDostupnLenPreOVMApi
    */
   public apiIamIdentitiesSearchPost(
     apiIamIdentitiesSearchPostRequest: ApiIamIdentitiesSearchPostRequest,
@@ -7744,7 +6491,6 @@ export class VyhadvanieIdenttDostupnLenPreOVMApi extends BaseAPI {
 
 /**
  * ZasielaniePodanApi - axios parameter creator
- * @export
  */
 export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -8147,7 +6893,6 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
 
 /**
  * ZasielaniePodanApi - functional programming interface
- * @export
  */
 export const ZasielaniePodanApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ZasielaniePodanApiAxiosParamCreator(configuration)
@@ -8377,7 +7122,6 @@ export const ZasielaniePodanApiFp = function (configuration?: Configuration) {
 
 /**
  * ZasielaniePodanApi - factory interface
- * @export
  */
 export const ZasielaniePodanApiFactory = function (
   configuration?: Configuration,
@@ -8504,9 +7248,6 @@ export const ZasielaniePodanApiFactory = function (
 
 /**
  * ZasielaniePodanApi - object-oriented interface
- * @export
- * @class ZasielaniePodanApi
- * @extends {BaseAPI}
  */
 export class ZasielaniePodanApi extends BaseAPI {
   /**
@@ -8517,7 +7258,6 @@ export class ZasielaniePodanApi extends BaseAPI {
    * @param {ApiEformFormTemplateRelatedDocumentGetTypeEnum} type Verzia formuláru.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanApi
    */
   public apiEformFormTemplateRelatedDocumentGet(
     identifier: string,
@@ -8537,7 +7277,6 @@ export class ZasielaniePodanApi extends BaseAPI {
    * @param {string} version Verzia formuláru.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanApi
    */
   public apiEformStatusGet(identifier: string, version: string, options?: RawAxiosRequestConfig) {
     return ZasielaniePodanApiFp(this.configuration)
@@ -8553,7 +7292,6 @@ export class ZasielaniePodanApi extends BaseAPI {
    * @param {ApiEformValidatePostRequest} apiEformValidatePostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanApi
    */
   public apiEformValidatePost(
     identifier: string,
@@ -8571,7 +7309,6 @@ export class ZasielaniePodanApi extends BaseAPI {
    * @summary Pripraví odosielanie podania aj po vypršaní WebSSO session
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanApi
    */
   public apiSktalkPrepareForLaterReceiveGet(options?: RawAxiosRequestConfig) {
     return ZasielaniePodanApiFp(this.configuration)
@@ -8585,7 +7322,6 @@ export class ZasielaniePodanApi extends BaseAPI {
    * @param {ApiSktalkReceivePostRequest} apiSktalkReceivePostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanApi
    */
   public apiSktalkReceiveAndSaveToOutboxPost(
     apiSktalkReceivePostRequest: ApiSktalkReceivePostRequest,
@@ -8602,7 +7338,6 @@ export class ZasielaniePodanApi extends BaseAPI {
    * @param {ApiSktalkReceivePostRequest} apiSktalkReceivePostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanApi
    */
   public apiSktalkReceivePost(
     apiSktalkReceivePostRequest: ApiSktalkReceivePostRequest,
@@ -8619,7 +7354,6 @@ export class ZasielaniePodanApi extends BaseAPI {
    * @param {ApiSktalkReceivePostRequest} apiSktalkReceivePostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanApi
    */
   public apiSktalkSaveToOutboxPost(
     apiSktalkReceivePostRequest: ApiSktalkReceivePostRequest,
@@ -8631,9 +7365,6 @@ export class ZasielaniePodanApi extends BaseAPI {
   }
 }
 
-/**
- * @export
- */
 export const ApiEformFormTemplateRelatedDocumentGetTypeEnum = {
   ClsFXsdEdoc: 'CLS_F_XSD_EDOC',
   ClsFXsltTxtSgn: 'CLS_F_XSLT_TXT_SGN',
@@ -8643,7 +7374,6 @@ export type ApiEformFormTemplateRelatedDocumentGetTypeEnum =
 
 /**
  * ZasielaniePodanAdministrciaApi - axios parameter creator
- * @export
  */
 export const ZasielaniePodanAdministrciaApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -8692,7 +7422,6 @@ export const ZasielaniePodanAdministrciaApiAxiosParamCreator = function (
 
 /**
  * ZasielaniePodanAdministrciaApi - functional programming interface
- * @export
  */
 export const ZasielaniePodanAdministrciaApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ZasielaniePodanAdministrciaApiAxiosParamCreator(configuration)
@@ -8726,7 +7455,6 @@ export const ZasielaniePodanAdministrciaApiFp = function (configuration?: Config
 
 /**
  * ZasielaniePodanAdministrciaApi - factory interface
- * @export
  */
 export const ZasielaniePodanAdministrciaApiFactory = function (
   configuration?: Configuration,
@@ -8751,9 +7479,6 @@ export const ZasielaniePodanAdministrciaApiFactory = function (
 
 /**
  * ZasielaniePodanAdministrciaApi - object-oriented interface
- * @export
- * @class ZasielaniePodanAdministrciaApi
- * @extends {BaseAPI}
  */
 export class ZasielaniePodanAdministrciaApi extends BaseAPI {
   /**
@@ -8761,7 +7486,6 @@ export class ZasielaniePodanAdministrciaApi extends BaseAPI {
    * @summary Spustí synchronizáciu formulárov
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ZasielaniePodanAdministrciaApi
    */
   public administrationEformSynchronizeGet(options?: RawAxiosRequestConfig) {
     return ZasielaniePodanAdministrciaApiFp(this.configuration)

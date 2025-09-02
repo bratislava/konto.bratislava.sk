@@ -244,7 +244,7 @@ const calculateInstallmentAmounts = (
       status = InstallmentPaidStatusEnum.PARTIALLY_PAID
     }
 
-    result.push({ toPay, paid, total: amount, status})
+    result.push({ toPay, paid, total: amount, status })
     remainingPaid -= paid
   })
 

@@ -33,66 +33,37 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-/**
- *
- * @export
- * @interface ClamavVersionDto
- */
 export interface ClamavVersionDto {
   /**
    * clamav version
-   * @type {string}
-   * @memberof ClamavVersionDto
    */
   version: string
 }
-/**
- *
- * @export
- * @interface ScanFileDto
- */
 export interface ScanFileDto {
   /**
    * uid/name of the file
-   * @type {string}
-   * @memberof ScanFileDto
    */
   fileUid: string
   /**
    * uid/name of the bucket. If not set, default bucket will be used
-   * @type {string}
-   * @memberof ScanFileDto
    */
   bucketUid?: string
 }
-/**
- *
- * @export
- * @interface ScanFileResponseDto
- */
 export interface ScanFileResponseDto {
   /**
    * scan result
-   * @type {string}
-   * @memberof ScanFileResponseDto
    */
   status: ScanFileResponseDtoStatusEnum
   /**
    * id of the record in db
-   * @type {string}
-   * @memberof ScanFileResponseDto
    */
   id: string
   /**
    * File Uid
-   * @type {string}
-   * @memberof ScanFileResponseDto
    */
   fileUid: string
   /**
    * more info
-   * @type {string}
-   * @memberof ScanFileResponseDto
    */
   message: string
 }
@@ -105,58 +76,37 @@ export const ScanFileResponseDtoStatusEnum = {
 export type ScanFileResponseDtoStatusEnum =
   (typeof ScanFileResponseDtoStatusEnum)[keyof typeof ScanFileResponseDtoStatusEnum]
 
-/**
- *
- * @export
- * @interface ScanStatusDto
- */
 export interface ScanStatusDto {
   /**
    * uid/name of the file
-   * @type {string}
-   * @memberof ScanStatusDto
    */
   fileUid: string
   /**
    * uid of the bucket
-   * @type {string}
-   * @memberof ScanStatusDto
    */
   bucketUid: string
   /**
    * File size in bytes
-   * @type {number}
-   * @memberof ScanStatusDto
    */
   fileSize: number
   /**
    * File mime type of file
-   * @type {string}
-   * @memberof ScanStatusDto
    */
   fileMimeType: string
   /**
    * scan result
-   * @type {string}
-   * @memberof ScanStatusDto
    */
   status: ScanStatusDtoStatusEnum
   /**
    * other meta data
-   * @type {object}
-   * @memberof ScanStatusDto
    */
   meta?: object
   /**
    * created at
-   * @type {string}
-   * @memberof ScanStatusDto
    */
   createdAt: string
   /**
    * updated at
-   * @type {string}
-   * @memberof ScanStatusDto
    */
   updatedAt: string
 }
@@ -177,60 +127,22 @@ export const ScanStatusDtoStatusEnum = {
 export type ScanStatusDtoStatusEnum =
   (typeof ScanStatusDtoStatusEnum)[keyof typeof ScanStatusDtoStatusEnum]
 
-/**
- *
- * @export
- * @interface ServiceRunningDto
- */
 export interface ServiceRunningDto {
   /**
    * is service running?
-   * @type {boolean}
-   * @memberof ServiceRunningDto
    */
   running: boolean
 }
-/**
- *
- * @export
- * @interface ServicesStatusDto
- */
 export interface ServicesStatusDto {
-  /**
-   *
-   * @type {ServiceRunningDto}
-   * @memberof ServicesStatusDto
-   */
   prisma: ServiceRunningDto
-  /**
-   *
-   * @type {ServiceRunningDto}
-   * @memberof ServicesStatusDto
-   */
   minio: ServiceRunningDto
-  /**
-   *
-   * @type {ServiceRunningDto}
-   * @memberof ServicesStatusDto
-   */
   forms: ServiceRunningDto
-  /**
-   *
-   * @type {ServiceRunningDto}
-   * @memberof ServicesStatusDto
-   */
   clamav: ServiceRunningDto
-  /**
-   *
-   * @type {ClamavVersionDto}
-   * @memberof ServicesStatusDto
-   */
   clamavVersion: ClamavVersionDto
 }
 
 /**
  * HealthApi - axios parameter creator
- * @export
  */
 export const HealthApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -305,7 +217,6 @@ export const HealthApiAxiosParamCreator = function (configuration?: Configuratio
 
 /**
  * HealthApi - functional programming interface
- * @export
  */
 export const HealthApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = HealthApiAxiosParamCreator(configuration)
@@ -359,7 +270,6 @@ export const HealthApiFp = function (configuration?: Configuration) {
 
 /**
  * HealthApi - factory interface
- * @export
  */
 export const HealthApiFactory = function (
   configuration?: Configuration,
@@ -393,9 +303,6 @@ export const HealthApiFactory = function (
 
 /**
  * HealthApi - object-oriented interface
- * @export
- * @class HealthApi
- * @extends {BaseAPI}
  */
 export class HealthApi extends BaseAPI {
   /**
@@ -403,7 +310,6 @@ export class HealthApi extends BaseAPI {
    * @summary Hello world!
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof HealthApi
    */
   public appControllerGetHello(options?: RawAxiosRequestConfig) {
     return HealthApiFp(this.configuration)
@@ -416,7 +322,6 @@ export class HealthApi extends BaseAPI {
    * @summary Check status of this service
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof HealthApi
    */
   public appControllerIsStatusRunning(options?: RawAxiosRequestConfig) {
     return HealthApiFp(this.configuration)
@@ -427,7 +332,6 @@ export class HealthApi extends BaseAPI {
 
 /**
  * ScannerApi - axios parameter creator
- * @export
  */
 export const ScannerApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -669,7 +573,6 @@ export const ScannerApiAxiosParamCreator = function (configuration?: Configurati
 
 /**
  * ScannerApi - functional programming interface
- * @export
  */
 export const ScannerApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ScannerApiAxiosParamCreator(configuration)
@@ -816,7 +719,6 @@ export const ScannerApiFp = function (configuration?: Configuration) {
 
 /**
  * ScannerApi - factory interface
- * @export
  */
 export const ScannerApiFactory = function (
   configuration?: Configuration,
@@ -904,9 +806,6 @@ export const ScannerApiFactory = function (
 
 /**
  * ScannerApi - object-oriented interface
- * @export
- * @class ScannerApi
- * @extends {BaseAPI}
  */
 export class ScannerApi extends BaseAPI {
   /**
@@ -914,7 +813,6 @@ export class ScannerApi extends BaseAPI {
    * @param {string} resourceId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannerApi
    */
   public scannerControllerDeleteFileById(resourceId: string, options?: RawAxiosRequestConfig) {
     return ScannerApiFp(this.configuration)
@@ -928,7 +826,6 @@ export class ScannerApi extends BaseAPI {
    * @param {string} fileUid64
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannerApi
    */
   public scannerControllerGetStatus(
     bucketUid64: string,
@@ -945,7 +842,6 @@ export class ScannerApi extends BaseAPI {
    * @param {string} resourceId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannerApi
    */
   public scannerControllerGetStatusById(resourceId: string, options?: RawAxiosRequestConfig) {
     return ScannerApiFp(this.configuration)
@@ -959,7 +855,6 @@ export class ScannerApi extends BaseAPI {
    * @param {ScanFileDto} scanFileDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannerApi
    */
   public scannerControllerScanFile(scanFileDto: ScanFileDto, options?: RawAxiosRequestConfig) {
     return ScannerApiFp(this.configuration)
@@ -973,7 +868,6 @@ export class ScannerApi extends BaseAPI {
    * @param {Array<object>} requestBody List of files to scan.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannerApi
    */
   public scannerControllerScanFiles(requestBody: Array<object>, options?: RawAxiosRequestConfig) {
     return ScannerApiFp(this.configuration)
@@ -984,7 +878,6 @@ export class ScannerApi extends BaseAPI {
 
 /**
  * StatusesApi - axios parameter creator
- * @export
  */
 export const StatusesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -1193,7 +1086,6 @@ export const StatusesApiAxiosParamCreator = function (configuration?: Configurat
 
 /**
  * StatusesApi - functional programming interface
- * @export
  */
 export const StatusesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = StatusesApiAxiosParamCreator(configuration)
@@ -1343,7 +1235,6 @@ export const StatusesApiFp = function (configuration?: Configuration) {
 
 /**
  * StatusesApi - factory interface
- * @export
  */
 export const StatusesApiFactory = function (
   configuration?: Configuration,
@@ -1427,9 +1318,6 @@ export const StatusesApiFactory = function (
 
 /**
  * StatusesApi - object-oriented interface
- * @export
- * @class StatusesApi
- * @extends {BaseAPI}
  */
 export class StatusesApi extends BaseAPI {
   /**
@@ -1437,7 +1325,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check clamav status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerIsClamavRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -1450,7 +1337,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check forms backend status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerIsFormsRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -1463,7 +1349,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check minio status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerIsMinioRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -1476,7 +1361,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check prisma status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerIsPrismaRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -1489,7 +1373,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check all services status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerStatus(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -1502,7 +1385,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Show clamav version
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerVersion(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)

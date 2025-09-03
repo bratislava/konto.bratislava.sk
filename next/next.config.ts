@@ -63,10 +63,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'cdn-api.bratislava.sk',
-      },
-      {
-        protocol: 'https',
         hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
       },
     ],

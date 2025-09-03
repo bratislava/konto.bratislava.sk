@@ -179,6 +179,9 @@ export default class EnvironmentVariables {
   @EnvBoolean()
   MINIO_USE_SSL: boolean
 
+  @EnvBoolean()
+  MINIO_PATH_STYLE: boolean
+
   @EnvString()
   MINIO_UNSCANNED_BUCKET: string
 

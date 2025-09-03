@@ -201,6 +201,12 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
   return ensureWorkingDay(dueDateBase)
 }
 
+/**
+ * Calculates installment payment amounts and their statuses based on overall paid amount.
+ *
+ * IMPORTANT: The sum of all installments should always equal the total tax amount.
+ * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd).
+ */
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
@@ -251,6 +257,34 @@ const calculateInstallmentAmounts = (
   return result
 }
 
+/**
+ * Determines installment statuses and remaining amounts based on due dates and payment status.
+ *
+ * CRITICAL BUSINESS LOGIC - AGGREGATION WITH SUM PRESERVATION:
+ * When installments are late, their remaining amounts are set to 0 and aggregated into subsequent installments.
+ * This preserves the total sum while preventing payment of late installments individually.
+ *
+ * Example scenario (as mentioned in CR):
+ * - Target tax: 300, Installments: [100, 100, 100]
+ * - 1st installment: 50 paid (50 remaining), but LATE
+ * - 2nd installment: 0 paid, but also LATE
+ * - 3rd installment: 0 paid
+ *
+ * Individual installment amounts to pay: [50, 100, 100] = 250 total remaining
+ *
+ * Result after aggregation:
+ * - 1st: remainingAmount = 0 (set to 0 because LATE, debt moved forward)
+ * - 2nd: remainingAmount = 0 (set to 0 because LATE, debt moved forward)
+ * - 3rd: remainingAmount = 250 (receives all unpaid debt: 50 + 100 + 100)
+ *
+ * Sum check: 0 + 0 + 250 = 250 ✓ (equals total remaining debt)
+ *
+ * This aggregation ensures that:
+ * 1. The sum of remaining amounts always equals the total unpaid debt
+ * 2. Late installments cannot be paid individually (remainingAmount = 0)
+ * 3. All unpaid amounts are consolidated into the next available installment
+ * 4. Users can only pay through the earliest available non-late installment
+ */
 const calculateInstallmentStatus = (
   dueDate: dayjs.Dayjs | undefined,
   today: Date,

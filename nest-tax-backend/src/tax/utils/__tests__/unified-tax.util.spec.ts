@@ -634,6 +634,104 @@ describe('UnifiedTaxUtil', () => {
       expectEqualAsJsonStringsWithDates(output, expected)
     })
   })
+
+  describe('for all possible installment payment scenarios', () => {
+    const testInputArrays = {
+      today: [
+        new Date('2025-01-01'), // Before first due date
+        new Date('2025-01-21T23:00:00.000Z'), // At first due date
+        new Date('2025-01-22'), // After first due date
+        new Date('2025-08-31T22:00:00.000Z'), // At second due date
+        new Date('2025-09-01'), // After second due date
+        new Date('2025-10-31T23:00:00.000Z'), // At third due date
+        new Date('2025-11-01'), // After third due date
+      ],
+      dateOfValidity: [null, new Date('2025-01-01')],
+      taxPayments: [
+        // No payments
+        [],
+        [{ amount: 1100, status: PaymentStatus.FAIL }],
+        [{ amount: 1100, status: PaymentStatus.NEW }],
+        [{ amount: 2200, status: PaymentStatus.NEW }],
+        // Partial first installment
+        [{ amount: 1100, status: PaymentStatus.SUCCESS }],
+        [
+          { amount: 1100, status: PaymentStatus.SUCCESS },
+          { amount: 1100, status: PaymentStatus.FAIL },
+        ],
+        // Full first installment
+        [{ amount: 2200, status: PaymentStatus.SUCCESS }],
+        [
+          { amount: 1100, status: PaymentStatus.SUCCESS },
+          { amount: 1100, status: PaymentStatus.SUCCESS },
+        ],
+        // Partial second installment
+        [{ amount: 3300, status: PaymentStatus.SUCCESS }],
+        [
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+          { amount: 1100, status: PaymentStatus.SUCCESS },
+        ],
+        // Full second installment
+        [{ amount: 4400, status: PaymentStatus.SUCCESS }],
+        [
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+        ],
+        // Partial third installment
+        [{ amount: 5500, status: PaymentStatus.SUCCESS }],
+        [
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+          { amount: 1100, status: PaymentStatus.SUCCESS },
+        ],
+        // Fully paid
+        [{ amount: 6600, status: PaymentStatus.SUCCESS }],
+        [
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+          { amount: 2200, status: PaymentStatus.SUCCESS },
+        ],
+        // Overpaid
+        [{ amount: 7000, status: PaymentStatus.SUCCESS }],
+      ],
+    }
+
+    // eslint-disable-next-line unicorn/no-array-reduce
+    const combinations = Object.entries(testInputArrays).reduce(
+      (acc, [key, values]) => {
+        if (acc.length === 0) {
+          return values.map((value) => ({ [key]: value }))
+        }
+        return acc.flatMap((combo) =>
+          values.map((value) => ({ ...combo, [key]: value })),
+        )
+      },
+      [] as Array<Partial<typeof defaultInput>>,
+    )
+
+    test.each(combinations.map((combination) => [combination]))(
+      'should return total amount for all installments equal to the overall amount for input: %j',
+      (combination) => {
+        const input = { ...defaultInput, ...combination }
+        const output = getTaxDetailPure(input)
+
+        if (
+          !output.installmentPayment.isPossible ||
+          !output.installmentPayment.installments
+        ) {
+          return
+        }
+
+        const totalInstallmentAmount =
+          output.installmentPayment.installments.reduce(
+            (sum, installment) => sum + installment.remainingAmount,
+            0,
+          )
+
+        expect(totalInstallmentAmount).toBe(output.overallBalance)
+      },
+    )
+  })
 })
 
 describe('getTaxDetailPureForInstallmentGenerator', () => {

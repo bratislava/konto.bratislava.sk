@@ -201,10 +201,16 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
   return ensureWorkingDay(dueDateBase)
 }
 
+/**
+ * Calculates installment payment amounts and their statuses based on overall paid amount.
+ *
+ * IMPORTANT: The sum of all installments should always equal the total tax amount.
+ * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd).
+ */
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
-): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
+) => {
   if (installments.length !== 3) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
@@ -226,6 +232,7 @@ const calculateInstallmentAmounts = (
   const result: {
     toPay: number
     paid: number
+    total: number
     status: InstallmentPaidStatusEnum
   }[] = []
   let remainingPaid = overallPaid
@@ -243,11 +250,110 @@ const calculateInstallmentAmounts = (
       status = InstallmentPaidStatusEnum.PARTIALLY_PAID
     }
 
-    result.push({ toPay, paid, status })
+    result.push({ toPay, paid, total: amount, status })
     remainingPaid -= paid
   })
 
   return result
+}
+
+/**
+ * Determines installment statuses and remaining amounts based on due dates and payment status.
+ *
+ * CRITICAL BUSINESS LOGIC - AGGREGATION WITH SUM PRESERVATION:
+ * When installments are late, their remaining amounts are set to 0 and aggregated into subsequent installments.
+ * This preserves the total sum while preventing payment of late installments individually.
+ *
+ * Example scenario (as mentioned in CR):
+ * - Target tax: 300, Installments: [100, 100, 100]
+ * - 1st installment: 50 paid (50 remaining), but LATE
+ * - 2nd installment: 0 paid, but also LATE
+ * - 3rd installment: 0 paid
+ *
+ * Individual installment amounts to pay: [50, 100, 100] = 250 total remaining
+ *
+ * Result after aggregation:
+ * - 1st: remainingAmount = 0 (set to 0 because LATE, debt moved forward)
+ * - 2nd: remainingAmount = 0 (set to 0 because LATE, debt moved forward)
+ * - 3rd: remainingAmount = 250 (receives all unpaid debt: 50 + 100 + 100)
+ *
+ * Sum check: 0 + 0 + 250 = 250 ✓ (equals total remaining debt)
+ *
+ * This aggregation ensures that:
+ * 1. The sum of remaining amounts always equals the total unpaid debt
+ * 2. Late installments cannot be paid individually (remainingAmount = 0)
+ * 3. All unpaid amounts are consolidated into the next available installment
+ * 4. Users can only pay through the earliest available non-late installment
+ */
+const calculateInstallmentStatus = (
+  dueDate: dayjs.Dayjs | undefined,
+  today: Date,
+  dueDateSecondPayment: dayjs.Dayjs,
+  installmentAmounts: {
+    toPay: number
+    paid: number
+    total: number
+    status: InstallmentPaidStatusEnum
+  }[],
+) => {
+  const dueDateFirstInstallmentInFuture = !dueDate || dueDate > dayjs(today)
+  const dueDateSecondInstallmentInFuture = dueDateSecondPayment > dayjs(today)
+  const isFirstInstallmentLate =
+    !dueDateFirstInstallmentInFuture &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+  const isSecondInstallmentLate =
+    !dueDateSecondInstallmentInFuture &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[1].status !== InstallmentPaidStatusEnum.OVER_PAID
+  // First installment status logic
+  const firstInstallmentStatus =
+    isFirstInstallmentLate || isSecondInstallmentLate
+      ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
+      : installmentAmounts[0].status
+  const firstInstallmentRemainingAmount =
+    isFirstInstallmentLate || isSecondInstallmentLate
+      ? 0
+      : installmentAmounts[0].toPay
+
+  // Second installment status logic
+  let secondInstallmentStatus: InstallmentPaidStatusEnum
+  let secondInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    secondInstallmentStatus = InstallmentPaidStatusEnum.AFTER_DUE_DATE
+    secondInstallmentRemainingAmount = 0
+  } else if (isFirstInstallmentLate) {
+    secondInstallmentStatus = installmentAmounts[0].status
+    secondInstallmentRemainingAmount =
+      installmentAmounts[1].toPay + installmentAmounts[0].toPay
+  } else {
+    secondInstallmentStatus = installmentAmounts[1].status
+    secondInstallmentRemainingAmount = installmentAmounts[1].toPay
+  }
+
+  // Third installment status logic
+  let thirdInstallmentStatus: InstallmentPaidStatusEnum
+  let thirdInstallmentRemainingAmount: number
+
+  if (isSecondInstallmentLate) {
+    thirdInstallmentStatus = installmentAmounts[1].status
+    thirdInstallmentRemainingAmount = installmentAmounts.reduce(
+      (agg, i) => i.toPay + agg,
+      0,
+    )
+  } else {
+    thirdInstallmentStatus = installmentAmounts[2].status
+    thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
+  }
+  return {
+    firstInstallmentStatus,
+    firstInstallmentRemainingAmount,
+    secondInstallmentStatus,
+    secondInstallmentRemainingAmount,
+    thirdInstallmentStatus,
+    thirdInstallmentRemainingAmount,
+  }
 }
 
 const calculateInstallmentPaymentDetails = (options: {
@@ -274,12 +380,6 @@ const calculateInstallmentPaymentDetails = (options: {
     variableSymbol,
     specificSymbol,
   } = options
-  if (overallAmount - overallPaid <= 0) {
-    return {
-      isPossible: false,
-      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-    }
-  }
 
   // Midnight start of the next day
   const dueDateSecondPayment = dayjs.tz(
@@ -291,10 +391,19 @@ const calculateInstallmentPaymentDetails = (options: {
     bratislavaTimeZone,
   )
 
-  if (dayjs(today) > dueDateSecondPayment) {
+  if (overallAmount - overallPaid <= 0) {
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+      dueDateLastPayment: dueDateThirdPayment.toDate(),
+    }
+  }
+
+  if (dayjs(today) > dueDateThirdPayment) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+      dueDateLastPayment: dueDateThirdPayment.toDate(),
     }
   }
 
@@ -311,36 +420,41 @@ const calculateInstallmentPaymentDetails = (options: {
     overallPaid,
   )
 
-  const dueDateInFuture = !dueDate || dueDate > dayjs(today)
-  const isFirstInstallmentLate =
-    !dueDateInFuture &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+  const {
+    firstInstallmentStatus,
+    firstInstallmentRemainingAmount,
+    secondInstallmentStatus,
+    secondInstallmentRemainingAmount,
+    thirdInstallmentStatus,
+    thirdInstallmentRemainingAmount,
+  } = calculateInstallmentStatus(
+    dueDate,
+    today,
+    dueDateSecondPayment,
+    installmentAmounts,
+  )
 
   const installmentDetails: ResponseInstallmentItemDto[] = [
     {
       installmentNumber: 1,
       dueDate: dueDate?.toDate(),
-      status: isFirstInstallmentLate
-        ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
-        : installmentAmounts[0].status,
-      remainingAmount: isFirstInstallmentLate ? 0 : installmentAmounts[0].toPay,
+      status: firstInstallmentStatus,
+      remainingAmount: firstInstallmentRemainingAmount,
+      totalInstallmentAmount: installmentAmounts[0].total,
     },
     {
       installmentNumber: 2,
       dueDate: dueDateSecondPayment.toDate(),
-      status: isFirstInstallmentLate
-        ? installmentAmounts[0].status
-        : installmentAmounts[1].status,
-      remainingAmount: isFirstInstallmentLate
-        ? installmentAmounts[1].toPay + installmentAmounts[0].toPay
-        : installmentAmounts[1].toPay,
+      status: secondInstallmentStatus,
+      remainingAmount: secondInstallmentRemainingAmount,
+      totalInstallmentAmount: installmentAmounts[1].total,
     },
     {
       installmentNumber: 3,
       dueDate: dueDateThirdPayment.toDate(),
-      status: installmentAmounts[2].status,
-      remainingAmount: installmentAmounts[2].toPay,
+      status: thirdInstallmentStatus,
+      remainingAmount: thirdInstallmentRemainingAmount,
+      totalInstallmentAmount: installmentAmounts[2].total,
     },
   ]
 
@@ -384,6 +498,7 @@ const calculateInstallmentPaymentDetails = (options: {
 
   return {
     isPossible: true,
+    dueDateLastPayment: dueDateThirdPayment.toDate(),
     installments: installmentDetails,
     activeInstallment,
   }

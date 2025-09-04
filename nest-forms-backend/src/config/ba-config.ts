@@ -138,6 +138,7 @@ export default class BaConfig {
       port: this.validatedConfig.MINIO_PORT,
       secretKey: this.validatedConfig.MINIO_SECRET_KEY,
       useSSL: this.validatedConfig.MINIO_USE_SSL,
+      pathStyle: this.validatedConfig.MINIO_PATH_STYLE,
       buckets: {
         unscanned: this.validatedConfig.MINIO_UNSCANNED_BUCKET,
         safe: this.validatedConfig.MINIO_SAFE_BUCKET,

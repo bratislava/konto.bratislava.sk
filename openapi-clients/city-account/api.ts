@@ -33,101 +33,63 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-/**
- *
- * @export
- * @interface ChangeEmailRequestDto
- */
 export interface ChangeEmailRequestDto {
   /**
    * New email for a user
-   * @type {string}
-   * @memberof ChangeEmailRequestDto
    */
   newEmail: string
 }
-/**
- *
- * @export
- * @interface CognitoGetUserData
- */
 export interface CognitoGetUserData {
   /**
    * Id from cognito
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   sub: string
   /**
    * Is email verified in cognito?
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   email_verified?: string
   /**
    * Usually name of the company
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   name?: string
   /**
    * Which type of verified tier it is?
-   * @type {object}
-   * @memberof CognitoGetUserData
    */
   'custom:tier'?: object
   /**
    * Which type of account it is?
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
   /**
    * First name
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   given_name?: string
   /**
    * Last name
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   family_name?: string
   /**
    * email
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   email: string
   /**
    * User Id from cognito, same as sub
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   idUser: string
   /**
    * User create date
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   UserCreateDate?: string
   /**
    * User updated date
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   UserLastModifiedDate?: string
   /**
    * Is user enabled?
-   * @type {boolean}
-   * @memberof CognitoGetUserData
    */
   Enabled: boolean
   /**
    * Cognito confirmation statue
-   * @type {string}
-   * @memberof CognitoGetUserData
    */
   UserStatus?: CognitoGetUserDataUserStatusEnum
 }
@@ -153,28 +115,17 @@ export const CognitoGetUserDataUserStatusEnum = {
 export type CognitoGetUserDataUserStatusEnum =
   (typeof CognitoGetUserDataUserStatusEnum)[keyof typeof CognitoGetUserDataUserStatusEnum]
 
-/**
- *
- * @export
- * @interface DeactivateAccountResponseDto
- */
 export interface DeactivateAccountResponseDto {
   /**
    * Marks if the operation has been successful
-   * @type {boolean}
-   * @memberof DeactivateAccountResponseDto
    */
   success: boolean
   /**
    * Status of the anonymization of user in bloomreach
-   * @type {string}
-   * @memberof DeactivateAccountResponseDto
    */
   bloomreachRemoved: DeactivateAccountResponseDtoBloomreachRemovedEnum
   /**
    * Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.
-   * @type {boolean}
-   * @memberof DeactivateAccountResponseDto
    */
   taxDeliveryMethodsRemoved: boolean
 }
@@ -191,8 +142,6 @@ export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
 
 /**
  * Type of Gdpr category
- * @export
- * @enum {string}
  */
 
 export const GDPRCategoryEnum = {
@@ -208,8 +157,6 @@ export type GDPRCategoryEnum = (typeof GDPRCategoryEnum)[keyof typeof GDPRCatego
 
 /**
  * Type of subType - unsubscribe or subscribe
- * @export
- * @enum {string}
  */
 
 export const GDPRSubTypeEnum = {
@@ -221,8 +168,6 @@ export type GDPRSubTypeEnum = (typeof GDPRSubTypeEnum)[keyof typeof GDPRSubTypeE
 
 /**
  * Type of Gdpr subscription
- * @export
- * @enum {string}
  */
 
 export const GDPRTypeEnum = {
@@ -235,118 +180,64 @@ export const GDPRTypeEnum = {
 
 export type GDPRTypeEnum = (typeof GDPRTypeEnum)[keyof typeof GDPRTypeEnum]
 
-/**
- *
- * @export
- * @interface GdprDataDto
- */
 export interface GdprDataDto {
   /**
    * Type of Gdpr subscription
-   * @type {GDPRTypeEnum}
-   * @memberof GdprDataDto
    */
   type: GDPRTypeEnum
   /**
    * Type of Gdpr category
-   * @type {GDPRCategoryEnum}
-   * @memberof GdprDataDto
    */
   category: GDPRCategoryEnum
 }
 
-/**
- *
- * @export
- * @interface GetUserDataByBirthNumbersBatchResponseDto
- */
 export interface GetUserDataByBirthNumbersBatchResponseDto {
   /**
    * A record of users keyed by their birth number
-   * @type {{ [key: string]: ResponseUserByBirthNumberDto; }}
-   * @memberof GetUserDataByBirthNumbersBatchResponseDto
    */
   users: { [key: string]: ResponseUserByBirthNumberDto }
 }
-/**
- *
- * @export
- * @interface ManuallyVerifyUserRequestDto
- */
 export interface ManuallyVerifyUserRequestDto {
   /**
    * userBirthNumber
-   * @type {string}
-   * @memberof ManuallyVerifyUserRequestDto
    */
   birthNumber: string
   /**
    * Ifo of the user
-   * @type {string}
-   * @memberof ManuallyVerifyUserRequestDto
    */
   ifo?: string
   /**
    * ico
-   * @type {string}
-   * @memberof ManuallyVerifyUserRequestDto
    */
   ico?: string
 }
-/**
- *
- * @export
- * @interface MarkDeceasedAccountRequestDto
- */
 export interface MarkDeceasedAccountRequestDto {
   /**
    * List of birthnumbers/external IDs to mark as deceased
-   * @type {Array<string>}
-   * @memberof MarkDeceasedAccountRequestDto
    */
   birthNumbers: Array<string>
 }
-/**
- *
- * @export
- * @interface MarkDeceasedAccountResponseDto
- */
 export interface MarkDeceasedAccountResponseDto {
   /**
    * List of birth numbers with success marked for each data storage.
-   * @type {Array<MarkDeceasedAccountResponseItemDto>}
-   * @memberof MarkDeceasedAccountResponseDto
    */
   results: Array<MarkDeceasedAccountResponseItemDto>
 }
-/**
- *
- * @export
- * @interface MarkDeceasedAccountResponseItemDto
- */
 export interface MarkDeceasedAccountResponseItemDto {
   /**
    * Birth number of the deceased person
-   * @type {string}
-   * @memberof MarkDeceasedAccountResponseItemDto
    */
   birthNumber: string
   /**
    * Whether the user was successfully marked as deceased in the database
-   * @type {boolean}
-   * @memberof MarkDeceasedAccountResponseItemDto
    */
   databaseMarked: boolean
   /**
    * Whether the user was successfully archived in Cognito / mail was changed.
-   * @type {boolean}
-   * @memberof MarkDeceasedAccountResponseItemDto
    */
   cognitoArchived: boolean
   /**
    * Status of the anonymization of user in Bloomreach
-   * @type {string}
-   * @memberof MarkDeceasedAccountResponseItemDto
    */
   bloomreachRemoved?: MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum
 }
@@ -361,181 +252,92 @@ export const MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum = {
 export type MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum =
   (typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum)[keyof typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum]
 
-/**
- *
- * @export
- * @interface OnlySuccessDto
- */
 export interface OnlySuccessDto {
   /**
    * Marks if the operation has been successful
-   * @type {boolean}
-   * @memberof OnlySuccessDto
    */
   success: boolean
 }
-/**
- *
- * @export
- * @interface RequestBatchQueryUsersByBirthNumbersDto
- */
 export interface RequestBatchQueryUsersByBirthNumbersDto {
   /**
    * Birth numbers without slash which should be retrieved from user database.
-   * @type {Array<string>}
-   * @memberof RequestBatchQueryUsersByBirthNumbersDto
    */
   birthNumbers: Array<string>
 }
-/**
- *
- * @export
- * @interface RequestBodyValidateEdeskForUserIdsDto
- */
 export interface RequestBodyValidateEdeskForUserIdsDto {
   /**
    * How many records to skip
-   * @type {number}
-   * @memberof RequestBodyValidateEdeskForUserIdsDto
    */
   offset?: number
 }
-/**
- *
- * @export
- * @interface RequestBodyVerifyIdentityCardDto
- */
 export interface RequestBodyVerifyIdentityCardDto {
   /**
    * Birth number for check
-   * @type {string}
-   * @memberof RequestBodyVerifyIdentityCardDto
    */
   birthNumber: string
   /**
    * String of identitiy card
-   * @type {string}
-   * @memberof RequestBodyVerifyIdentityCardDto
    */
   identityCard: string
   /**
    * Token returned by turnstile captcha
-   * @type {string}
-   * @memberof RequestBodyVerifyIdentityCardDto
    */
   turnstileToken: string
 }
-/**
- *
- * @export
- * @interface RequestBodyVerifyWithEidDto
- */
 export interface RequestBodyVerifyWithEidDto {
   /**
    * Token returned by https://fix.slovensko-sk-api.bratislava.sk/login
-   * @type {string}
-   * @memberof RequestBodyVerifyWithEidDto
    */
   oboToken: string
 }
-/**
- *
- * @export
- * @interface RequestBodyVerifyWithRpoDto
- */
 export interface RequestBodyVerifyWithRpoDto {
   /**
    * ico
-   * @type {string}
-   * @memberof RequestBodyVerifyWithRpoDto
    */
   ico: string
   /**
    * Birth number of legal entity\'s executive
-   * @type {string}
-   * @memberof RequestBodyVerifyWithRpoDto
    */
   birthNumber: string
   /**
    * Identity card of legal entity\'s executive
-   * @type {string}
-   * @memberof RequestBodyVerifyWithRpoDto
    */
   identityCard: string
   /**
    * Token returned by turnstile captcha
-   * @type {string}
-   * @memberof RequestBodyVerifyWithRpoDto
    */
   turnstileToken: string
 }
-/**
- *
- * @export
- * @interface RequestDeleteTaxDto
- */
 export interface RequestDeleteTaxDto {
   /**
    * Year of tax
-   * @type {number}
-   * @memberof RequestDeleteTaxDto
    */
   year: number
   /**
    * Birth number in format with slash
-   * @type {string}
-   * @memberof RequestDeleteTaxDto
    */
   birthNumber: string
 }
-/**
- *
- * @export
- * @interface RequestGdprDataDto
- */
 export interface RequestGdprDataDto {
-  /**
-   *
-   * @type {Array<GdprDataDto>}
-   * @memberof RequestGdprDataDto
-   */
   gdprData: Array<GdprDataDto>
 }
-/**
- *
- * @export
- * @interface RequestValidatePhysicalEntityRfoDto
- */
 export interface RequestValidatePhysicalEntityRfoDto {
   /**
    * Id of the physical entity object in db
-   * @type {string}
-   * @memberof RequestValidatePhysicalEntityRfoDto
    */
   physicalEntityId: string
 }
-/**
- *
- * @export
- * @interface ResponseCustomErrorVerificationEidDto
- */
 export interface ResponseCustomErrorVerificationEidDto {
   /**
    * status
-   * @type {string}
-   * @memberof ResponseCustomErrorVerificationEidDto
    */
   status: string
   /**
    * Message about error
-   * @type {string}
-   * @memberof ResponseCustomErrorVerificationEidDto
    */
   message: string
   /**
    * Error name for decoding.
-   * @type {string}
-   * @memberof ResponseCustomErrorVerificationEidDto
    */
   errorName: ResponseCustomErrorVerificationEidDtoErrorNameEnum
 }
@@ -564,28 +366,17 @@ export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
 export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
   (typeof ResponseCustomErrorVerificationEidDtoErrorNameEnum)[keyof typeof ResponseCustomErrorVerificationEidDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface ResponseCustomErrorVerificationIdentityCardDto
- */
 export interface ResponseCustomErrorVerificationIdentityCardDto {
   /**
    * status
-   * @type {string}
-   * @memberof ResponseCustomErrorVerificationIdentityCardDto
    */
   status: string
   /**
    * Message about error
-   * @type {string}
-   * @memberof ResponseCustomErrorVerificationIdentityCardDto
    */
   message: string
   /**
    * Error name for decoding.
-   * @type {string}
-   * @memberof ResponseCustomErrorVerificationIdentityCardDto
    */
   errorName: ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum
 }
@@ -614,426 +405,257 @@ export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
 export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
   (typeof ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum)[keyof typeof ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface ResponseGdprLegalPersonDataDto
- */
 export interface ResponseGdprLegalPersonDataDto {
   /**
-   * Type of Gdpr subscription
-   * @type {GDPRTypeEnum}
-   * @memberof ResponseGdprLegalPersonDataDto
-   */
-  type: GDPRTypeEnum
-  /**
    * Type of Gdpr category
-   * @type {GDPRCategoryEnum}
-   * @memberof ResponseGdprLegalPersonDataDto
    */
   category: GDPRCategoryEnum
   /**
+   * Type of Gdpr subscription
+   */
+  type: GDPRTypeEnum
+  /**
    * Type of subType - unsubscribe or subscribe
-   * @type {GDPRSubTypeEnum}
-   * @memberof ResponseGdprLegalPersonDataDto
    */
   subType: GDPRSubTypeEnum
 }
 
-/**
- *
- * @export
- * @interface ResponseGdprUserDataDto
- */
 export interface ResponseGdprUserDataDto {
   /**
    * Type of Gdpr category
-   * @type {GDPRCategoryEnum}
-   * @memberof ResponseGdprUserDataDto
    */
   category: GDPRCategoryEnum
   /**
    * Type of Gdpr subscription
-   * @type {GDPRTypeEnum}
-   * @memberof ResponseGdprUserDataDto
    */
   type: GDPRTypeEnum
   /**
    * Type of subType - unsubscribe or subscribe
-   * @type {GDPRSubTypeEnum}
-   * @memberof ResponseGdprUserDataDto
    */
   subType: GDPRSubTypeEnum
 }
 
-/**
- *
- * @export
- * @interface ResponseInternalServerErrorDto
- */
 export interface ResponseInternalServerErrorDto {
   /**
    * statusCode
-   * @type {number}
-   * @memberof ResponseInternalServerErrorDto
    */
   statusCode: number
   /**
    * Message about error
-   * @type {string}
-   * @memberof ResponseInternalServerErrorDto
    */
   message: string
 }
-/**
- *
- * @export
- * @interface ResponseLegalPersonDataDto
- */
 export interface ResponseLegalPersonDataDto {
   /**
    * Local ID of user
-   * @type {string}
-   * @memberof ResponseLegalPersonDataDto
    */
   id: string
   /**
    * Created timestamp
-   * @type {string}
-   * @memberof ResponseLegalPersonDataDto
    */
   createdAt: string
   /**
    * Last updated timestamp
-   * @type {string}
-   * @memberof ResponseLegalPersonDataDto
    */
   updatedAt: string
   /**
    * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
-   * @type {string}
-   * @memberof ResponseLegalPersonDataDto
    */
   externalId: string | null
   /**
    * Ico of company, which this user represents
-   * @type {string}
-   * @memberof ResponseLegalPersonDataDto
    */
   ico: string | null
   /**
    * Email
-   * @type {string}
-   * @memberof ResponseLegalPersonDataDto
    */
   email: string | null
   /**
    * Birth number
-   * @type {string}
-   * @memberof ResponseLegalPersonDataDto
    */
   birthNumber: string | null
   /**
    * Subscription Data in array
-   * @type {Array<ResponseGdprLegalPersonDataDto>}
-   * @memberof ResponseLegalPersonDataDto
    */
   gdprData: Array<ResponseGdprLegalPersonDataDto>
 }
-/**
- *
- * @export
- * @interface ResponseLegalPersonDataSimpleDto
- */
 export interface ResponseLegalPersonDataSimpleDto {
   /**
    * Local ID of user
-   * @type {string}
-   * @memberof ResponseLegalPersonDataSimpleDto
    */
   id: string
   /**
    * Created timestamp
-   * @type {string}
-   * @memberof ResponseLegalPersonDataSimpleDto
    */
   createdAt: string
   /**
    * Last updated timestamp
-   * @type {string}
-   * @memberof ResponseLegalPersonDataSimpleDto
    */
   updatedAt: string
   /**
    * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
-   * @type {string}
-   * @memberof ResponseLegalPersonDataSimpleDto
    */
   externalId: string | null
   /**
    * Ico of company, which this user represents
-   * @type {string}
-   * @memberof ResponseLegalPersonDataSimpleDto
    */
   ico: string | null
   /**
    * Email
-   * @type {string}
-   * @memberof ResponseLegalPersonDataSimpleDto
    */
   email: string | null
   /**
    * Birth number
-   * @type {string}
-   * @memberof ResponseLegalPersonDataSimpleDto
    */
   birthNumber: string | null
 }
-/**
- *
- * @export
- * @interface ResponseNotFoundErrorVerificationIdentityCardDto
- */
 export interface ResponseNotFoundErrorVerificationIdentityCardDto {
   /**
    * status
-   * @type {string}
-   * @memberof ResponseNotFoundErrorVerificationIdentityCardDto
    */
   status: string
   /**
    * Message about error
-   * @type {string}
-   * @memberof ResponseNotFoundErrorVerificationIdentityCardDto
    */
   message: string
   /**
    * Error name for decoding.
-   * @type {string}
-   * @memberof ResponseNotFoundErrorVerificationIdentityCardDto
    */
   errorName: string
 }
-/**
- *
- * @export
- * @interface ResponseUserByBirthNumberDto
- */
 export interface ResponseUserByBirthNumberDto {
   /**
    * userBirthNumber
-   * @type {string}
-   * @memberof ResponseUserByBirthNumberDto
    */
   birthNumber: string | null
   /**
    * email
-   * @type {string}
-   * @memberof ResponseUserByBirthNumberDto
    */
   email: string | null
   /**
    * Cognito Id
-   * @type {string}
-   * @memberof ResponseUserByBirthNumberDto
    */
   externalId: string | null
   /**
    * Special user attribute for user segmentation
-   * @type {object}
-   * @memberof ResponseUserByBirthNumberDto
    */
   userAttribute: object
   /**
    * Tier from cognito
-   * @type {object}
-   * @memberof ResponseUserByBirthNumberDto
    */
   cognitoAttributes?: object
 }
-/**
- *
- * @export
- * @interface ResponseUserDataBasicDto
- */
 export interface ResponseUserDataBasicDto {
   /**
    * Local ID of user
-   * @type {string}
-   * @memberof ResponseUserDataBasicDto
    */
   id: string
   /**
    * Created timestamp
-   * @type {string}
-   * @memberof ResponseUserDataBasicDto
    */
   createdAt: string
   /**
    * Last updated timestamp
-   * @type {string}
-   * @memberof ResponseUserDataBasicDto
    */
   updatedAt: string
   /**
    * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
-   * @type {string}
-   * @memberof ResponseUserDataBasicDto
    */
   externalId: string | null
   /**
    * Email
-   * @type {string}
-   * @memberof ResponseUserDataBasicDto
    */
   email: string | null
   /**
    * Birth number
-   * @type {string}
-   * @memberof ResponseUserDataBasicDto
    */
   birthNumber: string | null
   /**
    * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
-   * @type {UserOfficialCorrespondenceChannelEnum}
-   * @memberof ResponseUserDataBasicDto
    */
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
   /**
    * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
-   * @type {boolean}
-   * @memberof ResponseUserDataBasicDto
    */
   wasVerifiedBeforeTaxDeadline: boolean
   /**
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
-   * @type {boolean}
-   * @memberof ResponseUserDataBasicDto
    */
   showEmailCommunicationBanner: boolean
 }
 
-/**
- *
- * @export
- * @interface ResponseUserDataDto
- */
 export interface ResponseUserDataDto {
   /**
    * Local ID of user
-   * @type {string}
-   * @memberof ResponseUserDataDto
    */
   id: string
   /**
    * Created timestamp
-   * @type {string}
-   * @memberof ResponseUserDataDto
    */
   createdAt: string
   /**
    * Last updated timestamp
-   * @type {string}
-   * @memberof ResponseUserDataDto
    */
   updatedAt: string
   /**
    * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
-   * @type {string}
-   * @memberof ResponseUserDataDto
    */
   externalId: string | null
   /**
    * Email
-   * @type {string}
-   * @memberof ResponseUserDataDto
    */
   email: string | null
   /**
    * Birth number
-   * @type {string}
-   * @memberof ResponseUserDataDto
    */
   birthNumber: string | null
   /**
    * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
-   * @type {UserOfficialCorrespondenceChannelEnum}
-   * @memberof ResponseUserDataDto
    */
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
   /**
    * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
-   * @type {boolean}
-   * @memberof ResponseUserDataDto
    */
   wasVerifiedBeforeTaxDeadline: boolean
   /**
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
-   * @type {boolean}
-   * @memberof ResponseUserDataDto
    */
   showEmailCommunicationBanner: boolean
   /**
    * Subscription Data in array
-   * @type {Array<ResponseGdprUserDataDto>}
-   * @memberof ResponseUserDataDto
    */
   gdprData: Array<ResponseGdprUserDataDto>
 }
 
-/**
- *
- * @export
- * @interface ResponseValidatePhysicalEntityRfoDto
- */
 export interface ResponseValidatePhysicalEntityRfoDto {
   /**
    * Entity data (updated if new info was found in state registry)
-   * @type {object}
-   * @memberof ResponseValidatePhysicalEntityRfoDto
    */
   physicalEntity: object
   /**
    * Data received from RFO
-   * @type {object}
-   * @memberof ResponseValidatePhysicalEntityRfoDto
    */
   rfoData: object
   /**
    * Data received from UPVS
-   * @type {object}
-   * @memberof ResponseValidatePhysicalEntityRfoDto
    */
   upvsResult: object
 }
-/**
- *
- * @export
- * @interface ResponseVerificationDto
- */
 export interface ResponseVerificationDto {
   /**
    * number of status code
-   * @type {number}
-   * @memberof ResponseVerificationDto
    */
   statusCode: number
   /**
    * status
-   * @type {string}
-   * @memberof ResponseVerificationDto
    */
   status: string
   /**
    * Message about update
-   * @type {string}
-   * @memberof ResponseVerificationDto
    */
   message: string
   /**
    * Error if exists
-   * @type {string}
-   * @memberof ResponseVerificationDto
    */
   errorName?: ResponseVerificationDtoErrorNameEnum
 }
@@ -1062,34 +684,21 @@ export const ResponseVerificationDtoErrorNameEnum = {
 export type ResponseVerificationDtoErrorNameEnum =
   (typeof ResponseVerificationDtoErrorNameEnum)[keyof typeof ResponseVerificationDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface ResponseVerificationIdentityCardToQueueDto
- */
 export interface ResponseVerificationIdentityCardToQueueDto {
   /**
    * number of status code
-   * @type {number}
-   * @memberof ResponseVerificationIdentityCardToQueueDto
    */
   statusCode: number
   /**
    * status
-   * @type {string}
-   * @memberof ResponseVerificationIdentityCardToQueueDto
    */
   status: string
   /**
    * Message about update
-   * @type {string}
-   * @memberof ResponseVerificationIdentityCardToQueueDto
    */
   message: ResponseVerificationIdentityCardToQueueDtoMessageEnum
   /**
    * Error if exists
-   * @type {string}
-   * @memberof ResponseVerificationIdentityCardToQueueDto
    */
   errorName?: ResponseVerificationIdentityCardToQueueDtoErrorNameEnum
 }
@@ -1127,7 +736,6 @@ export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
 
 /**
  * @type UserControllerChangeEmail200Response
- * @export
  */
 export type UserControllerChangeEmail200Response =
   | ResponseLegalPersonDataSimpleDto
@@ -1135,7 +743,6 @@ export type UserControllerChangeEmail200Response =
 
 /**
  * @type UserControllerGetOrCreateUser200Response
- * @export
  */
 export type UserControllerGetOrCreateUser200Response =
   | ResponseLegalPersonDataDto
@@ -1143,8 +750,6 @@ export type UserControllerGetOrCreateUser200Response =
 
 /**
  * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
- * @export
- * @enum {string}
  */
 
 export const UserOfficialCorrespondenceChannelEnum = {
@@ -1156,64 +761,41 @@ export const UserOfficialCorrespondenceChannelEnum = {
 export type UserOfficialCorrespondenceChannelEnum =
   (typeof UserOfficialCorrespondenceChannelEnum)[keyof typeof UserOfficialCorrespondenceChannelEnum]
 
-/**
- *
- * @export
- * @interface UserVerifyState
- */
 export interface UserVerifyState {
   /**
    * Id of given user\'s email, if exists
-   * @type {string}
-   * @memberof UserVerifyState
    */
   externalId?: string | null
   /**
    * Type of user.
-   * @type {string}
-   * @memberof UserVerifyState
    */
   type?: UserVerifyStateTypeEnum
   /**
    * Marks if the user with given email is in database.
-   * @type {boolean}
-   * @memberof UserVerifyState
    */
   isInDatabase: boolean
   /**
    * Marks if the user with given email is in cognito.
-   * @type {boolean}
-   * @memberof UserVerifyState
    */
   isInCognito: boolean
   /**
    * Current cognito tier, marks the status of verifying.
-   * @type {string}
-   * @memberof UserVerifyState
    */
   cognitoTier?: UserVerifyStateCognitoTierEnum
   /**
    * If set, then this number was used for verifiying, but is already in our database for other user.
-   * @type {string}
-   * @memberof UserVerifyState
    */
   birthNumberAlreadyExists?: string
   /**
    * If set, then this number was used for verifiying, but is already in our database for other user.
-   * @type {string}
-   * @memberof UserVerifyState
    */
   birthNumberIcoAlreadyExists?: string
   /**
    * Marks if the user with given email is verified.
-   * @type {boolean}
-   * @memberof UserVerifyState
    */
   isVerified: boolean
   /**
    * Possible cause of the verify error.
-   * @type {string}
-   * @memberof UserVerifyState
    */
   possibleCause?: string
 }
@@ -1237,110 +819,59 @@ export const UserVerifyStateCognitoTierEnum = {
 export type UserVerifyStateCognitoTierEnum =
   (typeof UserVerifyStateCognitoTierEnum)[keyof typeof UserVerifyStateCognitoTierEnum]
 
-/**
- *
- * @export
- * @interface ValidateEdeskForUserIdsResponseDto
- */
 export interface ValidateEdeskForUserIdsResponseDto {
   /**
    * Number of users that were validated
-   * @type {number}
-   * @memberof ValidateEdeskForUserIdsResponseDto
    */
   validatedUsers: number
   /**
    * Temp debug data
-   * @type {object}
-   * @memberof ValidateEdeskForUserIdsResponseDto
    */
   enitites: object
 }
-/**
- *
- * @export
- * @interface ValidatedUsersToPhysicalEntitiesResponseDto
- */
 export interface ValidatedUsersToPhysicalEntitiesResponseDto {
-  /**
-   *
-   * @type {number}
-   * @memberof ValidatedUsersToPhysicalEntitiesResponseDto
-   */
   existingPhysicalEntitiesUpdated: number
-  /**
-   *
-   * @type {number}
-   * @memberof ValidatedUsersToPhysicalEntitiesResponseDto
-   */
   newPhysicalEntitiesCreated: number
 }
-/**
- *
- * @export
- * @interface VerificationDataForUser
- */
 export interface VerificationDataForUser {
   /**
    * Id of the user in cognito.
-   * @type {string}
-   * @memberof VerificationDataForUser
    */
   userId: string
   /**
    * userBirthNumber
-   * @type {string}
-   * @memberof VerificationDataForUser
    */
   birthNumber: string
   /**
    * Id card used for verification.
-   * @type {string}
-   * @memberof VerificationDataForUser
    */
   idCard: string
   /**
    * Ico used for verification.
-   * @type {string}
-   * @memberof VerificationDataForUser
    */
   ico?: string
   /**
    * Created timestamp
-   * @type {string}
-   * @memberof VerificationDataForUser
    */
   verifyStart: string
 }
-/**
- *
- * @export
- * @interface VerificationDataForUserResponseDto
- */
 export interface VerificationDataForUserResponseDto {
   /**
    * Id of the user in cognito.
-   * @type {string}
-   * @memberof VerificationDataForUserResponseDto
    */
   externalId: string | null
   /**
    * Email of the user.
-   * @type {string}
-   * @memberof VerificationDataForUserResponseDto
    */
   email: string | null
   /**
    * Verification data for the user in the last month. Ordered by start date descending.
-   * @type {Array<VerificationDataForUser>}
-   * @memberof VerificationDataForUserResponseDto
    */
   verificationDataLastMonth: Array<VerificationDataForUser>
 }
 
 /**
  * ADMINApi - axios parameter creator
- * @export
  */
 export const ADMINApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -1915,7 +1446,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
 
 /**
  * ADMINApi - functional programming interface
- * @export
  */
 export const ADMINApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ADMINApiAxiosParamCreator(configuration)
@@ -2282,7 +1812,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
 
 /**
  * ADMINApi - factory interface
- * @export
  */
 export const ADMINApiFactory = function (
   configuration?: Configuration,
@@ -2475,9 +2004,6 @@ export const ADMINApiFactory = function (
 
 /**
  * ADMINApi - object-oriented interface
- * @export
- * @class ADMINApi
- * @extends {BaseAPI}
  */
 export class ADMINApi extends BaseAPI {
   /**
@@ -2486,7 +2012,6 @@ export class ADMINApi extends BaseAPI {
    * @param {string} email
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerCheckUserVerifyState(email: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -2500,7 +2025,6 @@ export class ADMINApi extends BaseAPI {
    * @param {string} externalId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerDeactivateAccount(externalId: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -2514,7 +2038,6 @@ export class ADMINApi extends BaseAPI {
    * @param {RequestDeleteTaxDto} requestDeleteTaxDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerDeleteTax(
     requestDeleteTaxDto: RequestDeleteTaxDto,
@@ -2531,7 +2054,6 @@ export class ADMINApi extends BaseAPI {
    * @param {string} birthNumber userBirthNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerGetUserDataByBirthNumber(
     birthNumber: string,
@@ -2548,7 +2070,6 @@ export class ADMINApi extends BaseAPI {
    * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerGetUserDataByBirthNumbersBatch(
     requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
@@ -2568,7 +2089,6 @@ export class ADMINApi extends BaseAPI {
    * @param {string} email
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerGetVerificationDataForUser(email: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -2582,7 +2102,6 @@ export class ADMINApi extends BaseAPI {
    * @param {MarkDeceasedAccountRequestDto} markDeceasedAccountRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerMarkAccountsAsDeceasedByBirthnumber(
     markDeceasedAccountRequestDto: MarkDeceasedAccountRequestDto,
@@ -2598,7 +2117,6 @@ export class ADMINApi extends BaseAPI {
    * @summary Will activate one time sync of all users from cognito to db at 3am
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerSyncCognitoToDb(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -2612,7 +2130,6 @@ export class ADMINApi extends BaseAPI {
    * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerValidateEdeskForUserIds(
     requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
@@ -2629,7 +2146,6 @@ export class ADMINApi extends BaseAPI {
    * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerValidatePhysicalEntityRfo(
     requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
@@ -2645,7 +2161,6 @@ export class ADMINApi extends BaseAPI {
    * @summary Create physicalEntity records for validated users
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerValidatedUsersToPhysicalEntities(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -2660,7 +2175,6 @@ export class ADMINApi extends BaseAPI {
    * @param {ManuallyVerifyUserRequestDto} manuallyVerifyUserRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerVerifyUserManually(
     email: string,
@@ -2675,7 +2189,6 @@ export class ADMINApi extends BaseAPI {
 
 /**
  * AppApi - axios parameter creator
- * @export
  */
 export const AppApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -2716,7 +2229,6 @@ export const AppApiAxiosParamCreator = function (configuration?: Configuration) 
 
 /**
  * AppApi - functional programming interface
- * @export
  */
 export const AppApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AppApiAxiosParamCreator(configuration)
@@ -2747,7 +2259,6 @@ export const AppApiFp = function (configuration?: Configuration) {
 
 /**
  * AppApi - factory interface
- * @export
  */
 export const AppApiFactory = function (
   configuration?: Configuration,
@@ -2772,9 +2283,6 @@ export const AppApiFactory = function (
 
 /**
  * AppApi - object-oriented interface
- * @export
- * @class AppApi
- * @extends {BaseAPI}
  */
 export class AppApi extends BaseAPI {
   /**
@@ -2782,7 +2290,6 @@ export class AppApi extends BaseAPI {
    * @summary HealthCheck
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AppApi
    */
   public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
     return AppApiFp(this.configuration)
@@ -2793,7 +2300,6 @@ export class AppApi extends BaseAPI {
 
 /**
  * AuthApi - axios parameter creator
- * @export
  */
 export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -2838,7 +2344,6 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
 
 /**
  * AuthApi - functional programming interface
- * @export
  */
 export const AuthApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AuthApiAxiosParamCreator(configuration)
@@ -2869,7 +2374,6 @@ export const AuthApiFp = function (configuration?: Configuration) {
 
 /**
  * AuthApi - factory interface
- * @export
  */
 export const AuthApiFactory = function (
   configuration?: Configuration,
@@ -2892,9 +2396,6 @@ export const AuthApiFactory = function (
 
 /**
  * AuthApi - object-oriented interface
- * @export
- * @class AuthApi
- * @extends {BaseAPI}
  */
 export class AuthApi extends BaseAPI {
   /**
@@ -2902,7 +2403,6 @@ export class AuthApi extends BaseAPI {
    * @summary Check if user is authorized
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AuthApi
    */
   public authControllerLogin(options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
@@ -2913,7 +2413,6 @@ export class AuthApi extends BaseAPI {
 
 /**
  * UserVerificationsApi - axios parameter creator
- * @export
  */
 export const UserVerificationsApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -3081,7 +2580,6 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
 
 /**
  * UserVerificationsApi - functional programming interface
- * @export
  */
 export const UserVerificationsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = UserVerificationsApiAxiosParamCreator(configuration)
@@ -3186,7 +2684,6 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
 
 /**
  * UserVerificationsApi - factory interface
- * @export
  */
 export const UserVerificationsApiFactory = function (
   configuration?: Configuration,
@@ -3251,9 +2748,6 @@ export const UserVerificationsApiFactory = function (
 
 /**
  * UserVerificationsApi - object-oriented interface
- * @export
- * @class UserVerificationsApi
- * @extends {BaseAPI}
  */
 export class UserVerificationsApi extends BaseAPI {
   /**
@@ -3262,7 +2756,6 @@ export class UserVerificationsApi extends BaseAPI {
    * @param {RequestBodyVerifyIdentityCardDto} requestBodyVerifyIdentityCardDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UserVerificationsApi
    */
   public verificationControllerVerifyBirthNumberAndIdentityCard(
     requestBodyVerifyIdentityCardDto: RequestBodyVerifyIdentityCardDto,
@@ -3282,7 +2775,6 @@ export class UserVerificationsApi extends BaseAPI {
    * @param {RequestBodyVerifyWithRpoDto} requestBodyVerifyWithRpoDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UserVerificationsApi
    */
   public verificationControllerVerifyIcoBirthNumberAndIdentityCard(
     requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
@@ -3302,7 +2794,6 @@ export class UserVerificationsApi extends BaseAPI {
    * @param {RequestBodyVerifyWithEidDto} requestBodyVerifyWithEidDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UserVerificationsApi
    */
   public verificationControllerVerifyWithEid(
     requestBodyVerifyWithEidDto: RequestBodyVerifyWithEidDto,
@@ -3316,7 +2807,6 @@ export class UserVerificationsApi extends BaseAPI {
 
 /**
  * UsersManipulationApi - axios parameter creator
- * @export
  */
 export const UsersManipulationApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -3715,7 +3205,6 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
 
 /**
  * UsersManipulationApi - functional programming interface
- * @export
  */
 export const UsersManipulationApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = UsersManipulationApiAxiosParamCreator(configuration)
@@ -3969,7 +3458,6 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
 
 /**
  * UsersManipulationApi - factory interface
- * @export
  */
 export const UsersManipulationApiFactory = function (
   configuration?: Configuration,
@@ -4104,9 +3592,6 @@ export const UsersManipulationApiFactory = function (
 
 /**
  * UsersManipulationApi - object-oriented interface
- * @export
- * @class UsersManipulationApi
- * @extends {BaseAPI}
  */
 export class UsersManipulationApi extends BaseAPI {
   /**
@@ -4115,7 +3600,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @param {ChangeEmailRequestDto} changeEmailRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerChangeEmail(
     changeEmailRequestDto: ChangeEmailRequestDto,
@@ -4131,7 +3615,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @summary Get or create user with his data
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerGetOrCreateUser(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
@@ -4143,7 +3626,6 @@ export class UsersManipulationApi extends BaseAPI {
    *
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerRemoveBirthNumber(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
@@ -4157,7 +3639,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerSubscribeLoggedUser(
     requestGdprDataDto: RequestGdprDataDto,
@@ -4174,7 +3655,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerUnsubscribeLoggedUser(
     requestGdprDataDto: RequestGdprDataDto,
@@ -4193,7 +3673,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @param {GDPRCategoryEnum} category Type of Gdpr category
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerUnsubscribePublicUser(
     id: string,
@@ -4214,7 +3693,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @param {GDPRCategoryEnum} category Type of Gdpr category
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerUnsubscribePublicUserByExternalId(
     id: string,
@@ -4232,7 +3710,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @summary Update or create bloomreach customer for logged user
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersManipulationApi
    */
   public userControllerUpdateOrCreateBloomreachCustomer(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)

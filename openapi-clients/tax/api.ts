@@ -807,7 +807,7 @@ export interface ResponseTaxSummaryDetailDto {
   /**
    * Itemized details
    */
-  itemizedDetail: Array<ResponseTaxDetailItemizedDto>
+  itemizedDetail: ResponseTaxDetailItemizedDto
   /**
    * One-time payment details
    */

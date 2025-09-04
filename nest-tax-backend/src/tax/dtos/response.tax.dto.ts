@@ -1151,7 +1151,6 @@ export class ResponseTaxSummaryDetailDto {
   @ApiProperty({
     description: 'Itemized details',
     type: ResponseTaxDetailItemizedDto,
-    isArray: true,
   })
   @IsObject()
   @ValidateNested()

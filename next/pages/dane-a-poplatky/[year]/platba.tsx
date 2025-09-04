@@ -7,20 +7,18 @@ import { TaxFragment } from '@clients/graphql-strapi/api'
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import TaxFeePayment from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxFeePayment'
+import { StrapiTaxProvider } from 'components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
+import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import { ResponseTaxDto, ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
-
-import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
-import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
-import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
-import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
-import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
+import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
+import { prefetchUserQuery } from 'frontend/hooks/useUser'
+import { amplifyGetServerSideProps } from 'frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from 'frontend/utils/slovakServerSideTranslations'
+import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
 
 type AccountTaxesFeesPageProps = {
   taxData: ResponseTaxSummaryDetailDto
-  taxDataOld: ResponseTaxDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
@@ -49,21 +47,15 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxDataOld }, { data: taxData }, strapiTax, strapiTaxAdministrator] =
-        await Promise.all([
-          // TODO: implement when fixed types
-          taxClient.taxControllerGetActualTaxes(yearNumber, {
-            authStrategy: 'authOnly',
-            getSsrAuthSession: fetchAuthSession,
-          }),
-          taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, {
-            authStrategy: 'authOnly',
-            getSsrAuthSession: fetchAuthSession,
-          }),
-          strapiClient.Tax().then((response) => response.tax?.data?.attributes),
-          getTaxAdministratorForUser(amplifyContextSpec),
-          prefetchUserQuery(queryClient, fetchAuthSession),
-        ])
+      const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
+        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, {
+          authStrategy: 'authOnly',
+          getSsrAuthSession: fetchAuthSession,
+        }),
+        strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+        getTaxAdministratorForUser(amplifyContextSpec),
+        prefetchUserQuery(queryClient, fetchAuthSession),
+      ])
 
       if (!strapiTax) {
         return { notFound: true }
@@ -71,7 +63,6 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
       return {
         props: {
-          taxDataOld,
           taxData,
           strapiTax,
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
@@ -101,7 +92,6 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 )
 
 const AccountTaxesFeesPage = ({
-  taxDataOld,
   taxData,
   strapiTax,
   dehydratedState,
@@ -111,12 +101,8 @@ const AccountTaxesFeesPage = ({
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxFeeSectionProvider
-            taxDataOld={taxDataOld}
-            taxData={taxData}
-            strapiTaxAdministrator={strapiTaxAdministrator}
-          >
-            <TaxFeeSection />
+          <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
+            <TaxFeePayment />
           </TaxFeeSectionProvider>
         </StrapiTaxProvider>
       </AccountPageLayout>

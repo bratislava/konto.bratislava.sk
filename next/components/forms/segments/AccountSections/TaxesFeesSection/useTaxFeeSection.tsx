@@ -2,7 +2,7 @@ import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
 import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { ResponseTaxDto } from 'openapi-clients/tax'
+import { ResponseTaxDto, ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
@@ -10,11 +10,16 @@ import { base64ToArrayBuffer, downloadBlob } from '../../../../../frontend/utils
 import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
-  taxData: ResponseTaxDto
+  taxData: ResponseTaxSummaryDetailDto
+  taxDataOld: ResponseTaxDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
-const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({
+  taxDataOld,
+  taxData,
+  strapiTaxAdministrator,
+}: TaxFeeSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
@@ -22,9 +27,9 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
-  const { mutate: redirectToPayment, isPending: redirectToPaymentIsPending } = useMutation({
+  const { mutate: redirectToFullPayment, isPending: redirectToFullPaymentIsPending } = useMutation({
     mutationFn: () =>
-      taxClient.paymentControllerPayment(String(taxData.year), {
+      taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, {
         authStrategy: 'authOnly',
       }),
     networkMode: 'always',
@@ -43,10 +48,43 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     },
   })
 
-  const downloadQrCode = async () => {
-    if (!taxData.qrCodeWeb) return
-    const arrayBuffer = base64ToArrayBuffer(taxData.qrCodeWeb)
-    downloadBlob(new Blob([arrayBuffer], { type: 'image/png' }), 'QR-dan-z-nehnutelnosti.png')
+  const { mutate: redirectToInstallmentPayment, isPending: redirectToInstallmentPaymentIsPending } =
+    useMutation({
+      mutationFn: () =>
+        taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, {
+          authStrategy: 'authOnly',
+        }),
+      networkMode: 'always',
+      onSuccess: async (response) => {
+        closeSnackbarInfo()
+        await router.push(response.data.url)
+      },
+      onMutate: () => {
+        // TODO: Translation
+        openSnackbarInfo('Presmerovávam na platbu.')
+      },
+      onError: (error) => {
+        // TODO: Translation
+        openSnackbarError('Nepodarilo sa presmerovať na platbu.')
+        logger.error(error)
+      },
+    })
+
+  const downloadQrCodeOneTimePayment = async () => {
+    if (!taxData.oneTimePayment.qrCode) return
+    const arrayBuffer = base64ToArrayBuffer(taxData.oneTimePayment.qrCode)
+    downloadBlob(
+      new Blob([arrayBuffer], { type: 'image/png' }),
+      'QR-dan-z-nehnutelnosti-zvysna-suma.png',
+    )
+  }
+  const downloadQrCodeInstallmentPayment = async () => {
+    if (!taxData.installmentPayment.activeInstallment?.qrCode) return
+    const arrayBuffer = base64ToArrayBuffer(taxData.installmentPayment.activeInstallment.qrCode)
+    downloadBlob(
+      new Blob([arrayBuffer], { type: 'image/png' }),
+      'QR-dan-z-nehnutelnosti-splatka.png',
+    )
   }
 
   const downloadPdf = async () => {
@@ -59,10 +97,15 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
   }
 
   return {
+    // change for new endpoint taxData after https://github.com/bratislava/konto.bratislava.sk/pull/3171
+    taxDataOld,
     taxData,
-    redirectToPayment,
-    redirectToPaymentIsPending,
-    downloadQrCode,
+    redirectToFullPayment,
+    redirectToFullPaymentIsPending,
+    redirectToInstallmentPayment,
+    redirectToInstallmentPaymentIsPending,
+    downloadQrCodeOneTimePayment,
+    downloadQrCodeInstallmentPayment,
     downloadPdf,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,

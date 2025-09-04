@@ -300,6 +300,10 @@ export class TaxService {
       lookingForTaxDate,
     )
 
+    // this logic needs to change, it is returning returning empty array when i don't have any previous taxes,
+    // but when i had taxes previous years it returns virtual tax for current year,
+    // i think correct behaviour is to return virtual tax for current year also when there are not previous taxes
+
     if (taxes.length === 0) {
       const availabilityStatus = shouldAddCurrentYear
         ? TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX

@@ -14,13 +14,13 @@ import { PhysicalEntityService } from '../../../physical-entity/physical-entity.
 import { ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import { RfoIdentityList, RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
-import { RfoDataDto } from './types/verification-types.dto'
+import { RfoDataDto, VerificationResult } from './types/verification-types.dto'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class VerificationSubservice {
-  private logger: LineLoggerSubservice
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private errorMessengerGuard: ErrorMessengerGuard,
@@ -35,12 +35,26 @@ export class VerificationSubservice {
   private checkIdentityCard(
     rfoData: RfoIdentityListElement,
     identityCard: string
-  ): ResponseVerificationIdentityCardDto {
+  ): VerificationResult {
     if (rfoData.datumUmrtia && rfoData.datumUmrtia !== 'unknown' && rfoData.datumUmrtia !== '') {
-      return this.errorMessengerGuard.rfoDeadPerson()
+      this.logger.log(
+        this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.DEAD_PERSON,
+          VerificationErrorsResponseEnum.DEAD_PERSON,
+          rfoData
+        )
+      )
+      return { success: false, error: VerificationErrorsEnum.DEAD_PERSON }
     }
     if (!rfoData.doklady || Object.keys(rfoData.doklady).length === 0) {
-      return this.errorMessengerGuard.birthNumberICInconsistency()
+      this.logger.log(
+        this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.RFO_RESPONSE_MISSING_DOKLADY,
+          VerificationErrorsResponseEnum.RFO_RESPONSE_MISSING_DOKLADY,
+          rfoData
+        )
+      )
+      return { success: false, error: VerificationErrorsEnum.RFO_RESPONSE_MISSING_DOKLADY }
     }
     for (const document of rfoData.doklady) {
       if (
@@ -51,11 +65,7 @@ export class VerificationSubservice {
         document.jednoznacnyIdentifikator
       ) {
         if (document.jednoznacnyIdentifikator === identityCard) {
-          return {
-            statusCode: 200,
-            status: 'OK',
-            message: { message: 'ok' },
-          }
+          return { success: true }
         }
 
         // Some identity card numbers are in format "000000 XX" in registry, but users enter identity card as "XX000000"
@@ -65,21 +75,27 @@ export class VerificationSubservice {
           identityCardMagproxy.length === 2 &&
           identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard
         ) {
-          return {
-            statusCode: 200,
-            status: 'OK',
-            message: { message: 'ok' },
-          }
+          return { success: true }
         }
       }
     }
-    return this.errorMessengerGuard.birthNumberICInconsistency()
+    this.logger.log(
+      this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+        VerificationErrorsResponseEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+        rfoData
+      )
+    )
+    return {
+      success: false,
+      error: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+    }
   }
 
   private verifyRpoStatutory(
     legalEntity: ResponseRpoLegalPersonDto,
     birthNumber: string
-  ): ResponseVerificationIdentityCardDto {
+  ): VerificationResult {
     const statutoryBodies = legalEntity.statutarneOrgany
 
     for (const statutoryBody of statutoryBodies ?? []) {
@@ -92,19 +108,23 @@ export class VerificationSubservice {
           externalId.identifikator.replace('/', '') === birthNumber.replace('/', '')
         ) {
           return {
-            statusCode: 200,
-            status: 'OK',
-            message: externalId.identifikator,
+            success: true,
           }
         }
       }
     }
-    this.logger.warn({
-      message: 'Could not match birthnumber with statutory organ from RPO',
-      ico: legalEntity.ico,
-      birthNumber: birthNumber,
-    })
-    return this.errorMessengerGuard.birthNumberNotExists()
+    this.logger.error(
+      this.throwerErrorGuard.NotFoundException(
+        VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+        VerificationErrorsResponseEnum.BIRTH_NUMBER_NOT_EXISTS,
+        {
+          message: 'Could not match birthnumber with statutory organ from RPO',
+          ico: legalEntity.ico,
+          birthNumber: birthNumber,
+        }
+      )
+    )
+    return { success: false, error: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
   }
 
   /**
@@ -124,9 +144,16 @@ export class VerificationSubservice {
     user: CognitoGetUserData,
     data: RequestBodyVerifyIdentityCardDto,
     ico?: string
-  ): Promise<ResponseVerificationIdentityCardDto> {
+  ): Promise<VerificationResult> {
     if (!isValidBirthNumber(data.birthNumber)) {
-      return this.errorMessengerGuard.birthNumberBadFormat()
+      // TODO throw instead of log an return
+      this.logger.error(
+        this.throwerErrorGuard.BadRequestException(
+          VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
+          VerificationErrorsResponseEnum.BIRTH_NUMBER_WRONG_FORMAT,
+        )
+      )
+      return {success: false, error: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
     }
 
     // request RFO data and handle exceptions that may be resolved later
@@ -190,40 +217,40 @@ export class VerificationSubservice {
         continue
       }
 
-      const rfoCheck = this.checkIdentityCard(rfoDataSingle, data.identityCard)
+      if (!this.checkIdentityCard(rfoDataSingle, data.identityCard).success) {
+        continue
+      }
 
-      if (rfoCheck.statusCode === 200) {
-        let dbResult: ResponseVerificationIdentityCardDto
-        const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
-        if (ico) {
-          dbResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-            user,
-            ico,
-            birthNumber
-          )
-        } else {
-          dbResult = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
-            user,
-            rfoDataSingle.ifo || null,
-            birthNumber,
-            0
-          )
-        }
+      let dbResult: ResponseVerificationIdentityCardDto
+      const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
+      if (ico) {
+        dbResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+          user,
+          ico,
+          birthNumber
+        )
+      } else {
+        dbResult = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+          user,
+          rfoDataSingle.ifo || null,
+          birthNumber,
+          0
+        )
+      }
 
-        if (dbResult.statusCode !== 200) {
-          return dbResult
-        } else {
-          if (!ico) {
-            const dbUser = await this.databaseSubservice.findUserByEmailOrExternalId(
-              user.email,
-              user.idUser
-            )
-            if (dbUser !== null) {
-              await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
-            }
+      if (dbResult.statusCode !== 200) {
+        return dbResult
+      } else {
+        if (!ico) {
+          const dbUser = await this.databaseSubservice.findUserByEmailOrExternalId(
+            user.email,
+            user.idUser
+          )
+          if (dbUser !== null) {
+            await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
           }
-          return rfoCheck
         }
+        return rfoCheck
       }
     }
 
@@ -250,7 +277,7 @@ export class VerificationSubservice {
 
     const rfoCheckDcom = this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
 
-    if (rfoCheckDcom.statusCode === 200) {
+    if (rfoCheckDcom.success) {
       const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
       let dbResultDcom: ResponseVerificationIdentityCardDto
       if (ico) {

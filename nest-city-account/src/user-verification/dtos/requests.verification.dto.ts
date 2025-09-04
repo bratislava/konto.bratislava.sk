@@ -61,6 +61,7 @@ export class RequestBodyVerifyIdentityCardDto {
   turnstileToken!: string
 }
 
+// TODO delete this DTO. It is not used in any external communication
 export class ResponseVerificationIdentityCardDto {
   @ApiProperty({
     description: 'number of status code',

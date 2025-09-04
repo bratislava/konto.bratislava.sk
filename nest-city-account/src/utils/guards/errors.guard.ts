@@ -286,10 +286,6 @@ export class ErrorMessengerGuard {
     this.logger.log({ type: 'ALL GOOD - 200', user, log: data, cognitoData })
   }
 
-  verificationQueueError(user: CognitoGetUserData, data: ResponseVerificationIdentityCardDto) {
-    this.logger.error({ type: 'Not Verified without error - 200', user, error: data })
-  }
-
   birthNumberDuplicity() {
     return {
       statusCode: HttpStatus.UNPROCESSABLE_ENTITY,

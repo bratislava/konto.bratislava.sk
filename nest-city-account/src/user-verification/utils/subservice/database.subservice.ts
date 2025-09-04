@@ -9,14 +9,19 @@ import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../../verification.errors.enum'
+import {LineLoggerSubservice} from "../../../utils/subservices/line-logger.subservice";
 
 @Injectable()
 export class DatabaseSubserviceUser {
+  private readonly logger: LineLoggerSubservice
+
   constructor(
     private prisma: PrismaService,
     private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(VerificationSubservice.name)
+  }
 
   async findUserByEmailOrExternalId(email: string, externalId: string): Promise<User | null> {
     let user: User | null
@@ -198,7 +203,12 @@ export class DatabaseSubserviceUser {
               externalId: cognitoUser.idUser,
             },
           })
-          return this.errorMessengerGuard.birthNumberIcoDuplicity()
+          // TODO throw this
+          this.logger.error(this.throwerErrorGuard.UnprocessableEntityException(
+            VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
+            VerificationErrorsResponseEnum.BIRTHNUMBER_ICO_DUPLICITY,
+          ))
+          return {success: false, error: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY}
         } else {
           await this.prisma.legalPerson.update({
             where: {
@@ -244,11 +254,7 @@ export class DatabaseSubserviceUser {
         }
       }
 
-      return {
-        statusCode: 200,
-        status: 'OK',
-        message: 'upserted',
-      }
+      return {success: true}
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,

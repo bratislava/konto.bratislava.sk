@@ -190,19 +190,13 @@ export class AdminCronSubservice {
 
     try {
       await this.adminService.syncCognitoToDb()
+      this.logger.log(`syncCognitoToDb successfull, change ${COGNITO_SYNC_CONFIG_DB_KEY} to false.`)
     } catch (error) {
       this.logger.error(error)
       this.logger.log(
         `syncCognitoToDb unsuccessfull, change ${COGNITO_SYNC_CONFIG_DB_KEY} to false.`
       )
-
-      await this.prismaService.config.update({
-        where: { key: COGNITO_SYNC_CONFIG_DB_KEY },
-        data: { value: { active: false } },
-      })
     }
-
-    this.logger.log(`syncCognitoToDb successfull, change ${COGNITO_SYNC_CONFIG_DB_KEY} to false.`)
 
     await this.prismaService.config.update({
       where: { key: COGNITO_SYNC_CONFIG_DB_KEY },

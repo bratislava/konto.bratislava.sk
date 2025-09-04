@@ -32,7 +32,7 @@ export class DatabaseSubserviceUser {
     let user = await this.prisma.user.findUnique({
       where: { email: email },
     })
-    if (user && user.isDeceased) {
+    if (user?.isDeceased) {
       throw this.throwerErrorGuard.ForbiddenException(
         UserErrorsEnum.USER_IS_DECEASED,
         UserErrorsResponseEnum.USER_IS_DECEASED

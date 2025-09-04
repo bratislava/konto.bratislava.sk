@@ -850,7 +850,7 @@ export class ResponseTaxDetailItemizedDto {
 
   @ApiProperty({
     description: 'Apartment tax itemized',
-    type: [ResponseApartmentTaxDetailDto],
+    type: ResponseApartmentTaxDetailDto,
     isArray: true,
     example: [{ type: TaxDetailareaType.byt, base: 100, amount: 100 }],
   })
@@ -861,7 +861,7 @@ export class ResponseTaxDetailItemizedDto {
 
   @ApiProperty({
     description: 'Ground tax itemized',
-    type: [ResponseGroundTaxDetailDto],
+    type: ResponseGroundTaxDetailDto,
     example: [
       {
         type: TaxDetailareaType.A,
@@ -879,7 +879,7 @@ export class ResponseTaxDetailItemizedDto {
 
   @ApiProperty({
     description: 'Construction tax itemized',
-    type: [ResponseConstructionTaxDetailDto],
+    type: ResponseConstructionTaxDetailDto,
     isArray: true,
     example: [{ type: TaxDetailareaType.RESIDENTIAL, base: 100, amount: 100 }],
   })
@@ -960,7 +960,6 @@ export class ResponseInstallmentItemDto {
 
   @ApiPropertyOptional({
     description: 'Due date',
-    required: false,
     example: '2023-04-13',
   })
   @IsDate()
@@ -980,6 +979,11 @@ export class ResponseInstallmentItemDto {
   @IsNumber()
   @IsPositive()
   remainingAmount: number
+
+  @ApiProperty({ description: 'Total amount to pay', example: 50 })
+  @IsNumber()
+  @IsPositive()
+  totalInstallmentAmount: number
 }
 
 export class ResponseActiveInstallmentDto {
@@ -991,11 +995,11 @@ export class ResponseActiveInstallmentDto {
   @IsPositive()
   remainingAmount: number
 
-  @ApiProperty({ description: 'Variable symbol', required: false })
+  @ApiProperty({ description: 'Variable symbol' })
   @IsString()
   variableSymbol: string
 
-  @ApiProperty({ description: 'QR code', required: false })
+  @ApiProperty({ description: 'QR code' })
   @IsString()
   qrCode: string
 }
@@ -1018,27 +1022,40 @@ export class ResponseInstallmentPaymentDetailDto {
   reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum
 
   @ApiPropertyOptional({
+    description: 'Latest possible due date.',
+    required: false,
+    example: '2023-04-13',
+  })
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  dueDateLastPayment?: Date
+
+  @ApiPropertyOptional({
     description: 'List of exactly 3 installments or none at all',
-    type: [ResponseInstallmentItemDto],
+    type: ResponseInstallmentItemDto,
     isArray: true,
     example: [
       {
         installmentNumber: 1,
-        dueDate: '2023-04-13',
-        status: InstallmentPaidStatusEnum.NOT_PAID,
-        remainingAmount: 50,
+        dueDate: '2025-08-01',
+        status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+        remainingAmount: 30,
+        totalInstallmentAmount: 50,
       },
       {
         installmentNumber: 2,
-        dueDate: '2023-04-13',
+        dueDate: '2025-09-01',
         status: InstallmentPaidStatusEnum.NOT_PAID,
-        remainingAmount: 50,
+        remainingAmount: 80,
+        totalInstallmentAmount: 50,
       },
       {
         installmentNumber: 3,
-        dueDate: '2023-04-13',
+        dueDate: '2025-11-01',
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 50,
+        totalInstallmentAmount: 50,
       },
     ],
   })

@@ -43,9 +43,12 @@ import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 import { toLogfmt } from '../utils/logging'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class AdminService {
+  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminService.name)
+
   constructor(
     private cognitoSubservice: CognitoSubservice,
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -156,7 +159,11 @@ export class AdminService {
           toLogfmt(user)
         )
       }
-      await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
+      try {
+        await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
+      } catch (error) {
+        this.logger.error(error)
+      }
     }
   }
 

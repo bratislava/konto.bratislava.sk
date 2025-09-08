@@ -138,18 +138,20 @@ Párkrát sa stalo, že nesedel dátový typ, ktorý bol odoslaný s tým, ktor�
 
 Ak stále nič nefunguje, tak sa dá zreprodukovať odosielanie aj lokálne. Sharepoint vráti nejaký error log, ktorý je nie vždy veľa hovoriaci, ale vie niekedy pomôcť. Na toto treba mať nejaký tool na posielanie requestov, napríklad postman.
 
-1. Na toto treba získať bearer token. Treba si nastaviť env hodnoty `SHAREPOINT_TENANT_ID`, `SHAREPOINT_CLIENT_ID`, `SHAREPOINT_CLIENT_SECRET`, `SHAREPOINT_DOMAIN`, `SHAREPOINT_URL` na produkčné hodnoty a lokálne zavolať `getAccessToken` v `sharepoint.subservice`. Funkcia vráti bearer token, s ktorým možno simulovať posielanie do SharePointu.
+1. Na toto treba získať bearer token. Treba si nastaviť env hodnoty `SHAREPOINT_TENANT_ID`, `SHAREPOINT_CLIENT_ID`, `SHAREPOINT_CLIENT_SECRET`, `SHAREPOINT_DOMAIN`, `SHAREPOINT_GRAPH_URL`, `SHAREPOINT_SITE_ID` a `SHAREPOINT_SITE_NAME` na produkčné hodnoty a lokálne zavolať `getAccessToken` v `sharepoint.subservice`. Funkcia vráti bearer token, s ktorým možno simulovať posielanie do SharePointu.
 2. V logoch vidieť, do akej tabuľky/zoznamu zlyhalo odoslanie – má to tvar `dtb_NajomneByvanie...` - aj aké dáta sa tam poslali.
-3. Ak je napr. tabuľka `dtb_NajomneByvanieZiadatel`, tak treba posielať POST request na `https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_api/web/lists/getbytitle('dtb_NajomneByvanieZiadatel')/items`. Pre iný zoznam treba zmeniť hodnotu v url v `getbytitle`.
+3. Ak je napr. tabuľka `dtb_NajomneByvanieZiadatel`, tak treba posielať POST request na `{{SHAREPOINT_GRAPH_URL}}/sites/{{SHAREPOINT_SITE_ID}}/lists/dtb_NajomneByvanieZiadatel/items` (napr. `https://graph.microsoft.com/v1.0/sites/magistratba.sharepoint.com,71137172-a7f6-4649-a8e4-55dbaa494d5e,76b74c7f-1979-43f1-9601-b9d20702d7fd/lists/dtb_NajomneByvanieZiadatel/items`). Pre iný zoznam treba zmeniť hodnotu v url za `lists`.
 4. Autorizovať sa bearer tokenom z prvého kroku.
 5. Do body vložiť posielané dáta z logov v JSON formáte:
 
    ```json
    {
-     "GinisID": "MAG0X04WAYYY",
-     "KontaktovanyEmailom": true,
-     "ZiadatelMeno": "Erik",
-     ...
+     "fields": {
+       "GinisID": "MAG0X04WAYYY",
+       "KontaktovanyEmailom": true,
+       "ZiadatelMeno": "Erik",
+       ...
+     }
    }
    ```
 

@@ -149,8 +149,14 @@ export default class EnvironmentVariables {
   @EnvString()
   SHAREPOINT_DOMAIN: string
 
+  @EnvString()
+  SHAREPOINT_SITE_ID: string
+
+  @EnvString()
+  SHAREPOINT_SITE_NAME: string
+
   @EnvUrl()
-  SHAREPOINT_URL: string
+  SHAREPOINT_GRAPH_URL: string
 
   @EnvString()
   SHAREPOINT_CLIENT_ID: string

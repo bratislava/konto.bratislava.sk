@@ -1,6 +1,5 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { Job } from 'bull'
@@ -17,9 +16,9 @@ import {
   getValuesForFields,
 } from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
-import escape from 'lodash/escape'
 import lodashGet from 'lodash/get'
 
+import BaConfigService from '../../config/ba-config.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -27,6 +26,7 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
+import { toLogfmt } from '../logging'
 import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
@@ -41,22 +41,10 @@ export default class SharepointSubservice {
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
-    private configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new LineLoggerSubservice('SharepointSubservice')
-
-    if (
-      !this.configService.get<string>('SHAREPOINT_TENANT_ID') ||
-      !this.configService.get<string>('SHAREPOINT_CLIENT_ID') ||
-      !this.configService.get<string>('SHAREPOINT_CLIENT_SECRET') ||
-      !this.configService.get<string>('SHAREPOINT_DOMAIN') ||
-      !this.configService.get<string>('SHAREPOINT_URL')
-    ) {
-      throw new Error(
-        'Missing Sharepoint .env values, one of: SHAREPOINT_TENANT_ID, SHAREPOINT_CLIENT_ID, SHAREPOINT_CLIENT_SECRET, SHAREPOINT_DOMAIN, SHAREPOINT_URL',
-      )
-    }
   }
 
   @Process()
@@ -270,40 +258,39 @@ export default class SharepointSubservice {
     })
   }
 
+  private buildTableUrl(dbName: string): string {
+    return `${this.baConfigService.sharepoint.graphUrl}/sites/${this.baConfigService.sharepoint.siteId}/lists/${dbName}`
+  }
+
   private async mapColumnsToFields(
     columns: string[],
     accessToken: string,
     dbName: string,
   ): Promise<Record<string, string>> {
     const result: Record<string, string> = {}
-    const url = `${escape(this.configService.get<string>('SHAREPOINT_URL'))}/lists/getbytitle('${dbName}')/fields`
+    const url = `${this.buildTableUrl(dbName)}/columns`
 
     const fields = await axios
       .get(url, {
         headers: {
-          Accept: 'application/json;odata=verbose',
-          'Content-Type': 'application/json;odata=verbose',
+          Accept: 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
       })
       .then(
-        (
-          response: AxiosResponse<
-            { d: { results: Array<Record<string, string>> } },
-            object
-          >,
-        ) => response.data.d.results,
+        (response: AxiosResponse<{ value: Array<any> }, object>) =>
+          response.data.value,
       )
 
     columns.forEach((col) => {
-      const filtered = fields.find((field) => field.Title === col)
+      const filtered = fields.find((field) => field.displayName === col)
       if (!filtered) {
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.UNKNOWN_COLUMN,
           `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${col}, dtb name: ${dbName}.`,
         )
       }
-      result[col] = filtered.StaticName
+      result[col] = filtered.name
     })
 
     return result
@@ -382,48 +369,44 @@ export default class SharepointSubservice {
     accessToken: string,
     fieldValues: Record<string, string>,
   ): Promise<{ id: number }> {
-    const url = `${escape(this.configService.get<string>('SHAREPOINT_URL'))}/lists/getbytitle('${dbName}')/items`
+    const url = `${this.buildTableUrl(dbName)}/items`
 
-    const result = await axios
-      .post(url, fieldValues, {
-        headers: {
-          Accept: 'application/json;odata=verbose',
-          Authorization: `Bearer ${accessToken}`,
+    try {
+      const res: AxiosResponse<{ id: string }> = await axios.post(
+        url,
+        { fields: fieldValues },
+        {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      })
-      .catch((error) => {
-        throw this.throwerErrorGuard.BadRequestException(
-          SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
-          SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
-          `Error when sending to database: ${dbName}, posted data: ${JSON.stringify(fieldValues)} .`,
-          error instanceof Error ? error : undefined,
-        )
-      })
-      .then(
-        (res: AxiosResponse<{ d: { ID: number } }, object>) => res.data.d.ID,
       )
 
-    return { id: result }
+      return { id: parseInt(res.data.id, 10) }
+    } catch (error) {
+      throw this.throwerErrorGuard.BadRequestException(
+        SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
+        SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
+        toLogfmt({
+          databaseName: dbName,
+          postedData: JSON.stringify(fieldValues),
+        }),
+        error,
+      )
+    }
   }
 
   private async getAccessToken(): Promise<string> {
-    const url = `https://accounts.accesscontrol.windows.net/${escape(
-      this.configService.get<string>('SHAREPOINT_TENANT_ID'),
-    )}/tokens/OAuth/2`
+    const url = `https://login.microsoftonline.com/${this.baConfigService.sharepoint.tenantId}/oauth2/v2.0/token`
     const result = await axios
       .post(
         url,
         {
           grant_type: 'client_credentials',
-          client_id: `${escape(this.configService.get<string>('SHAREPOINT_CLIENT_ID'))}@${escape(
-            this.configService.get<string>('SHAREPOINT_TENANT_ID'),
-          )}`,
-          client_secret: this.configService.get<string>(
-            'SHAREPOINT_CLIENT_SECRET',
-          ),
-          resource: `00000003-0000-0ff1-ce00-000000000000/${
-            this.configService.get<string>('SHAREPOINT_DOMAIN') ?? ''
-          }@${this.configService.get<string>('SHAREPOINT_TENANT_ID') ?? ''}`,
+          client_id: this.baConfigService.sharepoint.clientId,
+          client_secret: this.baConfigService.sharepoint.clientSecret,
+          scope: `https://graph.microsoft.com/.default`,
         },
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
       )

@@ -7,14 +7,29 @@ import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import HandleErrors from '../utils/decorators/errorHandler.decorators'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { DeliveryMethod } from '../utils/types/tax.types'
+import { DeliveryMethodNoris } from '../utils/types/tax.types'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
-import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, PhysicalEntity } from '@prisma/client'
+import {
+  DeliveryMethodEnum,
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+  PhysicalEntity,
+} from '@prisma/client'
+import { DeliveryMethodCodec } from '../utils/norisCodec'
+
+import {
+  DeliveryMethodErrorsEnum,
+  DeliveryMethodErrorsResponseEnum,
+} from '../utils/guards/dtos/delivery-method.error'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
+
+const LOCK_DELIVERY_METHODS_BATCH = 100
+const BATCH_DELAY_MS = 1000
 
 const EDESK_UPDATE_LOOK_BACK_HOURS = 96
 
@@ -125,7 +140,7 @@ export class TasksService {
     })
   }
 
-  @Cron('*/5 * 2-30 4 *') // Every 5 minutes in April, starting from 2nd.
+  @Cron(`*/5 * 2-30 ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`) // Every 5 minutes in April, starting from 2nd.
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()
@@ -134,6 +149,9 @@ export class TasksService {
     const users = await this.prismaService.user.findMany({
       where: {
         birthNumber: {
+          not: null,
+        },
+        taxDeliveryMethodAtLockDate: {
           not: null,
         },
         OR: [
@@ -152,29 +170,11 @@ export class TasksService {
         },
         ...ACTIVE_USER_FILTER,
       },
-      include: {
-        userGdprData: {
-          orderBy: {
-            createdAt: 'desc',
-          },
-          where: {
-            category: GDPRCategoryEnum.TAXES,
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-            createdAt: {
-              lt: taxDeadlineDate,
-            },
-          },
-          take: 1,
-          select: {
-            subType: true,
-            createdAt: true,
-          },
-        },
-        physicalEntity: {
-          select: {
-            activeEdesk: true,
-          },
-        },
+      select: {
+        id: true,
+        birthNumber: true,
+        taxDeliveryMethodAtLockDate: true,
+        taxDeliveryMethodCityAccountLockDate: true,
       },
       take: UPLOAD_TAX_DELIVERY_METHOD_BATCH,
     })
@@ -188,19 +188,24 @@ export class TasksService {
         // We know that birthNumber is not null from the query.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const birthNumber: string = user.birthNumber!
-
-        if (user.physicalEntity?.activeEdesk) {
-          acc[birthNumber] = { deliveryMethod: DeliveryMethod.EDESK }
-          return acc
-        }
-        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
-          acc[birthNumber] = {
-            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-            date: user.userGdprData[0].createdAt.toISOString().slice(0, 10),
+        const deliveryMethod = DeliveryMethodCodec.decode(user.taxDeliveryMethodAtLockDate)
+        const date: string | undefined = user.taxDeliveryMethodCityAccountLockDate
+          ? user.taxDeliveryMethodCityAccountLockDate.toISOString().substring(0, 10)
+          : undefined
+        if (date) {
+          acc[birthNumber] = { deliveryMethod, date }
+        } else {
+          if (deliveryMethod === DeliveryMethodNoris.CITY_ACCOUNT) {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              undefined,
+              user
+            )
           }
-          return acc
+
+          acc[birthNumber] = { deliveryMethod }
         }
-        acc[birthNumber] = { deliveryMethod: DeliveryMethod.POSTAL }
         return acc
       },
       {}
@@ -299,5 +304,134 @@ export class TasksService {
       entities: entitiesFailedToUpdate,
       alert: 1,
     })
+  }
+
+  @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`)
+  @HandleErrors('Cron')
+  async lockDeliveryMethods(): Promise<void> {
+    this.logger.log('Starting lockDeliveryMethods task')
+    const jobStartTime = new Date()
+
+    let skip = 0
+    let processedCount = 0
+    let batchNumber = 1
+
+    while (true) {
+      const users = await this.prismaService.user.findMany({
+        where: {
+          birthNumber: { not: null },
+          // Ignore users who may sign up as this job runs
+          createdAt: { lt: jobStartTime },
+        },
+        include: {
+          userGdprData: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            where: {
+              category: GDPRCategoryEnum.TAXES,
+              type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            },
+            take: 1,
+            select: {
+              subType: true,
+              createdAt: true,
+            },
+          },
+          physicalEntity: {
+            select: {
+              activeEdesk: true,
+            },
+          },
+        },
+        skip,
+        take: LOCK_DELIVERY_METHODS_BATCH,
+        orderBy: {
+          id: 'asc', // Ensure consistent ordering
+        },
+      })
+
+      if (users.length === 0) {
+        break
+      }
+
+      this.logger.log(`Processing batch ${batchNumber} with ${users.length} users`)
+
+      const data = users.map((user) => {
+        // We know that birthNumber is not null from the query.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const birthNumber: string = user.birthNumber!
+
+        if (user.physicalEntity?.activeEdesk) {
+          return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
+        }
+        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
+          return {
+            birthNumber,
+            deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
+            date: user.userGdprData[0].createdAt,
+          }
+        }
+        return { birthNumber, deliveryMethod: DeliveryMethodEnum.POSTAL, date: undefined }
+      })
+
+      // Group users by delivery method
+      const edeskUsers = data.filter((entry) => entry.deliveryMethod === DeliveryMethodEnum.EDESK)
+      const postalUsers = data.filter((entry) => entry.deliveryMethod === DeliveryMethodEnum.POSTAL)
+      const cityAccountUsers = data.filter(
+        (entry) => entry.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT
+      )
+
+      // Batch updates for users with same delivery method
+      const updatePromises = [
+        // EDESK users - all have undefined date
+        edeskUsers.length > 0 &&
+          this.prismaService.user.updateMany({
+            where: { birthNumber: { in: edeskUsers.map((u) => u.birthNumber) } },
+            data: {
+              taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
+              taxDeliveryMethodCityAccountDate: null,
+            },
+          }),
+
+        // POSTAL users - all have undefined date
+        postalUsers.length > 0 &&
+          this.prismaService.user.updateMany({
+            where: { birthNumber: { in: postalUsers.map((u) => u.birthNumber) } },
+            data: {
+              taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
+              taxDeliveryMethodCityAccountDate: null,
+            },
+          }),
+
+        // CITY_ACCOUNT users still need individual updates due to different dates
+        ...cityAccountUsers.map((entry) =>
+          this.prismaService.user.update({
+            where: { birthNumber: entry.birthNumber },
+            data: {
+              taxDeliveryMethodAtLockDate: entry.deliveryMethod,
+              taxDeliveryMethodCityAccountDate: entry.date,
+            },
+          })
+        ),
+        // If postalUsers.length > 0 or edeskUsers.length > 0 evaluates to false, we want to filter out this result
+      ].filter(Boolean)
+
+      await Promise.all(updatePromises)
+
+      processedCount += users.length
+      skip += LOCK_DELIVERY_METHODS_BATCH
+
+      this.logger.log(`Completed batch ${batchNumber}. Total processed: ${processedCount} users`)
+
+      // Break between batches (except for the last one)
+      if (users.length === LOCK_DELIVERY_METHODS_BATCH) {
+        this.logger.log(`Waiting ${BATCH_DELAY_MS}ms before next batch...`)
+        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
+        batchNumber++
+      }
+    }
+
+    this.logger.log(`Completed lockDeliveryMethods task. Total processed: ${processedCount} users`)
   }
 }

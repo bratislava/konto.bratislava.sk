@@ -38,10 +38,12 @@ describe('MagproxyService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('validateRfoDataFormat', ()=> {
+  describe('validateRfoDataFormat', () => {
     it('should return result for valid RFO data', () => {
       const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
-      const response = service['validateRfoDataFormat'](mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[])
+      const response = service['validateRfoDataFormat'](
+        mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[]
+      )
 
       expect(errorLogSpy).not.toHaveBeenCalled()
       expect(response).toEqual(mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[])
@@ -52,7 +54,9 @@ describe('MagproxyService', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockRfoResponseListOneItemsInvalid = mockRfoResponseListOneItems as any
       mockRfoResponseListOneItemsInvalid[0].rodnePriezviskaOsoby[0].meno = 1222 // Invalid data - name as number
-      const response = service['validateRfoDataFormat'](mockRfoResponseListOneItemsInvalid as unknown as ResponseRfoPersonDto[])
+      const response = service['validateRfoDataFormat'](
+        mockRfoResponseListOneItemsInvalid as unknown as ResponseRfoPersonDto[]
+      )
 
       expect(errorLogSpy).toHaveBeenCalled()
       expect(response).toEqual(mockRfoResponseListOneItemsInvalid)

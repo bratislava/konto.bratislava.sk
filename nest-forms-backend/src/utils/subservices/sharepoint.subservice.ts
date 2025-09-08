@@ -55,10 +55,13 @@ export default class SharepointSubservice {
 
   @OnQueueFailed()
   handler(job: Job<{ formId: string }>, err: Error): void {
-    alertError(
-      `Sending form ${job.data.formId} to Sharepoint has failed.`,
-      this.logger,
-      JSON.stringify(err),
+    this.logger.error(
+      this.throwerErrorGuard.InternalServerErrorException(
+        SharepointErrorsEnum.GENERAL_ERROR,
+        SharepointErrorsResponseEnum.GENERAL_ERROR,
+        `Sending form ${job.data.formId} to Sharepoint has failed.`,
+        err,
+      ),
     )
 
     this.prismaService.forms

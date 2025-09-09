@@ -48,7 +48,7 @@ export const errorTypeKeys: Record<string, string> = {
   stack: `$Symbol-stack`,
   errorCause: `$Symbol-errorCause`,
   causedByMessage: `$Symbol-causedByMessage`,
-  causedByConsole: `$Symbol-causedByConsole`
+  causedByConsole: `$Symbol-causedByConsole`,
 }
 
 export const errorTypeStrings = Object.values(errorTypeKeys)
@@ -68,7 +68,7 @@ export class ResponseErrorInternalDto {
 
   [ErrorSymbols.errorCause]?: string;
 
-  [ErrorSymbols.causedByMessage]?: string
+  [ErrorSymbols.causedByMessage]?: string;
 
   [ErrorSymbols.causedByConsole]?: string
 }

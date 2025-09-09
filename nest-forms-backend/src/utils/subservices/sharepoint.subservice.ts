@@ -26,7 +26,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import { toLogfmt } from '../logging'
 import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,

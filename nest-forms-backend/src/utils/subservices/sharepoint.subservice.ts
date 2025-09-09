@@ -258,8 +258,8 @@ export default class SharepointSubservice {
     })
   }
 
-  private buildTableUrl(dbName: string): string {
-    return `${this.baConfigService.sharepoint.graphUrl}/sites/${this.baConfigService.sharepoint.siteId}/lists/${dbName}`
+  private getListUrl(listName: string): string {
+    return `${this.baConfigService.sharepoint.graphUrl}/sites/${this.baConfigService.sharepoint.siteId}/lists/${listName}`
   }
 
   private async mapColumnsToFields(
@@ -268,7 +268,7 @@ export default class SharepointSubservice {
     dbName: string,
   ): Promise<Record<string, string>> {
     const result: Record<string, string> = {}
-    const url = `${this.buildTableUrl(dbName)}/columns`
+    const url = `${this.getListUrl(dbName)}/columns`
 
     const fields = await axios
       .get(url, {
@@ -369,7 +369,7 @@ export default class SharepointSubservice {
     accessToken: string,
     fieldValues: Record<string, string>,
   ): Promise<{ id: number }> {
-    const url = `${this.buildTableUrl(dbName)}/items`
+    const url = `${this.getListUrl(dbName)}/items`
 
     try {
       const res: AxiosResponse<{ id: string }> = await axios.post(

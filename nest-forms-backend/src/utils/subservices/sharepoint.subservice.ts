@@ -26,7 +26,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import { toLogfmt } from '../logging'
 import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
@@ -55,10 +54,13 @@ export default class SharepointSubservice {
 
   @OnQueueFailed()
   handler(job: Job<{ formId: string }>, err: Error): void {
-    alertError(
-      `Sending form ${job.data.formId} to Sharepoint has failed.`,
-      this.logger,
-      JSON.stringify(err),
+    this.logger.error(
+      this.throwerErrorGuard.InternalServerErrorException(
+        SharepointErrorsEnum.GENERAL_ERROR,
+        SharepointErrorsResponseEnum.GENERAL_ERROR,
+        `Sending form ${job.data.formId} to Sharepoint has failed.`,
+        err,
+      ),
     )
 
     this.prismaService.forms
@@ -388,7 +390,7 @@ export default class SharepointSubservice {
       throw this.throwerErrorGuard.BadRequestException(
         SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
         SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
-        toLogfmt({
+        JSON.stringify({
           databaseName: dbName,
           postedData: JSON.stringify(fieldValues),
         }),

@@ -391,7 +391,7 @@ export default class SharepointSubservice {
       throw this.throwerErrorGuard.BadRequestException(
         SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
         SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
-        toLogfmt({
+        JSON.stringify({
           databaseName: dbName,
           postedData: JSON.stringify(fieldValues),
         }),

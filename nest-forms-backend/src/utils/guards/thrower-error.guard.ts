@@ -171,6 +171,12 @@ export default class ThrowerErrorGuard {
             message,
             [ErrorSymbols.errorCause]: errorCause.name,
             [ErrorSymbols.causedByMessage]: errorCause.message,
+            [ErrorSymbols.causedByConsole]:
+              errorCause instanceof HttpException
+                ? (errorCause.getResponse() as ResponseErrorInternalDto)[
+                    ErrorSymbols.console
+                  ]
+                : undefined,
             [ErrorSymbols.console]: console,
           }
         : {

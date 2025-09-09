@@ -7,10 +7,11 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { UserController } from './user.controller'
 import { UserService } from './user.service'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 @Module({
   imports: [PassportModule, PrismaModule, BloomreachModule],
-  providers: [UserService, DatabaseSubserviceUser, ThrowerErrorGuard],
+  providers: [UserService, DatabaseSubserviceUser, ThrowerErrorGuard, CognitoSubservice],
   exports: [],
   controllers: [UserController],
 })

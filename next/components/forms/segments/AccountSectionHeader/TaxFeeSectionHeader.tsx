@@ -1,20 +1,15 @@
-import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
-import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
-import { useSearchParams } from 'next/navigation'
+import { ChevronLeftIcon } from '@assets/ui-icons'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../frontend/api/constants'
-import Button from '../../simple-components/Button'
-import { useTaxFeeSection } from '../AccountSections/TaxesFeesSection/useTaxFeeSection'
 
-const TaxFeeSectionHeader = () => {
-  const { taxData, downloadPdf } = useTaxFeeSection()
+type TaxFeeSectionHeaderProps = {
+  title: string
+}
+const TaxFeeSectionHeader = ({ title }: TaxFeeSectionHeaderProps) => {
   const { t } = useTranslation('account')
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
-  const isSinglePayment = taxData.overallAmount === taxData.overallBalance
 
   return (
     <div className="h-full bg-gray-50 px-4 lg:px-0">
@@ -35,28 +30,7 @@ const TaxFeeSectionHeader = () => {
         <div className="flex size-full flex-col items-start gap-2">
           <div className="flex size-full flex-col items-start gap-4">
             <div className="flex w-full flex-row items-center gap-4">
-              <div className="grow text-h1">
-                {paymentMethodParam === PaymentMethod.Installments &&
-                  t('tax_detail_section.title_payment_installments')}
-                {paymentMethodParam === PaymentMethod.RemainingAmount &&
-                  !isSinglePayment &&
-                  t('tax_detail_section.title_payment_rest')}
-                {paymentMethodParam === PaymentMethod.RemainingAmount &&
-                  isSinglePayment &&
-                  t('tax_detail_section.title_payment_all')}
-              </div>
-
-              {/* depends if we provide pdf export right now we don't */}
-              {/* {taxData.pdfExport && (
-                <Button
-                  startIcon={<DownloadIcon className="size-5" />}
-                  variant="black-outline"
-                  text={t('download_pdf')}
-                  size="sm"
-                  className="hidden md:block"
-                  onPress={downloadPdf}
-                />
-              )} */}
+              <div className="grow text-h1">{title}</div>
             </div>
           </div>
         </div>

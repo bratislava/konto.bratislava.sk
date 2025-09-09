@@ -15,7 +15,7 @@ export const useTaxChannel = () => {
 
   const {
     officialCorrespondenceChannel,
-    showEmailCommunicationBanner,
+    showEmailCommunicationBanner: showDeliveryMethodNotSetBanner,
     wasVerifiedBeforeTaxDeadline,
   } = userData
 
@@ -32,7 +32,7 @@ export const useTaxChannel = () => {
 
   return {
     channel: officialCorrespondenceChannel,
-    showEmailCommunicationBanner,
+    showDeliveryMethodNotSetBanner,
     canChangeChannel,
     channelChangeEffectiveNextYear,
     channelCurrentYearEffective,

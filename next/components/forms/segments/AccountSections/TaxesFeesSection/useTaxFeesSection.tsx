@@ -3,7 +3,7 @@ import { ResponseGetTaxesListDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 type TaxFeesSectionProviderProps = {
-  taxesData: ResponseGetTaxesListDto
+  taxesData: ResponseGetTaxesListDto | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 

@@ -277,11 +277,15 @@
     "tax_form_change_ownership_alert_link_text": "Podať daňové priznanie",
     "effective_next_year_link_text": "Zistiť viac",
     "set_delivery_method": "Nastaviť doručovanie",
+    "verifying_identity_content": "## Overujeme vašu identitu\n\nPráve overujeme vašu identitu. Môže to chvíľu trvať. Ak neoveríme identitu do 24 hodín, prosím kontaktujte nás na info@bratislava.sk",
+    "set_delivery_method_content": "## Zobrazenie daní a poplatkov\n\nPre zobrazenie daní a poplatkov je potrebné overiť vašu identitu a nastaviť preferovaný spôsob doručenia. V prípade, že máte aktívnu elektronickú schránku na doručovanie - slovensko.sk nastavenie spôsobu doručenia nebude potrebné.\n\nPrejdite rýchlym procesom overovania a dostanete prehľad daní a poplatkov.",
     "verify_and_set": "Overiť a nastaviť",
     "tax_administrator": "Správca dane",
     "your_tax_administrator": "Váš správca dane",
     "tax_paid": "Daň z nehnuteľností je uhradená. Ďakujeme",
-    "tax_payment_year_over": "Nakoľko je po termíne možnosti poslednej úhrady splátkou, daň je možné uhradiť len plnou úhradou."
+    "tax_payment_year_over": "Nakoľko je po termíne možnosti poslednej úhrady splátkou, daň je možné uhradiť len plnou úhradou.",
+    "redirecting_to_payment": "Presmerovávam na platbu.",
+    "payment_redirect_error": "Nepodarilo sa presmerovať na platbu."
   },
   "account_section_help": {
     "navigation": "Pomoc",
@@ -397,18 +401,16 @@
         "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
       },
       "payment_failed": {
-        "title": "Platba bola zamietnutá",
-        "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
+        "title": "Úhrada dane zlyhala",
+        "content": "Daň sa nepodarilo uhradiť. Opakujte platbu alebo to skúste neskôr. V prípade problémov s úhradou dane nás kontaktujte na platbadane@bratislava.sk."
       },
       "payment_success": {
-        "title": "Platba prebehla úspešne",
-        "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
-        "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."
+        "title": "Daň bola úspešne uhradená",
+        "content": "Ďakujeme za úhradu dane z nehnuteľností. Stav úhrady si môžete skontrolovať v detaile dane v Bratislavskom konte."
       },
       "payment_already_paid": {
         "title": "Platba už bola vykonaná",
-        "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
-        "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."
+        "content": "Ďakujeme za zaplatenie dane z nehnuteľností."
       }
     },
     "button_to_formular_text": "Vyplniť dotazník",
@@ -490,9 +492,10 @@
     "tax_payment_methods": "Spôsob úhrady",
     "tax_payment_rest": "<strong>Úhrada celej zvyšnej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_rest_subtitle": "Úhrada do {{date}}",
+    "tax_payment_under_threshold_alert": "Nakoľko je vaša daň nižšia ako 66€ nie je možné ju hradiť v splátkach.",
     "tax_payment_installment": "<strong>Úhrada splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_installment_subtitle": "Úhrada nasledujúcej splátky do {{date}}",
-    "tax_payment_installment_alert_before_next_payment": "Pred termínom úhrady nasledujúcej splátky vám zašleme notifikáciu na <strong>meno@priezvisko.sk</strong>",
+    "tax_payment_installment_alert_before_next_payment": "Pred termínom úhrady nasledujúcej splátky vám zašleme notifikáciu na <strong>{{email}}</strong>",
     "tax_type": {
       "GROUND": {
         "title": "Daň z pozemkov",

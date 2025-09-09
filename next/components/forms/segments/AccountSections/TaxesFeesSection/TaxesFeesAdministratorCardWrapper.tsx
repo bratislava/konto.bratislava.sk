@@ -8,6 +8,10 @@ const TaxesFeesAdministratorCardWrapper = () => {
   const { t } = useTranslation('account')
   const { taxesData, strapiTaxAdministrator } = useTaxFeesSection()
 
+  if (!taxesData) {
+    return null
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-h5-semibold">{t('account_section_payment.tax_administrator')}</h2>

@@ -6,27 +6,20 @@ import React from 'react'
 
 import AnnouncementBlock from '../IntroSection/Announcements/AnnouncementBlock'
 
-// TODO: Translations
-const content = `## Zobrazenie daní a poplatkov
-
-Pre zobrazenie daní a poplatkov je potrebné overiť vašu identitu a nastaviť preferovaný spôsob doručenia. V prípade, že máte aktívnu elektronickú schránku na doručovanie - slovensko.sk nastavenie spôsobu doručenia nebude potrebné.
-
-Prejdite rýchlym procesom overovania a dostanete prehľad daní a poplatkov.`
-
-type TaxesFeesVerifyAndSetDeliveryBannerProps = {
+type TaxesFeesVerifyAndSetDeliveryMethodBannerProps = {
   onDeliveryMethodChange: () => void
 }
 
-const TaxesFeesVerifyAndSetDeliveryBanner = ({
+const TaxesFeesVerifyAndSetDeliveryMethodBanner = ({
   onDeliveryMethodChange,
-}: TaxesFeesVerifyAndSetDeliveryBannerProps) => {
+}: TaxesFeesVerifyAndSetDeliveryMethodBannerProps) => {
   const { t } = useTranslation('account')
   const { tierStatus } = useSsrAuth()
   const { isIdentityVerified } = tierStatus
 
   return (
     <AnnouncementBlock
-      announcementContent={content}
+      announcementContent={t('account_section_payment.set_delivery_method_content')}
       // TODO change for image without background color white
       imageSrc={BannerTaxWaiting}
       buttons={[
@@ -44,4 +37,4 @@ const TaxesFeesVerifyAndSetDeliveryBanner = ({
   )
 }
 
-export default TaxesFeesVerifyAndSetDeliveryBanner
+export default TaxesFeesVerifyAndSetDeliveryMethodBanner

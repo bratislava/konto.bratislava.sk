@@ -6,6 +6,8 @@ import {
   PaymentHandIcon,
   QrCodeIcon,
 } from '@assets/ui-icons'
+import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
+import { useUser } from 'frontend/hooks/useUser'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { useSearchParams } from 'next/navigation'
@@ -18,7 +20,7 @@ import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import PaymentSchedule from '../../../simple-components/PaymentSchedule'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
-import TaxesFeesVerifyAndSetDeliveryBanner from './TaxesFeesVerifyAndSetDeliveryBanner'
+import TaxesFeesVerifyAndSetDeliveryMethodBanner from './TaxesFeesVerifyAndSetDeliveryBanner'
 import { useStrapiTax } from './useStrapiTax'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeeSection } from './useTaxFeeSection'
@@ -34,14 +36,17 @@ const Details = ({ paymentMethod }: DetailsProps) => {
     redirectToInstallmentPayment,
     redirectToFullPaymentIsPending,
     redirectToInstallmentPaymentIsPending,
-    downloadQrCodeOneTimePayment: downloadQrCode,
+    downloadQrCodeOneTimePayment,
+    downloadQrCodeInstallmentPayment,
   } = useTaxFeeSection()
+  const { userData } = useUser()
   const strapiTax = useStrapiTax()
   const searchParams = useSearchParams()
   const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
   const { t } = useTranslation('account')
-  const qrCodeBase64 = `data:image/png;base64,${taxData.oneTimePayment.qrCode}`
+  const qrCodeBase64oneTimePayment = `data:image/png;base64,${taxData.oneTimePayment.qrCode}`
+  const qrCodeBase64InstallmentPayment = `data:image/png;base64,${taxData.installmentPayment.activeInstallment?.qrCode}`
   const hasMultipleInstallments = taxData.installmentPayment.isPossible
   const { channelChangeEffectiveNextYear } = useTaxChannel()
 
@@ -70,6 +75,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
                 ns="account"
                 i18nKey="tax_detail_section.tax_payment_installment_alert_before_next_payment"
                 components={{ strong: <strong className="font-semibold" /> }}
+                values={{ email: userData.email }}
               />
             }
           />
@@ -177,12 +183,20 @@ const Details = ({ paymentMethod }: DetailsProps) => {
                 text={t('download_qr_code')}
                 size="sm"
                 className="hidden lg:block"
-                onPress={downloadQrCode}
+                onPress={
+                  paymentMethod === PaymentMethod.Installments
+                    ? downloadQrCodeInstallmentPayment
+                    : downloadQrCodeOneTimePayment
+                }
               />
             </div>
             <img
               className="flex aspect-square max-h-max max-w-full items-center justify-center self-center bg-[red] sm:max-h-[256px] sm:max-w-[256px]"
-              src={qrCodeBase64}
+              src={
+                paymentMethod === PaymentMethod.Installments
+                  ? qrCodeBase64InstallmentPayment
+                  : qrCodeBase64oneTimePayment
+              }
               alt="QR code"
             />
 
@@ -193,7 +207,11 @@ const Details = ({ paymentMethod }: DetailsProps) => {
               text={t('download_qr_code')}
               size="sm"
               className="block min-w-full lg:hidden"
-              onPress={downloadQrCode}
+              onPress={
+                paymentMethod === PaymentMethod.Installments
+                  ? downloadQrCodeInstallmentPayment
+                  : downloadQrCodeOneTimePayment
+              }
             />
           </div>
         </div>
@@ -205,16 +223,18 @@ const Details = ({ paymentMethod }: DetailsProps) => {
 const PaymentData = () => {
   const { setOfficialCorrespondenceChannelModalOpen } = useTaxFeeSection()
   const { t } = useTranslation('account')
-  const { showEmailCommunicationBanner } = useTaxChannel()
+  const { tierStatus } = useSsrAuth()
+  const { isInQueue, isIdentityVerified } = tierStatus
+  const { showDeliveryMethodNotSetBanner } = useTaxChannel()
   const searchParams = useSearchParams()
   const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
-      {showEmailCommunicationBanner ? (
+      {(!isIdentityVerified && !isInQueue) || showDeliveryMethodNotSetBanner ? (
         <div className="flex flex-col gap-6">
           <Alert type="warning" fullWidth message={t('payment_method_access_prompt')} />
-          <TaxesFeesVerifyAndSetDeliveryBanner
+          <TaxesFeesVerifyAndSetDeliveryMethodBanner
             onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
           />
         </div>

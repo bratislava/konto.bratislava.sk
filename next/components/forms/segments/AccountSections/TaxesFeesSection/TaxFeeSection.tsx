@@ -31,7 +31,7 @@ const TaxFeeSection = () => {
         agreementContent={accountCommunicationConsentText}
       />
       <div className="flex flex-col">
-        <TaxFeeSectionHeader />
+        <TaxFeeSectionHeader title={t('tax_detail_section.title', { year: taxData.year })} />
         <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-12 lg:py-12">
           {(taxData.paidStatus === TaxStatusEnum.Paid ||
             taxData.paidStatus === TaxStatusEnum.OverPaid) && (

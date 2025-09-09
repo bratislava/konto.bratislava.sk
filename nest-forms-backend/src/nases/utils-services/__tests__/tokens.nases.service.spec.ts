@@ -7,21 +7,21 @@ import { FileStatus } from '@prisma/client'
 import { v1, v4 } from 'uuid'
 import { Builder, Parser } from 'xml2js'
 
-import prismaMock from '../../../test/singleton'
-import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
-import ClientsService from '../../clients/clients.service'
-import ConvertService from '../../convert/convert.service'
-import PrismaService from '../../prisma/prisma.service'
-import TaxService from '../../tax/tax.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
-import { NasesErrorsResponseEnum } from '../nases.errors.enum'
-import { SendMessageNasesSenderType } from '../types/send-message-nases-sender.type'
-import NasesUtilsService from './tokens.nases.service'
+import prismaMock from '../../../../test/singleton'
+import { CognitoGetUserData } from '../../../auth/dtos/cognito.dto'
+import ClientsService from '../../../clients/clients.service'
+import ConvertService from '../../../convert/convert.service'
+import PrismaService from '../../../prisma/prisma.service'
+import TaxService from '../../../tax/tax.service'
+import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import MinioClientSubservice from '../../../utils/subservices/minio-client.subservice'
+import { NasesErrorsResponseEnum } from '../../nases.errors.enum'
+import { SendMessageNasesSenderType } from '../../types/send-message-nases-sender.type'
+import NasesUtilsService from '../tokens.nases.service'
 
 jest.mock('axios')
-jest.mock('../../utils/subservices/minio-client.subservice')
-jest.mock('../../convert/convert.service')
+jest.mock('../../../utils/subservices/minio-client.subservice')
+jest.mock('../../../convert/convert.service')
 jest.mock('uuid', () => ({
   v4: jest.fn(),
   v1: jest.fn(),

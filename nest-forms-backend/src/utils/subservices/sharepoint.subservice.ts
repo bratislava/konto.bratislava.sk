@@ -223,7 +223,8 @@ export default class SharepointSubservice {
         fields,
       )
       Object.entries(oneToOneAdded).forEach(([key, id]) => {
-        valuesForFields[`${fields.oneToOne.originalTableFields[key]}Id`] = id
+        valuesForFields[`${fields.oneToOne.originalTableFields[key]}LookupId`] =
+          id
       })
     }
 
@@ -236,8 +237,15 @@ export default class SharepointSubservice {
         accessToken,
         fields,
       )
+
+      // https://stackoverflow.com/questions/77935301/updating-a-lookup-field-in-sharepoint-via-microsoft-graph-api-results-in-invali
       Object.entries(oneToManyAdded).forEach(([key, ids]) => {
-        valuesForFields[`${fields.oneToMany.originalTableFields[key]}Id`] = ids
+        valuesForFields[
+          `${fields.oneToMany.originalTableFields[key]}LookupId`
+        ] = ids
+        valuesForFields[
+          `${fields.oneToMany.originalTableFields[key]}LookupId@odata.type`
+        ] = 'Collection(Edm.Int32)'
       })
     }
 

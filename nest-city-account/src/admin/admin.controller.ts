@@ -29,6 +29,7 @@ import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
   MarkDeceasedAccountRequestDto,
+  RequestBatchNewUserBirthNumbers,
   RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
   RequestDeleteTaxDto,
@@ -37,6 +38,7 @@ import {
 } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
+  GetNewVerifiedUsersBirthNumbersResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
   MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
@@ -339,5 +341,20 @@ export class AdminController {
   @Post('delete-tax')
   async deleteTax(@Body() data: RequestDeleteTaxDto): Promise<void> {
     await this.adminService.deleteTax(data)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get birthnumbers for [take] new users since requested date',
+    description: 'Delete tax for user, for example when the tax is cancelled in Noris.',
+  })
+  @ApiOkResponse({
+    description: 'Success if all was updated accordingly.',
+  })
+  @UseGuards(AdminGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Post('get-verified-user-birth-numbers-batch')
+  async getNewVerifiedUsersBirthNumbers(@Body() data: RequestBatchNewUserBirthNumbers): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+    return await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
   }
 }

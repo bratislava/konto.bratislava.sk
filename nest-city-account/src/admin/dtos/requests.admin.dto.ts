@@ -1,5 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import {
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator'
+import {
+  Type
+} from 'class-transformer'
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
 
 export enum ResponseVerificationIdentityCardMessageEnum {
@@ -130,4 +141,25 @@ export class MarkDeceasedAccountRequestDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   birthNumbers: string[]
+}
+
+export class RequestBatchNewUserBirthNumbers {
+  @ApiProperty({
+    description: 'Date to query.',
+    example: '2023-04-13T14:39:49.004Z',
+    type: Date
+  })
+  @IsDate()
+  @Type(() => Date)
+  since: Date
+
+  @ApiProperty({
+    description: 'Optionally specify maximum number to return. Will not return more than internal limit (100).',
+    example: 20,
+    type: Number
+  })
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  take?: number
 }

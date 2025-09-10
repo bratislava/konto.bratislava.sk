@@ -207,6 +207,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: true,
     exampleFormNotRequired: true,
+    doesNotHaveToBeRegisteredInProduction: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,

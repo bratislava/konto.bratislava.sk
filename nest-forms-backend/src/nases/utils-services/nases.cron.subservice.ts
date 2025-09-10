@@ -5,6 +5,8 @@ import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 
 import ClientsService from '../../clients/clients.service'
+import BaConfigService from '../../config/ba-config.service'
+import { ClusterEnv } from '../../config/environment-variables'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError, {
@@ -29,22 +31,33 @@ export default class NasesCronSubservice {
     private readonly clientsService: ClientsService,
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.logger = new LineLoggerSubservice('NasesCronSubservice')
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @HandleErrors('CronError')
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async validateFormRegistrations(): Promise<void> {
     const result: ValidateFormRegistrationsResult = {
       'not-found': [],
       'not-published': [],
       error: [],
     }
+    let successfulForms = 0
 
     await Promise.all(
       formDefinitions.map(async (formDefinition) => {
         if (!isSlovenskoSkFormDefinition(formDefinition)) {
+          return
+        }
+
+        if (
+          this.baConfigService.environment.clusterEnv ===
+            ClusterEnv.Production &&
+          formDefinition.doesNotHaveToBeRegisteredInProduction
+        ) {
           return
         }
 
@@ -64,11 +77,14 @@ export default class NasesCronSubservice {
                 },
               },
             )
+          // eslint-disable-next-line unicorn/no-negated-condition
           if (validated.data.status !== 'Publikovaný') {
             result['not-published'].push({
               pospID,
               pospVersion,
             })
+          } else {
+            successfulForms += 1
           }
         } catch (error) {
           if (isAxiosError(error) && error.response?.status === 404) {
@@ -104,7 +120,9 @@ export default class NasesCronSubservice {
         this.logger,
       )
     } else {
-      this.logger.log('All Slovensko.sk form registrations are valid.')
+      this.logger.log(
+        `All ${successfulForms} Slovensko.sk form registrations are valid.`,
+      )
     }
   }
 }

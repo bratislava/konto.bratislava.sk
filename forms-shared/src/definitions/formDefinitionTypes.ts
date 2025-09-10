@@ -37,6 +37,10 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   publisher: string
   isSigned: boolean
   skipGinisStateUpdate?: boolean
+  /**
+   * If true, the form does not have to be registered in production of slovensko.sk (e.g. test forms)
+   */
+  doesNotHaveToBeRegisteredInProduction?: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {

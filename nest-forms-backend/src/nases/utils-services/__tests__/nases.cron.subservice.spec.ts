@@ -1,9 +1,14 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError } from 'axios'
-import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
 
 import ClientsService from '../../../clients/clients.service'
+import BaConfigService from '../../../config/ba-config.service'
+import { ClusterEnv } from '../../../config/environment-variables'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import {
   NasesErrorsEnum,
@@ -11,6 +16,15 @@ import {
 } from '../../nases.errors.enum'
 import NasesCronSubservice from '../nases.cron.subservice'
 import NasesUtilsService from '../tokens.nases.service'
+
+jest.mock('../../../utils/subservices/line-logger.subservice', () => ({
+  __esModule: true,
+  default: jest.fn(),
+  LineLoggerSubservice: jest.fn().mockImplementation(() => ({
+    log: jest.fn(),
+    error: jest.fn(),
+  })),
+}))
 
 jest.mock('forms-shared/definitions/formDefinitions', () => ({
   formDefinitions: [
@@ -30,16 +44,7 @@ jest.mock('forms-shared/definitions/formDefinitions', () => ({
       type: FormDefinitionType.Webhook,
       slug: 'non-slovensko-form',
     },
-  ],
-}))
-
-jest.mock('../../../utils/subservices/line-logger.subservice', () => ({
-  __esModule: true,
-  default: jest.fn(),
-  LineLoggerSubservice: jest.fn().mockImplementation(() => ({
-    log: jest.fn(),
-    error: jest.fn(),
-  })),
+  ] as unknown as FormDefinition[],
 }))
 
 describe('NasesCronSubservice', () => {
@@ -75,6 +80,14 @@ describe('NasesCronSubservice', () => {
             InternalServerErrorException: jest.fn(),
           }),
         },
+        {
+          provide: BaConfigService,
+          useValue: {
+            environment: {
+              clusterEnv: ClusterEnv.Production,
+            },
+          },
+        },
       ],
     }).compile()
 
@@ -94,10 +107,26 @@ describe('NasesCronSubservice', () => {
   })
 
   describe('validateFormRegistrations', () => {
+    let originalFormDefinitions: any
+
     beforeEach(() => {
       nasesUtilsService.createTechnicalAccountJwtToken.mockReturnValue(
         'mock-jwt-token',
       )
+
+      // Store original mock for restoration
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      originalFormDefinitions = [...formDefinitionsModule.formDefinitions]
+    })
+
+    afterEach(() => {
+      // Restore original mock after each test
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      formDefinitionsModule.formDefinitions = originalFormDefinitions
     })
 
     it('should validate all slovensko.sk forms successfully', async () => {
@@ -222,8 +251,95 @@ describe('NasesCronSubservice', () => {
       await service.validateFormRegistrations()
 
       expect(logSpy).toHaveBeenCalledWith(
-        'All Slovensko.sk form registrations are valid.',
+        'All 2 Slovensko.sk form registrations are valid.',
       )
+    })
+
+    it('should pass if there is an unregistered testing form and the env is production', async () => {
+      const testingForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.3',
+        pospVersion: '1.0',
+        slug: 'priznanie-k-dani-z-nehnutelnosti-test',
+        doesNotHaveToBeRegisteredInProduction: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      const extendedMockFormDefinitions = [
+        ...formDefinitionsModule.formDefinitions,
+        testingForm,
+      ]
+      formDefinitionsModule.formDefinitions = extendedMockFormDefinitions
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation((pospID) => {
+        if (pospID === 'test.form.definition.3') {
+          return Promise.resolve({
+            data: { status: 'Nepublikovaný' },
+          })
+        }
+        return Promise.resolve({
+          data: { status: 'Publikovaný' },
+        })
+      })
+
+      const logSpy = jest.spyOn(service['logger'], 'log')
+
+      await service.validateFormRegistrations()
+
+      expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
+      expect(logSpy).toHaveBeenCalledWith(
+        'All 2 Slovensko.sk form registrations are valid.',
+      )
+    })
+
+    it('should fail if there is an unregistered testing form and the env is staging', async () => {
+      const testingForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.3',
+        pospVersion: '1.0',
+        slug: 'priznanie-k-dani-z-nehnutelnosti-test',
+        doesNotHaveToBeRegisteredInProduction: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      const extendedMockFormDefinitions = [
+        ...formDefinitionsModule.formDefinitions,
+        testingForm,
+      ]
+      formDefinitionsModule.formDefinitions = extendedMockFormDefinitions
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation((pospID) => {
+        if (pospID === 'test.form.definition.3') {
+          return Promise.resolve({
+            data: { status: 'Nepublikovaný' },
+          })
+        }
+        return Promise.resolve({
+          data: { status: 'Publikovaný' },
+        })
+      })
+
+      Object.defineProperty(service['baConfigService'], 'environment', {
+        get: jest.fn(() => ({
+          clusterEnv: ClusterEnv.Staging,
+        })),
+        configurable: true,
+      })
+
+      const alertErrorMock = jest.requireMock(
+        '../../../utils/subservices/line-logger.subservice',
+      ).default
+      const logSpy = jest.spyOn(service['logger'], 'log')
+
+      await service.validateFormRegistrations()
+
+      expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(3)
+      expect(logSpy).not.toHaveBeenCalled()
+      expect(alertErrorMock).toHaveBeenCalled()
     })
   })
 })

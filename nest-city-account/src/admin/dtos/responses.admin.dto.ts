@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import {
+  IsArray,
   IsBoolean,
   IsEmail,
   IsEnum,
@@ -311,4 +312,26 @@ export class GetUserDataByBirthNumbersBatchResponseDto {
   })
   @IsObject()
   users: Record<string, ResponseUserByBirthNumberDto>
+}
+
+export class GetNewVerifiedUsersBirthNumbersResponseDto {
+  @ApiProperty({
+    description: 'List of birth numbers',
+    type: String,
+    isArray: true,
+    example: ['0123456789','1234567890','234567890']
+  })
+  @IsArray()
+  @IsString({each: true})
+  @IsBirthNumber({each: true})
+  birthNumbers: string[]
+
+
+  @ApiProperty({
+    description: 'Next date to query.',
+    example: '2023-04-13T14:39:49.004Z',
+  })
+  @IsDate()
+  @Type(() => Date)
+  nextSince: Date
 }

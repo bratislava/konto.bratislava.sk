@@ -40,7 +40,7 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   /**
    * If true, the form does not have to be registered in production of slovensko.sk (e.g. test forms)
    */
-  doesNotHaveToBeRegisteredInProduction?: boolean
+  skipProductionRegistrationCheck?: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {

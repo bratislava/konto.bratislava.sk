@@ -6,9 +6,11 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 
+import prismaMock from '../../../../test/singleton'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
+import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import {
   NasesErrorsEnum,
@@ -88,6 +90,7 @@ describe('NasesCronSubservice', () => {
             },
           },
         },
+        { provide: PrismaService, useValue: prismaMock },
       ],
     }).compile()
 
@@ -133,6 +136,10 @@ describe('NasesCronSubservice', () => {
       mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
         data: { status: 'Publikovaný' },
       })
+      const saveRegistrationStateToDatabaseSpy = jest.spyOn(
+        service,
+        'saveRegistrationStateToDatabase' as keyof NasesCronSubservice,
+      )
 
       await service.validateFormRegistrations()
 
@@ -155,6 +162,16 @@ describe('NasesCronSubservice', () => {
           },
         },
       )
+
+      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledTimes(2)
+      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+      )
+      expect(saveRegistrationStateToDatabaseSpy).not.toHaveBeenCalledWith(
+        expect.any(Object),
+        false,
+      )
     })
 
     it('should handle not published forms', async () => {
@@ -165,6 +182,10 @@ describe('NasesCronSubservice', () => {
         .mockResolvedValueOnce({
           data: { status: 'Nepublikovaný' },
         })
+      const saveRegistrationStateToDatabaseSpy = jest.spyOn(
+        service,
+        'saveRegistrationStateToDatabase' as keyof NasesCronSubservice,
+      )
 
       const alertErrorSpy = jest.fn()
       jest.doMock('../../../utils/subservices/line-logger.subservice', () => ({
@@ -175,6 +196,17 @@ describe('NasesCronSubservice', () => {
       await service.validateFormRegistrations()
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
+
+      // Both types of calls should be made
+      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledTimes(2)
+      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+      )
+      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledWith(
+        expect.any(Object),
+        false,
+      )
     })
 
     it('should handle 404 errors (form not found)', async () => {
@@ -251,7 +283,9 @@ describe('NasesCronSubservice', () => {
       await service.validateFormRegistrations()
 
       expect(logSpy).toHaveBeenCalledWith(
-        'All 2 Slovensko.sk form registrations are valid.',
+        expect.stringContaining(
+          'All 2 Slovensko.sk form registrations are valid.',
+        ),
       )
     })
 
@@ -261,7 +295,7 @@ describe('NasesCronSubservice', () => {
         pospID: 'test.form.definition.3',
         pospVersion: '1.0',
         slug: 'priznanie-k-dani-z-nehnutelnosti-test',
-        doesNotHaveToBeRegisteredInProduction: true,
+        skipProductionRegistrationCheck: true,
       } as FormDefinition
 
       const formDefinitionsModule = jest.requireMock(
@@ -290,7 +324,9 @@ describe('NasesCronSubservice', () => {
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
       expect(logSpy).toHaveBeenCalledWith(
-        'All 2 Slovensko.sk form registrations are valid.',
+        expect.stringContaining(
+          'All 2 Slovensko.sk form registrations are valid.',
+        ),
       )
     })
 
@@ -300,7 +336,7 @@ describe('NasesCronSubservice', () => {
         pospID: 'test.form.definition.3',
         pospVersion: '1.0',
         slug: 'priznanie-k-dani-z-nehnutelnosti-test',
-        doesNotHaveToBeRegisteredInProduction: true,
+        skipProductionRegistrationCheck: true,
       } as FormDefinition
 
       const formDefinitionsModule = jest.requireMock(

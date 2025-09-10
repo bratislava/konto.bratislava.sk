@@ -45,6 +45,7 @@ import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { CustomErrorAdminTypesEnum, CustomErrorAdminTypesResponseEnum } from './dtos/error.dto'
 
 const USER_REQUEST_LIMIT = 100
 
@@ -675,6 +676,17 @@ export class AdminService {
       },
       take: limitedTake,
     })
+
+    if (
+      (users.length() === limitedTake && limitedTake > 2 && users[0].createdAt) ===
+      users[users.length].createdAt
+    ) {
+      // If this happens because of manual edit in the database, please add random jitter to the dates
+      throw this.throwerErrorGuard(
+        CustomErrorAdminTypesEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
+        CustomErrorAdminTypesResponseEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP
+      )
+    }
 
     const nextSince = users[users.length].lastVerificationIdentityCard
 

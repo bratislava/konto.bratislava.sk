@@ -8,6 +8,7 @@ import {
 import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { DeliveryMethodErrorsEnum } from './delivery-method.error'
+import {CustomErrorAdminTypesEnum} from "../../../admin/dtos/error.dto";
 
 // copied over from nest-forms-backend
 export enum ErrorsEnum {
@@ -50,6 +51,7 @@ export type CustomErrorEnums =
   | AdminErrorsEnum
   | SendToQueueErrorsEnum
   | DeliveryMethodErrorsEnum
+  | CustomErrorAdminTypesEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

@@ -22,7 +22,6 @@ import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   TaxIdVariableSymbolYear,
   TaxWithTaxPayer,
-  transformDeliveryMethodToDatabaseType,
 } from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,

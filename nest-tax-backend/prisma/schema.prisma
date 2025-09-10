@@ -28,7 +28,6 @@ model TaxPayer {
   permanentResidenceStreet    String?
   permanentResidenceZip       String?
   permanentResidenceCity      String?
-  deliveryMethod              DeliveryMethodNamed? // Current delivery method for the tax payer.
 
   taxes Tax[]
 

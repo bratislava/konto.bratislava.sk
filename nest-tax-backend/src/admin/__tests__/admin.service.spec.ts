@@ -27,7 +27,7 @@ import * as taxDetailHelper from '../utils/tax-detail.helper'
 
 jest.mock('../utils/tax-detail.helper')
 
-describe('TasksService', () => {
+describe('AdminService', () => {
   let service: AdminService
 
   let prismaMock: PrismaService
@@ -125,7 +125,6 @@ describe('TasksService', () => {
         '001234/567': { deliveryMethod: DeliveryMethod.EDESK },
         '000123/890': { deliveryMethod: DeliveryMethod.EDESK },
       }
-      const updateManySpy = jest.spyOn(prismaMock['taxPayer'], 'updateMany')
 
       await service.updateDeliveryMethodsInNoris({
         data: mockData,
@@ -144,23 +143,6 @@ describe('TasksService', () => {
           date: null,
         },
       ])
-
-      expect(updateManySpy).toHaveBeenCalledTimes(1)
-      expect(updateManySpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { birthNumber: { in: ['001234/567', '000123/890'] } },
-          data: {
-            deliveryMethod: DeliveryMethodNamed.EDESK,
-          },
-        }),
-      )
-      expect(updateManySpy).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            deliveryMethod: DeliveryMethodNamed.POSTAL,
-          },
-        }),
-      )
     })
 
     it('should handle empty input data', async () => {
@@ -237,47 +219,6 @@ describe('TasksService', () => {
       expect(
         service['norisService'].updateDeliveryMethods,
       ).not.toHaveBeenCalled()
-    })
-
-    it('should update delivery methods in database as well', async () => {
-      const mockData: RequestUpdateNorisDeliveryMethodsData = {
-        '123456/789': { deliveryMethod: DeliveryMethod.EDESK },
-        '234567/890': { deliveryMethod: DeliveryMethod.EDESK },
-        '345678/901': { deliveryMethod: DeliveryMethod.POSTAL },
-        '345678/902': { deliveryMethod: DeliveryMethod.POSTAL },
-        '456789/0123': {
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: mockDate1,
-        },
-        '456789/0103': {
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: mockDate2,
-        },
-      }
-
-      const updateManySpy = jest.spyOn(prismaMock['taxPayer'], 'updateMany')
-
-      await service.updateDeliveryMethodsInNoris({
-        data: mockData,
-      })
-
-      expect(updateManySpy).toHaveBeenCalledTimes(3)
-      expect(updateManySpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { birthNumber: { in: ['123456/789', '234567/890'] } },
-          data: {
-            deliveryMethod: DeliveryMethodNamed.EDESK,
-          },
-        }),
-      )
-      expect(updateManySpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { birthNumber: { in: ['345678/901', '345678/902'] } },
-          data: {
-            deliveryMethod: DeliveryMethodNamed.POSTAL,
-          },
-        }),
-      )
     })
   })
 
@@ -643,6 +584,9 @@ describe('TasksService', () => {
           mockData,
           2025,
           mockTransaction,
+          {
+            taxDeliveryMethodAtLockDate: DeliveryMethodNamed.EDESK,
+          } as ResponseUserByBirthNumberDto,
         ),
       ).rejects.toThrow(mockError)
     })
@@ -706,6 +650,9 @@ describe('TasksService', () => {
         mockData,
         2025,
         mockTransaction,
+        {
+          taxDeliveryMethodAtLockDate: DeliveryMethodNamed.EDESK,
+        } as ResponseUserByBirthNumberDto,
       )
       expect(result).toEqual(mockTaxPayer)
 

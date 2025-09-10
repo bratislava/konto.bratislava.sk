@@ -61,6 +61,7 @@ export class AdminService {
     dataFromNoris: NorisTaxPayersDto,
     year: number,
     transaction: Prisma.TransactionClient,
+    userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
   ) {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
     const taxAdministrator = await transaction.taxAdministrator.upsert({
@@ -112,7 +113,7 @@ export class AdminService {
       update: taxData,
       create: {
         ...taxData,
-        deliveryMethod: taxPayer.deliveryMethod,
+        deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
       },
     })
 
@@ -174,32 +175,33 @@ export class AdminService {
 
         try {
           await this.prismaService.$transaction(async (tx) => {
+            const userFromCityAccount =
+              userDataFromCityAccount[norisItem.ICO_RC] || null
+
             const userData = await this.insertTaxPayerDataToDatabase(
               norisItem,
               year,
               tx,
+              userFromCityAccount,
             )
 
-            const userFromCityAccount =
-              userDataFromCityAccount[userData.birthNumber] || null
-            if (userFromCityAccount === null) {
-              return
-            }
-
-            const bloomreachTracker =
-              await this.bloomreachService.trackEventTax(
-                {
-                  amount: convertCurrencyToInt(norisItem.dan_spolu),
-                  year,
-                  delivery_method: userData.deliveryMethod,
-                },
-                userFromCityAccount.externalId ?? undefined,
-              )
-            if (!bloomreachTracker) {
-              throw this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
-              )
+            if (userFromCityAccount) {
+              const bloomreachTracker =
+                await this.bloomreachService.trackEventTax(
+                  {
+                    amount: convertCurrencyToInt(norisItem.dan_spolu),
+                    year,
+                    delivery_method:
+                      userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
+                  },
+                  userFromCityAccount.externalId ?? undefined,
+                )
+              if (!bloomreachTracker) {
+                throw this.throwerErrorGuard.InternalServerErrorException(
+                  ErrorsEnum.INTERNAL_SERVER_ERROR,
+                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+                )
+              }
             }
           })
         } catch (error) {
@@ -258,6 +260,11 @@ export class AdminService {
     }
     let count = 0
 
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        norisData.map((norisRecord) => norisRecord.ICO_RC),
+      )
+
     const taxesExist = await this.prismaService.tax.findMany({
       select: {
         id: true,
@@ -296,10 +303,15 @@ export class AdminService {
                   taxId: taxExists.id,
                 },
               })
+
+              const userFromCityAccount =
+                userDataFromCityAccount[norisItem.ICO_RC] || null
+
               const userData = await this.insertTaxPayerDataToDatabase(
                 norisItem,
                 data.year,
                 tx,
+                userFromCityAccount,
               )
               if (userData) {
                 count += 1
@@ -587,35 +599,6 @@ export class AdminService {
     )
   }
 
-  private async updateDeliveryMethodsInDatabase(
-    deliveryGroups: Record<
-      DeliveryMethod,
-      { birthNumber: string; date: string | null }[]
-    >,
-  ): Promise<void> {
-    // Update delivery methods in the database
-    await Promise.all(
-      Object.entries(deliveryGroups).map(
-        async ([deliveryMethod, birthNumbers]) => {
-          if (birthNumbers.length > 0) {
-            await this.prismaService.taxPayer.updateMany({
-              where: {
-                birthNumber: {
-                  in: birthNumbers.map((item) => item.birthNumber),
-                },
-              },
-              data: {
-                deliveryMethod: transformDeliveryMethodToDatabaseType(
-                  deliveryMethod as DeliveryMethod,
-                ),
-              },
-            })
-          }
-        },
-      ),
-    )
-  }
-
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
@@ -683,8 +666,6 @@ export class AdminService {
     if (updates.length > 0) {
       await this.norisService.updateDeliveryMethods(updates)
     }
-
-    await this.updateDeliveryMethodsInDatabase(deliveryGroups)
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

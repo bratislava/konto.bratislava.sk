@@ -14,14 +14,10 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import FilesService from '../files/files.service'
-import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import {
-  SendMessageNasesSender,
-  SendMessageNasesSenderType,
-} from '../nases/types/send-message-nases-sender.type'
+import NasesService from '../nases/nases.service'
+import { SendMessageNasesSenderType } from '../nases/types/send-message-nases-sender.type'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -46,12 +42,12 @@ export default class NasesConsumerService {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly formsService: FormsService,
-    private readonly filesService: FilesService,
     private readonly mailgunService: MailgunService,
-    private readonly convertPdfService: ConvertPdfService,
     private readonly emailFormsSubservice: EmailFormsSubservice,
     private readonly webhookSubservice: WebhookSubservice,
     private readonly prismaService: PrismaService,
+    private readonly nasesService: NasesService,
+    private readonly convertPdfService: ConvertPdfService,
   ) {
     this.logger = new LineLoggerSubservice('NasesConsumerService')
   }
@@ -124,117 +120,75 @@ export default class NasesConsumerService {
     return result
   }
 
+  private async sendFormSubmissionEmail(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSk,
+    emailSettings: {
+      template: MailgunTemplateEnum
+      to: string
+      firstName: string | null
+    },
+  ): Promise<void> {
+    const { template, to, firstName } = emailSettings
+    await this.mailgunService.sendEmail({
+      data: {
+        to,
+        template,
+        data: {
+          formId: form.id,
+          messageSubject: extractFormSubjectPlain(
+            formDefinition,
+            form.formDataJson,
+          ),
+          firstName,
+          slug: form.formDefinitionSlug,
+        },
+      },
+    })
+  }
+
   private async handleSlovenskoSkForm(
     form: Forms,
     data: RabbitPayloadDto,
     formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<Nack> {
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
-    const isSent = await this.sendToNasesAndUpdateState(
-      jwt,
-      form,
-      data,
-      formDefinition,
-      { type: SendMessageNasesSenderType.Self },
-    )
-    if (isSent) {
-      const toEmail = data.userData.email || form.email
-      if (toEmail) {
-        await this.mailgunService.sendEmail({
-          data: {
-            to: toEmail,
-            template: MailgunTemplateEnum.NASES_SENT,
-            data: {
-              formId: form.id,
-              messageSubject: extractFormSubjectPlain(
-                formDefinition,
-                form.formDataJson,
-              ),
-              firstName: data.userData.firstName,
-              slug: form.formDefinitionSlug,
-            },
-          },
-        })
-      }
-      return new Nack(false)
-    }
-    if (data.tries <= 1) {
-      const toEmail = data.userData.email || form.email
-      if (data.tries === 1 && toEmail) {
-        await this.mailgunService.sendEmail({
-          data: {
-            to: toEmail,
-            template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
-            data: {
-              formId: form.id,
-              messageSubject: extractFormSubjectPlain(
-                formDefinition,
-                form.formDataJson,
-              ),
-              firstName: data.userData.firstName,
-              slug: form.formDefinitionSlug,
-            },
-          },
-        })
-      }
-      await this.queueDelayedForm(
-        data.formId,
-        data.tries,
-        FormError.NASES_SEND_ERROR,
-        data.userData,
-        FormState.QUEUED,
-      )
-      return new Nack(false)
-    }
-    const requeueFinal = await this.nackTrueWithWait(60_000)
-    return requeueFinal
-  }
 
-  public async sendToNasesAndUpdateState(
-    jwt: string,
-    form: Forms,
-    data: RabbitPayloadDto,
-    formDefinition: FormDefinitionSlovenskoSk,
-    sender: SendMessageNasesSender,
-    additionalFormUpdates?: FormUpdateBodyDto,
-  ): Promise<boolean> {
-    // TODO find a nicer place to do this
     // create a pdf image of the form, upload it to minio and at it among form files
     await this.convertPdfService.createPdfImageInFormFiles(
       data.formId,
       formDefinition,
     )
 
-    const sendData = await this.nasesUtilsService.sendMessageNases(
-      jwt,
-      form,
-      sender,
-    )
-
-    if ((sendData && sendData.status !== 200) || !sendData) {
-      alertError(
-        `Unable send form ${form.id} to nases`,
-        this.logger,
-        JSON.stringify({
-          type: 'Unable send form to nases',
-          status: sendData.status,
-          formId: data.formId,
-          error: FormError.NASES_SEND_ERROR,
-          sendData: sendData.data,
-        }),
-      )
-      return false
+    try {
+      await this.nasesService.sendToNasesAndUpdateState(jwt, form, data, {
+        type: SendMessageNasesSenderType.Self,
+      })
+    } catch (error) {
+      if (data.tries <= 1) {
+        const toEmail = data.userData.email || form.email
+        if (data.tries === 1 && toEmail) {
+          await this.sendFormSubmissionEmail(form, formDefinition, {
+            template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+            to: toEmail,
+            firstName: data.userData.firstName,
+          })
+        }
+        await this.queueDelayedForm(
+          data.formId,
+          data.tries,
+          FormError.NASES_SEND_ERROR,
+          data.userData,
+          FormState.QUEUED,
+        )
+        return new Nack(false)
+      }
+      const requeueFinal = await this.nackTrueWithWait(60_000)
+      return requeueFinal
     }
-    // prisma update form status to DELIVERED_NASES
-    await this.formsService.updateForm(data.formId, {
-      state: FormState.DELIVERED_NASES,
-      error: FormError.NONE,
-      ...additionalFormUpdates,
-    })
 
-    // Send the form to ginis if should be sent
     if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
-      // TODO if this throws, the flow breaks and requires manual intervention
+      // If this throws, the flow breaks and requires manual intervention
       await this.rabbitmqClientService.publishToGinis({
         formId: data.formId,
         tries: 0,
@@ -242,13 +196,15 @@ export default class NasesConsumerService {
       })
     }
 
-    this.logger.log({
-      type: 'ALL GOOD - 200',
-      status: 200,
-      formId: data.formId,
-      sendData: sendData.data,
-    })
-    return true
+    const toEmail = data.userData.email || form.email
+    if (toEmail) {
+      await this.sendFormSubmissionEmail(form, formDefinition, {
+        template: MailgunTemplateEnum.NASES_SENT,
+        to: toEmail,
+        firstName: data.userData.firstName,
+      })
+    }
+    return new Nack(false)
   }
 
   private async queueDelayedForm(

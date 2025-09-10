@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '@prisma/client'
 import {
   IsBoolean,
   IsEmail,
@@ -49,6 +49,14 @@ export class ResponseUserByBirthNumberDto {
   })
   // eslint-disable-next-line @typescript-eslint/ban-types
   cognitoAttributes?: CognitoGetUserData | {}
+
+  @ApiPropertyOptional({
+    description: 'Delivery method for tax documents at lock date',
+    example: DeliveryMethodEnum.EDESK,
+    enum: DeliveryMethodEnum,
+  })
+  @IsEnum(DeliveryMethodEnum)
+  taxDeliveryMethodAtLockDate: DeliveryMethodEnum | null
 }
 
 export class UserVerifyState {

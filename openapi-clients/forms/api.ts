@@ -33,225 +33,77 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-/**
- *
- * @export
- * @interface BumpJsonVersionResponseDto
- */
 export interface BumpJsonVersionResponseDto {
   /**
    * UUID of the form.
-   * @type {string}
-   * @memberof BumpJsonVersionResponseDto
    */
   formId: string
   /**
    * True if the form was successfully bumped.
-   * @type {boolean}
-   * @memberof BumpJsonVersionResponseDto
    */
   success: boolean
 }
-/**
- *
- * @export
- * @interface ClaimMigrationOutput
- */
 export interface ClaimMigrationOutput {
-  /**
-   *
-   * @type {boolean}
-   * @memberof ClaimMigrationOutput
-   */
   success: boolean
 }
-/**
- *
- * @export
- * @interface ConvertToPdfRequestDto
- */
 export interface ConvertToPdfRequestDto {
   /**
-   * Form id
-   * @type {string}
-   * @memberof ConvertToPdfRequestDto
-   */
-  formId: string
-  /**
    * Form values in JSON
-   * @type {object}
-   * @memberof ConvertToPdfRequestDto
    */
   jsonData?: object
   /**
    * Used only in the FE requests to display files not yet uploaded to the server.
-   * @type {Array<SimplifiedClientFileInfoDto>}
-   * @memberof ConvertToPdfRequestDto
    */
   clientFiles?: Array<SimplifiedClientFileInfoDto>
 }
-/**
- *
- * @export
- * @interface CreateFormInput
- */
 export interface CreateFormInput {
-  /**
-   *
-   * @type {string}
-   * @memberof CreateFormInput
-   */
   formDefinitionSlug: string
 }
-/**
- *
- * @export
- * @interface CreateFormOutput
- */
 export interface CreateFormOutput {
-  /**
-   *
-   * @type {string}
-   * @memberof CreateFormOutput
-   */
   formId: string
 }
-/**
- *
- * @export
- * @interface CreateFormRequestDto
- */
-export interface CreateFormRequestDto {
-  /**
-   * Slug of the form definition
-   * @type {string}
-   * @memberof CreateFormRequestDto
-   */
-  formDefinitionSlug: string
-}
-/**
- *
- * @export
- * @interface CreateFormResponseDto
- */
-export interface CreateFormResponseDto {
-  /**
-   * ID of form
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  formId: string
-}
-/**
- *
- * @export
- * @interface DownloadTokenResponseDataDto
- */
 export interface DownloadTokenResponseDataDto {
   /**
    * Download jwt token
-   * @type {string}
-   * @memberof DownloadTokenResponseDataDto
    */
   jwt: string
 }
-/**
- *
- * @export
- * @interface EidUpdateSendFormRequestDto
- */
 export interface EidUpdateSendFormRequestDto {
   /**
    * Send JSON body of form
-   * @type {object}
-   * @memberof EidUpdateSendFormRequestDto
    */
   formDataJson?: object
   /**
    * Form signature with metadata
-   * @type {FormSignatureDto}
-   * @memberof EidUpdateSendFormRequestDto
    */
   formSignature?: FormSignatureDto | null
   /**
-   * State of form
-   * @type {object}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  state?: object
-  /**
-   * Data from ginis saved in our db
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  formDataGinis?: string
-  /**
-   * Date time, when submission was finished in ginis
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  finishSubmission?: string
-  /**
-   * ID of person, who is sending this (URI)
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  recipientId?: string
-  /**
-   * Ginis document id generated after registering the submission
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  ginisDocumentId?: string
-  /**
    * EID token to send form
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
    */
   eidToken: string
 }
-/**
- *
- * @export
- * @interface FormSignatureDto
- */
 export interface FormSignatureDto {
   /**
    * Base64 encoded signature
-   * @type {string}
-   * @memberof FormSignatureDto
    */
   signatureBase64: string
   /**
    * POSP ID of the form
-   * @type {string}
-   * @memberof FormSignatureDto
    */
   pospID: string
   /**
    * POSP version of the form
-   * @type {string}
-   * @memberof FormSignatureDto
    */
   pospVersion: string
   /**
    * JSON version of the form
-   * @type {string}
-   * @memberof FormSignatureDto
    */
   jsonVersion: string
   /**
    * Hash of the form data
-   * @type {string}
-   * @memberof FormSignatureDto
    */
   formDataHash: string
 }
-/**
- *
- * @export
- * @enum {string}
- */
 
 export const FormState = {
   Draft: 'DRAFT',
@@ -267,71 +119,43 @@ export const FormState = {
 
 export type FormState = (typeof FormState)[keyof typeof FormState]
 
-/**
- *
- * @export
- * @interface FormUserInformationDto
- */
 export interface FormUserInformationDto {
   /**
    * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-   * @type {string}
-   * @memberof FormUserInformationDto
    */
   userExternalId: string | null
   /**
    * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof FormUserInformationDto
    */
   mainUri: string | null
   /**
    * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof FormUserInformationDto
    */
   actorUri: string | null
 }
-/**
- *
- * @export
- * @interface GetFileResponseReducedDto
- */
 export interface GetFileResponseReducedDto {
   /**
    * id of the record in db
-   * @type {string}
-   * @memberof GetFileResponseReducedDto
    */
   id: string
   /**
    * Real file name of the file, but is used only for display
-   * @type {string}
-   * @memberof GetFileResponseReducedDto
    */
   fileName: string
   /**
    * File size in bytes
-   * @type {number}
-   * @memberof GetFileResponseReducedDto
    */
   fileSize: number
   /**
    * scan result
-   * @type {string}
-   * @memberof GetFileResponseReducedDto
    */
   status: GetFileResponseReducedDtoStatusEnum
   /**
    * order of this file in respective ginis submission
-   * @type {number}
-   * @memberof GetFileResponseReducedDto
    */
   ginisOrder: number | null
   /**
    * If the file was uploaded to GINIS
-   * @type {boolean}
-   * @memberof GetFileResponseReducedDto
    */
   ginisUploaded: boolean
 }
@@ -355,145 +179,94 @@ export const GetFileResponseReducedDtoStatusEnum = {
 export type GetFileResponseReducedDtoStatusEnum =
   (typeof GetFileResponseReducedDtoStatusEnum)[keyof typeof GetFileResponseReducedDtoStatusEnum]
 
-/**
- *
- * @export
- * @interface GetFormMetaDto
- */
 export interface GetFormMetaDto {
   /**
    * Number of forms for each state
-   * @type {object}
-   * @memberof GetFormMetaDto
    */
   countByState: object
 }
-/**
- *
- * @export
- * @interface GetFormResponseDto
- */
 export interface GetFormResponseDto {
   /**
    * Change email, on which you can be contacted
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   email: string | null
   /**
    * Id of record
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   id: string
   /**
    * Create date of record
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   createdAt: string
   /**
    * Update date of record
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   updatedAt: string
   /**
    * Id of send form from other system, (probably ginis)
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   externalId: string | null
   /**
    * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   userExternalId: string | null
   /**
    * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   mainUri: string | null
   /**
    * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   actorUri: string | null
   /**
    * State of form
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   state: GetFormResponseDtoStateEnum
   /**
    * Specific error type
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   error: GetFormResponseDtoErrorEnum
   /**
    * Data from ginis saved in our db
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   formDataGinis: string | null
   /**
    * Ginis document id generated after registering the submission
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   ginisDocumentId: string | null
   /**
    * Data in JSON format
-   * @type {object}
-   * @memberof GetFormResponseDto
    */
   formDataJson: object | null
   /**
    * Form subject
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   formSubject: string
   /**
    * Form signature with metadata
-   * @type {FormSignatureDto}
-   * @memberof GetFormResponseDto
    */
   formSignature?: FormSignatureDto | null
   /**
    * Technical NASES id of sender
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   senderId: string | null
   /**
    * Technical NASES id of recipient
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   recipientId: string | null
   /**
    * end of submition
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   finishSubmission: string | null
   /**
    * Slug of the form definition
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   formDefinitionSlug: string
   /**
    * JSON version
-   * @type {string}
-   * @memberof GetFormResponseDto
    */
   jsonVersion: string
+  requiresMigration: boolean
 }
 
 export const GetFormResponseDtoStateEnum = {
@@ -526,58 +299,37 @@ export const GetFormResponseDtoErrorEnum = {
 export type GetFormResponseDtoErrorEnum =
   (typeof GetFormResponseDtoErrorEnum)[keyof typeof GetFormResponseDtoErrorEnum]
 
-/**
- *
- * @export
- * @interface GetFormResponseSimpleDto
- */
 export interface GetFormResponseSimpleDto {
   /**
    * Id of record
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
    */
   id: string
   /**
    * Create date of record
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
    */
   createdAt: string
   /**
    * Update date of record
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
    */
   updatedAt: string
   /**
    * State of form
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
    */
   state: GetFormResponseSimpleDtoStateEnum
   /**
    * Specific error type
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
    */
   error: GetFormResponseSimpleDtoErrorEnum
   /**
    * Data in JSON format
-   * @type {object}
-   * @memberof GetFormResponseSimpleDto
    */
   formDataJson: object | null
   /**
    * Form subject
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
    */
   formSubject: string
   /**
    * Slug of the form definition
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
    */
   formDefinitionSlug: string
 }
@@ -612,133 +364,43 @@ export const GetFormResponseSimpleDtoErrorEnum = {
 export type GetFormResponseSimpleDtoErrorEnum =
   (typeof GetFormResponseSimpleDtoErrorEnum)[keyof typeof GetFormResponseSimpleDtoErrorEnum]
 
-/**
- *
- * @export
- * @interface GetFormsResponseDto
- */
 export interface GetFormsResponseDto {
   /**
    * actual page
-   * @type {number}
-   * @memberof GetFormsResponseDto
    */
   currentPage: number
   /**
    * number of items in one page
-   * @type {number}
-   * @memberof GetFormsResponseDto
    */
   pagination: number
   /**
    * Total number of items
-   * @type {number}
-   * @memberof GetFormsResponseDto
    */
   countPages: number
   /**
    * Items
-   * @type {Array<GetFormResponseSimpleDto>}
-   * @memberof GetFormsResponseDto
    */
   items: Array<GetFormResponseSimpleDto>
   /**
    * Meta data
-   * @type {GetFormMetaDto}
-   * @memberof GetFormsResponseDto
    */
   meta: GetFormMetaDto
 }
-/**
- *
- * @export
- * @interface GinisDocumentDetailResponseDto
- */
 export interface GinisDocumentDetailResponseDto {
-  /**
-   *
-   * @type {string}
-   * @memberof GinisDocumentDetailResponseDto
-   */
   id: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisDocumentDetailResponseDto
-   */
   dossierId: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisDocumentDetailResponseDto
-   */
   ownerName: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisDocumentDetailResponseDto
-   */
   ownerEmail: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisDocumentDetailResponseDto
-   */
   ownerPhone: string
-  /**
-   *
-   * @type {Array<GinisSdkHistorieDokumentuWithAssignedCategory>}
-   * @memberof GinisDocumentDetailResponseDto
-   */
   documentHistory: Array<GinisSdkHistorieDokumentuWithAssignedCategory>
 }
-/**
- *
- * @export
- * @interface GinisSdkHistorieDokumentuWithAssignedCategory
- */
 export interface GinisSdkHistorieDokumentuWithAssignedCategory {
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
   'Id-dokumentu': string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
   'Text-zmeny'?: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
   Poznamka?: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
   'Datum-zmeny': string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
   'Id-zmenu-provedl': string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
   'Id-ktg-zmeny': string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
   assignedCategory: GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum
 }
 
@@ -749,126 +411,63 @@ export const GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
 export type GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
   (typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum)[keyof typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum]
 
-/**
- *
- * @export
- * @interface JsonToXmlV2RequestDto
- */
 export interface JsonToXmlV2RequestDto {
   /**
-   * Form id
-   * @type {string}
-   * @memberof JsonToXmlV2RequestDto
-   */
-  formId: string
-  /**
    * JSON form values, if not provided the form data from the database will be used.
-   * @type {object}
-   * @memberof JsonToXmlV2RequestDto
    */
   jsonData?: object
 }
-/**
- *
- * @export
- * @interface MigrateFormResponseDto
- */
-export interface MigrateFormResponseDto {
-  /**
-   * ID of form
-   * @type {string}
-   * @memberof MigrateFormResponseDto
-   */
-  formId: string
-  /**
-   * True if the form was successfully migrated.
-   * @type {boolean}
-   * @memberof MigrateFormResponseDto
-   */
-  success: boolean
-}
-/**
- *
- * @export
- * @interface PostFileResponseDto
- */
 export interface PostFileResponseDto {
   /**
    * Real file name of the file, but is used only for display
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   fileName: string
   /**
    * Name under which is file stored in minio
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   minioFileName: string
   /**
    * Form type
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   pospId: string
   /**
    * Identifier of sent form
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   formId: string
   /**
    * scan result
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   status: PostFileResponseDtoStatusEnum
   /**
    * File size in bytes
-   * @type {number}
-   * @memberof PostFileResponseDto
    */
   fileSize: number
   /**
    * order of this file in respective ginis submission
-   * @type {number}
-   * @memberof PostFileResponseDto
    */
   ginisOrder: number | null
   /**
    * If the file was uploaded to GINIS
-   * @type {boolean}
-   * @memberof PostFileResponseDto
    */
   ginisUploaded: boolean
   /**
    * id of the record in db
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   id: string
   /**
    * File id under which is file stored in the scanner
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   scannerId?: string | null
   /**
    * Date when file was created
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   createdAt: string
   /**
    * Date when file was updated
-   * @type {string}
-   * @memberof PostFileResponseDto
    */
   updatedAt: string
   /**
    * Info about user who sent the form
-   * @type {FormUserInformationDto}
-   * @memberof PostFileResponseDto
    */
   forms?: FormUserInformationDto
 }
@@ -892,252 +491,69 @@ export const PostFileResponseDtoStatusEnum = {
 export type PostFileResponseDtoStatusEnum =
   (typeof PostFileResponseDtoStatusEnum)[keyof typeof PostFileResponseDtoStatusEnum]
 
-/**
- *
- * @export
- * @interface PrepareMigrationInput
- */
 export interface PrepareMigrationInput {
-  /**
-   *
-   * @type {string}
-   * @memberof PrepareMigrationInput
-   */
   guestIdentityId: string
 }
-/**
- *
- * @export
- * @interface PrepareMigrationOutput
- */
 export interface PrepareMigrationOutput {
-  /**
-   *
-   * @type {boolean}
-   * @memberof PrepareMigrationOutput
-   */
   success: boolean
 }
-/**
- *
- * @export
- * @interface SendFormResponseDto
- */
 export interface SendFormResponseDto {
   /**
    * Id of record
-   * @type {string}
-   * @memberof SendFormResponseDto
    */
   id: string
   /**
    * Message response regarding the process
-   * @type {string}
-   * @memberof SendFormResponseDto
    */
   message: string
   /**
    * Form state
-   * @type {object}
-   * @memberof SendFormResponseDto
    */
   state: object
 }
-/**
- *
- * @export
- * @interface ServiceRunningDto
- */
 export interface ServiceRunningDto {
   /**
    * is service running?
-   * @type {boolean}
-   * @memberof ServiceRunningDto
    */
   running: boolean
 }
-/**
- *
- * @export
- * @interface SignerDataRequestDto
- */
 export interface SignerDataRequestDto {
   /**
-   * Form id
-   * @type {string}
-   * @memberof SignerDataRequestDto
-   */
-  formId: string
-  /**
    * Form values in JSON
-   * @type {object}
-   * @memberof SignerDataRequestDto
    */
   formDataJson: object
 }
-/**
- *
- * @export
- * @interface SignerDataResponseDto
- */
 export interface SignerDataResponseDto {
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   signatureId: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   objectId: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   objectDescription: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   objectFormatIdentifier: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xdcXMLData: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xdcIdentifier: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xdcVersion: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xdcUsedXSD: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xsdReferenceURI: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xdcUsedXSLT: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xslReferenceURI: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xslMediaDestinationTypeDescription: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xslXSLTLanguage: string
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xslTargetEnvironment: string
-  /**
-   *
-   * @type {boolean}
-   * @memberof SignerDataResponseDto
-   */
   xdcIncludeRefs: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof SignerDataResponseDto
-   */
   xdcNamespaceURI: string
 }
-/**
- *
- * @export
- * @interface SimplifiedClientFileInfoDto
- */
 export interface SimplifiedClientFileInfoDto {
-  /**
-   *
-   * @type {string}
-   * @memberof SimplifiedClientFileInfoDto
-   */
   id: string
-  /**
-   *
-   * @type {object}
-   * @memberof SimplifiedClientFileInfoDto
-   */
   file: object
-  /**
-   *
-   * @type {object}
-   * @memberof SimplifiedClientFileInfoDto
-   */
   status: object
 }
-/**
- *
- * @export
- * @interface StatusResponseDto
- */
 export interface StatusResponseDto {
-  /**
-   *
-   * @type {ServiceRunningDto}
-   * @memberof StatusResponseDto
-   */
   prisma: ServiceRunningDto
-  /**
-   *
-   * @type {ServiceRunningDto}
-   * @memberof StatusResponseDto
-   */
   minio: ServiceRunningDto
-  /**
-   *
-   * @type {ServiceRunningDto}
-   * @memberof StatusResponseDto
-   */
   scanner: ServiceRunningDto
 }
-/**
- *
- * @export
- * @interface UpdateFileStatusRequestDto
- */
 export interface UpdateFileStatusRequestDto {
   /**
    * scan result
-   * @type {string}
-   * @memberof UpdateFileStatusRequestDto
    */
   status: UpdateFileStatusRequestDtoStatusEnum
 }
@@ -1161,94 +577,61 @@ export const UpdateFileStatusRequestDtoStatusEnum = {
 export type UpdateFileStatusRequestDtoStatusEnum =
   (typeof UpdateFileStatusRequestDtoStatusEnum)[keyof typeof UpdateFileStatusRequestDtoStatusEnum]
 
-/**
- *
- * @export
- * @interface UpdateFileStatusResponseDto
- */
 export interface UpdateFileStatusResponseDto {
   /**
    * Real file name of the file, but is used only for display
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   fileName: string
   /**
    * Name under which is file stored in minio
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   minioFileName: string
   /**
    * Form type
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   pospId: string
   /**
    * Identifier of sent form
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   formId: string
   /**
    * scan result
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   status: UpdateFileStatusResponseDtoStatusEnum
   /**
    * File size in bytes
-   * @type {number}
-   * @memberof UpdateFileStatusResponseDto
    */
   fileSize: number
   /**
    * order of this file in respective ginis submission
-   * @type {number}
-   * @memberof UpdateFileStatusResponseDto
    */
   ginisOrder: number | null
   /**
    * If the file was uploaded to GINIS
-   * @type {boolean}
-   * @memberof UpdateFileStatusResponseDto
    */
   ginisUploaded: boolean
   /**
    * id of the record in db
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   id: string
   /**
    * File id under which is file stored in the scanner
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   scannerId?: string | null
   /**
    * Date when file was created
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   createdAt: string
   /**
    * Date when file was updated
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   updatedAt: string
   /**
    * Info about user who sent the form
-   * @type {FormUserInformationDto}
-   * @memberof UpdateFileStatusResponseDto
    */
   forms?: FormUserInformationDto
   /**
    * more info
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
    */
   message: string
 }
@@ -1272,97 +655,35 @@ export const UpdateFileStatusResponseDtoStatusEnum = {
 export type UpdateFileStatusResponseDtoStatusEnum =
   (typeof UpdateFileStatusResponseDtoStatusEnum)[keyof typeof UpdateFileStatusResponseDtoStatusEnum]
 
-/**
- *
- * @export
- * @interface UpdateFormRequestDto
- */
 export interface UpdateFormRequestDto {
   /**
    * Send JSON body of form
-   * @type {object}
-   * @memberof UpdateFormRequestDto
    */
   formDataJson?: object
   /**
    * Form signature with metadata
-   * @type {FormSignatureDto}
-   * @memberof UpdateFormRequestDto
    */
   formSignature?: FormSignatureDto | null
-  /**
-   * State of form
-   * @type {object}
-   * @memberof UpdateFormRequestDto
-   */
-  state?: object
-  /**
-   * Data from ginis saved in our db
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  formDataGinis?: string
-  /**
-   * Date time, when submission was finished in ginis
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  finishSubmission?: string
-  /**
-   * ID of person, who is sending this (URI)
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  recipientId?: string
-  /**
-   * Ginis document id generated after registering the submission
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  ginisDocumentId?: string
 }
-/**
- *
- * @export
- * @interface XmlToJsonRequestDto
- */
 export interface XmlToJsonRequestDto {
   /**
-   * Form id
-   * @type {string}
-   * @memberof XmlToJsonRequestDto
-   */
-  formId: string
-  /**
    * Form values in XML
-   * @type {string}
-   * @memberof XmlToJsonRequestDto
    */
   xmlForm: string
 }
-/**
- *
- * @export
- * @interface XmlToJsonResponseDto
- */
 export interface XmlToJsonResponseDto {
   /**
    * Form values in JSON
-   * @type {object}
-   * @memberof XmlToJsonResponseDto
    */
   formDataJson: object
   /**
    * Indicates if version confirmation is required
-   * @type {boolean}
-   * @memberof XmlToJsonResponseDto
    */
   requiresVersionConfirmation: boolean
 }
 
 /**
  * ADMINApi - axios parameter creator
- * @export
  */
 export const ADMINApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -1480,7 +801,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
 
 /**
  * ADMINApi - functional programming interface
- * @export
  */
 export const ADMINApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ADMINApiAxiosParamCreator(configuration)
@@ -1559,7 +879,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
 
 /**
  * ADMINApi - factory interface
- * @export
  */
 export const ADMINApiFactory = function (
   configuration?: Configuration,
@@ -1606,9 +925,6 @@ export const ADMINApiFactory = function (
 
 /**
  * ADMINApi - object-oriented interface
- * @export
- * @class ADMINApi
- * @extends {BaseAPI}
  */
 export class ADMINApi extends BaseAPI {
   /**
@@ -1616,7 +932,6 @@ export class ADMINApi extends BaseAPI {
    * @summary
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerGetAdministrationJwt(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -1629,7 +944,6 @@ export class ADMINApi extends BaseAPI {
    * @summary
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerGetEidJwt(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -1642,7 +956,6 @@ export class ADMINApi extends BaseAPI {
    * @summary
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ADMINApi
    */
   public adminControllerGetTechnicalJwt(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
@@ -1653,28 +966,34 @@ export class ADMINApi extends BaseAPI {
 
 /**
  * ConvertApi - axios parameter creator
- * @export
  */
 export const ConvertApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
      * @summary Convert JSON to XML
+     * @param {string} formId
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXmlV2: async (
+      formId: string,
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('convertControllerConvertJsonToXmlV2', 'formId', formId)
       // verify required parameter 'jsonToXmlV2RequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertJsonToXmlV2',
         'jsonToXmlV2RequestDto',
         jsonToXmlV2RequestDto,
       )
-      const localVarPath = `/convert/json-to-xml-v2`
+      const localVarPath = `/convert/json-to-xml-v2/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1685,6 +1004,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -1713,21 +1035,28 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates PDF for given form data.
      * @summary
+     * @param {string} formId
      * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertToPdf: async (
+      formId: string,
       convertToPdfRequestDto: ConvertToPdfRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('convertControllerConvertToPdf', 'formId', formId)
       // verify required parameter 'convertToPdfRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertToPdf',
         'convertToPdfRequestDto',
         convertToPdfRequestDto,
       )
-      const localVarPath = `/convert/pdf`
+      const localVarPath = `/convert/pdf/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1738,6 +1067,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -1766,21 +1098,28 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates JSON form from given XML data and form ID
      * @summary Convert XML to JSON
+     * @param {string} formId
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson: async (
+      formId: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('convertControllerConvertXmlToJson', 'formId', formId)
       // verify required parameter 'xmlToJsonRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertXmlToJson',
         'xmlToJsonRequestDto',
         xmlToJsonRequestDto,
       )
-      const localVarPath = `/convert/xml-to-json`
+      const localVarPath = `/convert/xml-to-json/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1791,6 +1130,9 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -1821,7 +1163,6 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
 
 /**
  * ConvertApi - functional programming interface
- * @export
  */
 export const ConvertApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ConvertApiAxiosParamCreator(configuration)
@@ -1829,15 +1170,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
      * @summary Convert JSON to XML
+     * @param {string} formId
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertJsonToXmlV2(
+      formId: string,
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXmlV2(
+        formId,
         jsonToXmlV2RequestDto,
         options,
       )
@@ -1857,15 +1201,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates PDF for given form data.
      * @summary
+     * @param {string} formId
      * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertToPdf(
+      formId: string,
       convertToPdfRequestDto: ConvertToPdfRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
+        formId,
         convertToPdfRequestDto,
         options,
       )
@@ -1885,15 +1232,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates JSON form from given XML data and form ID
      * @summary Convert XML to JSON
+     * @param {string} formId
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertXmlToJson(
+      formId: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertXmlToJson(
+        formId,
         xmlToJsonRequestDto,
         options,
       )
@@ -1915,7 +1265,6 @@ export const ConvertApiFp = function (configuration?: Configuration) {
 
 /**
  * ConvertApi - factory interface
- * @export
  */
 export const ConvertApiFactory = function (
   configuration?: Configuration,
@@ -1927,46 +1276,52 @@ export const ConvertApiFactory = function (
     /**
      * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
      * @summary Convert JSON to XML
+     * @param {string} formId
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXmlV2(
+      formId: string,
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
-        .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
+        .convertControllerConvertJsonToXmlV2(formId, jsonToXmlV2RequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Generates PDF for given form data.
      * @summary
+     * @param {string} formId
      * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertToPdf(
+      formId: string,
       convertToPdfRequestDto: ConvertToPdfRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<object> {
       return localVarFp
-        .convertControllerConvertToPdf(convertToPdfRequestDto, options)
+        .convertControllerConvertToPdf(formId, convertToPdfRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Generates JSON form from given XML data and form ID
      * @summary Convert XML to JSON
+     * @param {string} formId
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson(
+      formId: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
-        .convertControllerConvertXmlToJson(xmlToJsonRequestDto, options)
+        .convertControllerConvertXmlToJson(formId, xmlToJsonRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -1974,66 +1329,65 @@ export const ConvertApiFactory = function (
 
 /**
  * ConvertApi - object-oriented interface
- * @export
- * @class ConvertApi
- * @extends {BaseAPI}
  */
 export class ConvertApi extends BaseAPI {
   /**
    * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
    * @summary Convert JSON to XML
+   * @param {string} formId
    * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ConvertApi
    */
   public convertControllerConvertJsonToXmlV2(
+    formId: string,
     jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
+      .convertControllerConvertJsonToXmlV2(formId, jsonToXmlV2RequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * Generates PDF for given form data.
    * @summary
+   * @param {string} formId
    * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ConvertApi
    */
   public convertControllerConvertToPdf(
+    formId: string,
     convertToPdfRequestDto: ConvertToPdfRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertToPdf(convertToPdfRequestDto, options)
+      .convertControllerConvertToPdf(formId, convertToPdfRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * Generates JSON form from given XML data and form ID
    * @summary Convert XML to JSON
+   * @param {string} formId
    * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ConvertApi
    */
   public convertControllerConvertXmlToJson(
+    formId: string,
     xmlToJsonRequestDto: XmlToJsonRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertXmlToJson(xmlToJsonRequestDto, options)
+      .convertControllerConvertXmlToJson(formId, xmlToJsonRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
 
 /**
  * FilesApi - axios parameter creator
- * @export
  */
 export const FilesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -2085,20 +1439,23 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * To be able to download file you need to obtain jwt token.
      * @summary Obtain jwt token form file download
+     * @param {string} formId
      * @param {string} fileId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     filesControllerDownloadToken: async (
+      formId: string,
       fileId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('filesControllerDownloadToken', 'formId', formId)
       // verify required parameter 'fileId' is not null or undefined
       assertParamExists('filesControllerDownloadToken', 'fileId', fileId)
-      const localVarPath = `/files/download/jwt/{fileId}`.replace(
-        `{${'fileId'}}`,
-        encodeURIComponent(String(fileId)),
-      )
+      const localVarPath = `/files/download/jwt/{formId}/{fileId}`
+        .replace(`{${'formId'}}`, encodeURIComponent(String(formId)))
+        .replace(`{${'fileId'}}`, encodeURIComponent(String(fileId)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2109,6 +1466,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2154,6 +1514,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2271,6 +1634,9 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarQueryParameter = {} as any
       const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
@@ -2308,7 +1674,6 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
 
 /**
  * FilesApi - functional programming interface
- * @export
  */
 export const FilesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = FilesApiAxiosParamCreator(configuration)
@@ -2343,17 +1708,20 @@ export const FilesApiFp = function (configuration?: Configuration) {
     /**
      * To be able to download file you need to obtain jwt token.
      * @summary Obtain jwt token form file download
+     * @param {string} formId
      * @param {string} fileId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async filesControllerDownloadToken(
+      formId: string,
       fileId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DownloadTokenResponseDataDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDownloadToken(
+        formId,
         fileId,
         options,
       )
@@ -2474,7 +1842,6 @@ export const FilesApiFp = function (configuration?: Configuration) {
 
 /**
  * FilesApi - factory interface
- * @export
  */
 export const FilesApiFactory = function (
   configuration?: Configuration,
@@ -2501,16 +1868,18 @@ export const FilesApiFactory = function (
     /**
      * To be able to download file you need to obtain jwt token.
      * @summary Obtain jwt token form file download
+     * @param {string} formId
      * @param {string} fileId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     filesControllerDownloadToken(
+      formId: string,
       fileId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<DownloadTokenResponseDataDto> {
       return localVarFp
-        .filesControllerDownloadToken(fileId, options)
+        .filesControllerDownloadToken(formId, fileId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2571,9 +1940,6 @@ export const FilesApiFactory = function (
 
 /**
  * FilesApi - object-oriented interface
- * @export
- * @class FilesApi
- * @extends {BaseAPI}
  */
 export class FilesApi extends BaseAPI {
   /**
@@ -2582,7 +1948,6 @@ export class FilesApi extends BaseAPI {
    * @param {string} jwtToken
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FilesApi
    */
   public filesControllerDownloadFile(jwtToken: string, options?: RawAxiosRequestConfig) {
     return FilesApiFp(this.configuration)
@@ -2593,14 +1958,18 @@ export class FilesApi extends BaseAPI {
   /**
    * To be able to download file you need to obtain jwt token.
    * @summary Obtain jwt token form file download
+   * @param {string} formId
    * @param {string} fileId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FilesApi
    */
-  public filesControllerDownloadToken(fileId: string, options?: RawAxiosRequestConfig) {
+  public filesControllerDownloadToken(
+    formId: string,
+    fileId: string,
+    options?: RawAxiosRequestConfig,
+  ) {
     return FilesApiFp(this.configuration)
-      .filesControllerDownloadToken(fileId, options)
+      .filesControllerDownloadToken(formId, fileId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2610,7 +1979,6 @@ export class FilesApi extends BaseAPI {
    * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FilesApi
    */
   public filesControllerGetFilesStatusByForm(formId: string, options?: RawAxiosRequestConfig) {
     return FilesApiFp(this.configuration)
@@ -2625,7 +1993,6 @@ export class FilesApi extends BaseAPI {
    * @param {UpdateFileStatusRequestDto} updateFileStatusRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FilesApi
    */
   public filesControllerUpdateFileStatusScannerId(
     scannerId: string,
@@ -2646,7 +2013,6 @@ export class FilesApi extends BaseAPI {
    * @param {string} [id]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FilesApi
    */
   public filesControllerUploadFile(
     formId: string,
@@ -2663,7 +2029,6 @@ export class FilesApi extends BaseAPI {
 
 /**
  * FormMigrationsApi - axios parameter creator
- * @export
  */
 export const FormMigrationsApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -2768,7 +2133,6 @@ export const FormMigrationsApiAxiosParamCreator = function (configuration?: Conf
 
 /**
  * FormMigrationsApi - functional programming interface
- * @export
  */
 export const FormMigrationsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = FormMigrationsApiAxiosParamCreator(configuration)
@@ -2831,7 +2195,6 @@ export const FormMigrationsApiFp = function (configuration?: Configuration) {
 
 /**
  * FormMigrationsApi - factory interface
- * @export
  */
 export const FormMigrationsApiFactory = function (
   configuration?: Configuration,
@@ -2873,9 +2236,6 @@ export const FormMigrationsApiFactory = function (
 
 /**
  * FormMigrationsApi - object-oriented interface
- * @export
- * @class FormMigrationsApi
- * @extends {BaseAPI}
  */
 export class FormMigrationsApi extends BaseAPI {
   /**
@@ -2883,7 +2243,6 @@ export class FormMigrationsApi extends BaseAPI {
    * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FormMigrationsApi
    */
   public formMigrationsControllerClaimMigration(formId: string, options?: RawAxiosRequestConfig) {
     return FormMigrationsApiFp(this.configuration)
@@ -2896,7 +2255,6 @@ export class FormMigrationsApi extends BaseAPI {
    * @param {PrepareMigrationInput} prepareMigrationInput
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FormMigrationsApi
    */
   public formMigrationsControllerPrepareMigration(
     prepareMigrationInput: PrepareMigrationInput,
@@ -2910,26 +2268,25 @@ export class FormMigrationsApi extends BaseAPI {
 
 /**
  * FormsApi - axios parameter creator
- * @export
  */
 export const FormsApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      * Updates form JSON version if a newer version is available
      * @summary Bump form JSON version to latest available version
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     formsControllerBumpJsonVersion: async (
-      id: string,
+      formId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('formsControllerBumpJsonVersion', 'id', id)
-      const localVarPath = `/forms/{id}/bump-version`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formsControllerBumpJsonVersion', 'formId', formId)
+      const localVarPath = `/forms/{formId}/bump-version`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -2941,6 +2298,9 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -2964,7 +2324,6 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
 
 /**
  * FormsApi - functional programming interface
- * @export
  */
 export const FormsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = FormsApiAxiosParamCreator(configuration)
@@ -2972,18 +2331,18 @@ export const FormsApiFp = function (configuration?: Configuration) {
     /**
      * Updates form JSON version if a newer version is available
      * @summary Bump form JSON version to latest available version
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async formsControllerBumpJsonVersion(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<BumpJsonVersionResponseDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerBumpJsonVersion(
-        id,
+        formId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3004,7 +2363,6 @@ export const FormsApiFp = function (configuration?: Configuration) {
 
 /**
  * FormsApi - factory interface
- * @export
  */
 export const FormsApiFactory = function (
   configuration?: Configuration,
@@ -3016,16 +2374,16 @@ export const FormsApiFactory = function (
     /**
      * Updates form JSON version if a newer version is available
      * @summary Bump form JSON version to latest available version
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     formsControllerBumpJsonVersion(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<BumpJsonVersionResponseDto> {
       return localVarFp
-        .formsControllerBumpJsonVersion(id, options)
+        .formsControllerBumpJsonVersion(formId, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -3033,29 +2391,24 @@ export const FormsApiFactory = function (
 
 /**
  * FormsApi - object-oriented interface
- * @export
- * @class FormsApi
- * @extends {BaseAPI}
  */
 export class FormsApi extends BaseAPI {
   /**
    * Updates form JSON version if a newer version is available
    * @summary Bump form JSON version to latest available version
-   * @param {string} id
+   * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FormsApi
    */
-  public formsControllerBumpJsonVersion(id: string, options?: RawAxiosRequestConfig) {
+  public formsControllerBumpJsonVersion(formId: string, options?: RawAxiosRequestConfig) {
     return FormsApiFp(this.configuration)
-      .formsControllerBumpJsonVersion(id, options)
+      .formsControllerBumpJsonVersion(formId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
 
 /**
  * FormsV2Api - axios parameter creator
- * @export
  */
 export const FormsV2ApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -3116,7 +2469,6 @@ export const FormsV2ApiAxiosParamCreator = function (configuration?: Configurati
 
 /**
  * FormsV2Api - functional programming interface
- * @export
  */
 export const FormsV2ApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = FormsV2ApiAxiosParamCreator(configuration)
@@ -3153,7 +2505,6 @@ export const FormsV2ApiFp = function (configuration?: Configuration) {
 
 /**
  * FormsV2Api - factory interface
- * @export
  */
 export const FormsV2ApiFactory = function (
   configuration?: Configuration,
@@ -3182,9 +2533,6 @@ export const FormsV2ApiFactory = function (
 
 /**
  * FormsV2Api - object-oriented interface
- * @export
- * @class FormsV2Api
- * @extends {BaseAPI}
  */
 export class FormsV2Api extends BaseAPI {
   /**
@@ -3193,7 +2541,6 @@ export class FormsV2Api extends BaseAPI {
    * @param {CreateFormInput} createFormInput
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof FormsV2Api
    */
   public formsV2ControllerCreateForm(
     createFormInput: CreateFormInput,
@@ -3207,7 +2554,6 @@ export class FormsV2Api extends BaseAPI {
 
 /**
  * GinisApi - axios parameter creator
- * @export
  */
 export const GinisApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -3261,7 +2607,6 @@ export const GinisApiAxiosParamCreator = function (configuration?: Configuration
 
 /**
  * GinisApi - functional programming interface
- * @export
  */
 export const GinisApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = GinisApiAxiosParamCreator(configuration)
@@ -3299,7 +2644,6 @@ export const GinisApiFp = function (configuration?: Configuration) {
 
 /**
  * GinisApi - factory interface
- * @export
  */
 export const GinisApiFactory = function (
   configuration?: Configuration,
@@ -3328,9 +2672,6 @@ export const GinisApiFactory = function (
 
 /**
  * GinisApi - object-oriented interface
- * @export
- * @class GinisApi
- * @extends {BaseAPI}
  */
 export class GinisApi extends BaseAPI {
   /**
@@ -3339,7 +2680,6 @@ export class GinisApi extends BaseAPI {
    * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof GinisApi
    */
   public ginisControllerGetGinisDocumentByFormId(formId: string, options?: RawAxiosRequestConfig) {
     return GinisApiFp(this.configuration)
@@ -3350,7 +2690,6 @@ export class GinisApi extends BaseAPI {
 
 /**
  * HealthcheckApi - axios parameter creator
- * @export
  */
 export const HealthcheckApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -3391,7 +2730,6 @@ export const HealthcheckApiAxiosParamCreator = function (configuration?: Configu
 
 /**
  * HealthcheckApi - functional programming interface
- * @export
  */
 export const HealthcheckApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = HealthcheckApiAxiosParamCreator(configuration)
@@ -3423,7 +2761,6 @@ export const HealthcheckApiFp = function (configuration?: Configuration) {
 
 /**
  * HealthcheckApi - factory interface
- * @export
  */
 export const HealthcheckApiFactory = function (
   configuration?: Configuration,
@@ -3446,9 +2783,6 @@ export const HealthcheckApiFactory = function (
 
 /**
  * HealthcheckApi - object-oriented interface
- * @export
- * @class HealthcheckApi
- * @extends {BaseAPI}
  */
 export class HealthcheckApi extends BaseAPI {
   /**
@@ -3456,7 +2790,6 @@ export class HealthcheckApi extends BaseAPI {
    * @summary Hello world!
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof HealthcheckApi
    */
   public appControllerGetHello(options?: RawAxiosRequestConfig) {
     return HealthcheckApiFp(this.configuration)
@@ -3467,76 +2800,26 @@ export class HealthcheckApi extends BaseAPI {
 
 /**
  * NasesApi - axios parameter creator
- * @export
  */
 export const NasesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary
-     * @param {CreateFormRequestDto} createFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerCreateForm: async (
-      createFormRequestDto: CreateFormRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'createFormRequestDto' is not null or undefined
-      assertParamExists('nasesControllerCreateForm', 'createFormRequestDto', createFormRequestDto)
-      const localVarPath = `/nases/create-form`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication cognitoGuestIdentityId required
-      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        createFormRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerDeleteForm: async (
-      id: string,
+      formId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerDeleteForm', 'id', id)
-      const localVarPath = `/nases/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerDeleteForm', 'formId', formId)
+      const localVarPath = `/nases/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -3547,6 +2830,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3592,6 +2878,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3679,74 +2968,29 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerMigrateForm: async (
-      id: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerMigrateForm', 'id', id)
-      const localVarPath = `/nases/migrate-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateForm: async (
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerSendAndUpdateForm', 'id', id)
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerSendAndUpdateForm', 'formId', formId)
       // verify required parameter 'updateFormRequestDto' is not null or undefined
       assertParamExists(
         'nasesControllerSendAndUpdateForm',
         'updateFormRequestDto',
         updateFormRequestDto,
       )
-      const localVarPath = `/nases/send-and-update-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      const localVarPath = `/nases/send-and-update-form/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3758,6 +3002,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3786,27 +3033,27 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateFormEid: async (
-      id: string,
+      formId: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerSendAndUpdateFormEid', 'id', id)
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerSendAndUpdateFormEid', 'formId', formId)
       // verify required parameter 'eidUpdateSendFormRequestDto' is not null or undefined
       assertParamExists(
         'nasesControllerSendAndUpdateFormEid',
         'eidUpdateSendFormRequestDto',
         eidUpdateSendFormRequestDto,
       )
-      const localVarPath = `/nases/eid/send-and-update-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      const localVarPath = `/nases/eid/send-and-update-form/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3818,6 +3065,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3846,23 +3096,23 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Update form
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerUpdateForm: async (
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerUpdateForm', 'id', id)
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerUpdateForm', 'formId', formId)
       // verify required parameter 'updateFormRequestDto' is not null or undefined
       assertParamExists('nasesControllerUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
-      const localVarPath = `/nases/update-form/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      const localVarPath = `/nases/update-form/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3874,6 +3124,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -3904,51 +3157,23 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
 
 /**
  * NasesApi - functional programming interface
- * @export
  */
 export const NasesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
   return {
     /**
-     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary
-     * @param {CreateFormRequestDto} createFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerCreateForm(
-      createFormRequestDto: CreateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateForm(
-        createFormRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerCreateForm']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerDeleteForm(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerDeleteForm(
-        id,
+        formId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -4028,47 +3253,20 @@ export const NasesApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerMigrateForm(
-      id: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MigrateFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerMigrateForm(
-        id,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerMigrateForm']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerSendAndUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(
-        id,
+        formId,
         updateFormRequestDto,
         options,
       )
@@ -4088,18 +3286,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerSendAndUpdateFormEid(
-      id: string,
+      formId: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
-        id,
+        formId,
         eidUpdateSendFormRequestDto,
         options,
       )
@@ -4119,18 +3317,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
     /**
      * Update form
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateForm(
-        id,
+        formId,
         updateFormRequestDto,
         options,
       )
@@ -4151,7 +3349,6 @@ export const NasesApiFp = function (configuration?: Configuration) {
 
 /**
  * NasesApi - factory interface
- * @export
  */
 export const NasesApiFactory = function (
   configuration?: Configuration,
@@ -4161,30 +3358,15 @@ export const NasesApiFactory = function (
   const localVarFp = NasesApiFp(configuration)
   return {
     /**
-     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary
-     * @param {CreateFormRequestDto} createFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerCreateForm(
-      createFormRequestDto: CreateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<CreateFormResponseDto> {
-      return localVarFp
-        .nasesControllerCreateForm(createFormRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerDeleteForm(id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerDeleteForm(formId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
-        .nasesControllerDeleteForm(id, options)
+        .nasesControllerDeleteForm(formId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4233,69 +3415,54 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Assign form with no assigned user to the authenticated user
-     * @summary
-     * @param {string} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerMigrateForm(
-      id: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<MigrateFormResponseDto> {
-      return localVarFp
-        .nasesControllerMigrateForm(id, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
-        .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
+        .nasesControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateFormEid(
-      id: string,
+      formId: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
-        .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
+        .nasesControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Update form
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerUpdateForm(
-      id: string,
+      formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
-        .nasesControllerUpdateForm(id, updateFormRequestDto, options)
+        .nasesControllerUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -4303,39 +3470,18 @@ export const NasesApiFactory = function (
 
 /**
  * NasesApi - object-oriented interface
- * @export
- * @class NasesApi
- * @extends {BaseAPI}
  */
 export class NasesApi extends BaseAPI {
   /**
-   * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-   * @summary
-   * @param {CreateFormRequestDto} createFormRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerCreateForm(
-    createFormRequestDto: CreateFormRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerCreateForm(createFormRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * Archive form (hide from user but keep in database)
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NasesApi
    */
-  public nasesControllerDeleteForm(id: string, options?: RawAxiosRequestConfig) {
+  public nasesControllerDeleteForm(formId: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
-      .nasesControllerDeleteForm(id, options)
+      .nasesControllerDeleteForm(formId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -4345,7 +3491,6 @@ export class NasesApi extends BaseAPI {
    * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NasesApi
    */
   public nasesControllerGetForm(formId: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
@@ -4363,7 +3508,6 @@ export class NasesApi extends BaseAPI {
    * @param {string} [formDefinitionSlug] Slug of the form definition
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NasesApi
    */
   public nasesControllerGetForms(
     currentPage?: string,
@@ -4386,101 +3530,90 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Assign form with no assigned user to the authenticated user
-   * @summary
-   * @param {string} id
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerMigrateForm(id: string, options?: RawAxiosRequestConfig) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerMigrateForm(id, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NasesApi
    */
   public nasesControllerSendAndUpdateForm(
-    id: string,
+    formId: string,
     updateFormRequestDto: UpdateFormRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
+      .nasesControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NasesApi
    */
   public nasesControllerSendAndUpdateFormEid(
-    id: string,
+    formId: string,
     eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
+      .nasesControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * Update form
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NasesApi
    */
   public nasesControllerUpdateForm(
-    id: string,
+    formId: string,
     updateFormRequestDto: UpdateFormRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerUpdateForm(id, updateFormRequestDto, options)
+      .nasesControllerUpdateForm(formId, updateFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
 
 /**
  * SignerApi - axios parameter creator
- * @export
  */
 export const SignerApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      * Generates signer data including XML and metadata for form signing
      * @summary Get signer data
+     * @param {string} formId
      * @param {SignerDataRequestDto} signerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     signerControllerGetSignerData: async (
+      formId: string,
       signerDataRequestDto: SignerDataRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('signerControllerGetSignerData', 'formId', formId)
       // verify required parameter 'signerDataRequestDto' is not null or undefined
       assertParamExists(
         'signerControllerGetSignerData',
         'signerDataRequestDto',
         signerDataRequestDto,
       )
-      const localVarPath = `/signer/get-signer-data`
+      const localVarPath = `/signer/get-signer-data/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -4491,6 +3624,9 @@ export const SignerApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required
@@ -4521,7 +3657,6 @@ export const SignerApiAxiosParamCreator = function (configuration?: Configuratio
 
 /**
  * SignerApi - functional programming interface
- * @export
  */
 export const SignerApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = SignerApiAxiosParamCreator(configuration)
@@ -4529,15 +3664,18 @@ export const SignerApiFp = function (configuration?: Configuration) {
     /**
      * Generates signer data including XML and metadata for form signing
      * @summary Get signer data
+     * @param {string} formId
      * @param {SignerDataRequestDto} signerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async signerControllerGetSignerData(
+      formId: string,
       signerDataRequestDto: SignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SignerDataResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.signerControllerGetSignerData(
+        formId,
         signerDataRequestDto,
         options,
       )
@@ -4559,7 +3697,6 @@ export const SignerApiFp = function (configuration?: Configuration) {
 
 /**
  * SignerApi - factory interface
- * @export
  */
 export const SignerApiFactory = function (
   configuration?: Configuration,
@@ -4571,16 +3708,18 @@ export const SignerApiFactory = function (
     /**
      * Generates signer data including XML and metadata for form signing
      * @summary Get signer data
+     * @param {string} formId
      * @param {SignerDataRequestDto} signerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     signerControllerGetSignerData(
+      formId: string,
       signerDataRequestDto: SignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<SignerDataResponseDto> {
       return localVarFp
-        .signerControllerGetSignerData(signerDataRequestDto, options)
+        .signerControllerGetSignerData(formId, signerDataRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -4588,32 +3727,29 @@ export const SignerApiFactory = function (
 
 /**
  * SignerApi - object-oriented interface
- * @export
- * @class SignerApi
- * @extends {BaseAPI}
  */
 export class SignerApi extends BaseAPI {
   /**
    * Generates signer data including XML and metadata for form signing
    * @summary Get signer data
+   * @param {string} formId
    * @param {SignerDataRequestDto} signerDataRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof SignerApi
    */
   public signerControllerGetSignerData(
+    formId: string,
     signerDataRequestDto: SignerDataRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return SignerApiFp(this.configuration)
-      .signerControllerGetSignerData(signerDataRequestDto, options)
+      .signerControllerGetSignerData(formId, signerDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
 
 /**
  * StatusesApi - axios parameter creator
- * @export
  */
 export const StatusesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -4756,7 +3892,6 @@ export const StatusesApiAxiosParamCreator = function (configuration?: Configurat
 
 /**
  * StatusesApi - functional programming interface
- * @export
  */
 export const StatusesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = StatusesApiAxiosParamCreator(configuration)
@@ -4860,7 +3995,6 @@ export const StatusesApiFp = function (configuration?: Configuration) {
 
 /**
  * StatusesApi - factory interface
- * @export
  */
 export const StatusesApiFactory = function (
   configuration?: Configuration,
@@ -4922,9 +4056,6 @@ export const StatusesApiFactory = function (
 
 /**
  * StatusesApi - object-oriented interface
- * @export
- * @class StatusesApi
- * @extends {BaseAPI}
  */
 export class StatusesApi extends BaseAPI {
   /**
@@ -4932,7 +4063,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check scanner backend status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerIsFormsRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -4945,7 +4075,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check minio status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerIsMinioRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -4958,7 +4087,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check prisma status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerIsPrismaRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
@@ -4971,7 +4099,6 @@ export class StatusesApi extends BaseAPI {
    * @summary Check all services status
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof StatusesApi
    */
   public statusControllerStatus(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)

@@ -1,4 +1,4 @@
-import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
+import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
 import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
@@ -11,10 +11,10 @@ import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxDto
-  taxAdministrator: StrapiTaxAdministrator | null
+  strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
-const useGetContext = ({ taxData, taxAdministrator }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
@@ -66,7 +66,7 @@ const useGetContext = ({ taxData, taxAdministrator }: TaxFeeSectionProviderProps
     downloadPdf,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
-    taxAdministrator,
+    strapiTaxAdministrator,
   }
 }
 

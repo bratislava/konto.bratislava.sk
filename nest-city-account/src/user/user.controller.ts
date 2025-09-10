@@ -24,7 +24,6 @@ import {
 import {
   ChangeEmailRequestDto,
   GdprDataDto,
-  GdprSubType,
   RequestGdprDataDto,
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
@@ -32,6 +31,7 @@ import {
 import { UserService } from './user.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { GDPRSubTypeEnum } from '@prisma/client'
 
 @ApiExtraModels(
   ResponseUserDataDto,
@@ -182,7 +182,7 @@ export class UserController {
     ) {
       const result: ResponseUserDataDto = await this.userService.subUnsubUser(
         user.idUser,
-        GdprSubType.SUB,
+        GDPRSubTypeEnum.subscribe,
         user.email,
         data.gdprData
       )
@@ -196,7 +196,7 @@ export class UserController {
     ) {
       const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
         user.idUser,
-        GdprSubType.SUB,
+        GDPRSubTypeEnum.subscribe,
         user.email,
         data.gdprData
       )
@@ -236,7 +236,7 @@ export class UserController {
     ) {
       const result: ResponseUserDataDto = await this.userService.subUnsubUser(
         user.idUser,
-        GdprSubType.UNSUB,
+        GDPRSubTypeEnum.unsubscribe,
         user.email,
         data.gdprData
       )
@@ -250,7 +250,7 @@ export class UserController {
     ) {
       const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
         user.idUser,
-        GdprSubType.UNSUB,
+        GDPRSubTypeEnum.unsubscribe,
         user.email,
         data.gdprData
       )

@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import {
-  FormError,
-  FormOwnerType,
-  Forms,
-  FormState,
-  Prisma,
-} from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
+  isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
@@ -24,13 +19,11 @@ import {
   versionCompareCanSendForm,
 } from 'forms-shared/versioning/version-compare'
 import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
-import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
-import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import { isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
-import { getUserIco, userToFormOwnerType } from '../auth-v2/utils/user-utils'
+import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
+import ConvertPdfService from '../convert-pdf/convert-pdf.service'
+import { FormFilesReadyResultDto } from '../files/files.dto'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
@@ -38,18 +31,15 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
-import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
+import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
-import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
-  CreateFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
   GetFormsResponseDto,
@@ -57,10 +47,12 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
-import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
-import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
+import {
+  SendMessageNasesSender,
+  SendMessageNasesSenderType,
+} from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
@@ -73,8 +65,6 @@ export default class NasesService {
   constructor(
     private readonly formsService: FormsService,
     private readonly filesService: FilesService,
-    private readonly formsHelper: FormsHelper,
-    private readonly nasesConsumerService: NasesConsumerService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesUtilsService: NasesUtilsService,
@@ -82,6 +72,7 @@ export default class NasesService {
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
     private readonly clientsService: ClientsService,
+    private readonly convertPdfService: ConvertPdfService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
@@ -109,85 +100,10 @@ export default class NasesService {
     return result
   }
 
-  async createForm(
-    requestData: CreateFormRequestDto,
-    user: User,
-  ): Promise<CreateFormResponseDto> {
-    const formDefinition = getFormDefinitionBySlug(
-      requestData.formDefinitionSlug,
-    )
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
-      )
-    }
-
-    const data: Prisma.FormsUncheckedCreateInput = {
-      userExternalId: isAuthUser(user) ? user.cognitoJwtPayload.sub : null,
-      cognitoGuestIdentityId: isGuestUser(user) ? user.cognitoIdentityId : null,
-      formDefinitionSlug: requestData.formDefinitionSlug,
-      jsonVersion: formDefinition.jsonVersion,
-      ico: getUserIco(user),
-      ownerType: userToFormOwnerType(user),
-    }
-    const result = await this.formsService.createForm(data)
-
-    return {
-      formId: result.id,
-    }
-  }
-
-  async migrateForm(
-    id: string,
-    user: CognitoGetUserData,
-    ico: string | null,
-  ): Promise<void> {
-    const form = await this.prisma.forms.findFirst({
-      where: {
-        id,
-        archived: false,
-      },
-    })
-    if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        ErrorsEnum.NOT_FOUND_ERROR,
-        `There is no such form with id ${id}`,
-      )
-    }
-
-    if (form.userExternalId || form.mainUri || form.actorUri) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORM_ASSIGNED_TO_OTHER_USER,
-        'This form is already assigned to another user',
-      )
-    }
-
-    await this.prisma.forms.update({
-      where: {
-        id,
-      },
-      data: {
-        userExternalId: user.sub,
-        cognitoGuestIdentityId: null,
-        ico,
-        ownerType:
-          user?.['custom:account_type'] === 'po' ||
-          user?.['custom:account_type'] === 'fo-p'
-            ? FormOwnerType.PO
-            : user?.['custom:account_type']
-              ? FormOwnerType.FO
-              : undefined,
-      },
-    })
-  }
-
   async getForm(
     id: string,
-    ico: string | null,
-    userExternalId?: string,
-  ): Promise<GetFormResponseDto> {
-    const form = await this.formsService.getForm(id, ico, userExternalId)
+  ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
+    const form = await this.formsService.getForm(id)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -204,10 +120,9 @@ export default class NasesService {
 
   async getForms(
     query: GetFormsRequestDto,
-    userExternalId: string,
-    ico: string | null,
+    user: AuthUser,
   ): Promise<GetFormsResponseDto> {
-    const result = await this.formsService.getForms(query, userExternalId, ico)
+    const result = await this.formsService.getForms(query, user)
     return result
   }
 
@@ -215,23 +130,21 @@ export default class NasesService {
     id: string,
     nasesUser: JwtNasesPayloadDto,
     requestData: UpdateFormRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<Forms> {
     const data: FormUpdateBodyDto = {
       mainUri: nasesUser.sub,
       actorUri: nasesUser.actor.sub,
       ...requestData,
     }
-    const result = await this.updateForm(id, data, ico, user)
+    const result = await this.updateForm(id, data, user)
     return result
   }
 
   async updateForm(
     id: string,
     requestData: UpdateFormRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<Forms> {
     const form = await this.prisma.forms.findFirst({
       where: {
@@ -247,27 +160,9 @@ export default class NasesService {
       )
     }
 
-    if (
-      !this.formsHelper.isFormAccessGranted(form, user ? user.sub : null, ico)
-    ) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        'Unauthorized',
-      )
-    }
-
     const data = {
-      userExternalId: user ? user.sub : null,
-      email: user?.email,
+      ...getUserFormFields(user),
       ...requestData,
-      ownerType:
-        user?.['custom:account_type'] === 'po' ||
-        user?.['custom:account_type'] === 'fo-p'
-          ? FormOwnerType.PO
-          : user?.['custom:account_type']
-            ? FormOwnerType.FO
-            : undefined,
-      ico,
     }
 
     const result = await this.formsService.updateForm(id, data)
@@ -305,24 +200,13 @@ export default class NasesService {
     }
   }
 
-  async sendForm(
-    id: string,
-    userInfo?: UserInfoResponse,
-    user?: CognitoGetUserData,
-  ): Promise<SendFormResponseDto> {
-    const form = await this.formsService.checkFormBeforeSending(id)
+  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
+    const form = await this.formsService.checkFormBeforeSending(formId)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
-    }
-
-    if (!this.formsHelper.userCanSendForm(form, userInfo, user?.sub)) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
 
@@ -367,7 +251,7 @@ export default class NasesService {
     )
     if (validationResult.errors.length > 0) {
       this.logger.error(
-        `Data for form with id ${id} is invalid: ${JSON.stringify(
+        `Data for form with id ${formId} is invalid: ${JSON.stringify(
           validationResult.errors,
         )}`,
       )
@@ -378,7 +262,9 @@ export default class NasesService {
       )
     }
 
-    this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
+    this.checkAttachments(
+      await this.filesService.areFormAttachmentsReady(formId),
+    )
 
     const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
 
@@ -389,8 +275,10 @@ export default class NasesService {
           formId: form.id,
           tries: 0,
           userData: {
-            email: user?.email || null,
-            firstName: user?.given_name || null,
+            email: isAuthUser(user) ? user.cityAccountUser.email : null,
+            firstName: isAuthUser(user)
+              ? (user.cognitoUser.userAttributes.given_name ?? null)
+              : null,
           },
         },
         10_000,
@@ -432,25 +320,12 @@ export default class NasesService {
   async sendFormEid(
     id: string,
     oboToken: string,
-    user: JwtNasesPayloadDto,
-    cognitoUser?: CognitoGetUserData,
+    nasesUser: JwtNasesPayloadDto,
+    user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
 
-    if (
-      !this.formsHelper.userCanSendFormEid(
-        form,
-        user.sub,
-        user.actor.sub,
-        cognitoUser?.sub,
-      )
-    ) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
-      )
-    }
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -461,7 +336,7 @@ export default class NasesService {
 
     const evaluatedSendPolicy = evaluateFormSendPolicy(
       formDefinition.sendPolicy,
-      userToSendPolicyAccountType(cognitoUser),
+      userToSendPolicyAccountType(user),
     )
 
     if (!evaluatedSendPolicy.eidSendPossible) {
@@ -550,8 +425,8 @@ export default class NasesService {
     const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
 
     await this.formsService.updateForm(id, {
-      mainUri: form.mainUri ?? user.sub,
-      actorUri: form.actorUri ?? user.actor.sub,
+      mainUri: nasesUser.sub,
+      actorUri: nasesUser.actor.sub,
     })
 
     const data: RabbitPayloadDto = {
@@ -584,32 +459,21 @@ export default class NasesService {
         : undefined),
     })
 
-    // Send to nases
-    let isSent = false
-
     try {
-      isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
-        jwt,
-        form,
-        data,
+      // create a pdf image of the form, upload it to minio and at it among form files
+      await this.convertPdfService.createPdfImageInFormFiles(
+        data.formId,
         formDefinition,
-        {
-          type: SendMessageNasesSenderType.Eid,
-          senderUri: user.sub,
-        },
       )
+
+      await this.sendToNasesAndUpdateState(jwt, form, data, {
+        type: SendMessageNasesSenderType.Eid,
+        senderUri: nasesUser.sub,
+      })
     } catch (error) {
       this.logger.error(`Error sending form to nases.`, error)
-    }
 
-    if (!isSent) {
-      // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function
-      await this.formsService.updateForm(data.formId, {
-        state: FormState.DRAFT,
-        error: FormError.NASES_SEND_ERROR,
-      })
-
-      // TODO temp SEND_TO_NASES_ERROR log, remove
+      // TODO temp SEND_TO_NASES_ERROR log, remove.
       this.logger.log(
         `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
           form.formSignature,
@@ -624,44 +488,32 @@ export default class NasesService {
       )
     }
 
+    // Send the form to ginis if should be sent
+    if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
+      try {
+        await this.rabbitmqClientService.publishToGinis({
+          formId: data.formId,
+          tries: 0,
+          userData: data.userData,
+        })
+      } catch (error) {
+        // We do not want to show the user error when the submission was already delivered to Nases. Therefore Ginis errors should only be logged for us.
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+            `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
+            undefined,
+            error,
+          ),
+        )
+      }
+    }
+
     return {
       id: form.id,
       message: 'Form was successfully sent to nases.',
       state: FormState.DELIVERED_NASES,
     }
-  }
-
-  async canSendForm(
-    formId: string,
-    user: JwtNasesPayloadDto,
-    userExternalId?: string,
-  ): Promise<boolean> {
-    const form = await this.formsService.checkFormBeforeSending(formId)
-    if (
-      !this.formsHelper.userCanSendFormEid(
-        form,
-        user.sub,
-        user.actor.sub,
-        userExternalId,
-      )
-    ) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
-      )
-    }
-
-    const formAttachmentsReady =
-      await this.filesService.areFormAttachmentsReady(formId)
-    return formAttachmentsReady.filesReady
-  }
-
-  private isUserVerified(user?: CognitoGetUserData): boolean {
-    if (!user) return false
-    return (
-      user['custom:tier'] === Tier.IDENTITY_CARD ||
-      user['custom:tier'] === Tier.EID
-    )
   }
 
   private checkAttachments(
@@ -682,5 +534,54 @@ export default class NasesService {
       NasesErrorsEnum.FILE_NOT_SCANNED,
       NasesErrorsResponseEnum.FILE_NOT_SCANNED,
     )
+  }
+
+  public async sendToNasesAndUpdateState(
+    jwt: string,
+    form: Forms,
+    data: RabbitPayloadDto,
+    sender: SendMessageNasesSender,
+    additionalFormUpdates?: FormUpdateBodyDto,
+  ): Promise<void> {
+    // sendMessageNases is implemented in a way that it does not throw. Therefore this is not in try-catch block.
+    const sendData = await this.nasesUtilsService.sendMessageNases(
+      jwt,
+      form,
+      sender,
+    )
+
+    if ((sendData && sendData.status !== 200) || !sendData) {
+      await this.formsService.updateForm(data.formId, {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
+        `${NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES} Received form id: ${
+          form.id
+        }, info: ${JSON.stringify({
+          type: 'Unable send form to nases',
+          status: sendData.status,
+          formId: data.formId,
+          error: FormError.NASES_SEND_ERROR,
+          sendData: sendData.data,
+        })}`,
+      )
+    }
+
+    // prisma update form status to DELIVERED_NASES
+    await this.formsService.updateForm(data.formId, {
+      state: FormState.DELIVERED_NASES,
+      error: FormError.NONE,
+      ...additionalFormUpdates,
+    })
+
+    this.logger.log({
+      type: 'ALL GOOD - 200',
+      status: 200,
+      formId: data.formId,
+      sendData: sendData.data,
+    })
   }
 }

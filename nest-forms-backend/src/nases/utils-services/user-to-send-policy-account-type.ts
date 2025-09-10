@@ -1,21 +1,18 @@
 import { SendPolicyAccountType } from 'forms-shared/send-policy/sendPolicy'
 
-import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
-import { Tier } from '../../utils/global-enums/city-account.enum'
+import { isAuthUser, isGuestUser, User } from '../../auth-v2/types/user'
+import { isUserVerified } from '../../auth-v2/utils/user-utils'
 
-export default function userToSendPolicyAccountType(
-  user?: CognitoGetUserData,
-): SendPolicyAccountType {
-  if (!user?.idUser) {
+export default function userToSendPolicyAccountType(user: User) {
+  if (isGuestUser(user)) {
     return SendPolicyAccountType.NotAuthenticated
   }
 
-  if (
-    user['custom:tier'] === Tier.IDENTITY_CARD ||
-    user['custom:tier'] === Tier.EID
-  ) {
-    return SendPolicyAccountType.AuthenticatedVerified
+  if (isAuthUser(user)) {
+    return isUserVerified(user)
+      ? SendPolicyAccountType.AuthenticatedVerified
+      : SendPolicyAccountType.AuthenticatedNotVerified
   }
 
-  return SendPolicyAccountType.AuthenticatedNotVerified
+  throw new Error('Unexpected error when converting user to send policy.')
 }

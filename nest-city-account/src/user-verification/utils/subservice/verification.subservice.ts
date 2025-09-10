@@ -143,8 +143,11 @@ export class VerificationSubservice {
     } catch (error) {
       if (error instanceof HttpException) {
         if (
-          error.getStatus() in
-          [HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.UNPROCESSABLE_ENTITY, HttpStatus.NOT_FOUND]
+          [
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            HttpStatus.NOT_FOUND,
+          ].includes(error.getStatus())
         ) {
           rfoData = {
             statusCode: error.getStatus(),

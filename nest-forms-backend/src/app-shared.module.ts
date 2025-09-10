@@ -24,6 +24,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
         useSSL: baConfigService.minio.useSSL,
         accessKey: baConfigService.minio.accessKey,
         secretKey: baConfigService.minio.secretKey,
+        pathStyle: baConfigService.minio.pathStyle,
       }),
     }),
     PrismaModule,

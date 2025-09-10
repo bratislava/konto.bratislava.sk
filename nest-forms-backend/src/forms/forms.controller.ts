@@ -6,13 +6,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import {
-  UserInfo,
-  UserInfoResponse,
-} from '../auth/decorators/user-info.decorator'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import CognitoGuard from '../auth/guards/cognito.guard'
-import { User } from '../utils/decorators/request.decorator'
+import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
+import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
+import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
+import { UserType } from '../auth-v2/types/user'
+import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { BumpJsonVersionResponseDto } from './dtos/forms.responses.dto'
 import FormsService from './forms.service'
 
@@ -30,22 +28,18 @@ export default class FormsController {
     description: 'Version successfully bumped',
     type: BumpJsonVersionResponseDto,
   })
-  @UseGuards(new CognitoGuard(true))
-  @Post(':id/bump-version')
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @Post(':formId/bump-version')
   async bumpJsonVersion(
-    @Param('id') id: string,
-    @User() user: CognitoGetUserData | undefined,
-    @UserInfo() userInfo: UserInfoResponse,
+    @Param('formId') formId: string,
   ): Promise<BumpJsonVersionResponseDto> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      id,
-      user?.sub ?? null,
-      userInfo?.ico ?? null,
-    )
-    await this.formsService.bumpJsonVersion(form)
+    await this.formsService.bumpJsonVersion(formId)
 
     return {
-      formId: id,
+      formId,
       success: true,
     }
   }

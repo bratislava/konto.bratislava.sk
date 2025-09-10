@@ -202,7 +202,7 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async sendUnpaidTaxReminders() {
-    const TWENTY_DAYS_AGO = dayjs().subtract(20, 'day').toDate()
+    const FIFTEEN_DAYS_AGO = dayjs().subtract(15, 'day').toDate()
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
@@ -224,7 +224,7 @@ export class TasksService {
           {
             deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
             createdAt: {
-              lte: TWENTY_DAYS_AGO,
+              lte: FIFTEEN_DAYS_AGO,
             },
           },
           {
@@ -232,13 +232,13 @@ export class TasksService {
               not: DeliveryMethodNamed.CITY_ACCOUNT,
             },
             dateTaxRuling: {
-              lte: TWENTY_DAYS_AGO,
+              lte: FIFTEEN_DAYS_AGO,
             },
           },
           {
             deliveryMethod: null,
             dateTaxRuling: {
-              lte: TWENTY_DAYS_AGO,
+              lte: FIFTEEN_DAYS_AGO,
             },
           },
         ],

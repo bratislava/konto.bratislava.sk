@@ -64,7 +64,9 @@ OLO_FRONTEND_URL=https://test.olo.sk
 
 # SharePoint
 SHAREPOINT_DOMAIN=test.sharepoint.com
-SHAREPOINT_URL=https://test.sharepoint.com
+SHAREPOINT_SITE_ID=test-site-id
+SHAREPOINT_SITE_NAME=test-site-name
+SHAREPOINT_GRAPH_URL=https://test.graph.microsoft.com/v1.0
 SHAREPOINT_CLIENT_ID=test-sharepoint-client
 SHAREPOINT_CLIENT_SECRET=test-sharepoint-secret
 SHAREPOINT_TENANT_ID=test-tenant-id
@@ -76,6 +78,7 @@ MINIO_HOST=localhost:9000
 MINIO_PORT=9000
 MINIO_SECRET_KEY=test-secret-key
 MINIO_USE_SSL=false
+MINIO_PATH_STYLE=false
 MINIO_UNSCANNED_BUCKET=test-unscanned
 MINIO_SAFE_BUCKET=test-safe
 MINIO_INFECTED_BUCKET=test-infected

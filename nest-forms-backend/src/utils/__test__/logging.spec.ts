@@ -7,7 +7,7 @@ import {
   escapeForLogfmt,
   objToLogfmt,
   separateLogFromResponseObj,
-  ToLogfmt,
+  toLogfmt,
 } from '../logging'
 
 describe('Testing logging:', () => {
@@ -126,40 +126,40 @@ describe('Testing logging:', () => {
       )
       const logfmt = errorToLogfmt(error, 'testMethod')
 
-      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" alert="1" errorCause="Error" causedByMessage="Test error message" console="console input" method="testMethod" stack="HttpException: Test message`
+      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" alert="1" errorCause="Error" causedByMessage="Test error message" causedByConsole="undefined" console="console input" method="testMethod" stack="HttpException: Test message`
 
       expect(logfmt).toContain(expected)
     })
   })
 
-  describe('ToLogfmt function', () => {
+  describe('toLogfmt function', () => {
     it('should convert random string to logfmt', () => {
       const randomString = 'This is a \n " random string!'
-      const result = ToLogfmt(randomString)
+      const result = toLogfmt(randomString)
       expect(result).toBe(String.raw`message="This is a \n \" random string!"`)
     })
 
     it('should convert logfmt string to logfmt', () => {
       const logfmtString = 'key="value"'
-      const result = ToLogfmt(logfmtString)
+      const result = toLogfmt(logfmtString)
       expect(result).toBe('key="value"')
     })
 
     it('should convert object to logfmt', () => {
       const testObject = { key1: 'value1', key2: 'value2' }
-      const result = ToLogfmt(testObject)
+      const result = toLogfmt(testObject)
       expect(result).toBe(`key1="${testObject.key1}" key2="${testObject.key2}"`)
     })
 
     it('should convert empty string with to logfmt', () => {
       const emptyString = ''
-      const result = ToLogfmt(emptyString)
+      const result = toLogfmt(emptyString)
       expect(result).toBe('')
     })
 
     it('should convert error to logfmt', () => {
       const error = new Error('Error message')
-      const result = ToLogfmt(error)
+      const result = toLogfmt(error)
       expect(result).toContain(`errorType="${error.name}"`)
       expect(result).toContain(`message="${escapeForLogfmt(error.message)}"`)
       expect(result).toContain(`stack="Error: Error message\\n`)

@@ -42,7 +42,7 @@ model Tax {
   updatedAt                       DateTime             @default(now()) @updatedAt
   year                            Int
   taxPayerId                      Int
-  taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id])
+  taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
   variableSymbol                  String
   qrCodeWeb                       String?
@@ -58,7 +58,7 @@ model Tax {
   taxDetails                      TaxDetail[]
   lastCheckedPayments             DateTime             @default(now())
   lastCheckedUpdates              DateTime             @default(now())
-  deliveryMethod                  DeliveryMethodNamed?
+  deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 
   @@unique([taxPayerId, year])
@@ -72,7 +72,7 @@ model TaxPayment {
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @default(now()) @updatedAt
   taxId          Int
-  tax            Tax               @relation(fields: [taxId], references: [id])
+  tax            Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
   status         PaymentStatus     @default(NEW)
   amount         Int
   specificSymbol String?
@@ -87,8 +87,8 @@ model TaxInstallment {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   taxId     Int
-  tax       Tax      @relation(fields: [taxId], references: [id])
-  order     String?
+  tax       Tax      @relation(fields: [taxId], references: [id], onDelete: Cascade)
+  order     Int
   amount    Int
   text      String?
 }
@@ -98,7 +98,7 @@ model TaxDetail {
   createdAt DateTime          @default(now())
   updatedAt DateTime          @default(now()) @updatedAt
   taxId     Int
-  tax       Tax               @relation(fields: [taxId], references: [id])
+  tax       Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
   type      TaxDetailType
   areaType  TaxDetailareaType
   area      String?

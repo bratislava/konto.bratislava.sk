@@ -11,7 +11,6 @@ import { MAILGUN } from '../../user-verification/constants'
 
 @Injectable()
 export class MailgunSubservice {
-
   private mg: Interfaces.IMailgunClient
 
   private readonly config

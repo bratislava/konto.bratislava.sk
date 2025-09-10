@@ -40,9 +40,15 @@ import {
 } from './utils/account-deactivate.utils'
 import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
+import { UserService } from '../user/user.service'
+import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
+import { toLogfmt } from '../utils/logging'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class AdminService {
+  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminService.name)
+
   constructor(
     private cognitoSubservice: CognitoSubservice,
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -50,7 +56,8 @@ export class AdminService {
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
-    private readonly taxSubservice: TaxSubservice
+    private readonly taxSubservice: TaxSubservice,
+    private readonly userService: UserService
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -75,6 +82,7 @@ export class AdminService {
       externalId: user.externalId,
       userAttribute: user.userAttribute,
       cognitoAttributes: cognitoUser,
+      taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
     }
   }
 
@@ -113,10 +121,52 @@ export class AdminService {
         externalId: user.externalId,
         userAttribute: user.userAttribute,
         cognitoAttributes: cognitoUser,
+        taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
       }
     }
 
     return result
+  }
+
+  /**
+   * Activates Cron job for sync of cognito users to db.
+   * @returns void
+   */
+  async activateSyncCognitoToDb(): Promise<void> {
+    await this.prismaService.config.update({
+      where: { key: COGNITO_SYNC_CONFIG_DB_KEY },
+      data: { value: { active: true } },
+    })
+  }
+
+  /**
+   * Gets all users from cognito and calls getOrCreate for each user.
+   * @returns void
+   */
+  async syncCognitoToDb(): Promise<void> {
+    const cognitoUsers = await this.cognitoSubservice.getAllCognitoUsers()
+    if (!cognitoUsers) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        UserErrorsEnum.COGNITO_TYPE_ERROR,
+        UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+      )
+    }
+
+    for (const user of cognitoUsers) {
+      const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+      if (!accountType || !user.sub || !user.email) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          toLogfmt(user)
+        )
+      }
+      try {
+        await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
+      } catch (error) {
+        this.logger.error(error)
+      }
+    }
   }
 
   async checkUserVerifyState(email: string): Promise<UserVerifyState> {

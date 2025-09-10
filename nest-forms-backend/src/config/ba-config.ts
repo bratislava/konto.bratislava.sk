@@ -123,7 +123,9 @@ export default class BaConfig {
   get sharepoint() {
     return {
       domain: this.validatedConfig.SHAREPOINT_DOMAIN,
-      url: this.validatedConfig.SHAREPOINT_URL,
+      siteId: this.validatedConfig.SHAREPOINT_SITE_ID,
+      siteName: this.validatedConfig.SHAREPOINT_SITE_NAME,
+      graphUrl: this.validatedConfig.SHAREPOINT_GRAPH_URL,
       clientId: this.validatedConfig.SHAREPOINT_CLIENT_ID,
       clientSecret: this.validatedConfig.SHAREPOINT_CLIENT_SECRET,
       tenantId: this.validatedConfig.SHAREPOINT_TENANT_ID,
@@ -138,6 +140,7 @@ export default class BaConfig {
       port: this.validatedConfig.MINIO_PORT,
       secretKey: this.validatedConfig.MINIO_SECRET_KEY,
       useSSL: this.validatedConfig.MINIO_USE_SSL,
+      pathStyle: this.validatedConfig.MINIO_PATH_STYLE,
       buckets: {
         unscanned: this.validatedConfig.MINIO_UNSCANNED_BUCKET,
         safe: this.validatedConfig.MINIO_SAFE_BUCKET,

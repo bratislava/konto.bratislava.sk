@@ -4,10 +4,10 @@ import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
-import FilesModule from '../files/files.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
+import NasesModule from '../nases/nases.module'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
@@ -16,7 +16,6 @@ import OloMailerService from '../utils/global-services/mailer/olo-mailer.service
 import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import NasesConsumerHelper from './nases-consumer.helper'
 import NasesConsumerService from './nases-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
@@ -25,19 +24,18 @@ import WebhookSubservice from './subservices/webhook.subservice'
   imports: [
     RabbitmqClientModule,
     FormsModule,
-    FilesModule,
     GinisModule,
     ConvertModule,
-    ConvertPdfModule,
     TaxModule,
     FormValidatorRegistryModule,
     ClientsModule,
     UserInfoPipeModule,
+    ConvertPdfModule,
+    NasesModule,
   ],
   providers: [
     NasesConsumerService,
     NasesUtilsService,
-    NasesConsumerHelper,
     ThrowerErrorGuard,
     MailgunHelper,
     MailgunService,
@@ -46,6 +44,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
     EmailFormsSubservice,
     WebhookSubservice,
   ],
-  exports: [NasesConsumerService, NasesConsumerHelper],
+  exports: [NasesConsumerService],
 })
 export default class NasesConsumerModule {}

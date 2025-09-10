@@ -1,5 +1,5 @@
 import BannerTax from '@assets/images/banner-dane.png'
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
+import { GDPRCategoryEnum, GDPRTypeEnum, } from 'openapi-clients/city-account'
 import React from 'react'
 
 import { useUserSubscription } from '../../../../../frontend/hooks/useUser'
@@ -19,8 +19,8 @@ const TaxesFeesDeliveryMethodBanner = ({
   onDeliveryMethodChange,
 }: TaxesFeesDeliveryMethodBannerProps) => {
   const { changeSubscription, subscriptionChangePending } = useUserSubscription({
-    category: GdprDataDtoCategoryEnum.Taxes,
-    type: GdprDataDtoTypeEnum.FormalCommunication,
+    category: GDPRCategoryEnum.Taxes,
+    type: GDPRTypeEnum.FormalCommunication,
   })
 
   return (

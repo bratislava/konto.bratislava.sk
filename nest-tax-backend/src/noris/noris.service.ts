@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionPool, Request } from 'mssql'
+
 import {
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
-} from 'src/admin/dtos/requests.dto'
-
+} from '../admin/dtos/requests.dto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
@@ -21,6 +21,7 @@ import {
   setDeliveryMethodsForUser,
 } from './noris.queries'
 import { UpdateNorisDeliveryMethods } from './noris.types'
+import { mapDeliveryMethodToNoris } from './utils/noris.helper'
 
 @Injectable()
 export class NorisService {
@@ -202,7 +203,10 @@ export class NorisService {
             'dkba_datum_suhlasu',
             dataItem.date ? new Date(dataItem.date) : null,
           )
-          request.input('dkba_sposob_dorucovania', dataItem.deliveryMethod)
+          request.input(
+            'dkba_sposob_dorucovania',
+            mapDeliveryMethodToNoris(dataItem.deliveryMethod),
+          )
 
           const birthNumberPlaceholders = dataItem.birthNumbers
             .map((_, index) => `@birthnumber${index}`)

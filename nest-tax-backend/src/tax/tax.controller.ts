@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  ParseIntPipe,
   Query,
   Res,
   UseGuards,
@@ -14,17 +15,17 @@ import {
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import pdf, { CreateOptions } from 'html-pdf'
-import { TiersGuard } from 'src/auth/guards/tiers.guard'
-import { Tiers } from 'src/utils/decorators/tier.decorator'
-import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
+
+import { BratislavaUser } from '../auth/decorators/user-info.decorator'
+import { TiersGuard } from '../auth/guards/tiers.guard'
+import { Tiers } from '../utils/decorators/tier.decorator'
+import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import { CognitoTiersEnum } from '../utils/global-dtos/cognito.dto'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
-} from 'src/utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-
-import { BratislavaUser } from '../auth/decorators/user-info.decorator'
-import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+} from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
 import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/response.tax.dto'
@@ -68,7 +69,7 @@ export class TaxController {
   @Get('get-tax-by-year')
   async getActualTaxes(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year') year: number,
+    @Query('year', ParseIntPipe) year: number,
   ): Promise<ResponseTaxDto> {
     return this.taxService.getTaxByYear(year, baUser.birthNumber)
   }
@@ -99,7 +100,7 @@ export class TaxController {
   @Get('get-tax-pdf-by-year')
   async getTaxByYearPdf(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year') year: number,
+    @Query('year', ParseIntPipe) year: number,
     @Res() res: any,
   ) {
     try {
@@ -138,6 +139,7 @@ export class TaxController {
   @HttpCode(200)
   @ApiOperation({
     summary: 'Get all taxes (paid and not paid)',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,

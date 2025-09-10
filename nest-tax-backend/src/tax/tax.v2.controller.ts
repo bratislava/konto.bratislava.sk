@@ -1,4 +1,11 @@
-import { Controller, Get, HttpCode, Query, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  HttpCode,
+  ParseIntPipe,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -6,17 +13,20 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
-import { TiersGuard } from 'src/auth/guards/tiers.guard'
-import { Tiers } from 'src/utils/decorators/tier.decorator'
-import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
+
+import { BratislavaUser } from '../auth/decorators/user-info.decorator'
+import { TiersGuard } from '../auth/guards/tiers.guard'
+import { Tiers } from '../utils/decorators/tier.decorator'
+import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import { CognitoTiersEnum } from '../utils/global-dtos/cognito.dto'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
-} from 'src/utils/guards/dtos/error.dto'
-
-import { BratislavaUser } from '../auth/decorators/user-info.decorator'
-import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
-import { ResponseTaxSummaryDetailDto } from './dtos/response.tax.dto'
+} from '../utils/guards/dtos/error.dto'
+import {
+  ResponseGetTaxesListDto,
+  ResponseTaxSummaryDetailDto,
+} from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
 @ApiTags('tax')
@@ -50,8 +60,41 @@ export class TaxControllerV2 {
   @Get('get-tax-detail-by-year')
   async getTaxDetailByYear(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year') year: number,
+    @Query('year', ParseIntPipe) year: number,
   ) {
     return this.taxService.getTaxDetail(baUser.birthNumber, year)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get all taxes (paid and not paid)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Load list of taxes by limit, default value 5',
+    type: ResponseGetTaxesListDto,
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Error to load tax data',
+    type: ResponseErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @UseGuards(TiersGuard)
+  @UseGuards(AuthenticationGuard)
+  @Get('taxes')
+  async getTaxesList(
+    @BratislavaUser() baUser: BratislavaUserDto,
+  ): Promise<ResponseGetTaxesListDto> {
+    // TODO - pagination - but it will be issue after in year 2040 :D
+    const response = await this.taxService.getListOfTaxesByBirthnumber(
+      baUser.birthNumber,
+    )
+    return response
   }
 }

@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 
-import axios, { AxiosError } from 'axios'
+import axios, { isAxiosError } from 'axios'
 
-import { GdprCategory, GdprDataDto, GdprSubType, GdprType } from '../user/dtos/gdpr.user.dto'
+import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import {
   AnonymizeResponse,
   BloomreachConsentActionEnum,
@@ -12,7 +12,12 @@ import {
 } from './bloomreach.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import {
+  CognitoUserAttributesTierEnum,
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+} from '@prisma/client'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -45,25 +50,25 @@ export class BloomreachService {
   }
 
   private createBloomreachConsentCategory(
-    category: GdprCategory,
-    type: GdprType,
-    subType: GdprSubType
+    category: GDPRCategoryEnum,
+    type: GDPRTypeEnum,
+    subType: GDPRSubTypeEnum
   ): ConsentBloomreachDataDto {
     const result: ConsentBloomreachDataDto = {
       action: BloomreachConsentActionEnum.ACCEPT,
       category: `${category}-${type}`,
       valid_until: 'unlimited',
     }
-    if (subType === GdprSubType.UNSUB) {
+    if (subType === GDPRSubTypeEnum.unsubscribe) {
       result.action = BloomreachConsentActionEnum.REJECT
     }
-    if (category === GdprCategory.ESBS && type === GdprType.LICENSE) {
+    if (category === GDPRCategoryEnum.ESBS && type === GDPRTypeEnum.LICENSE) {
       result.category = BloomreachConsentCategoryEnum.ESBS_LICENSE
     }
-    if (category === GdprCategory.ESBS && type === GdprType.MARKETING) {
+    if (category === GDPRCategoryEnum.ESBS && type === GDPRTypeEnum.MARKETING) {
       result.category = BloomreachConsentCategoryEnum.ESBS_MARKETING
     }
-    if (category === GdprCategory.TAXES && type === GdprType.FORMAL_COMMUNICATION) {
+    if (category === GDPRCategoryEnum.TAXES && type === GDPRTypeEnum.FORMAL_COMMUNICATION) {
       result.category = BloomreachConsentCategoryEnum.TAX_COMMUNICATION
     }
     return result
@@ -124,65 +129,57 @@ export class BloomreachService {
     data: object,
     cognitoId: string,
     eventName: BloomreachEventNameEnum
-  ): Promise<boolean | undefined> {
+  ): Promise<void> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
-      return undefined
+      return
     }
-    try {
-      const eventResponse = await axios
-        .post(
-          `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
-          JSON.stringify({
-            customer_ids: {
-              city_account_id: cognitoId,
-            },
-            properties: {
-              ...data,
-            },
-            event_type: eventName,
-          }),
-          {
-            headers: {
-              Authorization: `Basic ${this.bloomreachCredentials}`,
-            },
-          }
-        )
-        .catch((error) => {
-          this.logger.warn(error)
-          throw error
-        })
-      if (eventResponse.status != 200) {
-        this.logger.warn(`Write event ${eventName} to bloomreach error for user: ${cognitoId}`)
-        return false
-      }
-    } catch (error) {
-      return false
-    }
-
-    return true
+    await axios
+      .post(
+        `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
+        {
+          customer_ids: {
+            city_account_id: cognitoId,
+          },
+          properties: {
+            ...data,
+          },
+          event_type: eventName,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${this.bloomreachCredentials}`,
+          },
+        }
+      )
+      .catch((error) => {
+        this.logger.error(error, { alert: 1 })
+      })
   }
 
-  async trackEventConsent(
-    gdprSubType: GdprSubType,
-    gdprData: GdprDataDto[],
-    cognitoId: string | null
-  ): Promise<boolean | undefined> {
+  async trackEventConsents(
+    gdprData: GdprDataSubscriptionDto[],
+    cognitoId: string | null,
+    userId: string,
+    isLegalPerson: boolean
+  ) {
+    const userType = isLegalPerson ? 'legal person' : 'user'
     if (!cognitoId) {
-      return false
-    }
-    let result = true
-    for (const elem of gdprData) {
-      const pushEventResult = await this.trackEvent(
-        this.createBloomreachConsentCategory(elem.category, elem.type, gdprSubType),
-        cognitoId,
-        BloomreachEventNameEnum.CONSENT
+      this.logger.error(
+        `No externalId for ${userType} with id: ${userId} has no externalId, skipping trackEventConsents`
       )
-      if (!pushEventResult) {
-        result = false
-      }
+      return
     }
 
-    return result
+    this.logger.log(`Tracking ${gdprData.length} events for ${userType} with id: ${cognitoId}`)
+    await Promise.allSettled(
+      gdprData.map((elem) =>
+        this.trackEvent(
+          this.createBloomreachConsentCategory(elem.category, elem.type, elem.subType),
+          cognitoId,
+          BloomreachEventNameEnum.CONSENT
+        )
+      )
+    )
   }
 
   /**
@@ -220,7 +217,7 @@ export class BloomreachService {
       }
       return AnonymizeResponse.SUCCESS
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === HttpStatus.NOT_FOUND) {
+      if (isAxiosError(error) && error.response?.status === HttpStatus.NOT_FOUND) {
         // User not found in bloomreach
         return AnonymizeResponse.NOT_FOUND
       }

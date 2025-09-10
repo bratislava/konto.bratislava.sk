@@ -1,6 +1,5 @@
 /* eslint-disable pii/no-email */
 import { createMock } from '@golevelup/ts-jest'
-import { HttpException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
@@ -8,6 +7,7 @@ import {
   FormDefinition,
   FormDefinitionEmail,
   FormDefinitionSlovenskoSkGeneric,
+  FormDefinitionSlovenskoSkTax,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -17,21 +17,24 @@ import {
 } from 'forms-shared/send-policy/sendPolicy'
 import { getFormSummary } from 'forms-shared/summary/summary'
 
+import {
+  AuthFixtureUser,
+  UserFixtureFactory,
+} from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import ClientsService from '../clients/clients.service'
+import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
-import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
-import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
+import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -41,6 +44,13 @@ jest.mock('forms-shared/send-policy/sendPolicy')
 
 describe('NasesService', () => {
   let service: NasesService
+  let userFixtureFactory: UserFixtureFactory
+  let authUser: AuthFixtureUser
+
+  beforeAll(() => {
+    userFixtureFactory = new UserFixtureFactory()
+    authUser = userFixtureFactory.createFoAuthUser()
+  })
 
   beforeEach(async () => {
     jest.resetAllMocks()
@@ -55,14 +65,6 @@ describe('NasesService', () => {
         {
           provide: FilesService,
           useValue: createMock<FilesService>(),
-        },
-        {
-          provide: FormsHelper,
-          useValue: createMock<FormsHelper>(),
-        },
-        {
-          provide: NasesConsumerService,
-          useValue: createMock<NasesConsumerService>(),
         },
         {
           provide: RabbitmqClientService,
@@ -89,6 +91,10 @@ describe('NasesService', () => {
           provide: ClientsService,
           useValue: createMock<ClientsService>(),
         },
+        {
+          provide: ConvertPdfService,
+          useValue: createMock<ConvertPdfService>(),
+        },
       ],
     }).compile()
 
@@ -112,66 +118,6 @@ describe('NasesService', () => {
     })
   })
 
-  describe('migrateForm', () => {
-    it('should throw error', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue(null)
-
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-    })
-
-    it('should throw error if the form is already assigned to another user', async () => {
-      prismaMock.forms.findFirst
-        .mockResolvedValueOnce({
-          mainUri: null,
-          actorUri: null,
-          userExternalId: 'external',
-        } as Forms)
-        .mockResolvedValueOnce({
-          mainUri: 'uri',
-          actorUri: 'uri',
-          userExternalId: null,
-        } as Forms)
-      prismaMock.forms.update.mockResolvedValue({} as Forms)
-
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-    })
-
-    it('should correctly update', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue({
-        mainUri: null,
-        actorUri: null,
-        userExternalId: null,
-      } as Forms)
-      const spy = jest
-        .spyOn(prismaMock.forms, 'update')
-        .mockResolvedValue({} as Forms)
-
-      await service.migrateForm(
-        '1',
-        { sub: 'sub' } as CognitoGetUserData,
-        'ico1',
-      )
-      expect(spy).toHaveBeenCalled()
-      expect(spy).toHaveBeenCalledWith({
-        where: {
-          id: '1',
-        },
-        data: {
-          cognitoGuestIdentityId: null,
-          userExternalId: 'sub',
-          ico: 'ico1',
-        },
-      })
-    })
-  })
-
   describe('updateForm', () => {
     it('should throw not found', async () => {
       prismaMock.forms.findFirst.mockResolvedValue(null)
@@ -180,118 +126,33 @@ describe('NasesService', () => {
         service.updateForm(
           '1',
           { email: 'email' } as UpdateFormRequestDto,
-          'ico1',
-          { sub: 'subUser', email: 'emailUser' } as CognitoGetUserData,
-        ),
-      ).rejects.toThrow()
-    })
-
-    it('should throw unauthorized', async () => {
-      service['formsHelper'].isFormAccessGranted = jest
-        .fn()
-        .mockReturnValue(false)
-      prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
-
-      await expect(
-        service.updateForm(
-          '1',
-          { email: 'email' } as UpdateFormRequestDto,
-          'ico1',
-          { sub: 'subUser', email: 'emailUser' } as CognitoGetUserData,
+          authUser.user,
         ),
       ).rejects.toThrow()
     })
 
     it('should correctly update', async () => {
       prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
-      service['formsHelper'].isFormAccessGranted = jest
-        .fn()
-        .mockReturnValue(true)
       const spy = jest.spyOn(service['formsService'], 'updateForm')
 
       await service.updateForm(
         '1',
         { email: 'emailOverride', formDataXml: 'xml' } as UpdateFormRequestDto,
-        'ico1',
-        { email: 'emailUser', sub: 'subUser' } as CognitoGetUserData,
+        authUser.user,
       )
       expect(spy).toHaveBeenCalledWith('1', {
-        userExternalId: 'subUser',
+        userExternalId: authUser.sub,
+        cognitoGuestIdentityId: null,
+        ico: null,
+        ownerType: 'FO',
         email: 'emailOverride',
         formDataXml: 'xml',
-        ico: 'ico1',
       })
     })
   })
 
-  describe('canSendForm', () => {
-    it('should throw error if check form throws', async () => {
-      service['formsService'].checkFormBeforeSending = jest
-        .fn()
-        .mockRejectedValue(new HttpException('Error', 404))
-      await expect(
-        service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).rejects.toThrow()
-    })
-
-    it('should throw error if form send is not granted', async () => {
-      service['formsService'].checkFormBeforeSending = jest
-        .fn()
-        .mockResolvedValue({} as Forms)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(false)
-
-      await expect(
-        service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).rejects.toThrow()
-    })
-
-    it('should return the result of areFormAttachmentsReady otherwise', async () => {
-      service['formsService'].checkFormBeforeSending = jest
-        .fn()
-        .mockResolvedValue({} as Forms)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(true)
-
-      service['filesService'].areFormAttachmentsReady = jest
-        .fn()
-        .mockResolvedValue({ filesReady: false })
-      expect(
-        await service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).toBeFalsy()
-      service['filesService'].areFormAttachmentsReady = jest
-        .fn()
-        .mockResolvedValue({ filesReady: true })
-      expect(
-        await service.canSendForm('1', {
-          sub: 'uri',
-          actor: {
-            sub: 'uri',
-          },
-        } as JwtNasesPayloadDto),
-      ).toBeTruthy()
-    })
-  })
-
   describe('sendFormEid', () => {
-    it('should throw an error if sendMessageNases returns a status different than 200', async () => {
+    it('should throw an error if sendMessageNases throws', async () => {
       // Mock dependencies
       const mockForm = {
         id: '1',
@@ -302,7 +163,6 @@ describe('NasesService', () => {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayloadDto
-      const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
       const mockFormDefinition: FormDefinition = {
         jsonVersion: '1.0.0',
         schema: {},
@@ -324,9 +184,6 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(true)
       service['nasesUtilsService'].createUserJwtToken = jest
         .fn()
         .mockReturnValue('mock-jwt')
@@ -341,15 +198,15 @@ describe('NasesService', () => {
       })
 
       // this is the important mock we're testing against
-      service['nasesConsumerService'].sendToNasesAndUpdateState = jest
-        .fn()
-        .mockReturnValue(false)
+      jest
+        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .mockResolvedValue({ status: 404, data: {} })
 
       const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
 
       // Execute and assert
       await expect(
-        service.sendFormEid('1', 'mock-obo-token', mockUser, mockCognitoUser),
+        service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
       ).rejects.toThrow(NasesErrorsResponseEnum.SEND_TO_NASES_ERROR)
       expect(updateFormSpy).toHaveBeenCalledWith('1', {
         state: FormState.DRAFT,
@@ -377,9 +234,6 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
-      service['formsHelper'].userCanSendFormEid = jest
-        .fn()
-        .mockReturnValue(true)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -389,8 +243,252 @@ describe('NasesService', () => {
 
       // Execute and assert
       await expect(
-        service.sendFormEid('1', 'mock-obo-token', mockUser),
+        service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
       ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
+    })
+
+    it('should log and throw error if creating pdf fails, and the last update should be with state: QUEUED', async () => {
+      jest
+        .spyOn(service['formsService'], 'checkFormBeforeSending')
+        .mockResolvedValue({
+          id: '1',
+          formDefinitionSlug: 'test-slug',
+          formDataJson: {},
+        } as Forms)
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        eidSendPossible: true,
+      })
+      const updateSpy = jest.spyOn(service['formsService'], 'updateForm')
+      const mockFormDefinition = {
+        slug: 'test-slug',
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+      } as FormDefinitionSlovenskoSkGeneric
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayloadDto
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
+        mockFormDefinition,
+      )
+      jest
+        .spyOn(service['convertPdfService'], 'createPdfImageInFormFiles')
+        .mockRejectedValue(new Error('PDF creation failed'))
+      const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
+
+      await expect(
+        service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
+      ).rejects.toThrow()
+      expect(sendToNasesSpy).not.toHaveBeenCalled()
+      expect(service['logger'].error).toHaveBeenCalled()
+      expect(updateSpy).toHaveBeenLastCalledWith(
+        '1',
+        expect.objectContaining({
+          state: FormState.QUEUED,
+        }),
+      )
+    })
+
+    it('should end in NASES_SEND_ERROR error state, if sending to NASES fails', async () => {
+      jest
+        .spyOn(service['formsService'], 'checkFormBeforeSending')
+        .mockResolvedValue({
+          id: '1',
+          formDefinitionSlug: 'test-slug',
+          formDataJson: {},
+        } as Forms)
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        eidSendPossible: true,
+      })
+      const updateSpy = jest.spyOn(service['formsService'], 'updateForm')
+      const mockFormDefinition = {
+        slug: 'test-slug',
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+      } as FormDefinitionSlovenskoSkGeneric
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayloadDto
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
+        mockFormDefinition,
+      )
+      jest
+        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .mockResolvedValue({ status: 404, data: {} })
+      const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
+
+      await expect(
+        service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
+      ).rejects.toThrow()
+      expect(sendToNasesSpy).toHaveBeenCalled()
+      expect(service['logger'].error).toHaveBeenCalled()
+      expect(updateSpy).toHaveBeenLastCalledWith(
+        '1',
+        expect.objectContaining({
+          state: FormState.DRAFT,
+          error: FormError.NASES_SEND_ERROR,
+        }),
+      )
+    })
+
+    it('should just log if sending to GINIS throws', async () => {
+      jest
+        .spyOn(service['formsService'], 'checkFormBeforeSending')
+        .mockResolvedValue({
+          id: '1',
+          formDefinitionSlug: 'test-slug',
+          formDataJson: {},
+        } as Forms)
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        eidSendPossible: true,
+      })
+      const updateSpy = jest.spyOn(service['formsService'], 'updateForm')
+      const mockFormDefinition = {
+        slug: 'test-slug',
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+      } as FormDefinitionSlovenskoSkGeneric
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayloadDto
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
+        mockFormDefinition,
+      )
+      jest
+        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .mockResolvedValue({ status: 200, data: {} })
+      const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
+      const publishToGinisSpy = jest
+        .spyOn(service['rabbitmqClientService'], 'publishToGinis')
+        .mockRejectedValue(new Error('Ginis error'))
+
+      await service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user)
+
+      expect(sendToNasesSpy).toHaveBeenCalled()
+      expect(publishToGinisSpy).toHaveBeenCalled()
+      expect(service['logger'].error).toHaveBeenCalled()
+      expect(updateSpy).toHaveBeenCalledWith(
+        '1',
+        expect.objectContaining({
+          state: FormState.DELIVERED_NASES, // It should be succesfully delivered to NASES
+        }),
+      )
+    })
+
+    it('should skip GINIS if not generic slovensko.sk form', async () => {
+      jest
+        .spyOn(service['formsService'], 'checkFormBeforeSending')
+        .mockResolvedValue({
+          id: '1',
+          formDefinitionSlug: 'test-slug',
+          formDataJson: {},
+        } as Forms)
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        eidSendPossible: true,
+      })
+      const updateSpy = jest.spyOn(service['formsService'], 'updateForm')
+      const mockFormDefinition = {
+        slug: 'test-slug',
+        type: FormDefinitionType.SlovenskoSkTax,
+        sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+      } as FormDefinitionSlovenskoSkTax
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayloadDto
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
+        mockFormDefinition,
+      )
+      jest
+        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .mockResolvedValue({ status: 200, data: {} })
+      const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
+      const publishToGinisSpy = jest.spyOn(
+        service['rabbitmqClientService'],
+        'publishToGinis',
+      )
+
+      const result = await service.sendFormEid(
+        '1',
+        'mock-obo-token',
+        mockUser,
+        authUser.user,
+      )
+      expect(sendToNasesSpy).toHaveBeenCalled()
+      expect(publishToGinisSpy).not.toHaveBeenCalled()
+      expect(service['logger'].error).not.toHaveBeenCalled()
+      expect(updateSpy).toHaveBeenCalledWith(
+        '1',
+        expect.objectContaining({
+          state: FormState.DELIVERED_NASES, // It should be succesfully delivered to NASES
+        }),
+      )
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: '1',
+          state: FormState.DELIVERED_NASES,
+        }),
+      )
+    })
+
+    it('should return DELIVERED_NASES if everything went okay', async () => {
+      jest
+        .spyOn(service['formsService'], 'checkFormBeforeSending')
+        .mockResolvedValue({
+          id: '1',
+          formDefinitionSlug: 'test-slug',
+          formDataJson: {},
+        } as Forms)
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        eidSendPossible: true,
+      })
+      const updateSpy = jest.spyOn(service['formsService'], 'updateForm')
+      const mockFormDefinition = {
+        slug: 'test-slug',
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+      } as FormDefinitionSlovenskoSkGeneric
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayloadDto
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
+        mockFormDefinition,
+      )
+      jest
+        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .mockResolvedValue({ status: 200, data: {} })
+      const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
+      const publishToGinisSpy = jest.spyOn(
+        service['rabbitmqClientService'],
+        'publishToGinis',
+      )
+
+      const result = await service.sendFormEid(
+        '1',
+        'mock-obo-token',
+        mockUser,
+        authUser.user,
+      )
+      expect(sendToNasesSpy).toHaveBeenCalled()
+      expect(publishToGinisSpy).toHaveBeenCalled()
+      expect(service['logger'].error).not.toHaveBeenCalled()
+      expect(updateSpy).toHaveBeenCalledWith(
+        '1',
+        expect.objectContaining({
+          state: FormState.DELIVERED_NASES, // It should be succesfully delivered to NASES
+        }),
+      )
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: '1',
+          state: FormState.DELIVERED_NASES,
+        }),
+      )
     })
   })
 
@@ -420,9 +518,6 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['formsHelper'], 'userCanSendForm')
-        .mockReturnValue(true)
-      jest
         .spyOn(service['formsService'], 'updateForm')
         .mockResolvedValue(mockForm)
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
@@ -434,7 +529,7 @@ describe('NasesService', () => {
     it('should throw an error if form definition is not found', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
       )
     })
@@ -450,18 +545,8 @@ describe('NasesService', () => {
           }),
         })
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DATA_INVALID,
-      )
-    })
-
-    it('should throw an error if user cannot send the form', async () => {
-      jest
-        .spyOn(service['formsHelper'], 'userCanSendForm')
-        .mockReturnValue(false)
-
-      await expect(service.sendForm('1')).rejects.toThrow(
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     })
 
@@ -471,7 +556,7 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     })
@@ -482,7 +567,7 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     })
@@ -492,13 +577,13 @@ describe('NasesService', () => {
         .spyOn(service['rabbitmqClientService'], 'publishDelay')
         .mockRejectedValue(new Error('RabbitMQ error'))
 
-      await expect(service.sendForm('1')).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
       )
     })
 
     it('should queue the form', async () => {
-      const result = await service.sendForm('1')
+      const result = await service.sendForm('1', authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -512,7 +597,7 @@ describe('NasesService', () => {
         ...mockFormDefinitionEmail,
       })
 
-      const result = await service.sendForm('1')
+      const result = await service.sendForm('1', authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -527,7 +612,7 @@ describe('NasesService', () => {
         .spyOn(service as any, 'getFormSummaryOrThrow')
         .mockReturnValue(mockSummary)
 
-      await service.sendForm('1')
+      await service.sendForm('1', authUser.user)
 
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
@@ -542,7 +627,7 @@ describe('NasesService', () => {
           throw new Error('Summary generation failed')
         })
 
-      await expect(service.sendForm('1')).rejects.toThrow()
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow()
     })
   })
 
@@ -583,6 +668,151 @@ describe('NasesService', () => {
       expect(() =>
         service['getFormSummaryOrThrow'](mockForm, mockFormDefinition),
       ).toThrow(NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR)
+    })
+  })
+
+  describe('sendToNasesAndUpdateState', () => {
+    it('should throw if status is not 200', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 401 })
+
+      await expect(
+        service.sendToNasesAndUpdateState(
+          '',
+          {} as Forms,
+          {
+            formId: '',
+            tries: 1,
+            userData: {
+              email: 'test.inovacie_at_bratislava.sk',
+              firstName: 'Tester',
+            },
+          },
+          { type: SendMessageNasesSenderType.Self },
+        ),
+      ).rejects.toThrow()
+    })
+
+    it('should start checking for nases delivery and not trigger any errors', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 200 })
+
+      const spyLog = jest.spyOn(service['logger'], 'error')
+      await service.sendToNasesAndUpdateState(
+        '',
+        {} as Forms,
+        {
+          formId: 'formIdVal',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        { type: SendMessageNasesSenderType.Self },
+      )
+
+      expect(spyLog).not.toHaveBeenCalled()
+    })
+
+    it('should pass additionalFormUpdates to formsService.updateForm', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 200 })
+
+      const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
+      const additionalFormUpdates = {
+        formSummary: {} as PrismaJson.FormSummary,
+      }
+
+      await service.sendToNasesAndUpdateState(
+        '',
+        {} as Forms,
+        {
+          formId: 'formIdVal',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        { type: SendMessageNasesSenderType.Self },
+        additionalFormUpdates,
+      )
+
+      expect(updateFormSpy).toHaveBeenCalledWith('formIdVal', {
+        state: FormState.DELIVERED_NASES,
+        error: FormError.NONE,
+        ...additionalFormUpdates,
+      })
+    })
+
+    it('should update to ERROR an throw error if sending to NASES fails', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 500 })
+
+      const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
+
+      await expect(
+        service.sendToNasesAndUpdateState(
+          'jwt',
+          {} as Forms,
+          {
+            formId: 'formIdVal',
+            tries: 1,
+            userData: {
+              email: 'test.inovacie_at_bratislava.sk',
+              firstName: 'Tester',
+            },
+          },
+          { type: SendMessageNasesSenderType.Self },
+        ),
+      ).rejects.toThrow()
+
+      expect(updateFormSpy).toHaveBeenCalledWith('formIdVal', {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
+    })
+
+    it('should update to DELIVERED_NASES if sending to NASES is successful', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 200 })
+
+      const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
+
+      await service.sendToNasesAndUpdateState(
+        'jwt',
+        {} as Forms,
+        {
+          formId: 'formIdVal',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        { type: SendMessageNasesSenderType.Self },
+      )
+
+      expect(updateFormSpy).toHaveBeenCalledWith(
+        'formIdVal',
+        expect.objectContaining({
+          state: FormState.DELIVERED_NASES,
+          error: FormError.NONE,
+        }),
+      )
+      expect(updateFormSpy).not.toHaveBeenCalledWith(
+        'formIdVal',
+        expect.objectContaining({
+          state: FormState.DRAFT,
+          error: FormError.NASES_SEND_ERROR,
+        }),
+      )
     })
   })
 })

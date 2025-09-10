@@ -51,9 +51,8 @@ const MyApplicationDetailsHeader = ({
           `No form id.`,
         )
       const response = await formsClient.convertControllerConvertToPdf(
-        {
-          formId,
-        },
+        formId,
+        {},
         { authStrategy: 'authOrGuestWithToken', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`

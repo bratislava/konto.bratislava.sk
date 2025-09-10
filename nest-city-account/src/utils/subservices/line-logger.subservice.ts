@@ -2,7 +2,7 @@ import * as process from 'node:process'
 
 import { LoggerService } from '@nestjs/common'
 
-import { escapeForLogfmt, isLogfmt, ToLogfmt } from '../logging'
+import { escapeForLogfmt, isLogfmt, toLogfmt } from '../logging'
 
 // ANSI color escape codes
 const ANSI_RESET = '\u001B[0m'
@@ -47,7 +47,7 @@ export class LineLoggerSubservice implements LoggerService {
 
     const formattedStringMessages = this.formatStringMessage(stringMessages)
 
-    const formattedOtherItems = otherItems.map((item) => ToLogfmt(item)).join(' ')
+    const formattedOtherItems = otherItems.map((item) => toLogfmt(item)).join(' ')
 
     const formattedContext = this.context ? `context="${this.context}"` : ''
 

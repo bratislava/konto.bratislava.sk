@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import axios, { AxiosError } from 'axios'
+import axios, { isAxiosError } from 'axios'
 import https from 'https'
 
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
@@ -142,11 +142,12 @@ export class MagproxyService {
       // TODO this validation belongs to magproxy, TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
       return this.validateRfoDataFormat(result?.data?.items)
     } catch (error) {
-      if (!(error instanceof AxiosError)) {
+      if (!isAxiosError(error)) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          JSON.stringify(error)
+          'Error is not an instance of AxiosError',
+          error
         )
       }
       if (error.response?.status === HttpStatus.UNAUTHORIZED) {

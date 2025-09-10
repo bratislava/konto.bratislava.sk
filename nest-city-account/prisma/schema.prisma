@@ -19,31 +19,69 @@ enum CognitoUserAttributesTierEnum {
   EID
 }
 
+enum DeliveryMethodEnum {
+  EDESK
+  CITY_ACCOUNT
+  POSTAL
+}
+
+// Edesk is stored in PhysicalEntity and we do not want to duplicate it in User
+enum DeliveryMethodUserEnum {
+  CITY_ACCOUNT
+  POSTAL
+}
+
+enum GDPRTypeEnum {
+  ANALYTICS
+  DATAPROCESSING
+  FORMAL_COMMUNICATION
+  LICENSE
+  MARKETING
+}
+
+enum GDPRSubTypeEnum {
+  subscribe
+  unsubscribe
+}
+
+enum GDPRCategoryEnum {
+  CITY
+  ESBS
+  SWIMMINGPOOLS
+  TAXES
+  INIT
+  LIBRARY
+}
+
 model User {
-  id                               String                         @id @default(uuid()) @db.Uuid
-  createdAt                        DateTime                       @default(now())
-  updatedAt                        DateTime                       @updatedAt
-  externalId                       String?                        @unique
-  email                            String?                        @unique
-  ifo                              String?                        @unique
-  birthNumber                      String?                        @unique
-  lastVerificationIdentityCard     DateTime?
-  oldMagproxyDatabase              Int                            @default(0)
-  requeuedInVerification           Int                            @default(0)
-  birthnumberAlreadyExistsLast     String?
-  birthnumberAlreadyExistsCounter  Int                            @default(0)
-  userAttribute                    String?
-  userGdprData                     UserGdprData[]
-  physicalEntity                   PhysicalEntity?
-  lastTaxYear                      Int?
-  lastTaxBackendUploadTry          DateTime                       @default(now())
-  lastTaxDeliveryMethodsUpdateYear Int?
+  id                                   String                         @id @default(uuid()) @db.Uuid
+  createdAt                            DateTime                       @default(now())
+  updatedAt                            DateTime                       @updatedAt
+  externalId                           String?                        @unique
+  email                                String?                        @unique
+  ifo                                  String?                        @unique
+  birthNumber                          String?                        @unique
+  lastVerificationIdentityCard         DateTime?
+  oldMagproxyDatabase                  Int                            @default(0)
+  requeuedInVerification               Int                            @default(0)
+  birthnumberAlreadyExistsLast         String?
+  birthnumberAlreadyExistsCounter      Int                            @default(0)
+  userAttribute                        String?
+  userGdprData                         UserGdprData[]
+  physicalEntity                       PhysicalEntity?
+  lastTaxYear                          Int?
+  lastTaxBackendUploadTry              DateTime?
+  lastTaxDeliveryMethodsUpdateYear     Int?
+  taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
+  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery
+  taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
+  taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
   lastTaxDeliveryMethodsUpdateTry  DateTime                       @default(now())
-  cognitoTier                      CognitoUserAttributesTierEnum?
-  userIdCardVerify                 UserIdCardVerify[]
-  isDeceased                       Boolean                        @default(false)
-  markedDeceasedAt                 DateTime?
+  cognitoTier                          CognitoUserAttributesTierEnum?
+  userIdCardVerify                     UserIdCardVerify[]
+  isDeceased                           Boolean                        @default(false)
+  markedDeceasedAt                     DateTime?
 }
 
 // In this table we store for one month the data used by a user to verify their account by ID card.
@@ -74,17 +112,19 @@ model LegalPersonIcoIdCardVerify {
 // consolidates data from magproxy / NASES
 // a physicalEntity record may or may not be linked to exactly one User record, and vice versa
 model PhysicalEntity {
-  id                String              @id @default(uuid()) @db.Uuid
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  user              User?               @relation(fields: [userId], references: [id])
-  userId            String?             @unique @db.Uuid
-  uri               String?             @unique
-  // is ifo unique ? should we store it here ?
-  ifo               String?             @unique
-  birthNumber       String?
-  activeEdesk       Boolean?
-  UpvsIdentityByUri UpvsIdentityByUri[]
+  id                         String              @id @default(uuid()) @db.Uuid
+  createdAt                  DateTime            @default(now())
+  updatedAt                  DateTime            @updatedAt
+  user                       User?               @relation(fields: [userId], references: [id])
+  userId                     String?             @unique @db.Uuid
+  uri                        String?             @unique
+  ifo                        String?             @unique
+  birthNumber                String?
+  activeEdesk                Boolean?
+  activeEdeskUpdatedAt       DateTime?
+  activeEdeskUpdateFailedAt  DateTime?
+  activeEdeskUpdateFailCount Int                 @default(0)
+  UpvsIdentityByUri          UpvsIdentityByUri[]
 }
 
 // stores (filtered) requests from nases
@@ -120,25 +160,25 @@ model LegalPerson {
 }
 
 model UserGdprData {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @db.Uuid
-  type      String
-  category  String
-  subType   String?
-  user      User     @relation(fields: [userId], references: [id])
+  id        String           @id @default(uuid())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  userId    String           @db.Uuid
+  type      GDPRTypeEnum
+  category  GDPRCategoryEnum
+  subType   GDPRSubTypeEnum?
+  user      User             @relation(fields: [userId], references: [id])
 }
 
 model LegalPersonGdprData {
-  id            String      @id @default(uuid())
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  legalPersonId String      @db.Uuid
-  type          String
-  category      String
-  subType       String?
-  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id])
+  id            String           @id @default(uuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  legalPersonId String           @db.Uuid
+  type          GDPRTypeEnum
+  category      GDPRCategoryEnum
+  subType       GDPRSubTypeEnum?
+  legalPerson   LegalPerson      @relation(fields: [legalPersonId], references: [id])
 }
 
 model Config {

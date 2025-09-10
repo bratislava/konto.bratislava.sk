@@ -8,15 +8,16 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from '../../dtos/gdpr.legalperson.dto'
 import {
-  GdprCategory,
-  GdprSubType,
-  GdprType,
   ResponseGdprUserDataDto,
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
+import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
+import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
+import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
+import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -34,6 +35,12 @@ export class DatabaseSubserviceUser {
     let user = await this.prisma.user.findUnique({
       where: { email: email },
     })
+    if (user?.isDeceased) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        UserErrorsEnum.USER_IS_DECEASED,
+        UserErrorsResponseEnum.USER_IS_DECEASED
+      )
+    }
     if (user && externalId) {
       user = await this.prisma.user.update({
         where: {
@@ -57,16 +64,17 @@ export class DatabaseSubserviceUser {
         })
         await this.changeUserGdprData(user.id, [
           {
-            type: GdprType.LICENSE,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.LICENSE,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
           {
-            type: GdprType.MARKETING,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
         ])
+        await this.bloomreachService.trackCustomer(externalId)
       } else if (user.email != email) {
         const oldEmail = user.email
         user = await this.prisma.user.update({
@@ -93,11 +101,14 @@ export class DatabaseSubserviceUser {
       })
       await this.changeUserGdprData(user.id, [
         {
-          type: GdprType.LICENSE,
-          category: GdprCategory.ESBS,
-          subType: GdprSubType.SUB,
+          type: GDPRTypeEnum.LICENSE,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
         },
       ])
+      if (externalId) {
+        await this.bloomreachService.trackCustomer(externalId)
+      }
     }
 
     return prismaExclude(user, ['ifo'])
@@ -132,14 +143,14 @@ export class DatabaseSubserviceUser {
         })
         await this.changeLegalPersonGdprData(legalPerson.id, [
           {
-            type: GdprType.LICENSE,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.LICENSE,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
           {
-            type: GdprType.MARKETING,
-            category: GdprCategory.ESBS,
-            subType: GdprSubType.SUB,
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.subscribe,
           },
         ])
       } else if (legalPerson.email != email) {
@@ -168,9 +179,9 @@ export class DatabaseSubserviceUser {
       })
       await this.changeLegalPersonGdprData(legalPerson.id, [
         {
-          type: GdprType.LICENSE,
-          category: GdprCategory.ESBS,
-          subType: GdprSubType.SUB,
+          type: GDPRTypeEnum.LICENSE,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
         },
       ])
     }
@@ -278,39 +289,66 @@ export class DatabaseSubserviceUser {
   async getOfficialCorrespondenceChannel(
     userId: string
   ): Promise<UserOfficialCorrespondenceChannelEnum> {
-    const hasEdesk = await this.prisma.physicalEntity.findUnique({
-      where: {
-        userId,
+    const delivery = await this.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
+    const active = delivery.active?.deliveryMethod
+    switch (active) {
+      case DeliveryMethodEnum.EDESK:
+        return UserOfficialCorrespondenceChannelEnum.EDESK
+      case DeliveryMethodEnum.CITY_ACCOUNT:
+        return UserOfficialCorrespondenceChannelEnum.EMAIL
+      case DeliveryMethodEnum.POSTAL:
+        return UserOfficialCorrespondenceChannelEnum.POSTAL
+      default:
+        return UserOfficialCorrespondenceChannelEnum.POSTAL
+    }
+  }
+
+  async getActiveAndLockedDeliveryMethodsWithDates(
+    where: Prisma.UserWhereUniqueInput
+  ): Promise<DeliveryMethodActiveAndLockedDto> {
+    const user = await this.prisma.user.findUnique({
+      where,
+      include: {
+        physicalEntity: {
+          select: {
+            activeEdesk: true,
+          },
+        },
       },
     })
-    if (hasEdesk?.activeEdesk) {
-      return UserOfficialCorrespondenceChannelEnum.EDESK
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        ErrorsEnum.NOT_FOUND_ERROR,
+        ErrorsResponseEnum.NOT_FOUND_ERROR
+      )
     }
-    const lastSub = await this.prisma.userGdprData.findFirst({
-      where: {
-        userId,
-        category: GdprCategory.TAXES,
-        type: GdprType.FORMAL_COMMUNICATION,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
-    if (lastSub?.subType === GdprSubType.SUB) {
-      return UserOfficialCorrespondenceChannelEnum.EMAIL
-    }
-    return UserOfficialCorrespondenceChannelEnum.POSTAL
+
+    const active = user.physicalEntity?.activeEdesk
+      ? { deliveryMethod: DeliveryMethodEnum.EDESK }
+      : user.taxDeliveryMethod
+        ? {
+            deliveryMethod: user.taxDeliveryMethod,
+            date: user.taxDeliveryMethodCityAccountDate ?? undefined,
+          }
+        : undefined
+
+    const locked = user.taxDeliveryMethodAtLockDate
+      ? {
+          deliveryMethod: user.taxDeliveryMethodAtLockDate,
+          date: user.taxDeliveryMethodCityAccountLockDate ?? undefined,
+        }
+      : undefined
+
+    return { active, locked }
   }
 
   async getShowEmailCommunicationBanner(userId: string): Promise<boolean> {
-    const formalCommunicationSubscription = await this.prisma.userGdprData.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
-        userId,
-        type: GdprType.FORMAL_COMMUNICATION,
-        category: GdprCategory.TAXES,
+        id: userId,
       },
-      orderBy: {
-        createdAt: 'desc',
+      select: {
+        taxDeliveryMethod: true,
       },
     })
     const hasEdesk = await this.prisma.physicalEntity.findUnique({
@@ -318,10 +356,32 @@ export class DatabaseSubserviceUser {
         userId,
       },
     })
-    if (formalCommunicationSubscription || hasEdesk?.activeEdesk) {
-      return false
-    }
-    return true
+    return !(user?.taxDeliveryMethod || hasEdesk?.activeEdesk)
+  }
+
+  private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
+    return (
+      elem.category === GDPRCategoryEnum.TAXES && elem.type === GDPRTypeEnum.FORMAL_COMMUNICATION
+    )
+  }
+
+  private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
+    const taxDeliveryData: DeliveryMethodUserEnum[] = []
+    const otherGdprData: ResponseGdprUserDataDto[] = []
+
+    gdprData.forEach((elem) => {
+      if (this.isTaxDeliveryData(elem)) {
+        if (elem.subType === GDPRSubTypeEnum.subscribe) {
+          taxDeliveryData.push(DeliveryMethodUserEnum.CITY_ACCOUNT)
+        } else {
+          taxDeliveryData.push(DeliveryMethodUserEnum.POSTAL)
+        }
+      } else {
+        otherGdprData.push(elem)
+      }
+    })
+
+    return { taxDeliveryData, otherGdprData }
   }
 
   async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
@@ -334,6 +394,29 @@ export class DatabaseSubserviceUser {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
+
+    // TODO we want to separate this into an endpoint
+    const { taxDeliveryData } = this.separateTaxDeliveryData(gdprData)
+    if (taxDeliveryData.length > 1) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+        'Delivery method set more than once at the same time'
+      )
+    }
+
+    if (taxDeliveryData.length > 0) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          taxDeliveryMethod: taxDeliveryData[0],
+          ...(taxDeliveryData[0] === DeliveryMethodUserEnum.CITY_ACCOUNT && {
+            taxDeliveryMethodCityAccountDate: new Date(),
+          }),
+        },
+      })
+    }
+
     await this.prisma.userGdprData.createMany({
       data: gdprData.map((elem) => ({
         type: elem.type,
@@ -343,21 +426,7 @@ export class DatabaseSubserviceUser {
       })),
     })
 
-    for (const elem of gdprData) {
-      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-      // If there is error it isn't blocker for futher process.
-      // TODO Data will be also uploaded from database to bloomreach every day.
-      this.bloomreachService.trackEventConsent(
-        elem.subType,
-        [
-          {
-            category: elem.category,
-            type: elem.type,
-          },
-        ],
-        user.externalId
-      )
-    }
+    await this.bloomreachService.trackEventConsents(gdprData, user.externalId, user.id, false)
   }
 
   async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
@@ -379,20 +448,11 @@ export class DatabaseSubserviceUser {
       })),
     })
 
-    for (const elem of gdprData) {
-      // This is intentional not await, we don't want to wait for bloomreach integration if there will be error.
-      // If there is error it isn't blocker for futher process.
-      // TODO Data will be also uploaded from database to bloomreach every day.
-      this.bloomreachService.trackEventConsent(
-        elem.subType,
-        [
-          {
-            category: elem.category,
-            type: elem.type,
-          },
-        ],
-        legalPerson.externalId
-      )
-    }
+    await this.bloomreachService.trackEventConsents(
+      gdprData,
+      legalPerson.externalId,
+      legalPerson.id,
+      true
+    )
   }
 }

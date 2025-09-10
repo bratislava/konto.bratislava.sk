@@ -1,0 +1,18 @@
+fragment Alert on ComponentGeneralAlert {
+  id
+  content
+  dateFrom
+  dateTo
+}
+
+query Alerts {
+  general {
+    data {
+      attributes {
+        alerts {
+          ...Alert
+        }
+      }
+    }
+  }
+}

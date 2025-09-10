@@ -1,6 +1,7 @@
 import { TaxDetail, TaxDetailType, TaxInstallment } from '@prisma/client'
+import dayjs, { Dayjs } from 'dayjs'
 
-import { TaxPaidStatusEnum } from '../../dtos/response.tax.dto'
+import { TaxPaidStatusEnum, TaxStatusEnum } from '../../dtos/response.tax.dto'
 
 export const getTaxStatus = (
   desiredPayment: number,
@@ -11,6 +12,42 @@ export const getTaxStatus = (
   if (alreadyPaid > desiredPayment) return TaxPaidStatusEnum.OVER_PAID
   if (alreadyPaid === desiredPayment) return TaxPaidStatusEnum.PAID
   return TaxPaidStatusEnum.PARTIALLY_PAID
+}
+
+export const getExistingTaxStatus = (
+  taxAmount: number,
+  paidAmount: number,
+): TaxStatusEnum => {
+  if (paidAmount === 0) {
+    return TaxStatusEnum.NOT_PAID
+  }
+
+  if (paidAmount === taxAmount) {
+    return TaxStatusEnum.PAID
+  }
+
+  if (paidAmount > taxAmount) {
+    return TaxStatusEnum.OVER_PAID
+  }
+
+  return TaxStatusEnum.PARTIALLY_PAID
+}
+export const checkTaxDateInclusion = (
+  currentTime: Dayjs,
+  lookingForTaxDate: {
+    from: { month: number; day: number }
+    to: { month: number; day: number }
+  },
+) => {
+  const displayFrom = dayjs.tz(
+    `${currentTime.year()}-${lookingForTaxDate.from.month}-${lookingForTaxDate.from.day}`,
+    'Europe/Bratislava',
+  )
+  const displayTo = dayjs.tz(
+    `${currentTime.year()}-${lookingForTaxDate.to.month}-${lookingForTaxDate.to.day}`,
+    'Europe/Bratislava',
+  )
+  return currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
 }
 
 export const fixInstallmentTexts = (

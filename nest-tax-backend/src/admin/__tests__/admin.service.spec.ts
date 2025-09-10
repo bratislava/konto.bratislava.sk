@@ -1,6 +1,12 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, Prisma, Tax, TaxPayer } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  Prisma,
+  Tax,
+  TaxPayer,
+} from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -21,7 +27,7 @@ import * as taxDetailHelper from '../utils/tax-detail.helper'
 
 jest.mock('../utils/tax-detail.helper')
 
-describe('TasksService', () => {
+describe('AdminService', () => {
   let service: AdminService
 
   let prismaMock: PrismaService
@@ -354,12 +360,10 @@ describe('TasksService', () => {
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
-          delivery_method: DeliveryMethod.EDESK,
         },
         {
           ICO_RC: '123456/9999',
           dan_spolu: '1000',
-          delivery_method: DeliveryMethod.EDESK,
         },
       ] as NorisTaxPayersDto[]
 
@@ -399,12 +403,10 @@ describe('TasksService', () => {
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
-          delivery_method: DeliveryMethod.EDESK,
         },
         {
           ICO_RC: '123456/777',
           dan_spolu: '100',
-          delivery_method: DeliveryMethod.CITY_ACCOUNT,
         },
       ] as NorisTaxPayersDto[]
 
@@ -449,17 +451,14 @@ describe('TasksService', () => {
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
-          delivery_method: DeliveryMethod.EDESK,
         },
         {
           ICO_RC: '123456/777',
           dan_spolu: '100',
-          delivery_method: DeliveryMethod.CITY_ACCOUNT,
         },
         {
           ICO_RC: '123456/888',
           dan_spolu: '100',
-          delivery_method: DeliveryMethod.CITY_ACCOUNT,
         },
       ] as NorisTaxPayersDto[]
 
@@ -516,12 +515,10 @@ describe('TasksService', () => {
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
-          delivery_method: DeliveryMethod.EDESK,
         },
         {
           ICO_RC: '123456/777',
           dan_spolu: '100',
-          delivery_method: DeliveryMethod.CITY_ACCOUNT,
         },
       ] as NorisTaxPayersDto[]
 
@@ -566,7 +563,6 @@ describe('TasksService', () => {
       const mockData: NorisTaxPayersDto = {
         ICO_RC: '123456/789',
         dan_spolu: '1000',
-        delivery_method: DeliveryMethod.EDESK,
         cislo_poradace: '123456',
         variabilny_symbol: 'VS123',
         dan_pozemky: '200',
@@ -588,6 +584,9 @@ describe('TasksService', () => {
           mockData,
           2025,
           mockTransaction,
+          {
+            taxDeliveryMethodAtLockDate: DeliveryMethodNamed.EDESK,
+          } as ResponseUserByBirthNumberDto,
         ),
       ).rejects.toThrow(mockError)
     })
@@ -596,7 +595,6 @@ describe('TasksService', () => {
       const mockData: NorisTaxPayersDto = {
         ICO_RC: '123456/789',
         dan_spolu: '1000',
-        delivery_method: DeliveryMethod.EDESK,
         cislo_poradace: '123456',
         variabilny_symbol: 'VS123',
         dan_pozemky: '200',
@@ -652,6 +650,9 @@ describe('TasksService', () => {
         mockData,
         2025,
         mockTransaction,
+        {
+          taxDeliveryMethodAtLockDate: DeliveryMethodNamed.EDESK,
+        } as ResponseUserByBirthNumberDto,
       )
       expect(result).toEqual(mockTaxPayer)
 

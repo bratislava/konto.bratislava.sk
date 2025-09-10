@@ -651,51 +651,51 @@ export class AdminService {
 
   async getNewVerifiedUsersBirthNumbers(
     since: Date,
-    take: number
+    take?: number
   ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
     // Take one more, so that we can return nextSince for the next user
     // We can't do date+1, because two users can have the same timestamp
     // This should be sufficient, if we do not expect 100+ users with the same timestamp
-    const limitedTake = (take > USER_REQUEST_LIMIT ? USER_REQUEST_LIMIT : take) + 1
+    const takeDefined = take ? take : USER_REQUEST_LIMIT
+    const limitedTake = (takeDefined > USER_REQUEST_LIMIT ? USER_REQUEST_LIMIT : takeDefined) + 1
     const users = await this.prismaService.user.findMany({
       select: {
         birthNumber: true,
         lastVerificationIdentityCard: true,
       },
       where: {
-        lastVerificationIdentityCard: { gt: { date } },
+        lastVerificationIdentityCard: { gte: since },
         birthNumber: {
           not: null,
         },
         ...ACTIVE_USER_FILTER,
       },
       orderBy: {
-        lastTaxBackendUploadTry: {
-          lastVerificationIdentityCard: 'asc',
-        },
+        lastVerificationIdentityCard: 'asc',
       },
       take: limitedTake,
     })
 
     if (
-      (users.length() === limitedTake && limitedTake > 2 && users[0].createdAt) ===
-      users[users.length].createdAt
+      users.length === limitedTake &&
+      limitedTake > 2 &&
+      users[0].lastVerificationIdentityCard === users[users.length].lastVerificationIdentityCard
     ) {
       // If this happens because of manual edit in the database, please add random jitter to the dates
-      throw this.throwerErrorGuard(
+      throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorAdminTypesEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
         CustomErrorAdminTypesResponseEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP
       )
     }
 
-    const nextSince = users[users.length].lastVerificationIdentityCard
+    const nextSince = users[users.length].lastVerificationIdentityCard!
 
     if (users.length > 1) {
       users.pop()
     }
 
-    const birthNumbers: GetNewVerifiedUsersBirthNumbersResponseDto = users.map(
-      (user) => user.birthNumber
+    const birthNumbers = users.map(
+      (user) => user.birthNumber!
     )
 
     return { birthNumbers, nextSince }

@@ -8,7 +8,7 @@ export const mapDeliveryMethodToNoris = (
   const mapping: Record<DeliveryMethod, DeliveryMethodNoris> = {
     [DeliveryMethod.EDESK]: DeliveryMethodNoris.EDESK,
     [DeliveryMethod.CITY_ACCOUNT]: DeliveryMethodNoris.CITY_ACCOUNT,
-    [DeliveryMethod.POSTAL]: DeliveryMethodNoris.EDESK, // Postal maps to EDESK ('E')
+    [DeliveryMethod.POSTAL]: DeliveryMethodNoris.EDESK, // Postal is saved in Noris as EDESK ('E')
   }
 
   const norisMethod = mapping[deliveryMethod]

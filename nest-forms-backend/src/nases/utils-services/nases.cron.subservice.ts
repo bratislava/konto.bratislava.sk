@@ -2,26 +2,24 @@ import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { isAxiosError } from 'axios'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
-import {
-  FormDefinitionSlovenskoSk,
-  isSlovenskoSkFormDefinition,
-} from 'forms-shared/definitions/formDefinitionTypes'
+import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 
 import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
 import { ClusterEnv } from '../../config/environment-variables'
-import PrismaService from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
+import FormRegistrationStatusRepository from './form-registration-status.repository'
 import NasesUtilsService from './tokens.nases.service'
 
 type ValidateFormRegistrationsResult = Record<
   'not-found' | 'not-published' | 'error' | 'valid',
   {
+    slug: string
     pospID: string
     pospVersion: string
   }[]
@@ -40,33 +38,9 @@ export default class NasesCronSubservice {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly baConfigService: BaConfigService,
-    private readonly prismaService: PrismaService,
+    private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
   ) {
     this.logger = new LineLoggerSubservice('NasesCronSubservice')
-  }
-
-  private async saveRegistrationStateToDatabase(
-    formDefinition: FormDefinitionSlovenskoSk,
-    isRegistered: boolean,
-  ): Promise<void> {
-    await this.prismaService.formRegistrationStatus.upsert({
-      where: {
-        slug_pospId_pospVersion: {
-          slug: formDefinition.slug,
-          pospId: formDefinition.pospID,
-          pospVersion: formDefinition.pospVersion,
-        },
-      },
-      create: {
-        slug: formDefinition.slug,
-        pospId: formDefinition.pospID,
-        pospVersion: formDefinition.pospVersion,
-        isRegistered,
-      },
-      update: {
-        isRegistered,
-      },
-    })
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -113,30 +87,46 @@ export default class NasesCronSubservice {
           // eslint-disable-next-line unicorn/no-negated-condition
           if (validated.data.status !== FormRegistrationStatus.PUBLISHED) {
             result['not-published'].push({
+              slug: formDefinition.slug,
               pospID,
               pospVersion,
             })
-            await this.saveRegistrationStateToDatabase(formDefinition, false)
+            await this.formRegistrationStatusRepository.setStatus(
+              formDefinition,
+              false,
+            )
           } else {
             result.valid.push({
+              slug: formDefinition.slug,
               pospID,
               pospVersion,
             })
-            await this.saveRegistrationStateToDatabase(formDefinition, true)
+            await this.formRegistrationStatusRepository.setStatus(
+              formDefinition,
+              true,
+            )
           }
         } catch (error) {
           if (isAxiosError(error) && error.response?.status === 404) {
             result['not-found'].push({
+              slug: formDefinition.slug,
               pospID,
               pospVersion,
             })
-            await this.saveRegistrationStateToDatabase(formDefinition, false)
+            await this.formRegistrationStatusRepository.setStatus(
+              formDefinition,
+              false,
+            )
           } else {
             result.error.push({
+              slug: formDefinition.slug,
               pospID,
               pospVersion,
             })
-            await this.saveRegistrationStateToDatabase(formDefinition, false)
+            await this.formRegistrationStatusRepository.setStatus(
+              formDefinition,
+              false,
+            )
             this.logger.error(
               this.throwerErrorGuard.InternalServerErrorException(
                 NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,

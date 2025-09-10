@@ -1,19 +1,20 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
+import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import FormRegistrationStatusRepository from '../../nases/utils-services/form-registration-status.repository'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { FormSendService } from '../services/form-send.service'
 
 @Injectable()
 export class FormSendOnlyRegisteredGuard implements CanActivate {
   constructor(
-    private readonly formSendService: FormSendService,
+    private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
@@ -37,17 +38,23 @@ export class FormSendOnlyRegisteredGuard implements CanActivate {
       return false
     }
 
-    const result =
-      await this.formSendService.isFormRegisteredInSlovenskoSk(formDefinition)
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      return true
+    }
 
-    if (!result) {
+    const isRegistered =
+      await this.formRegistrationStatusRepository.isFormRegisteredInSlovenskoSk(
+        formDefinition,
+      )
+
+    if (!isRegistered) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
         FormsErrorsResponseEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
-        `Form definition with slug ${form.formDefinitionSlug} is not registered in slovensko.sk.`,
+        `Form definition with slug ${form.formDefinitionSlug}, pospId ${formDefinition.pospID}, pospVersion ${formDefinition.pospVersion} is not registered in slovensko.sk.`,
       )
     }
 
-    return result
+    return true
   }
 }

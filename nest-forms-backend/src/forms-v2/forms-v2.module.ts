@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
+import FormRegistrationStatusRepository from '../nases/utils-services/form-registration-status.repository'
 import PrismaModule from '../prisma/prisma.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormMigrationsController } from './controllers/form-migrations.controller'
@@ -10,7 +11,6 @@ import { FormSendOnlyRegisteredGuard } from './guards/form-send-only-registered.
 import { CreateFormService } from './services/create-form.service'
 import { FormAccessService } from './services/form-access.service'
 import { FormMigrationsService } from './services/form-migrations.service'
-import { FormSendService } from './services/form-send.service'
 
 @Module({
   imports: [PrismaModule, AuthV2Module],
@@ -22,7 +22,7 @@ import { FormSendService } from './services/form-send.service'
     CreateFormService,
     ThrowerErrorGuard,
     FormSendOnlyRegisteredGuard,
-    FormSendService,
+    FormRegistrationStatusRepository,
   ],
   exports: [FormAccessService, FormAccessGuard, FormSendOnlyRegisteredGuard],
 })

@@ -6,16 +6,15 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 
-import prismaMock from '../../../../test/singleton'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
-import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../../nases.errors.enum'
+import FormRegistrationStatusRepository from '../form-registration-status.repository'
 import NasesCronSubservice from '../nases.cron.subservice'
 import NasesUtilsService from '../tokens.nases.service'
 
@@ -90,7 +89,10 @@ describe('NasesCronSubservice', () => {
             },
           },
         },
-        { provide: PrismaService, useValue: prismaMock },
+        {
+          provide: FormRegistrationStatusRepository,
+          useValue: createMock<FormRegistrationStatusRepository>(),
+        },
       ],
     }).compile()
 
@@ -136,9 +138,9 @@ describe('NasesCronSubservice', () => {
       mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
         data: { status: 'Publikovaný' },
       })
-      const saveRegistrationStateToDatabaseSpy = jest.spyOn(
-        service,
-        'saveRegistrationStateToDatabase' as keyof NasesCronSubservice,
+      const setStatusSpy = jest.spyOn(
+        service['formRegistrationStatusRepository'],
+        'setStatus',
       )
 
       await service.validateFormRegistrations()
@@ -163,15 +165,9 @@ describe('NasesCronSubservice', () => {
         },
       )
 
-      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledTimes(2)
-      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledWith(
-        expect.any(Object),
-        true,
-      )
-      expect(saveRegistrationStateToDatabaseSpy).not.toHaveBeenCalledWith(
-        expect.any(Object),
-        false,
-      )
+      expect(setStatusSpy).toHaveBeenCalledTimes(2)
+      expect(setStatusSpy).toHaveBeenCalledWith(expect.any(Object), true)
+      expect(setStatusSpy).not.toHaveBeenCalledWith(expect.any(Object), false)
     })
 
     it('should handle not published forms', async () => {
@@ -182,9 +178,9 @@ describe('NasesCronSubservice', () => {
         .mockResolvedValueOnce({
           data: { status: 'Nepublikovaný' },
         })
-      const saveRegistrationStateToDatabaseSpy = jest.spyOn(
-        service,
-        'saveRegistrationStateToDatabase' as keyof NasesCronSubservice,
+      const setStatusSpy = jest.spyOn(
+        service['formRegistrationStatusRepository'],
+        'setStatus',
       )
 
       const alertErrorSpy = jest.fn()
@@ -198,15 +194,9 @@ describe('NasesCronSubservice', () => {
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
 
       // Both types of calls should be made
-      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledTimes(2)
-      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledWith(
-        expect.any(Object),
-        true,
-      )
-      expect(saveRegistrationStateToDatabaseSpy).toHaveBeenCalledWith(
-        expect.any(Object),
-        false,
-      )
+      expect(setStatusSpy).toHaveBeenCalledTimes(2)
+      expect(setStatusSpy).toHaveBeenCalledWith(expect.any(Object), true)
+      expect(setStatusSpy).toHaveBeenCalledWith(expect.any(Object), false)
     })
 
     it('should handle 404 errors (form not found)', async () => {

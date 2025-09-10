@@ -28,6 +28,7 @@ import { AdminErrorsEnum, AdminErrorsResponseEnum } from './admin.errors.enum'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
+  GetNewVerifiedUsersBirthNumbersResponseDto,
   MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
@@ -44,6 +45,8 @@ import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+
+const USER_REQUEST_LIMIT = 100
 
 @Injectable()
 export class AdminService {
@@ -643,5 +646,46 @@ export class AdminService {
     })
     await this.taxSubservice.deleteTax(data)
     return { success: true }
+  }
+
+  async getNewVerifiedUsersBirthNumbers(
+    since: Date,
+    take: number
+  ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+    // Take one more, so that we can return nextSince for the next user
+    // We can't do date+1, because two users can have the same timestamp
+    // This should be sufficient, if we do not expect 100+ users with the same timestamp
+    const limitedTake = (take > USER_REQUEST_LIMIT ? USER_REQUEST_LIMIT : take) + 1
+    const users = await this.prismaService.user.findMany({
+      select: {
+        birthNumber: true,
+        lastVerificationIdentityCard: true,
+      },
+      where: {
+        lastVerificationIdentityCard: { gt: { date } },
+        birthNumber: {
+          not: null,
+        },
+        ...ACTIVE_USER_FILTER,
+      },
+      orderBy: {
+        lastTaxBackendUploadTry: {
+          lastVerificationIdentityCard: 'asc',
+        },
+      },
+      take: limitedTake,
+    })
+
+    const nextSince = users[users.length].lastVerificationIdentityCard
+
+    if (users.length > 1) {
+      users.pop()
+    }
+
+    const birthNumbers: GetNewVerifiedUsersBirthNumbersResponseDto = users.map(
+      (user) => user.birthNumber
+    )
+
+    return { birthNumbers, nextSince }
   }
 }

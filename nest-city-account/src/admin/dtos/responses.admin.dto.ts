@@ -3,6 +3,7 @@ import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import {
   IsArray,
   IsBoolean,
+  IsDate,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -11,6 +12,9 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator'
+import {
+  Type
+} from 'class-transformer'
 import { AnonymizeResponse } from '../../bloomreach/bloomreach.dto'
 import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
 import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
@@ -325,7 +329,6 @@ export class GetNewVerifiedUsersBirthNumbersResponseDto {
   @IsString({each: true})
   @IsBirthNumber({each: true})
   birthNumbers: string[]
-
 
   @ApiProperty({
     description: 'Next date to query.',

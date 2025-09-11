@@ -97,7 +97,10 @@ export class CityAccountSubservice {
             },
           },
         )
-      return {birthNumbers: requestResult.data.birthNumbers, nextSince: new Date(requestResult.data.nextSince)}
+      const birthNumbers = requestResult.data.birthNumbers.map((bn) =>
+        addSlashToBirthNumber(bn),
+      )
+      return { birthNumbers, nextSince: new Date(requestResult.data.nextSince) }
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

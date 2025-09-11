@@ -49,16 +49,6 @@ export class TaxSubservice {
     }
   }
 
-  async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto
-  ): AxiosPromise<CreateBirthNumbersResponseDto> {
-    return this.clientsService.taxBackendApi.adminControllerLoadDataFromNorris(data, {
-      headers: {
-        apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),
-      },
-    })
-  }
-
   async updateDeliveryMethodsInNoris(
     data: RequestUpdateNorisDeliveryMethodsDto
   ): AxiosPromise<void> {

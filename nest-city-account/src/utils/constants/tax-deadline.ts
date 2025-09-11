@@ -1,10 +1,10 @@
 import { DateTime } from 'luxon'
-import { ConfigService } from "@nestjs/config";
+import { ConfigService } from '@nestjs/config'
 
 export function getTaxDeadlineDate(): Date {
   const config = new ConfigService()
   const MUNICIPAL_TAX_LOCK_MONTH = Number(config.getOrThrow('MUNICIPAL_TAX_LOCK_MONTH'))
-  const MUNICIPAL_TAX_LOCK_DAY = Number(config.getOrThrow('MUNICIPAL_TAX_LOCK_DAY') )
+  const MUNICIPAL_TAX_LOCK_DAY = Number(config.getOrThrow('MUNICIPAL_TAX_LOCK_DAY'))
 
   return DateTime.now()
     .setZone('Europe/Bratislava')

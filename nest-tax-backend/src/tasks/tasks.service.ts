@@ -307,4 +307,75 @@ export class TasksService {
       )
     }
   }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  @HandleErrors('Cron Error')
+  async loadNewUsersFromCityAccount() {
+    // Get latest date from config
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+    ])
+
+    const since = new Date(config.LOADING_NEW_USERS_FROM_CITY_ACCOUNT)
+    // Get birth numbers from nest-city account
+
+    const data =
+      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, 3)
+
+    // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
+
+    await this.prismaService.taxPayer.createMany({
+      data: data.birthNumbers.map((bn) => {
+        return { birthNumber: bn }
+      }),
+      skipDuplicates: true,
+    })
+
+    await this.prismaService.config.updateMany({
+      where: {
+        key: 'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+      },
+      data: {
+        value: data.nextSince.toISOString(),
+      },
+    })
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
+  async loadTaxesForUsers() {
+    this.logger.log('Starting loadTaxesForUsers task')
+
+    // Find users without tax this year
+    const year = new Date().getFullYear()
+    const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
+      select: { birthNumber: true },
+      where: { tax: { none: { year: year } } },
+      orderBy: { updatedAt: 'asc' },
+      take: UPLOAD_BIRTHNUMBERS_BATCH,
+    })
+
+    const birthNumbers = taxPayersFromDb.map((p) => p.birthNumber)
+
+    if (birthNumbers.length === 0) {
+      return
+    }
+
+    // Move all requested TaxPayers to the end of the queue
+    await this.prismaService.taxPayer.updateMany({
+      where: {
+        birthNumber: { in: birthNumbers },
+      },
+      data: {
+        updatedAt: new Date(),
+      },
+    })
+
+    // Load data from Noris
+    const result = await this.adminService.loadDataFromNoris(year, birthNumbers)
+
+    this.logger.log(
+      `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
+    )
+  }
 }

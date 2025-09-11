@@ -12,9 +12,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator'
-import {
-  Type
-} from 'class-transformer'
+import { Type } from 'class-transformer'
 import { AnonymizeResponse } from '../../bloomreach/bloomreach.dto'
 import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
 import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
@@ -323,16 +321,18 @@ export class GetNewVerifiedUsersBirthNumbersResponseDto {
     description: 'List of birth numbers',
     type: String,
     isArray: true,
-    example: ['0123456789','1234567890','234567890']
+    example: ['0123456789', '1234567890', '234567890'],
   })
   @IsArray()
-  @IsString({each: true})
-  @IsBirthNumber({each: true})
+  @IsString({ each: true })
+  @IsBirthNumber({ each: true })
   birthNumbers: string[]
 
   @ApiProperty({
     description: 'Next date to query.',
     example: '2023-04-13T14:39:49.004Z',
+    format: 'date-time',
+    type: 'string',
   })
   @IsDate()
   @Type(() => Date)

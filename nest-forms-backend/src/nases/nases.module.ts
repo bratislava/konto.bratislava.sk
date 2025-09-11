@@ -49,7 +49,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     NasesCronSubservice,
     FormRegistrationStatusRepository,
   ],
-  exports: [NasesService, NasesUtilsService],
+  exports: [NasesService, NasesUtilsService, NasesCronSubservice],
   controllers: [NasesController],
 })
 export default class NasesModule {}

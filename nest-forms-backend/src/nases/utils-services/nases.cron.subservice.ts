@@ -12,18 +12,10 @@ import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
+import { ValidateFormRegistrationsResultDto } from '../dtos/responses.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
 import FormRegistrationStatusRepository from './form-registration-status.repository'
 import NasesUtilsService from './tokens.nases.service'
-
-type ValidateFormRegistrationsResult = Record<
-  'not-found' | 'not-published' | 'error' | 'valid',
-  {
-    slug: string
-    pospID: string
-    pospVersion: string
-  }[]
->
 
 enum FormRegistrationStatus {
   PUBLISHED = 'Publikovaný',
@@ -46,8 +38,8 @@ export default class NasesCronSubservice {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @HandleErrors('CronError')
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  async validateFormRegistrations(): Promise<void> {
-    const result: ValidateFormRegistrationsResult = {
+  async validateFormRegistrations(): Promise<ValidateFormRegistrationsResultDto> {
+    const result: ValidateFormRegistrationsResultDto = {
       'not-found': [],
       'not-published': [],
       error: [],
@@ -154,5 +146,7 @@ export default class NasesCronSubservice {
         `All ${result.valid.length} Slovensko.sk form registrations are valid. Valid forms: ${JSON.stringify(result.valid)}`,
       )
     }
+
+    return result
   }
 }

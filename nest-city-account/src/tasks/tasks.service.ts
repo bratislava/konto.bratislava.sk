@@ -214,7 +214,6 @@ export class TasksService {
       {}
     )
 
-    await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
     const updateResponse = await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
     const updatedBirthNumbers = updateResponse.data.birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', '')

@@ -99,6 +99,10 @@ describe('NorisService', () => {
       const closeSpy = jest.spyOn(mockConnection, 'close')
       const inputQuerySpy = jest.spyOn(mockRequest, 'input')
 
+      jest
+        .spyOn(service as any, 'getBirthNumbersWithUpdatedDeliveryMethods')
+        .mockResolvedValue(['003322/4455', '003322/4456'])
+
       await service.updateDeliveryMethods([
         {
           birthNumbers: ['003322/4455', '003322/4456'],

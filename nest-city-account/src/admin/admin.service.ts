@@ -687,17 +687,17 @@ export class AdminService {
       )
     }
 
-    const lastVerify = users.at(-1)?.lastVerificationIdentityCard!
+    const lastVerify = users.at(-1)?.lastVerificationIdentityCard
     // Default: no users -> return request timestamp
     let nextSince: Date = since
     if (users.length > 0) {
       if (users.length < limitedTake) {
         // End of list for now, advance timestamp one millisecond
-        nextSince = new Date(lastVerify.getTime() + 1)
+        nextSince = new Date(lastVerify!.getTime() + 1)
       } else {
         // Last entry is one over take. We want to return the timestamp of this
         // entry for the next call, but not the entry itself
-        nextSince = lastVerify
+        nextSince = lastVerify!
         users.pop()
       }
     }

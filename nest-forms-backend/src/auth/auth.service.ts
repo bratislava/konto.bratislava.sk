@@ -1,5 +1,9 @@
+import {
+  AdminGetUserCommand,
+  AdminGetUserCommandOutput,
+  CognitoIdentityProviderClient,
+} from '@aws-sdk/client-cognito-identity-provider'
 import { HttpException, Injectable } from '@nestjs/common'
-import * as AWS from 'aws-sdk'
 
 import {
   CognitoGetUserAttributesData,
@@ -23,43 +27,46 @@ export default class AuthService {
     return result
   }
 
-  async getDataFromCognito(userId: string): Promise<CognitoGetUserData> {
-    const cognito = new AWS.CognitoIdentityServiceProvider({
-      accessKeyId: process.env.AWS_COGNITO_ACCESS,
-      secretAccessKey: process.env.AWS_COGNITO_SECRET,
-      region: process.env.AWS_COGNITO_REGION,
+  private async getUser(userId: string): Promise<AdminGetUserCommandOutput> {
+    const cognitoClient = new CognitoIdentityProviderClient({
+      region: process.env.AWS_COGNITO_REGION ?? '',
+      credentials: {
+        accessKeyId: process.env.AWS_COGNITO_ACCESS ?? '',
+        secretAccessKey: process.env.AWS_COGNITO_SECRET ?? '',
+      },
     })
-    const result = await cognito
-      .adminGetUser(
-        {
-          UserPoolId: process.env.AWS_COGNITO_USERPOOL_ID ?? '',
-          Username: userId,
-        },
-        (err, data) => {
-          if (err === null) {
-            return data
-          }
-          return err
-        },
+
+    const inputParams = {
+      UserPoolId: process.env.AWS_COGNITO_USERPOOL_ID ?? '',
+      Username: userId,
+    }
+
+    try {
+      const cognitoData = await cognitoClient.send(
+        new AdminGetUserCommand(inputParams),
       )
-      .promise()
-    if (result.$response.error) {
+      return cognitoData
+    } catch (error) {
       throw new HttpException(
         {
-          status: result.$response.error.statusCode,
-          message: result.$response.error.code,
+          // aws-sdk v3 TODO extract the error details
+          status: error.statusCode,
+          message: error.code,
         },
         400,
       )
-    } else {
-      return {
-        idUser: result.Username,
-        ...this.attributesToObject(result.UserAttributes ?? []),
-        UserCreateDate: result.UserCreateDate,
-        UserLastModifiedDate: result.UserLastModifiedDate,
-        Enabled: result.Enabled,
-        UserStatus: result.UserStatus,
-      }
+    }
+  }
+
+  async getDataFromCognito(userId: string): Promise<CognitoGetUserData> {
+    const result = await this.getUser(userId)
+    return {
+      idUser: result.Username,
+      ...this.attributesToObject(result.UserAttributes ?? []),
+      UserCreateDate: result.UserCreateDate,
+      UserLastModifiedDate: result.UserLastModifiedDate,
+      Enabled: result.Enabled,
+      UserStatus: result.UserStatus,
     }
   }
 }

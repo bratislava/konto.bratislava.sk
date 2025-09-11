@@ -1,9 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import AWS from 'aws-sdk'
+import { Injectable } from '@nestjs/common'
+import {
+  AdminDisableUserCommand,
+  AdminGetUserCommand,
+  AdminGetUserCommandOutput,
+  AdminUpdateUserAttributesCommand,
+  CognitoIdentityProviderClient,
+  ListUsersCommand,
+  ListUsersCommandInput,
+  UserType,
+} from '@aws-sdk/client-cognito-identity-provider'
+
+import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { fromPairs } from 'lodash'
-import { ListUsersRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import {
   CognitoGetUserAttributesData,
@@ -22,7 +32,7 @@ import {
 
 @Injectable()
 export class CognitoSubservice {
-  private readonly cognitoIdentity: AWS.CognitoIdentityServiceProvider
+  private readonly cognitoClient: CognitoIdentityProviderClient
 
   private readonly config
 
@@ -38,10 +48,12 @@ export class CognitoSubservice {
     ) {
       throw new Error('CognitoSubservice ENV vars are not set ')
     }
-    this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider({
-      accessKeyId: process.env.AWS_COGNITO_ACCESS,
-      secretAccessKey: process.env.AWS_COGNITO_SECRET,
+    this.cognitoClient = new CognitoIdentityProviderClient({
       region: process.env.AWS_COGNITO_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_COGNITO_ACCESS,
+        secretAccessKey: process.env.AWS_COGNITO_SECRET,
+      },
     })
 
     this.config = {
@@ -54,68 +66,58 @@ export class CognitoSubservice {
     return result as unknown as CognitoGetUserAttributesData
   }
 
+  private async getUser(userId: string): Promise<AdminGetUserCommandOutput> {
+    const inputParams = {
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: userId,
+    }
+
+    try {
+      const cognitoData = await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
+      return cognitoData
+    } catch (error) {
+      // TODO aws-sdk v3 extract the error details
+      // TODO aws-sdk v3 verify usage of throwerErrorGuard here
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        error.name,
+        error.statusCode?.toString(),
+        undefined,
+        error
+      )
+    }
+  }
+
   async getDataFromCognito(userId: string): Promise<CognitoGetUserData> {
-    const result = await this.cognitoIdentity
-      .adminGetUser(
-        {
-          UserPoolId: this.config.cognitoUserPoolId,
-          Username: userId,
-        },
-        (err, data) => {
-          if (err === null) {
-            return data
-          } else {
-            return err
-          }
-        }
-      )
-      .promise()
-    if (result.$response.error) {
-      // TODO: Use throwerErrorGuard
-      throw new HttpException(
-        {
-          status: result.$response.error.statusCode,
-          message: result.$response.error.code,
-        },
-        HttpStatus.BAD_REQUEST
-      )
-    } else {
-      return {
-        idUser: result.Username,
-        ...this.attributesToObject(result.UserAttributes ?? []),
-        UserCreateDate: result.UserCreateDate,
-        UserLastModifiedDate: result.UserLastModifiedDate,
-        Enabled: result.Enabled ?? false,
-        UserStatus: result.UserStatus as CognitoUserStatusEnum,
-      }
+    const result = await this.getUser(userId)
+
+    return {
+      idUser: result.Username,
+      ...this.attributesToObject(result.UserAttributes ?? []),
+      UserCreateDate: result.UserCreateDate,
+      UserLastModifiedDate: result.UserLastModifiedDate,
+      Enabled: result.Enabled ?? false,
+      UserStatus: result.UserStatus as CognitoUserStatusEnum,
     }
   }
 
   async cognitoDeactivateUser(userId: string): Promise<void> {
-    const result = await this.cognitoIdentity
-      .adminDisableUser(
-        {
-          UserPoolId: this.config.cognitoUserPoolId,
-          Username: userId,
-        },
-        (err, data) => {
-          if (err === null) {
-            return data
-          } else {
-            return err
-          }
-        }
-      )
-      .promise()
+    const inputParams = {
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: userId,
+    }
 
-    if (result.$response.error) {
-      // TODO: Use throwerErrorGuard
-      throw new HttpException(
-        {
-          status: result.$response.error.statusCode,
-          message: result.$response.error.code,
-        },
-        HttpStatus.BAD_REQUEST
+    try {
+      await this.cognitoClient.send(new AdminDisableUserCommand(inputParams))
+    } catch (error) {
+      // TODO aws-sdk v3 extract the error details
+      // TODO aws-sdk v3 verify usage of throwerErrorGuard here
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        error.name,
+        error.statusCode?.toString(),
+        undefined,
+        error
       )
     }
   }
@@ -177,23 +179,23 @@ export class CognitoSubservice {
 
   private async changeCognitoTier(
     userId: string,
-    userAttributes: CognitoUserAttributesValuesDateDto[]
+    userAttributes: CognitoUserAttributesValuesDateDto[] // TODO aws-sdk v3 check type of this with
   ) {
-    await this.cognitoIdentity
-      .adminUpdateUserAttributes({
-        UserAttributes: userAttributes,
-        UserPoolId: this.config.cognitoUserPoolId,
-        Username: userId,
-      })
-      .promise()
-      .catch((error) => {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-          undefined,
-          error
-        )
-      })
+    const inputParams = {
+      UserAttributes: userAttributes,
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: userId,
+    }
+    try {
+      await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+        SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        undefined,
+        error
+      )
+    }
   }
 
   /**
@@ -203,32 +205,32 @@ export class CognitoSubservice {
    * @returns void
    */
   async deactivateCognitoMail(userId: string, oldMail: string) {
-    const result = await this.cognitoIdentity
-      .adminUpdateUserAttributes({
-        UserAttributes: [
-          {
-            Name: 'email',
-            Value: `${userId}-${oldMail}.disabled.bratislava.sk`,
-          },
-          {
-            Name: 'email_verified',
-            Value: 'true',
-          },
-        ],
-        UserPoolId: this.config.cognitoUserPoolId,
-        Username: userId,
-      })
-      .promise()
-
-    if (result.$response.error) {
-      // TODO This error is a bit of a problem for me, as I don't want to break anything.
-      // TODO status in exception and in response may not match and we can't do that with throwerErrorGuard as of right now
-      throw new HttpException(
+    const inputParams = {
+      UserAttributes: [
         {
-          status: result.$response.error.statusCode,
-          message: result.$response.error.code,
+          Name: 'email',
+          Value: `${userId}-${oldMail}.disabled.bratislava.sk`,
         },
-        HttpStatus.BAD_REQUEST
+        {
+          Name: 'email_verified',
+          Value: 'true',
+        },
+      ],
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: userId,
+    }
+
+    try {
+      await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
+    } catch (error) {
+      // TODO aws-sdk v3 extract the error details
+      // TODO aws-sdk v3 verify usage of throwerErrorGuard here
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        error.name,
+        error.statusCode?.toString(),
+        undefined,
+        error
       )
     }
   }
@@ -238,13 +240,13 @@ export class CognitoSubservice {
    * @returns CognitoGetUserAttributesData[]
    */
   async getAllCognitoUsers(): Promise<CognitoGetUserAttributesData[]> {
-    const result: AWS.CognitoIdentityServiceProvider.UsersListType = []
-    const params: ListUsersRequest = {
+    const result: Array<UserType> = []
+    const params: ListUsersCommandInput = {
       UserPoolId: this.config.cognitoUserPoolId,
     }
     do {
       // TODO: add proper error handling
-      const cognitoData = await this.cognitoIdentity.listUsers(params).promise()
+      const cognitoData = await this.cognitoClient.send(new ListUsersCommand(params))
       result.push(...(cognitoData.Users ?? []))
       params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)

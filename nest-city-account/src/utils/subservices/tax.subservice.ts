@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import {
-  CreateBirthNumbersResponseDto,
   RequestAdminDeleteTaxDto,
-  RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from 'openapi-clients/tax'
 

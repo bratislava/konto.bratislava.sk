@@ -26,16 +26,6 @@ export class RequestPostNorisLoadDataDto {
   birthNumbers: string[] | 'All'
 }
 
-export class CreateBirthNumbersRequestDto {
-  @ApiProperty({
-    description:
-      'Birth numbers which should be added to tax payers in database. They must be in format with slash.',
-    default: ['000000/0000'],
-    type: [String],
-  })
-  birthNumbers: string[]
-}
-
 export class RequestPostNorisPaymentDataLoadDto {
   @ApiProperty({
     description: 'Year of tax',

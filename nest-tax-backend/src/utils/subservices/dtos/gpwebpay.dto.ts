@@ -1,14 +1,5 @@
 import { IsNotEmpty } from 'class-validator'
 
-export interface PaymentConfig {
-  url: string
-  merchantNumber: string
-  currency: string
-  publicKeyPath: string
-  privateKeyPath: string
-  privateKeyPassword: string
-}
-
 export interface CreateOrderData {
   MERCHANTNUMBER: string
   OPERATION: string

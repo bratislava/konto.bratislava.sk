@@ -22,6 +22,7 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import {NorisService} from "../noris/noris.service";
 
 @Injectable()
 export class TasksService {
@@ -35,6 +36,7 @@ export class TasksService {
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
+    private readonly norisService: NorisService,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -330,6 +332,7 @@ export class TasksService {
       }),
       skipDuplicates: true,
     })
+    // TODO test if it skips already created users.
 
     await this.prismaService.config.updateMany({
       where: {
@@ -372,7 +375,7 @@ export class TasksService {
     })
 
     // Load data from Noris
-    const result = await this.adminService.loadDataFromNoris(year, birthNumbers)
+    const result = await this.norisService.loadDataFromNoris(year, birthNumbers)
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,

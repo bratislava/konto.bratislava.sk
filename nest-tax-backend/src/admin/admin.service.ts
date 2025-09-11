@@ -30,7 +30,10 @@ import {
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
+import {
+  CreateBirthNumbersResponseDto,
+  UpdateDeliveryMethodsInNorisResponseDto,
+} from './dtos/responses.dto'
 import {
   convertCurrencyToInt,
   mapNorisToTaxAdministratorData,
@@ -600,7 +603,7 @@ export class AdminService {
 
   async updateDeliveryMethodsInNoris({
     data,
-  }: RequestUpdateNorisDeliveryMethodsDto) {
+  }: RequestUpdateNorisDeliveryMethodsDto): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
     /**
      * TODO - concurrency (if someone somehow changes his delivery method during its updating in Noris)
      */
@@ -662,9 +665,13 @@ export class AdminService {
       })
     })
 
-    if (updates.length > 0) {
-      await this.norisService.updateDeliveryMethods(updates)
+    if (updates.length === 0) {
+      return { birthNumbers: [] }
     }
+
+    const updatedBirthNumbers =
+      await this.norisService.updateDeliveryMethods(updates)
+    return { birthNumbers: updatedBirthNumbers }
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

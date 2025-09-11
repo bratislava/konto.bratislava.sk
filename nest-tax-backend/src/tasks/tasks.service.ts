@@ -307,4 +307,35 @@ export class TasksService {
       )
     }
   }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  @HandleErrors('Cron Error')
+  async loadNewUsersFromCityAccount() {
+    // Get latest date from config
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+    ])
+
+    const since = new Date(config.LOADING_NEW_USERS_FROM_CITY_ACCOUNT)
+    // Get birth numbers from nest-city account
+
+    const data =
+      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, 3)
+
+    // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
+
+    await this.prismaService.taxPayer.createMany({
+      data: data.birthNumbers.map(bn => {return {birthNumber:bn}}),
+      skipDuplicates: true,
+    })
+
+    await this.prismaService.config.updateMany({
+      where: {
+        key: 'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+      },
+      data: {
+        value: data.nextSince.toISOString(),
+      },
+    })
+  }
 }

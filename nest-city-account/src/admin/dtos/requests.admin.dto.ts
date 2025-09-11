@@ -8,9 +8,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator'
-import {
-  Type
-} from 'class-transformer'
+import { Type } from 'class-transformer'
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
 
 export enum ResponseVerificationIdentityCardMessageEnum {
@@ -147,16 +145,17 @@ export class RequestBatchNewUserBirthNumbers {
   @ApiProperty({
     description: 'Date to query.',
     example: '2023-04-13T14:39:49.004Z',
-    type: Date
+    type: Date,
   })
   @IsDate()
   @Type(() => Date)
   since: Date
 
   @ApiProperty({
-    description: 'Optionally specify maximum number to return. Will not return more than internal limit (100).',
+    description:
+      'Optionally specify maximum number to return. Will not return more than internal limit (100).',
     example: 20,
-    type: Number
+    type: Number,
   })
   @IsNumber()
   @IsOptional()

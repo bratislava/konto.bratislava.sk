@@ -325,7 +325,9 @@ export class TasksService {
     // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
 
     await this.prismaService.taxPayer.createMany({
-      data: data.birthNumbers.map(bn => {return {birthNumber:bn}}),
+      data: data.birthNumbers.map((bn) => {
+        return { birthNumber: bn }
+      }),
       skipDuplicates: true,
     })
 

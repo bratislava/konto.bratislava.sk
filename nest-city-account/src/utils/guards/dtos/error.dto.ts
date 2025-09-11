@@ -8,7 +8,7 @@ import {
 import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { DeliveryMethodErrorsEnum } from './delivery-method.error'
-import {CustomErrorAdminTypesEnum} from "../../../admin/dtos/error.dto";
+import { CustomErrorAdminTypesEnum } from '../../../admin/dtos/error.dto'
 
 // copied over from nest-forms-backend
 export enum ErrorsEnum {

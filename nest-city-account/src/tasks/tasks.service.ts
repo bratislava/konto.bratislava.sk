@@ -69,7 +69,6 @@ export class TasksService {
     })
   }
 
-
   @Cron(`*/5 * 2-30 ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`) // Every 5 minutes in April, starting from 2nd.
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {

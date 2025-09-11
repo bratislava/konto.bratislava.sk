@@ -9,6 +9,8 @@ import {
   Post,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common'
 import {
   ApiNotFoundResponse,
@@ -354,7 +356,9 @@ export class AdminController {
   @UseGuards(AdminGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('get-verified-user-birth-numbers-batch')
-  async getNewVerifiedUsersBirthNumbers(@Body() data: RequestBatchNewUserBirthNumbers): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+  async getNewVerifiedUsersBirthNumbers(
+    @Body() data: RequestBatchNewUserBirthNumbers
+  ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
     return await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
   }
 }

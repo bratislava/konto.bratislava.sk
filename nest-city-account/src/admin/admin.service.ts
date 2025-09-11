@@ -656,8 +656,7 @@ export class AdminService {
     // Take one more, so that we can return nextSince for the next user
     // We can't do date+1, because two users can have the same timestamp
     // This should be sufficient, if we do not expect 100+ users with the same timestamp
-    const takeDefined = take ? take : USER_REQUEST_LIMIT
-    const limitedTake = (takeDefined > USER_REQUEST_LIMIT ? USER_REQUEST_LIMIT : takeDefined) + 1
+    const limitedTake = Math.min(take ?? USER_REQUEST_LIMIT, USER_REQUEST_LIMIT) + 1
     const users = await this.prismaService.user.findMany({
       select: {
         birthNumber: true,
@@ -679,7 +678,7 @@ export class AdminService {
     if (
       users.length === limitedTake &&
       limitedTake > 2 &&
-      users[0].lastVerificationIdentityCard === users[users.length].lastVerificationIdentityCard
+      users[0].lastVerificationIdentityCard === users[users.length - 1].lastVerificationIdentityCard
     ) {
       // If this happens because of manual edit in the database, please add random jitter to the dates
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -688,15 +687,22 @@ export class AdminService {
       )
     }
 
-    const nextSince = users[users.length].lastVerificationIdentityCard!
-
-    if (users.length > 1) {
-      users.pop()
+    const lastVerify = users.at(-1)?.lastVerificationIdentityCard!
+    // Default: no users -> return request timestamp
+    let nextSince: Date = since
+    if (users.length > 0) {
+      if (users.length < limitedTake) {
+        // End of list for now, advance timestamp one millisecond
+        nextSince = new Date(lastVerify.getTime() + 1)
+      } else {
+        // Last entry is one over take. We want to return the timestamp of this
+        // entry for the next call, but not the entry itself
+        nextSince = lastVerify
+        users.pop()
+      }
     }
 
-    const birthNumbers = users.map(
-      (user) => user.birthNumber!
-    )
+    const birthNumbers = users.map((user) => user.birthNumber!)
 
     return { birthNumbers, nextSince }
   }

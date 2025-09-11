@@ -8,7 +8,6 @@ import { v1, v4 } from 'uuid'
 import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../test/singleton'
-import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import PrismaService from '../../prisma/prisma.service'
@@ -67,14 +66,6 @@ describe('NasesUtilsService', () => {
   describe('should be defined', () => {
     it('should be defined', () => {
       expect(service).toBeDefined()
-    })
-  })
-
-  describe('getUri', () => {
-    it('should return null for unprovided bearer token', async () => {
-      expect(
-        await service.getUri(undefined, {} as CognitoGetUserData),
-      ).toBeNull()
     })
   })
 

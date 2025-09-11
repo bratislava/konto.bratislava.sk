@@ -347,11 +347,13 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get birthnumbers for [take] new users since requested date',
+    summary: 'Get birth numbers for [take] new users since requested date',
     description: 'Delete tax for user, for example when the tax is cancelled in Noris.',
   })
-  @ApiOkResponse({
-    description: 'Success if all was updated accordingly.',
+  @ApiResponse({
+    status: 200,
+    description: 'Returns list of birt numbers for new verified users.',
+    type: GetNewVerifiedUsersBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
   @UsePipes(new ValidationPipe({ transform: true }))

@@ -191,6 +191,16 @@ export interface GdprDataDto {
   category: GDPRCategoryEnum
 }
 
+export interface GetNewVerifiedUsersBirthNumbersResponseDto {
+  /**
+   * List of birth numbers
+   */
+  birthNumbers: Array<string>
+  /**
+   * Next date to query.
+   */
+  nextSince: string
+}
 export interface GetUserDataByBirthNumbersBatchResponseDto {
   /**
    * A record of users keyed by their birth number
@@ -1023,7 +1033,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
     },
     /**
      * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Get birthnumbers for [take] new users since requested date
+     * @summary Get birth numbers for [take] new users since requested date
      * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1598,7 +1608,7 @@ export const ADMINApiFp = function (configuration?: Configuration) {
     },
     /**
      * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Get birthnumbers for [take] new users since requested date
+     * @summary Get birth numbers for [take] new users since requested date
      * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1606,7 +1616,12 @@ export const ADMINApiFp = function (configuration?: Configuration) {
     async adminControllerGetNewVerifiedUsersBirthNumbers(
       requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto>
+    > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerGetNewVerifiedUsersBirthNumbers(
           requestBatchNewUserBirthNumbers,
@@ -1958,7 +1973,7 @@ export const ADMINApiFactory = function (
     },
     /**
      * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Get birthnumbers for [take] new users since requested date
+     * @summary Get birth numbers for [take] new users since requested date
      * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1966,7 +1981,7 @@ export const ADMINApiFactory = function (
     adminControllerGetNewVerifiedUsersBirthNumbers(
       requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto> {
       return localVarFp
         .adminControllerGetNewVerifiedUsersBirthNumbers(requestBatchNewUserBirthNumbers, options)
         .then((request) => request(axios, basePath))
@@ -2156,7 +2171,7 @@ export class ADMINApi extends BaseAPI {
 
   /**
    * Delete tax for user, for example when the tax is cancelled in Noris.
-   * @summary Get birthnumbers for [take] new users since requested date
+   * @summary Get birth numbers for [take] new users since requested date
    * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

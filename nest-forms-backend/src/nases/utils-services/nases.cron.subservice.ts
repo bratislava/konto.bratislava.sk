@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { isAxiosError } from 'axios'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSk,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 
 import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
@@ -46,6 +49,19 @@ export default class NasesCronSubservice {
       valid: [],
     }
 
+    const addToResult = async (
+      key: keyof ValidateFormRegistrationsResultDto,
+      formDefinition: FormDefinitionSlovenskoSk,
+      isRegistered: boolean,
+    ) => {
+      const { pospID, pospVersion, slug } = formDefinition
+      result[key].push({ slug, pospID, pospVersion })
+      await this.formRegistrationStatusRepository.setStatus(
+        formDefinition,
+        isRegistered,
+      )
+    }
+
     await Promise.all(
       formDefinitions.map(async (formDefinition) => {
         if (!isSlovenskoSkFormDefinition(formDefinition)) {
@@ -77,48 +93,14 @@ export default class NasesCronSubservice {
               },
             )
           // eslint-disable-next-line unicorn/no-negated-condition
-          if (validated.data.status !== FormRegistrationStatus.PUBLISHED) {
-            result['not-published'].push({
-              slug: formDefinition.slug,
-              pospID,
-              pospVersion,
-            })
-            await this.formRegistrationStatusRepository.setStatus(
-              formDefinition,
-              false,
-            )
-          } else {
-            result.valid.push({
-              slug: formDefinition.slug,
-              pospID,
-              pospVersion,
-            })
-            await this.formRegistrationStatusRepository.setStatus(
-              formDefinition,
-              true,
-            )
-          }
+          await (validated.data.status !== FormRegistrationStatus.PUBLISHED
+            ? addToResult('not-published', formDefinition, false)
+            : addToResult('valid', formDefinition, true))
         } catch (error) {
           if (isAxiosError(error) && error.response?.status === 404) {
-            result['not-found'].push({
-              slug: formDefinition.slug,
-              pospID,
-              pospVersion,
-            })
-            await this.formRegistrationStatusRepository.setStatus(
-              formDefinition,
-              false,
-            )
+            await addToResult('not-found', formDefinition, false)
           } else {
-            result.error.push({
-              slug: formDefinition.slug,
-              pospID,
-              pospVersion,
-            })
-            await this.formRegistrationStatusRepository.setStatus(
-              formDefinition,
-              false,
-            )
+            await addToResult('error', formDefinition, false)
             this.logger.error(
               this.throwerErrorGuard.InternalServerErrorException(
                 NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,

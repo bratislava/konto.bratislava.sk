@@ -49,13 +49,25 @@ export default class NasesCronSubservice {
       valid: [],
     }
 
+    /**
+     * Add form definition to result object and optionally update its registration status in the database.
+     *
+     * @param key - The key in the result object to which the form definition should be added.
+     * @param formDefinition - The form definition to be added.
+     * @param isRegistered - Optional boolean indicating if the form is registered; if provided, updates the registration status in the database.
+     * @returns A promise that resolves when the operation is complete.
+     */
     const addToResult = async (
       key: keyof ValidateFormRegistrationsResultDto,
       formDefinition: FormDefinitionSlovenskoSk,
-      isRegistered: boolean,
+      isRegistered?: boolean,
     ) => {
       const { pospID, pospVersion, slug } = formDefinition
       result[key].push({ slug, pospID, pospVersion })
+
+      if (isRegistered === undefined) {
+        return
+      }
       await this.formRegistrationStatusRepository.setStatus(
         formDefinition,
         isRegistered,
@@ -100,7 +112,7 @@ export default class NasesCronSubservice {
           if (isAxiosError(error) && error.response?.status === 404) {
             await addToResult('not-found', formDefinition, false)
           } else {
-            await addToResult('error', formDefinition, false)
+            await addToResult('error', formDefinition)
             this.logger.error(
               this.throwerErrorGuard.InternalServerErrorException(
                 NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,

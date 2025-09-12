@@ -4,23 +4,22 @@ import {
   AdminGetUserCommand,
   AdminGetUserCommandOutput,
   AdminUpdateUserAttributesCommand,
+  AttributeType,
   CognitoIdentityProviderClient,
   CognitoIdentityProviderServiceException,
   ListUsersCommand,
   ListUsersCommandInput,
   UserType,
 } from '@aws-sdk/client-cognito-identity-provider'
-
+import { plainToInstance } from 'class-transformer'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { fromPairs } from 'lodash'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import {
   CognitoGetUserAttributesData,
   CognitoGetUserData,
   CognitoUserAccountTypesEnum,
-  CognitoUserAttributesDto,
   CognitoUserAttributesEnum,
   CognitoUserAttributesValuesDateDto,
   CognitoUserStatusEnum,
@@ -62,9 +61,15 @@ export class CognitoSubservice {
     }
   }
 
-  private attributesToObject(data: CognitoUserAttributesDto[]): CognitoGetUserAttributesData {
-    const result = fromPairs(data.map((elem) => [elem.Name, elem.Value]))
-    return result as unknown as CognitoGetUserAttributesData
+  private attributesToObject(attributes: AttributeType[]): CognitoGetUserAttributesData {
+    const obj = Object.fromEntries(
+      attributes
+        .filter((attr): attr is AttributeType & { Name: string } => attr.Name != null)
+        .map(({ Name, Value }) => [Name, Value] as const)
+    )
+    return plainToInstance(CognitoGetUserAttributesData, obj, {
+      enableImplicitConversion: true,
+    })
   }
 
   private async getUser(userId: string): Promise<AdminGetUserCommandOutput> {

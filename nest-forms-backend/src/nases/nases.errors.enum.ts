@@ -15,6 +15,7 @@ export enum NasesErrorsEnum {
   SEND_POLICY_NOT_ALLOWED_FOR_USER = 'SEND_POLICY_NOT_ALLOWED_FOR_USER',
   UNABLE_SEND_FORM_TO_NASES = 'UNABLE_SEND_FORM_TO_NASES',
   SEND_TO_GINIS_ERROR = 'SEND_TO_GINIS_ERROR',
+  FAILED_FORM_REGISTRATION_VERIFICATION = 'FAILED_FORM_REGISTRATION_VERIFICATION',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -34,6 +35,7 @@ export enum NasesErrorsResponseEnum {
   SEND_POLICY_NOT_ALLOWED_FOR_USER = 'Sending is not allowed for this user.',
   UNABLE_SEND_FORM_TO_NASES = 'Unable to send form to NASES.',
   SEND_TO_GINIS_ERROR = 'There was an error when sending to Ginis.',
+  FAILED_FORM_REGISTRATION_VERIFICATION = 'Failed to verify form registration in Slovensko.sk.',
 }
 
 export enum NasesErrorCodesEnum {

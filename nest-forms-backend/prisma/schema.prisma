@@ -173,3 +173,12 @@ model FormMigration {
   expiresAt              DateTime
   createdAt              DateTime @default(now())
 }
+
+model FormRegistrationStatus {
+  slug         String
+  pospId       String
+  pospVersion  String
+  isRegistered Boolean
+
+  @@id([slug, pospId, pospVersion])
+}

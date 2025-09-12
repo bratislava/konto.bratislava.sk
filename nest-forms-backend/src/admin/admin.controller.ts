@@ -9,6 +9,8 @@ import {
 } from '@nestjs/swagger'
 
 import AdminGuard from '../auth/guards/admin.guard'
+import { ValidateFormRegistrationsResultDto } from '../nases/dtos/responses.dto'
+import NasesCronSubservice from '../nases/utils-services/nases.cron.subservice'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -20,6 +22,7 @@ export default class AdminController {
   constructor(
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly nasesCronSubservice: NasesCronSubservice,
   ) {}
 
   // Endpoints only for testing
@@ -70,5 +73,20 @@ export default class AdminController {
       )
     }
     return this.nasesUtilsService.createUserJwtToken(head.authorization)
+  }
+
+  @ApiOperation({
+    summary:
+      'Run check of all form definitions, whether their registration in NASES is valid.',
+    description: 'Return the result of the form registration validation',
+  })
+  @ApiOkResponse({
+    description: 'Result of the form registration validation',
+    type: ValidateFormRegistrationsResultDto,
+  })
+  @UseGuards(AdminGuard)
+  @Get('check-form-registrations-in-nases')
+  checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
+    return this.nasesCronSubservice.validateFormRegistrations()
   }
 }

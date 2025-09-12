@@ -361,11 +361,29 @@ describe('NasesCronSubservice', () => {
       ).default
       const logSpy = jest.spyOn(service['logger'], 'log')
 
-      await service.validateFormRegistrations()
+      const result = await service.validateFormRegistrations()
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(3)
       expect(logSpy).not.toHaveBeenCalled()
       expect(alertErrorMock).toHaveBeenCalled()
+
+      expect(result['not-published']).toHaveLength(1)
+      expect(result['valid']).toHaveLength(2)
+    })
+
+    it('should not save error status to db if there is an error with form verification', async () => {
+      mockSlovenskoSkApi.apiEformStatusGet.mockRejectedValue(
+        new Error('API Error'),
+      )
+      const setStatusSpy = jest.spyOn(
+        service['formRegistrationStatusRepository'],
+        'setStatus',
+      )
+
+      const result = await service.validateFormRegistrations()
+
+      expect(result['error']).toHaveLength(2)
+      expect(setStatusSpy).not.toHaveBeenCalled()
     })
   })
 })

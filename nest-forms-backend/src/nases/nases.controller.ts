@@ -29,6 +29,7 @@ import {
   FormAccessGuard,
   GetFormAccessType,
 } from '../forms-v2/guards/form-access.guard'
+import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
 import { FormAccessType } from '../forms-v2/services/form-access.service'
 import {
   ErrorsEnum,
@@ -165,7 +166,7 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormSendOnlyRegisteredGuard)
   @Post('send-and-update-form/:formId')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
@@ -190,7 +191,7 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormSendOnlyRegisteredGuard)
   @Post('eid/send-and-update-form/:formId')
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,

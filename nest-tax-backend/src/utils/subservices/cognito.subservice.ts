@@ -38,10 +38,7 @@ export class CognitoSubservice {
     }
 
     try {
-      const cognitoData = await this.cognitoClient.send(
-        new AdminGetUserCommand(inputParams),
-      )
-      return cognitoData
+      return await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
     } catch (error) {
       if (error instanceof CognitoIdentityProviderServiceException) {
         throw this.throwerErrorGuard.BadRequestException(

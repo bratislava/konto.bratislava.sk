@@ -79,8 +79,7 @@ export class CognitoSubservice {
     }
 
     try {
-      const cognitoData = await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
-      return cognitoData
+      return await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
     } catch (error) {
       // TODO aws-sdk v3 verify usage of throwerErrorGuard here
       if (error instanceof CognitoIdentityProviderServiceException) {
@@ -102,6 +101,14 @@ export class CognitoSubservice {
 
   async getDataFromCognito(userId: string): Promise<CognitoGetUserData> {
     const result = await this.getUser(userId)
+
+    if (result.Username === undefined) {
+      // TODO aws-sdk v3 verify usage of throwerErrorGuard here
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+        'Username undefined in user data from Cognito'
+      )
+    }
 
     return {
       idUser: result.Username,

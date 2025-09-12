@@ -59,7 +59,7 @@ export class CognitoSubservice {
     }
   }
 
-  async getDataFromCognito(userId: string): Promise<CognitoTiersEnum> {
+  async getUserTierFromCognito(userId: string): Promise<CognitoTiersEnum> {
     const cognitoData = await this.getUser(userId)
     let result: CognitoTiersEnum = CognitoTiersEnum.NEW
     cognitoData.UserAttributes?.forEach((elem) => {

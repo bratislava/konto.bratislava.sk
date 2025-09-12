@@ -5,6 +5,7 @@ import {
   AdminGetUserCommandOutput,
   AdminUpdateUserAttributesCommand,
   CognitoIdentityProviderClient,
+  CognitoIdentityProviderServiceException,
   ListUsersCommand,
   ListUsersCommandInput,
   UserType,
@@ -76,12 +77,18 @@ export class CognitoSubservice {
       const cognitoData = await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
       return cognitoData
     } catch (error) {
-      // TODO aws-sdk v3 extract the error details
       // TODO aws-sdk v3 verify usage of throwerErrorGuard here
+      if (error instanceof CognitoIdentityProviderServiceException) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          error.name,
+          undefined,
+          error
+        )
+      }
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
-        error.name,
-        error.statusCode?.toString(),
+        'Unknown error occurred when fetching user from Cognito',
         undefined,
         error
       )
@@ -110,12 +117,18 @@ export class CognitoSubservice {
     try {
       await this.cognitoClient.send(new AdminDisableUserCommand(inputParams))
     } catch (error) {
-      // TODO aws-sdk v3 extract the error details
       // TODO aws-sdk v3 verify usage of throwerErrorGuard here
+      if (error instanceof CognitoIdentityProviderServiceException) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          error.name,
+          undefined,
+          error
+        )
+      }
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
-        error.name,
-        error.statusCode?.toString(),
+        'Unknown error occurred when disabling user in Cognito',
         undefined,
         error
       )
@@ -223,12 +236,18 @@ export class CognitoSubservice {
     try {
       await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
     } catch (error) {
-      // TODO aws-sdk v3 extract the error details
       // TODO aws-sdk v3 verify usage of throwerErrorGuard here
+      if (error instanceof CognitoIdentityProviderServiceException) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          error.name,
+          undefined,
+          error
+        )
+      }
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
-        error.name,
-        error.statusCode?.toString(),
+        'Unknown error occurred when updating user attributes in Cognito',
         undefined,
         error
       )

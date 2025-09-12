@@ -44,7 +44,6 @@
     "@rjsf/utils": "5.24.9",
     "amqplib": "^0.10.9",
     "aws-jwt-verify": "^5.1.0",
-    "aws-sdk": "2.1692.0",
     "axios": "^1.11.0",
     "bull": "4.16.5",
     "class-transformer": "0.5.1",

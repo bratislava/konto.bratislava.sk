@@ -104,10 +104,9 @@ export default class NasesCronSubservice {
                 },
               },
             )
-          // eslint-disable-next-line unicorn/no-negated-condition
-          await (validated.data.status !== FormRegistrationStatus.PUBLISHED
-            ? addToResult('not-published', formDefinition, false)
-            : addToResult('valid', formDefinition, true))
+          await (validated.data.status === FormRegistrationStatus.PUBLISHED
+            ? addToResult('valid', formDefinition, true)
+            : addToResult('not-published', formDefinition, false))
         } catch (error) {
           if (isAxiosError(error) && error.response?.status === 404) {
             await addToResult('not-found', formDefinition, false)

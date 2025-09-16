@@ -25,7 +25,7 @@ export class TiersGuard implements CanActivate {
     }
     const { cognito_user } = context.switchToHttp().getRequest()
 
-    const tier = await this.cognitoSubservice.getDataFromCognito(
+    const tier = await this.cognitoSubservice.getUserTierFromCognito(
       cognito_user._username,
     )
     const result = requiredRoles.some((role) => [tier]?.includes(role))

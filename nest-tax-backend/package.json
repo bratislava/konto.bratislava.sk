@@ -24,6 +24,7 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.888.0",
     "@nestjs-cognito/auth": "^2.2.0",
     "@nestjs/cli": "^11.0.10",
     "@nestjs/common": "^11.1.6",
@@ -34,9 +35,8 @@
     "@nestjs/swagger": "^11.2.0",
     "@prisma/client": "^6.15.0",
     "@types/mssql": "^9.1.8",
-    "aws-sdk": "^2.1692.0",
     "axios": "^1.12.2",
-    "bysquare": "^2.1.0",
+    "bysquare": "2.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "csv-parse": "^6.1.0",
@@ -55,7 +55,7 @@
     "ssh2-sftp-client": "^12.0.1"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^5.0.30",
+    "@darraghor/eslint-plugin-nestjs-typed": "5.1.4",
     "@golevelup/ts-jest": "^0.7.0",
     "@nestjs/schematics": "^11.0.7",
     "@nestjs/testing": "^11.1.6",

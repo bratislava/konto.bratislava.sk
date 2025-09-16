@@ -27,9 +27,9 @@
     "update-aws": "npm install @aws-sdk/client-cognito-identity@latest @aws-sdk/client-cognito-identity-provider@latest @aws-sdk/client-sts@latest aws-jwt-verify@latest"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity": "^3.883.0",
-    "@aws-sdk/client-cognito-identity-provider": "^3.883.0",
-    "@aws-sdk/client-sts": "^3.883.0",
+    "@aws-sdk/client-cognito-identity": "^3.888.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.888.0",
+    "@aws-sdk/client-sts": "^3.888.0",
     "@bratislava/ginis-sdk": "^2.0.0",
     "@golevelup/nestjs-rabbitmq": "6.0.2",
     "@nestjs/bull": "11.0.3",
@@ -44,7 +44,6 @@
     "@rjsf/utils": "5.24.9",
     "amqplib": "^0.10.9",
     "aws-jwt-verify": "^5.1.0",
-    "aws-sdk": "2.1692.0",
     "axios": "^1.12.2",
     "bull": "4.16.5",
     "class-transformer": "0.5.1",
@@ -73,7 +72,7 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^5.0.29",
+    "@darraghor/eslint-plugin-nestjs-typed": "5.1.4",
     "@golevelup/ts-jest": "^0.7.0",
     "@nestjs/cli": "11.0.10",
     "@nestjs/schematics": "11.0.7",

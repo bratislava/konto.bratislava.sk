@@ -18,10 +18,8 @@ import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExt
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
-import { UserControllerGetOrCreateUser200Response } from 'openapi-clients/city-account'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
-import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import {
@@ -41,7 +39,6 @@ import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
-  NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
 import {
@@ -253,91 +250,6 @@ export default class NasesUtilsService {
       this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
       options,
     )
-  }
-
-  async getUserInfo(
-    bearerToken: string,
-  ): Promise<UserControllerGetOrCreateUser200Response> {
-    return this.clientsService.cityAccountApi
-      .userControllerGetOrCreateUser({
-        headers: {
-          Authorization: bearerToken,
-        },
-      })
-      .then((response) => response.data)
-      .catch((error) => {
-        throw this.throwerErrorGuard.NotFoundException(
-          NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          undefined,
-          error,
-        )
-      })
-  }
-
-  async getUri(
-    bearerToken?: string,
-    userData?: CognitoGetUserData,
-  ): Promise<string | null> {
-    if (bearerToken === undefined) return null
-
-    if (!userData || !userData.family_name || !userData.given_name) {
-      return null
-    }
-
-    let birthNumber: string
-    try {
-      const userInfo = await this.getUserInfo(bearerToken)
-      if (userInfo.birthNumber === null) {
-        return null
-      }
-      birthNumber = userInfo.birthNumber
-    } catch (error) {
-      alertError('Error when retrieving user info', this.logger, error)
-      return null
-    }
-
-    // TODO remove when slovensko.sk uri will be retrievable.
-    return `rc://sk/${birthNumber}_${userData.family_name.toLowerCase()}_${userData.given_name.toLowerCase()}`
-
-    // TODO And put back this
-    /* const result = await axios
-      .post(
-        `${
-          this.configService.getOrThrow<string>('SLOVENSKO_SK_CONTAINER_URI')
-        }/api/iam/identities/search`,
-        {
-          uris: [
-            `rc://sk/${birthNumber}_${userData.family_name.toLowerCase()}_${userData.given_name.toLowerCase()}`,
-          ],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${this.createTechnicalAccountJwtToken()}`,
-          },
-        },
-      )
-      .then((response: AxiosResponse) => {
-        if (response.data && Array.isArray(response.data)) {
-          try {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            return response.data[0].uri as string;
-          } catch (error) {
-            return null;
-          }
-        }
-        return null;
-      })
-      .catch((error) => {
-        alertError(
-          'There was an error when retrieving uri from slovensko.sk',
-          this.logger,
-          error
-        )
-        return null;
-      });
-
-    return result; */
   }
 
   private async getFormMessage(

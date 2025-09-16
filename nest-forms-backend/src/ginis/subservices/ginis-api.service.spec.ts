@@ -127,14 +127,16 @@ describe('GinisAPIService', () => {
         mockStream,
       )
 
-      expect(uploadSpy).toHaveBeenCalledWith({
-        'Id-dokumentu': 'docId',
-        'Jmeno-souboru': filename_middle204 + filename_last50,
-        'Typ-vazby': 'elektronicka-priloha',
-        'Popis-souboru': filename_first50,
-        'Podrobny-popis-souboru': filename_first50 + filename_middle204,
-        Obsah: mockStream,
-      })
+      expect(uploadSpy).toHaveBeenCalledWith(
+        {
+          'Id-dokumentu': 'docId',
+          'Jmeno-souboru': filename_middle204 + filename_last50,
+          'Typ-vazby': 'elektronicka-priloha',
+          'Popis-souboru': filename_first50,
+          'Podrobny-popis-souboru': filename_first50 + filename_middle204,
+        },
+        mockStream,
+      )
     })
 
     it('should extract base name of the file correctly', async () => {
@@ -148,14 +150,16 @@ describe('GinisAPIService', () => {
 
       await service.uploadFile('docId', 'foobar.zip', mockStream)
 
-      expect(uploadSpy).toHaveBeenCalledWith({
-        'Id-dokumentu': 'docId',
-        'Jmeno-souboru': 'foobar.zip',
-        'Typ-vazby': 'elektronicka-priloha',
-        'Popis-souboru': 'foobar',
-        'Podrobny-popis-souboru': 'foobar',
-        Obsah: mockStream,
-      })
+      expect(uploadSpy).toHaveBeenCalledWith(
+        {
+          'Id-dokumentu': 'docId',
+          'Jmeno-souboru': 'foobar.zip',
+          'Typ-vazby': 'elektronicka-priloha',
+          'Popis-souboru': 'foobar',
+          'Podrobny-popis-souboru': 'foobar',
+        },
+        mockStream,
+      )
     })
   })
 

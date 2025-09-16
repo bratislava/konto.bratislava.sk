@@ -22,58 +22,56 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
   return (
     <>
       {/* Desktop */}
-      <div className="relative hidden h-[104px] w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex w-full max-w-[450px] flex-col pl-6">
-            {isActiveLink ? (
-              <MLinkNew href={ROUTES.TAXES_AND_FEES_YEAR(year)} variant="unstyled" stretched>
-                <h3 className="mb-1 text-16-semibold">
-                  {t('account_section_payment.tax_card_title', { year })}
-                </h3>
-              </MLinkNew>
-            ) : (
+      <div className="relative hidden w-full items-center justify-between gap-6 py-4 lg:flex">
+        <div className="flex w-full max-w-[450px] flex-col">
+          {isActiveLink ? (
+            <MLinkNew href={ROUTES.TAXES_AND_FEES_YEAR(year)} variant="unstyled" stretched>
               <h3 className="mb-1 text-16-semibold">
                 {t('account_section_payment.tax_card_title', { year })}
               </h3>
+            </MLinkNew>
+          ) : (
+            <h3 className="mb-1 text-16-semibold">
+              {t('account_section_payment.tax_card_title', { year })}
+            </h3>
+          )}
+        </div>
+        <div className="flex w-full items-center gap-18">
+          <div className="flex flex-col">
+            <span className="mb-1 text-p3-semibold">
+              {t('account_section_payment.tax_card_delivered')}
+            </span>
+            <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="mb-1 text-p3-semibold">
+              {t('account_section_payment.tax_card_amount')}
+            </span>
+            {amountToBePaid === undefined ? (
+              <span>-</span>
+            ) : (
+              <span>
+                <FormatCurrencyFromCents value={amountToBePaid} />
+              </span>
             )}
           </div>
-          <div className="flex w-full items-center">
-            <div className="flex flex-col px-10">
-              <span className="mb-1 text-p3-semibold">
-                {t('account_section_payment.tax_card_delivered')}
-              </span>
-              <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
-            </div>
-            <div className="flex flex-col px-10">
-              <span className="mb-1 text-p3-semibold">
-                {t('account_section_payment.tax_card_amount')}
-              </span>
-              {amountToBePaid === undefined ? (
-                <span>-</span>
-              ) : (
-                <span>
-                  <FormatCurrencyFromCents value={amountToBePaid} />
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col px-10">
-              <span className="mb-1 text-p3-semibold">
-                {t('account_section_payment.tax_card_status')}
-              </span>
-              <TaxPaidStatus status={status} />
-            </div>
+          <div className="flex flex-col">
+            <span className="mb-1 text-p3-semibold">
+              {t('account_section_payment.tax_card_status')}
+            </span>
+            <TaxPaidStatus status={status} />
           </div>
         </div>
-        {isActiveLink && (
-          <div className="h-full w-16 min-w-[64px] cursor-pointer">
+        <div className="h-full w-16 min-w-[64px] cursor-pointer">
+          {isActiveLink && (
             <div className="flex size-full items-center justify-center">
               <ChevronRightIcon />
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       {/* Mobile */}
-      <div className="relative flex h-24 w-full items-center justify-between border-b-2 border-gray-200 bg-white lg:hidden">
+      <div className="relative flex h-25 w-full items-center justify-between py-4 lg:hidden">
         <div className="flex w-full items-start justify-between">
           <div className="flex flex-col">
             {isActiveLink ? (
@@ -86,18 +84,20 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
             ) : (
               <span className="mb-1 text-p2-semibold leading-5">{`${t('account_section_payment.tax_card_title', { year })}`}</span>
             )}
-            <div className="flex flex-wrap items-center">
-              {amountToBePaid === undefined ? (
-                <span className="flex w-max items-center text-p3">
-                  <span>-</span>
+            <div className="">
+              {createdAt && <div className="w-max">{formatDate(createdAt)}</div>}
+              <div className="flex flex-row">
+                {amountToBePaid !== undefined && amountToBePaid !== null && (
+                  <span className="text-p3">
+                    <FormatCurrencyFromCents value={amountToBePaid} />
+                  </span>
+                )}
+                <span className="flex items-center">
+                  {amountToBePaid !== undefined && amountToBePaid !== null && (
+                    <span className="mx-3 size-1 rounded-full bg-gray-700" />
+                  )}
+                  <TaxPaidStatus status={status} />
                 </span>
-              ) : (
-                <span className="text-p3">
-                  <FormatCurrencyFromCents value={amountToBePaid} />
-                </span>
-              )}
-              <div className="flex items-center">
-                <TaxPaidStatus status={status} />
               </div>
             </div>
           </div>

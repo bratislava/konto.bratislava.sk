@@ -28,15 +28,15 @@ const PaymentMethodItem = ({
   buttonHref,
 }: PaymentMethodItemProps) => {
   const labelStyle = cn(
-    'flex w-full justify-between border-gray-200 nth-2:pt-4 nth-2:lg:border-t-2',
+    'flex w-full flex-col justify-between border-gray-200 nth-2:border-t-2 nth-2:pt-4 lg:flex-row',
   )
   return (
     <div className={labelStyle}>
-      <div>
+      <div className="flex flex-col items-start gap-3 px-4 pt-4 lg:px-0 lg:pt-0 lg:pb-3">
         <div className="text-p2">{title}</div>
         <div className="text-p2-semibold text-category-600">{subtitle}</div>
       </div>
-      <div className="flex flex-row items-center gap-8">
+      <div className="flex flex-col items-start gap-4 px-4 pb-4 lg:flex-row lg:items-center lg:gap-8 lg:px-0 lg:pb-0">
         <span className="text-p1-semibold">
           <FormatCurrencyFromCents value={amount} />
         </span>
@@ -99,26 +99,29 @@ const PaymentMethodSection = () => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-4 px-4 lg:px-0">
-      <div className="text-h3">{t('tax_detail_section.tax_payment_methods')}</div>
-      <div className="flex w-full flex-col gap-6 rounded-lg border-2 border-gray-200 p-6">
-        <PaymentMethodItem
-          title={
-            <Trans
-              ns="account"
-              i18nKey="tax_detail_section.tax_payment_rest"
-              components={{ strong: <strong className="font-semibold" /> }}
-            />
-          }
-          subtitle={t('tax_detail_section.tax_payment_rest_subtitle', {
-            date: formatDate(taxData.oneTimePayment.dueDate || ''),
-          })}
-          amount={taxData.overallBalance}
-          buttonText={t('pay_all')}
-          buttonVariant="black-solid"
-          buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}
-        />
-        {renderInstallmentPayment()}
+    <div className="flex w-full flex-col px-4 lg:px-0">
+      <div className="flex w-full border-t-2 border-gray-200 lg:hidden lg:border-t-0" />
+      <div className="flex w-full flex-col gap-4 pt-4 lg:pt-0">
+        <div className="text-h3">{t('tax_detail_section.tax_payment_methods')}</div>
+        <div className="flex w-full flex-col rounded-lg border-2 border-gray-200 lg:p-6">
+          <PaymentMethodItem
+            title={
+              <Trans
+                ns="account"
+                i18nKey="tax_detail_section.tax_payment_rest"
+                components={{ strong: <strong className="font-semibold" /> }}
+              />
+            }
+            subtitle={t('tax_detail_section.tax_payment_rest_subtitle', {
+              date: formatDate(taxData.oneTimePayment.dueDate || ''),
+            })}
+            amount={taxData.overallBalance}
+            buttonText={t('pay_all')}
+            buttonVariant="black-solid"
+            buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}
+          />
+          {renderInstallmentPayment()}
+        </div>
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import { ResponseTaxAdministratorDto } from 'openapi-clients/tax'
 
@@ -9,6 +10,7 @@ type TaxesFeesTaxAdministratorCardProps = {
   beTaxAdministrator: ResponseTaxAdministratorDto | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   withTitle?: boolean
+  removeBorder?: boolean
 }
 
 const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorDto) => {
@@ -19,13 +21,11 @@ const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorD
   }
 }
 
-/**
- * TODO: Use card component, translations
- */
 const TaxesFeesTaxAdministratorCard = ({
   beTaxAdministrator,
   strapiTaxAdministrator,
   withTitle = true,
+  removeBorder = false,
 }: TaxesFeesTaxAdministratorCardProps) => {
   const { t } = useTranslation('account')
   const taxAdministrator = beTaxAdministrator
@@ -35,10 +35,18 @@ const TaxesFeesTaxAdministratorCard = ({
   if (!taxAdministrator) {
     return null
   }
+
   return (
-    <div className="flex w-full items-center items-start justify-between gap-4 rounded-lg border-2 border-gray-200 p-5">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1">
+    <div
+      className={cn(
+        'flex w-full flex-1 items-center items-start justify-between gap-4 rounded-lg border-2 border-gray-200 px-4 py-3 lg:p-5',
+        {
+          'border-none': removeBorder,
+        },
+      )}
+    >
+      <div className="flex flex-col gap-4 lg:gap-3">
+        <div className="hidden flex-col lg:flex">
           {withTitle && (
             <div className="flex flex-col gap-1">
               {t('account_section_payment.your_tax_administrator')}
@@ -73,7 +81,7 @@ const TaxesFeesTaxAdministratorCard = ({
         </div>
       </div>
       {/* TODO: this icon is used /dane-a-poplatky icon in the middle and /dane-a-poplatky/2025 icon in the top */}
-      <div className="hidden rounded-lg bg-gray-100 p-3 sm:block">
+      <div className="hidden rounded-lg bg-gray-100 p-3 lg:block">
         <PhoneIcon className="size-6" />
       </div>
     </div>

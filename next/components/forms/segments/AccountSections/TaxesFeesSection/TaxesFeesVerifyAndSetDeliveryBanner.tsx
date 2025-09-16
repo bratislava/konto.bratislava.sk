@@ -30,9 +30,9 @@ const TaxesFeesVerifyAndSetDeliveryMethodBanner = ({
           href: isIdentityVerified ? undefined : ROUTES.IDENTITY_VERIFICATION,
           onPress: isIdentityVerified ? onDeliveryMethodChange : undefined,
           variant: 'black-solid',
+          fullWidthMobile: true,
         },
       ]}
-      reversed
     />
   )
 }

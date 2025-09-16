@@ -27,7 +27,7 @@ const TaxesFeesDeliveryMethodCard = ({
   }[channel]
 
   return (
-    <div className="flex w-full items-center justify-between gap-4 p-4 lg:p-0">
+    <div className="flex w-full items-center justify-between gap-4">
       <div className="flex items-center gap-4">
         <div className="hidden rounded-lg bg-gray-100 p-3 sm:block">
           <MailIcon className="size-6 text-main-700" />

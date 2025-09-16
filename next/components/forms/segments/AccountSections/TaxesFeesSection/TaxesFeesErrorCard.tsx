@@ -13,13 +13,15 @@ const TaxesFeesErrorCard = () => {
   `
 
   return (
-    <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col rounded-lg border-0 border-gray-200 px-4 pt-0 lg:flex-row lg:border-2 lg:px-0">
-      <AccountMarkdown
-        className="mt-6 flex w-full max-w-none flex-col justify-center md:mt-0 lg:gap-2 lg:p-12"
-        content={content}
-      />
-      <span className="relative w-full">
-        <Image src={ImageMesto} alt="" fill className="object-cover" />
+    <div className="flex w-full max-w-(--breakpoint-lg) flex-col justify-around rounded-lg border-2 border-gray-200 lg:flex-row">
+      <div className="flex w-full flex-1 p-4 lg:p-12">
+        <AccountMarkdown
+          className="flex max-w-none flex-col justify-center md:mt-0 lg:max-w-[528px]"
+          content={content}
+        />
+      </div>
+      <span className="flex flex-1 justify-center">
+        <Image src={ImageMesto} alt="" className="object-contain" />
       </span>
     </div>
   )

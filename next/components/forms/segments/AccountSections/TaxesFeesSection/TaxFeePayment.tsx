@@ -1,4 +1,5 @@
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import { ROUTES } from 'frontend/api/constants'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { useSearchParams } from 'next/navigation'
 import { useTranslation } from 'next-i18next'
@@ -32,7 +33,20 @@ const TaxFeePayment = () => {
   }
   return (
     <div className="flex flex-col">
-      <TaxFeeSectionHeader title={getTitle()} />
+      <TaxFeeSectionHeader
+        title={getTitle()}
+        navigationItems={[
+          { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
+          {
+            title: t('account_section_payment.tax_detail'),
+            path: ROUTES.TAXES_AND_FEES_YEAR(taxData.year),
+          },
+          {
+            title: getTitle(),
+            path: null,
+          },
+        ]}
+      />
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-12 lg:py-12">
         <PaymentData />
         <TaxFooter />

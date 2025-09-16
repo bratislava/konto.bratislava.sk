@@ -33,6 +33,7 @@ const TaxesFeesSection = () => {
     taxesData,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
+    strapiTaxAdministrator,
   } = useTaxFeesSection()
   const { accountCommunicationConsentText } = useStrapiTax()
   const { channel, showDeliveryMethodNotSetBanner, channelChangeEffectiveNextYear } =
@@ -63,10 +64,12 @@ const TaxesFeesSection = () => {
       />
       <AccountSectionHeader
         title={t('account_section_payment.title')}
+        // not the best solution, but for proper one we need to rewrite components in Figma (pages, UserProfileView, HelpSection, IntroSection)
+        titleWrapperClassName="pb-0 lg:pb-0 pt-8"
         wrapperClassName="lg:py-0 lg:pt-16"
       >
         {channel && (
-          <div className="flex flex-col gap-4 rounded-lg bg-gray-0 p-4 lg:gap-5 lg:p-5">
+          <div className="mx-4 flex flex-col gap-4 rounded-lg bg-gray-0 p-4 lg:mx-0 lg:gap-5 lg:p-5">
             <TaxesFeesDeliveryMethodCard
               onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
             />
@@ -102,7 +105,10 @@ const TaxesFeesSection = () => {
         {isInQueue && <TaxesFeesUserVerificationInProcess />}
         {isIdentityVerified && !showDeliveryMethodNotSetBanner && (
           <>
-            <TaxesFeesAdministratorCardWrapper />
+            <TaxesFeesAdministratorCardWrapper
+              beTaxAdministrator={taxesData?.taxAdministrator ?? null}
+              strapiTaxAdministrator={strapiTaxAdministrator}
+            />
             <div className="flex flex-col gap-4">
               <h2 className="text-h5-semibold">
                 {t('account_section_payment.tax_overview_title')}
@@ -110,9 +116,12 @@ const TaxesFeesSection = () => {
               {displayTaxesLookingFor && <TaxesFeesSearchingCard />}
               {taxesDataNotOnRecord && <TaxesFeesErrorCard />}
               {taxesDataAvailable && (
-                <ul className="flex flex-col gap-4">
+                <ul className="flex flex-col rounded-lg border-2 border-gray-200">
                   {taxesData.items.map((item) => (
-                    <li key={item.year}>
+                    <li
+                      key={item.year}
+                      className="mx-4 not-last:border-b-2 not-last:border-gray-200 lg:mx-6"
+                    >
                       <TaxesFeesCard taxData={item} />
                     </li>
                   ))}

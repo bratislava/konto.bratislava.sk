@@ -10,9 +10,10 @@ import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
+import ClientsModule from '../clients/clients.module'
 
 @Module({
-  imports: [PrismaModule, BloomreachModule],
+  imports: [PrismaModule, BloomreachModule, ClientsModule],
   providers: [
     NorisService,
     NorisConnectionSubservice,

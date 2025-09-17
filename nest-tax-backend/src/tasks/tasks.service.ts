@@ -22,6 +22,7 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import { NorisService } from '../noris/noris.service'
 
 @Injectable()
 export class TasksService {
@@ -35,6 +36,7 @@ export class TasksService {
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
+    private readonly norisService: NorisService,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -163,7 +165,7 @@ export class TasksService {
       `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
     )
 
-    await this.adminService.updateTaxesFromNoris(taxes)
+    await this.norisService.updateTaxesFromNoris(taxes)
 
     await this.prismaService.tax.updateMany({
       where: {

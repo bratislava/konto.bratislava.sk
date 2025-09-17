@@ -8,6 +8,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { TasksService } from './tasks.service'
+import { NorisModule } from '../noris/noris.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TasksService } from './tasks.service'
     CardPaymentReportingModule,
     BloomreachModule,
     ClientsModule,
+    NorisModule,
   ],
   providers: [
     TasksService,

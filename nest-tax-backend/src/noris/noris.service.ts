@@ -1,20 +1,24 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import {
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from '../admin/dtos/requests.dto'
-import { NorisTaxPayersDto, NorisUpdateDto } from './noris.dto'
+import {
+  NorisPaymentsDto,
+  NorisTaxPayersDto,
+  NorisUpdateDto,
+} from './noris.dto'
 import { UpdateNorisDeliveryMethods } from './utils/noris.types'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
+import { CreateBirthNumbersResponseDto } from '../admin/dtos/responses.dto'
+import { TaxIdVariableSymbolYear } from '../utils/types/types.prisma'
 
 @Injectable()
 export class NorisService {
-  private readonly logger: Logger = new Logger('NorisService')
-
   constructor(
     private readonly paymentSubservice: NorisPaymentSubservice,
     private readonly taxSubservice: NorisTaxSubservice,
@@ -50,5 +54,40 @@ export class NorisService {
     years: number[],
   ): Promise<NorisUpdateDto[]> {
     return await this.taxSubservice.getDataForUpdate(variableSymbols, years)
+  }
+
+  async getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+    data: RequestPostNorisLoadDataDto,
+  ): Promise<CreateBirthNumbersResponseDto> {
+    return this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
+      data,
+    )
+  }
+
+  async updatePaymentsFromNorisWithData(
+    norisPaymentData: Partial<NorisPaymentsDto>[],
+  ) {
+    return await this.paymentSubservice.updatePaymentsFromNorisWithData(
+      norisPaymentData,
+    )
+  }
+
+  async processNorisTaxData(
+    norisData: NorisTaxPayersDto[],
+    year: number,
+  ): Promise<string[]> {
+    return await this.taxSubservice.processNorisTaxData(norisData, year)
+  }
+
+  async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    data: RequestPostNorisLoadDataDto,
+  ) {
+    return await this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+      data,
+    )
+  }
+
+  async updateTaxesFromNoris(taxes: TaxIdVariableSymbolYear[]) {
+    return await this.taxSubservice.updateTaxesFromNoris(taxes)
   }
 }

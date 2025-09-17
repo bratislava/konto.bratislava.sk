@@ -641,12 +641,6 @@ export class AdminService {
       )
     }
 
-    await this.prismaService.user.update({
-      where: { birthNumber: data.birthNumber },
-      data: {
-        lastTaxYear: null,
-      },
-    })
     await this.taxSubservice.deleteTax(data)
     return { success: true }
   }

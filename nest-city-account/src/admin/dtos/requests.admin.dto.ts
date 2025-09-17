@@ -9,7 +9,7 @@ import {
   IsUUID,
 } from 'class-validator'
 import { Type } from 'class-transformer'
-import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
+import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
 
 export class RequestQueryUserByBirthNumberDto {
   @ApiProperty({

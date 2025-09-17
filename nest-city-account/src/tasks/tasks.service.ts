@@ -24,7 +24,6 @@ import {
   DeliveryMethodErrorsResponseEnum,
 } from '../utils/guards/dtos/delivery-method.error'
 
-const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
 const LOCK_DELIVERY_METHODS_BATCH = 100

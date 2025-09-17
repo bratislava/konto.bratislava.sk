@@ -4,13 +4,13 @@ import {
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
+  RequestUpdateNorisDeliveryMethodsDto,
 } from '../admin/dtos/requests.dto'
 import {
   NorisPaymentsDto,
   NorisTaxPayersDto,
   NorisUpdateDto,
 } from './noris.dto'
-import { UpdateNorisDeliveryMethods } from './utils/noris.types'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
@@ -25,12 +25,6 @@ export class NorisService {
     private readonly deliverySubservice: NorisDeliveryMethodSubservice,
   ) {}
 
-  async getTaxDataByYearAndBirthNumber(
-    data: RequestPostNorisLoadDataDto,
-  ): Promise<NorisTaxPayersDto[]> {
-    return await this.taxSubservice.getTaxDataByYearAndBirthNumber(data)
-  }
-
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
     return await this.paymentSubservice.getPaymentDataFromNoris(data)
   }
@@ -41,12 +35,6 @@ export class NorisService {
     return await this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(
       data,
     )
-  }
-
-  async updateDeliveryMethods(
-    data: UpdateNorisDeliveryMethods[],
-  ): Promise<void> {
-    return await this.deliverySubservice.updateDeliveryMethods(data)
   }
 
   async getDataForUpdate(
@@ -89,5 +77,17 @@ export class NorisService {
 
   async updateTaxesFromNoris(taxes: TaxIdVariableSymbolYear[]) {
     return await this.taxSubservice.updateTaxesFromNoris(taxes)
+  }
+
+  async updateDeliveryMethodsInNoris({
+    data,
+  }: RequestUpdateNorisDeliveryMethodsDto) {
+    return await this.deliverySubservice.updateDeliveryMethodsInNoris({ data })
+  }
+
+  async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
+    return await this.deliverySubservice.removeDeliveryMethodsFromNoris(
+      birthNumber,
+    )
   }
 }

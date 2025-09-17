@@ -43,7 +43,7 @@ export class NorisTaxSubservice {
     private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
 
-  async getTaxDataByYearAndBirthNumber(
+  private async getTaxDataByYearAndBirthNumber(
     data: RequestPostNorisLoadDataDto,
   ): Promise<NorisTaxPayersDto[]> {
     const connection = await this.connectionService.createConnection()

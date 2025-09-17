@@ -65,81 +65,11 @@ export class AdminService {
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
-    /**
-     * TODO - concurrency (if someone somehow changes his delivery method during its updating in Noris)
-     */
-    const deliveryGroups: Record<
-      DeliveryMethod,
-      { birthNumber: string; date: string | null }[]
-    > = {
-      [DeliveryMethod.EDESK]: [],
-      [DeliveryMethod.CITY_ACCOUNT]: [],
-      [DeliveryMethod.POSTAL]: [],
-    }
-
-    Object.entries(data).forEach(([birthNumber, methodInfo]) => {
-      if (!(methodInfo.deliveryMethod in deliveryGroups)) {
-        return
-      }
-
-      if (
-        methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT &&
-        !methodInfo.date
-      ) {
-        // We must enforce that the date is present for CITY_ACCOUNT delivery method.
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`,
-        )
-      }
-
-      deliveryGroups[methodInfo.deliveryMethod].push({
-        birthNumber: addSlashToBirthNumber(birthNumber),
-        date:
-          methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT
-            ? methodInfo.date
-            : null,
-      })
-    })
-
-    const updates: UpdateNorisDeliveryMethods[] = Object.entries(deliveryGroups)
-      .filter(
-        ([deliveryMethod, birthNumbers]) =>
-          birthNumbers.length > 0 &&
-          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT,
-      )
-      .map(([deliveryMethod, birthNumbers]) => {
-        return {
-          birthNumbers: birthNumbers.map((item) => item.birthNumber),
-          inCityAccount: IsInCityAccount.YES,
-          deliveryMethod: deliveryMethod as DeliveryMethod,
-          date: null, // date of confirmation of delivery method should be set only for city account notification
-        }
-      })
-
-    deliveryGroups[DeliveryMethod.CITY_ACCOUNT].forEach((item) => {
-      updates.push({
-        birthNumbers: [item.birthNumber],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-        date: item.date,
-      })
-    })
-
-    if (updates.length > 0) {
-      await this.norisService.updateDeliveryMethods(updates)
-    }
+    return await this.norisService.updateDeliveryMethodsInNoris({ data })
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    await this.norisService.updateDeliveryMethods([
-      {
-        birthNumbers: [addSlashToBirthNumber(birthNumber)],
-        inCityAccount: IsInCityAccount.NO,
-        deliveryMethod: null,
-        date: null,
-      },
-    ])
+    return await this.norisService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   /**

@@ -1,4 +1,4 @@
-import { NorisTaxPayersDto } from '../../../noris/noris.dto'
+import { NorisTaxPayersDto } from '../../noris.dto'
 import { AreaTypesEnum, mapNorisToTaxDetailData } from '../tax-detail.helper'
 
 describe('taxDetail', () => {

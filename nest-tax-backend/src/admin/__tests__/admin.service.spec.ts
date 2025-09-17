@@ -23,9 +23,9 @@ import {
 } from '../../utils/types/types.prisma'
 import { AdminService } from '../admin.service'
 import { RequestUpdateNorisDeliveryMethodsData } from '../dtos/requests.dto'
-import * as taxDetailHelper from '../utils/tax-detail.helper'
+import * as taxDetailHelper from '../../noris/utils/tax-detail.helper'
 
-jest.mock('../utils/tax-detail.helper')
+jest.mock('../../noris/utils/tax-detail.helper')
 
 describe('AdminService', () => {
   let service: AdminService

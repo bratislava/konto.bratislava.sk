@@ -1,7 +1,7 @@
 import { TaxDetailareaType } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisTaxPayersDto } from '../../noris/noris.dto'
+import { NorisTaxPayersDto } from '../noris.dto'
 
 export enum AreaTypesEnum {
   APARTMENT = 'APARTMENT',

@@ -38,7 +38,7 @@ import {
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from '../noris/utils/noris.helper'
-import { mapNorisToTaxDetailData } from './utils/tax-detail.helper'
+import { mapNorisToTaxDetailData } from '../noris/utils/tax-detail.helper'
 import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()

@@ -16,7 +16,7 @@ import {
   AreaTypesEnum,
   DeliveryMethod,
   IsInCityAccount,
-} from '../../noris/noris.types'
+} from '../../noris/utils/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'

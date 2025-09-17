@@ -11,7 +11,7 @@ import {
   DeliveryMethod,
   IsInCityAccount,
   UpdateNorisDeliveryMethods,
-} from '../noris/noris.types'
+} from '../noris/utils/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
@@ -38,7 +38,7 @@ import {
   mapNorisToTaxDetailData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
-} from '../noris/utils/noris.helper'
+} from '../noris/utils/mapping.helper'
 import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()

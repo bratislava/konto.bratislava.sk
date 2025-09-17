@@ -5,7 +5,7 @@ import * as mssql from 'mssql'
 
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NorisService } from '../noris.service'
-import { DeliveryMethod, IsInCityAccount } from '../noris.types'
+import { DeliveryMethod, IsInCityAccount } from '../utils/noris.types'
 
 const mockConnection = {
   close: jest.fn(),

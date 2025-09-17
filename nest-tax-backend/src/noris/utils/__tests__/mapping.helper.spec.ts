@@ -2,7 +2,7 @@ import {
   AreaTypesEnum,
   DeliveryMethod,
   DeliveryMethodNoris,
-} from '../../noris.types'
+} from '../noris.types'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,

@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/noris.types'
+import { DeliveryMethod } from '../../noris/utils/noris.types'
 
 export class RequestPostNorisLoadDataDto {
   @ApiProperty({

@@ -37,7 +37,7 @@ import {
   mapNorisToTaxData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
-} from './utils/admin.helper'
+} from '../noris/utils/noris.helper'
 import { mapNorisToTaxDetailData } from './utils/tax-detail.helper'
 import { createTestingTaxMock } from './utils/testing-tax-mock'
 

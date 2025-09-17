@@ -5,7 +5,7 @@ import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 @Injectable()
-export class ConnectionSubservice {
+export class NorisConnectionSubservice {
   private readonly logger: Logger = new Logger('NorisService')
 
   constructor(
@@ -23,6 +23,24 @@ export class ConnectionSubservice {
         'Missing one of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
       )
     }
+  }
+
+  async createConnection(): Promise<ConnectionPool>{
+    const connection = await connect({
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
+      port: 1433,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+      connectionTimeout: 120_000,
+      requestTimeout: 120_000,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
+      options: {
+        encrypt: true,
+        trustServerCertificate: true,
+      },
+    })
+
+    return connection
   }
 
   async createOptimizedConnection(): Promise<ConnectionPool> {

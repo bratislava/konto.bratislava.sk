@@ -230,7 +230,7 @@ export class AdminService {
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
-    const norisData = (await this.norisService.getDataFromNoris(
+    const norisData = (await this.norisService.getTaxDataByYearAndBirthNumber(
       data,
     )) as NorisTaxPayersDto[]
 
@@ -245,7 +245,7 @@ export class AdminService {
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
     let norisData: NorisTaxPayersDto[]
     try {
-      norisData = (await this.norisService.getDataFromNoris(
+      norisData = (await this.norisService.getTaxDataByYearAndBirthNumber(
         data,
       )) as NorisTaxPayersDto[]
     } catch (error) {

@@ -3,7 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 
-import { AdminService } from '../admin/admin.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
@@ -25,13 +24,14 @@ import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { NorisService } from '../noris/noris.service'
 import {NorisPaymentsDto} from "../noris/noris.dto";
 
+const UPLOAD_BIRTHNUMBERS_BATCH = 100
+
 @Injectable()
 export class TasksService {
   private readonly logger: Logger
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly cardPaymentReportingService: CardPaymentReportingService,
     private readonly bloomreachService: BloomreachService,
@@ -325,7 +325,6 @@ export class TasksService {
       await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, 3)
 
     // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
-
     await this.prismaService.taxPayer.createMany({
       data: data.birthNumbers.map((bn) => {
         return { birthNumber: bn }
@@ -352,7 +351,7 @@ export class TasksService {
     const year = new Date().getFullYear()
     const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
       select: { birthNumber: true },
-      where: { tax: { none: { year: year } } },
+      where: { taxes: { none: { year: year } } },
       orderBy: { updatedAt: 'asc' },
       take: UPLOAD_BIRTHNUMBERS_BATCH,
     })
@@ -374,7 +373,7 @@ export class TasksService {
     })
 
     // Load data from Noris
-    const result = await this.adminService.loadDataFromNoris(year, birthNumbers)
+    const result = await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({year, birthNumbers})
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,

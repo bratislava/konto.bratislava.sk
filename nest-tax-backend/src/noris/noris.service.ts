@@ -17,7 +17,7 @@ import {
   setDeliveryMethodsForUser,
 } from './noris.queries'
 import { UpdateNorisDeliveryMethods } from './noris.types'
-import { mapDeliveryMethodToNoris } from './utils/noris.helper'
+import { mapDeliveryMethodToNoris } from './utils/mapping.helper'
 
 @Injectable()
 export class NorisService {

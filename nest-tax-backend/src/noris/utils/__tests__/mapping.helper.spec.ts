@@ -11,7 +11,7 @@ import {
   mapNorisToTaxDetailData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
-} from '../noris.helper'
+} from '../mapping.helper'
 
 import { TaxAdministrator } from '@prisma/client'
 

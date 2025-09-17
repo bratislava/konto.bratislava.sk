@@ -57,7 +57,7 @@ model Tax {
   taxDetails                      TaxDetail[]
   lastCheckedPayments             DateTime             @default(now())
   lastCheckedUpdates              DateTime             @default(now())
-  deliveryMethod                  DeliveryMethodNamed?
+  deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 
   @@unique([taxPayerId, year])

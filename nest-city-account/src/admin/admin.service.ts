@@ -86,6 +86,7 @@ export class AdminService {
       externalId: user.externalId,
       userAttribute: user.userAttribute,
       cognitoAttributes: cognitoUser,
+      taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
     }
   }
 
@@ -124,6 +125,7 @@ export class AdminService {
         externalId: user.externalId,
         userAttribute: user.userAttribute,
         cognitoAttributes: cognitoUser,
+        taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
       }
     }
 

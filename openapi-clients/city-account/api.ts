@@ -564,7 +564,21 @@ export interface ResponseUserByBirthNumberDto {
    * Tier from cognito
    */
   cognitoAttributes?: object
+  /**
+   * Delivery method for tax documents at lock date
+   */
+  taxDeliveryMethodAtLockDate?: ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum | null
 }
+
+export const ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum = {
+  Edesk: 'EDESK',
+  CityAccount: 'CITY_ACCOUNT',
+  Postal: 'POSTAL',
+} as const
+
+export type ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum =
+  (typeof ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum)[keyof typeof ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum]
+
 export interface ResponseUserDataBasicDto {
   /**
    * Local ID of user

@@ -22,6 +22,8 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import { NorisService } from '../noris/noris.service'
+import {NorisPaymentsDto} from "../noris/noris.dto";
 
 @Injectable()
 export class TasksService {
@@ -35,6 +37,7 @@ export class TasksService {
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
+    private readonly norisService: NorisService,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -109,10 +112,9 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      result = await this.adminService.updatePaymentsFromNoris({
-        type: 'variableSymbols',
-        data,
-      })
+      const norisPaymentData: Partial<NorisPaymentsDto>[] =
+           await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
+      result = await this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
@@ -163,7 +165,7 @@ export class TasksService {
       `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
     )
 
-    await this.adminService.updateTaxesFromNoris(taxes)
+    await this.norisService.updateTaxesFromNoris(taxes)
 
     await this.prismaService.tax.updateMany({
       where: {

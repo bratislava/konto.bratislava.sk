@@ -21,3 +21,9 @@ export interface UpdateNorisDeliveryMethods {
   deliveryMethod: DeliveryMethod | null
   date: string | null
 }
+
+export enum AreaTypesEnum {
+  APARTMENT = 'APARTMENT',
+  CONSTRUCTION = 'CONSTRUCTION',
+  GROUND = 'GROUND',
+}

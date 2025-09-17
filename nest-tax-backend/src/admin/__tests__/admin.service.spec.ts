@@ -12,7 +12,11 @@ import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../../noris/noris.dto'
 import { NorisService } from '../../noris/noris.service'
-import { DeliveryMethod, IsInCityAccount } from '../../noris/noris.types'
+import {
+  AreaTypesEnum,
+  DeliveryMethod,
+  IsInCityAccount,
+} from '../../noris/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
@@ -623,7 +627,7 @@ describe('AdminService', () => {
           {
             taxId: 1,
             areaType: 'A',
-            type: taxDetailHelper.AreaTypesEnum.APARTMENT,
+            type: AreaTypesEnum.APARTMENT,
             base: 100,
             amount: 400,
             area: null,
@@ -631,7 +635,7 @@ describe('AdminService', () => {
           {
             taxId: 1,
             areaType: 'B',
-            type: taxDetailHelper.AreaTypesEnum.CONSTRUCTION,
+            type: AreaTypesEnum.CONSTRUCTION,
             base: 200,
             amount: 300,
             area: null,
@@ -639,7 +643,7 @@ describe('AdminService', () => {
           {
             taxId: 1,
             areaType: 'C',
-            type: taxDetailHelper.AreaTypesEnum.GROUND,
+            type: AreaTypesEnum.GROUND,
             base: 0,
             amount: 200,
             area: null,

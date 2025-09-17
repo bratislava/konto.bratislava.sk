@@ -1,8 +1,12 @@
-import { DeliveryMethod, DeliveryMethodNoris } from '../noris.types'
+import {
+  AreaTypesEnum,
+  DeliveryMethod,
+  DeliveryMethodNoris,
+} from '../noris.types'
 import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisTaxPayersDto } from '../../noris/noris.dto'
+import { NorisTaxPayersDto } from '../noris.dto'
 
 export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue
@@ -114,12 +118,6 @@ export const mapDeliveryMethodToNoris = (
     throw new Error(`Unknown delivery method: ${deliveryMethod}`)
   }
   return norisMethod
-}
-
-export enum AreaTypesEnum {
-  APARTMENT = 'APARTMENT',
-  CONSTRUCTION = 'CONSTRUCTION',
-  GROUND = 'GROUND',
 }
 
 const config: Record<

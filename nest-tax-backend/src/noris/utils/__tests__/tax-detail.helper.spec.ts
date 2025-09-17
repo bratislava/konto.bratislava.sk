@@ -1,5 +1,6 @@
 import { NorisTaxPayersDto } from '../../noris.dto'
-import { AreaTypesEnum, mapNorisToTaxDetailData } from '../noris.helper'
+import { mapNorisToTaxDetailData } from '../noris.helper'
+import {AreaTypesEnum} from "../../noris.types";
 
 describe('taxDetail', () => {
   const mockTaxId = 123

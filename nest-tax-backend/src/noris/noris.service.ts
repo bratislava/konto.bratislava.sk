@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { connect, ConnectionPool, Request } from 'mssql'
+import { connect, Request } from 'mssql'
 
 import {
   RequestPostNorisLoadDataDto,
@@ -15,9 +15,10 @@ import {
   queryPayersFromNoris,
   queryPaymentsFromNoris,
   setDeliveryMethodsForUser,
-} from './noris.queries'
-import { UpdateNorisDeliveryMethods } from './noris.types'
+} from './utils/noris.queries'
+import { UpdateNorisDeliveryMethods } from './utils/noris.types'
 import { mapDeliveryMethodToNoris } from './utils/mapping.helper'
+import { ConnectionSubservice } from './subservices/connection.subservice'
 
 @Injectable()
 export class NorisService {
@@ -26,6 +27,7 @@ export class NorisService {
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly connectionService: ConnectionSubservice,
   ) {
     if (
       !process.env.MSSQL_HOST ||
@@ -237,11 +239,11 @@ export class NorisService {
     variableSymbols: string[],
     years: number[],
   ): Promise<NorisUpdateDto[]> {
-    const connection = await this.createOptimizedConnection()
+    const connection = await this.connectionService.createOptimizedConnection()
 
     try {
       // Wait for connection to be fully established
-      await this.waitForConnection(connection)
+      await this.connectionService.waitForConnection(connection)
 
       const request = new Request(connection)
 
@@ -277,47 +279,5 @@ export class NorisService {
       // Always close the connection
       await connection.close()
     }
-  }
-
-  private async createOptimizedConnection(): Promise<ConnectionPool> {
-    const connection = await connect({
-      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
-      port: 1433,
-      database: this.configService.getOrThrow<string>('MSSQL_DB'),
-      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
-      connectionTimeout: 60_000,
-      requestTimeout: 180_000,
-      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
-      options: {
-        encrypt: true,
-        trustServerCertificate: true,
-      },
-    })
-
-    return connection
-  }
-
-  private async waitForConnection(
-    connection: ConnectionPool,
-    maxWaitTime: number = 10_000,
-  ): Promise<void> {
-    const startTime = Date.now()
-
-    return new Promise((resolve, reject) => {
-      const checkConnection = () => {
-        if (connection.connected) {
-          resolve()
-        } else if (Date.now() - startTime >= maxWaitTime) {
-          reject(
-            new Error(
-              'Connection timeout: Database connection not established within timeout period',
-            ),
-          )
-        } else {
-          setTimeout(checkConnection, 100)
-        }
-      }
-      checkConnection()
-    })
   }
 }

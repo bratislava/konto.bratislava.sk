@@ -9,6 +9,8 @@ import PaymentData from './PaymentData'
 import TaxFooter from './TaxFooter'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
+// query param "sposob-uhrady" could have "zvysna suma" split to "zvysna-suma" and "jednorazova-uhrada"
+// but only thing that is affecting is title of the page
 const TaxFeePayment = () => {
   const { t } = useTranslation('account')
 

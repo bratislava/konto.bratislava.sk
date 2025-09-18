@@ -20,6 +20,7 @@ const TaxesFeesDeliveryMethodCard = ({
     return null
   }
 
+  // TODO this is repeated 3 time in the codebase, we should move this logic to separate function
   const type = {
     [UserOfficialCorrespondenceChannelEnum.Email]: t('communication_channel.email'),
     [UserOfficialCorrespondenceChannelEnum.Postal]: t('communication_channel.postal'),

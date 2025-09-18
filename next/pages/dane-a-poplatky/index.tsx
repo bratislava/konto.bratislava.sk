@@ -45,7 +45,6 @@ const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
       // TODO: This should be replace with a proper error code (which is not returned)
       error.response?.data?.message === 'Forbidden tier'
     ) {
-      // TODO: revisit this when you understand this endpoint better
       return null
     }
     throw error

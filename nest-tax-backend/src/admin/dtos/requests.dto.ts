@@ -136,6 +136,13 @@ export class RequestUpdateNorisDeliveryMethodsDto {
 
 export class RequestAdminCreateTestingTaxNorisData {
   @ApiProperty({
+    description: 'Variable symbol of the tax',
+    example: '0000000001',
+  })
+  @IsString()
+  variableSymbol: string
+
+  @ApiProperty({
     description: 'Delivery method for the tax',
     enum: DeliveryMethod,
     nullable: true,

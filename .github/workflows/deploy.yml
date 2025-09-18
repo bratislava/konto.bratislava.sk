@@ -41,15 +41,23 @@ jobs:
 
   deploy-dev:
     name: after dev Backends deploy Next
-    needs: [conditions, deploy-dev-strapi, deploy-dev-nest-forms-backend, deploy-dev-nest-clamav-scanner, deploy-dev-nest-tax-backend, deploy-dev-nest-city-account]
+    needs:
+      [
+        conditions,
+        deploy-dev-strapi,
+        deploy-dev-nest-forms-backend,
+        deploy-dev-nest-clamav-scanner,
+        deploy-dev-nest-tax-backend,
+        deploy-dev-nest-city-account,
+      ]
     if: needs.conditions.outputs.dev == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -68,8 +76,8 @@ jobs:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -86,9 +94,9 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
     with:
       directory: strapi/
-      cluster: tkg-innov-dev
+      cluster: development
       skip_deployment_check: '--no_image_repo_check'
-      url: https://tkg.dev.bratislava.sk
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -107,8 +115,8 @@ jobs:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -125,9 +133,9 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
     with:
       directory: cvdmirror/
-      cluster: tkg-innov-dev
+      cluster: development
       skip_deployment_check: '--no_image_repo_check'
-      url: https://tkg.dev.bratislava.sk
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -144,8 +152,8 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
     with:
       directory: clamav/
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       skip_deployment_check: '--no_image_repo_check'
       debug: --debug
       version: beta
@@ -165,8 +173,8 @@ jobs:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -185,8 +193,8 @@ jobs:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
     secrets:
@@ -204,8 +212,8 @@ jobs:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
     secrets:
@@ -216,7 +224,15 @@ jobs:
 
   deploy-staging:
     name: after staging Backends deploy Next
-    needs: [conditions, deploy-staging-strapi, deploy-staging-nest-forms-backend, deploy-staging-nest-clamav-scanner, deploy-staging-nest-tax-backend, deploy-staging-nest-city-account]
+    needs:
+      [
+        conditions,
+        deploy-staging-strapi,
+        deploy-staging-nest-forms-backend,
+        deploy-staging-nest-clamav-scanner,
+        deploy-staging-nest-tax-backend,
+        deploy-staging-nest-city-account,
+      ]
     if: needs.conditions.outputs.staging == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
@@ -410,7 +426,15 @@ jobs:
 
   deploy-prod:
     name: after prod Backends deploy Next
-    needs: [conditions, deploy-prod-strapi, deploy-prod-nest-forms-backend, deploy-prod-nest-clamav-scanner, deploy-prod-nest-tax-backend, deploy-prod-nest-city-account]
+    needs:
+      [
+        conditions,
+        deploy-prod-strapi,
+        deploy-prod-nest-forms-backend,
+        deploy-prod-nest-clamav-scanner,
+        deploy-prod-nest-tax-backend,
+        deploy-prod-nest-city-account,
+      ]
     if: needs.conditions.outputs.prod == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:

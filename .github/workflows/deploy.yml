@@ -51,7 +51,7 @@ jobs:
         deploy-dev-nest-city-account,
       ]
     if: needs.conditions.outputs.dev == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
@@ -71,7 +71,7 @@ jobs:
     name: dev Next
     needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.dev-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
@@ -91,7 +91,7 @@ jobs:
     name: dev Strapi
     needs: conditions
     if: needs.conditions.outputs.dev-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: strapi/
       cluster: development
@@ -110,7 +110,7 @@ jobs:
     name: dev nest-forms-backend
     needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.dev-nest-forms-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
@@ -130,7 +130,7 @@ jobs:
     name: dev cvdmirror
     needs: conditions
     if: needs.conditions.outputs.dev-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: cvdmirror/
       cluster: development
@@ -149,7 +149,7 @@ jobs:
     name: dev clamav
     needs: deploy-dev-cvdmirror
     if: needs.conditions.outputs.dev-clamav == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: clamav/
       cluster: development
@@ -168,7 +168,7 @@ jobs:
     name: dev nest-clamav-scanner
     needs: [deploy-dev-clamav, build-openapi-clients]
     if: needs.conditions.outputs.dev-nest-clamav-scanner == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
@@ -188,7 +188,7 @@ jobs:
     name: dev nest-tax-backend
     needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.dev-nest-tax-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'

@@ -17,7 +17,7 @@ jobs:
     name: Deploy to dev
     if: needs.conditions.outputs.dev == 'true'
     needs: conditions
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: ./
       cluster: development

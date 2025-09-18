@@ -5,7 +5,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import {
   CreateOrderData,
-  PaymentErrorStatus,
   PaymentResponseQueryToVerifyDto,
 } from '../dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from '../gpwebpay.subservice'

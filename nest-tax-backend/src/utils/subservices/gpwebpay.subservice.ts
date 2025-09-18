@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config'
 
 import {
   CreateOrderData,
-  PaymentErrorStatus,
   PaymentResponseQueryToVerifyDto,
   SignedOrderData,
 } from './dtos/gpwebpay.dto'

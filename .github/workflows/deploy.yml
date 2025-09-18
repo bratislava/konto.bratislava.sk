@@ -207,7 +207,7 @@ jobs:
     name: dev nest-city-account
     needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.dev-nest-city-account == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'

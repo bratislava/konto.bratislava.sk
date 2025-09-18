@@ -1,12 +1,12 @@
+import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
+import currency from 'currency.js'
+
+import { NorisTaxPayersDto } from '../noris.dto'
 import {
   AreaTypesEnum,
   DeliveryMethod,
   DeliveryMethodNoris,
 } from './noris.types'
-import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
-import currency from 'currency.js'
-
-import { NorisTaxPayersDto } from '../noris.dto'
 
 export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue

@@ -17,7 +17,6 @@ export interface SignedOrderData extends CreateOrderData {
   DIGEST: string
 }
 
-
 export class PaymentResponseQueryToVerifyDto {
   @IsNotEmpty() OPERATION!: string
 

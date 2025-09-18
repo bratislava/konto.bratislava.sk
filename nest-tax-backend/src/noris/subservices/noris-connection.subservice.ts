@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionPool } from 'mssql'
+
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
@@ -25,7 +26,7 @@ export class NorisConnectionSubservice {
     }
   }
 
-  async createConnection(): Promise<ConnectionPool>{
+  async createConnection(): Promise<ConnectionPool> {
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,

@@ -1,5 +1,5 @@
 describe('Minimal test suite', () => {
   test('should pass', () => {
-    expect(true).toBe(true);
-  });
-});
+    expect(true).toBe(true)
+  })
+})

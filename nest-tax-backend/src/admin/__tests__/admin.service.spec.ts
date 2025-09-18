@@ -1,8 +1,8 @@
 describe('Minimal test suite', () => {
   test('should pass', () => {
-    expect(true).toBe(true);
-  });
-});
+    expect(true).toBe(true)
+  })
+})
 /* TODO move tests to Noris module
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'

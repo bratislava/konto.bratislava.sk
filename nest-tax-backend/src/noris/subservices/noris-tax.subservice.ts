@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { Request } from 'mssql'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { RequestPostNorisLoadDataDto } from '../../admin/dtos/requests.dto'
+import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
+import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { NorisTaxPayersDto, NorisUpdateDto } from '../noris.dto'
-import {
-  getNorisDataForUpdate,
-  queryPayersFromNoris,
-} from '../utils/noris.queries'
-import { NorisConnectionSubservice } from './noris-connection.subservice'
-import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
+import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
+import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
+import { NorisTaxPayersDto, NorisUpdateDto } from '../noris.dto'
+import { CustomErrorNorisTypesEnum } from '../noris.errors'
 import {
   convertCurrencyToInt,
   mapNorisToTaxAdministratorData,
@@ -20,19 +23,17 @@ import {
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from '../utils/mapping.helper'
-import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import { PrismaService } from '../../prisma/prisma.service'
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
-import { Prisma } from '@prisma/client'
-import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
-import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
+import {
+  getNorisDataForUpdate,
+  queryPayersFromNoris,
+} from '../utils/noris.queries'
+import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisPaymentSubservice } from './noris-payment.subservice'
-import { CustomErrorNorisTypesEnum } from '../noris.errors'
-import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 
 @Injectable()
 export class NorisTaxSubservice {
   private readonly logger = new LineLoggerSubservice('NorisTaxSubservice')
+
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly connectionService: NorisConnectionSubservice,

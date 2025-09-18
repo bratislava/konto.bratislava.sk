@@ -36,9 +36,11 @@ export const mockConfigService = {
 }
 
 export const mockThrowerErrorGuard = {
-  InternalServerErrorException: jest.fn().mockImplementation((error, message) => {
-    return new Error(message)
-  }),
+  InternalServerErrorException: jest
+    .fn()
+    .mockImplementation((error, message) => {
+      return new Error(message)
+    }),
 }
 
 // Usage in tests

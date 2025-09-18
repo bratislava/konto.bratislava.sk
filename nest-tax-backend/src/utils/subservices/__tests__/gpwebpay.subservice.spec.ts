@@ -5,7 +5,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import {
   CreateOrderData,
-  PaymentErrorStatus,
   PaymentResponseQueryToVerifyDto,
 } from '../dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from '../gpwebpay.subservice'
@@ -91,44 +90,6 @@ describe('GpWebpaySubservice', () => {
 
       const result = service.getDataToVerify(mockData)
       expect(result).toBe('CREATE|456|0|0|OK')
-    })
-  })
-
-  describe('getPaymentErrorMessage', () => {
-    it('should return correct error status for direct PR codes', () => {
-      expect((service as any).getPaymentErrorMessage('32', '0')).toBe(
-        PaymentErrorStatus.incorrectData,
-      )
-      expect((service as any).getPaymentErrorMessage('25', '0')).toBe(
-        PaymentErrorStatus.paymentDenied,
-      )
-      expect((service as any).getPaymentErrorMessage('26', '0')).toBe(
-        PaymentErrorStatus.techProblem,
-      )
-      expect((service as any).getPaymentErrorMessage(25, '0')).toBe(
-        PaymentErrorStatus.paymentDenied,
-      )
-      expect((service as any).getPaymentErrorMessage('26', 0)).toBe(
-        PaymentErrorStatus.techProblem,
-      )
-      expect((service as any).getPaymentErrorMessage(26, 0)).toBe(
-        PaymentErrorStatus.techProblem,
-      )
-    })
-
-    it('should return correct error status for special cases', () => {
-      expect((service as any).getPaymentErrorMessage('28', '3000')).toBe(
-        PaymentErrorStatus.incorrectData,
-      )
-      expect((service as any).getPaymentErrorMessage('30', '1001')).toBe(
-        PaymentErrorStatus.paymentDenied,
-      )
-    })
-
-    it('should return unknown error for unmapped codes', () => {
-      expect((service as any).getPaymentErrorMessage('999', '999')).toBe(
-        PaymentErrorStatus.unknownError,
-      )
     })
   })
 

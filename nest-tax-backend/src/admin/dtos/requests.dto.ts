@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/noris.types'
+import { DeliveryMethod } from '../../noris/utils/noris.types'
 
 export class RequestPostNorisLoadDataDto {
   @ApiProperty({
@@ -24,16 +24,6 @@ export class RequestPostNorisLoadDataDto {
     default: ['000000/0000'],
   })
   birthNumbers: string[] | 'All'
-}
-
-export class CreateBirthNumbersRequestDto {
-  @ApiProperty({
-    description:
-      'Birth numbers which should be added to tax payers in database. They must be in format with slash.',
-    default: ['000000/0000'],
-    type: [String],
-  })
-  birthNumbers: string[]
 }
 
 export class RequestPostNorisPaymentDataLoadDto {

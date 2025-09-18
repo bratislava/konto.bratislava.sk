@@ -1,15 +1,14 @@
-import ImageMesto from '@assets/images/mestske-konto-situacia.png'
+import Icon from '@assets/images/mestske-konto-situacia-3.png'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 
-const TaxesFeesErrorCard = () => {
+const TaxesFeesSearchingCard = () => {
   const { t } = useTranslation('account')
 
   const content = `
-  <h3>${t('account_section_payment.error_card_title')}</h3>
-  <div>${t('account_section_payment.error_card_content.title')}
-  <ul>${t('account_section_payment.error_card_content.list.other')}</ul><br /></div>
+  <h3>${t('account_section_payment.searching_card_title')}</h3>
+  <div>${t('account_section_payment.searching_card_text')}</div>
   `
 
   return (
@@ -21,10 +20,10 @@ const TaxesFeesErrorCard = () => {
         />
       </div>
       <span className="flex flex-1 justify-center">
-        <Image src={ImageMesto} alt="" className="object-contain" />
+        <Image src={Icon} alt="" className="object-contain" />
       </span>
     </div>
   )
 }
 
-export default TaxesFeesErrorCard
+export default TaxesFeesSearchingCard

@@ -1,0 +1,40 @@
+import BannerTaxWaiting from '@assets/images/banner-tax-waiting.png'
+import { ROUTES } from 'frontend/api/constants'
+import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+
+import AnnouncementBlock from '../IntroSection/Announcements/AnnouncementBlock'
+
+type TaxesFeesVerifyAndSetDeliveryMethodBannerProps = {
+  onDeliveryMethodChange: () => void
+}
+
+const TaxesFeesVerifyAndSetDeliveryMethodBanner = ({
+  onDeliveryMethodChange,
+}: TaxesFeesVerifyAndSetDeliveryMethodBannerProps) => {
+  const { t } = useTranslation('account')
+  const { tierStatus } = useSsrAuth()
+  const { isIdentityVerified } = tierStatus
+
+  return (
+    <AnnouncementBlock
+      announcementContent={t('account_section_payment.set_delivery_method_content')}
+      // TODO change for image without background color white
+      imageSrc={BannerTaxWaiting}
+      buttons={[
+        {
+          children: isIdentityVerified
+            ? t('account_section_payment.set_delivery_method')
+            : t('account_section_payment.verify_and_set'),
+          href: isIdentityVerified ? undefined : ROUTES.IDENTITY_VERIFICATION,
+          onPress: isIdentityVerified ? onDeliveryMethodChange : undefined,
+          variant: 'black-solid',
+          fullWidthMobile: true,
+        },
+      ]}
+    />
+  )
+}
+
+export default TaxesFeesVerifyAndSetDeliveryMethodBanner

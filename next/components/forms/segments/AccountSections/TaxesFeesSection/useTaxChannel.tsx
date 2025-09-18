@@ -15,10 +15,12 @@ export const useTaxChannel = () => {
 
   const {
     officialCorrespondenceChannel,
-    showEmailCommunicationBanner,
+    showEmailCommunicationBanner: showDeliveryMethodNotSetBanner,
     wasVerifiedBeforeTaxDeadline,
   } = userData
 
+  // TODO: this logic is only considering user that recently verified their birth number, but it should be considering user that was verified before
+  // TODO: Move this logic to BE
   const channelChangeEffectiveNextYear =
     !wasVerifiedBeforeTaxDeadline &&
     officialCorrespondenceChannel === UserOfficialCorrespondenceChannelEnum.Email
@@ -30,7 +32,7 @@ export const useTaxChannel = () => {
 
   return {
     channel: officialCorrespondenceChannel,
-    showEmailCommunicationBanner,
+    showDeliveryMethodNotSetBanner,
     canChangeChannel,
     channelChangeEffectiveNextYear,
     channelCurrentYearEffective,

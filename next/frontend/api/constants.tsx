@@ -9,6 +9,7 @@ export const ROUTES = {
   HELP: '/pomoc',
   TAXES_AND_FEES: '/dane-a-poplatky',
   TAXES_AND_FEES_YEAR: (year: number) => `/dane-a-poplatky/${year}`,
+  TAXES_AND_FEES_PAYMENT: (year: number) => `/dane-a-poplatky/${year}/platba`,
   MUNICIPAL_SERVICES: '/mestske-sluzby',
   MUNICIPAL_SERVICES_FORM: (formSlug: string) => `/mestske-sluzby/${formSlug}`,
   MUNICIPAL_SERVICES_FORM_WITH_ID: (formSlug: string, formId: string) =>

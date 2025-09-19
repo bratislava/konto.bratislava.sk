@@ -6,8 +6,8 @@ jest.mock('@nestjs/config', () => ({
       if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '04'
       if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
       throw new Error(`Unknown config key: ${key}`)
-    })
-  }))
+    }),
+  })),
 }))
 
 describe('tax-deadline', () => {

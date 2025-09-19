@@ -54,56 +54,6 @@ export class GpWebpaySubservice {
     return validValues.join('|')
   }
 
-  private readonly getPaymentErrorMessage = (
-    PRCODE: any,
-    SRCODE: any,
-  ): PaymentErrorStatus => {
-    const pr = Number(PRCODE)
-    const sr = Number(SRCODE)
-
-    // Direct PR code mappings
-    const prCodeMap: Record<number, PaymentErrorStatus> = {
-      32: PaymentErrorStatus.incorrectData,
-      38: PaymentErrorStatus.incorrectData,
-      25: PaymentErrorStatus.paymentDenied,
-      40: PaymentErrorStatus.paymentDenied,
-      85: PaymentErrorStatus.paymentDenied,
-      300: PaymentErrorStatus.paymentDenied,
-      26: PaymentErrorStatus.techProblem,
-      1000: PaymentErrorStatus.techProblem,
-    }
-
-    // Special cases mappings
-    const specialCases: Record<number, Record<number, PaymentErrorStatus>> = {
-      28: {
-        3000: PaymentErrorStatus.incorrectData,
-        3008: PaymentErrorStatus.paymentDenied,
-        3005: PaymentErrorStatus.techProblem,
-        3006: PaymentErrorStatus.techProblem,
-        3007: PaymentErrorStatus.techProblem,
-      },
-      30: {
-        1003: PaymentErrorStatus.incorrectData,
-        1001: PaymentErrorStatus.paymentDenied,
-        1002: PaymentErrorStatus.paymentDenied,
-        1005: PaymentErrorStatus.paymentDenied,
-        1004: PaymentErrorStatus.techProblem,
-      },
-    }
-
-    // Check direct PR code mappings
-    if (prCodeMap[pr]) {
-      return prCodeMap[pr]
-    }
-
-    // Check special cases
-    if (specialCases[pr]?.[sr]) {
-      return specialCases[pr][sr]
-    }
-
-    return PaymentErrorStatus.unknownError
-  }
-
   getSignedData(data: CreateOrderData): SignedOrderData {
     const signer = crypto.createSign('SHA1')
 

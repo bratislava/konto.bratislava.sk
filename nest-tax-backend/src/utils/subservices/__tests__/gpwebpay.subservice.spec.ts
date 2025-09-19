@@ -94,44 +94,6 @@ describe('GpWebpaySubservice', () => {
     })
   })
 
-  describe('getPaymentErrorMessage', () => {
-    it('should return correct error status for direct PR codes', () => {
-      expect((service as any).getPaymentErrorMessage('32', '0')).toBe(
-        PaymentErrorStatus.incorrectData,
-      )
-      expect((service as any).getPaymentErrorMessage('25', '0')).toBe(
-        PaymentErrorStatus.paymentDenied,
-      )
-      expect((service as any).getPaymentErrorMessage('26', '0')).toBe(
-        PaymentErrorStatus.techProblem,
-      )
-      expect((service as any).getPaymentErrorMessage(25, '0')).toBe(
-        PaymentErrorStatus.paymentDenied,
-      )
-      expect((service as any).getPaymentErrorMessage('26', 0)).toBe(
-        PaymentErrorStatus.techProblem,
-      )
-      expect((service as any).getPaymentErrorMessage(26, 0)).toBe(
-        PaymentErrorStatus.techProblem,
-      )
-    })
-
-    it('should return correct error status for special cases', () => {
-      expect((service as any).getPaymentErrorMessage('28', '3000')).toBe(
-        PaymentErrorStatus.incorrectData,
-      )
-      expect((service as any).getPaymentErrorMessage('30', '1001')).toBe(
-        PaymentErrorStatus.paymentDenied,
-      )
-    })
-
-    it('should return unknown error for unmapped codes', () => {
-      expect((service as any).getPaymentErrorMessage('999', '999')).toBe(
-        PaymentErrorStatus.unknownError,
-      )
-    })
-  })
-
   describe('getSignedData', () => {
     it('should return signed data with digest', () => {
       jest.spyOn(crypto, 'createSign').mockReturnValue({

@@ -3,7 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 
-import { AdminService } from '../admin/admin.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
@@ -22,6 +21,10 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import { NorisService } from '../noris/noris.service'
+import {NorisPaymentsDto} from "../noris/noris.dto";
+
+const UPLOAD_BIRTHNUMBERS_BATCH = 100
 
 @Injectable()
 export class TasksService {
@@ -29,12 +32,12 @@ export class TasksService {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly cardPaymentReportingService: CardPaymentReportingService,
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
+    private readonly norisService: NorisService,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -109,10 +112,9 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      result = await this.adminService.updatePaymentsFromNoris({
-        type: 'variableSymbols',
-        data,
-      })
+      const norisPaymentData: Partial<NorisPaymentsDto>[] =
+           await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
+      result = await this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
@@ -163,7 +165,7 @@ export class TasksService {
       `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
     )
 
-    await this.adminService.updateTaxesFromNoris(taxes)
+    await this.norisService.updateTaxesFromNoris(taxes)
 
     await this.prismaService.tax.updateMany({
       where: {
@@ -306,5 +308,75 @@ export class TasksService {
         'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
       )
     }
+  }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  @HandleErrors('Cron Error')
+  async loadNewUsersFromCityAccount() {
+    // Get latest date from config
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+    ])
+
+    const since = new Date(config.LOADING_NEW_USERS_FROM_CITY_ACCOUNT)
+    // Get birth numbers from nest-city account
+
+    const data =
+      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, 3)
+
+    // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
+    await this.prismaService.taxPayer.createMany({
+      data: data.birthNumbers.map((bn) => {
+        return { birthNumber: bn }
+      }),
+      skipDuplicates: true,
+    })
+
+    await this.prismaService.config.updateMany({
+      where: {
+        key: 'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+      },
+      data: {
+        value: data.nextSince.toISOString(),
+      },
+    })
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
+  async loadTaxesForUsers() {
+    this.logger.log('Starting loadTaxesForUsers task')
+
+    // Find users without tax this year
+    const year = new Date().getFullYear()
+    const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
+      select: { birthNumber: true },
+      where: { taxes: { none: { year: year } } },
+      orderBy: { updatedAt: 'asc' },
+      take: UPLOAD_BIRTHNUMBERS_BATCH,
+    })
+
+    const birthNumbers = taxPayersFromDb.map((p) => p.birthNumber)
+
+    if (birthNumbers.length === 0) {
+      return
+    }
+
+    // Move all requested TaxPayers to the end of the queue
+    await this.prismaService.taxPayer.updateMany({
+      where: {
+        birthNumber: { in: birthNumbers },
+      },
+      data: {
+        updatedAt: new Date(),
+      },
+    })
+
+    // Load data from Noris
+    const result = await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({year, birthNumbers})
+
+    this.logger.log(
+      `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
+    )
   }
 }

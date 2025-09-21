@@ -88,7 +88,7 @@
     "prisma": "^6.16.2",
     "rimraf": "^6.0.1",
     "supertest": "^7.1.4",
-    "ts-jest": "^29.4.1",
+    "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "ts-unused-exports": "^11.0.1",
     "typescript": "^5.4.5"

@@ -16,7 +16,7 @@ import {
   DeliveryMethodNoris,
 } from '../noris.types'
 
-describe('admin.helper', () => {
+describe('mapping.helper', () => {
   describe('convertCurrencyToInt', () => {
     it('should convert string currency with comma to integer', () => {
       expect(convertCurrencyToInt('123,45')).toBe(12_345)

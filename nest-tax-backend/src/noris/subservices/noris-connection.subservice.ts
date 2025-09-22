@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { connect, ConnectionPool } from 'mssql'
+import { connect, ConnectionPool, config } from 'mssql'
 
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -26,8 +26,11 @@ export class NorisConnectionSubservice {
     }
   }
 
-  async createConnection(): Promise<ConnectionPool> {
+  async createConnection(
+    configOverrides?: Partial<config>,
+  ): Promise<ConnectionPool> {
     const connection = await connect({
+      ...configOverrides,
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
       database: this.configService.getOrThrow<string>('MSSQL_DB'),
@@ -45,21 +48,10 @@ export class NorisConnectionSubservice {
   }
 
   async createOptimizedConnection(): Promise<ConnectionPool> {
-    const connection = await connect({
-      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
-      port: 1433,
-      database: this.configService.getOrThrow<string>('MSSQL_DB'),
-      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+    return this.createConnection({
       connectionTimeout: 60_000,
       requestTimeout: 180_000,
-      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
-      options: {
-        encrypt: true,
-        trustServerCertificate: true,
-      },
     })
-
-    return connection
   }
 
   async waitForConnection(

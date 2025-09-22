@@ -21,7 +21,7 @@ export class NorisDeliveryMethodSubservice {
     private readonly connectionService: NorisConnectionSubservice,
   ) {}
 
-  async updateDeliveryMethods(
+  async updateDeliveryMethodsInNoris(
     data: UpdateNorisDeliveryMethods[],
   ): Promise<void> {
     const connection = await this.connectionService.createConnection()
@@ -71,7 +71,7 @@ export class NorisDeliveryMethodSubservice {
     }
   }
 
-  async updateDeliveryMethodsInNoris({
+  async updateDeliveryMethods({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
     /**
@@ -136,12 +136,12 @@ export class NorisDeliveryMethodSubservice {
     })
 
     if (updates.length > 0) {
-      await this.updateDeliveryMethods(updates)
+      await this.updateDeliveryMethodsInNoris(updates)
     }
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    await this.updateDeliveryMethods([
+    await this.updateDeliveryMethodsInNoris([
       {
         birthNumbers: [addSlashToBirthNumber(birthNumber)],
         inCityAccount: IsInCityAccount.NO,

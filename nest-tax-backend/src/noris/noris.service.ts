@@ -80,7 +80,7 @@ export class NorisService {
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
-    return this.deliverySubservice.updateDeliveryMethodsInNoris({ data })
+    return this.deliverySubservice.updateDeliveryMethods({ data })
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

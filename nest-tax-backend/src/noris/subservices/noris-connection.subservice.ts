@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionPool, config } from 'mssql'
 
@@ -7,8 +7,6 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 @Injectable()
 export class NorisConnectionSubservice {
-  private readonly logger: Logger = new Logger('NorisService')
-
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,

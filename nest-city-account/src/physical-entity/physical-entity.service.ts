@@ -273,9 +273,9 @@ export class PhysicalEntityService {
     })
 
     const upvsInput: UpvsIdentityByUriServiceCreateManyParam = physicalEntitiesFromDb
-      .filter((entity) => entity.uri)
-      .map((entity) => {
-        return { physicalEntityId: entity.id, uri: entity.uri! }
+      .filter((physicalEntity) => physicalEntity.uri)
+      .map((physicalEntity) => {
+        return { physicalEntityId: physicalEntity.id, uri: physicalEntity.uri! }
       })
 
     await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)

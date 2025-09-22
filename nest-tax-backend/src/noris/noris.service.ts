@@ -22,7 +22,7 @@ export class NorisService {
   constructor(
     private readonly paymentSubservice: NorisPaymentSubservice,
     private readonly taxSubservice: NorisTaxSubservice,
-    private readonly deliverySubservice: NorisDeliveryMethodSubservice,
+    private readonly deliveryMethodSubservice: NorisDeliveryMethodSubservice,
   ) {}
 
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
@@ -80,10 +80,10 @@ export class NorisService {
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
-    return this.deliverySubservice.updateDeliveryMethods({ data })
+    return this.deliveryMethodSubservice.updateDeliveryMethods({ data })
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    return this.deliverySubservice.removeDeliveryMethodsFromNoris(birthNumber)
+    return this.deliveryMethodSubservice.removeDeliveryMethodsFromNoris(birthNumber)
   }
 }

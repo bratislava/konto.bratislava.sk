@@ -268,14 +268,14 @@ export class PhysicalEntityService {
   }
 
   async updateEdeskFromUpvs(where: Prisma.PhysicalEntityWhereInput) {
-    const entities = await this.prismaService.physicalEntity.findMany({
+    const physicalEntitiesFromDb = await this.prismaService.physicalEntity.findMany({
       where,
     })
 
-    const upvsInput: UpvsIdentityByUriServiceCreateManyParam = entities
+    const upvsInput: UpvsIdentityByUriServiceCreateManyParam = physicalEntitiesFromDb
       .filter((entity) => entity.uri)
       .map((entity) => {
-        return { id: entity.id, uri: entity.uri! }
+        return { physicalEntityId: entity.id, uri: entity.uri! }
       })
 
     await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)

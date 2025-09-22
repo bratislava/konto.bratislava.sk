@@ -1,8 +1,6 @@
-import {
-  AreaTypesEnum,
-  DeliveryMethod,
-  DeliveryMethodNoris,
-} from '../noris.types'
+import { TaxAdministrator } from '@prisma/client'
+
+import { NorisTaxPayersDto } from '../../noris.dto'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,
@@ -12,10 +10,11 @@ import {
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from '../mapping.helper'
-
-import { TaxAdministrator } from '@prisma/client'
-
-import { NorisTaxPayersDto } from '../../noris.dto'
+import {
+  AreaTypesEnum,
+  DeliveryMethod,
+  DeliveryMethodNoris,
+} from '../noris.types'
 
 describe('admin.helper', () => {
   describe('convertCurrencyToInt', () => {

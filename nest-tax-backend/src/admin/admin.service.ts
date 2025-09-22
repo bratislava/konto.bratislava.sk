@@ -3,11 +3,6 @@ import { Injectable } from '@nestjs/common'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto } from '../noris/noris.dto'
 import { NorisService } from '../noris/noris.service'
-import {
-  DeliveryMethod,
-  IsInCityAccount,
-  UpdateNorisDeliveryMethods,
-} from '../noris/utils/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -47,7 +42,7 @@ export class AdminService {
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    return await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       data,
     )
   }
@@ -65,11 +60,11 @@ export class AdminService {
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
-    return await this.norisService.updateDeliveryMethodsInNoris({ data })
+    return this.norisService.updateDeliveryMethodsInNoris({ data })
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    return await this.norisService.removeDeliveryMethodsFromNoris(birthNumber)
+    return this.norisService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   /**

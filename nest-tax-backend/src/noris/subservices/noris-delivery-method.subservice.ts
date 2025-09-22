@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common'
 import { Request } from 'mssql'
+
+import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto'
+import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { mapDeliveryMethodToNoris } from '../utils/mapping.helper'
 import { setDeliveryMethodsForUser } from '../utils/noris.queries'
 import {
   DeliveryMethod,
   IsInCityAccount,
   UpdateNorisDeliveryMethods,
 } from '../utils/noris.types'
-import { mapDeliveryMethodToNoris } from '../utils/mapping.helper'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
-import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto'
-import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 
 @Injectable()
 export class NorisDeliveryMethodSubservice {
@@ -138,6 +139,7 @@ export class NorisDeliveryMethodSubservice {
       await this.updateDeliveryMethods(updates)
     }
   }
+
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
     await this.updateDeliveryMethods([
       {

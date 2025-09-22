@@ -5,7 +5,9 @@ import dayjs from 'dayjs'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
+import { NorisPaymentsDto } from '../noris/noris.dto'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
+import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -21,8 +23,6 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
-import { NorisService } from '../noris/noris.service'
-import {NorisPaymentsDto} from "../noris/noris.dto";
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 
@@ -113,8 +113,11 @@ export class TasksService {
     }
     try {
       const norisPaymentData: Partial<NorisPaymentsDto>[] =
-           await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
-      result = await this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
+        await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
+      result =
+        await this.norisService.updatePaymentsFromNorisWithData(
+          norisPaymentData,
+        )
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,

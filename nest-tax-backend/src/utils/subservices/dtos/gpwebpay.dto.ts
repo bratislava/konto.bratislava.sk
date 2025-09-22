@@ -17,13 +17,6 @@ export interface SignedOrderData extends CreateOrderData {
   DIGEST: string
 }
 
-export enum PaymentErrorStatus {
-  techProblem = 'technical-problem',
-  paymentDenied = 'payment-denied',
-  incorrectData = 'incorrect-data',
-  unknownError = 'unknown-error',
-}
-
 export class PaymentResponseQueryToVerifyDto {
   @IsNotEmpty() OPERATION!: string
 

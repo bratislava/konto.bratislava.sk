@@ -1,25 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { PaymentStatus, Tax, TaxPayment } from '@prisma/client'
+import currency from 'currency.js'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import {
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
+import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { PrismaService } from '../../prisma/prisma.service'
 import {
   ErrorsEnum,
   ErrorsResponseEnum,
 } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { queryPaymentsFromNoris } from '../utils/noris.queries'
-import { NorisConnectionSubservice } from './noris-connection.subservice'
-import { NorisPaymentsDto } from '../noris.dto'
-import { PrismaService } from '../../prisma/prisma.service'
-import { PaymentStatus, Tax, TaxPayment } from '@prisma/client'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
-import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
-import currency from 'currency.js'
+import { NorisPaymentsDto } from '../noris.dto'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { queryPaymentsFromNoris } from '../utils/noris.queries'
+import { NorisConnectionSubservice } from './noris-connection.subservice'
 
 @Injectable()
 export class NorisPaymentSubservice {
@@ -66,6 +66,7 @@ export class NorisPaymentSubservice {
     connection.close()
     return norisData.recordset
   }
+
   async getPaymentDataFromNorisByVariableSymbols(
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
@@ -312,6 +313,7 @@ export class NorisPaymentSubservice {
       )
     }
   }
+
   // TODO: Eventually we want to get rid of this function, and do some better error handling, than watching these specific cases.
   /**
    * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.

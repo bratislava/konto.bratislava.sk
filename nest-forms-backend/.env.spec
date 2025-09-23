@@ -64,7 +64,9 @@ OLO_FRONTEND_URL=https://test.olo.sk
 
 # SharePoint
 SHAREPOINT_DOMAIN=test.sharepoint.com
-SHAREPOINT_URL=https://test.sharepoint.com
+SHAREPOINT_SITE_ID=test-site-id
+SHAREPOINT_SITE_NAME=test-site-name
+SHAREPOINT_GRAPH_URL=https://test.graph.microsoft.com/v1.0
 SHAREPOINT_CLIENT_ID=test-sharepoint-client
 SHAREPOINT_CLIENT_SECRET=test-sharepoint-secret
 SHAREPOINT_TENANT_ID=test-tenant-id

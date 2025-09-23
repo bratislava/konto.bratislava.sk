@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import axios from 'axios'
@@ -17,6 +16,7 @@ import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSha
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
 import prismaMock from '../../../../test/singleton'
+import BaConfigService from '../../../config/ba-config.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
@@ -32,16 +32,25 @@ describe('SharepointSubservice', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
 
-    const configServiceMock = {
-      get: jest.fn().mockReturnValue('value'),
-    }
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SharepointSubservice,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
-        { provide: ConfigService, useValue: configServiceMock },
+        {
+          provide: BaConfigService,
+          useValue: {
+            sharepoint: {
+              domain: 'domainValue',
+              siteId: 'siteIdValue',
+              siteName: 'siteNameValue',
+              graphUrl: 'https://test.graph.microsoft.com/v1.0',
+              clientId: 'clientIdValue',
+              clientSecret: 'clientSecretValue',
+              tenantId: 'tenantIdValue',
+            },
+          },
+        },
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
@@ -95,7 +104,7 @@ describe('SharepointSubservice', () => {
     it('should return the id of the created record', async () => {
       const postSpy = jest
         .spyOn(axios, 'post')
-        .mockResolvedValue({ data: { d: { ID: 120 } } })
+        .mockResolvedValue({ data: { id: 120 } })
       const result = await service['postDataToSharepoint'](
         'dbNameValue',
         'accessTokenValue',
@@ -105,7 +114,7 @@ describe('SharepointSubservice', () => {
       expect(result.id).toBe(120)
       expect(postSpy).toHaveBeenCalledWith(
         expect.anything(),
-        { field1: 'value1' },
+        { fields: { field1: 'value1' } },
         expect.anything(),
       )
     })
@@ -132,13 +141,11 @@ describe('SharepointSubservice', () => {
     beforeEach(() => {
       jest.spyOn(axios, 'get').mockResolvedValue({
         data: {
-          d: {
-            results: [
-              { Title: 'Title1', StaticName: 'StaticName1' },
-              { Title: 'Title2', StaticName: 'StaticName2' },
-              { Title: 'Title3', StaticName: 'StaticName3' },
-            ],
-          },
+          value: [
+            { displayName: 'Title1', name: 'StaticName1' },
+            { displayName: 'Title2', name: 'StaticName2' },
+            { displayName: 'Title3', name: 'StaticName3' },
+          ],
         },
       })
     })

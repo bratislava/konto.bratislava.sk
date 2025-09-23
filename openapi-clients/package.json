@@ -37,11 +37,11 @@
     "@openapitools/openapi-generator-cli": "^2.23.1",
     "@types/app-root-dir": "^0.1.4",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.5.2",
     "app-root-dir": "^1.0.2",
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "camelcase": "^8.0.0",
-    "chalk": "^5.6.0",
+    "chalk": "5.6.2",
     "commander": "^14.0.0",
     "diff": "^8.0.2",
     "fs-extra": "^11.3.1",
@@ -52,7 +52,7 @@
     "typescript": "5.9.2"
   },
   "peerDependencies": {
-    "axios": "^1.11.0"
+    "axios": "^1.12.2"
   },
   "engines": {
     "node": ">=20.9.x",

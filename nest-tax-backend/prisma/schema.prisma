@@ -29,8 +29,6 @@ model TaxPayer {
   permanentResidenceZip       String?
   permanentResidenceCity      String?
 
-  removeIfNotInCityAccountMigrated Boolean @default(false) // Temporary field used in removeTaxPayersNotInCityAccount task
-
   taxes Tax[]
 
   @@unique([birthNumber])
@@ -60,7 +58,7 @@ model Tax {
   taxDetails                      TaxDetail[]
   lastCheckedPayments             DateTime             @default(now())
   lastCheckedUpdates              DateTime             @default(now())
-  deliveryMethod                  DeliveryMethodNamed?
+  deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 
   @@unique([taxPayerId, year])

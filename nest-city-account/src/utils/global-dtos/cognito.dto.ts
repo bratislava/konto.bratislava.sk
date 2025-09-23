@@ -115,11 +115,6 @@ export class CognitoGetUserData extends CognitoGetUserAttributesData {
   UserStatus?: CognitoUserStatusEnum
 }
 
-export interface CognitoUserAttributesDto {
-  Name: string
-  Value?: string
-}
-
 export interface CognitoAccessTokenDto {
   sub: string
   device_key: string

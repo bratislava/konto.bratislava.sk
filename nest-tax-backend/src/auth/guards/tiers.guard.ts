@@ -23,10 +23,10 @@ export class TiersGuard implements CanActivate {
     if (!requiredRoles) {
       return true
     }
-    const { cognito_user } = context.switchToHttp().getRequest()
+    const { cognito_jwt_payload } = context.switchToHttp().getRequest()
 
     const tier = await this.cognitoSubservice.getUserTierFromCognito(
-      cognito_user._username,
+      cognito_jwt_payload.sub,
     )
     const result = requiredRoles.some((role) => [tier]?.includes(role))
     if (!result) {

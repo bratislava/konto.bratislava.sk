@@ -14,14 +14,7 @@ import {
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
-import {
-  CognitoUserAttributesTierEnum,
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
-} from '@prisma/client'
-import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
-import { CognitoUserAttributesEnum } from 'src/utils/global-dtos/cognito.dto'
+import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -30,8 +23,7 @@ export class DatabaseSubserviceUser {
   constructor(
     private prisma: PrismaService,
     private bloomreachService: BloomreachService,
-    private throwerErrorGuard: ThrowerErrorGuard,
-    private cognitoSubservice: CognitoSubservice
+    private throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
@@ -323,15 +315,8 @@ export class DatabaseSubserviceUser {
 
   async getShowEmailCommunicationBanner(
     userId: string,
-    externalId: string | null
+    isIdentityVerified: boolean
   ): Promise<boolean> {
-    if (!externalId) {
-      return false
-    }
-    const cognitoUser = await this.cognitoSubservice.getDataFromCognito(externalId)
-    const isIdentityVerified =
-      cognitoUser[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
-      cognitoUser[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
     if (!isIdentityVerified) {
       return false
     }

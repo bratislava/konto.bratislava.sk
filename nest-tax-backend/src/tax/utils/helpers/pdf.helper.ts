@@ -22,7 +22,7 @@ type TaxDetailsToPdfResponse = {
 export const taxDetailsToPdf = (taxDetails: TaxDetail[]) => {
   const response: TaxDetailsToPdfResponse = {}
   taxDetails.forEach((taxDetail) => {
-    if (taxDetail.type in response === false) {
+    if (!(taxDetail.type in response)) {
       response[taxDetail.type] = {}
     }
     response[taxDetail.type]![taxDetail.areaType] = {

@@ -3,10 +3,11 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 
-import { AdminService } from '../admin/admin.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
+import { NorisPaymentsDto } from '../noris/noris.dto'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
+import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -29,12 +30,12 @@ export class TasksService {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly cardPaymentReportingService: CardPaymentReportingService,
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
+    private readonly norisService: NorisService,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -109,10 +110,12 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      result = await this.adminService.updatePaymentsFromNoris({
-        type: 'variableSymbols',
-        data,
-      })
+      const norisPaymentData: Partial<NorisPaymentsDto>[] =
+        await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
+      result =
+        await this.norisService.updatePaymentsFromNorisWithData(
+          norisPaymentData,
+        )
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
@@ -163,7 +166,7 @@ export class TasksService {
       `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
     )
 
-    await this.adminService.updateTaxesFromNoris(taxes)
+    await this.norisService.updateTaxesFromNoris(taxes)
 
     await this.prismaService.tax.updateMany({
       where: {
@@ -306,65 +309,5 @@ export class TasksService {
         'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
       )
     }
-  }
-
-  /**
-   * This is a temporary task to remove all tax payers from tax backend database, who are not in city account.
-   * https://github.com/bratislava/private-konto.bratislava.sk/issues/958
-   */
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  @HandleErrors('Cron Error')
-  async removeTaxPayersNotInCityAccount() {
-    const configFlags = await this.databaseSubservice.getConfigByKeys([
-      'REMOVE_TAX_PAYERS_NOT_IN_CITY_ACCOUNT_FLAG',
-    ])
-    if (configFlags.REMOVE_TAX_PAYERS_NOT_IN_CITY_ACCOUNT_FLAG !== 'true') {
-      return
-    }
-
-    const taxPayersToMigrate = await this.prismaService.taxPayer.findMany({
-      select: {
-        id: true,
-        birthNumber: true,
-      },
-      where: {
-        removeIfNotInCityAccountMigrated: false,
-      },
-      take: 100,
-    })
-
-    if (taxPayersToMigrate.length === 0) {
-      this.logger.warn('No tax payers to migrate')
-      return
-    }
-
-    const birthNumberToId = Object.fromEntries(
-      taxPayersToMigrate.map((tp) => [tp.birthNumber, tp.id]),
-    )
-
-    const cityAccountData =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
-        Object.keys(birthNumberToId),
-      )
-
-    const idsToRemove = Object.entries(birthNumberToId)
-      .filter(([birthNumber]) => !cityAccountData[birthNumber])
-      .map(([, id]) => id)
-    const allTaxPayerIds = taxPayersToMigrate.map((tp) => tp.id)
-
-    if (idsToRemove.length > 0) {
-      await this.prismaService.taxPayer.deleteMany({
-        where: { id: { in: idsToRemove } },
-      })
-    }
-
-    await this.prismaService.taxPayer.updateMany({
-      where: { id: { in: allTaxPayerIds } },
-      data: { removeIfNotInCityAccountMigrated: true },
-    })
-
-    this.logger.log(
-      `Removed ${idsToRemove.length} tax payers not in city account: ${JSON.stringify(idsToRemove)}`,
-    )
   }
 }

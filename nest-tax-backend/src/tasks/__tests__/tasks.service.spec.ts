@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { AdminService } from '../../admin/admin.service'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../../card-payment-reporting/card-payment-reporting.service'
+import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
@@ -18,7 +18,7 @@ describe('TasksService', () => {
       providers: [
         TasksService,
         ThrowerErrorGuard,
-        { provide: AdminService, useValue: createMock<AdminService>() },
+        { provide: NorisService, useValue: createMock<NorisService>() },
         { provide: PrismaService, useValue: createMock<PrismaService>() },
         {
           provide: DatabaseSubservice,

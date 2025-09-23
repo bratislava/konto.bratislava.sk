@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
+import NasesModule from '../nases/nases.module'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaModule from '../prisma/prisma.module'
 import TaxModule from '../tax/tax.module'
@@ -17,6 +18,7 @@ import AdminController from './admin.controller'
     TaxModule,
     ClientsModule,
     UserInfoPipeModule,
+    NasesModule,
   ],
   providers: [ThrowerErrorGuard, NasesUtilsService, MinioClientSubservice],
   exports: [],

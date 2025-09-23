@@ -1,10 +1,12 @@
 import { FormError } from '@prisma/client'
 
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
+import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../signer/signer.errors.enum'
 import { ErrorsEnum } from '../global-enums/errors.enum'
+import { SharepointErrorsEnum } from '../subservices/dtos/sharepoint.errors.enum'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.
@@ -34,4 +36,6 @@ export default [
   FormError.NASES_SEND_ERROR,
   FormError.RABBITMQ_MAX_TRIES,
   SignerErrorsEnum.XML_VALIDATION_ERROR,
+  SharepointErrorsEnum.GENERAL_ERROR,
+  FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
 ] as string[]

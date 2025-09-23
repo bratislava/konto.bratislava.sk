@@ -123,7 +123,9 @@ export default class BaConfig {
   get sharepoint() {
     return {
       domain: this.validatedConfig.SHAREPOINT_DOMAIN,
-      url: this.validatedConfig.SHAREPOINT_URL,
+      siteId: this.validatedConfig.SHAREPOINT_SITE_ID,
+      siteName: this.validatedConfig.SHAREPOINT_SITE_NAME,
+      graphUrl: this.validatedConfig.SHAREPOINT_GRAPH_URL,
       clientId: this.validatedConfig.SHAREPOINT_CLIENT_ID,
       clientSecret: this.validatedConfig.SHAREPOINT_CLIENT_SECRET,
       tenantId: this.validatedConfig.SHAREPOINT_TENANT_ID,

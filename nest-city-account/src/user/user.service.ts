@@ -44,7 +44,10 @@ export class UserService {
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id, user.externalId)
+      await this.databaseSubservice.getShowEmailCommunicationBanner(
+        user.id,
+        user.birthNumber ? true : false
+      )
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
@@ -66,7 +69,10 @@ export class UserService {
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id, user.externalId)
+      await this.databaseSubservice.getShowEmailCommunicationBanner(
+        user.id,
+        user.birthNumber ? true : false
+      )
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
@@ -111,7 +117,10 @@ export class UserService {
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id, user.externalId)
+      await this.databaseSubservice.getShowEmailCommunicationBanner(
+        user.id,
+        user.birthNumber ? true : false
+      )
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
@@ -156,7 +165,10 @@ export class UserService {
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id, user.externalId)
+      await this.databaseSubservice.getShowEmailCommunicationBanner(
+        user.id,
+        user.birthNumber ? true : false
+      )
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
@@ -222,7 +234,10 @@ export class UserService {
       const officialCorrespondenceChannel =
         await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
       const showEmailCommunicationBanner =
-        await this.databaseSubservice.getShowEmailCommunicationBanner(user.id, user.externalId)
+        await this.databaseSubservice.getShowEmailCommunicationBanner(
+          user.id,
+          user.birthNumber ? true : false
+        )
       return {
         ...user,
         wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),

@@ -1,4 +1,5 @@
 import {
+  AdminGetUserCommand,
   AdminGetUserCommandOutput,
   AttributeType,
 } from '@aws-sdk/client-cognito-identity-provider'
@@ -98,11 +99,14 @@ export class CognitoUserService {
   ) {}
 
   async getUserAttributes(sub: string) {
-    const response =
-      await this.cognitoProvidersService.identityProvider.adminGetUser({
-        UserPoolId: this.baConfigService.cognito.userPoolId,
-        Username: sub,
-      })
+    const inputParams = {
+      UserPoolId: this.baConfigService.cognito.userPoolId,
+      Username: sub,
+    }
+
+    const response = await this.cognitoProvidersService.identityProvider.send(
+      new AdminGetUserCommand(inputParams),
+    )
 
     return verifyAndMapResponse(response)
   }

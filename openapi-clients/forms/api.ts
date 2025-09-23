@@ -665,6 +665,38 @@ export interface UpdateFormRequestDto {
    */
   formSignature?: FormSignatureDto | null
 }
+export interface ValidateFormRegistrationDto {
+  /**
+   * Form slug
+   */
+  slug: string
+  /**
+   * POSP ID
+   */
+  pospID: string
+  /**
+   * POSP Version
+   */
+  pospVersion: string
+}
+export interface ValidateFormRegistrationsResultDto {
+  /**
+   * Forms not found
+   */
+  'not-found': Array<ValidateFormRegistrationDto>
+  /**
+   * Forms not published
+   */
+  'not-published': Array<ValidateFormRegistrationDto>
+  /**
+   * Forms with errors
+   */
+  error: Array<ValidateFormRegistrationDto>
+  /**
+   * Valid forms
+   */
+  valid: Array<ValidateFormRegistrationDto>
+}
 export interface XmlToJsonRequestDto {
   /**
    * Form values in XML
@@ -687,6 +719,43 @@ export interface XmlToJsonResponseDto {
  */
 export const ADMINApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * Return the result of the form registration validation
+     * @summary Run check of all form definitions, whether their registration in NASES is valid.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerCheckFormsRegistrationsInNases: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/admin/check-form-registrations-in-nases`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      * Return administration account JWT token
      * @summary
@@ -806,6 +875,32 @@ export const ADMINApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ADMINApiAxiosParamCreator(configuration)
   return {
     /**
+     * Return the result of the form registration validation
+     * @summary Run check of all form definitions, whether their registration in NASES is valid.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerCheckFormsRegistrationsInNases(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ValidateFormRegistrationsResultDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerCheckFormsRegistrationsInNases(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerCheckFormsRegistrationsInNases']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Return administration account JWT token
      * @summary
      * @param {*} [options] Override http request option.
@@ -888,6 +983,19 @@ export const ADMINApiFactory = function (
   const localVarFp = ADMINApiFp(configuration)
   return {
     /**
+     * Return the result of the form registration validation
+     * @summary Run check of all form definitions, whether their registration in NASES is valid.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerCheckFormsRegistrationsInNases(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ValidateFormRegistrationsResultDto> {
+      return localVarFp
+        .adminControllerCheckFormsRegistrationsInNases(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Return administration account JWT token
      * @summary
      * @param {*} [options] Override http request option.
@@ -927,6 +1035,18 @@ export const ADMINApiFactory = function (
  * ADMINApi - object-oriented interface
  */
 export class ADMINApi extends BaseAPI {
+  /**
+   * Return the result of the form registration validation
+   * @summary Run check of all form definitions, whether their registration in NASES is valid.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public adminControllerCheckFormsRegistrationsInNases(options?: RawAxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerCheckFormsRegistrationsInNases(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    * Return administration account JWT token
    * @summary

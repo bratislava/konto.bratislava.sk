@@ -1,6 +1,7 @@
 import { FormError } from '@prisma/client'
 
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
+import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../signer/signer.errors.enum'
@@ -36,4 +37,5 @@ export default [
   FormError.RABBITMQ_MAX_TRIES,
   SignerErrorsEnum.XML_VALIDATION_ERROR,
   SharepointErrorsEnum.GENERAL_ERROR,
+  FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
 ] as string[]

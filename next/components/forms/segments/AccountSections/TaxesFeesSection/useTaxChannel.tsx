@@ -21,6 +21,7 @@ export const useTaxChannel = () => {
 
   // TODO: this logic is only considering user that recently verified their birth number, but it should be considering user that was verified before
   // TODO: Move this logic to BE
+  // https://github.com/bratislava/private-konto.bratislava.sk/issues/1029
   const channelChangeEffectiveNextYear =
     !wasVerifiedBeforeTaxDeadline &&
     officialCorrespondenceChannel === UserOfficialCorrespondenceChannelEnum.Email

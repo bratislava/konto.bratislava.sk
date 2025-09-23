@@ -71,9 +71,7 @@ export class NorisDeliveryMethodSubservice {
     }
   }
 
-  async updateDeliveryMethods({
-    data,
-  }: RequestUpdateNorisDeliveryMethodsDto) {
+  async updateDeliveryMethods({ data }: RequestUpdateNorisDeliveryMethodsDto) {
     /**
      * TODO - concurrency (if someone somehow changes his delivery method during its updating in Noris)
      */

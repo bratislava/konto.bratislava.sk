@@ -95,6 +95,30 @@ export class PaymentService {
       )
     }
 
+    let year: string | undefined = undefined
+    try {
+      const tax = await this.prisma.tax.findUnique({
+        where: { id: options.taxId },
+      })
+      if (tax) {
+        year = tax.year.toString()
+      }
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Can find tax corresponding to the order',
+        'Database error',
+        undefined,
+        error,
+      )
+    }
+    if (!year) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Tax not found without error',
+      )
+    }
+
     try {
       // data that goes to payment gateway should not contain diacritics
       const requestData = {
@@ -106,7 +130,7 @@ export class PaymentService {
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=DzN`,
+        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=DzN&year=${year}`,
         DESCRIPTION: options.description,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }

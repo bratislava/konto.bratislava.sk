@@ -16,7 +16,21 @@ export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
     ]),
 )
 
-export const MAILGUN_CONFIG = {
+type MailgunConfig = {
+  template: string
+  subject: string
+  renderLocaly?: boolean
+  variables: Record<
+    string,
+    {
+      type: MailgunConfigVariableType
+      value: any
+      selectorVariable?: string
+    }
+  >
+}
+
+export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
   NASES_SENT: {
     template: '2023-application-status-sent',
     subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
@@ -186,6 +200,7 @@ export const MAILGUN_CONFIG = {
   TSB_NEW_SUBMISSION: {
     template: 'tsb-form-send',
     subject: 'TSB: Nové podanie',
+    renderLocaly: true,
     variables: {
       slug: {
         type: MailgunConfigVariableType.PARAMETER,

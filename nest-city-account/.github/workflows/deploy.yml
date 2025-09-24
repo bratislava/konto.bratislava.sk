@@ -36,8 +36,8 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
       directory: ./
-      cluster: tkg-innov-staging
-      url: https://tkg.staging.bratislava.sk
+      cluster: staging
+      url: https://stage.tkgis.bratislava.sk:6443
       flag: --staging
       debug: --debug
     secrets:

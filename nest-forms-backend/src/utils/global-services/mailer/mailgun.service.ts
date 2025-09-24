@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { FormError } from '@prisma/client'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { IMailgunClient } from 'mailgun.js/Interfaces'
 
+import PrismaService from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import { toLogfmt } from '../../logging'
@@ -22,6 +24,7 @@ export default class MailgunService implements Mailer {
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly mailgunHelper: MailgunHelper,
+    private readonly prismaService: PrismaService,
   ) {
     if (
       !process.env.MAILGUN_API_KEY ||
@@ -39,6 +42,15 @@ export default class MailgunService implements Mailer {
       username: 'api',
       key: this.configService.get('MAILGUN_API_KEY') || '',
       url: this.configService.get('MAILGUN_HOST'),
+    })
+  }
+
+  private async setFormToEmailErrorState(formId: string) {
+    await this.prismaService.forms.update({
+      where: { id: formId },
+      data: {
+        error: FormError.EMAIL_SEND_ERROR,
+      },
     })
   }
 
@@ -76,20 +88,22 @@ export default class MailgunService implements Mailer {
           ...emailContent,
         },
       )
-      // TODO if the sending fails, should the form be set to error state?
       if (mailgunResponse.status !== 200) {
-        // TODO should this be alerted?
-        this.logger.warn(
-          `Mailgun message was not sent for email.`,
-          toLogfmt({
-            formId: data.data.formId,
-            emailFrom,
-            emailTo: data.to,
-            subject,
-            mailgunResponse,
-            filenames: attachments?.map((attachment) => attachment.filename),
-          }),
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Mailgun message was not sent to email.`,
+            toLogfmt({
+              formId: data.data.formId,
+              emailFrom,
+              emailTo: data.to,
+              subject,
+              mailgunResponse,
+              filenames: attachments?.map((attachment) => attachment.filename),
+            }),
+          ),
         )
+        await this.setFormToEmailErrorState(data.data.formId)
       }
     } catch (error) {
       this.logger.error(
@@ -106,6 +120,7 @@ export default class MailgunService implements Mailer {
           error,
         ),
       )
+      await this.setFormToEmailErrorState(data.data.formId)
     }
   }
 }

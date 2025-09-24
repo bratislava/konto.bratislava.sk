@@ -20,7 +20,9 @@ describe('Mailgun Emails', () => {
   describe('local rendering of emails', () => {
     Object.entries(testEmailDefinitions).forEach(([key, emailDefinition]) => {
       it(`should correctly render email: ${key}`, async () => {
-        expect(MAILGUN_CONFIG[emailDefinition.template].renderLocaly).toBe(true) // Ensure the email is set to be rendered locally
+        expect(MAILGUN_CONFIG[emailDefinition.template].renderLocally).toBe(
+          true,
+        ) // Ensure the email is set to be rendered locally
 
         const rendered = await mailgunHelper.getFilledTemplate(
           MAILGUN_CONFIG[emailDefinition.template].template,

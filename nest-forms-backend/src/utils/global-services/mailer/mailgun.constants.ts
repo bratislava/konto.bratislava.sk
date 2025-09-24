@@ -19,7 +19,7 @@ export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
 type MailgunConfig = {
   template: string
   subject: string
-  renderLocaly?: boolean
+  renderLocally?: boolean
   variables: Record<
     string,
     {
@@ -200,7 +200,7 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
   TSB_NEW_SUBMISSION: {
     template: 'tsb-form-send',
     subject: 'TSB: Nové podanie',
-    renderLocaly: true,
+    renderLocally: true,
     variables: {
       slug: {
         type: MailgunConfigVariableType.PARAMETER,

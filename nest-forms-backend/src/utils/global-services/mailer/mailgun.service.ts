@@ -50,7 +50,7 @@ export default class MailgunService implements Mailer {
     }))
 
     try {
-      const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocaly
+      const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocally
 
       const emailContent = renderLocally
         ? {

@@ -19,10 +19,7 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
 @Module({
   imports: [
     RabbitMQModule.forRoot({
-      uri:
-        process.env.NODE_ENV === 'production'
-          ? `amqp://${process.env.RABBIT_MQ_USERNAME}:${process.env.RABBIT_MQ_PASSWORD}@${process.env.RABBIT_MQ_HOST}:${process.env.RABBIT_MQ_PORT}`
-          : (process.env.RABBIT_MQ_URI ?? ''),
+      uri: process.env.RABBIT_MQ_URI ?? '',
       exchanges: [
         {
           name: RABBIT_MQ.EXCHANGE,

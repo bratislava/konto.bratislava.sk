@@ -21,6 +21,7 @@ export default class MailgunService implements Mailer {
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly mailgunHelper: MailgunHelper,
   ) {
     if (
       !process.env.MAILGUN_API_KEY ||
@@ -47,18 +48,32 @@ export default class MailgunService implements Mailer {
       data: attachment.content,
       filename: attachment.filename,
     }))
+
     try {
+      const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocaly
+
+      const emailContent = renderLocally
+        ? {
+            html: await this.mailgunHelper.getFilledTemplate(
+              MAILGUN_CONFIG[data.template].template,
+              MailgunHelper.createEmailVariables(data),
+            ),
+          }
+        : {
+            'h:X-Mailgun-Variables': JSON.stringify(
+              MailgunHelper.createEmailVariables(data),
+            ),
+            template: MAILGUN_CONFIG[data.template].template,
+          }
+
       const mailgunResponse = await this.mailgunClient.messages.create(
         process.env.MAILGUN_DOMAIN!,
         {
           from: emailFrom ?? process.env.MAILGUN_EMAIL_FROM!,
           to: data.to,
-          template: MAILGUN_CONFIG[data.template].template,
           subject: subject ?? MAILGUN_CONFIG[data.template].subject,
-          'h:X-Mailgun-Variables': JSON.stringify(
-            MailgunHelper.createEmailVariables(data),
-          ),
           attachment: mailgunAttachments,
+          ...emailContent,
         },
       )
       if (mailgunResponse.status !== 200) {

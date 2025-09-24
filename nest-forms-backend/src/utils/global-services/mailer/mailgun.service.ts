@@ -76,12 +76,15 @@ export default class MailgunService implements Mailer {
           ...emailContent,
         },
       )
+      // TODO if the sending fails, should the form be set to error state?
       if (mailgunResponse.status !== 200) {
+        // TODO should this be alerted?
         this.logger.warn(
           `Mailgun message was not sent for email.`,
           toLogfmt({
             formId: data.data.formId,
             emailFrom,
+            emailTo: data.to,
             subject,
             mailgunResponse,
             filenames: attachments?.map((attachment) => attachment.filename),
@@ -96,6 +99,7 @@ export default class MailgunService implements Mailer {
           toLogfmt({
             formId: data.data.formId,
             emailFrom,
+            emailTo: data.to,
             subject,
             filenames: attachments?.map((attachment) => attachment.filename),
           }),

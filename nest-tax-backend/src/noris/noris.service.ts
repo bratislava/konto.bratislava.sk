@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import {
-  RequestPostNorisLoadDataDto,
+  RequestGetNorisTaxDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -43,7 +43,7 @@ export class NorisService {
   }
 
   async getAndProcessNewNorisTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    data: RequestGetNorisTaxDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
       data,
@@ -66,7 +66,7 @@ export class NorisService {
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    data: RequestPostNorisLoadDataDto,
+    data: RequestGetNorisTaxDataDto,
   ) {
     return this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       data,

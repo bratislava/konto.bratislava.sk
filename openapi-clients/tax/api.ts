@@ -686,6 +686,10 @@ export interface ResponseTaxDto {
    */
   lastCheckedUpdates: string
   /**
+   * Type of tax
+   */
+  type: TaxType
+  /**
    * delivery_method
    */
   deliveryMethod: DeliveryMethodNamed | null
@@ -900,6 +904,17 @@ export const TaxStatusEnum = {
 } as const
 
 export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]
+
+/**
+ * Type of tax
+ */
+
+export const TaxType = {
+  Dzn: 'DZN',
+  Ko: 'KO',
+} as const
+
+export type TaxType = (typeof TaxType)[keyof typeof TaxType]
 
 /**
  * AdminApi - axios parameter creator

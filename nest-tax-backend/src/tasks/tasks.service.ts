@@ -326,7 +326,10 @@ export class TasksService {
     // Get birth numbers from nest-city account
 
     const data =
-      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, LOAD_USER_BIRTHNUMBERS_BATCH)
+      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(
+        since,
+        LOAD_USER_BIRTHNUMBERS_BATCH,
+      )
 
     // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
     await this.prismaService.taxPayer.createMany({
@@ -366,7 +369,11 @@ export class TasksService {
       return
     }
 
-     const result = await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({year, birthNumbers})
+    const result =
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+        year,
+        birthNumbers,
+      })
 
     // Move all requested TaxPayers to the end of the queue
     await this.prismaService.taxPayer.updateMany({

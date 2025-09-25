@@ -1,0 +1,318 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Mailgun Emails local rendering of emails should correctly render email: test1 1`] = `
+"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" lang="en">
+
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta name="x-apple-disable-message-reformatting" />
+  </head>
+
+  <body style="background-color:#f3f3f5;font-family:Inter, sans-serif;font-weight:400;font-size:16px;line-height:24px">
+    <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="max-width:584px;width:100%;margin:0 auto;background-color:#ffffff">
+      <tbody>
+        <tr style="width:100%">
+          <td>
+            <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="border-bottom:solid 2px;border-color:#D6D6D6;padding-top:0;margin:0">
+              <tbody style="width:100%">
+                <tr style="width:100%">
+                  <td data-id="__react-email-column">
+                    <table width="100%" border="0" cellSpacing="0" cellPadding="0">
+                      <tr>
+                        <td align="center"><img alt="TSB logo" height="40" src="https://olo.s3.bratislava.sk/assets/email/tsb-logo.png" style="display:block;outline:none;border:none;text-decoration:none;padding:20px 0" /></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="padding-bottom:32px;padding-left:24px;padding-right:24px">
+              <tbody style="width:100%">
+                <tr style="width:100%">
+                  <td data-id="__react-email-column">
+                    <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
+                      <tbody style="width:100%">
+                        <tr style="width:100%">
+                          <td data-id="__react-email-column">
+                            <div data-id="react-email-markdown">
+                              <p style="margin-bottom:0px">tsb-form</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
+                      <tbody style="width:100%">
+                        <tr style="width:100%">
+                          <td data-id="__react-email-column"><p>This is a test submission.</p></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+
+</html>"
+`;
+
+exports[`Mailgun Emails local rendering of emails should correctly render email: test2 1`] = `
+"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" lang="en">
+
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta name="x-apple-disable-message-reformatting" />
+  </head>
+
+  <body style="background-color:#f3f3f5;font-family:Inter, sans-serif;font-weight:400;font-size:16px;line-height:24px">
+    <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="max-width:584px;width:100%;margin:0 auto;background-color:#ffffff">
+      <tbody>
+        <tr style="width:100%">
+          <td>
+            <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="border-bottom:solid 2px;border-color:#D6D6D6;padding-top:0;margin:0">
+              <tbody style="width:100%">
+                <tr style="width:100%">
+                  <td data-id="__react-email-column">
+                    <table width="100%" border="0" cellSpacing="0" cellPadding="0">
+                      <tr>
+                        <td align="center"><img alt="TSB logo" height="40" src="https://olo.s3.bratislava.sk/assets/email/tsb-logo.png" style="display:block;outline:none;border:none;text-decoration:none;padding:20px 0" /></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="padding-bottom:32px;padding-left:24px;padding-right:24px">
+              <tbody style="width:100%">
+                <tr style="width:100%">
+                  <td data-id="__react-email-column">
+                    <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
+                      <tbody style="width:100%">
+                        <tr style="width:100%">
+                          <td data-id="__react-email-column">
+                            <div data-id="react-email-markdown">
+                              <p style="margin-bottom:0px">tsb-form</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
+                      <tbody style="width:100%">
+                        <tr style="width:100%">
+                          <td data-id="__react-email-column">
+      <table>
+        <caption>Generated dataset — many rows and columns</caption>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Alpha</th>
+            <th>Bravo</th>
+            <th>Charlie</th>
+            <th>Delta</th>
+            <th>Echo</th>
+            <th>Foxtrot</th>
+            <th>Golf</th>
+            <th>Hotel</th>
+            <th>India</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows start -->
+          <!-- The following rows are intentionally repetitive; each cell contains a distinctive phrase so the total HTML size grows large. -->
+          <!-- Row 1 -->
+          <tr>
+            <td>1</td>
+            <td>Cell R1C2 - lorem ipsum dolor sit amet consectetur</td>
+            <td>Cell R1C3 - consectetur adipiscing elit sed do eiusmod</td>
+            <td>Cell R1C4 - tempor incididunt ut labore et dolore magna</td>
+            <td>Cell R1C5 - aliqua ut enim ad minim veniam quis</td>
+            <td>Cell R1C6 - nostrud exercitation ullamco laboris nisi ut</td>
+            <td>Cell R1C7 - aliquip ex ea commodo consequat sunt in</td>
+            <td>Cell R1C8 - culpa qui officia deserunt mollit anim id</td>
+            <td>Cell R1C9 - est laborum repeated to enlarge the document</td>
+            <td>Cell R1C10 - seed text for table growth and test use</td>
+          </tr>
+          <!-- Row 2 -->
+          <tr>
+            <td>2</td>
+            <td>Cell R2C2 - sample phrase alpha beta gamma delta epsilon</td>
+            <td>Cell R2C3 - sample phrase zeta eta theta iota kappa</td>
+            <td>Cell R2C4 - repeated content to expand HTML size reliably</td>
+            <td>Cell R2C5 - ensure this cell contains plenty of characters</td>
+            <td>Cell R2C6 - plausible descriptive sentence to increase bytes</td>
+            <td>Cell R2C7 - additional filler text to reach the requested size</td>
+            <td>Cell R2C8 - more repeated words and phrases for test purposes</td>
+            <td>Cell R2C9 - include links? no, just plain text for simplicity</td>
+            <td>Cell R2C10 - stable filler content to make file suitably large</td>
+          </tr>
+          <!-- Row 3 through many -->
+          <tr>
+            <td>3</td>
+            <td>Cell R3C2 - this is a deliberately long cell containing multiple words and phrases to grow the HTML</td>
+            <td>Cell R3C3 - another long filler phrase used to increase the document length for testing</td>
+            <td>Cell R3C4 - yet another repetitive but slightly varied sentence to avoid perfect duplication</td>
+            <td>Cell R3C5 - testing the size boundary by including long human readable content</td>
+            <td>Cell R3C6 - make sure the combined markup and content easily surpass sixteen kilobytes</td>
+            <td>Cell R3C7 - keep adding sensible filler sentences so the HTML remains realistic</td>
+            <td>Cell R3C8 - note this is not truly random but is varied enough for visual checking</td>
+            <td>Cell R3C9 - content expanded with phrases, numbers, and small repeated clauses</td>
+            <td>Cell R3C10 - end of row 3 filler content for table size testing</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Cell R4C2 - continuing the pattern: data point, long sentence, extra details and notes</td>
+            <td>Cell R4C3 - extend with additional descriptors to pad total HTML length significantly</td>
+            <td>Cell R4C4 - filler text repeated in many variations to reach size threshold</td>
+            <td>Cell R4C5 - content includes natural language that looks plausible for an email or report</td>
+            <td>Cell R4C6 - more filler: this paragraph-like cell helps reach the 16 KB requirement</td>
+            <td>Cell R4C7 - plenty of words here to ensure the combined payload grows fast</td>
+            <td>Cell R4C8 - small sentences separated by commas to create moderate length</td>
+            <td>Cell R4C9 - penultimate column for extra long repeated test content</td>
+            <td>Cell R4C10 - final column of this row with additional descriptive filler</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Cell R5C2 - sample long phrase A: lorem ipsum dolor sit amet, consetetur sadipscing elitr</td>
+            <td>Cell R5C3 - sample long phrase B: sed diam nonumy eirmod tempor invidunt ut labore</td>
+            <td>Cell R5C4 - sample long phrase C: et dolore magna aliquyam erat, sed diam voluptua</td>
+            <td>Cell R5C5 - sample long phrase D: at vero eos et accusam et justo duo dolores</td>
+            <td>Cell R5C6 - sample long phrase E: et ea rebum stet clita kasd gubergren no sea</td>
+            <td>Cell R5C7 - sample long phrase F: takimata sanctus est Lorem ipsum dolor sit amet</td>
+            <td>Cell R5C8 - sample long phrase G: consetetur sadipscing elitr sed diam nonumy</td>
+            <td>Cell R5C9 - sample long phrase H: eirmod tempor invidunt ut labore et dolore magna</td>
+            <td>Cell R5C10 - sample long phrase I: aliquyam erat sed diam voluptua vero eos</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Cell R6C2 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C3 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C4 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C5 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C6 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C7 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C8 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C9 - auto-generated filler piece number six to add more content volume</td>
+            <td>Cell R6C10 - auto-generated filler piece number six to add more content volume</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Cell R7C2 - repeating varied sentence fragments: alpha, beta, gamma, delta, epsilon, zeta</td>
+            <td>Cell R7C3 - repeating varied sentence fragments: eta, theta, iota, kappa, lambda, mu</td>
+            <td>Cell R7C4 - repeating varied sentence fragments: nu, xi, omicron, pi, rho, sigma</td>
+            <td>Cell R7C5 - repeating varied sentence fragments: tau, upsilon, phi, chi, psi, omega</td>
+            <td>Cell R7C6 - padded content with commas and extra clauses for more bytes</td>
+            <td>Cell R7C7 - padded content with commas and extra clauses for more bytes</td>
+            <td>Cell R7C8 - padded content with commas and extra clauses for more bytes</td>
+            <td>Cell R7C9 - padded content with commas and extra clauses for more bytes</td>
+            <td>Cell R7C10 - padded content with commas and extra clauses for more bytes</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Cell R8C2 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C3 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C4 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C5 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C6 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C7 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C8 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C9 - descriptive long sentence to simulate real-world email content or report block</td>
+            <td>Cell R8C10 - descriptive long sentence to simulate real-world email content or report block</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>Cell R9C2 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C3 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C4 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C5 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C6 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C7 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C8 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C9 - long repeated human readable chunk: test data, sample content, debug text</td>
+            <td>Cell R9C10 - long repeated human readable chunk: test data, sample content, debug text</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>Cell R10C2 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C3 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C4 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C5 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C6 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C7 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C8 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C9 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+            <td>Cell R10C10 - continued filler: each of these cells contains dozens of characters to enlarge the file</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td>Cell R11C2 - filler data to make document large enough for tests</td>
+            <td>Cell R11C3 - filler data to make document large enough for tests</td>
+            <td>Cell R11C4 - filler data to make document large enough for tests</td>
+            <td>Cell R11C5 - filler data to make document large enough for tests</td>
+            <td>Cell R11C6 - filler data to make document large enough for tests</td>
+            <td>Cell R11C7 - filler data to make document large enough for tests</td>
+            <td>Cell R11C8 - filler data to make document large enough for tests</td>
+            <td>Cell R11C9 - filler data to make document large enough for tests</td>
+            <td>Cell R11C10 - filler data to make document large enough for tests</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td>Cell R12C2 - filler data to make document large enough for tests</td>
+            <td>Cell R12C3 - filler data to make document large enough for tests</td>
+            <td>Cell R12C4 - filler data to make document large enough for tests</td>
+            <td>Cell R12C5 - filler data to make document large enough for tests</td>
+            <td>Cell R12C6 - filler data to make document large enough for tests</td>
+            <td>Cell R12C7 - filler data to make document large enough for tests</td>
+            <td>Cell R12C8 - filler data to make document large enough for tests</td>
+            <td>Cell R12C9 - filler data to make document large enough for tests</td>
+            <td>Cell R12C10 - filler data to make document large enough for tests</td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td>Cell R13C2 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C3 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C4 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C5 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C6 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C7 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C8 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C9 - filler to expand size suitably for boundary testing</td>
+            <td>Cell R13C10 - filler to expand size suitably for boundary testing</td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td>Cell R14C2 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C3 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C4 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C5 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C6 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C7 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C8 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C9 - extra long phrase, repeated for document inflation and test use</td>
+            <td>Cell R14C10 - extra long phrase, repeated for document inflation and test use</td>
+          </tr>
+        </tbody>
+      </table>
+      </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+
+</html>"
+`;

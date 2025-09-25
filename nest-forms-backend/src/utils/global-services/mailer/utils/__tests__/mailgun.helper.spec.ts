@@ -4,13 +4,13 @@ import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
 
-import { SendEmailInputDto } from '../../../global-dtos/mailgun.dto'
+import { SendEmailInputDto } from '../../../../global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
-} from '../../../global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../../guards/thrower-error.guard'
-import MailgunHelper from './mailgun.helper'
+} from '../../../../global-enums/mailgun.errors.enum'
+import ThrowerErrorGuard from '../../../../guards/thrower-error.guard'
+import MailgunHelper from '../mailgun.helper'
 
 // Mock for IMailgunClient
 const mockMailgunClient = {

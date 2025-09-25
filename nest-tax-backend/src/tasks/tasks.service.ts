@@ -314,7 +314,7 @@ export class TasksService {
     }
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('Cron Error')
   async loadNewUsersFromCityAccount() {
     // Get latest date from config
@@ -346,7 +346,7 @@ export class TasksService {
     })
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
     this.logger.log('Starting loadTaxesForUsers task')

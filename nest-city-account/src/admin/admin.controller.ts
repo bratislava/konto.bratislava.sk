@@ -352,7 +352,7 @@ export class AdminController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Returns list of birt numbers for new verified users.',
+    description: 'Returns list of birth numbers for new verified users.',
     type: GetNewVerifiedUsersBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)

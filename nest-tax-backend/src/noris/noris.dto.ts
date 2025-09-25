@@ -8,7 +8,6 @@ export interface NorisTaxPayersDto {
   subjekt_refer: string
   subjekt_nazev: string
   rok: number
-  ulica_tb: string
   ulica_tb_cislo: string
   psc_ref_tb: string
   psc_naz_tb: string
@@ -88,14 +87,7 @@ export interface NorisTaxPayersDto {
   SPL4_3: string
   TXTSPL4_4: string
   SPL4_4: string
-  obalka_ulica: string
-  obalka_psc: string
-  obalka_mesto: string
-  obalka_stat: string
-  pouk_cena_bez_hal: string
-  pouk_cena_hal: string
   specificky_symbol: string
-  uzivatelsky_atribut: string
   uhrazeno: string
   zbyva_uhradit: string
 }

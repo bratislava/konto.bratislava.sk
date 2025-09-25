@@ -1,10 +1,11 @@
+/* eslint-disable no-secrets/no-secrets */
 export const queryPayersFromNoris = `
 SELECT
     lcs.dane21_doklad.sposob_dorucenia,
-    subjekty_a.cislo_poradace,
-    lcs.dane21_doklad.cislo_subjektu, 
-    subjekty_d1.nazev_subjektu adresa_tp_sidlo,
-    subjekty_a.reference_subjektu cislo_konania , 
+    subjekt_doklad.cislo_poradace,
+    lcs.dane21_doklad.cislo_subjektu,
+    subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
+    subjekt_doklad.reference_subjektu cislo_konania , 
     lcs.dane21_doklad.datum_platnosti,
     lcs.dane21_doklad.variabilny_symbol, 
     (case 
@@ -19,10 +20,9 @@ SELECT
             end)
         else 0 
     end ) zbyva_uhradit,
-    subjekty_c.reference_subjektu subjekt_refer, 
+    subjekt_doklad_sub.reference_subjektu subjekt_refer, 
     ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
     lcs.dane21_priznanie.rok, 
-    a_tb.ulica_nazev as ulica_tb, 
     a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_priznanie.adr_tp_sup_cislo, lcs.dane21_priznanie.adr_tp_or_cislo), '') as ulica_tb_cislo, 
     a_tb.psc_refer as psc_ref_tb,
     a_tb.psc_nazev as psc_naz_tb, 
@@ -170,20 +170,9 @@ SELECT
         else  ''
     end  ) SPL4_4, 
 
-   /* --------- Texty splátok výmeru end ----------------------------*/       /* obalka start */  
+   /* --------- Texty splátok výmeru end ----------------------------*/
    
-    (a_post_doklad.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_doklad.adr_po_sup_cislo, lcs.dane21_doklad.adr_po_or_cislo), '')  +
-        (case 
-            when  a_post_doklad.ulica is not null and isnull(a_post_doklad.psc_nazev, '')<>'' and a_post_doklad.obec_nazev<>left(isnull(a_post_doklad.psc_nazev, ''), len(a_post_doklad.obec_nazev)) then ', '+a_post_doklad.obec_nazev else '' 
-        end)
-    )   obalka_ulica, 
-    a_post_doklad.psc_refer  obalka_psc, 
-    a_post_doklad.psc_nazev  obalka_mesto, 
-    a_post_doklad.stat_nazov_plny  obalka_stat, 
-        left(replace (cast(floor( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), len(replace (cast(floor( (  view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''))-2) pouk_cena_bez_hal, 
-        right(replace (cast(( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), 2) pouk_cena_hal,     
     lcs.dane21_doklad.specificky_symbol,
-    lcs.nf_valuace_atributu(21276, 0, 'lcs.dane21_doklad.uzivatelsky_atribut', lcs.dane21_doklad.uzivatelsky_atribut) as uzivatelsky_atribut
 FROM 
     lcs.dane21_doklad  
 
@@ -194,14 +183,14 @@ FROM
 --         kont.hid=host_id()  
 
 LEFT OUTER JOIN 
-    lcs.subjekty subjekty_a  
+    lcs.subjekty subjekt_doklad  
     ON 
-        lcs.dane21_doklad.cislo_subjektu=subjekty_a.cislo_subjektu  
+        lcs.dane21_doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu  
 
 LEFT OUTER JOIN 
-    lcs.subjekty subjekty_c  
+    lcs.subjekty subjekt_doklad_sub  
     ON 
-        lcs.dane21_doklad.subjekt=subjekty_c.cislo_subjektu  
+        lcs.dane21_doklad.subjekt=subjekt_doklad_sub.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_d  
@@ -224,14 +213,14 @@ JOIN
         lcs.dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu  
 
 JOIN 
-    lcs.subjekty subjekty_a1  
+    lcs.subjekty subjekt_priznanie  
     ON 
-        subjekty_a1.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu  
+        subjekt_priznanie.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.dane21_priznanie_config dp_conf  
     ON 
-        subjekty_a1.cislo_poradace=dp_conf.cislo_poradace  
+        subjekt_priznanie.cislo_poradace=dp_conf.cislo_poradace  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_vybav  
@@ -244,9 +233,9 @@ LEFT OUTER JOIN
         z_vybav.cislo_subjektu=dp_conf.vybavuje  
 
 LEFT OUTER JOIN 
-    lcs.subjekty subjekty_d1  
+    lcs.subjekty subjekt_tp_adresa  
     ON 
-        lcs.dane21_priznanie.adresa_tp_sidlo=subjekty_d1.cislo_subjektu  
+        lcs.dane21_priznanie.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_e1  
@@ -440,15 +429,7 @@ SELECT
             else 0 
         end ) zbyva_uhradit,
         dane21_doklad.specificky_symbol specificky_symbol
-    FROM 
-        (SELECT
-            *
-        FROM
-            lcs.dane21_doklad
-        WHERE
-            lcs.dane21_doklad.rok_podkladu {%YEARS%}
-            AND lcs.dane21_doklad.rok_podkladu {%YEARS%}
-        ) as dane21_doklad
+    FROM lcs.dane21_doklad as dane21_doklad
     JOIN 
         (SELECT 
             *
@@ -468,28 +449,20 @@ SELECT
         lcs.dane_21_all_poplatky vpodklad
         ON
             vpodklad.cislo_subjektu=dane21_doklad.podklad
-    JOIN(
-        SELECT
-            distinct
-            cislo_subjektu
-        FROM
-            lcs.subjekty subjekty_a
-       WHERE
-           reference_subjektu LIKE '1/%'
-    ) as subjekty_a ON dane21_doklad.cislo_subjektu=subjekty_a.cislo_subjektu
     LEFT JOIN 
-    lcs.dane21_priznanie  
-    ON 
-        dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
-    JOIN 
-    lcs.subjekty subjekty_a1  
-    ON 
-        subjekty_a1.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu
+        lcs.dane21_priznanie  
+        ON 
+            dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
+    LEFT JOIN 
+        lcs.pko21_poplatok  
+        ON 
+            dane21_doklad.podklad=lcs.pko21_poplatok.cislo_subjektu
    WHERE 
         lcs.dane21_druh_dokladu.typ_dokladu = 'v'
-        AND lcs.dane21_druh_dokladu.typ_dane = '1'
-        AND dane21_doklad.stav_dokladu<>'s'
-        AND lcs.dane21_priznanie.podnikatel = 'N'
+        AND lcs.dane21_druh_dokladu.typ_dane IN ('1', '4') -- TODO naozaj je PKO 4?
+        AND dane21_doklad.stav_dokladu <> 's'
+        AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
+        AND dane21_doklad.rok_podkladu {%YEARS%}
         {%VARIABLE_SYMBOLS%}
 `
 

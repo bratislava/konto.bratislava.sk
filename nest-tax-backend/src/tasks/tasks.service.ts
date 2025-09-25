@@ -366,6 +366,8 @@ export class TasksService {
       return
     }
 
+     const result = await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({year, birthNumbers})
+
     // Move all requested TaxPayers to the end of the queue
     await this.prismaService.taxPayer.updateMany({
       where: {
@@ -375,9 +377,6 @@ export class TasksService {
         updatedAt: new Date(),
       },
     })
-
-    // Load data from Noris
-    const result = await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({year, birthNumbers})
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,

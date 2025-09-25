@@ -358,7 +358,7 @@ export class TasksService {
     const year = new Date().getFullYear()
     const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
       select: { birthNumber: true },
-      where: { taxes: { none: { year: year } } },
+      where: { taxes: { none: { year } } },
       orderBy: { updatedAt: 'asc' },
       take: UPLOAD_BIRTHNUMBERS_BATCH,
     })

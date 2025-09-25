@@ -13,7 +13,7 @@ import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestPostNorisLoadDataDto,
+  RequestGetNorisTaxDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
@@ -34,14 +34,14 @@ export class AdminService {
   }
 
   async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto,
+    data: RequestGetNorisTaxDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
       data,
     )
   }
 
-  async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
+  async updateDataFromNoris(data: RequestGetNorisTaxDataDto) {
     return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       data,
     )

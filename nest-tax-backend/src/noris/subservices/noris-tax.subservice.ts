@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client'
 import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
-import { RequestPostNorisLoadDataDto } from '../../admin/dtos/requests.dto'
+import { RequestGetNorisTaxDataDto } from '../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -45,19 +45,18 @@ export class NorisTaxSubservice {
   ) {}
 
   private async getTaxDataByYearAndBirthNumber(
-    data: RequestPostNorisLoadDataDto,
+    data: RequestGetNorisTaxDataDto,
   ): Promise<NorisTaxPayersDto[]> {
     const connection = await this.connectionService.createConnection()
 
     let birthNumbers = ''
-    if (data.birthNumbers !== 'All') {
-      data.birthNumbers.forEach((birthNumber) => {
-        birthNumbers += `'${birthNumber}',`
-      })
-      if (birthNumbers.length > 0) {
-        birthNumbers = `AND lcs.dane21_priznanie.rodne_cislo IN (${birthNumbers.slice(0, -1)})`
-      }
+    data.birthNumbers.forEach((birthNumber) => {
+      birthNumbers += `'${birthNumber}',`
+    })
+    if (birthNumbers.length > 0) {
+      birthNumbers = `AND lcs.dane21_priznanie.rodne_cislo IN (${birthNumbers.slice(0, -1)})`
     }
+
     const norisData = await connection.query(
       queryPayersFromNoris
         .replaceAll('{%YEAR%}', data.year.toString())
@@ -114,7 +113,7 @@ export class NorisTaxSubservice {
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    data: RequestPostNorisLoadDataDto,
+    data: RequestGetNorisTaxDataDto,
   ) {
     let norisData: NorisTaxPayersDto[]
     try {
@@ -305,7 +304,7 @@ export class NorisTaxSubservice {
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    data: RequestGetNorisTaxDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
     const norisData = (await this.getTaxDataByYearAndBirthNumber(

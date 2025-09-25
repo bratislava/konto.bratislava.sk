@@ -13,7 +13,12 @@ import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subse
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
-import { NorisTaxPayersDto, NorisUpdateDto } from '../noris.dto'
+import {
+  NorisCommunalWasteTaxDto,
+  NorisCommunalWasteTaxProcessedDto,
+  NorisTaxPayersDto,
+  NorisUpdateDto,
+} from '../noris.dto'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 import {
   convertCurrencyToInt,
@@ -24,6 +29,7 @@ import {
   mapNorisToTaxPayerData,
 } from '../utils/mapping.helper'
 import {
+  getCommunalWasteTaxesFromNoris,
   getNorisDataForUpdate,
   queryPayersFromNoris,
 } from '../utils/noris.queries'
@@ -417,5 +423,109 @@ export class NorisTaxSubservice {
           }),
       ),
     )
+  }
+
+  /**
+   * Fetches communal waste tax data from Noris for given birth numbers and year.
+   *
+   * @remarks
+   * ⚠️ **Warning:** This returns a record for each communal waste container.
+   * The data must be grouped and processed by birth number, so we process only one record internally, with all containers for one person as one record.
+   *
+   * @param data List of birth numbers and year to fetch data for.
+   * @returns An array of records for given birth numbers and year.
+   */
+  private async getCommunalWasteTaxDataByBirthNumberAndYear(
+    data: RequestGetNorisTaxDataDto,
+  ): Promise<NorisCommunalWasteTaxDto[]> {
+    const connection = await this.connectionService.createConnection()
+
+    try {
+      // Wait for connection to be fully established
+      await this.connectionService.waitForConnection(connection)
+
+      const request = new Request(connection)
+
+      const birthNumbersPlaceholders = data.birthNumbers
+        .map((_, index) => `@birth_number${index}`)
+        .join(',')
+      data.birthNumbers.forEach((birthNumber, index) => {
+        request.input(`birth_number${index}`, birthNumber)
+      })
+      request.input('year', data.year)
+
+      const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
+        '@variable_symbols',
+        birthNumbersPlaceholders,
+      )
+
+      const norisData = await request.query(queryWithPlaceholders)
+      return norisData.recordset
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Failed to get communal waste tax data from Noris`,
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    } finally {
+      // Always close the connection
+      await connection.close()
+    }
+  }
+
+  processWasteTaxRecords(
+    records: NorisCommunalWasteTaxDto[],
+  ): NorisCommunalWasteTaxProcessedDto[] {
+    const grouped: Record<string, NorisCommunalWasteTaxDto[]> = {}
+
+    records.forEach((rec) => {
+      if (!grouped[rec.ICO_RC]) {
+        grouped[rec.ICO_RC] = []
+      }
+      grouped[rec.ICO_RC].push(rec)
+    })
+
+    const result: NorisCommunalWasteTaxProcessedDto[] = []
+
+    Object.values(grouped).forEach((group) => {
+      // Take the first record as "base" since all other fields are the same
+      const base = group[0]
+
+      const containers = group.map((r) => ({
+        address: {
+          street: r.ulica,
+          orientationNumber: r.orientacne_cislo,
+        },
+        details: {
+          objem_nadoby: r.objem_nadoby,
+          pocet_nadob: r.pocet_nadob,
+          pocet_odvozov: r.pocet_odvozov,
+          sadzba: r.sadzba,
+          poplatok: r.poplatok,
+          druh_nadoby: r.druh_nadoby,
+        },
+      }))
+
+      const processed: NorisCommunalWasteTaxProcessedDto = {
+        ...base,
+        containers,
+      }
+
+      // Remove the container-specific fields that are no longer part of the processed interface
+      delete (processed as any).ulica
+      delete (processed as any).orientacne_cislo
+      delete (processed as any).objem_nadoby
+      delete (processed as any).pocet_nadob
+      delete (processed as any).pocet_odvozov
+      delete (processed as any).sadzba
+      delete (processed as any).poplatok
+      delete (processed as any).druh_nadoby
+
+      result.push(processed)
+    })
+
+    return result
   }
 }

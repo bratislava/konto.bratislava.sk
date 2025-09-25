@@ -487,3 +487,230 @@ export const getNorisDataForUpdate = `
     WHERE rok_podkladu IN (@years)
     AND variabilny_symbol IN (@variable_symbols)
 `
+
+/**
+ * @remarks
+ * ⚠️ **Warning:** This returns a record for each communal waste container.
+ * The data must be grouped and processed by birth number, so we process only one record internally, with all containers for one person as one record.
+ */
+export const getCommunalWasteTaxesFromNoris = `
+    SELECT 
+        subjekt_doklad.cislo_poradace,
+        doklad.cislo_subjektu,
+        subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
+        subjekt_doklad.reference_subjektu cislo_konania,
+        doklad.datum_platnosti,
+        doklad.variabilny_symbol,
+        doklad.specificky_symbol,
+        poplatok.rok rok,
+        lcs.fn21_dec2string( dsum.dan_spolu_nezaokr , 2) as dan_spolu, 
+        (case 
+            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+            else 0 end 
+        ) uhrazeno,
+        (case 
+            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
+                case 
+                    when doklad.stav_dokladu='S' then 0 
+                    else view_doklad_saldo.zbyva_uhradit 
+                end)
+            else 0 
+        end ) zbyva_uhradit,
+        subjekt_doklad_sub.reference_subjektu subjekt_refer,
+        ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
+        CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,
+        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov, 
+
+        /* ----------------------------Texty splátok výmeru start------------------------------------*/   
+        
+        (case
+            when doklad.rok_podkladu<2008 then 
+                (case 
+                    when doklad.datum_spl2 is not null then ''
+                    else  '-  naraz do '+convert(varchar(10), doklad.datum_spl1, 104) +' v sume:'      
+                end)
+            else      
+                (case 
+                    when doklad.datum_spl2 is not null then '' 
+                    else  'v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic) +' v sume:'       
+                end)
+        end)  TXTSPL1, 
+        (case 
+            when doklad.datum_spl2 is not null then ''         
+            else lcs.fn21_dec2string(doklad.suma_mena, 2)   
+        end ) SPL1, 
+        (case 
+            when doklad.rok_podkladu<2008 then
+                (case 
+                    when doklad.datum_spl2 is not null then '-  Splátka 1 do '+convert(varchar(10), doklad.datum_spl1, 104)  +' v sume:'                    else  ''               end  )        else             (case when doklad.datum_spl2 is not null then '- prvá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                    else  '' 
+                end)
+        end) TXTSPL4_1, 
+        (case 
+            when doklad.datum_spl2 is not null then lcs.fn21_dec2string( doklad.suma_spl1 , 2)
+            else  ''
+        end  ) SPL4_1, 
+        (case 
+            when doklad.datum_spl2 is not null then
+                (case 
+                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_2_splatnost, 112), 4)) as datetime)>=doklad.datum_spl2                  then '- druhá splátka v termíne do '+convert(varchar(10), doklad.datum_spl2, 104) +' v sume:'
+                    else '- druhá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                end )
+            else  ''
+        end) TXTSPL4_2, 
+        (case 
+            when doklad.datum_spl2 is not null then lcs.fn21_dec2string( doklad.suma_spl2 , 2)
+            else  '' 
+        end) SPL4_2, 
+        (case 
+            when doklad.datum_spl3 is not null then
+                (case 
+                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_3_splatnost, 112), 4)) as datetime)>=doklad.datum_spl3  then '- tretia splátka v termíne do '+convert(varchar(10), doklad.datum_spl3, 104) +' v sume:'
+                    else '- tretia splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                end )
+            else  ''
+        end  ) TXTSPL4_3, 
+    (case 
+            when  doklad.datum_spl3 is not null  then lcs.fn21_dec2string( doklad.suma_spl3 , 2)
+            else  ''
+        end  ) SPL4_3, 
+        (case 
+            when  doklad.datum_spl4 is not null  then 
+                (case 
+                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_4_splatnost, 112), 4)) as datetime)>=doklad.datum_spl4 then '- štvrtá splátka v termíne do '+convert(varchar(10), doklad.datum_spl4, 104)  +' v sume:'
+                    else '- štvrtá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                    end )
+            else  ''
+        end  ) TXTSPL4_4, 
+    (case 
+            when  doklad.datum_spl4 is not null  then lcs.fn21_dec2string( doklad.suma_spl4 , 2)
+            else  ''
+        end  ) SPL4_4,
+
+    /* --------- Texty splátok výmeru end ----------------------------*/
+
+    (case 
+        when poplatok.podnikatel='N' then 'Meno a priezvisko:' 
+        else 'Obchodné meno:' 
+    end  ) TXT_MENO, 
+    (case 
+        when poplatok.podnikatel='N' then 'Adresa trvalého pobytu:' 
+        else 'Sídlo:'
+    end  ) TXT_UL, 
+    (case 
+        when poplatok.podnikatel='N' then 'Rodné číslo:' 
+        else 'IČO/DIČ:' 
+    end  ) TYP_USER, 
+    (case 
+        when poplatok.podnikatel='N' then poplatok.rodne_cislo 
+        else  isnull(poplatok.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
+    end) ICO_RC, 
+
+    a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, poplatok.adr_tp_sup_cislo, poplatok.adr_tp_or_cislo), '') as ulica_tb_cislo, 
+    a_tb.psc_refer as psc_ref_tb,
+    a_tb.psc_nazev as psc_naz_tb, 
+    a_tb.stat_nazov_plny, 
+    a_tb.obec_nazev obec_nazev_tb, 
+
+    z_vybav.telefon_prace vyb_telefon_prace, 
+    z_vybav.e_mail vyb_email, 
+    pop_conf.vybavuje vyb_id
+
+    ------ Info about the container
+    nadoba.objem objem_nadoby,
+    nadoba.pocet_nadob pocet_nadob,
+    nadoba.pocet_odvozov pocet_odvozov,
+    nadoba.sadzba_mena sadzba,
+    nadoba.suma_uhrada_mena poplatok, -- TODO je toto spravny amount?
+    nadoba.druh_nadoby druh_nadoby,
+    CASE 
+            WHEN CHARINDEX(',', sub_adresa.nazev_subjektu) > 0 
+                    THEN LEFT(sub_adresa.nazev_subjektu, CHARINDEX(',', sub_adresa.nazev_subjektu) - 1)
+            ELSE sub_adresa.nazev_subjektu
+        END AS ulica,
+    nadoba.orientacne_cislo orientacne_cislo,
+
+    FROM lcs.pko21_nadoba nadoba
+    JOIN lcs.pko21_poplatok poplatok ON nadoba.pko_poplatok = poplatok.cislo_subjektu
+    JOIN lcs.subjekty sub_adresa ON sub_adresa.cislo_subjektu = nadoba.adresa
+    JOIN lcs.dane21_doklad doklad ON doklad.podklad = poplatok.cislo_subjektu
+    LEFT OUTER JOIN lcs.organizace_vlastni ov  ON 1=1
+    LEFT OUTER JOIN 
+        lcs.dane21_druh_dokladu
+        ON
+            doklad.druh_dokladu=lcs.dane21_druh_dokladu.cislo_subjektu
+    JOIN 
+        lcs.subjekty subjekt_poplatok  
+        ON 
+            subjekt_poplatok.cislo_subjektu=poplatok.cislo_subjektu  
+
+    LEFT OUTER JOIN 
+        lcs.pko21_poplatok_config pop_conf  
+        ON 
+            subjekt_poplatok.cislo_poradace=pop_conf.cislo_poradace  
+
+    LEFT OUTER JOIN 
+        lcs.subjekty subjekty_vybav  
+        ON 
+            subjekty_vybav.cislo_subjektu=pop_conf.vybavuje  
+
+    LEFT OUTER JOIN 
+        lcs.zamestnanci z_vybav  
+        ON 
+            z_vybav.cislo_subjektu=pop_conf.vybavuje  
+
+    LEFT OUTER JOIN 
+        lcs.subjekty subjekt_doklad  
+        ON 
+            doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu
+
+    LEFT OUTER JOIN 
+        lcs.subjekty subjekt_tp_adresa  
+        ON 
+            poplatok.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu
+
+    LEFT OUTER JOIN 
+        lcs.subjekty subjekt_doklad_sub  
+        ON 
+            doklad.subjekt=subjekt_doklad_sub.cislo_subjektu
+
+    LEFT OUTER JOIN 
+        lcs.dane_21_sum_pko_popl_celkom dsum  
+        ON
+            dsum.cs_dan_prizn=poplatok.cislo_subjektu
+
+    LEFT OUTER JOIN 
+        lcs.organizace org_cudz  
+        ON
+            doklad.subjekt=org_cudz.cislo_subjektu  
+
+    LEFT OUTER JOIN
+        lcs.evidence_dic ev_dic_cudz  
+        ON 
+            org_cudz.evidence_dic=ev_dic_cudz.cislo_subjektu  
+
+    LEFT OUTER JOIN
+        lcs.dane21_doklad_sum_saldo view_doklad_saldo  
+        ON
+            view_doklad_saldo.cislo_subjektu=doklad.cislo_subjektu
+
+    LEFT OUTER JOIN 
+        lcs.dane_21_adresa_view a_tb  
+        ON 
+            poplatok.adresa_tp_sidlo=a_tb.cislo_subjektu
+    WHERE 
+        poplatok.rodne_cislo IN (@birth_numbers) AND
+        nadoba.druh_odpadu IS NULL AND
+        poplatok.rok = @year AND
+        poplatok.platnost = 'A' AND -- TODO naozaj?
+        poplatok.podnikatel = 'N' AND
+        doklad.pohladavka IS NOT NULL AND 
+        lcs.dane21_druh_dokladu.typ_dokladu = 'V'AND
+        lcs.dane21_druh_dokladu.typ_dane = '4' AND -- TODO je toto pravda? Sú 4 PKO?
+        doklad.stav_dokladu<>'s' AND
+        doklad.rok_podkladu = @year
+`
+
+// TODO - do not use string replace, but request.input in mssql
+
+/* eslint-enable no-secrets/no-secrets */

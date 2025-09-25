@@ -25,6 +25,7 @@ import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservi
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
+const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
 @Injectable()
 export class TasksService {
@@ -325,7 +326,7 @@ export class TasksService {
     // Get birth numbers from nest-city account
 
     const data =
-      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, 3)
+      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, LOAD_USER_BIRTHNUMBERS_BATCH)
 
     // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
     await this.prismaService.taxPayer.createMany({

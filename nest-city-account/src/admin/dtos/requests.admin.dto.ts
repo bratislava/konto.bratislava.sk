@@ -1,11 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
-import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
-
-export enum ResponseVerificationIdentityCardMessageEnum {
-  SEND_TO_QUEUE = 'SendToQueue',
-  ALREADY_VERIFIED = 'AlreadyVerified',
-}
+import {
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator'
+import { Type } from 'class-transformer'
+import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
 
 export class RequestQueryUserByBirthNumberDto {
   @ApiProperty({
@@ -28,33 +32,6 @@ export class RequestBatchQueryUsersByBirthNumbersDto {
   })
   @IsArray()
   birthNumbers: string[]
-}
-
-export class RequestBodyRequeueVerifyIdentityCardDto {
-  @ApiProperty({
-    description: 'Birth number for check',
-    example: '8808080000',
-  })
-  @IsBirthNumber({
-    message: 'Text must be birthnumber without slash (9 or 10 characters) and Only numbers ',
-  })
-  birthNumber!: string
-
-  @ApiProperty({
-    description: 'String of identitiy card',
-    example: 'AB123456',
-  })
-  @IsIdentityCard({
-    message: 'Text must be identity card number in format XX000000',
-  })
-  identityCard!: string
-
-  @ApiProperty({
-    description: 'Id of the user to requeue for verification',
-    example: 'a86bdfb7-7134-4dc2-b49b-1bc051d3825b',
-  })
-  @IsUUID()
-  userId!: string
 }
 
 export class RequestBodyValidateEdeskForUserIdsDto {
@@ -130,4 +107,26 @@ export class MarkDeceasedAccountRequestDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   birthNumbers: string[]
+}
+
+export class RequestBatchNewUserBirthNumbers {
+  @ApiProperty({
+    description: 'Date to query.',
+    example: '2023-04-13T14:39:49.004Z',
+    type: Date,
+  })
+  @IsDate()
+  @Type(() => Date)
+  since: Date
+
+  @ApiProperty({
+    description:
+      'Optionally specify maximum number to return. Will not return more than internal limit (100).',
+    example: 20,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  take?: number
 }

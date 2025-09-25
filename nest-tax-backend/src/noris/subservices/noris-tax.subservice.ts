@@ -118,9 +118,7 @@ export class NorisTaxSubservice {
   ) {
     let norisData: NorisTaxPayersDto[]
     try {
-      norisData = (await this.getTaxDataByYearAndBirthNumber(
-        data,
-      )) as NorisTaxPayersDto[]
+      norisData = await this.getTaxDataByYearAndBirthNumber(data)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
@@ -308,9 +306,7 @@ export class NorisTaxSubservice {
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
-    const norisData = (await this.getTaxDataByYearAndBirthNumber(
-      data,
-    )) as NorisTaxPayersDto[]
+    const norisData = await this.getTaxDataByYearAndBirthNumber(data)
 
     const birthNumbersResult: string[] = await this.processNorisTaxData(
       norisData,

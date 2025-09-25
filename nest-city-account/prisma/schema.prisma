@@ -69,8 +69,6 @@ model User {
   userAttribute                        String?
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
-  lastTaxYear                          Int?
-  lastTaxBackendUploadTry              DateTime?
   lastTaxDeliveryMethodsUpdateYear     Int?
   taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery

@@ -345,17 +345,17 @@ export class TaxService {
 
   async generatePdf(year: number, birthNumber: string): Promise<string> {
     try {
-      const tax = await this.getTaxByYear(year, birthNumber)
-      const taxDetails = taxDetailsToPdf(tax.taxDetails)
+      const user = await this.getTaxByYear(year, birthNumber)
+      const taxDetails = taxDetailsToPdf(user.taxDetails)
       const totals = taxTotalsToPdf(
-        tax,
-        tax.taxInstallments.map((data) => ({
+        user,
+        user.taxInstallments.map((data) => ({
           ...data,
           order: data.order ? +data.order : 1,
         })),
       )
       return await ejs.renderFile('public/tax-pdf.ejs', {
-        tax,
+        user,
         logo: path.resolve('public/logoBaTax.png'),
         taxDetails,
         totals,

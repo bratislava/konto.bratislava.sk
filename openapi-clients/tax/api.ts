@@ -72,6 +72,10 @@ export interface RequestAdminCreateTestingTaxDto {
 }
 export interface RequestAdminCreateTestingTaxNorisData {
   /**
+   * Variable symbol of the tax
+   */
+  variableSymbol: string
+  /**
    * Delivery method for the tax
    */
   deliveryMethod: RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum | null

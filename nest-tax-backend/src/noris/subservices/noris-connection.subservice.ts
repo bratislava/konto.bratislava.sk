@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { connect, ConnectionPool, config } from 'mssql'
+import { config, connect, ConnectionPool } from 'mssql'
 
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -28,7 +28,6 @@ export class NorisConnectionSubservice {
     configOverrides?: Partial<config>,
   ): Promise<ConnectionPool> {
     const connection = await connect({
-      ...configOverrides,
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
       database: this.configService.getOrThrow<string>('MSSQL_DB'),
@@ -40,6 +39,7 @@ export class NorisConnectionSubservice {
         encrypt: true,
         trustServerCertificate: true,
       },
+      ...configOverrides,
     })
 
     return connection

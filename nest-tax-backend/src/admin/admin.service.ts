@@ -91,6 +91,19 @@ export class AdminService {
       year,
     )
 
+    const taxesByVariabileSymbolExist = await this.prismaService.tax.findFirst({
+      where: {
+        variableSymbol: mockTaxRecord.variabilny_symbol,
+      },
+    })
+
+    if (taxesByVariabileSymbolExist) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax with this variable symbol already exists',
+      )
+    }
+
     // Process the mock data to create the testing tax
     await this.norisService.processNorisTaxData([mockTaxRecord], year)
   }

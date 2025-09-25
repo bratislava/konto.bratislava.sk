@@ -28,7 +28,7 @@ export const createTestingTaxMock = (
 
     // payment data
     specificky_symbol: '2024100000',
-    variabilny_symbol: '0000000001',
+    variabilny_symbol: norisData.variableSymbol,
     uhrazeno: norisData.alreadyPaid,
     zbyva_uhradit: (
       parseFloat(norisData.taxTotal.replace(',', '.')) -

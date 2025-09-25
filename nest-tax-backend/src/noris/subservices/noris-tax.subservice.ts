@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Prisma, TaxType } from '@prisma/client'
 import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
@@ -376,6 +376,7 @@ export class NorisTaxSubservice {
       update: taxData,
       create: {
         ...taxData,
+        type: TaxType.DZN,
         deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
       },
     })

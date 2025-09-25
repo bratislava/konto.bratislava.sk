@@ -361,6 +361,7 @@ export class AdminController {
   async getNewVerifiedUsersBirthNumbers(
     @Body() data: RequestBatchNewUserBirthNumbers
   ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
-    return await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
+    const result = await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
+    return result
   }
 }

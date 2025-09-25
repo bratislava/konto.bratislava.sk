@@ -1,5 +1,9 @@
 import { useTranslation } from 'next-i18next'
-import { ResponseTaxDetailsDto } from 'openapi-clients/tax'
+import {
+  ResponseApartmentTaxDetailDto,
+  ResponseConstructionTaxDetailDto,
+  ResponseGroundTaxDetailDto,
+} from 'openapi-clients/tax'
 import React, { useRef } from 'react'
 
 import cn from '../../../frontend/cn'
@@ -9,18 +13,10 @@ import AccordionV2 from './AccordionV2'
 
 const tableHeaderData = {
   subject: <span>Predmet dane</span>,
-  area: (
-    <span>
-      Výmera pozemku v m<sup>2</sup>
-    </span>
-  ),
-  baseMetric: (
-    <span>
-      Základ dane m<sup>2</sup>
-    </span>
-  ),
-  baseMonetary: <span>Základ dane v EUR</span>,
-  total: <span>Daň v EUR</span>,
+  area: <span>Výmera</span>,
+  baseMetric: <span>Základ dane</span>,
+  baseMonetary: <span>Základ dane</span>,
+  total: <span>Daň</span>,
 }
 
 const matchHeader = {
@@ -33,7 +29,10 @@ type AccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   dataType: string
-  data: ResponseTaxDetailsDto[]
+  data:
+    | ResponseGroundTaxDetailDto[]
+    | ResponseConstructionTaxDetailDto[]
+    | ResponseApartmentTaxDetailDto[]
 }
 
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
@@ -51,12 +50,12 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   ]
 
   return (
-    <thead className="self-stretch bg-gray-50 lg:bg-gray-0">
-      <tr>
+    <thead className="self-stretch bg-gray-50">
+      <tr className="lg:border-b-2">
         {headerData.map((header, index) => (
           <th
             key={index}
-            className="border-spacing-0 border-b-2 p-4 text-left text-16 not-first:text-center first:rounded-tl last:rounded-tr lg:p-0 lg:py-4"
+            className="p-4 text-left text-16 font-semibold not-first:text-center lg:px-6 lg:py-5"
           >
             {header}
           </th>
@@ -66,37 +65,41 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   )
 }
 
-const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsDto[] }) => {
+const TableData = ({
+  dataType,
+  data,
+}: {
+  dataType: string
+  data:
+    | ResponseGroundTaxDetailDto[]
+    | ResponseConstructionTaxDetailDto[]
+    | ResponseApartmentTaxDetailDto[]
+}) => {
   const { t } = useTranslation('account')
+
   return (
     <tbody>
       {data.map((taxDetail) => {
         return (
-          <tr key={taxDetail.id}>
-            <td className="h-max border-r-2 p-4 not-first:text-center not-first:text-20-semibold last:border-r-0 lg:p-0 lg:py-4">
+          <tr key={taxDetail.type} className="not-last:lg:border-b-2">
+            <td className="h-max p-4 not-first:text-center not-first:text-20-semibold lg:px-6 lg:py-5">
               <div className="inline h-0 font-semibold">
-                {t(
-                  `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.title`,
-                )}
+                {t(`tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.type}.title`)}
               </div>
-              <br />
-              {t(
-                `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.description`,
-              )}
             </td>
             {dataType === 'GROUND' && (
-              <td className="w-[15%] border-r-2 p-4 not-first:text-center not-first:text-16-semibold last:border-r-0 lg:p-0 lg:py-4 lg:not-first:text-20-semibold">
-                {taxDetail.area}
+              <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
+                {taxDetail.area} m<sup>2</sup>
               </td>
             )}
-            <td className="w-[15%] border-r-2 p-4 not-first:text-center not-first:text-16-semibold last:border-r-0 lg:p-0 lg:py-4 lg:not-first:text-20-semibold">
+            <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
             {/* Buggy detection */}
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            <td className="w-[15%] border-r-2 p-4 not-first:text-center not-first:text-16-semibold last:border-r-0 lg:p-0 lg:py-4 lg:not-first:text-20-semibold">
+            <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>
@@ -106,16 +109,31 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
   )
 }
 
-const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsDto[] }) => {
+const Table = ({
+  dataType,
+  data,
+}: {
+  dataType: string
+  data:
+    | ResponseGroundTaxDetailDto[]
+    | ResponseConstructionTaxDetailDto[]
+    | ResponseApartmentTaxDetailDto[]
+}) => {
   const tableWrapperRef = useRef<HTMLDivElement>(null)
   const { scrollFadeClassNames } = useHorizontalScrollFade({ ref: tableWrapperRef })
 
   return (
     <div className="relative w-full">
-      <div className={cn('overflow-x-auto', scrollFadeClassNames)} ref={tableWrapperRef}>
-        <table className="w-max table-auto border-separate border-spacing-0 rounded-lg border-2 border-solid border-gray-200 last:border-b-2 sm:w-full lg:rounded-none lg:border-0">
+      <div
+        className={cn(
+          'overflow-x-auto rounded-lg border-2 border-solid border-gray-200',
+          scrollFadeClassNames,
+        )}
+        ref={tableWrapperRef}
+      >
+        <table className="w-max table-auto sm:w-full">
           <TableHeaderRow dataType={dataType} />
-          <TableRow dataType={dataType} data={data} />
+          <TableData dataType={dataType} data={data} />
         </table>
       </div>
     </div>
@@ -139,10 +157,6 @@ const AccordionTableTaxContent = ({
     >
       <div className="flex size-full flex-col gap-6">
         <Table dataType={dataType} data={data} />
-        <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
-          <div className="grow text-h4-semibold">Celkom</div>
-          <div className="text-h4-semibold">{secondTitle}</div>
-        </div>
       </div>
     </AccordionV2>
   )

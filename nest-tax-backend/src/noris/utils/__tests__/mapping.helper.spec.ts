@@ -65,7 +65,6 @@ describe('mapNorisToTaxPayerData', () => {
     const result = mapNorisToTaxPayerData(mockNorisData, mockTaxAdministrator)
 
     expect(result).toEqual({
-      active: true,
       birthNumber: '1234567890',
       permanentResidenceAddress: 'Test Address',
       externalId: 'EXT123',

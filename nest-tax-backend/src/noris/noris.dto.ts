@@ -8,7 +8,6 @@ export interface NorisTaxPayersDto {
   subjekt_refer: string
   subjekt_nazev: string
   rok: number
-  ulica_tb: string
   ulica_tb_cislo: string
   psc_ref_tb: string
   psc_naz_tb: string
@@ -88,14 +87,7 @@ export interface NorisTaxPayersDto {
   SPL4_3: string
   TXTSPL4_4: string
   SPL4_4: string
-  obalka_ulica: string
-  obalka_psc: string
-  obalka_mesto: string
-  obalka_stat: string
-  pouk_cena_bez_hal: string
-  pouk_cena_hal: string
   specificky_symbol: string
-  uzivatelsky_atribut: string
   uhrazeno: string
   zbyva_uhradit: string
 }
@@ -110,4 +102,73 @@ export interface NorisPaymentsDto {
 export interface NorisUpdateDto {
   variabilny_symbol: string
   datum_platnosti: string | null
+}
+
+interface BaseNorisCommunalWasteTaxDto {
+  cislo_poradace: number
+  cislo_subjektu: number
+  adresa_tp_sidlo: string
+  cislo_konania: string
+  datum_platnosti: string | null
+  variabilny_symbol: string
+  specificky_symbol: string
+  rok: number
+  dan_spolu: string
+  uhrazeno: string
+  zbyva_uhradit: string
+  subjekt_refer: string
+  subjekt_nazev: string
+  akt_datum: string
+  vyb_nazov: string
+  TXTSPL1: string
+  SPL1: string
+  TXTSPL4_1: string
+  SPL4_1: string
+  TXTSPL4_2: string
+  SPL4_2: string
+  TXTSPL4_3: string
+  SPL4_3: string
+  TXTSPL4_4: string
+  SPL4_4: string
+  TXT_MENO: string
+  TXT_UL: string
+  TYP_USER: string
+  ICO_RC: string
+  ulica_tb_cislo: string
+  psc_ref_tb: string
+  psc_naz_tb: string
+  stat_nazov_plny: string
+  obec_nazev_tb: string
+  vyb_telefon_prace: string
+  vyb_email: string
+  vyb_id: number
+}
+
+export interface NorisCommunalWasteTaxDto extends BaseNorisCommunalWasteTaxDto {
+  objem_nadoby: string
+  pocet_nadob: string
+  pocet_odvozov: string
+  sadzba: string
+  poplatok: string
+  druh_nadoby: string
+  ulica: string
+  orientacne_cislo: string
+}
+
+export interface NorisCommunalWasteTaxProcessedDto
+  extends BaseNorisCommunalWasteTaxDto {
+  containers: {
+    address: {
+      street: string
+      orientationNumber: string
+    }
+    details: {
+      objem_nadoby: string
+      pocet_nadob: string
+      pocet_odvozov: string
+      sadzba: string
+      poplatok: string
+      druh_nadoby: string
+    }
+  }[]
 }

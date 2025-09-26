@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import {
   CreateBirthNumbersResponseDto,
   RequestAdminDeleteTaxDto,
-  RequestPostNorisLoadDataDto,
+  RequestGetNorisTaxDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from 'openapi-clients/tax'
 
@@ -50,7 +50,7 @@ export class TaxSubservice {
   }
 
   async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto
+    data: RequestGetNorisTaxDataDto
   ): AxiosPromise<CreateBirthNumbersResponseDto> {
     return this.clientsService.taxBackendApi.adminControllerLoadDataFromNorris(data, {
       headers: {

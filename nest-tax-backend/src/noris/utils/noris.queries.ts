@@ -172,7 +172,7 @@ SELECT
 
    /* --------- Texty splátok výmeru end ----------------------------*/
    
-    lcs.dane21_doklad.specificky_symbol,
+    lcs.dane21_doklad.specificky_symbol
 FROM 
     lcs.dane21_doklad  
 

@@ -1,14 +1,15 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DeliveryMethodEnum, GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
-import prismaMock from '../../../test/singleton'
-import { AdminApi } from 'openapi-clients/tax'
-import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { DeliveryMethodNoris } from '../../utils/types/tax.types'
-import { TasksService } from '../tasks.service'
 import { TaxSubservice } from '../../utils/subservices/tax.subservice'
+import { PrismaService } from '../../prisma/prisma.service'
+import prismaMock from '../../../test/singleton'
 import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { AdminApi, UpdateDeliveryMethodsInNorisResponseDto } from 'openapi-clients/tax'
+import { TasksService } from '../tasks.service'
+import { DeliveryMethodEnum, GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
+import { DeliveryMethodNoris } from '../../utils/types/tax.types'
+import { AxiosResponse } from 'axios'
 
 jest.mock('../../utils/decorators/errorHandler.decorators', () => {
   return jest.fn(() => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
@@ -62,8 +63,14 @@ describe('TasksService', () => {
   })
 
   describe('updateDeliveryMethodsInNoris', () => {
-    it('should call the endpoint with the correct data', async () => {
-      const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
+    it('should call the endpoint with the correct data, and update only users who are really updated in Noris', async () => {
+      const adminApiUpdateSpy = jest
+        .spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
+        .mockResolvedValue({
+          data: {
+            birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
+          },
+        } as AxiosResponse<UpdateDeliveryMethodsInNorisResponseDto>)
       const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
 
@@ -146,9 +153,14 @@ describe('TasksService', () => {
           },
         },
       })
+
+      expect(prismaUserUpdateSpy).toHaveBeenCalledWith({
+        where: { birthNumber: { in: ['1234562020', '1234564848', '1234564649', '1234564521'] } },
+        data: { lastTaxDeliveryMethodsUpdateYear: new Date().getFullYear() },
+      })
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith({
         where: { id: { in: ['1', '2', '3', '4', '5', '6', '7', '8'] } },
-        data: { lastTaxDeliveryMethodsUpdateYear: new Date().getFullYear() },
+        data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
       })
     })
 

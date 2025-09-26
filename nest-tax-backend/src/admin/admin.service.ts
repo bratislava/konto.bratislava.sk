@@ -16,7 +16,10 @@ import {
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
+import {
+  CreateBirthNumbersResponseDto,
+  UpdateDeliveryMethodsInNorisResponseDto,
+} from './dtos/responses.dto'
 import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()
@@ -59,7 +62,7 @@ export class AdminService {
 
   async updateDeliveryMethodsInNoris({
     data,
-  }: RequestUpdateNorisDeliveryMethodsDto) {
+  }: RequestUpdateNorisDeliveryMethodsDto): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
     return this.norisService.updateDeliveryMethodsInNoris({ data })
   }
 

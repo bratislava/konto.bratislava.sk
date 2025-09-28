@@ -33,7 +33,7 @@
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/swagger": "^11.2.0",
     "@prisma/client": "6.15.0",
-    "@types/passport-http-bearer": "^1.0.41",
+    "@types/passport-http-bearer": "^1.0.42",
     "await-exec": "^0.1.2",
     "axios": "^1.12.2",
     "base64url": "^3.0.1",

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { DeliveryMethodNamed, TaxPaymentSource } from '@prisma/client'
+import { DeliveryMethodNamed, TaxPaymentSource, TaxType } from '@prisma/client'
 import { IsDefined, IsEnum, IsNumber, IsOptional } from 'class-validator'
 
 export enum BloomreachEventNameEnum {
@@ -13,19 +13,33 @@ export class TaxPaymentBloomreachDataDto {
     description: 'year',
     example: 2024,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'amount',
     example: 13.2,
   })
+  @IsNumber()
   amount: number
 
   @ApiProperty({
     description: 'payment_source',
     example: TaxPaymentSource.CARD,
+    enumName: 'TaxPaymentSource',
+    enum: TaxPaymentSource,
   })
+  @IsEnum(TaxPaymentSource)
   payment_source: TaxPaymentSource
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
 }
 
 export class TaxBloomreachDataDto {
@@ -53,6 +67,15 @@ export class TaxBloomreachDataDto {
   @IsEnum(DeliveryMethodNamed)
   @IsOptional()
   delivery_method: DeliveryMethodNamed | null
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
 }
 
 export class UnpaidTaxReminderBloomreachDataDto {
@@ -63,4 +86,13 @@ export class UnpaidTaxReminderBloomreachDataDto {
   @IsDefined()
   @IsNumber()
   year: number
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
 }

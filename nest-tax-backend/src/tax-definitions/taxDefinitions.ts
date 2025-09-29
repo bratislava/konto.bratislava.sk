@@ -6,10 +6,10 @@ export const taxDefinitions: TaxDefinition[] = [
   {
     type: TaxType.DZN,
     getAndProcessDataFromNoris:
-      'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      'getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear',
     getDataFromNorisAndUpdateExistingRecords:
       'getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords',
   },
 ]
 
-// Done modules - Admin
+// Done modules - Admin, Auth, Bloomreach

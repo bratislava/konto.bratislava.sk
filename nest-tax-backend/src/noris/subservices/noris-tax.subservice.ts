@@ -203,7 +203,7 @@ export class NorisTaxSubservice {
     return { updated: count }
   }
 
-  async processNorisTaxData(
+  async processNorisRealEstateTaxData(
     norisData: NorisTaxPayersDto[],
     year: number,
   ): Promise<string[]> {
@@ -266,6 +266,7 @@ export class NorisTaxSubservice {
                     year,
                     delivery_method:
                       userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
+                    taxType: TaxType.DZN,
                   },
                   userFromCityAccount.externalId ?? undefined,
                 )
@@ -300,16 +301,14 @@ export class NorisTaxSubservice {
     return [...birthNumbersResult]
   }
 
-  async getAndProcessNorisTaxDataByBirthNumberAndYear(
+  async getAndProcessNorisRealEstateTaxDataByBirthNumberAndYear(
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
     const norisData = await this.getTaxDataByYearAndBirthNumber(data)
 
-    const birthNumbersResult: string[] = await this.processNorisTaxData(
-      norisData,
-      data.year,
-    )
+    const birthNumbersResult: string[] =
+      await this.processNorisRealEstateTaxData(norisData, data.year)
 
     return { birthNumbers: birthNumbersResult }
   }

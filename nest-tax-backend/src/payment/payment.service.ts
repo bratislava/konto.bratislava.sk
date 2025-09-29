@@ -390,6 +390,7 @@ export class PaymentService {
           tax: {
             select: {
               year: true,
+              type: true,
             },
           },
         },
@@ -404,6 +405,7 @@ export class PaymentService {
             amount: taxPayment.amount,
             payment_source: TaxPaymentSource.CARD,
             year: taxPayment.tax.year,
+            taxType: taxPayment.tax.type,
           },
           user.externalId,
         )

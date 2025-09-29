@@ -308,6 +308,7 @@ export class NorisPaymentSubservice {
           amount: createdTaxPayment.amount,
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
+          taxType: taxData.type,
         },
         userFromCityAccount.externalId,
       )

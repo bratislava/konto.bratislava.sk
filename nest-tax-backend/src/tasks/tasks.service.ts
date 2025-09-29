@@ -218,6 +218,7 @@ export class TasksService {
       select: {
         id: true,
         year: true,
+        type: true,
         taxPayer: {
           select: {
             birthNumber: true,
@@ -281,7 +282,7 @@ export class TasksService {
           userDataFromCityAccount[tax.taxPayer.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           await this.bloomreachService.trackEventUnpaidTaxReminder(
-            { year: tax.year },
+            { year: tax.year, taxType: tax.type },
             userFromCityAccount.externalId,
           )
         }
@@ -392,11 +393,13 @@ export class TasksService {
     }
 
     const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
-        year,
-        birthNumbers,
-        taxType: TaxType.DZN,
-      })
+      await this.norisService.getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear(
+        {
+          year,
+          birthNumbers,
+          taxType: TaxType.DZN,
+        },
+      )
 
     // Move all requested TaxPayers to the end of the queue
     await this.prismaService.taxPayer.updateMany({

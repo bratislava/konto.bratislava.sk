@@ -118,7 +118,7 @@ export class AdminService {
     }
 
     // Process the mock data to create the testing tax
-    await this.norisService.processNorisTaxData([mockTaxRecord], year)
+    await this.norisService.processNorisRealEstateTaxData([mockTaxRecord], year)
   }
 
   async deleteTax({
@@ -176,6 +176,7 @@ export class AdminService {
         year,
         amount: 0,
         delivery_method: null,
+        taxType,
       },
       userDataFromCityAccount.externalId ?? undefined,
     )

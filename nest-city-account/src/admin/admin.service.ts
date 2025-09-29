@@ -673,7 +673,7 @@ export class AdminService {
 
     if (
       users.length === limitedTake &&
-      limitedTake > 2 &&
+      limitedTake >= 2 &&
       users[0].lastVerificationIdentityCard === users[users.length - 1].lastVerificationIdentityCard
     ) {
       // If this happens because of manual edit in the database, please add random jitter to the dates

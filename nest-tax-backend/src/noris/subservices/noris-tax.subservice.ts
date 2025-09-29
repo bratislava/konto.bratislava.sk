@@ -455,7 +455,7 @@ export class NorisTaxSubservice {
       request.input('year', data.year)
 
       const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
-        '@variable_symbols',
+        '@birth_numbers',
         birthNumbersPlaceholders,
       )
 

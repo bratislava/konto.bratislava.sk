@@ -614,7 +614,7 @@ export const getCommunalWasteTaxesFromNoris = `
 
     z_vybav.telefon_prace vyb_telefon_prace, 
     z_vybav.e_mail vyb_email, 
-    pop_conf.vybavuje vyb_id
+    pop_conf.vybavuje vyb_id,
 
     ------ Info about the container
     nadoba.objem objem_nadoby,
@@ -628,7 +628,7 @@ export const getCommunalWasteTaxesFromNoris = `
                     THEN LEFT(sub_adresa.nazev_subjektu, CHARINDEX(',', sub_adresa.nazev_subjektu) - 1)
             ELSE sub_adresa.nazev_subjektu
         END AS ulica,
-    nadoba.orientacne_cislo orientacne_cislo,
+    nadoba.orientacne_cislo orientacne_cislo
 
     FROM lcs.pko21_nadoba nadoba
     JOIN lcs.pko21_poplatok poplatok ON nadoba.pko_poplatok = poplatok.cislo_subjektu

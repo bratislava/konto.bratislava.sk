@@ -279,9 +279,7 @@ export class TasksService {
       return
     }
 
-    const entityIdArray = entitiesToUpdate.map((entity) => entity.id)
-
-    await this.physicalEntityService.updateEdeskFromUpvs({ id: { in: entityIdArray } })
+    await this.physicalEntityService.updateEdeskFromUpvs(entitiesToUpdate)
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_9AM)

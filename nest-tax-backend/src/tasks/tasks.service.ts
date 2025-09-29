@@ -152,7 +152,7 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
-  async updateTaxesFromNoris() {
+  async updateRealEstateTaxesFromNoris() {
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
@@ -174,7 +174,7 @@ export class TasksService {
       `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
     )
 
-    await this.norisService.updateTaxesFromNoris(taxes)
+    await this.norisService.updateTaxesFromNoris(taxes, TaxType.DZN)
 
     await this.prismaService.tax.updateMany({
       where: {

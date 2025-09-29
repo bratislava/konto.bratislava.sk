@@ -7,6 +7,7 @@ import {
   TaxPayer,
   TaxPayment,
   TaxPaymentSource,
+  TaxType,
 } from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
 
@@ -279,9 +280,10 @@ export class PaymentService {
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
-          taxPayerId_year: {
+          taxPayerId_year_type: {
             taxPayerId: taxPayer.id,
             year: +year,
+            type: TaxType.DZN, // TODO resolve when refactoring payment module
           },
         },
       })

@@ -1,5 +1,9 @@
 import { TaxType } from '@prisma/client'
 
+import {
+  mapNorisToRealEstateTaxData,
+  mapNorisToRealEstateTaxDetailData,
+} from '../noris/utils/mapping.helper'
 import { TaxDefinition } from './taxDefinitionsTypes'
 
 export const taxDefinitions: TaxDefinition[] = [
@@ -8,8 +12,11 @@ export const taxDefinitions: TaxDefinition[] = [
     getAndProcessDataFromNoris:
       'getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear',
     getDataFromNorisAndUpdateExistingRecords:
-      'getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords',
+      'getNorisRealEstateTaxDataByBirthNumberAndYearAndUpdateExistingRecords',
+    mapNorisToTaxData: mapNorisToRealEstateTaxData,
+    mapNorisToTaxDetailData: mapNorisToRealEstateTaxDetailData,
+    getDataForUpdate: 'getRealEstateDataForUpdate',
   },
 ]
 
-// Done modules - Admin, Auth, Bloomreach
+// Done modules - Admin, Auth, Bloomreach, CardPaymentReporting, Clients, Noris

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 
 import {
   RequestPostNorisLoadDataDto,
@@ -35,11 +36,11 @@ export class NorisService {
     return this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(data)
   }
 
-  async getDataForUpdate(
+  async getRealEstateDataForUpdate(
     variableSymbols: string[],
     years: number[],
   ): Promise<NorisUpdateDto[]> {
-    return this.taxSubservice.getDataForUpdate(variableSymbols, years)
+    return this.taxSubservice.getRealEstateDataForUpdate(variableSymbols, years)
   }
 
   async getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear(
@@ -65,16 +66,16 @@ export class NorisService {
     return this.taxSubservice.processNorisRealEstateTaxData(norisData, year)
   }
 
-  async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+  async getNorisRealEstateTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     data: RequestPostNorisLoadDataDto,
   ) {
-    return this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    return this.taxSubservice.getNorisRealEstateTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       data,
     )
   }
 
-  async updateTaxesFromNoris(taxes: TaxIdVariableSymbolYear[]) {
-    return this.taxSubservice.updateTaxesFromNoris(taxes)
+  async updateTaxesFromNoris(taxes: TaxIdVariableSymbolYear[], type: TaxType) {
+    return this.taxSubservice.updateTaxesFromNoris(taxes, type)
   }
 
   async updateDeliveryMethodsInNoris({

@@ -1,7 +1,7 @@
 import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
-import { PaymentStatus, Prisma } from '@prisma/client'
+import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -85,9 +85,10 @@ export class TaxService {
       include: T
     }>({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type: {
           year,
           taxPayerId: taxPayer.id,
+          type: TaxType.DZN, // TODO replace when refactoring tax module.
         },
       },
       include,

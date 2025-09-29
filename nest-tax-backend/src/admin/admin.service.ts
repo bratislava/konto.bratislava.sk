@@ -141,11 +141,11 @@ export class AdminService {
 
     const tax = await this.prismaService.tax.findUnique({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
         },
-        type: taxType,
       },
     })
     if (!tax) {
@@ -157,11 +157,11 @@ export class AdminService {
 
     await this.prismaService.tax.delete({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
         },
-        type: taxType,
       },
     })
 

@@ -31,6 +31,7 @@ import {
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import {PaymentTypeEnum} from "../tax/dtos/response.tax.dto";
 
 @Injectable()
 export class PaymentService {
@@ -130,7 +131,7 @@ export class PaymentService {
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=DzN&year=${year}`,
+        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=${PaymentTypeEnum.DZN}&year=${year}`,
         DESCRIPTION: options.description,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
@@ -224,7 +225,7 @@ export class PaymentService {
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=DzN`,
+        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=${PaymentTypeEnum.DZN}&year=${tax.year.toString()}`,
         DESCRIPTION: `Platba za dane pre BA s id dane ${tax.id}`,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }

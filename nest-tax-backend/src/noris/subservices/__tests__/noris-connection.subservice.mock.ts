@@ -16,6 +16,7 @@ export const createNorisConnectionSubserviceMock = () => {
   const mock = {
     createConnection: jest.fn().mockResolvedValue(mockConnectionPool),
     createOptimizedConnection: jest.fn().mockResolvedValue(mockConnectionPool),
+    // eslint-disable-next-line unicorn/no-useless-undefined
     waitForConnection: jest.fn().mockResolvedValue(undefined),
   }
 

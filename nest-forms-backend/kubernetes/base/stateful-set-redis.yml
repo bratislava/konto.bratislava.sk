@@ -134,7 +134,7 @@ spec:
     spec:
       initContainers:
         - name: volume-permissions
-          image: docker.io/bitnami/bitnami-shell:11-debian-11-r72
+          image: docker.io/bitnami/bitnami-shell-archived:11-debian-11-r72
           imagePullPolicy: "IfNotPresent"
           command:
             - /bin/bash
@@ -151,7 +151,7 @@ spec:
               mountPath: /data
       containers:
       - name: redis
-        image: bitnami/redis:7.0.8-debian-11-r0
+        image: bitnamilegacy/redis:7.0.8-debian-11-r0
         command: 
           - /bin/bash
         args:

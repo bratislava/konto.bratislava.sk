@@ -25,6 +25,7 @@ import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservi
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
+const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
 @Injectable()
 export class TasksService {
@@ -313,7 +314,7 @@ export class TasksService {
     }
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('Cron Error')
   async loadNewUsersFromCityAccount() {
     // Get latest date from config
@@ -325,7 +326,10 @@ export class TasksService {
     // Get birth numbers from nest-city account
 
     const data =
-      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(since, 3)
+      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(
+        since,
+        LOAD_USER_BIRTHNUMBERS_BATCH,
+      )
 
     // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
     await this.prismaService.taxPayer.createMany({
@@ -362,7 +366,7 @@ export class TasksService {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
     this.logger.log('Starting loadTaxesForUsers task')
@@ -371,7 +375,7 @@ export class TasksService {
     const year = new Date().getFullYear()
     const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
       select: { birthNumber: true },
-      where: { taxes: { none: { year: year } } },
+      where: { taxes: { none: { year } } },
       orderBy: { updatedAt: 'asc' },
       take: UPLOAD_BIRTHNUMBERS_BATCH,
     })
@@ -382,6 +386,12 @@ export class TasksService {
       return
     }
 
+    const result =
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+        year,
+        birthNumbers,
+      })
+
     // Move all requested TaxPayers to the end of the queue
     await this.prismaService.taxPayer.updateMany({
       where: {
@@ -391,13 +401,6 @@ export class TasksService {
         updatedAt: new Date(),
       },
     })
-
-    // Load data from Noris
-    const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
-        year,
-        birthNumbers,
-      })
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,

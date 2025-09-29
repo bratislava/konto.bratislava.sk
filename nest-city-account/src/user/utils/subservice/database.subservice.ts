@@ -288,7 +288,7 @@ export class DatabaseSubserviceUser {
 
   async getOfficialCorrespondenceChannel(
     userId: string
-  ): Promise<UserOfficialCorrespondenceChannelEnum> {
+  ): Promise<UserOfficialCorrespondenceChannelEnum | null> {
     const delivery = await this.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
     const active = delivery.active?.deliveryMethod
     switch (active) {
@@ -299,7 +299,7 @@ export class DatabaseSubserviceUser {
       case DeliveryMethodEnum.POSTAL:
         return UserOfficialCorrespondenceChannelEnum.POSTAL
       default:
-        return UserOfficialCorrespondenceChannelEnum.POSTAL
+        return null
     }
   }
 
@@ -342,7 +342,13 @@ export class DatabaseSubserviceUser {
     return { active, locked }
   }
 
-  async getShowEmailCommunicationBanner(userId: string): Promise<boolean> {
+  async getShowEmailCommunicationBanner(
+    userId: string,
+    isIdentityVerified: boolean
+  ): Promise<boolean> {
+    if (!isIdentityVerified) {
+      return false
+    }
     const user = await this.prisma.user.findFirst({
       where: {
         id: userId,

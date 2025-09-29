@@ -17,11 +17,11 @@ jobs:
     name: Deploy to dev
     if: needs.conditions.outputs.dev == 'true'
     needs: conditions
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: ./
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
+      cluster: development
+      url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
     secrets:
@@ -33,11 +33,11 @@ jobs:
     name: Deploy to staging
     if: needs.conditions.outputs.staging == 'true'
     needs: [conditions]
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: ./
-      cluster: tkg-innov-staging
-      url: https://tkg.staging.bratislava.sk
+      cluster: staging
+      url: https://stage.tkgis.bratislava.sk:6443
       flag: --staging
       debug: --debug
     secrets:

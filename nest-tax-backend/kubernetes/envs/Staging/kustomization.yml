@@ -1,6 +1,6 @@
 resources:
   - ../../base
-  - scaler.yml
+  - ./secrets/cognito.secret.yml
   - ./secrets/reporting.secret.yml
   - ./secrets/email.secret.yml
 

@@ -1,7 +1,6 @@
 resources:
   - ../../base
   - secrets/database.secret.yml
-  - scaler.yml
 
 generatorOptions:
   disableNameSuffixHash: true

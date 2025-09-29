@@ -353,7 +353,7 @@ export class AdminController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Returns list of birt numbers for new verified users.',
+    description: 'Returns list of birth numbers for new verified users.',
     type: GetNewVerifiedUsersBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
@@ -362,6 +362,7 @@ export class AdminController {
   async getNewVerifiedUsersBirthNumbers(
     @Body() data: RequestBatchNewUserBirthNumbers
   ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
-    return await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
+    const result = await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
+    return result
   }
 }

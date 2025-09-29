@@ -18,7 +18,6 @@ export const mapNorisToTaxPayerData = (
   taxAdministrator: TaxAdministrator,
 ) => {
   return {
-    active: true,
     birthNumber: data.ICO_RC,
     permanentResidenceAddress: data.adresa_tp_sidlo,
     externalId: data.subjekt_refer,
@@ -65,10 +64,17 @@ export const mapNorisToTaxData = (
   }
 }
 
+type TaxInstallment = {
+  taxId: number
+  amount: number
+  text: string | null
+  order: number
+}
+
 export const mapNorisToTaxInstallmentsData = (
   data: NorisTaxPayersDto,
   taxId: number,
-): any[] => {
+): TaxInstallment[] => {
   if (data.SPL4_2 === '') {
     return [
       {
@@ -120,38 +126,6 @@ export const mapDeliveryMethodToNoris = (
   return norisMethod
 }
 
-const config: Record<
-  string,
-  {
-    areaType: AreaTypesEnum
-    base: string
-    amount: string
-    area: string | false
-    types: TaxDetailareaType[]
-  }
-> = {
-  pozemky: {
-    areaType: AreaTypesEnum.GROUND,
-    base: 'ZAKLAD',
-    amount: 'DAN',
-    area: 'VYMERA',
-    types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-  },
-  stavba: {
-    areaType: AreaTypesEnum.CONSTRUCTION,
-    base: 'ZAKLAD',
-    amount: 'DAN',
-    area: false,
-    types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'jH', 'jI', 'H'],
-  },
-  byt: {
-    areaType: AreaTypesEnum.APARTMENT,
-    base: 'zaklad_dane',
-    amount: 'dan_byty',
-    area: false,
-    types: ['byt', 'nebyt'],
-  },
-}
 export type TaxDetail = {
   taxId: number
   areaType: TaxDetailareaType
@@ -164,6 +138,39 @@ export const mapNorisToTaxDetailData = (
   data: NorisTaxPayersDto,
   taxId: number,
 ): TaxDetail[] => {
+  const config: Record<
+    string,
+    {
+      areaType: AreaTypesEnum
+      base: string
+      amount: string
+      area: string | false
+      types: TaxDetailareaType[]
+    }
+  > = {
+    pozemky: {
+      areaType: AreaTypesEnum.GROUND,
+      base: 'ZAKLAD',
+      amount: 'DAN',
+      area: 'VYMERA',
+      types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    },
+    stavba: {
+      areaType: AreaTypesEnum.CONSTRUCTION,
+      base: 'ZAKLAD',
+      amount: 'DAN',
+      area: false,
+      types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'jH', 'jI', 'H'],
+    },
+    byt: {
+      areaType: AreaTypesEnum.APARTMENT,
+      base: 'zaklad_dane',
+      amount: 'dan_byty',
+      area: false,
+      types: ['byt', 'nebyt'],
+    },
+  }
+
   const response: TaxDetail[] = []
 
   Object.entries(config).forEach(([keyTaxConfig, valueTaxConfig]) => {

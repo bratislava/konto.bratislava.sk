@@ -335,14 +335,31 @@ export class TasksService {
       skipDuplicates: true,
     })
 
-    await this.prismaService.config.updateMany({
+    const latestRecord = await this.prismaService.config.findFirst({
       where: {
         key: 'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
       },
-      data: {
-        value: data.nextSince.toISOString(),
+      orderBy: {
+        updatedAt: 'desc',
       },
     })
+    if (latestRecord) {
+      await this.prismaService.config.update({
+        where: {
+          id: latestRecord.id,
+        },
+        data: {
+          value: data.nextSince.toISOString(),
+        },
+      })
+    } else {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
+        undefined,
+        `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
+      )
+    }
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -376,7 +393,11 @@ export class TasksService {
     })
 
     // Load data from Noris
-    const result = await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({year, birthNumbers})
+    const result =
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+        year,
+        birthNumbers,
+      })
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,

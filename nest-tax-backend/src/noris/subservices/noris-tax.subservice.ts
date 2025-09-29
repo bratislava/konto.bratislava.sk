@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Prisma, TaxType } from '@prisma/client'
 import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
@@ -123,9 +123,7 @@ export class NorisTaxSubservice {
   ) {
     let norisData: NorisTaxPayersDto[]
     try {
-      norisData = (await this.getTaxDataByYearAndBirthNumber(
-        data,
-      )) as NorisTaxPayersDto[]
+      norisData = await this.getTaxDataByYearAndBirthNumber(data)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
@@ -313,9 +311,7 @@ export class NorisTaxSubservice {
     data: RequestGetNorisTaxDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
-    const norisData = (await this.getTaxDataByYearAndBirthNumber(
-      data,
-    )) as NorisTaxPayersDto[]
+    const norisData = await this.getTaxDataByYearAndBirthNumber(data)
 
     const birthNumbersResult: string[] = await this.processNorisTaxData(
       norisData,
@@ -381,6 +377,7 @@ export class NorisTaxSubservice {
       update: taxData,
       create: {
         ...taxData,
+        type: TaxType.DZN,
         deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
       },
     })

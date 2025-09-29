@@ -347,8 +347,9 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get birth numbers for [take] new users since requested date',
-    description: 'Delete tax for user, for example when the tax is cancelled in Noris.',
+    summary: 'Get birth numbers of newly verified users.',
+    description:
+      'Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.',
   })
   @ApiResponse({
     status: 200,

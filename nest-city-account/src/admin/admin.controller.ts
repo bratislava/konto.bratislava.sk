@@ -358,7 +358,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
-  @Post('get-verified-user-birth-numbers-batch')
+  @Post('get-verified-users-birth-numbers-batch')
   async getNewVerifiedUsersBirthNumbers(
     @Body() data: RequestBatchNewUserBirthNumbers
   ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {

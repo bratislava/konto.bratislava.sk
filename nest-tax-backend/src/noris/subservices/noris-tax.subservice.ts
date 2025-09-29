@@ -50,13 +50,11 @@ export class NorisTaxSubservice {
     const connection = await this.connectionService.createConnection()
 
     let birthNumbers = ''
-    if (data.birthNumbers !== 'All') {
-      data.birthNumbers.forEach((birthNumber) => {
-        birthNumbers += `'${birthNumber}',`
-      })
-      if (birthNumbers.length > 0) {
-        birthNumbers = `AND lcs.dane21_priznanie.rodne_cislo IN (${birthNumbers.slice(0, -1)})`
-      }
+    data.birthNumbers.forEach((birthNumber) => {
+      birthNumbers += `'${birthNumber}',`
+    })
+    if (birthNumbers.length > 0) {
+      birthNumbers = `AND lcs.dane21_priznanie.rodne_cislo IN (${birthNumbers.slice(0, -1)})`
     }
     const norisData = await connection.query(
       queryPayersFromNoris

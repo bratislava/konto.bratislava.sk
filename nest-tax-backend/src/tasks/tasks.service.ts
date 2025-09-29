@@ -1,6 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  Prisma,
+  TaxType,
+} from '@prisma/client'
 import dayjs from 'dayjs'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -390,6 +395,7 @@ export class TasksService {
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
         year,
         birthNumbers,
+        taxType: TaxType.DZN,
       })
 
     // Move all requested TaxPayers to the end of the queue

@@ -125,7 +125,12 @@ export interface RequestAdminDeleteTaxDto {
    * Birth number in format with slash
    */
   birthNumber: string
+  /**
+   * Type of tax
+   */
+  taxType: TaxType
 }
+
 export interface RequestPostNorisLoadDataDto {
   /**
    * Year of tax
@@ -134,8 +139,13 @@ export interface RequestPostNorisLoadDataDto {
   /**
    * Birth numbers or ALL
    */
-  birthNumbers: object
+  birthNumbers: Array<string>
+  /**
+   * Type of tax
+   */
+  taxType: TaxType
 }
+
 export interface RequestPostNorisPaymentDataLoadDto {
   /**
    * Year of tax

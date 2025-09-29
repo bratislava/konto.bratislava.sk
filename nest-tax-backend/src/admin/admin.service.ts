@@ -4,6 +4,7 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto } from '../noris/noris.dto'
 import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -36,15 +37,27 @@ export class AdminService {
   async loadDataFromNoris(
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
-      data,
-    )
+    const taxDefintion = getTaxDefinitionByType(data.taxType)
+    if (!taxDefintion) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax definition not found: ${data.taxType}`,
+      )
+    }
+    return this.norisService[taxDefintion.getAndProcessDataFromNoris](data)
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-      data,
-    )
+    const taxDefintion = getTaxDefinitionByType(data.taxType)
+    if (!taxDefintion) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax definition not found: ${data.taxType}`,
+      )
+    }
+    return this.norisService[
+      taxDefintion.getDataFromNorisAndUpdateExistingRecords
+    ](data)
   }
 
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
@@ -111,6 +124,7 @@ export class AdminService {
   async deleteTax({
     year,
     birthNumber,
+    taxType,
   }: RequestAdminDeleteTaxDto): Promise<void> {
     const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
     const taxPayer = await this.prismaService.taxPayer.findUnique({
@@ -131,6 +145,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           year,
         },
+        type: taxType,
       },
     })
     if (!tax) {
@@ -146,6 +161,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           year,
         },
+        type: taxType,
       },
     })
 

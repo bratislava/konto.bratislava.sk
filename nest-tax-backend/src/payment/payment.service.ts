@@ -95,7 +95,7 @@ export class PaymentService {
       )
     }
 
-    let year: string | undefined = undefined
+    let year: string | undefined
     try {
       const tax = await this.prisma.tax.findUnique({
         where: { id: options.taxId },
@@ -106,7 +106,7 @@ export class PaymentService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Can find tax corresponding to the order',
+        'Can\'t find tax corresponding to the order',
         'Database error',
         undefined,
         error,
@@ -115,7 +115,7 @@ export class PaymentService {
     if (!year) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Tax not found without error',
+        `Tax with ID ${options.taxId} does not exist.`,
       )
     }
 

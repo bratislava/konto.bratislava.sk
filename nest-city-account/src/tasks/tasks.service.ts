@@ -270,7 +270,7 @@ export class TasksService {
              "activeEdeskUpdateFailCount" = 0 OR
              ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate}))
       
-      ORDER BY "activeEdeskUpdatedAt" NULLS FIRST
+      ORDER BY greatest("activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
       LIMIT 5;
     `
 

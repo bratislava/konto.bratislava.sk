@@ -197,7 +197,7 @@ export class TasksService {
              "activeEdeskUpdateFailCount" = 0 OR
              ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate}))
       
-      ORDER BY "activeEdeskUpdatedAt" NULLS FIRST
+      ORDER BY greatest("activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
       LIMIT 5;
     `
 
@@ -206,9 +206,7 @@ export class TasksService {
       return
     }
 
-    const entityIdArray = entitiesToUpdate.map((entity) => entity.id)
-
-    await this.physicalEntityService.updateEdeskFromUpvs({ id: { in: entityIdArray } })
+    await this.physicalEntityService.updateEdeskFromUpvs(entitiesToUpdate)
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_9AM)

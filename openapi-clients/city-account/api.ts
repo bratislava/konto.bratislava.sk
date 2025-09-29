@@ -1046,8 +1046,8 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Get birth numbers for [take] new users since requested date
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
      * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1062,7 +1062,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         'requestBatchNewUserBirthNumbers',
         requestBatchNewUserBirthNumbers,
       )
-      const localVarPath = `/admin/get-verified-user-birth-numbers-batch`
+      const localVarPath = `/admin/get-verified-users-birth-numbers-batch`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1621,8 +1621,8 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Get birth numbers for [take] new users since requested date
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
      * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1986,8 +1986,8 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Get birth numbers for [take] new users since requested date
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
      * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2184,8 +2184,8 @@ export class ADMINApi extends BaseAPI {
   }
 
   /**
-   * Delete tax for user, for example when the tax is cancelled in Noris.
-   * @summary Get birth numbers for [take] new users since requested date
+   * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+   * @summary Get birth numbers of newly verified users.
    * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

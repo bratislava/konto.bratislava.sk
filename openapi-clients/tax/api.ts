@@ -33,6 +33,12 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
+export interface CreateBirthNumbersResponseDto {
+  /**
+   * An array of birth numbers which were added to TaxPayers in this batch.
+   */
+  birthNumbers: Array<string>
+}
 /**
  * delivery_method
  */
@@ -119,6 +125,16 @@ export interface RequestAdminDeleteTaxDto {
    * Birth number in format with slash
    */
   birthNumber: string
+}
+export interface RequestPostNorisLoadDataDto {
+  /**
+   * Year of tax
+   */
+  year: number
+  /**
+   * Birth numbers or ALL
+   */
+  birthNumbers: object
 }
 export interface RequestPostNorisPaymentDataLoadDto {
   /**
@@ -995,6 +1011,58 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
+     *
+     * @summary Integrate data from noris if not exists by birth numbers or all
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerLoadDataFromNoris: async (
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestPostNorisLoadDataDto' is not null or undefined
+      assertParamExists(
+        'adminControllerLoadDataFromNoris',
+        'requestPostNorisLoadDataDto',
+        requestPostNorisLoadDataDto,
+      )
+      const localVarPath = `/admin/create-data-from-noris`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestPostNorisLoadDataDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
      * @summary Remove delivery methods for given birth number.
      * @param {string} birthNumber
@@ -1032,6 +1100,58 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Integrate data from noris
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateDataFromNoris: async (
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestPostNorisLoadDataDto' is not null or undefined
+      assertParamExists(
+        'adminControllerUpdateDataFromNoris',
+        'requestPostNorisLoadDataDto',
+        requestPostNorisLoadDataDto,
+      )
+      const localVarPath = `/admin/update-data-from-noris`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestPostNorisLoadDataDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1206,6 +1326,36 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     *
+     * @summary Integrate data from noris if not exists by birth numbers or all
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerLoadDataFromNoris(
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateBirthNumbersResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerLoadDataFromNoris(
+        requestPostNorisLoadDataDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerLoadDataFromNoris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
      * @summary Remove delivery methods for given birth number.
      * @param {string} birthNumber
@@ -1224,6 +1374,34 @@ export const AdminApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['AdminApi.adminControllerRemoveDeliveryMethodsFromNoris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Integrate data from noris
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerUpdateDataFromNoris(
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpdateDataFromNoris(
+        requestPostNorisLoadDataDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerUpdateDataFromNoris']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1336,6 +1514,21 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     *
+     * @summary Integrate data from noris if not exists by birth numbers or all
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerLoadDataFromNoris(
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<CreateBirthNumbersResponseDto> {
+      return localVarFp
+        .adminControllerLoadDataFromNoris(requestPostNorisLoadDataDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
      * @summary Remove delivery methods for given birth number.
      * @param {string} birthNumber
@@ -1348,6 +1541,21 @@ export const AdminApiFactory = function (
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Integrate data from noris
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateDataFromNoris(
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerUpdateDataFromNoris(requestPostNorisLoadDataDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1420,6 +1628,22 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
+   *
+   * @summary Integrate data from noris if not exists by birth numbers or all
+   * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public adminControllerLoadDataFromNoris(
+    requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerLoadDataFromNoris(requestPostNorisLoadDataDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
    * @summary Remove delivery methods for given birth number.
    * @param {string} birthNumber
@@ -1432,6 +1656,22 @@ export class AdminApi extends BaseAPI {
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Integrate data from noris
+   * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public adminControllerUpdateDataFromNoris(
+    requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerUpdateDataFromNoris(requestPostNorisLoadDataDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

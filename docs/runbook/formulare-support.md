@@ -87,7 +87,7 @@ Treba brať ohľad na to, kedy boli formuláre odoslané. Ak sú odoslané nedá
 
 ### Zaseknutý formulár v `RUNNING_UPLOAD_ATTACHMENTS`
 
-1. Pristúpiť do `nest-forms-backend` databázy (IP: `10.10.10.45`)
+1. Pristúpiť do `nest-forms-backend` databázy (IP: `10.10.30.74`)
 2. Nájsť formulár v tabuľke `Forms` podľa `id` (alebo `ginisDocumentId`)
 3. Nájsť všetky súbory daného formulára v tabuľke `Files` podľa `formId` (pozor, použiť `id`, nie `ginisDocumentId`)
 4. Ak sú nejaké súbory s `true` flagom `ginisUploadedError`, tak treba [skontrolovať prílohy priamo v Ginise](#kontrola-formulára-v-ginise) a manuálne v DB nastaviť `ginisUploaded` na `true` pre všetky súbory, čo sú v Ginise, a na `false` pre ostatné. Potom nastaviť **všetky** `ginisUploadedError` na `false`.

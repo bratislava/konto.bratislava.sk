@@ -2,9 +2,9 @@ name: Nest deploy pipeline
 on:
   push:
     tags:
-      - 'dev**'
-      - 'staging**'
-      - 'prod**'
+      - "dev**"
+      - "staging**"
+      - "prod**"
     branches:
       - master
 
@@ -52,8 +52,8 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
       directory: ./
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}

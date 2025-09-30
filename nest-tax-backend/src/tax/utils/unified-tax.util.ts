@@ -6,10 +6,7 @@ import utc from 'dayjs/plugin/utc'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { TaxDefinition } from '../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import {
-  QrCodeGeneratorDto,
-  QrPaymentNoteEnum,
-} from '../../utils/subservices/dtos/qrcode.dto'
+import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -26,14 +23,14 @@ import {
   ResponseTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
 import { generateItemizedRealEstateTaxDetail } from './helpers/tax.helper'
-import { GetTaxDetailPureOptions, GetTaxDetailPureResponse } from './types'
+import {
+  GetTaxDetailPureOptions,
+  GetTaxDetailPureResponse,
+  ReplaceQrCodeWithGeneratorDto,
+} from './types'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
-
-export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
-  [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
-}
 
 const bratislavaTimeZone = 'Europe/Bratislava'
 

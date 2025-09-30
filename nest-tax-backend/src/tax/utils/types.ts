@@ -1,12 +1,16 @@
 import { PaymentStatus, TaxDetail } from '@prisma/client'
 
+import { QrCodeGeneratorDto } from '../../utils/subservices/dtos/qrcode.dto'
 import {
   ResponseActiveInstallmentDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
-import { ReplaceQrCodeWithGeneratorDto } from './unified-tax.util'
+
+export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
+  [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
+}
 
 export type GetTaxDetailPureOptions = {
   taxYear: number // daňový rok

@@ -121,6 +121,9 @@ export class AdminController {
     summary: "Get user's verify state",
     description: 'Return the state of user verifying.',
   })
+  @ApiOkResponse({
+    type: UserVerifyState,
+  })
   @UseGuards(AdminGuard)
   @Get('status/user/:email')
   async checkUserVerifyState(@Param('email') email: string): Promise<UserVerifyState> {

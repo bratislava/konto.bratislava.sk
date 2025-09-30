@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsArray,
   IsDate,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -10,6 +11,7 @@ import {
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
+import { TaxType } from 'openapi-clients/tax'
 
 export class RequestQueryUserByBirthNumberDto {
   @ApiProperty({
@@ -95,6 +97,15 @@ export class RequestDeleteTaxDto {
   })
   @IsString()
   birthNumber: string
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.Dzn,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
 }
 
 export class MarkDeceasedAccountRequestDto {

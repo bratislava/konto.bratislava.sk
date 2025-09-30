@@ -8,9 +8,9 @@ import * as ejs from 'ejs'
 
 import prismaMock from '../../../test/singleton'
 import { PaymentService } from '../../payment/payment.service'
+import * as paymentHelper from '../../payment/utils/payment.helper'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import * as paymentHelper from '../../utils/helpers/payment.helper'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import {
   CustomErrorTaxTypesEnum,

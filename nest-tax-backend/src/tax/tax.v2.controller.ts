@@ -15,12 +15,12 @@ import {
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import { TaxType } from '@prisma/client'
+import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
 import { Tiers } from '../utils/decorators/tier.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
-import { CognitoTiersEnum } from '../utils/global-dtos/cognito.dto'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
@@ -56,7 +56,7 @@ export class TaxControllerV2 {
     description: 'Internal server error',
     type: ResponseInternalServerErrorDto,
   })
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
   @Get('get-tax-detail-by-year-and-type')
@@ -87,7 +87,7 @@ export class TaxControllerV2 {
     description: 'Internal server error',
     type: ResponseInternalServerErrorDto,
   })
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
   @Get('taxes')

@@ -337,7 +337,12 @@ export interface RequestDeleteTaxDto {
    * Birth number in format with slash
    */
   birthNumber: string
+  /**
+   * Type of tax
+   */
+  taxType: TaxType
 }
+
 export interface RequestGdprDataDto {
   gdprData: Array<GdprDataDto>
 }
@@ -767,6 +772,17 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
   (typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum]
+
+/**
+ * Type of tax
+ */
+
+export const TaxType = {
+  Dzn: 'DZN',
+  Ko: 'KO',
+} as const
+
+export type TaxType = (typeof TaxType)[keyof typeof TaxType]
 
 /**
  * @type UserControllerChangeEmail200Response

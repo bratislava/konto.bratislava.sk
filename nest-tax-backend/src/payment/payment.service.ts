@@ -16,7 +16,6 @@ import { PrismaService } from '../prisma/prisma.service'
 import { TaxService } from '../tax/tax.service'
 import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { computeIsPayableYear } from '../utils/helpers/payment.helper'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
@@ -28,6 +27,7 @@ import {
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import { computeIsPayableYear } from './utils/payment.helper'
 
 @Injectable()
 export class PaymentService {

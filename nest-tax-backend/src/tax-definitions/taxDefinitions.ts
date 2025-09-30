@@ -30,5 +30,3 @@ export const taxDefinitions: TaxDefinition[] = [
     },
   },
 ]
-
-// Done modules - Admin, Auth, Bloomreach, CardPaymentReporting, Clients, Noris, Payment, Tasks, Tax

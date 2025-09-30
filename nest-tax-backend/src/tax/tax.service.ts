@@ -8,10 +8,10 @@ import utc from 'dayjs/plugin/utc'
 import ejs from 'ejs'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
+import { computeIsPayableYear } from '../payment/utils/payment.helper'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { computeIsPayableYear } from '../utils/helpers/payment.helper'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   CustomErrorPdfCreateTypesEnum,

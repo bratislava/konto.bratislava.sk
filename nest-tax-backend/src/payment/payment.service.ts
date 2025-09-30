@@ -96,30 +96,6 @@ export class PaymentService {
       )
     }
 
-    let year: string | undefined
-    try {
-      const tax = await this.prisma.tax.findUnique({
-        where: { id: options.taxId },
-      })
-      if (tax) {
-        year = tax.year.toString()
-      }
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Can\'t find tax corresponding to the order',
-        'Database error',
-        undefined,
-        error,
-      )
-    }
-    if (!year) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        `Tax with ID ${options.taxId} does not exist.`,
-      )
-    }
-
     try {
       // data that goes to payment gateway should not contain diacritics
       const requestData = {
@@ -131,7 +107,7 @@ export class PaymentService {
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=${PaymentTypeEnum.DZN}&year=${year}`,
+        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}`,
         DESCRIPTION: options.description,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
@@ -225,7 +201,7 @@ export class PaymentService {
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}?paymentType=${PaymentTypeEnum.DZN}&year=${tax.year.toString()}`,
+        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}`,
         DESCRIPTION: `Platba za dane pre BA s id dane ${tax.id}`,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }

@@ -2,9 +2,9 @@ name: Monorepo deploy pipelines
 on:
   push:
     tags:
-      - 'dev**'
-      - 'staging**'
-      - 'prod**'
+      - "dev**"
+      - "staging**"
+      - "prod**"
     branches:
       - master
 
@@ -14,8 +14,8 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: forms-shared/
-      build_image_no_registry: '--no_image_repo_check'
-      tag: '--tag=${{ github.ref_name }}-${{ github.sha }}'
+      build_image_no_registry: "--no_image_repo_check"
+      tag: "--tag=${{ github.ref_name }}-${{ github.sha }}"
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -27,8 +27,8 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: openapi-clients/
-      build_image_no_registry: '--no_image_repo_check'
-      tag: '--tag=${{ github.ref_name }}-${{ github.sha }}'
+      build_image_no_registry: "--no_image_repo_check"
+      tag: "--tag=${{ github.ref_name }}-${{ github.sha }}"
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -55,7 +55,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
@@ -75,7 +75,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
@@ -95,7 +95,7 @@ jobs:
     with:
       directory: strapi/
       cluster: development
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
@@ -114,7 +114,7 @@ jobs:
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
@@ -134,7 +134,7 @@ jobs:
     with:
       directory: cvdmirror/
       cluster: development
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
       version: beta
@@ -154,7 +154,7 @@ jobs:
       directory: clamav/
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -172,7 +172,7 @@ jobs:
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
@@ -192,7 +192,7 @@ jobs:
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
@@ -211,7 +211,7 @@ jobs:
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
       debug: --debug
@@ -238,7 +238,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
@@ -258,7 +258,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
@@ -278,7 +278,7 @@ jobs:
     with:
       directory: strapi/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
@@ -298,7 +298,7 @@ jobs:
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
@@ -319,7 +319,7 @@ jobs:
       directory: cvdmirror/
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       debug: --debug
       flag: --staging
       fetch-depth: 1
@@ -338,7 +338,7 @@ jobs:
       directory: clamav/
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       debug: --debug
       flag: --staging
       fetch-depth: 1
@@ -356,7 +356,7 @@ jobs:
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
@@ -376,7 +376,7 @@ jobs:
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
@@ -395,7 +395,7 @@ jobs:
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
+      skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
@@ -436,13 +436,13 @@ jobs:
         deploy-prod-nest-city-account,
       ]
     if: needs.conditions.outputs.prod == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      skip_deployment_check: "--no_image_repo_check"
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -456,13 +456,13 @@ jobs:
     name: prod Next
     needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.prod-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      skip_deployment_check: "--no_image_repo_check"
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -476,12 +476,12 @@ jobs:
     name: prod Strapi
     needs: conditions
     if: needs.conditions.outputs.prod-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
-      skip_deployment_check: '--no_image_repo_check'
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
+      skip_deployment_check: "--no_image_repo_check"
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -495,13 +495,13 @@ jobs:
     name: prod nest-forms-backend
     needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.prod-nest-forms-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      skip_deployment_check: "--no_image_repo_check"
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -515,12 +515,12 @@ jobs:
     name: prod cvdmirror
     needs: conditions
     if: needs.conditions.outputs.prod-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: cvdmirror/
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
-      skip_deployment_check: '--no_image_repo_check'
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
+      skip_deployment_check: "--no_image_repo_check"
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -534,12 +534,12 @@ jobs:
     name: prod clamav
     needs: deploy-prod-cvdmirror
     if: needs.conditions.outputs.prod-clamav == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: clamav/
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
-      skip_deployment_check: '--no_image_repo_check'
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
+      skip_deployment_check: "--no_image_repo_check"
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -553,13 +553,13 @@ jobs:
     name: prod nest-clamav-scanner
     needs: [deploy-prod-clamav, build-openapi-clients]
     if: needs.conditions.outputs.prod-nest-clamav-scanner == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      skip_deployment_check: "--no_image_repo_check"
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -573,13 +573,13 @@ jobs:
     name: prod nest-tax-backend
     needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.prod-nest-tax-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      skip_deployment_check: "--no_image_repo_check"
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       debug: --debug
     secrets:
@@ -592,13 +592,13 @@ jobs:
     name: prod nest-city-account
     needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.prod-nest-city-account == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
-      skip_deployment_check: '--no_image_repo_check'
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      skip_deployment_check: "--no_image_repo_check"
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       debug: --debug
     secrets:

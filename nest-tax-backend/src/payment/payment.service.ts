@@ -107,7 +107,7 @@ export class PaymentService {
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}`,
+        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
         DESCRIPTION: options.description,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
@@ -201,7 +201,7 @@ export class PaymentService {
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: `${this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL')}`,
+        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
         DESCRIPTION: `Platba za dane pre BA s id dane ${tax.id}`,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }

@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  ParseEnumPipe,
   ParseIntPipe,
   Query,
   UseGuards,
@@ -13,6 +14,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
+import { TaxType } from '@prisma/client'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
@@ -37,7 +39,7 @@ export class TaxControllerV2 {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get tax detail by year.',
+    summary: 'Get tax detail by year and type.',
   })
   @ApiResponse({
     status: 200,
@@ -57,12 +59,13 @@ export class TaxControllerV2 {
   @Tiers(CognitoTiersEnum.IDENTITY_CARD)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Get('get-tax-detail-by-year')
+  @Get('get-tax-detail-by-year-and-type')
   async getTaxDetailByYear(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year', ParseIntPipe) year: number,
+    @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ) {
-    return this.taxService.getTaxDetail(baUser.birthNumber, year)
+    return this.taxService.getTaxDetail(baUser.birthNumber, year, type)
   }
 
   @HttpCode(200)
@@ -90,10 +93,13 @@ export class TaxControllerV2 {
   @Get('taxes')
   async getTaxesList(
     @BratislavaUser() baUser: BratislavaUserDto,
+    @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseGetTaxesListDto> {
     // TODO - pagination - but it will be issue after in year 2040 :D
-    const response = await this.taxService.getListOfTaxesByBirthnumber(
+    // TODO add filter for type - or?
+    const response = await this.taxService.getListOfTaxesByBirthnumberAndType(
       baUser.birthNumber,
+      type,
     )
     return response
   }

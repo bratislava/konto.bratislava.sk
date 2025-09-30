@@ -5,6 +5,14 @@ import {
   RealEstateTaxData,
   RealEstateTaxDetail,
 } from '../noris/utils/mapping.helper'
+import {
+  realEstateTaxDetailsToPdf,
+  realEstateTaxTotalsToPdf,
+} from '../tax/utils/helpers/pdf.helper'
+import {
+  GetTaxDetailPureOptions,
+  GetTaxDetailPureResponse,
+} from '../tax/utils/types'
 
 export type TaxDefinition = {
   type: TaxType
@@ -22,4 +30,18 @@ export type TaxDefinition = {
     taxId: number,
   ) => RealEstateTaxDetail[]
   getDataForUpdate: 'getRealEstateDataForUpdate'
+  getTaxDetail: 'getRealEstateTaxDetail'
+  getTaxDetailPure: (
+    options: GetTaxDetailPureOptions,
+  ) => GetTaxDetailPureResponse
+
+  pdfOptions:
+    | {
+        generate: false
+      }
+    | {
+        generate: true
+        taxDetailsToPdf: typeof realEstateTaxDetailsToPdf
+        taxTotalsToPdf: typeof realEstateTaxTotalsToPdf
+      }
 }

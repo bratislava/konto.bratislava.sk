@@ -161,6 +161,7 @@ export class TasksService {
       },
       where: {
         dateTaxRuling: null,
+        type: TaxType.DZN,
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
       orderBy: {
@@ -374,14 +375,14 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   @HandleErrors('Cron Error')
-  async loadTaxesForUsers() {
-    this.logger.log('Starting loadTaxesForUsers task')
+  async loadRealEstateTaxesForUsers() {
+    this.logger.log('Starting loadRealEstateTaxesForUsers task')
 
     // Find users without tax this year
     const year = new Date().getFullYear()
     const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
       select: { birthNumber: true },
-      where: { taxes: { none: { year } } },
+      where: { taxes: { none: { year, type: TaxType.DZN } } },
       orderBy: { updatedAt: 'asc' },
       take: UPLOAD_BIRTHNUMBERS_BATCH,
     })

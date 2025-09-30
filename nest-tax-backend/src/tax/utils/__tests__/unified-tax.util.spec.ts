@@ -1,7 +1,13 @@
 /* eslint-disable no-param-reassign */
 
-import { PaymentStatus, TaxDetailareaType, TaxDetailType } from '@prisma/client'
+import {
+  PaymentStatus,
+  TaxDetailareaType,
+  TaxDetailType,
+  TaxType,
+} from '@prisma/client'
 
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -15,7 +21,7 @@ import {
   OneTimePaymentTypeEnum,
 } from '../../dtos/response.tax.dto'
 import {
-  getTaxDetailPure,
+  getRealEstateTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from '../unified-tax.util'
@@ -129,7 +135,7 @@ const defaultInput = {
   taxPayments: [{ amount: 123, status: PaymentStatus.NEW }],
 }
 
-const defaultOutput: ReturnType<typeof getTaxDetailPure> = {
+const defaultOutput: ReturnType<typeof getRealEstateTaxDetailPure> = {
   overallPaid: 0,
   overallBalance: 6600,
   overallAmount: 6600,
@@ -245,8 +251,8 @@ function createExpectedOutput(modifier: (draft: typeof defaultOutput) => void) {
 }
 
 function expectEqualAsJsonStringsWithDates(
-  received: ReturnType<typeof getTaxDetailPure>,
-  expected: ReturnType<typeof getTaxDetailPure>,
+  received: ReturnType<typeof getRealEstateTaxDetailPure>,
+  expected: ReturnType<typeof getRealEstateTaxDetailPure>,
 ) {
   const stringifiedOutput = JSON.stringify(
     received,
@@ -266,13 +272,13 @@ describe('UnifiedTaxUtil', () => {
   describe('- calculateUnifiedTax should create tax detail correctly for', () => {
     describe('value = ', () => {
       it('unpaid', () => {
-        const output = getTaxDetailPure(defaultInput)
+        const output = getRealEstateTaxDetailPure(defaultInput)
 
         expect(output).toStrictEqual(defaultOutput)
       })
 
       it('partial first', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [{ amount: 1, status: PaymentStatus.SUCCESS }],
         })
@@ -298,7 +304,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       it('full first', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [{ amount: 2200, status: PaymentStatus.SUCCESS }],
         })
@@ -324,7 +330,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       it('partial second', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [{ amount: 2201, status: PaymentStatus.SUCCESS }],
         })
@@ -355,7 +361,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       it('full second', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [{ amount: 4400, status: PaymentStatus.SUCCESS }],
         })
@@ -384,7 +390,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       it('fully paid', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [{ amount: 6600, status: PaymentStatus.SUCCESS }],
         })
@@ -410,7 +416,7 @@ describe('UnifiedTaxUtil', () => {
 
     describe('date', () => {
       it('at first payment due threshold', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [],
           today: new Date('2025-01-21 21:00'),
@@ -423,7 +429,7 @@ describe('UnifiedTaxUtil', () => {
 
       describe('after first payment due threshold', () => {
         it('', () => {
-          const output = getTaxDetailPure({
+          const output = getRealEstateTaxDetailPure({
             ...defaultInput,
             taxPayments: [],
             today: new Date('2025-01-22'),
@@ -444,7 +450,7 @@ describe('UnifiedTaxUtil', () => {
         })
 
         it('with partial first payment', () => {
-          const output = getTaxDetailPure({
+          const output = getRealEstateTaxDetailPure({
             ...defaultInput,
             taxPayments: [{ amount: 1, status: PaymentStatus.SUCCESS }],
             today: new Date('2025-01-22'),
@@ -475,7 +481,7 @@ describe('UnifiedTaxUtil', () => {
         })
 
         it('with full first payment', () => {
-          const output = getTaxDetailPure({
+          const output = getRealEstateTaxDetailPure({
             ...defaultInput,
             taxPayments: [{ amount: 2200, status: PaymentStatus.SUCCESS }],
             today: new Date('2025-01-22'),
@@ -506,7 +512,7 @@ describe('UnifiedTaxUtil', () => {
         })
 
         it('with full second payment', () => {
-          const output = getTaxDetailPure({
+          const output = getRealEstateTaxDetailPure({
             ...defaultInput,
             taxPayments: [{ amount: 4400, status: PaymentStatus.SUCCESS }],
             today: new Date('2025-01-22'),
@@ -538,7 +544,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       it('at second payment due threshold', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [],
           today: new Date('2025-08-31'),
@@ -559,7 +565,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       it('after second payment due threshold', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [],
           today: new Date('2025-09-01'),
@@ -599,7 +605,7 @@ describe('UnifiedTaxUtil', () => {
       })
 
       it('after third payment due threshold', () => {
-        const output = getTaxDetailPure({
+        const output = getRealEstateTaxDetailPure({
           ...defaultInput,
           taxPayments: [],
           today: new Date('2025-11-01'),
@@ -621,7 +627,7 @@ describe('UnifiedTaxUtil', () => {
     })
 
     it('undefined dateOfValidity', () => {
-      const output = getTaxDetailPure({
+      const output = getRealEstateTaxDetailPure({
         ...defaultInput,
         dateOfValidity: null,
       })
@@ -713,7 +719,7 @@ describe('UnifiedTaxUtil', () => {
       'should return total amount for all installments equal to the overall amount for input: %j',
       (combination) => {
         const input = { ...defaultInput, ...combination }
-        const output = getTaxDetailPure(input)
+        const output = getRealEstateTaxDetailPure(input)
 
         if (
           !output.installmentPayment.isPossible ||
@@ -750,6 +756,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     ],
     specificSymbol: '2025200000',
     taxPayments: [],
+    taxDefinition: getTaxDefinitionByType(TaxType.DZN)!,
   }
 
   it('should generate payment for the first installment', () => {

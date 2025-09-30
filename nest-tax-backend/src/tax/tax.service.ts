@@ -9,6 +9,7 @@ import ejs from 'ejs'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { computeIsPayableYear } from '../utils/helpers/payment.helper'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
@@ -30,7 +31,6 @@ import {
   TaxAvailabilityStatus,
   TaxStatusEnum,
 } from './dtos/response.tax.dto'
-import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import {
   checkTaxDateInclusion,
   fixInstallmentTexts,
@@ -38,7 +38,7 @@ import {
   getTaxStatus,
 } from './utils/helpers/tax.helper'
 import {
-  getTaxDetailPure,
+  getRealEstateTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
@@ -67,6 +67,7 @@ export class TaxService {
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
     include: T,
     year: number,
+    type: TaxType,
   ) {
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: taxPayerWhereUniqueInput,
@@ -88,7 +89,7 @@ export class TaxService {
         taxPayerId_year_type: {
           year,
           taxPayerId: taxPayer.id,
-          type: TaxType.DZN, // TODO replace when refactoring tax module.
+          type,
         },
       },
       include,
@@ -118,9 +119,10 @@ export class TaxService {
     return taxPayment._sum.amount || 0
   }
 
-  async getTaxByYear(
+  async getTaxByYearAndType(
     year: number,
     birthNumber: string,
+    type: TaxType,
   ): Promise<ResponseTaxDto> {
     if (!birthNumber || !year) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -142,6 +144,7 @@ export class TaxService {
         taxPayments: true,
       },
       year,
+      type,
     )
 
     const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
@@ -187,7 +190,10 @@ export class TaxService {
     }
   }
 
-  async loadTaxes(birthNumber: string): Promise<ResponseGetTaxesDto> {
+  async loadTaxes(
+    birthNumber: string,
+    type: TaxType,
+  ): Promise<ResponseGetTaxesDto> {
     if (!birthNumber) {
       throw this.throwerErrorGuard.ForbiddenException(
         CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
@@ -201,6 +207,7 @@ export class TaxService {
           taxPayer: {
             birthNumber,
           },
+          type,
         },
         status: PaymentStatus.SUCCESS,
       },
@@ -215,6 +222,7 @@ export class TaxService {
         taxPayer: {
           birthNumber,
         },
+        type,
       },
       orderBy: {
         taxId: 'desc',
@@ -225,6 +233,7 @@ export class TaxService {
         createdAt: true,
         amount: true,
         year: true,
+        type: true,
       },
     })
 
@@ -262,8 +271,9 @@ export class TaxService {
     }
   }
 
-  async getListOfTaxesByBirthnumber(
+  async getListOfTaxesByBirthnumberAndType(
     birthNumber: string,
+    type: TaxType,
   ): Promise<ResponseGetTaxesListDto> {
     if (!birthNumber) {
       throw this.throwerErrorGuard.ForbiddenException(
@@ -287,6 +297,7 @@ export class TaxService {
         taxPayer: {
           birthNumber,
         },
+        type,
       },
       orderBy: {
         year: 'desc',
@@ -296,6 +307,7 @@ export class TaxService {
         createdAt: true,
         amount: true,
         year: true,
+        type: true,
       },
     })
     const currentTime = dayjs().tz('Europe/Bratislava')
@@ -326,6 +338,7 @@ export class TaxService {
           year: tax.year,
           amountToBePaid,
           status,
+          type: tax.type,
         }
       }),
     )
@@ -338,6 +351,7 @@ export class TaxService {
       items.unshift({
         year: currentTime.year(),
         status: TaxStatusEnum.AWAITING_PROCESSING,
+        type,
       })
     }
 
@@ -348,11 +362,32 @@ export class TaxService {
     }
   }
 
-  async generatePdf(year: number, birthNumber: string): Promise<string> {
+  async generatePdf(
+    year: number,
+    birthNumber: string,
+    type: TaxType,
+  ): Promise<string> {
+    const taxDefinition = getTaxDefinitionByType(type)
+    if (!taxDefinition) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.TAX_TYPE_NOT_FOUND,
+        `Tax type ${type} not found`,
+      )
+    }
+
+    if (!taxDefinition.pdfOptions.generate) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.PDF_GENERATE_ERROR,
+        `PDF generation for tax type ${type} is not supported`,
+      )
+    }
+
     try {
-      const user = await this.getTaxByYear(year, birthNumber)
-      const taxDetails = taxDetailsToPdf(user.taxDetails)
-      const totals = taxTotalsToPdf(
+      const user = await this.getTaxByYearAndType(year, birthNumber, type)
+      const taxDetails = taxDefinition.pdfOptions.taxDetailsToPdf(
+        user.taxDetails,
+      )
+      const totals = taxDefinition.pdfOptions.taxTotalsToPdf(
         user,
         user.taxInstallments.map((data) => ({
           ...data,
@@ -379,6 +414,22 @@ export class TaxService {
   async getTaxDetail(
     birthNumber: string,
     year: number,
+    type: TaxType,
+  ): Promise<ResponseTaxSummaryDetailDto> {
+    const taxDefinition = getTaxDefinitionByType(type)
+    if (!taxDefinition) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.TAX_TYPE_NOT_FOUND,
+        `Tax type ${type} not found`,
+      )
+    }
+
+    return this[taxDefinition.getTaxDetail](birthNumber, year)
+  }
+
+  async getRealEstateTaxDetail(
+    birthNumber: string,
+    year: number,
   ): Promise<ResponseTaxSummaryDetailDto> {
     const today = dayjs().tz('Europe/Bratislava')
 
@@ -395,9 +446,10 @@ export class TaxService {
         taxPayments: true,
       },
       year,
+      TaxType.DZN,
     )
 
-    const detailWithoutQrCode = getTaxDetailPure({
+    const detailWithoutQrCode = getRealEstateTaxDetailPure({
       taxYear: +year,
       today: today.toDate(),
       overallAmount: tax.amount,
@@ -469,11 +521,13 @@ export class TaxService {
   async getOneTimePaymentGenerator(
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
     year: number,
+    type: TaxType,
   ): Promise<PaymentGateURLGeneratorDto> {
     const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,
       { taxPayments: true },
       year,
+      type,
     )
 
     return getTaxDetailPureForOneTimeGenerator({
@@ -486,6 +540,7 @@ export class TaxService {
   async getInstallmentPaymentGenerator(
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
     year: number,
+    type: TaxType,
   ): Promise<PaymentGateURLGeneratorDto> {
     const today = dayjs().tz('Europe/Bratislava').toDate()
 
@@ -493,10 +548,20 @@ export class TaxService {
       taxPayerWhereUniqueInput,
       { taxInstallments: true, taxPayments: true },
       year,
+      type,
     )
+
+    const taxDefinition = getTaxDefinitionByType(type)
+    if (!taxDefinition) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.TAX_TYPE_NOT_FOUND,
+        `Tax definition for type ${type} not found`,
+      )
+    }
 
     return getTaxDetailPureForInstallmentGenerator({
       taxId: tax.id,
+      taxDefinition,
       taxYear: year,
       today,
       overallAmount: tax.amount,

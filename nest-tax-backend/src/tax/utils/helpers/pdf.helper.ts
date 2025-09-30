@@ -7,7 +7,7 @@ import {
 } from '@prisma/client'
 import currency from 'currency.js'
 
-import { TaxTotalsToPdfDto } from '../../dtos/response.pdf.dto'
+import { RealEstateTaxTotalsToPdfDto } from '../../dtos/response.pdf.dto'
 
 type TaxDetailsToPdfResponse = {
   [typeKey in TaxDetailType]?: {
@@ -19,7 +19,7 @@ type TaxDetailsToPdfResponse = {
   }
 }
 
-export const taxDetailsToPdf = (taxDetails: TaxDetail[]) => {
+export const realEstateTaxDetailsToPdf = (taxDetails: TaxDetail[]) => {
   const response: TaxDetailsToPdfResponse = {}
   taxDetails.forEach((taxDetail) => {
     if (!(taxDetail.type in response)) {
@@ -38,11 +38,11 @@ export const taxDetailsToPdf = (taxDetails: TaxDetail[]) => {
   return response
 }
 
-export const taxTotalsToPdf = (
+export const realEstateTaxTotalsToPdf = (
   tax: Tax,
   taxInstallments: TaxInstallment[],
-): TaxTotalsToPdfDto => {
-  const total: TaxTotalsToPdfDto = {
+): RealEstateTaxTotalsToPdfDto => {
+  const total: RealEstateTaxTotalsToPdfDto = {
     total: currency(tax.amount, { fromCents: true })
       .toString()
       .replace('.', ','),

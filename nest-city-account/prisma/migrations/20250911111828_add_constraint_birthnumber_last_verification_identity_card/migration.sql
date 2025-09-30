@@ -6,7 +6,7 @@ ALTER TABLE "User"
         CHECK (
             CASE
                 WHEN "User"."birthNumber" IS NOT NULL THEN "User"."lastVerificationIdentityCard" IS NOT NULL
-                ELSE FALSE
+                ELSE TRUE
                 END );
 
 COMMIT;

@@ -306,9 +306,8 @@ export class TaxService {
 
     // TaxPayer is updated only if tax was searched for in Noris
     const taxPayerWasUpdated = taxPayer
-      ? (taxPayer.updatedAt.getTime() - taxPayer.createdAt.getTime()) > 1000 // 1 second threshold
+      ? taxPayer.updatedAt.getTime() - taxPayer.createdAt.getTime() > 1000 // 1 second threshold
       : false
-
 
     if (taxes.length === 0) {
       const availabilityStatus =

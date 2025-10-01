@@ -17,8 +17,6 @@ export const taxDefinitions: TaxDefinition[] = [
     isUnique: true,
     mapNorisToTaxData: mapNorisToRealEstateTaxData,
     mapNorisToTaxDetailData: mapNorisToRealEstateTaxDetailData,
-    getDataForUpdate: 'getRealEstateDataForUpdate',
-    getTaxDetail: 'getRealEstateTaxDetail',
     getTaxDetailPure: getRealEstateTaxDetailPure,
     pdfOptions: {
       generate: true,

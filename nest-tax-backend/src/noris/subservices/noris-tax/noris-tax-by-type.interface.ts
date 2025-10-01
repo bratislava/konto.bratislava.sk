@@ -5,7 +5,7 @@ import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
-import { NorisTaxPayersDto } from '../../noris.dto'
+import { NorisTaxPayersDto, NorisUpdateDto } from '../../noris.dto'
 import {
   convertCurrencyToInt,
   mapNorisToTaxAdministratorData,
@@ -27,6 +27,11 @@ export abstract class NorisTaxByType {
   abstract getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     data: RequestPostNorisLoadDataDto,
   ): Promise<{ updated: number }>
+
+  abstract getDataForUpdate(
+    variableSymbols: string[],
+    years: number[],
+  ): Promise<NorisUpdateDto[]>
 
   protected async insertTaxPayerDataToDatabase(
     dataFromNoris: NorisTaxPayersDto,

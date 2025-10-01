@@ -17,6 +17,7 @@ model TaxPayer {
   createdAt                   DateTime          @default(now())
   updatedAt                   DateTime          @default(now()) @updatedAt
   birthNumber                 String // with slash
+  // TODO - tax administrator will be one for each type of tax, therefore the relation will be many-to-many
   taxAdministratorId          Int?
   taxAdministrator            TaxAdministrator? @relation(fields: [taxAdministratorId], references: [id])
   permanentResidenceAddress   String?

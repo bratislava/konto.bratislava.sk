@@ -479,63 +479,6 @@ describe('TaxService', () => {
   })
 
   describe('private methods', () => {
-    describe('fetchTaxData', () => {
-      it('should fetch tax data successfully', async () => {
-        prismaMock.taxPayer.findUnique.mockResolvedValue({
-          id: 1,
-        } as TaxPayer)
-        prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
-
-        const result = await service['fetchTaxData'](
-          { birthNumber: '123456/789' },
-          { taxInstallments: true },
-          2023,
-          TaxType.DZN,
-          1,
-        )
-
-        expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
-          where: {
-            taxPayerId_year: {
-              year: 2023,
-              taxPayerId: 1,
-            },
-          },
-          include: {
-            taxInstallments: true,
-          },
-        })
-        expect(result).toEqual(mockTaxData)
-      })
-
-      it('should throw error when tax not found', async () => {
-        prismaMock.taxPayer.findUnique.mockResolvedValue({
-          id: 1,
-        } as TaxPayer)
-        prismaMock.tax.findUnique.mockResolvedValue(null)
-        const notFoundExceptionSpy = jest.spyOn(
-          service['throwerErrorGuard'],
-          'NotFoundException',
-        )
-        await expect(
-          service['fetchTaxData'](
-            { birthNumber: '123456/789' },
-            {},
-            2023,
-            TaxType.DZN,
-            1,
-          ),
-        ).rejects.toThrow()
-
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith(
-          CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-          CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        )
-      })
-
-      todo('test also other types of taxes')
-    })
-
     describe('getAmountAlreadyPaidByTaxId', () => {
       it('should return total paid amount', async () => {
         prismaMock.taxPayment.aggregate.mockResolvedValue({

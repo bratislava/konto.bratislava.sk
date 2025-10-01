@@ -28,8 +28,6 @@ export type TaxDefinition = {
     data: NorisTaxPayersDto,
     taxId: number,
   ) => RealEstateTaxDetail[]
-  getDataForUpdate: 'getRealEstateDataForUpdate'
-  getTaxDetail: 'getRealEstateTaxDetail'
   getTaxDetailPure: (
     options: GetTaxDetailPureOptions,
   ) => GetTaxDetailPureResponse

@@ -36,11 +36,12 @@ export class NorisService {
     return this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(data)
   }
 
-  async getRealEstateDataForUpdate(
+  async getDataForUpdate(
     variableSymbols: string[],
     years: number[],
+    type: TaxType,
   ): Promise<NorisUpdateDto[]> {
-    return this.taxSubservice.getRealEstateDataForUpdate(variableSymbols, years)
+    return this.taxSubservice.getDataForUpdate(variableSymbols, years, type)
   }
 
   async getAndProcessNewNorisTaxDataByBirthNumberAndYear(

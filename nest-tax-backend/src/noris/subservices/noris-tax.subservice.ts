@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
-import { Request } from 'mssql'
 
 import { RequestPostNorisLoadDataDto } from '../../admin/dtos/requests.dto'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -9,7 +8,6 @@ import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 import { NorisTaxPayersDto, NorisUpdateDto } from '../noris.dto'
-import { getNorisDataForUpdate } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 import { NorisTaxByType } from './noris-tax/noris-tax-by-type.interface'
@@ -56,50 +54,15 @@ export class NorisTaxSubservice {
     ).getAndProcessNorisTaxDataByBirthNumberAndYear(data)
   }
 
-  async getRealEstateDataForUpdate(
+  async getDataForUpdate(
     variableSymbols: string[],
     years: number[],
+    type: TaxType,
   ): Promise<NorisUpdateDto[]> {
-    const connection = await this.connectionService.createOptimizedConnection()
-
-    try {
-      // Wait for connection to be fully established
-      await this.connectionService.waitForConnection(connection)
-
-      const request = new Request(connection)
-
-      const variableSymbolsPlaceholders = variableSymbols
-        .map((_, index) => `@variablesymbol${index}`)
-        .join(',')
-      variableSymbols.forEach((variableSymbol, index) => {
-        request.input(`variablesymbol${index}`, variableSymbol)
-      })
-
-      const yearsPlaceholders = years
-        .map((_, index) => `@year${index}`)
-        .join(',')
-      years.forEach((year, index) => {
-        request.input(`year${index}`, year)
-      })
-
-      const queryWithPlaceholders = getNorisDataForUpdate
-        .replaceAll('@variable_symbols', variableSymbolsPlaceholders)
-        .replaceAll('@years', yearsPlaceholders)
-
-      const norisData = await request.query(queryWithPlaceholders)
-      return norisData.recordset
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Failed to get data from Noris during tax update`,
-        undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
-      )
-    } finally {
-      // Always close the connection
-      await connection.close()
-    }
+    return this.getImplementationByType(type).getDataForUpdate(
+      variableSymbols,
+      years,
+    )
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -128,10 +91,7 @@ export class NorisTaxSubservice {
       )
     }
 
-    const data = await this[taxDefinition.getDataForUpdate](
-      variableSymbols,
-      years,
-    )
+    const data = await this.getDataForUpdate(variableSymbols, years, type)
     const variableSymbolsToNonNullDateFromNoris: Map<string, string> = new Map(
       data
         .filter((item) => item.datum_platnosti !== null)

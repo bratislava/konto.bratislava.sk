@@ -570,7 +570,7 @@ export const getCommunalWasteTaxesFromNoris = `
                 end )
             else  ''
         end  ) TXTSPL4_3, 
-    (case 
+        (case 
             when  doklad.datum_spl3 is not null  then lcs.fn21_dec2string( doklad.suma_spl3 , 2)
             else  ''
         end  ) SPL4_3, 
@@ -582,60 +582,61 @@ export const getCommunalWasteTaxesFromNoris = `
                     end )
             else  ''
         end  ) TXTSPL4_4, 
-    (case 
+        (case 
             when  doklad.datum_spl4 is not null  then lcs.fn21_dec2string( doklad.suma_spl4 , 2)
             else  ''
         end  ) SPL4_4,
 
-    /* --------- Texty splátok výmeru end ----------------------------*/
+        /* --------- Texty splátok výmeru end ----------------------------*/
 
-    (case 
-        when poplatok.podnikatel='N' then 'Meno a priezvisko:' 
-        else 'Obchodné meno:' 
-    end  ) TXT_MENO, 
-    (case 
-        when poplatok.podnikatel='N' then 'Adresa trvalého pobytu:' 
-        else 'Sídlo:'
-    end  ) TXT_UL, 
-    (case 
-        when poplatok.podnikatel='N' then 'Rodné číslo:' 
-        else 'IČO/DIČ:' 
-    end  ) TYP_USER, 
-    (case 
-        when poplatok.podnikatel='N' then poplatok.rodne_cislo 
-        else  isnull(poplatok.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
-    end) ICO_RC, 
+        (case 
+            when poplatok.podnikatel='N' then 'Meno a priezvisko:' 
+            else 'Obchodné meno:' 
+        end  ) TXT_MENO, 
+        (case 
+            when poplatok.podnikatel='N' then 'Adresa trvalého pobytu:' 
+            else 'Sídlo:'
+        end  ) TXT_UL, 
+        (case 
+            when poplatok.podnikatel='N' then 'Rodné číslo:' 
+            else 'IČO/DIČ:' 
+        end  ) TYP_USER, 
+        (case 
+            when poplatok.podnikatel='N' then poplatok.rodne_cislo 
+            else  isnull(poplatok.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
+        end) ICO_RC, 
 
-    a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, poplatok.adr_tp_sup_cislo, poplatok.adr_tp_or_cislo), '') as ulica_tb_cislo, 
-    a_tb.psc_refer as psc_ref_tb,
-    a_tb.psc_nazev as psc_naz_tb, 
-    a_tb.stat_nazov_plny, 
-    a_tb.obec_nazev obec_nazev_tb, 
+        a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, poplatok.adr_tp_sup_cislo, poplatok.adr_tp_or_cislo), '') as ulica_tb_cislo, 
+        a_tb.psc_refer as psc_ref_tb,
+        a_tb.psc_nazev as psc_naz_tb, 
+        a_tb.stat_nazov_plny, 
+        a_tb.obec_nazev obec_nazev_tb, 
 
-    z_vybav.telefon_prace vyb_telefon_prace, 
-    z_vybav.e_mail vyb_email, 
-    pop_conf.vybavuje vyb_id,
+        z_vybav.telefon_prace vyb_telefon_prace, 
+        z_vybav.e_mail vyb_email, 
+        pop_conf.vybavuje vyb_id,
 
-    ------ Info about the container
-    nadoba.objem objem_nadoby,
-    nadoba.pocet_nadob pocet_nadob,
-    nadoba.pocet_odvozov pocet_odvozov,
-    nadoba.sadzba_mena sadzba,
-    nadoba.suma_uhrada_mena poplatok, -- TODO je toto spravny amount?
-    nadoba.druh_nadoby druh_nadoby,
-    CASE 
-            WHEN CHARINDEX(',', sub_adresa.nazev_subjektu) > 0 
-                    THEN LEFT(sub_adresa.nazev_subjektu, CHARINDEX(',', sub_adresa.nazev_subjektu) - 1)
-            ELSE sub_adresa.nazev_subjektu
-        END AS ulica,
-    nadoba.orientacne_cislo orientacne_cislo
+        ------ Info about the container
+        nadoba.objem objem_nadoby,
+        nadoba.pocet_nadob pocet_nadob,
+        nadoba.pocet_odvozov pocet_odvozov,
+        nadoba.sadzba_mena sadzba,
+        nadoba.suma_uhrada_mena poplatok,
+        nadoba.druh_nadoby druh_nadoby,
+        CASE 
+                WHEN CHARINDEX(',', sub_adresa.nazev_subjektu) > 0 
+                        THEN LEFT(sub_adresa.nazev_subjektu, CHARINDEX(',', sub_adresa.nazev_subjektu) - 1)
+                ELSE sub_adresa.nazev_subjektu
+            END AS ulica,
+        nadoba.orientacne_cislo orientacne_cislo
 
     FROM lcs.pko21_nadoba nadoba
+
     JOIN lcs.pko21_poplatok poplatok ON nadoba.pko_poplatok = poplatok.cislo_subjektu
     JOIN lcs.subjekty sub_adresa ON sub_adresa.cislo_subjektu = nadoba.adresa
     JOIN lcs.dane21_doklad doklad ON doklad.podklad = poplatok.cislo_subjektu
-    LEFT OUTER JOIN lcs.organizace_vlastni ov  ON 1=1
-    LEFT OUTER JOIN 
+    JOIN lcs.organizace_vlastni ov  ON 1=1
+    JOIN 
         lcs.dane21_druh_dokladu
         ON
             doklad.druh_dokladu=lcs.dane21_druh_dokladu.cislo_subjektu
@@ -659,22 +660,22 @@ export const getCommunalWasteTaxesFromNoris = `
         ON 
             z_vybav.cislo_subjektu=pop_conf.vybavuje  
 
-    LEFT OUTER JOIN 
+    JOIN 
         lcs.subjekty subjekt_doklad  
         ON 
             doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu
 
-    LEFT OUTER JOIN 
+    JOIN 
         lcs.subjekty subjekt_tp_adresa  
         ON 
             poplatok.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu
 
-    LEFT OUTER JOIN 
+    JOIN 
         lcs.subjekty subjekt_doklad_sub  
         ON 
             doklad.subjekt=subjekt_doklad_sub.cislo_subjektu
 
-    LEFT OUTER JOIN 
+    JOIN 
         lcs.dane_21_sum_pko_popl_celkom dsum  
         ON
             dsum.cs_dan_prizn=poplatok.cislo_subjektu
@@ -689,12 +690,12 @@ export const getCommunalWasteTaxesFromNoris = `
         ON 
             org_cudz.evidence_dic=ev_dic_cudz.cislo_subjektu  
 
-    LEFT OUTER JOIN
+    JOIN
         lcs.dane21_doklad_sum_saldo view_doklad_saldo  
         ON
             view_doklad_saldo.cislo_subjektu=doklad.cislo_subjektu
 
-    LEFT OUTER JOIN 
+    JOIN 
         lcs.dane_21_adresa_view a_tb  
         ON 
             poplatok.adresa_tp_sidlo=a_tb.cislo_subjektu
@@ -702,7 +703,6 @@ export const getCommunalWasteTaxesFromNoris = `
         poplatok.rodne_cislo IN (@birth_numbers) AND
         nadoba.druh_odpadu IS NULL AND
         poplatok.rok = @year AND
-        poplatok.platnost = 'A' AND -- TODO naozaj?
         poplatok.podnikatel = 'N' AND
         doklad.pohladavka IS NOT NULL AND 
         lcs.dane21_druh_dokladu.typ_dokladu = 'V'AND

@@ -16,6 +16,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
+import { PaymentTypeEnum } from '../tax/dtos/response.tax.dto'
 import { TaxService } from '../tax/tax.service'
 import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -31,7 +32,6 @@ import {
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
-import {PaymentTypeEnum} from "../tax/dtos/response.tax.dto";
 
 @Injectable()
 export class PaymentService {
@@ -319,7 +319,10 @@ export class PaymentService {
     if (!ORDERNUMBER) {
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
-    const tax = await this.prisma.taxPayment.findUnique({where: {orderId: ORDERNUMBER}, include: {tax: true}})
+    const tax = await this.prisma.taxPayment.findUnique({
+      where: { orderId: ORDERNUMBER },
+      include: { tax: true },
+    })
     const year = tax?.tax.year
     // TODO tax type when PKO is implemented
 

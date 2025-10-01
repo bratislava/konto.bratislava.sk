@@ -8,6 +8,7 @@ import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-componen
 type AnnouncementBlockProps = {
   announcementContent?: string
   imageSrc?: ComponentProps<typeof Image>['src']
+  icon?: React.ReactNode
   buttons?: (ButtonProps | AnchorProps)[]
   onPress?: () => void
   reversed?: boolean
@@ -20,6 +21,7 @@ type AnnouncementBlockProps = {
 const AnnouncementBlock = ({
   announcementContent,
   imageSrc,
+  icon,
   reversed,
   reversedMobile,
   buttons = [],
@@ -53,7 +55,7 @@ const AnnouncementBlock = ({
         <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
           <Image
             src={imageSrc}
-            className={cn('rounded-t-lg object-cover object-center', {
+            className={cn('rounded-t-lg object-contain object-center', {
               'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
               'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
             })}
@@ -64,6 +66,7 @@ const AnnouncementBlock = ({
           />
         </div>
       ) : null}
+      {icon && <div className="flex items-center justify-center">{icon}</div>}
     </div>
   )
 }

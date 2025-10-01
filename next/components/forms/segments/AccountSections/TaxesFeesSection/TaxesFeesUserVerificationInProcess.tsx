@@ -1,4 +1,4 @@
-import BannerTaxWaiting from '@assets/images/banner-tax-waiting.png'
+import MestskeKontoSituacia from '@assets/images/mestske-konto-situacia.svg'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -10,8 +10,7 @@ const TaxesFeesUserVerificationInProcess = () => {
   return (
     <AnnouncementBlock
       announcementContent={t('account_section_payment.verifying_identity_content')}
-      // TODO change for image without background color white
-      imageSrc={BannerTaxWaiting}
+      icon={<MestskeKontoSituacia className="h-[140px] w-[145px] sm:h-[256px] sm:w-[608px]" />}
       reversed
     />
   )

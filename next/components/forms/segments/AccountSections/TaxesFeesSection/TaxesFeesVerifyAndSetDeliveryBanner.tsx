@@ -1,4 +1,4 @@
-import BannerTaxWaiting from '@assets/images/banner-tax-waiting.png'
+import MestskeKontoSituacia from '@assets/images/mestske-konto-situacia.svg'
 import { ROUTES } from 'frontend/api/constants'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { useTranslation } from 'next-i18next'
@@ -24,8 +24,7 @@ const TaxesFeesVerifyAndSetDeliveryMethodBanner = ({
   return (
     <AnnouncementBlock
       announcementContent={t('account_section_payment.set_delivery_method_content')}
-      // TODO change for image without background color white
-      imageSrc={BannerTaxWaiting}
+      icon={<MestskeKontoSituacia className="h-[140px] w-[145px] sm:h-[256px] sm:w-[608px]" />}
       buttons={[
         {
           children: buttonText,

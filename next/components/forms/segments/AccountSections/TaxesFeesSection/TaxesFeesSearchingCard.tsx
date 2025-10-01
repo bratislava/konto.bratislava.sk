@@ -1,6 +1,5 @@
-import Icon from '@assets/images/mestske-konto-situacia-3.png'
+import MestskeKontoSituacia from '@assets/images/mestske-konto-situacia.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 
 const TaxesFeesSearchingCard = () => {
@@ -20,7 +19,7 @@ const TaxesFeesSearchingCard = () => {
         />
       </div>
       <span className="flex flex-1 justify-center">
-        <Image src={Icon} alt="" className="object-contain" />
+        <MestskeKontoSituacia className="h-[140px] w-[145px] sm:h-[256px] sm:w-[608px]" />
       </span>
     </div>
   )

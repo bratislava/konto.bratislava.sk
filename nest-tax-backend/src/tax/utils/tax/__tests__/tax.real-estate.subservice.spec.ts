@@ -109,9 +109,11 @@ describe('TaxRealEstateSubservice', () => {
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year: {
+          taxPayerId_year_type_order: {
             year: 2023,
             taxPayerId: 1,
+            type: TaxType.DZN,
+            order: 1,
           },
         },
         include: {

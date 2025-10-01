@@ -20,6 +20,7 @@ import { TaxPaidStatusEnum } from '../dtos/response.tax.dto'
 import { TaxService } from '../tax.service'
 import * as pdfHelper from '../utils/helpers/pdf.helper'
 import * as taxHelper from '../utils/helpers/tax.helper'
+import { TaxRealEstateSubservice } from '../utils/tax/tax.real-estate.subservice'
 
 jest.mock('ejs', () => ({
   renderFile: jest.fn(),
@@ -34,13 +35,13 @@ jest.mock('../utils/unified-tax.util', () => ({
   getTaxDetailPure: jest.fn(),
 }))
 
-jest.mock('../../utils/helpers/payment.helper', () => ({
+jest.mock('../../payment/utils/payment.helper', () => ({
   computeIsPayableYear: jest.fn(),
 }))
 
 jest.mock('../utils/helpers/pdf.helper', () => ({
-  taxDetailsToPdf: jest.fn(),
-  taxTotalsToPdf: jest.fn(),
+  realEstateTaxDetailsToPdf: jest.fn(),
+  realEstateTaxTotalsToPdf: jest.fn(),
 }))
 
 describe('TaxService', () => {
@@ -109,6 +110,7 @@ describe('TaxService', () => {
         ThrowerErrorGuard,
         { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
+        TaxRealEstateSubservice,
       ],
     }).compile()
 
@@ -152,9 +154,11 @@ describe('TaxService', () => {
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year: {
+          taxPayerId_year_type_order: {
             taxPayerId: 1,
             year: 2023,
+            order: 1,
+            type: TaxType.DZN,
           },
         },
         include: {

@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsArray,
   IsDate,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -11,7 +10,6 @@ import {
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
-import { TaxType } from 'openapi-clients/tax'
 
 export class RequestQueryUserByBirthNumberDto {
   @ApiProperty({
@@ -81,38 +79,6 @@ export class RequestValidatePhysicalEntityRfoDto {
   })
   @IsUUID()
   physicalEntityId!: string
-}
-
-export class RequestDeleteTaxDto {
-  @ApiProperty({
-    description: 'Year of tax',
-    default: 2022,
-  })
-  @IsNumber()
-  year: number
-
-  @ApiProperty({
-    description: 'Birth number in format with slash',
-    example: '0000000000',
-  })
-  @IsString()
-  birthNumber: string
-
-  @ApiProperty({
-    description: 'Type of tax',
-    example: TaxType.Dzn,
-    enumName: 'TaxType',
-    enum: TaxType,
-  })
-  @IsEnum(TaxType)
-  taxType: TaxType
-
-  @ApiProperty({
-    description: 'Order of tax for given year and type',
-    default: 1,
-  })
-  @IsNumber()
-  order: number
 }
 
 export class MarkDeceasedAccountRequestDto {

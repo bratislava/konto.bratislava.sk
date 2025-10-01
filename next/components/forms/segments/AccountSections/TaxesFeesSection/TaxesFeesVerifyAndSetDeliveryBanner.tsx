@@ -17,6 +17,10 @@ const TaxesFeesVerifyAndSetDeliveryMethodBanner = ({
   const { tierStatus } = useSsrAuth()
   const { isIdentityVerified } = tierStatus
 
+  const buttonText = isIdentityVerified
+    ? t('account_section_payment.set_delivery_method')
+    : t('account_section_payment.verify_and_set')
+
   return (
     <AnnouncementBlock
       announcementContent={t('account_section_payment.set_delivery_method_content')}
@@ -24,9 +28,7 @@ const TaxesFeesVerifyAndSetDeliveryMethodBanner = ({
       imageSrc={BannerTaxWaiting}
       buttons={[
         {
-          children: isIdentityVerified
-            ? t('account_section_payment.set_delivery_method')
-            : t('account_section_payment.verify_and_set'),
+          children: buttonText,
           href: isIdentityVerified ? undefined : ROUTES.IDENTITY_VERIFICATION,
           onPress: isIdentityVerified ? onDeliveryMethodChange : undefined,
           variant: 'black-solid',

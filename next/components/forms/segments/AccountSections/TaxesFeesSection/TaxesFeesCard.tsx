@@ -5,7 +5,7 @@ import React from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { FormatCurrencyFromCents } from '../../../../../frontend/utils/formatCurrency'
-import { formatDate } from '../../../../../frontend/utils/general'
+import { formatDate, isDefined } from '../../../../../frontend/utils/general'
 import MLinkNew from '../../../simple-components/MLinkNew'
 import TaxPaidStatus from './TaxPaidStatus'
 
@@ -84,21 +84,19 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
             ) : (
               <span className="mb-1 text-p2-semibold leading-5">{`${t('account_section_payment.tax_card_title', { year })}`}</span>
             )}
-            <div className="">
-              {createdAt && <div className="w-max">{formatDate(createdAt)}</div>}
-              <div className="flex flex-row">
-                {amountToBePaid !== undefined && amountToBePaid !== null && (
-                  <span className="text-p3">
-                    <FormatCurrencyFromCents value={amountToBePaid} />
-                  </span>
-                )}
-                <span className="flex items-center">
-                  {amountToBePaid !== undefined && amountToBePaid !== null && (
-                    <span className="mx-3 size-1 rounded-full bg-gray-700" />
-                  )}
-                  <TaxPaidStatus status={status} />
+            {createdAt && <div className="w-max">{formatDate(createdAt)}</div>}
+            <div className="flex flex-row">
+              {isDefined(amountToBePaid) && (
+                <span className="text-p3">
+                  <FormatCurrencyFromCents value={amountToBePaid} />
                 </span>
-              </div>
+              )}
+              <span className="flex items-center">
+                {isDefined(amountToBePaid) && (
+                  <span className="mx-3 size-1 rounded-full bg-gray-700" />
+                )}
+                <TaxPaidStatus status={status} />
+              </span>
             </div>
           </div>
           {isActiveLink && (

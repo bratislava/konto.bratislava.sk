@@ -35,7 +35,6 @@ const TaxesFeesAdministratorCardWrapper = ({
         <TaxesFeesTaxAdministratorCard
           beTaxAdministrator={beTaxAdministrator}
           strapiTaxAdministrator={strapiTaxAdministrator}
-          withTitle={false}
         />
       </div>
     </div>

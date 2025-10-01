@@ -1,7 +1,7 @@
 import cn from 'frontend/cn'
 import { formatDate } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
-import { InstallmentPaidStatusEnum } from 'node_modules/openapi-clients/dist/tax/api'
+import { InstallmentPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
@@ -28,7 +28,7 @@ const PaymentSchedule = () => {
               })}
             </span>
             <span
-              className={cn('', {
+              className={cn({
                 'text-p2-semibold text-success-700': isPaid,
               })}
             >

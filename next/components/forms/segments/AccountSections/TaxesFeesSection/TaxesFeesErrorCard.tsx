@@ -1,4 +1,4 @@
-import ImageMesto from '@assets/images/mestske-konto-situacia.png'
+import ImageMestskeKontoSituacia from '@assets/images/mestske-konto-situacia.png'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
@@ -21,7 +21,7 @@ const TaxesFeesErrorCard = () => {
         />
       </div>
       <span className="flex flex-1 justify-center">
-        <Image src={ImageMesto} alt="" className="object-contain" />
+        <Image src={ImageMestskeKontoSituacia} alt="" className="object-contain" />
       </span>
     </div>
   )

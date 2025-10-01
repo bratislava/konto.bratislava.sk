@@ -23,7 +23,7 @@ const TaxFormAlert = () => {
             content={t('account_section_payment.tax_form_change_ownership_alert_text')}
             variant="sm"
           />
-          <div className="mt-2">
+          <div className="pt-2">
             <MLinkNew
               href={ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti')}
               variant="underlined-medium"

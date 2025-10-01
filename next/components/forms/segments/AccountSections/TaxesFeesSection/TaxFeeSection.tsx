@@ -53,8 +53,6 @@ const TaxFeeSection = () => {
           <div className="flex w-full flex-col gap-4 lg:flex-row lg:px-0">
             <ResponsiveCarousel
               controlsVariant="side"
-              mobile={1}
-              tablet={2}
               desktop={2}
               hasVerticalPadding={false}
               items={[

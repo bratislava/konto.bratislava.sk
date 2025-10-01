@@ -1,3 +1,4 @@
+import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
@@ -122,23 +123,23 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
           <RadioGroup
             required
             onChange={(value) => field.onChange(value === 'true')}
-            value={field.value === undefined ? undefined : field.value ? 'true' : 'false'}
+            value={isDefined(field.value) ? String(field.value) : undefined}
             label={t('delivery_method_change_modal_label')}
             orientation="vertical"
           >
-            <Radio
-              value="true"
-              variant="boxed"
-              description={t('delivery_method_change_modal_description_true')}
-            >
-              {t('delivery_method_change_modal_description_true_title')}
-            </Radio>
             <Radio
               value="false"
               variant="boxed"
               description={t('delivery_method_change_modal_description_false')}
             >
               {t('delivery_method_change_modal_description_false_title')}
+            </Radio>
+            <Radio
+              value="true"
+              variant="boxed"
+              description={t('delivery_method_change_modal_description_true')}
+            >
+              {t('delivery_method_change_modal_description_true_title')}
             </Radio>
           </RadioGroup>
         )}
@@ -180,7 +181,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
   onOpenChange,
   agreementContent,
 }: TaxesFeesDeliveryMethodChangeModalProps) => {
-  const { isSubscribed, isSubscribtionExists, changeSubscription } = useUserSubscription({
+  const { isSubscribed, changeSubscription, subType } = useUserSubscription({
     category: GDPRCategoryEnum.Taxes,
     type: GDPRTypeEnum.FormalCommunication,
   })
@@ -214,7 +215,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       </Heading>
       <Form
         defaultValues={{
-          isSubscribed: isSubscribtionExists ? isSubscribed : undefined,
+          isSubscribed: subType === undefined ? subType : isSubscribed,
           scrolledToBottom: false,
         }}
         onSubmit={handleSubmit}

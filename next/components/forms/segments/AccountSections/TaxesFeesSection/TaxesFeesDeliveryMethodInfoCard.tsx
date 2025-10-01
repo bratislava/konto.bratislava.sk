@@ -8,15 +8,7 @@ import React from 'react'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
 import { useTaxChannel } from './useTaxChannel'
 
-type TaxesFeesDeliveryMethodInfoCardProps = {
-  addBorder?: boolean
-  withTitle?: boolean
-}
-
-const TaxesFeesDeliveryMethodInfoCard = ({
-  addBorder = false,
-  withTitle = true,
-}: TaxesFeesDeliveryMethodInfoCardProps) => {
+const TaxesFeesDeliveryMethodInfoCard = () => {
   const { t } = useTranslation('account')
   const { channel, canChangeChannel } = useTaxChannel()
 
@@ -33,10 +25,9 @@ const TaxesFeesDeliveryMethodInfoCard = ({
 
   return (
     <div
-      className={cn('flex w-full items-center justify-between gap-4 rounded-lg lg:p-5', {
-        'border-2 border-gray-200 p-4': addBorder,
-        'border-none': !addBorder,
-      })}
+      className={cn(
+        'flex w-full items-center justify-between gap-4 rounded-lg lg:border-2 lg:border-gray-200 lg:p-4 lg:p-5',
+      )}
     >
       <div className="flex w-full items-start justify-between gap-4">
         <div className="flex flex-col">
@@ -47,21 +38,17 @@ const TaxesFeesDeliveryMethodInfoCard = ({
             {/* <span className="text-p2">
               {t('communication_channel_info_title', { year: taxData.year })}
             </span> */}
-            {withTitle && <span className="text-p1-semibold">{type}</span>}
+            <span className="hidden text-p1-semibold lg:block">{type}</span>
           </div>
           {canChangeChannel && (
-            <div>
+            <div className="pt-3 pb-5 lg:px-0 lg:pb-2">
               <AccountMarkdown
-                content={`<div className='text-p2'>${t(
-                  'communication_channel_info_change_link_text',
-                  {
-                    url: ROUTES.TAXES_AND_FEES,
-                  },
-                )}</div>`}
-                variant="sm"
-                className={cn('mx-auto w-full pt-3 pr-4 pb-5 lg:px-0 lg:py-2', {
-                  'px-4': addBorder,
-                })}
+                content={`${t('communication_channel_info_change_link_text', {
+                  url: ROUTES.TAXES_AND_FEES,
+                })}`}
+                // variant added to change text size on mobile devices,
+                // not the best solution but this problem needs more complex solution across whole project
+                variant="statusBar"
               />
             </div>
           )}

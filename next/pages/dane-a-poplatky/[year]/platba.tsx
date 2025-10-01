@@ -11,6 +11,7 @@ import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
 import { prefetchUserQuery } from 'frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from 'frontend/utils/amplifyServer'
+import { convertYearToNumber } from 'frontend/utils/general'
 import { slovakServerSideTranslations } from 'frontend/utils/slovakServerSideTranslations'
 import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
 
@@ -22,14 +23,6 @@ type AccountTaxesFeesPageProps = {
 
 type Params = {
   year: string
-}
-
-function convertYearToNumber(input: string | undefined) {
-  if (input === undefined || !/^(20\d{2})$/.test(input)) {
-    return null
-  }
-
-  return parseInt(input, 10)
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(

@@ -24,29 +24,10 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
   const { t } = useTranslation('account')
 
-  const { mutate: redirectToFullPayment, isPending: redirectToFullPaymentIsPending } = useMutation({
-    mutationFn: () =>
-      taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, {
-        authStrategy: 'authOnly',
-      }),
-    networkMode: 'always',
-    onSuccess: async (response) => {
-      closeSnackbarInfo()
-      await router.push(response.data.url)
-    },
-    onMutate: () => {
-      openSnackbarInfo(t('account_section_payment.redirecting_to_payment'))
-    },
-    onError: (error) => {
-      openSnackbarError(t('account_section_payment.payment_redirect_error'))
-      logger.error(error)
-    },
-  })
-
-  const { mutate: redirectToInstallmentPayment, isPending: redirectToInstallmentPaymentIsPending } =
+  const { mutate: redirectToFullPaymentMutate, isPending: redirectToFullPaymentIsPending } =
     useMutation({
       mutationFn: () =>
-        taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, {
+        taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, {
           authStrategy: 'authOnly',
         }),
       networkMode: 'always',
@@ -62,6 +43,28 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
         logger.error(error)
       },
     })
+
+  const {
+    mutate: redirectToInstallmentPaymentMutate,
+    isPending: redirectToInstallmentPaymentIsPending,
+  } = useMutation({
+    mutationFn: () =>
+      taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, {
+        authStrategy: 'authOnly',
+      }),
+    networkMode: 'always',
+    onSuccess: async (response) => {
+      closeSnackbarInfo()
+      await router.push(response.data.url)
+    },
+    onMutate: () => {
+      openSnackbarInfo(t('account_section_payment.redirecting_to_payment'))
+    },
+    onError: (error) => {
+      openSnackbarError(t('account_section_payment.payment_redirect_error'))
+      logger.error(error)
+    },
+  })
 
   const downloadQrCodeOneTimePayment = async () => {
     if (!taxData.oneTimePayment.qrCode) return
@@ -91,9 +94,9 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
 
   return {
     taxData,
-    redirectToFullPayment,
+    redirectToFullPaymentMutate,
     redirectToFullPaymentIsPending,
-    redirectToInstallmentPayment,
+    redirectToInstallmentPaymentMutate,
     redirectToInstallmentPaymentIsPending,
     downloadQrCodeOneTimePayment,
     downloadQrCodeInstallmentPayment,

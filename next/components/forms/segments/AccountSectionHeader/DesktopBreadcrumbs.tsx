@@ -6,7 +6,9 @@ import type { BreadcrumbsProps } from './Breadcrumbs'
 
 /**
  * Figma: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%3A-Component-library?node-id=821-1994&t=pIPe0xK0FBdmOKH1-0
+ * Based on bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/b8e21a117c691f1f3e3a9be9fa8ae65d4c8172ee/next/src/components/common/Breadcrumbs/DesktopBreadcrumbs.tsx#L11
  */
+
 const DesktopBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
   const { t } = useTranslation()
 

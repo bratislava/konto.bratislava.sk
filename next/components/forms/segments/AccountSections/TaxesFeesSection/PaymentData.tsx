@@ -30,8 +30,8 @@ type DetailsProps = {
 const Details = ({ paymentMethod }: DetailsProps) => {
   const {
     taxData,
-    redirectToFullPayment,
-    redirectToInstallmentPayment,
+    redirectToFullPaymentMutate,
+    redirectToInstallmentPaymentMutate,
     redirectToFullPaymentIsPending,
     redirectToInstallmentPaymentIsPending,
     downloadQrCodeOneTimePayment,
@@ -101,8 +101,8 @@ const Details = ({ paymentMethod }: DetailsProps) => {
             variant="black-solid"
             onPress={() =>
               paymentMethod === PaymentMethod.Installments
-                ? redirectToInstallmentPayment()
-                : redirectToFullPayment()
+                ? redirectToInstallmentPaymentMutate()
+                : redirectToFullPaymentMutate()
             }
             isLoading={
               paymentMethod === PaymentMethod.Installments

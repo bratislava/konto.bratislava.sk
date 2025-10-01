@@ -6,7 +6,6 @@ import cn from '../../../../../frontend/cn'
 
 type TaxPaidStatusProps = {
   status: TaxStatusEnum
-  mobileIcon?: boolean
 }
 
 const TaxPaidStatus = ({ status }: TaxPaidStatusProps) => {

@@ -53,7 +53,7 @@ const AnnouncementBlock = ({
         <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
           <Image
             src={imageSrc}
-            className={cn('rounded-t-lg object-contain object-center', {
+            className={cn('rounded-t-lg object-cover object-center', {
               'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
               'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
             })}

@@ -24,13 +24,13 @@ const TaxesFeesDeliveryMethodInfoCardWrapper = () => {
   return (
     <div className="flex flex-1 flex-col gap-4">
       <h2 className="text-h5-semibold">{t('account_section_payment.delivery_method')}</h2>
-      <div className="block lg:hidden">
+      <div className="lg:hidden">
         <AccordionV2 title={type}>
-          <TaxesFeesDeliveryMethodInfoCard withTitle={false} />
+          <TaxesFeesDeliveryMethodInfoCard />
         </AccordionV2>
       </div>
-      <div className="hidden lg:block">
-        <TaxesFeesDeliveryMethodInfoCard addBorder />
+      <div className="max-lg:hidden">
+        <TaxesFeesDeliveryMethodInfoCard />
       </div>
     </div>
   )

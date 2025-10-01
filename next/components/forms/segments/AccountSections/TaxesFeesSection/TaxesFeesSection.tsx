@@ -65,8 +65,8 @@ const TaxesFeesSection = () => {
       <AccountSectionHeader
         title={t('account_section_payment.title')}
         // not the best solution, but for proper one we need to rewrite components in Figma (pages, UserProfileView, HelpSection, IntroSection)
-        titleWrapperClassName="pb-0 lg:pb-0 pt-8"
-        wrapperClassName="lg:py-0 lg:pt-16"
+        titleWrapperClassName="pb-0 pt-8 lg:py-0"
+        wrapperClassName="lg:pt-14"
       >
         {channel && (
           <div className="mx-4 flex flex-col gap-4 rounded-lg bg-gray-0 p-4 lg:mx-0 lg:gap-5 lg:p-5">
@@ -96,7 +96,7 @@ const TaxesFeesSection = () => {
           </TabList>
         </Tabs>
       </AccountSectionHeader>
-      <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-4 p-4 sm:px-6 lg:gap-8 lg:px-0 lg:py-12">
+      <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-4 p-4 lg:gap-8 lg:px-0 lg:py-12">
         {((!isIdentityVerified && !isInQueue) || showDeliveryMethodNotSetBanner) && (
           <TaxesFeesVerifyAndSetDeliveryMethodBanner
             onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}

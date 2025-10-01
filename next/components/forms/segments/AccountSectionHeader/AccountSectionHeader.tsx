@@ -6,7 +6,9 @@ type AccountSectionHeaderBase = PropsWithChildren<{
   text?: string
   /** This is used when page contains other h1, such as homepage */
   titleAsParagraph?: boolean
+  /** Temporary added before better solution is implemented */
   titleWrapperClassName?: string
+  /** Temporary added before better solution is implemented */
   wrapperClassName?: string
 }>
 

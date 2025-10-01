@@ -9,7 +9,6 @@ import MLinkNew from '../../../simple-components/MLinkNew'
 type TaxesFeesTaxAdministratorCardProps = {
   beTaxAdministrator: ResponseTaxAdministratorDto | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
-  withTitle?: boolean
   removeBorder?: boolean
 }
 
@@ -24,7 +23,6 @@ const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorD
 const TaxesFeesTaxAdministratorCard = ({
   beTaxAdministrator,
   strapiTaxAdministrator,
-  withTitle = true,
   removeBorder = false,
 }: TaxesFeesTaxAdministratorCardProps) => {
   const { t } = useTranslation('account')
@@ -47,11 +45,6 @@ const TaxesFeesTaxAdministratorCard = ({
     >
       <div className="flex flex-col gap-4 lg:gap-3">
         <div className="hidden flex-col lg:flex">
-          {withTitle && (
-            <div className="flex flex-col gap-1">
-              {t('account_section_payment.your_tax_administrator')}
-            </div>
-          )}
           <span className="text-p1-semibold">{taxAdministrator.name}</span>
         </div>
         <div className="flex flex-wrap content-center items-center gap-x-5 gap-y-2 self-stretch">

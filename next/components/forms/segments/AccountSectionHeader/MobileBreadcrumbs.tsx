@@ -11,6 +11,7 @@ const goBack = () => {
 
 /**
  * Figma: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%3A-Component-library?node-id=4316-6581&t=h4JAjB29v0Uizs8Y-0
+ * Based on bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/b8e21a117c691f1f3e3a9be9fa8ae65d4c8172ee/next/src/components/common/Breadcrumbs/MobileBreadcrumbs.tsx#L22
  */
 const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
   const { t } = useTranslation()

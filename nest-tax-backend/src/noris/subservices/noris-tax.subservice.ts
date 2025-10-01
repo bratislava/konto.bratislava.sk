@@ -478,10 +478,10 @@ export class NorisTaxSubservice {
     const grouped: Record<string, NorisCommunalWasteTaxDto[]> = {}
 
     records.forEach((rec) => {
-      if (!grouped[rec.ICO_RC]) {
-        grouped[rec.ICO_RC] = []
+      if (!grouped[rec.variabilny_symbol]) {
+        grouped[rec.variabilny_symbol] = []
       }
-      grouped[rec.ICO_RC].push(rec)
+      grouped[rec.variabilny_symbol].push(rec)
     })
 
     const result: NorisCommunalWasteTaxProcessedDto[] = []

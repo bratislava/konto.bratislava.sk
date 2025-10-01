@@ -459,7 +459,7 @@ SELECT
             dane21_doklad.podklad=lcs.pko21_poplatok.cislo_subjektu
    WHERE 
         lcs.dane21_druh_dokladu.typ_dokladu = 'v'
-        AND lcs.dane21_druh_dokladu.typ_dane IN ('1', '4') -- TODO naozaj je PKO 4?
+        AND lcs.dane21_druh_dokladu.typ_dane IN ('1', '4')
         AND dane21_doklad.stav_dokladu <> 's'
         AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
         AND dane21_doklad.rok_podkladu {%YEARS%}
@@ -706,7 +706,7 @@ export const getCommunalWasteTaxesFromNoris = `
         poplatok.podnikatel = 'N' AND
         doklad.pohladavka IS NOT NULL AND 
         lcs.dane21_druh_dokladu.typ_dokladu = 'V'AND
-        lcs.dane21_druh_dokladu.typ_dane = '4' AND -- TODO je toto pravda? Sú 4 PKO?
+        lcs.dane21_druh_dokladu.typ_dane = '4' AND
         doklad.stav_dokladu<>'s' AND
         doklad.rok_podkladu = @year
 `

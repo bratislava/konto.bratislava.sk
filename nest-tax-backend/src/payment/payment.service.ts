@@ -129,11 +129,13 @@ export class PaymentService {
     where: Prisma.TaxPayerWhereUniqueInput,
     year: number,
     type: TaxType,
+    order: number,
   ) {
     const generator = await this.taxService.getOneTimePaymentGenerator(
       where,
       year,
       type,
+      order,
     )
 
     return this.getPaymentUrlInternal(generator)
@@ -143,11 +145,13 @@ export class PaymentService {
     where: Prisma.TaxPayerWhereUniqueInput,
     year: number,
     type: TaxType,
+    order: number,
   ) {
     const generator = await this.taxService.getInstallmentPaymentGenerator(
       where,
       year,
       type,
+      order,
     )
 
     return this.getPaymentUrlInternal(generator)
@@ -256,6 +260,7 @@ export class PaymentService {
     year: string,
     birthNumber: string,
     type: TaxType,
+    order: number,
   ) {
     let taxPayer: TaxPayer | null = null
     try {
@@ -284,10 +289,11 @@ export class PaymentService {
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
-          taxPayerId_year_type: {
+          taxPayerId_year_type_order: {
             taxPayerId: taxPayer.id,
             year: +year,
             type,
+            order,
           },
         },
       })

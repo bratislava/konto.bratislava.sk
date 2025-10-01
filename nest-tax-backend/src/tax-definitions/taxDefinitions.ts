@@ -14,10 +14,7 @@ import { TaxDefinition } from './taxDefinitionsTypes'
 export const taxDefinitions: TaxDefinition[] = [
   {
     type: TaxType.DZN,
-    getAndProcessDataFromNoris:
-      'getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear',
-    getDataFromNorisAndUpdateExistingRecords:
-      'getNorisRealEstateTaxDataByBirthNumberAndYearAndUpdateExistingRecords',
+    isUnique: true,
     mapNorisToTaxData: mapNorisToRealEstateTaxData,
     mapNorisToTaxDetailData: mapNorisToRealEstateTaxDetailData,
     getDataForUpdate: 'getRealEstateDataForUpdate',

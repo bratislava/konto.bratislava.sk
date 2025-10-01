@@ -49,7 +49,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
-        taxClient.taxControllerGetActualTaxes(yearNumber, TaxType.Dzn, {
+        taxClient.taxControllerGetActualTaxes(yearNumber, 1, TaxType.Dzn, { // TODO - for DZN all order values are 1, since it is unique
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),

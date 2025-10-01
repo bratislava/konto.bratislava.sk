@@ -71,16 +71,18 @@ export class PaymentController {
   @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Post('cardpay/by-year-and-type/:year/:type')
+  @Post('cardpay/by-year-and-type/:year/:type/:order')
   async payment(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Param('year') year: string,
     @Param('type', new ParseEnumPipe(TaxType)) type: TaxType,
+    @Param('order', ParseIntPipe) order: number,
   ) {
     const urlToRedirect = await this.paymentService.getPayGateUrlByUserYearType(
       year,
       baUser.birthNumber,
       type,
+      order,
     )
     return { url: urlToRedirect }
   }
@@ -111,11 +113,12 @@ export class PaymentController {
   @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Post('cardpay/full-payment/:year/:type')
+  @Post('cardpay/full-payment/:year/:type/:order')
   async generateFullPaymentLink(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Param('year', ParseIntPipe) year: number,
     @Param('type', new ParseEnumPipe(TaxType)) type: TaxType,
+    @Param('order', ParseIntPipe) order: number,
   ) {
     const urlToRedirect = await this.paymentService.generateFullPaymentLink(
       {
@@ -123,6 +126,7 @@ export class PaymentController {
       },
       year,
       type,
+      order,
     )
 
     return { url: urlToRedirect }
@@ -153,11 +157,12 @@ export class PaymentController {
   @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Post('cardpay/installment-payment/:year/:type')
+  @Post('cardpay/installment-payment/:year/:type/:order')
   async generateInstallmentPaymentLink(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Param('year', ParseIntPipe) year: number,
     @Param('type', new ParseEnumPipe(TaxType)) type: TaxType,
+    @Param('order', ParseIntPipe) order: number,
   ) {
     const urlToRedirect =
       await this.paymentService.generateInstallmentPaymentLink(
@@ -166,6 +171,7 @@ export class PaymentController {
         },
         year,
         type,
+        order,
       )
 
     return { url: urlToRedirect }

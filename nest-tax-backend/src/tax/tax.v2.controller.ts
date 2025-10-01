@@ -63,9 +63,10 @@ export class TaxControllerV2 {
   async getTaxDetailByYear(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year', ParseIntPipe) year: number,
+    @Query('order', ParseIntPipe) order: number,
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ) {
-    return this.taxService.getTaxDetail(baUser.birthNumber, year, type)
+    return this.taxService.getTaxDetail(baUser.birthNumber, year, type, order)
   }
 
   @HttpCode(200)

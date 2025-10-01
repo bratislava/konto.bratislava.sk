@@ -43,10 +43,10 @@ export class NorisService {
     return this.taxSubservice.getRealEstateDataForUpdate(variableSymbols, years)
   }
 
-  async getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear(
+  async getAndProcessNewNorisTaxDataByBirthNumberAndYear(
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    return this.taxSubservice.getAndProcessNorisRealEstateTaxDataByBirthNumberAndYear(
+    return this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
       data,
     )
   }
@@ -59,17 +59,18 @@ export class NorisService {
     )
   }
 
-  async processNorisRealEstateTaxData(
+  async processNorisTaxData(
     norisData: NorisTaxPayersDto[],
     year: number,
+    taxType: TaxType,
   ): Promise<string[]> {
-    return this.taxSubservice.processNorisRealEstateTaxData(norisData, year)
+    return this.taxSubservice.processNorisTaxData(norisData, year, taxType)
   }
 
-  async getNorisRealEstateTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+  async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     data: RequestPostNorisLoadDataDto,
   ) {
-    return this.taxSubservice.getNorisRealEstateTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    return this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       data,
     )
   }

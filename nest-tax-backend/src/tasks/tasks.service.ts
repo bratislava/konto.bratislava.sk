@@ -394,13 +394,11 @@ export class TasksService {
     }
 
     const result =
-      await this.norisService.getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear(
-        {
-          year,
-          birthNumbers,
-          taxType: TaxType.DZN,
-        },
-      )
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+        year,
+        birthNumbers,
+        taxType: TaxType.DZN,
+      })
 
     // Move all requested TaxPayers to the end of the queue
     await this.prismaService.taxPayer.updateMany({

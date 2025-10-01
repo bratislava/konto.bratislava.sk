@@ -147,6 +147,7 @@ describe('TaxService', () => {
         2023,
         '123456/789',
         TaxType.DZN,
+        1,
       )
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
@@ -184,7 +185,7 @@ describe('TaxService', () => {
       )
 
       await expect(
-        service.getTaxByYearAndType(2023, '', TaxType.DZN),
+        service.getTaxByYearAndType(2023, '', TaxType.DZN, 1),
       ).rejects.toThrow()
 
       expect(notFoundExceptionSpy).toHaveBeenCalledWith(
@@ -200,7 +201,7 @@ describe('TaxService', () => {
       )
 
       await expect(
-        service.getTaxByYearAndType(null as any, '123456/789', TaxType.DZN),
+        service.getTaxByYearAndType(null as any, '123456/789', TaxType.DZN, 1),
       ).rejects.toThrow()
 
       expect(notFoundExceptionSpy).toHaveBeenCalledWith(
@@ -232,6 +233,7 @@ describe('TaxService', () => {
         2023,
         '123456/789',
         TaxType.DZN,
+        1,
       )
 
       expect(createQrCodeSpy).toHaveBeenCalledWith({
@@ -267,6 +269,7 @@ describe('TaxService', () => {
         2023,
         '123456/789',
         TaxType.DZN,
+        1,
       )
 
       expect(createQrCodeSpy).not.toHaveBeenCalled()
@@ -423,7 +426,12 @@ describe('TaxService', () => {
         .spyOn(ejs, 'renderFile')
         .mockResolvedValue('<html>PDF content</html>')
 
-      const result = await service.generatePdf(2023, '123456/789', TaxType.DZN)
+      const result = await service.generatePdf(
+        2023,
+        '123456/789',
+        TaxType.DZN,
+        1,
+      )
 
       expect(renderFileSpy).toHaveBeenCalledWith(
         'public/tax-pdf.ejs',
@@ -453,7 +461,7 @@ describe('TaxService', () => {
         .mockReturnValue(thrownError)
 
       await expect(
-        service.generatePdf(2023, '123456/789', TaxType.DZN),
+        service.generatePdf(2023, '123456/789', TaxType.DZN, 1),
       ).rejects.toThrow(thrownError)
 
       expect(
@@ -483,6 +491,7 @@ describe('TaxService', () => {
           { taxInstallments: true },
           2023,
           TaxType.DZN,
+          1,
         )
 
         expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
@@ -514,6 +523,7 @@ describe('TaxService', () => {
             {},
             2023,
             TaxType.DZN,
+            1,
           ),
         ).rejects.toThrow()
 

@@ -73,9 +73,15 @@ export class TaxController {
   async getActualTaxes(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year', ParseIntPipe) year: number,
+    @Query('order', ParseIntPipe) order: number,
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseTaxDto> {
-    return this.taxService.getTaxByYearAndType(year, baUser.birthNumber, type)
+    return this.taxService.getTaxByYearAndType(
+      year,
+      baUser.birthNumber,
+      type,
+      order,
+    )
   }
 
   @HttpCode(200)
@@ -105,6 +111,7 @@ export class TaxController {
   async getTaxByYearPdf(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year', ParseIntPipe) year: number,
+    @Query('order', ParseIntPipe) order: number,
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
     @Res() res: any,
   ) {
@@ -113,6 +120,7 @@ export class TaxController {
         year,
         baUser.birthNumber,
         type,
+        order,
       )
       const options: CreateOptions = {
         format: 'A4',

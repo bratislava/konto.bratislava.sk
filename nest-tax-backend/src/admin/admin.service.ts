@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto } from '../noris/noris.dto'
@@ -44,7 +45,9 @@ export class AdminService {
         `Tax definition not found: ${data.taxType}`,
       )
     }
-    return this.norisService[taxDefintion.getAndProcessDataFromNoris](data)
+    return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+      data,
+    )
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
@@ -55,9 +58,9 @@ export class AdminService {
         `Tax definition not found: ${data.taxType}`,
       )
     }
-    return this.norisService[
-      taxDefintion.getDataFromNorisAndUpdateExistingRecords
-    ](data)
+    return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+      data,
+    )
   }
 
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
@@ -118,13 +121,18 @@ export class AdminService {
     }
 
     // Process the mock data to create the testing tax
-    await this.norisService.processNorisRealEstateTaxData([mockTaxRecord], year)
+    await this.norisService.processNorisTaxData(
+      [mockTaxRecord],
+      year,
+      TaxType.DZN,
+    )
   }
 
   async deleteTax({
     year,
     birthNumber,
     taxType,
+    order,
   }: RequestAdminDeleteTaxDto): Promise<void> {
     const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
     const taxPayer = await this.prismaService.taxPayer.findUnique({
@@ -141,10 +149,11 @@ export class AdminService {
 
     const tax = await this.prismaService.tax.findUnique({
       where: {
-        taxPayerId_year_type: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
           type: taxType,
+          order,
         },
       },
     })
@@ -157,10 +166,11 @@ export class AdminService {
 
     await this.prismaService.tax.delete({
       where: {
-        taxPayerId_year_type: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
           type: taxType,
+          order,
         },
       },
     })

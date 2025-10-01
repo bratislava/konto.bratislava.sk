@@ -68,6 +68,7 @@ export class TaxService {
     include: T,
     year: number,
     type: TaxType,
+    order: number,
   ) {
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: taxPayerWhereUniqueInput,
@@ -86,10 +87,11 @@ export class TaxService {
       include: T
     }>({
       where: {
-        taxPayerId_year_type: {
+        taxPayerId_year_type_order: {
           year,
           taxPayerId: taxPayer.id,
           type,
+          order,
         },
       },
       include,
@@ -123,6 +125,7 @@ export class TaxService {
     year: number,
     birthNumber: string,
     type: TaxType,
+    order: number,
   ): Promise<ResponseTaxDto> {
     if (!birthNumber || !year) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -145,6 +148,7 @@ export class TaxService {
       },
       year,
       type,
+      order,
     )
 
     const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
@@ -181,6 +185,7 @@ export class TaxService {
         ...tax.taxPayer,
         active: true,
       },
+      order,
       taxInstallments,
       paidAmount,
       paidStatus,
@@ -366,6 +371,7 @@ export class TaxService {
     year: number,
     birthNumber: string,
     type: TaxType,
+    order: number,
   ): Promise<string> {
     const taxDefinition = getTaxDefinitionByType(type)
     if (!taxDefinition) {
@@ -383,7 +389,12 @@ export class TaxService {
     }
 
     try {
-      const user = await this.getTaxByYearAndType(year, birthNumber, type)
+      const user = await this.getTaxByYearAndType(
+        year,
+        birthNumber,
+        type,
+        order,
+      )
       const taxDetails = taxDefinition.pdfOptions.taxDetailsToPdf(
         user.taxDetails,
       )
@@ -415,6 +426,7 @@ export class TaxService {
     birthNumber: string,
     year: number,
     type: TaxType,
+    order: number,
   ): Promise<ResponseTaxSummaryDetailDto> {
     const taxDefinition = getTaxDefinitionByType(type)
     if (!taxDefinition) {
@@ -424,12 +436,13 @@ export class TaxService {
       )
     }
 
-    return this[taxDefinition.getTaxDetail](birthNumber, year)
+    return this[taxDefinition.getTaxDetail](birthNumber, year, order)
   }
 
   async getRealEstateTaxDetail(
     birthNumber: string,
     year: number,
+    order: number,
   ): Promise<ResponseTaxSummaryDetailDto> {
     const today = dayjs().tz('Europe/Bratislava')
 
@@ -447,6 +460,7 @@ export class TaxService {
       },
       year,
       TaxType.DZN,
+      order,
     )
 
     const detailWithoutQrCode = getRealEstateTaxDetailPure({
@@ -522,12 +536,14 @@ export class TaxService {
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
     year: number,
     type: TaxType,
+    order: number,
   ): Promise<PaymentGateURLGeneratorDto> {
     const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,
       { taxPayments: true },
       year,
       type,
+      order,
     )
 
     return getTaxDetailPureForOneTimeGenerator({
@@ -541,6 +557,7 @@ export class TaxService {
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
     year: number,
     type: TaxType,
+    order: number,
   ): Promise<PaymentGateURLGeneratorDto> {
     const today = dayjs().tz('Europe/Bratislava').toDate()
 
@@ -549,6 +566,7 @@ export class TaxService {
       { taxInstallments: true, taxPayments: true },
       year,
       type,
+      order,
     )
 
     const taxDefinition = getTaxDefinitionByType(type)

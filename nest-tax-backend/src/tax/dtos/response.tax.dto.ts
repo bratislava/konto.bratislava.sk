@@ -372,6 +372,13 @@ export class ResponseTaxDto {
   amount: number
 
   @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
+
+  @ApiProperty({
     description: 'Amount which was already paid in cents - integer',
     default: 1000,
   })

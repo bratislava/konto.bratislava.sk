@@ -16,8 +16,7 @@ import {
 
 export type TaxDefinition = {
   type: TaxType
-  getAndProcessDataFromNoris: 'getAndProcessNewNorisRealEstateTaxDataByBirthNumberAndYear'
-  getDataFromNorisAndUpdateExistingRecords: 'getNorisRealEstateTaxDataByBirthNumberAndYearAndUpdateExistingRecords'
+  isUnique: boolean
   mapNorisToTaxData: (
     data: NorisTaxPayersDto,
     year: number,

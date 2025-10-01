@@ -61,7 +61,6 @@ model Tax {
   deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 
-  @@unique([taxPayerId, year, type])
   @@unique([uuid])
   @@index([year, lastCheckedPayments])
 }

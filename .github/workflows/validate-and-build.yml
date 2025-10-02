@@ -17,11 +17,11 @@ jobs:
 
   build-forms-shared:
     name: Build image of forms-shared and push it to harbor
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: forms-shared/
-      build_image_no_registry: ''
-      tag: '--tag=build-${{ github.sha }}'
+      build_image_no_registry: ""
+      tag: "--tag=build-${{ github.sha }}"
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -29,11 +29,11 @@ jobs:
 
   build-openapi-clients:
     name: Build image of openapi-clients and push it to harbor
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: openapi-clients/
-      build_image_no_registry: ''
-      tag: '--tag=build-${{ github.sha }}'
+      build_image_no_registry: ""
+      tag: "--tag=build-${{ github.sha }}"
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -49,13 +49,13 @@ jobs:
     name: build next
     needs: [conditions]
     if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       debug: --debug
       fetch-depth: 1
-      build_image_no_registry: ''
+      build_image_no_registry: ""
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -65,7 +65,7 @@ jobs:
     name: build Strapi
     needs: conditions
     if: needs.conditions.outputs.strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: strapi/
       debug: --debug
@@ -86,12 +86,12 @@ jobs:
     name: build nest-forms-backend
     needs: [conditions, validate-nest-forms-backend]
     if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       fetch-depth: 1
-      build_image_no_registry: ''
+      build_image_no_registry: ""
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -110,7 +110,7 @@ jobs:
     name: build nest-clamav-scanner
     needs: [conditions, validate-nest-clamav-scanner]
     if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'

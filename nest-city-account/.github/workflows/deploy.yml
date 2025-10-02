@@ -17,7 +17,7 @@ jobs:
     name: Deploy to dev
     if: needs.conditions.outputs.dev == 'true'
     needs: conditions
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
     with:
       directory: ./
       cluster: development
@@ -33,7 +33,7 @@ jobs:
     name: Deploy to staging
     if: needs.conditions.outputs.staging == 'true'
     needs: [conditions]
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
       directory: ./
       cluster: staging
@@ -49,7 +49,7 @@ jobs:
     name: Deploy to prod
     if: needs.conditions.outputs.prod == 'true'
     needs: [conditions]
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
       directory: ./
       cluster: production

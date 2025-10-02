@@ -9,6 +9,7 @@ import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import { TaxController } from './tax.controller'
 import { TaxService } from './tax.service'
 import { TaxControllerV2 } from './tax.v2.controller'
+import { TaxRealEstateSubservice } from './utils/tax/tax.real-estate.subservice'
 
 @Module({
   imports: [PrismaModule, ClientsModule, UserInfoPipeModule],
@@ -17,6 +18,7 @@ import { TaxControllerV2 } from './tax.v2.controller'
     CognitoSubservice,
     ThrowerErrorGuard,
     QrCodeSubservice,
+    TaxRealEstateSubservice,
   ],
   exports: [TaxService],
   controllers: [TaxController, TaxControllerV2],

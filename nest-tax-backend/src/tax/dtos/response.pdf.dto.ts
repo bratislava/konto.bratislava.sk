@@ -4,7 +4,7 @@ class TaxInstallmentToPdfDto {
   amount: string
 }
 
-export class TaxTotalsToPdfDto {
+export class RealEstateTaxTotalsToPdfDto {
   total: string
 
   taxFlat: string

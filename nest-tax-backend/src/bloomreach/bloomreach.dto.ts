@@ -40,6 +40,13 @@ export class TaxPaymentBloomreachDataDto {
   })
   @IsEnum(TaxType)
   taxType: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax',
+    example: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class TaxBloomreachDataDto {
@@ -76,6 +83,13 @@ export class TaxBloomreachDataDto {
   })
   @IsEnum(TaxType)
   taxType: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax',
+    example: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class UnpaidTaxReminderBloomreachDataDto {
@@ -95,4 +109,11 @@ export class UnpaidTaxReminderBloomreachDataDto {
   })
   @IsEnum(TaxType)
   taxType: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax',
+    example: 1,
+  })
+  @IsNumber()
+  order: number
 }

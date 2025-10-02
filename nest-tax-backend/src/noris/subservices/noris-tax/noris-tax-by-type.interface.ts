@@ -5,6 +5,7 @@ import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
+import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { NorisTaxPayersDto, NorisUpdateDto } from '../../noris.dto'
 import {
   convertCurrencyToInt,
@@ -33,13 +34,13 @@ export abstract class NorisTaxByType {
     years: number[],
   ): Promise<NorisUpdateDto[]>
 
-  protected async insertTaxPayerDataToDatabase(
+  protected async insertTaxDataToDatabase(
     dataFromNoris: NorisTaxPayersDto,
     year: number,
     transaction: Prisma.TransactionClient,
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
     taxDefinition: TaxDefinition,
-  ) {
+  ): Promise<TaxWithTaxPayer> {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
     const taxAdministrator = await transaction.taxAdministrator.upsert({
       where: {
@@ -80,6 +81,11 @@ export abstract class NorisTaxByType {
       qrCodeEmail,
       qrCodeWeb,
     )
+    const sharedTaxPrismaOptions = {
+      include: {
+        taxPayer: true,
+      },
+    }
     const tax = taxDefinition.isUnique
       ? await transaction.tax.upsert({
           where: {
@@ -97,6 +103,7 @@ export abstract class NorisTaxByType {
             deliveryMethod:
               userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
           },
+          ...sharedTaxPrismaOptions,
         })
       : await transaction.tax.create({
           data: {
@@ -105,6 +112,7 @@ export abstract class NorisTaxByType {
             deliveryMethod:
               userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
           },
+          ...sharedTaxPrismaOptions,
         })
 
     const taxInstallments = mapNorisToTaxInstallmentsData(dataFromNoris, tax.id)
@@ -120,6 +128,6 @@ export abstract class NorisTaxByType {
     await transaction.taxDetail.createMany({
       data: taxDetailData,
     })
-    return taxPayer
+    return tax
   }
 }

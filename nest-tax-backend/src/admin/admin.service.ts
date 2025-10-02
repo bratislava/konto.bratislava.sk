@@ -187,6 +187,7 @@ export class AdminService {
         amount: 0,
         delivery_method: null,
         taxType,
+        order,
       },
       userDataFromCityAccount.externalId ?? undefined,
     )

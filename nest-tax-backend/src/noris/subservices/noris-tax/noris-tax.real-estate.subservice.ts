@@ -133,7 +133,7 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
             const userFromCityAccount =
               userDataFromCityAccount[norisItem.ICO_RC] || null
 
-            const userData = await this.insertTaxPayerDataToDatabase(
+            const tax = await this.insertTaxDataToDatabase(
               norisItem,
               year,
               tx,
@@ -150,13 +150,14 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
                     delivery_method:
                       userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
                     taxType: TaxType.DZN,
+                    order: tax.order!, // non-null by DB trigger
                   },
                   userFromCityAccount.externalId ?? undefined,
                 )
               if (!bloomreachTracker) {
                 throw this.throwerErrorGuard.InternalServerErrorException(
                   ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+                  `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
                 )
               }
             }
@@ -257,14 +258,14 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
               const userFromCityAccount =
                 userDataFromCityAccount[norisItem.ICO_RC] || null
 
-              const userData = await this.insertTaxPayerDataToDatabase(
+              const tax = await this.insertTaxDataToDatabase(
                 norisItem,
                 data.year,
                 tx,
                 userFromCityAccount,
                 taxDefinitionRealEstate,
               )
-              if (userData) {
+              if (tax) {
                 count += 1
               }
             })

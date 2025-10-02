@@ -403,6 +403,7 @@ export class PaymentService {
             select: {
               year: true,
               type: true,
+              order: true,
             },
           },
         },
@@ -418,6 +419,7 @@ export class PaymentService {
             payment_source: TaxPaymentSource.CARD,
             year: taxPayment.tax.year,
             taxType: taxPayment.tax.type,
+            order: taxPayment.tax.order!, // non-null by DB trigger
           },
           user.externalId,
         )

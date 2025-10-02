@@ -745,6 +745,13 @@ export class ResponseGetTaxesListBodyDto {
   })
   @IsEnum(TaxType)
   type: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class ResponseGetTaxesListDto {

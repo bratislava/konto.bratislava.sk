@@ -97,7 +97,6 @@ export class TaxControllerV2 {
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseGetTaxesListDto> {
     // TODO - pagination - but it will be issue after in year 2040 :D
-    // TODO add filter for type - or?
     const response = await this.taxService.getListOfTaxesByBirthnumberAndType(
       baUser.birthNumber,
       type,

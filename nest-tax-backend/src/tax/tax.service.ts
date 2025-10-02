@@ -273,15 +273,14 @@ export class TaxService {
         },
         type,
       },
-      orderBy: {
-        year: 'desc',
-      },
+      orderBy: [{ year: 'desc' }, { order: 'desc' }],
       select: {
         id: true,
         createdAt: true,
         amount: true,
         year: true,
         type: true,
+        order: true,
       },
     })
     const currentTime = dayjs().tz('Europe/Bratislava')
@@ -313,6 +312,7 @@ export class TaxService {
           amountToBePaid,
           status,
           type: tax.type,
+          order: tax.order!, // non-null by DB trigger
         }
       }),
     )
@@ -326,6 +326,7 @@ export class TaxService {
         year: currentTime.year(),
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type,
+        order: 1,
       })
     }
 

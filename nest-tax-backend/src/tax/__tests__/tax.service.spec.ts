@@ -40,8 +40,10 @@ jest.mock('../../payment/utils/payment.helper', () => ({
 }))
 
 jest.mock('../utils/helpers/pdf.helper', () => ({
-  realEstateTaxDetailsToPdf: jest.fn(),
-  realEstateTaxTotalsToPdf: jest.fn(),
+  RealEstatePdfHelper: {
+    taxDetailsToPdf: jest.fn(),
+    taxTotalsToPdf: jest.fn(),
+  },
 }))
 
 describe('TaxService', () => {
@@ -421,10 +423,10 @@ describe('TaxService', () => {
         .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
       jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
       jest
-        .spyOn(pdfHelper, 'realEstateTaxDetailsToPdf')
+        .spyOn(pdfHelper.RealEstatePdfHelper, 'taxDetailsToPdf')
         .mockReturnValue(mockTaxDetails)
       jest
-        .spyOn(pdfHelper, 'realEstateTaxTotalsToPdf')
+        .spyOn(pdfHelper.RealEstatePdfHelper, 'taxTotalsToPdf')
         .mockReturnValue(mockTaxTotals)
       const renderFileSpy = jest
         .spyOn(ejs, 'renderFile')

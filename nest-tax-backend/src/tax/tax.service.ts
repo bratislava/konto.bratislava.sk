@@ -364,10 +364,10 @@ export class TaxService {
         type,
         order,
       )
-      const taxDetails = taxDefinition.pdfOptions.taxDetailsToPdf(
+      const taxDetails = taxDefinition.pdfOptions.pdfHelper.taxDetailsToPdf(
         user.taxDetails,
       )
-      const totals = taxDefinition.pdfOptions.taxTotalsToPdf(
+      const totals = taxDefinition.pdfOptions.pdfHelper.taxTotalsToPdf(
         user,
         user.taxInstallments.map((data) => ({
           ...data,

@@ -4,10 +4,7 @@ import {
   mapNorisToRealEstateTaxData,
   mapNorisToRealEstateTaxDetailData,
 } from '../noris/utils/mapping.helper'
-import {
-  realEstateTaxDetailsToPdf,
-  realEstateTaxTotalsToPdf,
-} from '../tax/utils/helpers/pdf.helper'
+import { RealEstatePdfHelper } from '../tax/utils/helpers/pdf.helper'
 import { getRealEstateTaxDetailPure } from '../tax/utils/unified-tax.util'
 import { TaxDefinition } from './taxDefinitionsTypes'
 
@@ -20,8 +17,7 @@ export const taxDefinitions: TaxDefinition[] = [
     getTaxDetailPure: getRealEstateTaxDetailPure,
     pdfOptions: {
       generate: true,
-      taxDetailsToPdf: realEstateTaxDetailsToPdf,
-      taxTotalsToPdf: realEstateTaxTotalsToPdf,
+      pdfHelper: RealEstatePdfHelper,
     },
   },
 ]

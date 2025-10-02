@@ -8,7 +8,6 @@ import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 import { NorisTaxPayersDto, NorisUpdateDto } from '../noris.dto'
-import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 import { NorisTaxByType } from './noris-tax/noris-tax-by-type.interface'
 
@@ -16,7 +15,6 @@ import { NorisTaxByType } from './noris-tax/noris-tax-by-type.interface'
 export class NorisTaxSubservice {
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly connectionService: NorisConnectionSubservice,
     private readonly prismaService: PrismaService,
     private readonly norisTaxRealEstateSubservice: NorisTaxRealEstateSubservice,
   ) {}

@@ -1,4 +1,4 @@
-import { Prisma, TaxType } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
@@ -93,7 +93,7 @@ export abstract class NorisTaxByType {
           update: taxData,
           create: {
             ...taxData,
-            type: TaxType.DZN,
+            type: taxDefinition.type,
             deliveryMethod:
               userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
           },
@@ -101,7 +101,7 @@ export abstract class NorisTaxByType {
       : await transaction.tax.create({
           data: {
             ...taxData,
-            type: TaxType.DZN,
+            type: taxDefinition.type,
             deliveryMethod:
               userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
           },

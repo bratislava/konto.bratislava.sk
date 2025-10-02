@@ -6,22 +6,22 @@ on:
         description: "Base dir where whole app is located."
         type: string
         required: false
-        default: './'
+        default: "./"
       typescript-directory:
         description: "Where typescript have to be checked"
         type: string
         required: false
-        default: './src'
+        default: "./src"
       node:
         description: "Define node version"
         type: string
         required: false
-        default: '20'
+        default: "20"
       level:
         description: "Change reporter level if you need"
         type: string
         required: false
-        default: 'warning'
+        default: "warning"
       run_e2e_tests:
         description: "Run E2E tests"
         type: boolean
@@ -31,14 +31,14 @@ on:
 jobs:
   test:
     name: Unit tests and lint
-    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    runs-on: ["Linux", "X64", "bratislava"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Pipelines Version
         run: |
-          echo "Pipelines version: 2.3.0"  
+          echo "Pipelines version: 2.3.0"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -60,7 +60,7 @@ jobs:
       # move to directory
       - name: Install dependencies
         working-directory: ${{ inputs.directory }}
-        run: | 
+        run: |
           pwd
           npm ci
           npx prisma generate

@@ -31,7 +31,7 @@ on:
 jobs:
   test:
     name: Unit tests and lint
-    runs-on: ["Linux", "X64", "bratislava"]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

@@ -11,7 +11,7 @@ permissions:
 jobs:
   test-forms-shared:
     name: Run tests on forms-shared
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@github-pipelines
     with:
       directory: forms-shared/
 
@@ -42,7 +42,7 @@ jobs:
   conditions:
     name: Check for conditions
     needs: [build-forms-shared, build-openapi-clients]
-    uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@github-pipelines
     permissions: write-all
 
   build-next:
@@ -76,7 +76,7 @@ jobs:
     name: validate nest-forms-backend
     needs: conditions
     if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@github-pipelines
     with:
       directory: nest-forms-backend/
       run_e2e_tests: true
@@ -101,7 +101,7 @@ jobs:
     name: validate nest-clamav-scanner
     needs: conditions
     if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@github-pipelines
     with:
       directory: nest-clamav-scanner/
     permissions: write-all
@@ -124,7 +124,7 @@ jobs:
     name: validate nest-tax-backend
     needs: conditions
     if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@github-pipelines
     with:
       directory: nest-tax-backend/
     permissions: write-all
@@ -147,7 +147,7 @@ jobs:
     name: validate nest-city-account
     needs: conditions
     if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@github-pipelines
     with:
       directory: nest-city-account/
     permissions: write-all

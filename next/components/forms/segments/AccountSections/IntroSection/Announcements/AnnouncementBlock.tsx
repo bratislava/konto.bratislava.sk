@@ -8,15 +8,22 @@ import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-componen
 type AnnouncementBlockProps = {
   announcementContent?: string
   imageSrc?: ComponentProps<typeof Image>['src']
+  icon?: React.ReactNode
   buttons?: (ButtonProps | AnchorProps)[]
   onPress?: () => void
   reversed?: boolean
+  reversedMobile?: boolean
 }
+
+// in figma mobile verion is requested using design system and desktop is custom konto design system,
+// figma should be updated to implement design system for mobile and desktop, until then custom implementation is used
 
 const AnnouncementBlock = ({
   announcementContent,
   imageSrc,
+  icon,
   reversed,
+  reversedMobile,
   buttons = [],
 }: AnnouncementBlockProps) => {
   if (!announcementContent) {
@@ -25,13 +32,12 @@ const AnnouncementBlock = ({
 
   return (
     <div
-      className={cn(
-        'flex w-full flex-col-reverse rounded-lg border-2 border-gray-200 lg:rounded-lg',
-        {
-          'lg:flex-row-reverse': reversed,
-          'lg:flex-row': !reversed,
-        },
-      )}
+      className={cn('flex w-full rounded-lg border-2 border-gray-200', {
+        'flex-col': !reversedMobile,
+        'flex-col-reverse': reversedMobile,
+        'lg:flex-row-reverse': reversed,
+        'lg:flex-row': !reversed,
+      })}
     >
       <div className="flex w-full flex-col justify-center gap-4 p-4 lg:w-1/2 lg:gap-6 lg:p-12 lg:pr-14">
         <div className="flex flex-col gap-2">
@@ -49,7 +55,7 @@ const AnnouncementBlock = ({
         <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
           <Image
             src={imageSrc}
-            className={cn('rounded-t-lg object-cover object-center', {
+            className={cn('rounded-t-lg object-contain object-center', {
               'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
               'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
             })}
@@ -60,6 +66,7 @@ const AnnouncementBlock = ({
           />
         </div>
       ) : null}
+      {icon && <div className="flex items-center justify-center">{icon}</div>}
     </div>
   )
 }

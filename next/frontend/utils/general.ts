@@ -39,3 +39,11 @@ export const downloadBlob = (blob: Blob, fileName: string) => {
 export function isDefined<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null
 }
+
+export function convertYearToNumber(input: string | undefined) {
+  if (input === undefined || !/^(20\d{2})$/.test(input)) {
+    return null
+  }
+
+  return parseInt(input, 10)
+}

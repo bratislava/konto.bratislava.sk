@@ -14,12 +14,14 @@ import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subser
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 import {
+  BaseNorisCommunalWasteTaxDto,
   NorisCommunalWasteTaxDto,
   NorisCommunalWasteTaxProcessedDto,
   NorisTaxPayersDto,
   NorisUpdateDto,
 } from '../noris.dto'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
+import { baseNorisCommunalWasteTaxSchema } from '../noris.schema'
 import {
   convertCurrencyToInt,
   mapNorisToTaxAdministratorData,
@@ -427,7 +429,8 @@ export class NorisTaxSubservice {
    *
    * @remarks
    * ⚠️ **Warning:** This returns a record for each communal waste container.
-   * The data must be grouped and processed by birth number, so we process only one record internally, with all containers for one person as one record.
+   * The data must be grouped and processed by birth number, so we process only one record internally, with all containers
+   * for one person as one record.
    *
    * @param data List of birth numbers and year to fetch data for.
    * @returns An array of records for given birth numbers and year.
@@ -505,20 +508,19 @@ export class NorisTaxSubservice {
         },
       }))
 
+      // Get all keys from BaseNorisCommunalWasteTaxDto
+      const baseKeys = Object.keys(
+        baseNorisCommunalWasteTaxSchema.shape,
+      ) as (keyof BaseNorisCommunalWasteTaxDto)[]
+
+      const baseData = Object.fromEntries(
+        baseKeys.map((key) => [key, base[key]]),
+      ) as BaseNorisCommunalWasteTaxDto
+
       const processed: NorisCommunalWasteTaxProcessedDto = {
-        ...base,
+        ...baseData,
         containers,
       }
-
-      // Remove the container-specific fields that are no longer part of the processed interface
-      delete (processed as any).ulica
-      delete (processed as any).orientacne_cislo
-      delete (processed as any).objem_nadoby
-      delete (processed as any).pocet_nadob
-      delete (processed as any).pocet_odvozov
-      delete (processed as any).sadzba
-      delete (processed as any).poplatok
-      delete (processed as any).druh_nadoby
 
       result.push(processed)
     })

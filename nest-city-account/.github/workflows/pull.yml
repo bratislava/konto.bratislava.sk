@@ -13,4 +13,4 @@ on:
 jobs:
   validate:
     name: Validate code
-    uses: bratislava/github-actions/.github/workflows/validate-nest-prisma-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/validate-nest-prisma.yml@stable

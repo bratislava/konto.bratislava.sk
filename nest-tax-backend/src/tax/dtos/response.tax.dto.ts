@@ -72,6 +72,10 @@ export enum InstallmentPaidStatusEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
 }
 
+export enum PaymentTypeEnum {
+  DZN = 'DzN',
+}
+
 export class ResponseTaxPayerDto {
   @ApiProperty({
     description: 'Numeric id of tax payer',

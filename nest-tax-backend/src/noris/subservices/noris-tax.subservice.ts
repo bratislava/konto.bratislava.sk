@@ -15,8 +15,8 @@ import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 import {
   BaseNorisCommunalWasteTaxDto,
-  NorisCommunalWasteTaxDto,
-  NorisCommunalWasteTaxProcessedDto,
+  NorisCommunalWasteTaxGroupedDto,
+  NorisRawCommunalWasteTaxDto,
   NorisTaxPayersDto,
   NorisUpdateDto,
 } from '../noris.dto'
@@ -429,7 +429,7 @@ export class NorisTaxSubservice {
    *
    * @remarks
    * ⚠️ **Warning:** This returns a record for each communal waste container.
-   * The data must be grouped and processed by birth number, so we process only one record internally, with all containers
+   * The data must be grouped by variable symbol, so we process only one record internally, with all containers
    * for one person as one record.
    *
    * @param data List of birth numbers and year to fetch data for.
@@ -437,7 +437,7 @@ export class NorisTaxSubservice {
    */
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
     data: RequestGetNorisTaxDataDto,
-  ): Promise<NorisCommunalWasteTaxDto[]> {
+  ): Promise<NorisRawCommunalWasteTaxDto[]> {
     const connection = await this.connectionService.createConnection()
 
     try {
@@ -476,9 +476,9 @@ export class NorisTaxSubservice {
   }
 
   processWasteTaxRecords(
-    records: NorisCommunalWasteTaxDto[],
-  ): NorisCommunalWasteTaxProcessedDto[] {
-    const grouped: Record<string, NorisCommunalWasteTaxDto[]> = {}
+    records: NorisRawCommunalWasteTaxDto[],
+  ): NorisCommunalWasteTaxGroupedDto[] {
+    const grouped: Record<string, NorisRawCommunalWasteTaxDto[]> = {}
 
     records.forEach((rec) => {
       if (!grouped[rec.variabilny_symbol]) {
@@ -487,7 +487,7 @@ export class NorisTaxSubservice {
       grouped[rec.variabilny_symbol].push(rec)
     })
 
-    const result: NorisCommunalWasteTaxProcessedDto[] = []
+    const result: NorisCommunalWasteTaxGroupedDto[] = []
 
     Object.values(grouped).forEach((group) => {
       // Take the first record as "base" since all other fields are the same
@@ -517,12 +517,12 @@ export class NorisTaxSubservice {
         baseKeys.map((key) => [key, base[key]]),
       ) as BaseNorisCommunalWasteTaxDto
 
-      const processed: NorisCommunalWasteTaxProcessedDto = {
+      const groupedData: NorisCommunalWasteTaxGroupedDto = {
         ...baseData,
         containers,
       }
 
-      result.push(processed)
+      result.push(groupedData)
     })
 
     return result

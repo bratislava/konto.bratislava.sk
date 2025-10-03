@@ -40,7 +40,7 @@ export const baseNorisCommunalWasteTaxSchema = z.object({
   vyb_id: z.number(),
 })
 
-export const norisCommunalWasteTaxSchema =
+export const norisRawCommunalWasteTaxSchema =
   baseNorisCommunalWasteTaxSchema.extend({
     objem_nadoby: z.string(),
     pocet_nadob: z.string(),
@@ -52,7 +52,7 @@ export const norisCommunalWasteTaxSchema =
     orientacne_cislo: z.string(),
   })
 
-export const norisCommunalWasteTaxProcessedSchema =
+export const norisCommunalWasteTaxGroupedSchema =
   baseNorisCommunalWasteTaxSchema.extend({
     containers: z.array(
       z.object({

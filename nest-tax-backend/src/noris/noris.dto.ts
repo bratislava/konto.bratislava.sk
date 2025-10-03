@@ -2,8 +2,8 @@ import z from 'zod'
 
 import {
   baseNorisCommunalWasteTaxSchema,
-  norisCommunalWasteTaxProcessedSchema,
-  norisCommunalWasteTaxSchema,
+  norisCommunalWasteTaxGroupedSchema,
+  norisRawCommunalWasteTaxSchema,
 } from './noris.schema'
 
 export interface NorisTaxPayersDto {
@@ -116,9 +116,16 @@ export interface NorisUpdateDto {
 export type BaseNorisCommunalWasteTaxDto = z.infer<
   typeof baseNorisCommunalWasteTaxSchema
 >
-export type NorisCommunalWasteTaxDto = z.infer<
-  typeof norisCommunalWasteTaxSchema
+/**
+ * @remarks
+ * ⚠️ **Warning:** This represents raw data from Noris where each record corresponds to a single container.
+ * Multiple records with the same variable symbol belong to the same tax payer.
+ * These records need to be grouped and transformed into NorisCommunalWasteTaxGroupedDto,
+ * where containers are nested within a single tax payer record.
+ */
+export type NorisRawCommunalWasteTaxDto = z.infer<
+  typeof norisRawCommunalWasteTaxSchema
 >
-export type NorisCommunalWasteTaxProcessedDto = z.infer<
-  typeof norisCommunalWasteTaxProcessedSchema
+export type NorisCommunalWasteTaxGroupedDto = z.infer<
+  typeof norisCommunalWasteTaxGroupedSchema
 >

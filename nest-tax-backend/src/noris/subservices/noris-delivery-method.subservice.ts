@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common'
 import { Request } from 'mssql'
 
 import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto'
+import { UpdateDeliveryMethodsInNorisResponseDto } from '../../admin/dtos/responses.dto'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { NorisDeliveryMethodsUpdateResultDto } from '../noris.dto'
 import { mapDeliveryMethodToNoris } from '../utils/mapping.helper'
-import { setDeliveryMethodsForUser } from '../utils/noris.queries'
+import {
+  getBirthNumbersForSubjects,
+  setDeliveryMethodsForUser,
+} from '../utils/noris.queries'
 import {
   DeliveryMethod,
   IsInCityAccount,
@@ -23,11 +28,11 @@ export class NorisDeliveryMethodSubservice {
 
   async updateDeliveryMethodsInNoris(
     data: UpdateNorisDeliveryMethods[],
-  ): Promise<void> {
+  ): Promise<string[]> {
     const connection = await this.connectionService.createConnection()
 
     try {
-      await Promise.all(
+      const result = await Promise.all(
         data.map(async (dataItem) => {
           const request = new Request(connection)
 
@@ -54,9 +59,15 @@ export class NorisDeliveryMethodSubservice {
           )
 
           // Execute the query
-          return request.query(queryWithPlaceholders)
+          return request.query(
+            queryWithPlaceholders,
+          ) as Promise<NorisDeliveryMethodsUpdateResultDto>
         }),
       )
+
+      const birthNumbersUpdated =
+        await this.getBirthNumbersWithUpdatedDeliveryMethods(result)
+      return birthNumbersUpdated
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -67,6 +78,52 @@ export class NorisDeliveryMethodSubservice {
       )
     } finally {
       // Always close the connection
+      await connection.close()
+    }
+  }
+
+  private async getBirthNumbersWithUpdatedDeliveryMethods(
+    data: NorisDeliveryMethodsUpdateResultDto[],
+  ): Promise<string[]> {
+    const updatedSubjects = data.flatMap((item) =>
+      item.recordset.map((record) => record.cislo_subjektu),
+    )
+
+    if (updatedSubjects.length === 0) {
+      return []
+    }
+
+    const connection = await this.connectionService.createConnection()
+
+    try {
+      const request = new Request(connection)
+
+      // Set parameters for the query
+      const subjectPlaceholders = updatedSubjects
+        .map((_, index) => `@subject${index}`)
+        .join(',')
+      updatedSubjects.forEach((subject, index) => {
+        request.input(`subject${index}`, subject)
+      })
+      const queryWithPlaceholders = getBirthNumbersForSubjects.replaceAll(
+        '@subjects',
+        subjectPlaceholders,
+      )
+
+      // Execute the query
+      const result = await request.query(queryWithPlaceholders)
+      return result.recordset.map((record: { ico: string }) =>
+        record.ico.trim(),
+      ) // Birth numbers are stored in `ico` column in the respective table
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Failed to get birth numbers for updated subjects',
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    } finally {
       await connection.close()
     }
   }
@@ -133,9 +190,15 @@ export class NorisDeliveryMethodSubservice {
       })
     })
 
-    if (updates.length > 0) {
-      await this.updateDeliveryMethodsInNoris(updates)
+    const result: UpdateDeliveryMethodsInNorisResponseDto = {
+      birthNumbers: [],
     }
+
+    if (updates.length > 0) {
+      result.birthNumbers = await this.updateDeliveryMethodsInNoris(updates)
+    }
+
+    return result
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

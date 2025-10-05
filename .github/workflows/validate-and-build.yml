@@ -20,8 +20,8 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: forms-shared/
-      build_image_no_registry: ''
-      tag: '--tag=build-${{ github.sha }}'
+      build_image_no_registry: ""
+      tag: "--tag=build-${{ github.sha }}"
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -32,8 +32,8 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: openapi-clients/
-      build_image_no_registry: ''
-      tag: '--tag=build-${{ github.sha }}'
+      build_image_no_registry: ""
+      tag: "--tag=build-${{ github.sha }}"
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -55,7 +55,7 @@ jobs:
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       debug: --debug
       fetch-depth: 1
-      build_image_no_registry: ''
+      build_image_no_registry: ""
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -91,7 +91,7 @@ jobs:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       fetch-depth: 1
-      build_image_no_registry: ''
+      build_image_no_registry: ""
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -133,7 +133,7 @@ jobs:
     name: build nest-tax-backend
     needs: [conditions, validate-nest-tax-backend]
     if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
@@ -156,7 +156,7 @@ jobs:
     name: build nest-city-account
     needs: [conditions, validate-nest-city-account]
     if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'

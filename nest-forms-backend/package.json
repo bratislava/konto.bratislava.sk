@@ -86,7 +86,7 @@
     "@types/lodash": "4.17.20",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^24.2.1",
-    "@types/nodemailer": "^7.0.1",
+    "@types/nodemailer": "^7.0.2",
     "@types/passport-http": "^0.3.11",
     "@types/passport-http-bearer": "^1.0.41",
     "@types/passport-jwt": "^4.0.1",

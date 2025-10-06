@@ -342,6 +342,21 @@ export class DatabaseSubserviceUser {
     return { active, locked }
   }
 
+  async getLastTaxDeliveryMethodsChangeDate(userId: string): Promise<Date | null> {
+    // TODO: EDESK logic
+    const lastSub = await this.prisma.userGdprData.findFirst({
+      where: {
+        userId,
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+    return lastSub?.updatedAt ?? null
+  }
+
   async getShowEmailCommunicationBanner(
     userId: string,
     isIdentityVerified: boolean

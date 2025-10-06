@@ -119,6 +119,12 @@ export class ResponseUserDataBasicDto {
     default: true,
   })
   showEmailCommunicationBanner!: boolean
+
+  @ApiProperty({
+    description: 'Does user change delivery method before current year tax deadline?',
+    default: true,
+  })
+  isBeforeDeliveryMethodChangeDeadline!: boolean
 }
 
 export class ResponseUserDataDto extends ResponseUserDataBasicDto {

@@ -39,10 +39,20 @@ export class UserService {
     return verificationDate < verificationDeadlineDate
   }
 
+  private isBeforeDeliveryMethodChangeDeadline(lastChange: Date | null): boolean {
+    const deliveryMethodChangeDeadline = getTaxDeadlineDate()
+    if (lastChange === null) {
+      return false
+    }
+    return lastChange < deliveryMethodChangeDeadline
+  }
+
   async getOrCreateUserData(id: string, email: string): Promise<ResponseUserDataDto> {
     const user = await this.databaseSubservice.getOrCreateUser(id, email)
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+    const lastTaxDeliveryMethodsChangeDate =
+      await this.databaseSubservice.getLastTaxDeliveryMethodsChangeDate(user.id)
     const showEmailCommunicationBanner =
       await this.databaseSubservice.getShowEmailCommunicationBanner(
         user.id,
@@ -52,6 +62,9 @@ export class UserService {
     return {
       ...user,
       wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
+      isBeforeDeliveryMethodChangeDeadline: this.isBeforeDeliveryMethodChangeDeadline(
+        lastTaxDeliveryMethodsChangeDate
+      ),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
@@ -68,6 +81,8 @@ export class UserService {
     const user = await this.databaseSubservice.removeBirthNumber(id)
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+    const lastTaxDeliveryMethodsChangeDate =
+      await this.databaseSubservice.getLastTaxDeliveryMethodsChangeDate(user.id)
     const showEmailCommunicationBanner =
       await this.databaseSubservice.getShowEmailCommunicationBanner(
         user.id,
@@ -77,6 +92,9 @@ export class UserService {
     return {
       ...user,
       wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
+      isBeforeDeliveryMethodChangeDeadline: this.isBeforeDeliveryMethodChangeDeadline(
+        lastTaxDeliveryMethodsChangeDate
+      ),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
@@ -92,6 +110,7 @@ export class UserService {
       officialCorrespondenceChannel: null,
       gdprData: getGdprData,
       showEmailCommunicationBanner: false, // TODO add this for legal persons
+      isBeforeDeliveryMethodChangeDeadline: false,
     }
   }
 
@@ -116,6 +135,8 @@ export class UserService {
 
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+    const lastTaxDeliveryMethodsChangeDate =
+      await this.databaseSubservice.getLastTaxDeliveryMethodsChangeDate(user.id)
     const showEmailCommunicationBanner =
       await this.databaseSubservice.getShowEmailCommunicationBanner(
         user.id,
@@ -125,6 +146,9 @@ export class UserService {
     return {
       ...user,
       wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
+      isBeforeDeliveryMethodChangeDeadline: this.isBeforeDeliveryMethodChangeDeadline(
+        lastTaxDeliveryMethodsChangeDate
+      ),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
@@ -164,6 +188,8 @@ export class UserService {
     )
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+    const lastTaxDeliveryMethodsChangeDate =
+      await this.databaseSubservice.getLastTaxDeliveryMethodsChangeDate(user.id)
     const showEmailCommunicationBanner =
       await this.databaseSubservice.getShowEmailCommunicationBanner(
         user.id,
@@ -173,6 +199,9 @@ export class UserService {
     return {
       ...user,
       wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
+      isBeforeDeliveryMethodChangeDeadline: this.isBeforeDeliveryMethodChangeDeadline(
+        lastTaxDeliveryMethodsChangeDate
+      ),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
@@ -233,6 +262,8 @@ export class UserService {
       })
       const officialCorrespondenceChannel =
         await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+      const lastTaxDeliveryMethodsChangeDate =
+        await this.databaseSubservice.getLastTaxDeliveryMethodsChangeDate(user.id)
       const showEmailCommunicationBanner =
         await this.databaseSubservice.getShowEmailCommunicationBanner(
           user.id,
@@ -241,6 +272,9 @@ export class UserService {
       return {
         ...user,
         wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
+        isBeforeDeliveryMethodChangeDeadline: this.isBeforeDeliveryMethodChangeDeadline(
+          lastTaxDeliveryMethodsChangeDate
+        ),
         officialCorrespondenceChannel,
         showEmailCommunicationBanner,
       }

@@ -215,7 +215,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       </Heading>
       <Form
         defaultValues={{
-          isSubscribed: subType === undefined ? subType : isSubscribed,
+          isSubscribed: subType ? isSubscribed : undefined,
           scrolledToBottom: false,
         }}
         onSubmit={handleSubmit}

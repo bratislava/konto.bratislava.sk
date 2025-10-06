@@ -21,7 +21,7 @@ import { AdminService } from './admin.service'
 import {
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestGetNorisTaxDataDto,
+  RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
@@ -48,7 +48,7 @@ export class AdminController {
   @UseGuards(AdminGuard)
   @Post('create-data-from-noris')
   async loadDataFromNoris(
-    @Body() data: RequestGetNorisTaxDataDto,
+    @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.adminService.loadDataFromNoris(data)
   }
@@ -66,7 +66,7 @@ export class AdminController {
   @UseGuards(AdminGuard)
   @Post('update-data-from-noris')
   async updateDataFromNoris(
-    @Body() data: RequestGetNorisTaxDataDto,
+    @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<any> {
     return this.adminService.updateDataFromNoris(data)
   }

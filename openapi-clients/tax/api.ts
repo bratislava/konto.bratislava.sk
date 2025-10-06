@@ -126,7 +126,7 @@ export interface RequestAdminDeleteTaxDto {
    */
   birthNumber: string
 }
-export interface RequestGetNorisTaxDataDto {
+export interface RequestPostNorisLoadDataDto {
   /**
    * Year of tax
    */
@@ -1028,19 +1028,19 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Loads new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Loads new data from Noris.
-     * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerLoadDataFromNoris: async (
-      requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'requestGetNorisTaxDataDto' is not null or undefined
+      // verify required parameter 'requestPostNorisLoadDataDto' is not null or undefined
       assertParamExists(
         'adminControllerLoadDataFromNoris',
-        'requestGetNorisTaxDataDto',
-        requestGetNorisTaxDataDto,
+        'requestPostNorisLoadDataDto',
+        requestPostNorisLoadDataDto,
       )
       const localVarPath = `/admin/create-data-from-noris`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1067,7 +1067,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        requestGetNorisTaxDataDto,
+        requestPostNorisLoadDataDto,
         localVarRequestOptions,
         configuration,
       )
@@ -1124,19 +1124,19 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Updates data from Noris.
-     * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerUpdateDataFromNoris: async (
-      requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'requestGetNorisTaxDataDto' is not null or undefined
+      // verify required parameter 'requestPostNorisLoadDataDto' is not null or undefined
       assertParamExists(
         'adminControllerUpdateDataFromNoris',
-        'requestGetNorisTaxDataDto',
-        requestGetNorisTaxDataDto,
+        'requestPostNorisLoadDataDto',
+        requestPostNorisLoadDataDto,
       )
       const localVarPath = `/admin/update-data-from-noris`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1163,7 +1163,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        requestGetNorisTaxDataDto,
+        requestPostNorisLoadDataDto,
         localVarRequestOptions,
         configuration,
       )
@@ -1343,18 +1343,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     /**
      * Loads new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Loads new data from Noris.
-     * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async adminControllerLoadDataFromNoris(
-      requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateBirthNumbersResponseDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerLoadDataFromNoris(
-        requestGetNorisTaxDataDto,
+        requestPostNorisLoadDataDto,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -1402,16 +1402,16 @@ export const AdminApiFp = function (configuration?: Configuration) {
     /**
      * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Updates data from Noris.
-     * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async adminControllerUpdateDataFromNoris(
-      requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpdateDataFromNoris(
-        requestGetNorisTaxDataDto,
+        requestPostNorisLoadDataDto,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -1531,16 +1531,16 @@ export const AdminApiFactory = function (
     /**
      * Loads new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Loads new data from Noris.
-     * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerLoadDataFromNoris(
-      requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<CreateBirthNumbersResponseDto> {
       return localVarFp
-        .adminControllerLoadDataFromNoris(requestGetNorisTaxDataDto, options)
+        .adminControllerLoadDataFromNoris(requestPostNorisLoadDataDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1561,16 +1561,16 @@ export const AdminApiFactory = function (
     /**
      * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Updates data from Noris.
-     * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+     * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerUpdateDataFromNoris(
-      requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+      requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminControllerUpdateDataFromNoris(requestGetNorisTaxDataDto, options)
+        .adminControllerUpdateDataFromNoris(requestPostNorisLoadDataDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1645,16 +1645,16 @@ export class AdminApi extends BaseAPI {
   /**
    * Loads new data from Noris by birth numbers and year, and saves it to our database.
    * @summary Loads new data from Noris.
-   * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+   * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public adminControllerLoadDataFromNoris(
-    requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+    requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
     options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminControllerLoadDataFromNoris(requestGetNorisTaxDataDto, options)
+      .adminControllerLoadDataFromNoris(requestPostNorisLoadDataDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -1677,16 +1677,16 @@ export class AdminApi extends BaseAPI {
   /**
    * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
    * @summary Updates data from Noris.
-   * @param {RequestGetNorisTaxDataDto} requestGetNorisTaxDataDto
+   * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public adminControllerUpdateDataFromNoris(
-    requestGetNorisTaxDataDto: RequestGetNorisTaxDataDto,
+    requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
     options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminControllerUpdateDataFromNoris(requestGetNorisTaxDataDto, options)
+      .adminControllerUpdateDataFromNoris(requestPostNorisLoadDataDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

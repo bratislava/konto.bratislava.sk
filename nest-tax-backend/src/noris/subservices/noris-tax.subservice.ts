@@ -3,7 +3,7 @@ import { Prisma, TaxType } from '@prisma/client'
 import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
-import { RequestGetNorisTaxDataDto } from '../../admin/dtos/requests.dto'
+import { RequestPostNorisLoadDataDto } from '../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -53,7 +53,7 @@ export class NorisTaxSubservice {
   ) {}
 
   private async getTaxDataByYearAndBirthNumber(
-    data: RequestGetNorisTaxDataDto,
+    data: RequestPostNorisLoadDataDto,
   ): Promise<NorisTaxPayersDto[]> {
     const connection = await this.connectionService.createConnection()
 
@@ -121,7 +121,7 @@ export class NorisTaxSubservice {
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    data: RequestGetNorisTaxDataDto,
+    data: RequestPostNorisLoadDataDto,
   ) {
     let norisData: NorisTaxPayersDto[]
     try {
@@ -310,7 +310,7 @@ export class NorisTaxSubservice {
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
-    data: RequestGetNorisTaxDataDto,
+    data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
     const norisData = await this.getTaxDataByYearAndBirthNumber(data)
@@ -436,7 +436,7 @@ export class NorisTaxSubservice {
    * @returns An array of records for given birth numbers and year.
    */
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
-    data: RequestGetNorisTaxDataDto,
+    data: RequestPostNorisLoadDataDto,
   ): Promise<NorisRawCommunalWasteTaxDto[]> {
     const connection = await this.connectionService.createConnection()
 

@@ -12,7 +12,7 @@ import {
 
 import { DeliveryMethod } from '../../noris/utils/noris.types'
 
-export class RequestGetNorisTaxDataDto {
+export class RequestPostNorisLoadDataDto {
   @ApiProperty({
     description: 'Year of tax',
     default: 2022,

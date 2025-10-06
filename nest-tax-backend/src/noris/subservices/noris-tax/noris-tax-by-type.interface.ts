@@ -81,39 +81,33 @@ export abstract class NorisTaxByType {
       qrCodeEmail,
       qrCodeWeb,
     )
-    const sharedTaxPrismaOptions = {
-      include: {
-        taxPayer: true,
-      },
-    }
-    const tax = taxDefinition.isUnique
-      ? await transaction.tax.upsert({
-          where: {
+
+    const whereUnique: Prisma.TaxWhereUniqueInput = {
+      ...(taxDefinition.isUnique
+        ? {
             taxPayerId_year_type_order: {
               taxPayerId: taxPayer.id,
               year,
               type: taxDefinition.type,
               order: 1,
             },
-          },
-          update: taxData,
-          create: {
-            ...taxData,
-            type: taxDefinition.type,
-            deliveryMethod:
-              userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
-          },
-          ...sharedTaxPrismaOptions,
-        })
-      : await transaction.tax.create({
-          data: {
-            ...taxData,
-            type: taxDefinition.type,
-            deliveryMethod:
-              userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
-          },
-          ...sharedTaxPrismaOptions,
-        })
+          }
+        : {
+            variableSymbol: dataFromNoris.variabilny_symbol,
+          }),
+    }
+    const tax = await transaction.tax.upsert({
+      where: whereUnique,
+      update: taxData,
+      create: {
+        ...taxData,
+        type: taxDefinition.type,
+        deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
+      },
+      include: {
+        taxPayer: true,
+      },
+    })
 
     const taxInstallments = mapNorisToTaxInstallmentsData(dataFromNoris, tax.id)
     await transaction.taxInstallment.createMany({

@@ -33,6 +33,12 @@ jobs:
     name: Unit tests and lint
     runs-on: "bratislava"
     steps:
+
+      - name: Set up Alpine
+        uses: jirutka/setup-alpine@v1
+        with:
+          packages: make
+
       - name: Checkout code
         uses: actions/checkout@v4
 

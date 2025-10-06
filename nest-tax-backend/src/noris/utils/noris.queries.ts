@@ -481,13 +481,6 @@ export const setDeliveryMethodsForUser = `
         )
 `
 
-export const getNorisDataForUpdate = `
-    SELECT variabilny_symbol, datum_platnosti
-    FROM lcs.dane21_doklad
-    WHERE rok_podkladu IN (@years)
-    AND variabilny_symbol IN (@variable_symbols)
-`
-
 /**
  * @remarks
  * ⚠️ **Warning:** This returns a record for each communal waste container.

@@ -7,12 +7,7 @@ import {
   RequestUpdateNorisDeliveryMethodsDto,
 } from '../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../admin/dtos/responses.dto'
-import { TaxIdVariableSymbolYear } from '../utils/types/types.prisma'
-import {
-  NorisPaymentsDto,
-  NorisTaxPayersDto,
-  NorisUpdateDto,
-} from './noris.dto'
+import { NorisPaymentsDto, NorisTaxPayersDto } from './noris.dto'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
@@ -33,13 +28,6 @@ export class NorisService {
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
     return this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(data)
-  }
-
-  async getDataForUpdate(
-    variableSymbols: string[],
-    years: number[],
-  ): Promise<NorisUpdateDto[]> {
-    return this.taxSubservice.getDataForUpdate(variableSymbols, years)
   }
 
   async getAndProcessNewNorisTaxDataByBirthNumberAndYear(
@@ -71,10 +59,6 @@ export class NorisService {
     return this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       data,
     )
-  }
-
-  async updateTaxesFromNoris(taxes: TaxIdVariableSymbolYear[]) {
-    return this.taxSubservice.updateTaxesFromNoris(taxes)
   }
 
   async updateDeliveryMethodsInNoris({

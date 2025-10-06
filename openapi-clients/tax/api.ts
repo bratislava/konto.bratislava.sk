@@ -682,10 +682,6 @@ export interface ResponseTaxDto {
    */
   lastCheckedPayments: string
   /**
-   * When were last checked updates for this tax with automatic task.
-   */
-  lastCheckedUpdates: string
-  /**
    * Type of tax
    */
   type: TaxType

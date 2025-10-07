@@ -20,10 +20,10 @@ export class RequestPostNorisLoadDataDto {
   year: number
 
   @ApiProperty({
-    description: 'Birth numbers or ALL',
+    description: 'Birth numbers in format with slash',
     default: ['000000/0000'],
   })
-  birthNumbers: string[] | 'All'
+  birthNumbers: string[]
 }
 
 export class RequestPostNorisPaymentDataLoadDto {

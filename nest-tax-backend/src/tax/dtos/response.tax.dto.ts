@@ -3,6 +3,7 @@ import {
   DeliveryMethodNamed,
   TaxDetailareaType,
   TaxDetailType,
+  TaxType,
 } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
@@ -557,6 +558,15 @@ export class ResponseTaxDto {
   @IsDate()
   @Type(() => Date)
   lastCheckedUpdates: Date
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  type: TaxType
 
   @ApiProperty({
     description: 'delivery_method',

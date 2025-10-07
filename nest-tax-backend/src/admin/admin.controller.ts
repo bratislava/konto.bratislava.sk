@@ -35,16 +35,19 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Integrate data from norris if not exists by birth numbers or all',
+    summary: 'Loads new data from Noris.',
+    description:
+      'Loads new data from Noris by birth numbers and year, and saves it to our database.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Load data from noris',
+    description:
+      'Birth numbers of tax payers, whose taxes were successfully loaded from Noris.',
     type: CreateBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
   @Post('create-data-from-noris')
-  async loadDataFromNorris(
+  async loadDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.adminService.loadDataFromNoris(data)
@@ -52,15 +55,17 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Integrate data from norris',
+    summary: 'Updates data from Noris.',
+    description:
+      'Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Load data from noris',
+    description: 'Number of records updated in Noris',
   })
   @UseGuards(AdminGuard)
-  @Post('update-data-from-norris')
-  async updateDataFromNorris(
+  @Post('update-data-from-noris')
+  async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<any> {
     return this.adminService.updateDataFromNoris(data)

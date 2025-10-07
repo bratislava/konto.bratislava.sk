@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
-import { addSlashToBirthNumber } from '../utils/birthNumbers'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import HandleErrors from '../utils/decorators/errorHandler.decorators'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
@@ -25,7 +24,6 @@ import {
   DeliveryMethodErrorsResponseEnum,
 } from '../utils/guards/dtos/delivery-method.error'
 
-const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
 const LOCK_DELIVERY_METHODS_BATCH = 100
@@ -65,77 +63,6 @@ export class TasksService {
         verifyStart: {
           lt: oneMonthAgo,
         },
-      },
-    })
-  }
-
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  @HandleErrors('Cron Error')
-  async loadTaxesForUsers() {
-    this.logger.log('Starting loadTaxesForUsers task')
-
-    const year = new Date().getFullYear()
-    const birthNumbersFromDb = await this.prismaService.user.findMany({
-      select: {
-        birthNumber: true,
-      },
-      where: {
-        birthNumber: {
-          not: null,
-        },
-        OR: [{ lastTaxYear: null }, { lastTaxYear: { not: year } }],
-        ...ACTIVE_USER_FILTER,
-      },
-      orderBy: {
-        lastTaxBackendUploadTry: {
-          sort: 'asc',
-          nulls: 'first',
-        },
-      },
-      take: UPLOAD_BIRTHNUMBERS_BATCH,
-    })
-    const birthNumbers = birthNumbersFromDb
-      .map((birthNumberFromDb) => birthNumberFromDb.birthNumber)
-      .filter((item): item is string => item !== null)
-      .map(addSlashToBirthNumber)
-
-    if (birthNumbers.length === 0) {
-      return
-    }
-
-    this.logger.log(`Found ${birthNumbers.length} birth numbers to be added to tax backend.`)
-
-    const result = await this.taxSubservice.loadDataFromNoris({ year, birthNumbers })
-    const addedBirthNumbers = result.data.birthNumbers.map((birthNumber) =>
-      birthNumber.replaceAll('/', '')
-    )
-
-    this.logger.log(
-      `${addedBirthNumbers.length} birth numbers are successfully added to tax backend.`
-    )
-
-    // Mark birth numbers which are in the tax backend.
-    await this.prismaService.user.updateMany({
-      where: {
-        birthNumber: {
-          in: addedBirthNumbers,
-        },
-        ...ACTIVE_USER_FILTER,
-      },
-      data: {
-        lastTaxYear: year,
-      },
-    })
-
-    // Set current datetime as the last try for the upload of the birth number to tax backend.
-    await this.prismaService.user.updateMany({
-      where: {
-        birthNumber: {
-          in: birthNumbers.map((birthNumber) => birthNumber.replaceAll('/', '')),
-        },
-      },
-      data: {
-        lastTaxBackendUploadTry: new Date(),
       },
     })
   }
@@ -270,7 +197,7 @@ export class TasksService {
              "activeEdeskUpdateFailCount" = 0 OR
              ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate}))
       
-      ORDER BY "activeEdeskUpdatedAt" NULLS FIRST
+      ORDER BY greatest("activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
       LIMIT 5;
     `
 
@@ -279,9 +206,7 @@ export class TasksService {
       return
     }
 
-    const entityIdArray = entitiesToUpdate.map((entity) => entity.id)
-
-    await this.physicalEntityService.updateEdeskFromUpvs({ id: { in: entityIdArray } })
+    await this.physicalEntityService.updateEdeskFromUpvs(entitiesToUpdate)
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_9AM)

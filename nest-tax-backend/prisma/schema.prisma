@@ -16,7 +16,6 @@ model TaxPayer {
   uuid                        String            @default(uuid()) @db.Uuid
   createdAt                   DateTime          @default(now())
   updatedAt                   DateTime          @default(now()) @updatedAt
-  active                      Boolean // if it is active tax payer or is only past tax pay
   birthNumber                 String // with slash
   taxAdministratorId          Int?
   taxAdministrator            TaxAdministrator? @relation(fields: [taxAdministratorId], references: [id])
@@ -41,6 +40,7 @@ model Tax {
   createdAt                       DateTime             @default(now())
   updatedAt                       DateTime             @default(now()) @updatedAt
   year                            Int
+  type                            TaxType
   taxPayerId                      Int
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
@@ -174,4 +174,9 @@ enum DeliveryMethodNamed {
   EDESK
   POSTAL
   CITY_ACCOUNT
+}
+
+enum TaxType {
+  DZN // daň z nehnuteľnosti
+  KO // komumálny odpad
 }

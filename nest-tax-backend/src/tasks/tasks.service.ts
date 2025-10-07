@@ -24,6 +24,9 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 
+const UPLOAD_BIRTHNUMBERS_BATCH = 100
+const LOAD_USER_BIRTHNUMBERS_BATCH = 100
+
 @Injectable()
 export class TasksService {
   private readonly logger: Logger
@@ -309,5 +312,98 @@ export class TasksService {
         'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
       )
     }
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  @HandleErrors('Cron Error')
+  async loadNewUsersFromCityAccount() {
+    // Get latest date from config
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+    ])
+
+    const since = new Date(config.LOADING_NEW_USERS_FROM_CITY_ACCOUNT)
+    // Get birth numbers from nest-city account
+
+    const data =
+      await this.cityAccountSubservice.getNewUserBirtNumbersAdminBatch(
+        since,
+        LOAD_USER_BIRTHNUMBERS_BATCH,
+      )
+
+    // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
+    await this.prismaService.taxPayer.createMany({
+      data: data.birthNumbers.map((bn) => {
+        return { birthNumber: bn }
+      }),
+      skipDuplicates: true,
+    })
+
+    const latestRecord = await this.prismaService.config.findFirst({
+      where: {
+        key: 'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    })
+    if (latestRecord) {
+      await this.prismaService.config.update({
+        where: {
+          id: latestRecord.id,
+        },
+        data: {
+          value: data.nextSince.toISOString(),
+        },
+      })
+    } else {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
+        undefined,
+        `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
+      )
+    }
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  @HandleErrors('Cron Error')
+  async loadTaxesForUsers() {
+    this.logger.log('Starting loadTaxesForUsers task')
+
+    // Find users without tax this year
+    const year = new Date().getFullYear()
+    const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
+      select: { birthNumber: true },
+      where: { taxes: { none: { year } } },
+      orderBy: { updatedAt: 'asc' },
+      take: UPLOAD_BIRTHNUMBERS_BATCH,
+    })
+
+    const birthNumbers = taxPayersFromDb.map((p) => p.birthNumber)
+
+    if (birthNumbers.length === 0) {
+      return
+    }
+
+    const result =
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+        year,
+        birthNumbers,
+      })
+
+    // Move all requested TaxPayers to the end of the queue
+    await this.prismaService.taxPayer.updateMany({
+      where: {
+        birthNumber: { in: birthNumbers },
+      },
+      data: {
+        updatedAt: new Date(),
+      },
+    })
+
+    this.logger.log(
+      `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
+    )
   }
 }

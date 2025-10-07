@@ -34,7 +34,6 @@ export class NorisPaymentSubservice {
   ) {}
 
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
-    const connection = await this.connectionService.createConnection()
     let { fromDate } = data
     let { toDate } = data
     if (!fromDate) {
@@ -51,27 +50,39 @@ export class NorisPaymentSubservice {
       overpayments =
         'OR lcs.dane21_doklad_sum_saldo.datum_posledni_platby is NULL'
     }
-    const norisData = await connection.query(
-      queryPaymentsFromNoris
-        .replaceAll(
-          '{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}',
-          `AND (
-            (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= '${fromDate}' AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= '${toDate}')
-            ${overpayments}
-        )`,
-        )
-        .replaceAll('{%YEARS%}', `= ${data.year.toString()}`)
-        .replaceAll('{%VARIABLE_SYMBOLS%}', ''),
-    )
-    connection.close()
-    return norisData.recordset
+
+    try {
+      const norisData = await this.connectionService.withConnection(
+        async (connection) => {
+          return connection.query(
+            queryPaymentsFromNoris
+              .replaceAll(
+                '{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}',
+                `AND (
+                  (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= '${fromDate}' AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= '${toDate}')
+                  ${overpayments}
+              )`,
+              )
+              .replaceAll('{%YEARS%}', `= ${data.year.toString()}`)
+              .replaceAll('{%VARIABLE_SYMBOLS%}', ''),
+          )
+        },
+      )
+      return norisData.recordset
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Failed to get payment data from Noris by date range.',
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    }
   }
 
   async getPaymentDataFromNorisByVariableSymbols(
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
-    const connection = await this.connectionService.createConnection()
-
     let variableSymbols = ''
     data.variableSymbols.forEach((variableSymbol) => {
       if (/^\d+$/.test(variableSymbol)) {
@@ -94,17 +105,30 @@ export class NorisPaymentSubservice {
       )
     }
 
-    const norisData = await connection.query(
-      queryPaymentsFromNoris
-        .replaceAll('{%YEARS%}', `IN (${data.years.join(',')})`)
-        .replaceAll(
-          '{%VARIABLE_SYMBOLS%}',
-          `AND dane21_doklad.variabilny_symbol IN ${variableSymbols}`,
-        )
-        .replaceAll('{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}', ''),
-    )
-    connection.close()
-    return norisData.recordset
+    try {
+      const norisData = await this.connectionService.withConnection(
+        async (connection) => {
+          return connection.query(
+            queryPaymentsFromNoris
+              .replaceAll('{%YEARS%}', `IN (${data.years.join(',')})`)
+              .replaceAll(
+                '{%VARIABLE_SYMBOLS%}',
+                `AND dane21_doklad.variabilny_symbol IN ${variableSymbols}`,
+              )
+              .replaceAll('{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}', ''),
+          )
+        },
+      )
+      return norisData.recordset
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Failed to get payment data from Noris by variable symbols.',
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    }
   }
 
   private async createTaxMapByVariableSymbol(

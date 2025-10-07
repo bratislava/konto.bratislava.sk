@@ -24,7 +24,7 @@ export class NorisConnectionSubservice {
     }
   }
 
-  async createConnection(
+  private async createConnection(
     configOverrides?: Partial<config>,
   ): Promise<ConnectionPool> {
     const connection = await connect({
@@ -45,14 +45,14 @@ export class NorisConnectionSubservice {
     return connection
   }
 
-  async createOptimizedConnection(): Promise<ConnectionPool> {
+  private async createOptimizedConnection(): Promise<ConnectionPool> {
     return this.createConnection({
       connectionTimeout: 60_000,
       requestTimeout: 180_000,
     })
   }
 
-  async waitForConnection(
+  private async waitForConnection(
     connection: ConnectionPool,
     maxWaitTime: number = 10_000,
   ): Promise<void> {
@@ -74,5 +74,30 @@ export class NorisConnectionSubservice {
       }
       checkConnection()
     })
+  }
+
+  /**
+   * Executes a function within a database connection context.
+   * Creates a connection, executes the function, and ensures proper cleanup.
+   *
+   * @param operation - Function to execute within the connection context
+   * @param useOptimized - Whether to use optimized connection settings
+   * @returns Result of the operation
+   */
+  async withConnection<T>(
+    operation: (connection: ConnectionPool) => Promise<T>,
+    useOptimized: boolean = false,
+  ): Promise<T> {
+    const connection = useOptimized
+      ? await this.createOptimizedConnection()
+      : await this.createConnection()
+
+    try {
+      await this.waitForConnection(connection)
+      const result = await operation(connection)
+      return result
+    } finally {
+      await connection.close()
+    }
   }
 }

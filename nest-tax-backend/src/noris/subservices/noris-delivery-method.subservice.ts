@@ -24,39 +24,39 @@ export class NorisDeliveryMethodSubservice {
   async updateDeliveryMethodsInNoris(
     data: UpdateNorisDeliveryMethods[],
   ): Promise<void> {
-    const connection = await this.connectionService.createConnection()
-
     try {
-      await Promise.all(
-        data.map(async (dataItem) => {
-          const request = new Request(connection)
+      await this.connectionService.withConnection(async (connection) => {
+        await Promise.all(
+          data.map(async (dataItem) => {
+            const request = new Request(connection)
 
-          // Set parameters for the query
-          request.input('dkba_stav', dataItem.inCityAccount)
-          request.input(
-            'dkba_datum_suhlasu',
-            dataItem.date ? new Date(dataItem.date) : null,
-          )
-          request.input(
-            'dkba_sposob_dorucovania',
-            mapDeliveryMethodToNoris(dataItem.deliveryMethod),
-          )
+            // Set parameters for the query
+            request.input('dkba_stav', dataItem.inCityAccount)
+            request.input(
+              'dkba_datum_suhlasu',
+              dataItem.date ? new Date(dataItem.date) : null,
+            )
+            request.input(
+              'dkba_sposob_dorucovania',
+              mapDeliveryMethodToNoris(dataItem.deliveryMethod),
+            )
 
-          const birthNumberPlaceholders = dataItem.birthNumbers
-            .map((_, index) => `@birthnumber${index}`)
-            .join(',')
-          dataItem.birthNumbers.forEach((birthNumber, index) => {
-            request.input(`birthnumber${index}`, birthNumber)
-          })
-          const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
-            '@birth_numbers',
-            birthNumberPlaceholders,
-          )
+            const birthNumberPlaceholders = dataItem.birthNumbers
+              .map((_, index) => `@birthnumber${index}`)
+              .join(',')
+            dataItem.birthNumbers.forEach((birthNumber, index) => {
+              request.input(`birthnumber${index}`, birthNumber)
+            })
+            const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
+              '@birth_numbers',
+              birthNumberPlaceholders,
+            )
 
-          // Execute the query
-          return request.query(queryWithPlaceholders)
-        }),
-      )
+            // Execute the query
+            return request.query(queryWithPlaceholders)
+          }),
+        )
+      })
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -65,9 +65,6 @@ export class NorisDeliveryMethodSubservice {
         undefined,
         error,
       )
-    } finally {
-      // Always close the connection
-      await connection.close()
     }
   }
 

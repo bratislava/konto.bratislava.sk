@@ -52,8 +52,6 @@ export class NorisTaxSubservice {
   private async getTaxDataByYearAndBirthNumber(
     data: RequestPostNorisLoadDataDto,
   ): Promise<NorisTaxPayersDto[]> {
-    const connection = await this.connectionService.createConnection()
-
     let birthNumbers = ''
     data.birthNumbers.forEach((birthNumber) => {
       birthNumbers += `'${birthNumber}',`
@@ -62,13 +60,26 @@ export class NorisTaxSubservice {
       birthNumbers = `AND lcs.dane21_priznanie.rodne_cislo IN (${birthNumbers.slice(0, -1)})`
     }
 
-    const norisData = await connection.query(
-      queryPayersFromNoris
-        .replaceAll('{%YEAR%}', data.year.toString())
-        .replaceAll('{%BIRTHNUMBERS%}', birthNumbers),
-    )
-    connection.close()
-    return norisData.recordset
+    try {
+      const norisData = await this.connectionService.withConnection(
+        async (connection) => {
+          return connection.query(
+            queryPayersFromNoris
+              .replaceAll('{%YEAR%}', data.year.toString())
+              .replaceAll('{%BIRTHNUMBERS%}', birthNumbers),
+          )
+        },
+      )
+      return norisData.recordset
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Failed to get taxes from Noris',
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    }
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -362,28 +373,28 @@ export class NorisTaxSubservice {
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
     data: RequestPostNorisLoadDataDto,
   ): Promise<NorisRawCommunalWasteTaxDto[]> {
-    const connection = await this.connectionService.createConnection()
-
     try {
-      // Wait for connection to be fully established
-      await this.connectionService.waitForConnection(connection)
+      const norisData = await this.connectionService.withConnection(
+        async (connection) => {
+          const request = new Request(connection)
 
-      const request = new Request(connection)
+          const birthNumbersPlaceholders = data.birthNumbers
+            .map((_, index) => `@birth_number${index}`)
+            .join(',')
+          data.birthNumbers.forEach((birthNumber, index) => {
+            request.input(`birth_number${index}`, birthNumber)
+          })
+          request.input('year', data.year)
 
-      const birthNumbersPlaceholders = data.birthNumbers
-        .map((_, index) => `@birth_number${index}`)
-        .join(',')
-      data.birthNumbers.forEach((birthNumber, index) => {
-        request.input(`birth_number${index}`, birthNumber)
-      })
-      request.input('year', data.year)
+          const queryWithPlaceholders =
+            getCommunalWasteTaxesFromNoris.replaceAll(
+              '@birth_numbers',
+              birthNumbersPlaceholders,
+            )
 
-      const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
-        '@birth_numbers',
-        birthNumbersPlaceholders,
+          return request.query(queryWithPlaceholders)
+        },
       )
-
-      const norisData = await request.query(queryWithPlaceholders)
       return norisData.recordset
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -393,9 +404,6 @@ export class NorisTaxSubservice {
         error instanceof Error ? undefined : <string>error,
         error instanceof Error ? error : undefined,
       )
-    } finally {
-      // Always close the connection
-      await connection.close()
     }
   }
 

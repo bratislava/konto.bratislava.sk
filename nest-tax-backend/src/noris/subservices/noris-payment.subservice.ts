@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentStatus, Tax, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
+import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import {
@@ -18,7 +19,10 @@ import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subse
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { NorisPaymentsDto } from '../noris.dto'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
-import { queryPaymentsFromNoris } from '../utils/noris.queries'
+import {
+  queryPaymentsFromNorisByFromToDate,
+  queryPaymentsFromNorisByVariableSymbols,
+} from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 
 @Injectable()
@@ -34,38 +38,19 @@ export class NorisPaymentSubservice {
   ) {}
 
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
-    let { fromDate } = data
-    let { toDate } = data
-    if (!fromDate) {
-      const newFromDate = new Date(`${data.year}-04-01`)
-      fromDate = newFromDate.toDateString()
-    }
-    if (!toDate) {
-      const newToDate = new Date()
-      newToDate.setHours(0, 0, 0, 0)
-      toDate = newToDate.toDateString()
-    }
-    let overpayments = ''
-    if (data.overPayments) {
-      overpayments =
-        'OR lcs.dane21_doklad_sum_saldo.datum_posledni_platby is NULL'
-    }
+    const { fromDate, toDate, overPayments, year } = data
 
     try {
       const norisData = await this.connectionService.withConnection(
         async (connection) => {
-          return connection.query(
-            queryPaymentsFromNoris
-              .replaceAll(
-                '{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}',
-                `AND (
-                  (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= '${fromDate}' AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= '${toDate}')
-                  ${overpayments}
-              )`,
-              )
-              .replaceAll('{%YEARS%}', `= ${data.year.toString()}`)
-              .replaceAll('{%VARIABLE_SYMBOLS%}', ''),
-          )
+          const request = new Request(connection)
+
+          request.input('fromDate', fromDate)
+          request.input('toDate', toDate)
+          request.input('overPayments', overPayments)
+          request.input('years', year)
+
+          return request.query(queryPaymentsFromNorisByFromToDate)
         },
       )
       return norisData.recordset
@@ -83,20 +68,20 @@ export class NorisPaymentSubservice {
   async getPaymentDataFromNorisByVariableSymbols(
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
-    let variableSymbols = ''
-    data.variableSymbols.forEach((variableSymbol) => {
-      if (/^\d+$/.test(variableSymbol)) {
-        variableSymbols += `'${variableSymbol}',`
-      } else {
+    const filteredVariableSymbols = data.variableSymbols.filter(
+      (variableSymbol) => {
+        if (/^\d+$/.test(variableSymbol)) {
+          return true
+        }
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
             `Variable symbol has a wrong format: "${variableSymbol}"`,
           ),
         )
-      }
-    })
-    variableSymbols = `(${variableSymbols.slice(0, -1)})`
+        return false
+      },
+    )
 
     if (data.years.length === 0) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -108,14 +93,26 @@ export class NorisPaymentSubservice {
     try {
       const norisData = await this.connectionService.withConnection(
         async (connection) => {
+          const request = new Request(connection)
+
+          const yearPlaceholders = data.years
+            .map((_, index) => `@year${index}`)
+            .join(',')
+          data.years.forEach((year, index) => {
+            request.input(`year${index}`, year)
+          })
+
+          const variableSymbolsPlaceholders = filteredVariableSymbols
+            .map((_, index) => `@variable_symbol${index}`)
+            .join(',')
+          filteredVariableSymbols.forEach((variableSymbol, index) => {
+            request.input(`variable_symbol${index}`, variableSymbol)
+          })
+
           return connection.query(
-            queryPaymentsFromNoris
-              .replaceAll('{%YEARS%}', `IN (${data.years.join(',')})`)
-              .replaceAll(
-                '{%VARIABLE_SYMBOLS%}',
-                `AND dane21_doklad.variabilny_symbol IN ${variableSymbols}`,
-              )
-              .replaceAll('{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}', ''),
+            queryPaymentsFromNorisByVariableSymbols
+              .replaceAll('@years', yearPlaceholders)
+              .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
           )
         },
       )

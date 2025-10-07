@@ -52,21 +52,24 @@ export class NorisTaxSubservice {
   private async getTaxDataByYearAndBirthNumber(
     data: RequestPostNorisLoadDataDto,
   ): Promise<NorisTaxPayersDto[]> {
-    let birthNumbers = ''
-    data.birthNumbers.forEach((birthNumber) => {
-      birthNumbers += `'${birthNumber}',`
-    })
-    if (birthNumbers.length > 0) {
-      birthNumbers = `AND lcs.dane21_priznanie.rodne_cislo IN (${birthNumbers.slice(0, -1)})`
-    }
-
     try {
       const norisData = await this.connectionService.withConnection(
         async (connection) => {
-          return connection.query(
-            queryPayersFromNoris
-              .replaceAll('{%YEAR%}', data.year.toString())
-              .replaceAll('{%BIRTHNUMBERS%}', birthNumbers),
+          const request = new Request(connection)
+
+          request.input('year', data.year)
+          const birthNumbersPlaceholders = data.birthNumbers
+            .map((_, index) => `@birth_number${index}`)
+            .join(',')
+          data.birthNumbers.forEach((birthNumber, index) => {
+            request.input(`birth_number${index}`, birthNumber)
+          })
+
+          return request.query(
+            queryPayersFromNoris.replaceAll(
+              '@birth_numbers',
+              birthNumbersPlaceholders,
+            ),
           )
         },
       )

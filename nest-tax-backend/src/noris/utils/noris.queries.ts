@@ -402,19 +402,19 @@ WHERE
         lcs.dane21_druh_dokladu.typ_dokladu = 'v'
         AND lcs.dane21_druh_dokladu.typ_dane = '1'
         AND lcs.dane21_doklad.stav_dokladu<>'s'  
-        AND lcs.dane21_doklad.rok_podkladu = {%YEAR%}
-        AND lcs.dane21_priznanie.rok = {%YEAR%}
+        AND lcs.dane21_doklad.rok_podkladu = @year
+        AND lcs.dane21_priznanie.rok = @year
         AND lcs.dane21_priznanie.podnikatel = 'N'
         AND lcs.dane21_doklad.pohladavka IS NOT NULL
+        AND lcs.dane21_priznanie.rodne_cislo IN (@birth_numbers)
     )
-    {%BIRTHNUMBERS%}
 
 ORDER BY 
     lcs.dane21_priznanie.obchodny_nazov 
 `
 
-export const queryPaymentsFromNoris = `
-SELECT 
+const basePaymentsQuery = `
+    SELECT 
         dane21_doklad.variabilny_symbol as variabilny_symbol,
         (case 
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
@@ -437,7 +437,6 @@ SELECT
             lcs.dane21_doklad_sum_saldo
        WHERE
         lcs.dane21_doklad_sum_saldo.uhrazeno > 0
-        {%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}
         ) as view_doklad_saldo
         ON 
             view_doklad_saldo.cislo_subjektu=dane21_doklad.cislo_subjektu
@@ -462,9 +461,24 @@ SELECT
         AND lcs.dane21_druh_dokladu.typ_dane IN ('1', '4')
         AND dane21_doklad.stav_dokladu <> 's'
         AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
-        AND dane21_doklad.rok_podkladu {%YEARS%}
-        {%VARIABLE_SYMBOLS%}
+        AND dane21_doklad.rok_podkladu IN (@years)
+        {%ADDITIONAL_CONDITIONS%}
 `
+
+export const queryPaymentsFromNorisByFromToDate = basePaymentsQuery.replace(
+  '{%ADDITIONAL_CONDITIONS%}',
+  `
+    AND (
+            (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= @fromDate AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= @toDate)
+            OR (@overPayments = 1 AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby is NULL)
+        )`,
+)
+
+export const queryPaymentsFromNorisByVariableSymbols =
+  basePaymentsQuery.replace(
+    '{%ADDITIONAL_CONDITIONS%}',
+    `AND dane21_doklad.variabilny_symbol IN (@variable_symbols)`,
+  )
 
 export const setDeliveryMethodsForUser = `
     UPDATE lcs.uda_21_organizacia_mag
@@ -703,7 +717,4 @@ export const getCommunalWasteTaxesFromNoris = `
         doklad.stav_dokladu<>'s' AND
         doklad.rok_podkladu = @year
 `
-
-// TODO - do not use string replace, but request.input in mssql
-
 /* eslint-enable no-secrets/no-secrets */

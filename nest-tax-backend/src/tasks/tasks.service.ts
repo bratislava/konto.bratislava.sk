@@ -173,11 +173,15 @@ export class TasksService {
       `TasksService: Updating taxes from Noris with ids: ${taxes.map((t) => t.id).join(', ')}`,
     )
 
-    await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    const { updated } = await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       {
         year: currentYear,
         birthNumbers: taxes.map((t) => t.taxPayer.birthNumber),
       },
+    )
+
+    this.logger.log(
+      `TasksService: Updated ${updated} taxes from Noris`,
     )
 
     await this.prismaService.tax.updateMany({

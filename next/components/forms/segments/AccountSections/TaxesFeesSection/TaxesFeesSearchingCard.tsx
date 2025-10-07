@@ -20,7 +20,7 @@ const TaxesFeesSearchingCard = () => {
         />
       </div>
       <span className="flex flex-1 justify-center">
-        <Image src={ImageMestskeKontoSituacia} alt="" className="object-cover" />
+        <Image src={ImageMestskeKontoSituacia} alt="" className="object-contain" />
       </span>
     </div>
   )

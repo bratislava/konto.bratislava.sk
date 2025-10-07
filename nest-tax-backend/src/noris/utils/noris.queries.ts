@@ -430,24 +430,13 @@ const basePaymentsQuery = `
         end ) zbyva_uhradit,
         dane21_doklad.specificky_symbol specificky_symbol
     FROM lcs.dane21_doklad as dane21_doklad
-    JOIN 
-        (SELECT 
-            *
-        FROM
-            lcs.dane21_doklad_sum_saldo
-       WHERE
-        lcs.dane21_doklad_sum_saldo.uhrazeno > 0
-        ) as view_doklad_saldo
-        ON 
-            view_doklad_saldo.cislo_subjektu=dane21_doklad.cislo_subjektu
+    JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
+        ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
+        AND view_doklad_saldo.uhrazeno > 0
     LEFT OUTER JOIN 
         lcs.dane21_druh_dokladu
         ON
             dane21_doklad.druh_dokladu=lcs.dane21_druh_dokladu.cislo_subjektu
-    LEFT OUTER JOIN
-        lcs.dane_21_all_poplatky vpodklad
-        ON
-            vpodklad.cislo_subjektu=dane21_doklad.podklad
     LEFT JOIN 
         lcs.dane21_priznanie  
         ON 
@@ -469,9 +458,9 @@ export const queryPaymentsFromNorisByFromToDate = basePaymentsQuery.replace(
   '{%ADDITIONAL_CONDITIONS%}',
   `
     AND (
-            (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= @fromDate AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= @toDate)
-            OR (@overPayments = 1 AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby is NULL)
-        )`,
+        (@overPayments = 0 AND view_doklad_saldo.datum_posledni_platby >= @fromDate AND view_doklad_saldo.datum_posledni_platby <= @toDate)
+        OR (@overPayments = 1 AND view_doklad_saldo.datum_posledni_platby IS NULL)
+    )`,
 )
 
 export const queryPaymentsFromNorisByVariableSymbols =

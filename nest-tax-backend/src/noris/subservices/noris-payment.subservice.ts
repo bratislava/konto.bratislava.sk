@@ -47,7 +47,7 @@ export class NorisPaymentSubservice {
 
           request.input('fromDate', fromDate)
           request.input('toDate', toDate)
-          request.input('overPayments', overPayments)
+          request.input('overPayments', overPayments ? 1 : 0)
           request.input('years', year)
 
           return request.query(queryPaymentsFromNorisByFromToDate)
@@ -109,7 +109,7 @@ export class NorisPaymentSubservice {
             request.input(`variable_symbol${index}`, variableSymbol)
           })
 
-          return connection.query(
+          return request.query(
             queryPaymentsFromNorisByVariableSymbols
               .replaceAll('@years', yearPlaceholders)
               .replaceAll('@variable_symbols', variableSymbolsPlaceholders),

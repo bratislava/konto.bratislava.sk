@@ -152,7 +152,7 @@ export interface RequestPostNorisPaymentDataLoadDto {
   /**
    * If you want to count also overpayments.
    */
-  overPayments: object
+  overPayments: boolean
 }
 export interface RequestPostReportingSendReport {
   /**

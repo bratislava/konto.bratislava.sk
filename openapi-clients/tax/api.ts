@@ -152,7 +152,7 @@ export interface RequestPostNorisPaymentDataLoadDto {
   /**
    * If you want to count also overpayments.
    */
-  overPayments: object
+  overPayments: boolean
 }
 export interface RequestPostReportingSendReport {
   /**
@@ -681,10 +681,6 @@ export interface ResponseTaxDto {
    * When were last checked payments for this tax with automatic task.
    */
   lastCheckedPayments: string
-  /**
-   * When were last checked updates for this tax with automatic task.
-   */
-  lastCheckedUpdates: string
   /**
    * Type of tax
    */

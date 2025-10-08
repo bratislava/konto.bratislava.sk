@@ -274,14 +274,12 @@ export class NorisTaxSubservice {
           },
           userFromCityAccount.externalId ?? undefined,
         )
-
-        if (bloomreachTracker) {
-          return
+        if (!bloomreachTracker) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+          )
         }
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
-        )
       })
     } catch (error) {
       this.logger.error(

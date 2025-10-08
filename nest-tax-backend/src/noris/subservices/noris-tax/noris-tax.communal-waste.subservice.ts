@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Request } from 'mssql'
-import { CreateBirthNumbersResponseDto } from 'src/admin/dtos/responses.dto'
-import { baseNorisCommunalWasteTaxSchema } from 'src/noris/noris.schema'
-import { getCommunalWasteTaxesFromNoris } from 'src/noris/utils/noris.queries'
 
 import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
+import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
@@ -17,6 +15,8 @@ import {
   NorisCommunalWasteTaxGroupedDto,
   NorisRawCommunalWasteTaxDto,
 } from '../../noris.dto'
+import { baseNorisCommunalWasteTaxSchema } from '../../noris.schema'
+import { getCommunalWasteTaxesFromNoris } from '../../utils/noris.queries'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
 import { NorisTaxByType } from './noris-tax-by-type.interface'

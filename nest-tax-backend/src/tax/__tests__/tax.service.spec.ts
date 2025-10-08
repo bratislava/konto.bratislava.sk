@@ -527,7 +527,7 @@ describe('TaxService', () => {
     todo('test also other types of taxes')
   })
 
-  describe('getListOfTaxesByBirthnumber', () => {
+  describe('getListOfTaxesByBirthnumberAndType', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
     beforeAll(async () => {
@@ -546,7 +546,9 @@ describe('TaxService', () => {
         'ForbiddenException',
       )
 
-      await expect(service.getListOfTaxesByBirthnumber('')).rejects.toThrow()
+      await expect(
+        service.getListOfTaxesByBirthnumberAndType('', TaxType.DZN),
+      ).rejects.toThrow()
 
       expect(forbiddenExceptionSpy).toHaveBeenCalledWith(
         CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
@@ -559,7 +561,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(null)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
       expect(result.taxAdministrator).toBeNull()
@@ -574,7 +579,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
@@ -588,7 +596,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
@@ -602,7 +613,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
     })
@@ -616,7 +630,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
@@ -632,7 +649,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       // With no taxes and shouldAddCurrentYear=true => LOOKING_FOR_YOUR_TAX
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
@@ -648,7 +668,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
     })
@@ -664,7 +687,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
 
@@ -678,7 +704,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
 
@@ -692,7 +721,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
       expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
     })
   })

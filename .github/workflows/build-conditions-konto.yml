@@ -29,7 +29,7 @@ on:
 jobs:
   changes:
     name: Checking for directory changes in repository
-    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    runs-on: "bratislava"
     outputs:
       forms-shared: ${{ steps.filter.outputs.forms-shared }}
       openapi-clients: ${{ steps.filter.outputs.openapi-clients }}
@@ -72,7 +72,7 @@ jobs:
   conditions:
     name: Checking build conditions
     needs: changes
-    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    runs-on: "bratislava"
     env:
       COUNT: 0
     outputs:

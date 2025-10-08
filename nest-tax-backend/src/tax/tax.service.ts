@@ -290,10 +290,16 @@ export class TaxService {
       lookingForTaxDate,
     )
 
+    // TaxPayer is updated only if tax was searched for in Noris
+    const taxPayerWasUpdated = taxPayer
+      ? taxPayer.updatedAt.getTime() - taxPayer.createdAt.getTime() > 1000 // 1 second threshold
+      : false
+
     if (taxes.length === 0) {
-      const availabilityStatus = shouldAddCurrentYear
-        ? TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX
-        : TaxAvailabilityStatus.TAX_NOT_ON_RECORD
+      const availabilityStatus =
+        shouldAddCurrentYear || !taxPayerWasUpdated
+          ? TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX
+          : TaxAvailabilityStatus.TAX_NOT_ON_RECORD
       return {
         availabilityStatus,
         items: [],
@@ -321,7 +327,10 @@ export class TaxService {
       (item) => item.year === currentTime.year(),
     )
 
-    if (!currentYearTaxExists && shouldAddCurrentYear) {
+    if (
+      !currentYearTaxExists &&
+      (shouldAddCurrentYear || !taxPayerWasUpdated)
+    ) {
       items.unshift({
         year: currentTime.year(),
         status: TaxStatusEnum.AWAITING_PROCESSING,

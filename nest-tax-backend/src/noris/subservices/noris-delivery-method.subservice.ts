@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Request } from 'mssql'
+import { ConnectionPool, Request } from 'mssql'
 
 import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
@@ -24,51 +24,55 @@ export class NorisDeliveryMethodSubservice {
   async updateDeliveryMethodsInNoris(
     data: UpdateNorisDeliveryMethods[],
   ): Promise<void> {
-    const connection = await this.connectionService.createConnection()
+    await this.connectionService.withConnection(
+      async (connection) => {
+        const updatePromises = data.map((dataItem) =>
+          this.executeDeliveryMethodUpdate(connection, dataItem),
+        )
+        await Promise.all(updatePromises)
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to update delivery methods',
+          undefined,
+          undefined,
+          error,
+        )
+      },
+    )
+  }
 
-    try {
-      await Promise.all(
-        data.map(async (dataItem) => {
-          const request = new Request(connection)
+  private async executeDeliveryMethodUpdate(
+    connection: ConnectionPool,
+    dataItem: UpdateNorisDeliveryMethods,
+  ) {
+    const request = new Request(connection)
 
-          // Set parameters for the query
-          request.input('dkba_stav', dataItem.inCityAccount)
-          request.input(
-            'dkba_datum_suhlasu',
-            dataItem.date ? new Date(dataItem.date) : null,
-          )
-          request.input(
-            'dkba_sposob_dorucovania',
-            mapDeliveryMethodToNoris(dataItem.deliveryMethod),
-          )
+    // Set parameters for the query
+    request.input('dkba_stav', dataItem.inCityAccount)
+    request.input(
+      'dkba_datum_suhlasu',
+      dataItem.date ? new Date(dataItem.date) : null,
+    )
+    request.input(
+      'dkba_sposob_dorucovania',
+      mapDeliveryMethodToNoris(dataItem.deliveryMethod),
+    )
 
-          const birthNumberPlaceholders = dataItem.birthNumbers
-            .map((_, index) => `@birthnumber${index}`)
-            .join(',')
-          dataItem.birthNumbers.forEach((birthNumber, index) => {
-            request.input(`birthnumber${index}`, birthNumber)
-          })
-          const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
-            '@birth_numbers',
-            birthNumberPlaceholders,
-          )
+    const birthNumberPlaceholders = dataItem.birthNumbers
+      .map((_, index) => `@birthnumber${index}`)
+      .join(',')
+    dataItem.birthNumbers.forEach((birthNumber, index) => {
+      request.input(`birthnumber${index}`, birthNumber)
+    })
+    const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
+      '@birth_numbers',
+      birthNumberPlaceholders,
+    )
 
-          // Execute the query
-          return request.query(queryWithPlaceholders)
-        }),
-      )
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to update delivery methods',
-        undefined,
-        undefined,
-        error,
-      )
-    } finally {
-      // Always close the connection
-      await connection.close()
-    }
+    // Execute the query
+    return request.query(queryWithPlaceholders)
   }
 
   async updateDeliveryMethods({ data }: RequestUpdateNorisDeliveryMethodsDto) {

@@ -153,29 +153,44 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async updateRealEstateTaxesFromNoris() {
+    const currentYear = new Date().getFullYear()
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
-        variableSymbol: true,
-        year: true,
+        taxPayer: {
+          select: {
+            birthNumber: true,
+          },
+        },
       },
       where: {
-        dateTaxRuling: null,
+        year: currentYear,
         type: TaxType.DZN,
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
       orderBy: {
-        lastCheckedUpdates: 'asc',
+        updatedAt: 'asc',
       },
     })
 
-    if (taxes.length === 0) return
+    if (taxes.length === 0) {
+      return
+    }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
+      `TasksService: Updating taxes from Noris with ids: ${taxes.map((t) => t.id).join(', ')}`,
     )
 
-    await this.norisService.updateTaxesFromNoris(taxes, TaxType.DZN)
+    const { updated } =
+      await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+        {
+          year: currentYear,
+          birthNumbers: taxes.map((t) => t.taxPayer.birthNumber),
+          taxType: TaxType.DZN,
+        },
+      )
+
+    this.logger.log(`TasksService: Updated ${updated} DZN taxes from Noris`)
 
     await this.prismaService.tax.updateMany({
       where: {
@@ -184,7 +199,7 @@ export class TasksService {
         },
       },
       data: {
-        lastCheckedUpdates: new Date(),
+        updatedAt: new Date(),
       },
     })
   }

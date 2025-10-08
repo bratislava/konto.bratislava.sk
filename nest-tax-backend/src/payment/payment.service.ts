@@ -330,6 +330,12 @@ export class PaymentService {
     if (!ORDERNUMBER) {
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
+    const tax = await this.prisma.taxPayment.findUnique({
+      where: { orderId: ORDERNUMBER },
+      include: { tax: true },
+    })
+    const year = tax?.tax.year
+
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
         OPERATION,
@@ -354,7 +360,7 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       const payment = await this.prisma.taxPayment.findUnique({
@@ -371,11 +377,11 @@ export class PaymentService {
       })
 
       if (!payment) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       if (payment.status === PaymentStatus.SUCCESS) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       // TODO: when user has taxPayment with status SUCCESS,
@@ -389,7 +395,7 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       const taxPayment = await this.prisma.taxPayment.update({
@@ -425,7 +431,7 @@ export class PaymentService {
         )
       }
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${tax?.tax.type}&year=${year}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

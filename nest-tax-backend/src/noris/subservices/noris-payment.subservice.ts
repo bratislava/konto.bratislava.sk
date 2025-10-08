@@ -40,29 +40,28 @@ export class NorisPaymentSubservice {
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
     const { fromDate, toDate, overPayments, year } = data
 
-    try {
-      const norisData = await this.connectionService.withConnection(
-        async (connection) => {
-          const request = new Request(connection)
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
 
-          request.input('fromDate', fromDate)
-          request.input('toDate', toDate)
-          request.input('overPayments', overPayments ? 1 : 0)
-          request.input('years', year)
+        request.input('fromDate', fromDate)
+        request.input('toDate', toDate)
+        request.input('overPayments', overPayments ? 1 : 0)
+        request.input('years', year)
 
-          return request.query(queryPaymentsFromNorisByFromToDate)
-        },
-      )
-      return norisData.recordset
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get payment data from Noris by date range.',
-        undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
-      )
-    }
+        return request.query(queryPaymentsFromNorisByFromToDate)
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get payment data from Noris by date range.',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
+    return norisData.recordset
   }
 
   async getPaymentDataFromNorisByVariableSymbols(
@@ -90,42 +89,41 @@ export class NorisPaymentSubservice {
       )
     }
 
-    try {
-      const norisData = await this.connectionService.withConnection(
-        async (connection) => {
-          const request = new Request(connection)
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
 
-          const yearPlaceholders = data.years
-            .map((_, index) => `@year${index}`)
-            .join(',')
-          data.years.forEach((year, index) => {
-            request.input(`year${index}`, year)
-          })
+        const yearPlaceholders = data.years
+          .map((_, index) => `@year${index}`)
+          .join(',')
+        data.years.forEach((year, index) => {
+          request.input(`year${index}`, year)
+        })
 
-          const variableSymbolsPlaceholders = filteredVariableSymbols
-            .map((_, index) => `@variable_symbol${index}`)
-            .join(',')
-          filteredVariableSymbols.forEach((variableSymbol, index) => {
-            request.input(`variable_symbol${index}`, variableSymbol)
-          })
+        const variableSymbolsPlaceholders = filteredVariableSymbols
+          .map((_, index) => `@variable_symbol${index}`)
+          .join(',')
+        filteredVariableSymbols.forEach((variableSymbol, index) => {
+          request.input(`variable_symbol${index}`, variableSymbol)
+        })
 
-          return request.query(
-            queryPaymentsFromNorisByVariableSymbols
-              .replaceAll('@years', yearPlaceholders)
-              .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
-          )
-        },
-      )
-      return norisData.recordset
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get payment data from Noris by variable symbols.',
-        undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
-      )
-    }
+        return request.query(
+          queryPaymentsFromNorisByVariableSymbols
+            .replaceAll('@years', yearPlaceholders)
+            .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
+        )
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get payment data from Noris by variable symbols.',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
+    return norisData.recordset
   }
 
   private async createTaxMapByVariableSymbol(

@@ -52,37 +52,36 @@ export class NorisTaxSubservice {
   private async getTaxDataByYearAndBirthNumber(
     data: RequestPostNorisLoadDataDto,
   ): Promise<NorisTaxPayersDto[]> {
-    try {
-      const norisData = await this.connectionService.withConnection(
-        async (connection) => {
-          const request = new Request(connection)
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
 
-          request.input('year', data.year)
-          const birthNumbersPlaceholders = data.birthNumbers
-            .map((_, index) => `@birth_number${index}`)
-            .join(',')
-          data.birthNumbers.forEach((birthNumber, index) => {
-            request.input(`birth_number${index}`, birthNumber)
-          })
+        request.input('year', data.year)
+        const birthNumbersPlaceholders = data.birthNumbers
+          .map((_, index) => `@birth_number${index}`)
+          .join(',')
+        data.birthNumbers.forEach((birthNumber, index) => {
+          request.input(`birth_number${index}`, birthNumber)
+        })
 
-          return request.query(
-            queryPayersFromNoris.replaceAll(
-              '@birth_numbers',
-              birthNumbersPlaceholders,
-            ),
-          )
-        },
-      )
-      return norisData.recordset
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
-      )
-    }
+        return request.query(
+          queryPayersFromNoris.replaceAll(
+            '@birth_numbers',
+            birthNumbersPlaceholders,
+          ),
+        )
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get taxes from Noris',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
+    return norisData.recordset
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -376,38 +375,36 @@ export class NorisTaxSubservice {
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
     data: RequestPostNorisLoadDataDto,
   ): Promise<NorisRawCommunalWasteTaxDto[]> {
-    try {
-      const norisData = await this.connectionService.withConnection(
-        async (connection) => {
-          const request = new Request(connection)
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
 
-          const birthNumbersPlaceholders = data.birthNumbers
-            .map((_, index) => `@birth_number${index}`)
-            .join(',')
-          data.birthNumbers.forEach((birthNumber, index) => {
-            request.input(`birth_number${index}`, birthNumber)
-          })
-          request.input('year', data.year)
+        const birthNumbersPlaceholders = data.birthNumbers
+          .map((_, index) => `@birth_number${index}`)
+          .join(',')
+        data.birthNumbers.forEach((birthNumber, index) => {
+          request.input(`birth_number${index}`, birthNumber)
+        })
+        request.input('year', data.year)
 
-          const queryWithPlaceholders =
-            getCommunalWasteTaxesFromNoris.replaceAll(
-              '@birth_numbers',
-              birthNumbersPlaceholders,
-            )
+        const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
+          '@birth_numbers',
+          birthNumbersPlaceholders,
+        )
 
-          return request.query(queryWithPlaceholders)
-        },
-      )
-      return norisData.recordset
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Failed to get communal waste tax data from Noris`,
-        undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
-      )
-    }
+        return request.query(queryWithPlaceholders)
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get communal waste tax data from Noris',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
+    return norisData.recordset
   }
 
   processWasteTaxRecords(

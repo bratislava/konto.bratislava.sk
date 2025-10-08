@@ -86,6 +86,7 @@ export class NorisConnectionSubservice {
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
+    errorHandler: (error: any) => never,
     useOptimized: boolean = false,
   ): Promise<T> {
     const connection = useOptimized
@@ -96,6 +97,8 @@ export class NorisConnectionSubservice {
       await this.waitForConnection(connection)
       const result = await operation(connection)
       return result
+    } catch (error) {
+      return errorHandler(error)
     } finally {
       await connection.close()
     }

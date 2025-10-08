@@ -167,7 +167,9 @@ export class TasksService {
       },
     })
 
-    if (taxes.length === 0) return
+    if (taxes.length === 0) {
+      return
+    }
 
     this.logger.log(
       `TasksService: Updating taxes from Noris with ids: ${taxes.map((t) => t.id).join(', ')}`,

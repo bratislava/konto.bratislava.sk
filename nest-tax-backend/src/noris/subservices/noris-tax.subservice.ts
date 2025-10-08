@@ -133,31 +133,37 @@ export class NorisTaxSubservice {
         const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
         if (taxExists) {
           try {
-            await this.prismaService.$transaction(async (tx) => {
-              await tx.taxInstallment.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
-              await tx.taxDetail.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
+            await this.prismaService.$transaction(
+              async (tx) => {
+                await tx.taxInstallment.deleteMany({
+                  where: {
+                    taxId: taxExists.id,
+                  },
+                })
+                await tx.taxDetail.deleteMany({
+                  where: {
+                    taxId: taxExists.id,
+                  },
+                })
 
-              const userFromCityAccount =
-                userDataFromCityAccount[norisItem.ICO_RC] || null
+                const userFromCityAccount =
+                  userDataFromCityAccount[norisItem.ICO_RC] || null
 
-              const userData = await this.insertTaxPayerDataToDatabase(
-                norisItem,
-                data.year,
-                tx,
-                userFromCityAccount,
-              )
-              if (userData) {
-                count += 1
-              }
-            })
+                const userData = await this.insertTaxPayerDataToDatabase(
+                  norisItem,
+                  data.year,
+                  tx,
+                  userFromCityAccount,
+                )
+                if (userData) {
+                  count += 1
+                }
+              },
+              {
+                maxWait: 5000,
+                timeout: 10_000,
+              },
+            )
           } catch (error) {
             this.logger.error(
               this.throwerErrorGuard.InternalServerErrorException(
@@ -220,36 +226,42 @@ export class NorisTaxSubservice {
         }
 
         try {
-          await this.prismaService.$transaction(async (tx) => {
-            const userFromCityAccount =
-              userDataFromCityAccount[norisItem.ICO_RC] || null
+          await this.prismaService.$transaction(
+            async (tx) => {
+              const userFromCityAccount =
+                userDataFromCityAccount[norisItem.ICO_RC] || null
 
-            const userData = await this.insertTaxPayerDataToDatabase(
-              norisItem,
-              year,
-              tx,
-              userFromCityAccount,
-            )
+              const userData = await this.insertTaxPayerDataToDatabase(
+                norisItem,
+                year,
+                tx,
+                userFromCityAccount,
+              )
 
-            if (userFromCityAccount) {
-              const bloomreachTracker =
-                await this.bloomreachService.trackEventTax(
-                  {
-                    amount: convertCurrencyToInt(norisItem.dan_spolu),
-                    year,
-                    delivery_method:
-                      userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
-                  },
-                  userFromCityAccount.externalId ?? undefined,
-                )
-              if (!bloomreachTracker) {
-                throw this.throwerErrorGuard.InternalServerErrorException(
-                  ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
-                )
+              if (userFromCityAccount) {
+                const bloomreachTracker =
+                  await this.bloomreachService.trackEventTax(
+                    {
+                      amount: convertCurrencyToInt(norisItem.dan_spolu),
+                      year,
+                      delivery_method:
+                        userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
+                    },
+                    userFromCityAccount.externalId ?? undefined,
+                  )
+                if (!bloomreachTracker) {
+                  throw this.throwerErrorGuard.InternalServerErrorException(
+                    ErrorsEnum.INTERNAL_SERVER_ERROR,
+                    `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+                  )
+                }
               }
-            }
-          })
+            },
+            {
+              maxWait: 5000,
+              timeout: 10_000,
+            },
+          )
         } catch (error) {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(

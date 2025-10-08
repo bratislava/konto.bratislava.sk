@@ -134,50 +134,51 @@ export class NorisTaxSubservice {
     )
 
     await Promise.all(
-      norisData.map(async (norisItem) => {
-        return this.concurrencyLimit(async () => {
+      norisData.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
           const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
-          if (taxExists) {
-            try {
-              await this.prismaService.$transaction(async (tx) => {
-                await tx.taxInstallment.deleteMany({
-                  where: {
-                    taxId: taxExists.id,
-                  },
-                })
-                await tx.taxDetail.deleteMany({
-                  where: {
-                    taxId: taxExists.id,
-                  },
-                })
-
-                const userFromCityAccount =
-                  userDataFromCityAccount[norisItem.ICO_RC] || null
-
-                const userData = await this.insertTaxPayerDataToDatabase(
-                  norisItem,
-                  data.year,
-                  tx,
-                  userFromCityAccount,
-                )
-                if (userData) {
-                  count += 1
-                }
-              })
-            } catch (error) {
-              this.logger.error(
-                this.throwerErrorGuard.InternalServerErrorException(
-                  ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  'Failed to update tax in database.',
-                  undefined,
-                  undefined,
-                  error,
-                ),
-              )
-            }
+          if (!taxExists) {
+            return
           }
-        })
-      }),
+          try {
+            await this.prismaService.$transaction(async (tx) => {
+              await tx.taxInstallment.deleteMany({
+                where: {
+                  taxId: taxExists.id,
+                },
+              })
+              await tx.taxDetail.deleteMany({
+                where: {
+                  taxId: taxExists.id,
+                },
+              })
+
+              const userFromCityAccount =
+                userDataFromCityAccount[norisItem.ICO_RC] || null
+
+              const userData = await this.insertTaxPayerDataToDatabase(
+                norisItem,
+                data.year,
+                tx,
+                userFromCityAccount,
+              )
+              if (userData) {
+                count += 1
+              }
+            })
+          } catch (error) {
+            this.logger.error(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                'Failed to update tax in database.',
+                undefined,
+                undefined,
+                error,
+              ),
+            )
+          }
+        }),
+      ),
     )
 
     return { updated: count }
@@ -217,69 +218,85 @@ export class NorisTaxSubservice {
       taxesExist.map((tax) => tax.taxPayer.birthNumber),
     )
 
+    const norisDataNotInDatabase = norisData.filter(
+      (norisItem) => !birthNumbersWithExistingTax.has(norisItem.ICO_RC),
+    )
+
     await Promise.all(
-      norisData.map(async (norisItem) => {
-        return this.concurrencyLimit(async () => {
-          birthNumbersResult.add(norisItem.ICO_RC)
-
-          const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
-          if (taxExists) {
-            return
-          }
-
-          try {
-            await this.prismaService.$transaction(async (tx) => {
-              const userFromCityAccount =
-                userDataFromCityAccount[norisItem.ICO_RC] || null
-
-              const userData = await this.insertTaxPayerDataToDatabase(
-                norisItem,
-                year,
-                tx,
-                userFromCityAccount,
-              )
-
-              if (userFromCityAccount) {
-                const bloomreachTracker =
-                  await this.bloomreachService.trackEventTax(
-                    {
-                      amount: convertCurrencyToInt(norisItem.dan_spolu),
-                      year,
-                      delivery_method:
-                        userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
-                    },
-                    userFromCityAccount.externalId ?? undefined,
-                  )
-                if (!bloomreachTracker) {
-                  throw this.throwerErrorGuard.InternalServerErrorException(
-                    ErrorsEnum.INTERNAL_SERVER_ERROR,
-                    `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
-                  )
-                }
-              }
-            })
-          } catch (error) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Failed to insert tax to database.',
-                undefined,
-                undefined,
-                error,
-              ),
-            )
-
-            // Remove the birth number from the result set if insertion fails
-            birthNumbersResult.delete(norisItem.ICO_RC)
-          }
-        })
-      }),
+      norisDataNotInDatabase.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          await this.processTaxRecordFromNoris(
+            birthNumbersResult,
+            norisItem,
+            userDataFromCityAccount,
+            year,
+          )
+        }),
+      ),
     )
 
     // Add the payments for these added taxes to database
     await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
 
     return [...birthNumbersResult]
+  }
+
+  private readonly processTaxRecordFromNoris = async (
+    birthNumbersResult: Set<string>,
+    norisItem: NorisTaxPayersDto,
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    year: number,
+  ) => {
+    birthNumbersResult.add(norisItem.ICO_RC)
+
+    try {
+      await this.prismaService.$transaction(async (tx) => {
+        const userFromCityAccount =
+          userDataFromCityAccount[norisItem.ICO_RC] || null
+
+        if (!userFromCityAccount) {
+          return
+        }
+
+        const userData = await this.insertTaxPayerDataToDatabase(
+          norisItem,
+          year,
+          tx,
+          userFromCityAccount,
+        )
+
+        const bloomreachTracker = await this.bloomreachService.trackEventTax(
+          {
+            amount: convertCurrencyToInt(norisItem.dan_spolu),
+            year,
+            delivery_method:
+              userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
+          },
+          userFromCityAccount.externalId ?? undefined,
+        )
+
+        if (bloomreachTracker) {
+          return
+        }
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+        )
+      })
+    } catch (error) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to insert tax to database.',
+          undefined,
+          undefined,
+          error,
+        ),
+      )
+
+      // Remove the birth number from the result set if insertion fails
+      birthNumbersResult.delete(norisItem.ICO_RC)
+    }
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(

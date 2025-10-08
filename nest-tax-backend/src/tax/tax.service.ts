@@ -173,6 +173,10 @@ export class TaxService {
 
     return {
       ...tax,
+      taxPayer: {
+        ...tax.taxPayer,
+        active: true,
+      },
       taxInstallments,
       paidAmount,
       paidStatus,

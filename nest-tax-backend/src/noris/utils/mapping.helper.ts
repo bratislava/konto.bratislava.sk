@@ -18,7 +18,6 @@ export const mapNorisToTaxPayerData = (
   taxAdministrator: TaxAdministrator,
 ) => {
   return {
-    active: true,
     birthNumber: data.ICO_RC,
     permanentResidenceAddress: data.adresa_tp_sidlo,
     externalId: data.subjekt_refer,

@@ -10,7 +10,7 @@ import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
 import { AccountType } from 'frontend/dtos/accountDto'
-import { ResponseGetTaxesDto } from 'openapi-clients/tax'
+import { ResponseGetTaxesListDto } from 'openapi-clients/tax'
 
 import TaxesFeesSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
@@ -22,7 +22,7 @@ import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
-  taxesData: ResponseGetTaxesDto
+  taxesData: ResponseGetTaxesListDto | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
@@ -33,7 +33,7 @@ type AccountTaxesFeesPageProps = {
  */
 const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
   try {
-    const { data } = await taxClient.taxControllerGetArchivedTaxes({
+    const { data } = await taxClient.taxControllerV2GetTaxesListV2({
       authStrategy: 'authOnly',
       getSsrAuthSession,
     })
@@ -45,11 +45,7 @@ const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
       // TODO: This should be replace with a proper error code (which is not returned)
       error.response?.data?.message === 'Forbidden tier'
     ) {
-      return {
-        isInNoris: false,
-        items: [],
-        taxAdministrator: null,
-      } as ResponseGetTaxesDto
+      return null
     }
     throw error
   }

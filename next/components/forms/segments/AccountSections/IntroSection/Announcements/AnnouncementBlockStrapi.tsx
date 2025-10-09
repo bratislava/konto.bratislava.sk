@@ -35,6 +35,7 @@ ${description}`
       imageSrc={image?.data?.attributes?.url ?? undefined}
       buttons={buttons}
       reversed={reversed}
+      reversedMobile
     />
   )
 }

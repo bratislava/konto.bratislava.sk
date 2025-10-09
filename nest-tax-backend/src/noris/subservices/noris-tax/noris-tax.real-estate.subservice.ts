@@ -18,7 +18,7 @@ import { convertCurrencyToInt } from '../../utils/mapping.helper'
 import { queryPayersFromNoris } from '../../utils/noris.queries'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
-import { NorisTaxByType } from './noris-tax-by-type.interface'
+import { NorisTaxByType } from './noris-tax-by-type.abstract'
 
 @Injectable()
 export class NorisTaxRealEstateSubservice extends NorisTaxByType {

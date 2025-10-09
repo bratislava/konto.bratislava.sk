@@ -13,13 +13,13 @@ import {
   ResponseTaxPayerReducedDto,
   ResponseTaxSummaryDetailDto,
 } from '../../dtos/response.tax.dto'
-import { getTaxStatus } from '../helpers/tax.helper'
-import { getRealEstateTaxDetailPure } from '../unified-tax.util'
+import { getTaxStatus } from '../../utils/helpers/tax.helper'
+import { getRealEstateTaxDetailPure } from '../../utils/unified-tax.util'
 import {
   paymentCalendarThreshold,
   specificSymbol,
   TaxSubserviceByType,
-} from './tax-by-type.interface'
+} from './tax-by-type.abstract'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

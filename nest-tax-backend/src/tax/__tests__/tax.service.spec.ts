@@ -17,10 +17,10 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
 import { TaxPaidStatusEnum } from '../dtos/response.tax.dto'
+import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
 import { TaxService } from '../tax.service'
 import * as pdfHelper from '../utils/helpers/pdf.helper'
 import * as taxHelper from '../utils/helpers/tax.helper'
-import { TaxRealEstateSubservice } from '../utils/tax/tax.real-estate.subservice'
 
 jest.mock('ejs', () => ({
   renderFile: jest.fn(),

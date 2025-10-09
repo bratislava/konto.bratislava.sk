@@ -28,18 +28,18 @@ import {
   TaxAvailabilityStatus,
   TaxStatusEnum,
 } from './dtos/response.tax.dto'
+import { TaxRealEstateSubservice } from './subservices/tax/tax.real-estate.subservice'
+import {
+  paymentCalendarThreshold,
+  specificSymbol,
+  TaxSubserviceByType,
+} from './subservices/tax/tax-by-type.abstract'
 import {
   checkTaxDateInclusion,
   fixInstallmentTexts,
   getExistingTaxStatus,
   getTaxStatus,
 } from './utils/helpers/tax.helper'
-import { TaxRealEstateSubservice } from './utils/tax/tax.real-estate.subservice'
-import {
-  paymentCalendarThreshold,
-  specificSymbol,
-  TaxSubserviceByType,
-} from './utils/tax/tax-by-type.interface'
 import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,

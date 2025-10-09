@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import groupBy from 'lodash/groupBy'
 import { Request } from 'mssql'
 
 import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
@@ -72,7 +73,7 @@ export class NorisTaxCommunalWasteSubservice extends NorisTaxByType {
         const request = new Request(connection)
 
         const birthNumbersPlaceholders = data.birthNumbers
-          .map((_, index) => `@birth_number${index}`)
+          .map((birthNumber, index) => `@birth_number${index}`)
           .join(',')
         data.birthNumbers.forEach((birthNumber, index) => {
           request.input(`birth_number${index}`, birthNumber)
@@ -99,17 +100,10 @@ export class NorisTaxCommunalWasteSubservice extends NorisTaxByType {
     return norisData.recordset
   }
 
-  processWasteTaxRecords(
+  private groupWasteTaxRecords(
     records: NorisRawCommunalWasteTaxDto[],
   ): NorisCommunalWasteTaxGroupedDto[] {
-    const grouped: Record<string, NorisRawCommunalWasteTaxDto[]> = {}
-
-    records.forEach((rec) => {
-      if (!grouped[rec.variabilny_symbol]) {
-        grouped[rec.variabilny_symbol] = []
-      }
-      grouped[rec.variabilny_symbol].push(rec)
-    })
+    const grouped = groupBy(records, 'variabilny_symbol')
 
     const result: NorisCommunalWasteTaxGroupedDto[] = []
 

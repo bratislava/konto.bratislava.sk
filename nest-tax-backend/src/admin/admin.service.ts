@@ -38,8 +38,8 @@ export class AdminService {
   async loadDataFromNoris(
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    const taxDefintion = getTaxDefinitionByType(data.taxType)
-    if (!taxDefintion) {
+    const taxDefinition = getTaxDefinitionByType(data.taxType)
+    if (!taxDefinition) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
         `Tax definition not found: ${data.taxType}`,
@@ -51,8 +51,8 @@ export class AdminService {
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    const taxDefintion = getTaxDefinitionByType(data.taxType)
-    if (!taxDefintion) {
+    const taxDefinition = getTaxDefinitionByType(data.taxType)
+    if (!taxDefinition) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
         `Tax definition not found: ${data.taxType}`,

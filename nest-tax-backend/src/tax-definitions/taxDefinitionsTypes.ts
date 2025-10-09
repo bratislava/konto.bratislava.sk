@@ -41,3 +41,5 @@ export type TaxDefinition = {
   /** Configuration for PDF generation */
   pdfOptions: { generate: false } | { generate: true; pdfHelper: PdfHelper }
 }
+
+export type TaxDefinitionsMap = Record<TaxType, TaxDefinition>

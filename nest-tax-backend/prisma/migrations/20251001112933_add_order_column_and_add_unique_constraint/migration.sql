@@ -11,15 +11,17 @@ CREATE UNIQUE INDEX "Tax_taxPayerId_year_type_order_key" ON "public"."Tax"("taxP
 CREATE OR REPLACE FUNCTION set_tax_order()
 RETURNS TRIGGER AS $$
 DECLARE
-  lock_key BIGINT;
+  type_val INTEGER;
 BEGIN
   -- Only assign if not provided
   IF NEW."order" IS NULL THEN
-    -- Create a unique bigint key for this (taxPayerId, year, type)
-    lock_key := (NEW."taxPayerId"::BIGINT << 32) # NEW."year"::BIGINT # (CASE WHEN NEW."type" = 'DZN' THEN 1 ELSE 2 END);
+    type_val := CASE WHEN NEW."type" = 'DZN' THEN 1 ELSE 0 END;
 
-    -- Acquire an advisory lock for this key
-    PERFORM pg_advisory_xact_lock(lock_key);
+    -- Acquire an advisory lock for this taxPayerId, year, type
+    PERFORM pg_advisory_xact_lock(
+      NEW."taxPayerId"::INTEGER,
+      (NEW."year"::INTEGER << 8) | type_val
+    );
 
     -- Compute the next order safely
     SELECT COALESCE(MAX("order"), 0) + 1

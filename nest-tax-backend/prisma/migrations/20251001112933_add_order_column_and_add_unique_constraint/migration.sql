@@ -37,6 +37,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER tax_order_trigger
-BEFORE INSERT ON "Tax"
+BEFORE INSERT OR UPDATE ON "Tax"
 FOR EACH ROW
 EXECUTE FUNCTION set_tax_order();

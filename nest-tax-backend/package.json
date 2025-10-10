@@ -50,7 +50,7 @@
     "mssql": "^11.0.1",
     "nodemailer": "^7.0.6",
     "openapi-clients": "file:../openapi-clients",
-    "p-limit": "^7.1.1",
+    "p-limit": "3.1.0",
     "passport-headerapikey": "^1.2.2",
     "qrcode": "^1.5.4",
     "rimraf": "^5.0.5",
@@ -128,9 +128,6 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "transformIgnorePatterns": [
-      "node_modules/(?!(p-limit|yocto-queue)/)"
-    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],

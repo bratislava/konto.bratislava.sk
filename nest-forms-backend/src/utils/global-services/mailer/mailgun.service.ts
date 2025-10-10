@@ -63,19 +63,19 @@ export default class MailgunService implements Mailer {
 
     try {
       const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocally
+      const { template } = MAILGUN_CONFIG[data.template]
+      const variables = MailgunHelper.createEmailVariables(data)
 
       const emailContent = renderLocally
         ? {
             html: await this.mailgunHelper.getFilledTemplate(
-              MAILGUN_CONFIG[data.template].template,
-              MailgunHelper.createEmailVariables(data),
+              template,
+              variables,
             ),
           }
         : {
-            'h:X-Mailgun-Variables': JSON.stringify(
-              MailgunHelper.createEmailVariables(data),
-            ),
-            template: MAILGUN_CONFIG[data.template].template,
+            'h:X-Mailgun-Variables': JSON.stringify(variables),
+            template,
           }
 
       const mailgunResponse = await this.mailgunClient.messages.create(
@@ -89,21 +89,18 @@ export default class MailgunService implements Mailer {
         },
       )
       if (mailgunResponse.status !== 200) {
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `Mailgun message was not sent to email.`,
-            toLogfmt({
-              formId: data.data.formId,
-              emailFrom,
-              emailTo: data.to,
-              subject,
-              mailgunResponse,
-              filenames: attachments?.map((attachment) => attachment.filename),
-            }),
-          ),
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Mailgun message was not sent to email.`,
+          toLogfmt({
+            formId: data.data.formId,
+            emailFrom,
+            emailTo: data.to,
+            subject,
+            mailgunResponse,
+            filenames: attachments?.map((attachment) => attachment.filename),
+          }),
         )
-        await this.setFormToEmailErrorState(data.data.formId)
       }
     } catch (error) {
       this.logger.error(

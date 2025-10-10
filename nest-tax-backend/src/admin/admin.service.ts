@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto } from '../noris/noris.dto'
 import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -36,12 +38,26 @@ export class AdminService {
   async loadDataFromNoris(
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
+    const taxDefinition = getTaxDefinitionByType(data.taxType)
+    if (!taxDefinition) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax definition not found: ${data.taxType}`,
+      )
+    }
     return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
       data,
     )
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
+    const taxDefinition = getTaxDefinitionByType(data.taxType)
+    if (!taxDefinition) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax definition not found: ${data.taxType}`,
+      )
+    }
     return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       data,
     )
@@ -105,12 +121,18 @@ export class AdminService {
     }
 
     // Process the mock data to create the testing tax
-    await this.norisService.processNorisTaxData([mockTaxRecord], year)
+    await this.norisService.processNorisTaxData(
+      [mockTaxRecord],
+      year,
+      TaxType.DZN,
+    )
   }
 
   async deleteTax({
     year,
     birthNumber,
+    taxType,
+    order,
   }: RequestAdminDeleteTaxDto): Promise<void> {
     const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
     const taxPayer = await this.prismaService.taxPayer.findUnique({
@@ -127,9 +149,11 @@ export class AdminService {
 
     const tax = await this.prismaService.tax.findUnique({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
+          order,
         },
       },
     })
@@ -142,9 +166,11 @@ export class AdminService {
 
     await this.prismaService.tax.delete({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
+          order,
         },
       },
     })
@@ -160,6 +186,8 @@ export class AdminService {
         year,
         amount: 0,
         delivery_method: null,
+        taxType,
+        order,
       },
       userDataFromCityAccount.externalId ?? undefined,
     )

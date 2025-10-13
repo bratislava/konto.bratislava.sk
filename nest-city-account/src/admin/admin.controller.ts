@@ -29,6 +29,7 @@ import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { AdminService } from './admin.service'
 import {
+  ManuallySendUserToVerificationQueueDto,
   ManuallyVerifyUserRequestDto,
   MarkDeceasedAccountRequestDto,
   RequestBatchNewUserBirthNumbers,
@@ -196,6 +197,26 @@ export class AdminController {
   ): Promise<OnlySuccessDto> {
     const result = await this.adminService.manuallyVerifyUser(email, data)
     return result
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Manually send user to verification queue.',
+    description:
+      'Manually send user to verification queue. This endpoint is only for manual administration.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success if all was updated accordingly.',
+    type: OnlySuccessDto,
+  })
+  @UseGuards(AdminGuard)
+  @Post('user/manually-send-to-verification-queue')
+  async manuallySendToVerificationQueue(
+    @Body() data: ManuallySendUserToVerificationQueueDto
+  ): Promise<OnlySuccessDto> {
+    const success = await this.adminService.manuallySendUserToVerificationQueue(data.where, data.identityData)
+    return success
   }
 
   @HttpCode(200)

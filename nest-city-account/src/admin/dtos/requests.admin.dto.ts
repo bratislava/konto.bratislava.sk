@@ -10,6 +10,7 @@ import {
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
+import { Prisma } from "@prisma/client"
 
 export class RequestQueryUserByBirthNumberDto {
   @ApiProperty({
@@ -70,6 +71,24 @@ export class ManuallyVerifyUserRequestDto {
     message: 'Text must be Ico of length 6 to 8 character. Only numeric characters allowed.',
   })
   ico?: string
+}
+
+export class ManuallySendUserToVerificationQueueDto {
+  @ApiProperty({
+    description: 'User identifier for finding the user',
+    example: { email: 'user@example.com' },
+  })
+  where: Prisma.UserWhereUniqueInput
+
+  @ApiPropertyOptional({
+    description: 'Optional identity verification data',
+    example: {
+      birthNumber: '8808080000',
+      identityCard: 'AB123456'
+    }
+  })
+  @IsOptional()
+  identityData?: { birthNumber: string; identityCard: string }
 }
 
 export class RequestValidatePhysicalEntityRfoDto {

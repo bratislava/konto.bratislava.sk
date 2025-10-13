@@ -215,7 +215,10 @@ export class AdminController {
   async manuallySendToVerificationQueue(
     @Body() data: ManuallySendUserToVerificationQueueDto
   ): Promise<OnlySuccessDto> {
-    const success = await this.adminService.manuallySendUserToVerificationQueue(data.where, data.identityData)
+    const success = await this.adminService.manuallySendUserToVerificationQueue(
+      data.where,
+      data.identityData
+    )
     return success
   }
 

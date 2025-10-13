@@ -10,7 +10,7 @@ import {
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
-import { Prisma } from "@prisma/client"
+import { Prisma } from '@prisma/client'
 
 export class RequestQueryUserByBirthNumberDto {
   @ApiProperty({
@@ -84,11 +84,27 @@ export class ManuallySendUserToVerificationQueueDto {
     description: 'Optional identity verification data',
     example: {
       birthNumber: '8808080000',
-      identityCard: 'AB123456'
-    }
+      identityCard: 'AB123456',
+    },
   })
   @IsOptional()
-  identityData?: { birthNumber: string; identityCard: string }
+  identityData?: IdentityDataDto
+}
+
+export class IdentityDataDto {
+  @ApiProperty({
+    description: 'Birth number in format with slash',
+    example: '0000000000',
+  })
+  @IsBirthNumber()
+  birthNumber: string
+
+  @ApiProperty({
+    description: 'Birth number in format with slash',
+    example: '0000000000',
+  })
+  @IsString()
+  identityCard: string
 }
 
 export class RequestValidatePhysicalEntityRfoDto {

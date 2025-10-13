@@ -5,12 +5,12 @@ import { Interfaces } from 'mailgun.js/definitions'
 
 const mailgun = new Mailgun(formData)
 
-import { MailgunTemplates } from '../global-dtos/mailgun.dto'
-import { LineLoggerSubservice } from './line-logger.subservice'
-import { MAILGUN } from '../../user-verification/constants'
+import { MailgunTemplates } from '../utils/global-dtos/mailgun.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { MAILGUN } from '../user-verification/constants'
 
 @Injectable()
-export class MailgunSubservice {
+export class MailgunService {
   private mg: Interfaces.IMailgunClient
 
   private readonly config
@@ -20,7 +20,7 @@ export class MailgunSubservice {
   constructor() {
     // TODO temporarily uses dummy token which always passes
     if (!process.env.MAILGUN_API_KEY || !process.env.DEFAULT_MAILGUN_DOMAIN) {
-      throw new Error('MailgunSubservice ENV vars are not set.')
+      throw new Error('MailgunService ENV vars are not set.')
     }
     this.config = {
       defaultMailgunDomain: process.env.DEFAULT_MAILGUN_DOMAIN,
@@ -31,7 +31,7 @@ export class MailgunSubservice {
       key: process.env.MAILGUN_API_KEY,
       url: MAILGUN.API_URL,
     })
-    this.logger = new LineLoggerSubservice(MailgunSubservice.name)
+    this.logger = new LineLoggerSubservice(MailgunService.name)
     this.logger.log('Successfully initialized Mailgun')
   }
 

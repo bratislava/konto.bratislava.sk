@@ -13,6 +13,7 @@ import { TaxSubservice } from './utils/subservices/tax.subservice'
 import { ConfigModule } from '@nestjs/config'
 import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
+import { MailgunModule } from './mailgun/mailgun.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TasksModule } from './tasks/tasks.module'
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule,
     TasksModule,
+    MailgunModule,
   ],
   controllers: [AppController],
   providers: [TaxSubservice, ThrowerErrorGuard],

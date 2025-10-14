@@ -85,7 +85,12 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
     networkMode: 'always',
   })
 
-  return { subType, isSubscribed, changeSubscription, subscriptionChangePending }
+  return {
+    subType,
+    isSubscribed,
+    changeSubscription,
+    subscriptionChangePending,
+  }
 }
 
 export const useUserUpdateBloomreachData = () => {

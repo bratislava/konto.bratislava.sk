@@ -40,3 +40,19 @@ CREATE TRIGGER tax_order_trigger
 BEFORE INSERT OR UPDATE ON "Tax"
 FOR EACH ROW
 EXECUTE FUNCTION set_tax_order();
+
+-- ADDING NOT NULL CONSTRAINT TO THE ORDER COLUMN
+
+-- Add a check constraint that enforces NOT NULL but won't be detected by Prisma introspection
+-- Prisma doesn't automatically convert CHECK constraints to NOT NULL constraints in schema
+ALTER TABLE "public"."Tax" 
+ADD CONSTRAINT "tax_order_not_null_hidden" 
+CHECK ("order" IS NOT NULL);
+
+-- Add a comment to document this hidden constraint
+COMMENT ON CONSTRAINT "tax_order_not_null_hidden" ON "public"."Tax" 
+IS 'Hidden NOT NULL constraint for order column. Prisma schema keeps it nullable since the value is set by the trigger.';
+
+-- Optional: Add a comment to the column as well
+COMMENT ON COLUMN "public"."Tax"."order" 
+IS 'Non-null constraint enforced via hidden check constraint. Prisma schema keeps it nullable since the value is set by the trigger.';

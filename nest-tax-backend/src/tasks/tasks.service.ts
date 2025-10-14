@@ -183,11 +183,9 @@ export class TasksService {
 
     const { updated } =
       await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-        {
-          year: currentYear,
-          birthNumbers: taxes.map((t) => t.taxPayer.birthNumber),
-          taxType: TaxType.DZN,
-        },
+        TaxType.DZN,
+        currentYear,
+        taxes.map((t) => t.taxPayer.birthNumber),
       )
 
     this.logger.log(`TasksService: Updated ${updated} DZN taxes from Noris`)
@@ -410,11 +408,11 @@ export class TasksService {
     }
 
     const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+        TaxType.DZN,
         year,
         birthNumbers,
-        taxType: TaxType.DZN,
-      })
+      )
 
     // Move all requested TaxPayers to the end of the queue
     await this.prismaService.taxPayer.updateMany({

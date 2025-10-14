@@ -5,7 +5,6 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto } from '../noris/noris.dto'
 import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -15,7 +14,6 @@ import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
@@ -36,30 +34,26 @@ export class AdminService {
   }
 
   async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto,
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto> {
-    const taxDefinition = getTaxDefinitionByType(data.taxType)
-    if (!taxDefinition) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        `Tax definition not found: ${data.taxType}`,
-      )
-    }
     return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 
-  async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    const taxDefinition = getTaxDefinitionByType(data.taxType)
-    if (!taxDefinition) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        `Tax definition not found: ${data.taxType}`,
-      )
-    }
+  async updateDataFromNoris(
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
+  ) {
     return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 
@@ -122,9 +116,9 @@ export class AdminService {
 
     // Process the mock data to create the testing tax
     await this.norisService.processNorisTaxData(
+      TaxType.DZN,
       [mockTaxRecord],
       year,
-      TaxType.DZN,
     )
   }
 

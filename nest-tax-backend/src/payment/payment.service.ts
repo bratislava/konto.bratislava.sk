@@ -257,7 +257,7 @@ export class PaymentService {
   }
 
   async getPayGateUrlByUserYearType(
-    year: string,
+    year: number,
     birthNumber: string,
     type: TaxType,
     order: number,
@@ -291,7 +291,7 @@ export class PaymentService {
         where: {
           taxPayerId_year_type_order: {
             taxPayerId: taxPayer.id,
-            year: +year,
+            year,
             type,
             order,
           },
@@ -425,7 +425,7 @@ export class PaymentService {
             payment_source: TaxPaymentSource.CARD,
             year: taxPayment.tax.year,
             taxType: taxPayment.tax.type,
-            order: taxPayment.tax.order!, // non-null by DB trigger
+            order: taxPayment.tax.order!, // non-null by DB trigger and constraint
           },
           user.externalId,
         )

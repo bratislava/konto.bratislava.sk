@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 import { Request } from 'mssql'
 
-import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -39,17 +38,18 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
   }
 
   private async getTaxDataByYearAndBirthNumber(
-    data: RequestPostNorisLoadDataDto,
+    year: number,
+    birthNumbers: string[],
   ): Promise<NorisTaxPayersDto[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
         const request = new Request(connection)
 
-        request.input('year', data.year)
-        const birthNumbersPlaceholders = data.birthNumbers
+        request.input('year', year)
+        const birthNumbersPlaceholders = birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
-        data.birthNumbers.forEach((birthNumber, index) => {
+        birthNumbers.forEach((birthNumber, index) => {
           request.input(`birth_number${index}`, birthNumber)
         })
 
@@ -74,14 +74,18 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    year: number,
+    birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
-    const norisData = await this.getTaxDataByYearAndBirthNumber(data)
+    const norisData = await this.getTaxDataByYearAndBirthNumber(
+      year,
+      birthNumbers,
+    )
 
     const birthNumbersResult: string[] = await this.processNorisTaxData(
       norisData,
-      data.year,
+      year,
     )
 
     return { birthNumbers: birthNumbersResult }
@@ -101,12 +105,6 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
       )
 
     const taxDefinitionRealEstate = getTaxDefinitionByType(TaxType.DZN)
-    if (!taxDefinitionRealEstate) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Tax definition for tax type ${TaxType.DZN} not found`,
-      )
-    }
 
     const taxesExist = await this.prismaService.tax.findMany({
       select: {
@@ -161,7 +159,7 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
                     delivery_method:
                       userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
                     taxType: TaxType.DZN,
-                    order: tax.order!, // non-null by DB trigger
+                    order: tax.order!, // non-null by DB trigger and constraint
                   },
                   userFromCityAccount.externalId ?? undefined,
                 )
@@ -197,11 +195,12 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    data: RequestPostNorisLoadDataDto,
+    year: number,
+    birthNumbers: string[],
   ): Promise<{ updated: number }> {
     let norisData: NorisTaxPayersDto[]
     try {
-      norisData = await this.getTaxDataByYearAndBirthNumber(data)
+      norisData = await this.getTaxDataByYearAndBirthNumber(year, birthNumbers)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
@@ -214,12 +213,6 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
     let count = 0
 
     const taxDefinitionRealEstate = getTaxDefinitionByType(TaxType.DZN)
-    if (!taxDefinitionRealEstate) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Tax definition for tax type ${TaxType.DZN} not found`,
-      )
-    }
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
@@ -236,7 +229,7 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
         },
       },
       where: {
-        year: data.year,
+        year,
         taxPayer: {
           birthNumber: {
             in: norisData.map((norisRecord) => norisRecord.ICO_RC),
@@ -271,7 +264,7 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
 
               const tax = await this.insertTaxDataToDatabase(
                 norisItem,
-                data.year,
+                year,
                 tx,
                 userFromCityAccount,
                 taxDefinitionRealEstate,

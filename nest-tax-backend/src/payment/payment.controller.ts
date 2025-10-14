@@ -74,7 +74,7 @@ export class PaymentController {
   @Post('cardpay/by-year-and-type/:year/:type/:order')
   async payment(
     @BratislavaUser() baUser: BratislavaUserDto,
-    @Param('year') year: string,
+    @Param('year', ParseIntPipe) year: number,
     @Param('type', new ParseEnumPipe(TaxType)) type: TaxType,
     @Param('order', ParseIntPipe) order: number,
   ) {

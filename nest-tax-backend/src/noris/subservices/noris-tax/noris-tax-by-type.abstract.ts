@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
-import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
@@ -16,19 +15,53 @@ import {
 
 export abstract class NorisTaxByType {
   constructor(protected readonly qrCodeSubservice: QrCodeSubservice) {}
+
+  /**
+   * Gets tax data from Noris and processes it by inserting into the database.
+   *
+   * @param year - Year of the taxes
+   * @param birthNumbers - Birth numbers of the tax payers to process
+   * @returns Birth numbers of the tax payers that were processed
+   */
   abstract getAndProcessNorisTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    year: number,
+    birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto>
 
+  /**
+   * Processes the tax data from Noris to insert into the database.
+   *
+   * @param norisData - Tax data from Noris
+   * @param year - Year of the taxes
+   * @returns Birth numbers of the tax payers that were processed
+   */
   abstract processNorisTaxData(
     norisData: NorisTaxPayersDto[],
     year: number,
   ): Promise<string[]>
 
+  /**
+   * Gets the tax data from Noris and updates the existing records in the database.
+   *
+   * @param year - Year of the taxes
+   * @param birthNumbers - Birth numbers of the tax payers to update
+   * @returns Number of records that were updated
+   */
   abstract getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    data: RequestPostNorisLoadDataDto,
+    year: number,
+    birthNumbers: string[],
   ): Promise<{ updated: number }>
 
+  /**
+   * Inserts the tax data into the database.
+   *
+   * @param dataFromNoris - Tax data from Noris
+   * @param year - Year of the taxes
+   * @param transaction - Transaction client
+   * @param userDataFromCityAccount - User data from City Account
+   * @param taxDefinition - Tax definition
+   * @returns The tax data that was inserted into the database, along with info about the tax payer.
+   */
   protected async insertTaxDataToDatabase(
     dataFromNoris: NorisTaxPayersDto,
     year: number,

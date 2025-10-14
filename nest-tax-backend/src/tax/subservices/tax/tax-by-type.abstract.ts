@@ -18,12 +18,30 @@ export abstract class TaxSubserviceByType {
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
+  /**
+   * Gets the tax detail for a given birth number, year and order.
+   *
+   * @param birthNumber - Birth number of the tax payer
+   * @param year - Year of the tax
+   * @param order - Order of the tax
+   * @returns Tax detail
+   */
   abstract getTaxDetail(
     birthNumber: string,
     year: number,
     order: number,
   ): Promise<ResponseTaxSummaryDetailDto>
 
+  /**
+   * Fetches the tax data from database for a given tax payer, year, type and order.
+   *
+   * @param taxPayerWhereUniqueInput - Tax payer where unique input
+   * @param include - Include fields
+   * @param year - Year of the tax
+   * @param type - Type of the tax
+   * @param order - Order of the tax
+   * @returns Tax data from database
+   */
   async fetchTaxData<T extends Prisma.TaxInclude>(
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
     include: T,

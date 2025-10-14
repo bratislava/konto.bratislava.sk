@@ -318,7 +318,7 @@ export class TaxService {
           amountToBePaid,
           status,
           type: tax.type,
-          order: tax.order!, // non-null by DB trigger
+          order: tax.order!, // non-null by DB trigger and constraint
         }
       }),
     )
@@ -353,13 +353,6 @@ export class TaxService {
     order: number,
   ): Promise<string> {
     const taxDefinition = getTaxDefinitionByType(type)
-    if (!taxDefinition) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorTaxTypesEnum.TAX_TYPE_NOT_FOUND,
-        `Tax type ${type} not found`,
-      )
-    }
-
     if (!taxDefinition.pdfOptions.generate) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorTaxTypesEnum.PDF_GENERATE_ERROR,
@@ -452,12 +445,6 @@ export class TaxService {
     )
 
     const taxDefinition = getTaxDefinitionByType(type)
-    if (!taxDefinition) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorTaxTypesEnum.TAX_TYPE_NOT_FOUND,
-        `Tax definition for type ${type} not found`,
-      )
-    }
 
     return getTaxDetailPureForInstallmentGenerator({
       taxId: tax.id,

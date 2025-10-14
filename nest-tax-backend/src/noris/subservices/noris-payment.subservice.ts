@@ -328,7 +328,7 @@ export class NorisPaymentSubservice {
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
           taxType: taxData.type,
-          order: taxData.order!, // non-null by DB trigger
+          order: taxData.order!, // non-null by DB trigger and constraint
         },
         userFromCityAccount.externalId,
       )

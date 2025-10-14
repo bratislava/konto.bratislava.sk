@@ -756,7 +756,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     ],
     specificSymbol: '2025200000',
     taxPayments: [],
-    taxDefinition: getTaxDefinitionByType(TaxType.DZN)!,
+    taxDefinition: getTaxDefinitionByType(TaxType.DZN),
   }
 
   it('should generate payment for the first installment', () => {

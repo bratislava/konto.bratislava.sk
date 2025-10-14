@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 
-import { RequestPostNorisLoadDataDto } from '../../admin/dtos/requests.dto'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NorisTaxPayersDto } from '../noris.dto'
@@ -34,9 +33,9 @@ export class NorisTaxSubservice {
   }
 
   async processNorisTaxData(
+    taxType: TaxType,
     norisData: NorisTaxPayersDto[],
     year: number,
-    taxType: TaxType,
   ): Promise<string[]> {
     return this.getImplementationByType(taxType).processNorisTaxData(
       norisData,
@@ -45,18 +44,25 @@ export class NorisTaxSubservice {
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
   ) {
     return this.getImplementationByType(
-      data.taxType,
-    ).getAndProcessNorisTaxDataByBirthNumberAndYear(data)
+      taxType,
+    ).getAndProcessNorisTaxDataByBirthNumberAndYear(year, birthNumbers)
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    data: RequestPostNorisLoadDataDto,
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
   ): Promise<{ updated: number }> {
     return this.getImplementationByType(
-      data.taxType,
-    ).getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(data)
+      taxType,
+    ).getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+      year,
+      birthNumbers,
+    )
   }
 }

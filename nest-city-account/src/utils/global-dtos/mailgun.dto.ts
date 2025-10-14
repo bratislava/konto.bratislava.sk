@@ -1,4 +1,5 @@
 import { MAILGUN } from '../../user-verification/constants'
+import { MailgunMessageData } from 'mailgun.js/definitions'
 
 interface RegistrationSuccessfulMailgunParams {
   to: string
@@ -55,6 +56,17 @@ export const identityCheckRejectedTemplate = ({
 })
 
 export const MailgunTemplates = {
+export type MailgunTemplateParams = {
+  '2023-registration-successful': RegistrationSuccessfulMailgunParams
+  '2023-identity-check-successful': IdentityCheckSuccessfulMailgunParams
+  '2023-identity-check-rejected': IdentityCheckRejectedMailgunParams
+}
+
+export type MailgunTemplateFunctions = {
+  [K in keyof MailgunTemplateParams]: (params: MailgunTemplateParams[K]) => MailgunMessageData
+}
+
+export const MailgunTemplates: MailgunTemplateFunctions = {
   '2023-registration-successful': registrationSuccessfulTemplate,
   '2023-identity-check-successful': identityCheckSuccessfulTemplate,
   '2023-identity-check-rejected': identityCheckRejectedTemplate,

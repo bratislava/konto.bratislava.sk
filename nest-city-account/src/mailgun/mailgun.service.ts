@@ -5,7 +5,7 @@ import { Interfaces } from 'mailgun.js/definitions'
 
 const mailgun = new Mailgun(formData)
 
-import { MailgunTemplates } from '../utils/global-dtos/mailgun.dto'
+import { MailgunTemplateParams, MailgunTemplates } from '../utils/global-dtos/mailgun.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MAILGUN } from '../user-verification/constants'
 
@@ -40,31 +40,22 @@ export class MailgunService {
   // we can use the logs to resend failed mails manually
   // TODO consider storing failed email options in DB / or an email scheduler
   async sendEmail<T extends keyof typeof MailgunTemplates>(
+  async sendEmail<T extends keyof MailgunTemplateParams>(
     templateKey: T,
-    options: Parameters<(typeof MailgunTemplates)[T]>[0]
+    options: MailgunTemplateParams[T]
   ) {
     try {
-      this.logger.log(
-        'About to send email with template',
-        templateKey,
-        'and options',
-        JSON.stringify(options)
-      )
       const response = await this.mg.messages.create(
         this.config.defaultMailgunDomain,
         MailgunTemplates[templateKey](options)
       )
-      this.logger.log('Mailgun response', response)
+      this.logger.log('Mailgun email sent. response', { templateKey, options, response })
     } catch (error) {
-      this.logger.error(
-        'WARNING - failed to send Mailgun email, with template',
+      this.logger.error('WARNING - failed to send Mailgun email, with template', {
         templateKey,
-        'and options',
-        JSON.stringify(options),
-        '. Error:',
+        options,
         error,
-        '. Continuing with regular response'
-      )
+      })
     }
   }
 }

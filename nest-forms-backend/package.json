@@ -22,6 +22,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config jest.e2e-config.ts",
+    "test:emails": "jest --config jest.emails-config.ts",
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
     "update-rjsf": "npm install @rjsf/utils@latest --save-exact",
     "update-aws": "npm install @aws-sdk/client-cognito-identity@latest @aws-sdk/client-cognito-identity-provider@latest @aws-sdk/client-sts@latest aws-jwt-verify@latest"

@@ -23,20 +23,26 @@ import { NorisTaxByType } from './noris-tax-by-type.abstract'
 
 @Injectable()
 export class NorisTaxCommunalWasteSubservice extends NorisTaxByType {
-  private readonly logger = new LineLoggerSubservice(
-    NorisTaxCommunalWasteSubservice.name,
-  )
-
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly connectionService: NorisConnectionSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
-    private readonly prismaService: PrismaService,
-    private readonly bloomreachService: BloomreachService,
     private readonly paymentSubservice: NorisPaymentSubservice,
+
     qrCodeSubservice: QrCodeSubservice,
+    throwerErrorGuard: ThrowerErrorGuard,
+    prismaService: PrismaService,
+    bloomreachService: BloomreachService,
   ) {
-    super(qrCodeSubservice)
+    const logger = new LineLoggerSubservice(
+      NorisTaxCommunalWasteSubservice.name,
+    )
+    super(
+      qrCodeSubservice,
+      prismaService,
+      bloomreachService,
+      throwerErrorGuard,
+      logger,
+    )
   }
 
   getAndProcessNorisTaxDataByBirthNumberAndYear(): Promise<CreateBirthNumbersResponseDto> {

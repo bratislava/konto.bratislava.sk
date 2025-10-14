@@ -2,7 +2,12 @@ import { Prisma } from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
+import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import { PrismaService } from '../../../prisma/prisma.service'
 import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { NorisTaxPayersDto } from '../../noris.dto'
@@ -14,7 +19,13 @@ import {
 } from '../../utils/mapping.helper'
 
 export abstract class NorisTaxByType {
-  constructor(protected readonly qrCodeSubservice: QrCodeSubservice) {}
+  constructor(
+    protected readonly qrCodeSubservice: QrCodeSubservice,
+    protected readonly prismaService: PrismaService,
+    protected readonly bloomreachService: BloomreachService,
+    protected readonly throwerErrorGuard: ThrowerErrorGuard,
+    protected readonly logger: LineLoggerSubservice,
+  ) {}
 
   /**
    * Gets tax data from Noris and processes it by inserting into the database.
@@ -55,19 +66,19 @@ export abstract class NorisTaxByType {
   /**
    * Inserts the tax data into the database.
    *
+   * @param taxDefinition - Tax definition
    * @param dataFromNoris - Tax data from Noris
    * @param year - Year of the taxes
    * @param transaction - Transaction client
    * @param userDataFromCityAccount - User data from City Account
-   * @param taxDefinition - Tax definition
    * @returns The tax data that was inserted into the database, along with info about the tax payer.
    */
   protected async insertTaxDataToDatabase(
+    taxDefinition: TaxDefinition,
     dataFromNoris: NorisTaxPayersDto,
     year: number,
     transaction: Prisma.TransactionClient,
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
-    taxDefinition: TaxDefinition,
   ): Promise<TaxWithTaxPayer> {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
     const taxAdministrator = await transaction.taxAdministrator.upsert({
@@ -151,5 +162,65 @@ export abstract class NorisTaxByType {
       data: taxDetailData,
     })
     return tax
+  }
+
+  protected readonly processTaxRecordFromNoris = async (
+    taxDefinition: TaxDefinition,
+    birthNumbersResult: Set<string>,
+    norisItem: NorisTaxPayersDto,
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    year: number,
+  ) => {
+    birthNumbersResult.add(norisItem.ICO_RC)
+
+    try {
+      await this.prismaService.$transaction(async (tx) => {
+        const userFromCityAccount =
+          userDataFromCityAccount[norisItem.ICO_RC] || null
+
+        if (!userFromCityAccount) {
+          return
+        }
+
+        const tax = await this.insertTaxDataToDatabase(
+          taxDefinition,
+          norisItem,
+          year,
+          tx,
+          userFromCityAccount,
+        )
+
+        const bloomreachTracker = await this.bloomreachService.trackEventTax(
+          {
+            amount: convertCurrencyToInt(norisItem.dan_spolu),
+            year,
+            delivery_method:
+              userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
+            taxType: taxDefinition.type,
+            order: tax.order!,
+          },
+          userFromCityAccount.externalId ?? undefined,
+        )
+        if (!bloomreachTracker) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+          )
+        }
+      })
+    } catch (error) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to insert tax to database.',
+          undefined,
+          undefined,
+          error,
+        ),
+      )
+
+      // Remove the birth number from the result set if insertion fails
+      birthNumbersResult.delete(norisItem.ICO_RC)
+    }
   }
 }

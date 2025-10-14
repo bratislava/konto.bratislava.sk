@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 import { Request } from 'mssql'
+import pLimit from 'p-limit'
 
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
@@ -13,7 +14,6 @@ import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.sub
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { NorisTaxPayersDto } from '../../noris.dto'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
-import { convertCurrencyToInt } from '../../utils/mapping.helper'
 import { queryPayersFromNoris } from '../../utils/noris.queries'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
@@ -21,20 +21,28 @@ import { NorisTaxByType } from './noris-tax-by-type.abstract'
 
 @Injectable()
 export class NorisTaxRealEstateSubservice extends NorisTaxByType {
-  private readonly logger = new LineLoggerSubservice(
-    NorisTaxRealEstateSubservice.name,
-  )
+  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+
+  private readonly concurrencyLimit = pLimit(this.concurrency)
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly connectionService: NorisConnectionSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
-    private readonly prismaService: PrismaService,
-    private readonly bloomreachService: BloomreachService,
     private readonly paymentSubservice: NorisPaymentSubservice,
+
+    throwerErrorGuard: ThrowerErrorGuard,
+    bloomreachService: BloomreachService,
     qrCodeSubservice: QrCodeSubservice,
+    prismaService: PrismaService,
   ) {
-    super(qrCodeSubservice)
+    const logger = new LineLoggerSubservice(NorisTaxRealEstateSubservice.name)
+    super(
+      qrCodeSubservice,
+      prismaService,
+      bloomreachService,
+      throwerErrorGuard,
+      logger,
+    )
   }
 
   private async getTaxDataByYearAndBirthNumber(
@@ -128,64 +136,22 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
       taxesExist.map((tax) => tax.taxPayer.birthNumber),
     )
 
+    const norisDataNotInDatabase = norisData.filter(
+      (norisItem) => !birthNumbersWithExistingTax.has(norisItem.ICO_RC),
+    )
+
     await Promise.all(
-      norisData.map(async (norisItem) => {
-        birthNumbersResult.add(norisItem.ICO_RC)
-
-        const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
-        if (taxExists) {
-          return
-        }
-
-        try {
-          await this.prismaService.$transaction(async (tx) => {
-            const userFromCityAccount =
-              userDataFromCityAccount[norisItem.ICO_RC] || null
-
-            const tax = await this.insertTaxDataToDatabase(
-              norisItem,
-              year,
-              tx,
-              userFromCityAccount,
-              taxDefinitionRealEstate,
-            )
-
-            if (userFromCityAccount) {
-              const bloomreachTracker =
-                await this.bloomreachService.trackEventTax(
-                  {
-                    amount: convertCurrencyToInt(norisItem.dan_spolu),
-                    year,
-                    delivery_method:
-                      userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
-                    taxType: TaxType.DZN,
-                    order: tax.order!, // non-null by DB trigger and constraint
-                  },
-                  userFromCityAccount.externalId ?? undefined,
-                )
-              if (!bloomreachTracker) {
-                throw this.throwerErrorGuard.InternalServerErrorException(
-                  ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
-                )
-              }
-            }
-          })
-        } catch (error) {
-          this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to insert tax to database.',
-              undefined,
-              undefined,
-              error,
-            ),
+      norisDataNotInDatabase.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          await this.processTaxRecordFromNoris(
+            taxDefinitionRealEstate,
+            birthNumbersResult,
+            norisItem,
+            userDataFromCityAccount,
+            year,
           )
-
-          // Remove the birth number from the result set if insertion fails
-          birthNumbersResult.delete(norisItem.ICO_RC)
-        }
-      }),
+        }),
+      ),
     )
 
     // Add the payments for these added taxes to database
@@ -243,9 +209,12 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
     )
 
     await Promise.all(
-      norisData.map(async (norisItem) => {
-        const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
-        if (taxExists) {
+      norisData.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
+          if (!taxExists) {
+            return
+          }
           try {
             await this.prismaService.$transaction(async (tx) => {
               await tx.taxInstallment.deleteMany({
@@ -263,11 +232,11 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
                 userDataFromCityAccount[norisItem.ICO_RC] || null
 
               const tax = await this.insertTaxDataToDatabase(
+                taxDefinitionRealEstate,
                 norisItem,
                 year,
                 tx,
                 userFromCityAccount,
-                taxDefinitionRealEstate,
               )
               if (tax) {
                 count += 1
@@ -284,8 +253,8 @@ export class NorisTaxRealEstateSubservice extends NorisTaxByType {
               ),
             )
           }
-        }
-      }),
+        }),
+      ),
     )
 
     return { updated: count }

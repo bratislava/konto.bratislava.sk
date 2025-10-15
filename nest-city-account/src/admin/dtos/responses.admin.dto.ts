@@ -249,7 +249,7 @@ export class VerificationDataForUserResponseDto {
     example: 'a86bdfb7-7134-4dc2-b49b-1bc051d3825b',
   })
   @IsString()
-  @IsUUID()
+  @IsNotEmpty()
   externalId!: string | null
 
   @ApiProperty({

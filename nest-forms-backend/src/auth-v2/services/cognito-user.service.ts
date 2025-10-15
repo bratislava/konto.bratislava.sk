@@ -8,9 +8,9 @@ import { Expose, plainToInstance } from 'class-transformer'
 import {
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   validateOrReject,
 } from 'class-validator'
 import {
@@ -23,7 +23,8 @@ import { CognitoProvidersService } from './cognito-providers.service'
 
 class CognitoUserAttributesDto {
   @Expose()
-  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
   sub: string
 
   @Expose()

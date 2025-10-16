@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus, Tax, TaxPayment } from '@prisma/client'
+import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
 import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -228,8 +228,7 @@ export class NorisPaymentSubservice {
     const validPayments = norisPaymentData.filter(
       (norisPayment) =>
         norisPayment.variabilny_symbol !== undefined &&
-        norisPayment.uhrazeno !== undefined &&
-        norisPayment.zbyva_uhradit !== undefined,
+        norisPayment.uhrazeno !== undefined,
     )
 
     // Step 2: Process each payment separately
@@ -264,7 +263,6 @@ export class NorisPaymentSubservice {
         count: 0,
       }
       const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!)
-      const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit!)
 
       // Early return if payment already recorded
       if (payerData.sum !== null && payerData.sum >= paidFromNoris) {
@@ -289,12 +287,6 @@ export class NorisPaymentSubservice {
         )
       })
 
-      this.handlePaymentsErrors(
-        paidFromNoris,
-        taxData,
-        toPayFromNoris,
-        payerData.count,
-      )
       return 'CREATED'
     } catch (error) {
       return this.throwerErrorGuard.InternalServerErrorException(
@@ -329,53 +321,6 @@ export class NorisPaymentSubservice {
           year: taxData.year,
         },
         userFromCityAccount.externalId,
-      )
-    }
-  }
-
-  // TODO: Eventually we want to get rid of this function, and do some better error handling, than watching these specific cases.
-  /**
-   * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.
-   *
-   * @param paidFromNoris Already paid amount in Noris.
-   * @param taxData Tax object, containing all the information about the tax.
-   * @param forPayment Left to be paid amount in Noris.
-   * @param payerDataCountAll How many payments for this tax we have in the database.
-   */
-  private handlePaymentsErrors(
-    paidFromNoris: number,
-    taxData: Tax,
-    forPayment: number,
-    payerDataCountAll: number,
-  ) {
-    if (paidFromNoris > taxData.amount && forPayment === 0) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
-        ),
-      )
-    } else if (
-      payerDataCountAll === 0 &&
-      paidFromNoris >= taxData.amount &&
-      forPayment > 0
-    ) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
-        ),
-      )
-    } else if (
-      payerDataCountAll > 0 &&
-      paidFromNoris >= taxData.amount &&
-      forPayment > 0
-    ) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
-        ),
       )
     }
   }

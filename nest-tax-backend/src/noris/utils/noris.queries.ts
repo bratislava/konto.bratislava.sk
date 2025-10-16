@@ -12,14 +12,6 @@ SELECT
         when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
         else 0 end 
     ) uhrazeno,
-    (case 
-        when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-            case 
-                when dane21_doklad.stav_dokladu='S' then 0 
-                else view_doklad_saldo.zbyva_uhradit 
-            end)
-        else 0 
-    end ) zbyva_uhradit,
     subjekt_doklad_sub.reference_subjektu subjekt_refer, 
     ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
     lcs.dane21_priznanie.rok, 
@@ -420,14 +412,6 @@ const basePaymentsQuery = `
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
         ) uhrazeno,
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-                case 
-                    when dane21_doklad.stav_dokladu='S' then 0 
-                    else view_doklad_saldo.zbyva_uhradit 
-                end)
-            else 0 
-        end ) zbyva_uhradit,
         dane21_doklad.specificky_symbol specificky_symbol
     FROM lcs.dane21_doklad as dane21_doklad
     JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
@@ -504,14 +488,6 @@ export const getCommunalWasteTaxesFromNoris = `
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
         ) uhrazeno,
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-                case 
-                    when doklad.stav_dokladu='S' then 0 
-                    else view_doklad_saldo.zbyva_uhradit 
-                end)
-            else 0 
-        end ) zbyva_uhradit,
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,

@@ -428,4 +428,43 @@ export class TasksService {
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
     )
   }
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  @HandleErrors('Cron Error')
+  async loadOverpaymentsFromNoris() {
+    const fromDate = dayjs().subtract(3, 'day').toDate()
+    const toDate = dayjs().toDate()
+    const data = {
+      fromDate,
+      toDate,
+    }
+
+    this.logger.log(
+      `TasksService: Loading overpayments from Noris with data: ${JSON.stringify(data)}`,
+    )
+
+    let result: {
+      created: number
+      alreadyCreated: number
+    }
+    try {
+      const norisOverpaymentsData: Partial<NorisPaymentsDto>[] =
+        await this.norisService.getOverpaymentsDataFromNorisByDateRange(data)
+      result = await this.norisService.updatePaymentsFromNorisWithData(
+        norisOverpaymentsData,
+      )
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        'Failed to load overpayments from Noris',
+        undefined,
+        undefined,
+        error,
+      )
+    }
+
+    this.logger.log(
+      `TasksService: Loaded overpayments from Noris, result: ${JSON.stringify(result)}`,
+    )
+  }
 }

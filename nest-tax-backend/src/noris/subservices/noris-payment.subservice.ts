@@ -5,6 +5,7 @@ import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import {
+  RequestDateRangeDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
@@ -20,6 +21,7 @@ import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { NorisPaymentsDto } from '../noris.dto'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
+  queryOverpaymentsFromNorisByDateRange,
   queryPaymentsFromNorisByFromToDate,
   queryPaymentsFromNorisByVariableSymbols,
 } from '../utils/noris.queries'
@@ -117,6 +119,29 @@ export class NorisPaymentSubservice {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get payment data from Noris by variable symbols.',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
+    return norisData.recordset
+  }
+
+  async getOverpaymentsDataFromNorisByDateRange(data: RequestDateRangeDto) {
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
+
+        request.input('fromDate', data.fromDate)
+        request.input('toDate', data.toDate)
+
+        return request.query(queryOverpaymentsFromNorisByDateRange)
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get overpayments data from Noris by date range.',
           undefined,
           error instanceof Error ? undefined : <string>error,
           error instanceof Error ? error : undefined,

@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
 import {
   IsBoolean,
+  IsDate,
   IsDateString,
   IsEmail,
   IsEnum,
@@ -73,6 +75,24 @@ export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
     isArray: true,
   })
   variableSymbols: string[]
+}
+
+export class RequestDateRangeDto {
+  @ApiProperty({
+    description: 'From date',
+    default: '2022-01-01',
+  })
+  @IsDate()
+  @Type(() => Date)
+  fromDate: Date
+
+  @ApiProperty({
+    description: 'To date',
+    default: '2022-01-02',
+  })
+  @IsDate()
+  @Type(() => Date)
+  toDate: Date
 }
 
 export type RequestUpdateNorisDeliveryMethodsData = {

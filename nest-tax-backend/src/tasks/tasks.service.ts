@@ -429,7 +429,7 @@ export class TasksService {
     )
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async loadOverpaymentsFromNoris() {
     const fromDate = dayjs().subtract(3, 'day').toDate()

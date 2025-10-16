@@ -2,11 +2,14 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsArray,
   IsDate,
+  IsEmail,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
@@ -73,24 +76,6 @@ export class ManuallyVerifyUserRequestDto {
   ico?: string
 }
 
-export class ManuallySendUserToVerificationQueueDto {
-  @ApiProperty({
-    description: 'User identifier for finding the user',
-    example: { email: 'user@example.com' },
-  })
-  where: Prisma.UserWhereUniqueInput
-
-  @ApiPropertyOptional({
-    description: 'Optional identity verification data',
-    example: {
-      birthNumber: '8808080000',
-      identityCard: 'AB123456',
-    },
-  })
-  @IsOptional()
-  identityData?: IdentityDataDto
-}
-
 export class IdentityDataDto {
   @ApiProperty({
     description: 'Birth number in format with slash',
@@ -105,6 +90,73 @@ export class IdentityDataDto {
   })
   @IsString()
   identityCard: string
+}
+export class WhereUserBasicUniqueDto {
+  @ApiPropertyOptional({
+    description: 'Local UUID of user',
+    example: 'a86bdfb7-7134-4dc2-b49b-1bc051d3825b',
+  })
+  @IsOptional()
+  @IsUUID()
+  id?: string
+
+  @ApiPropertyOptional({
+    description: 'Email of the user',
+    example: 'user@example.com',
+  })
+  @IsOptional()
+  @IsEmail()
+  email?: string
+
+  @ApiPropertyOptional({
+    description: 'External ID (e.g., Cognito sub)',
+    example: 'e4d909c290d0fb1ca068ffaddf22cbd0',
+  })
+  @IsOptional()
+  @IsString()
+  externalId?: string
+
+  @ApiPropertyOptional({
+    description: 'IFO (internal identifier, if applicable)',
+    example: '123456987',
+  })
+  @IsOptional()
+  @IsString()
+  ifo?: string
+
+  @ApiPropertyOptional({
+    description: 'Birth number without slash (9 or 10 digits)',
+    example: '8808080000',
+  })
+  @IsOptional()
+  @IsBirthNumber({
+    message: 'Text must be birthnumber without slash (9 or 10 characters) and Only numbers ',
+  })
+  birthNumber?: string
+}
+
+export class ManuallySendUserToVerificationQueueDto {
+  @ApiProperty({
+    description: 'User identifier for finding the user',
+    example: { email: 'user@example.com' },
+    type: WhereUserBasicUniqueDto,
+  })
+  @ValidateNested()
+  @Type(() => WhereUserBasicUniqueDto)
+  @IsNotEmptyObject()
+  where: Prisma.UserWhereUniqueInput & WhereUserBasicUniqueDto
+
+  @ApiPropertyOptional({
+    description: 'Optional identity verification data',
+    example: {
+      birthNumber: '8808080000',
+      identityCard: 'AB123456',
+    },
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => IdentityDataDto)
+  identityData?: IdentityDataDto
 }
 
 export class RequestValidatePhysicalEntityRfoDto {

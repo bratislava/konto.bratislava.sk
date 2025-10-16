@@ -134,7 +134,7 @@ export class NorisPaymentSubservice {
         const request = new Request(connection)
 
         request.input('fromDate', data.fromDate)
-        request.input('toDate', data.toDate)
+        request.input('toDate', data.toDate ?? new Date())
 
         return request.query(queryOverpaymentsFromNorisByDateRange)
       },

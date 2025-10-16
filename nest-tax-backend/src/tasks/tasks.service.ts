@@ -433,10 +433,8 @@ export class TasksService {
   @HandleErrors('Cron Error')
   async loadOverpaymentsFromNoris() {
     const fromDate = dayjs().subtract(3, 'day').toDate()
-    const toDate = dayjs().toDate()
     const data = {
       fromDate,
-      toDate,
     }
 
     this.logger.log(

@@ -126,6 +126,16 @@ export interface RequestAdminDeleteTaxDto {
    */
   birthNumber: string
 }
+export interface RequestDateRangeDto {
+  /**
+   * From date
+   */
+  fromDate: string
+  /**
+   * To date
+   */
+  toDate?: string
+}
 export interface RequestPostNorisLoadDataDto {
   /**
    * Year of tax
@@ -1223,6 +1233,58 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
     },
     /**
      *
+     * @summary Integrate overpayments for day from - to.
+     * @param {RequestDateRangeDto} requestDateRangeDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateOverpaymentsFromNoris: async (
+      requestDateRangeDto: RequestDateRangeDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestDateRangeDto' is not null or undefined
+      assertParamExists(
+        'adminControllerUpdateOverpaymentsFromNoris',
+        'requestDateRangeDto',
+        requestDateRangeDto,
+      )
+      const localVarPath = `/admin/overpayments-from-noris`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestDateRangeDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
      * @summary Integrate Paid for day from - to.
      * @param {RequestPostNorisPaymentDataLoadDto} requestPostNorisPaymentDataLoadDto
      * @param {*} [options] Override http request option.
@@ -1454,6 +1516,35 @@ export const AdminApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary Integrate overpayments for day from - to.
+     * @param {RequestDateRangeDto} requestDateRangeDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerUpdateOverpaymentsFromNoris(
+      requestDateRangeDto: RequestDateRangeDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerUpdateOverpaymentsFromNoris(
+          requestDateRangeDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerUpdateOverpaymentsFromNoris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
      * @summary Integrate Paid for day from - to.
      * @param {RequestPostNorisPaymentDataLoadDto} requestPostNorisPaymentDataLoadDto
      * @param {*} [options] Override http request option.
@@ -1586,6 +1677,21 @@ export const AdminApiFactory = function (
     },
     /**
      *
+     * @summary Integrate overpayments for day from - to.
+     * @param {RequestDateRangeDto} requestDateRangeDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateOverpaymentsFromNoris(
+      requestDateRangeDto: RequestDateRangeDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerUpdateOverpaymentsFromNoris(requestDateRangeDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary Integrate Paid for day from - to.
      * @param {RequestPostNorisPaymentDataLoadDto} requestPostNorisPaymentDataLoadDto
      * @param {*} [options] Override http request option.
@@ -1699,6 +1805,22 @@ export class AdminApi extends BaseAPI {
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerUpdateDeliveryMethodsInNoris(requestUpdateNorisDeliveryMethodsDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Integrate overpayments for day from - to.
+   * @param {RequestDateRangeDto} requestDateRangeDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public adminControllerUpdateOverpaymentsFromNoris(
+    requestDateRangeDto: RequestDateRangeDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerUpdateOverpaymentsFromNoris(requestDateRangeDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

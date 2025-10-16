@@ -13,6 +13,7 @@ import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
+  RequestDateRangeDto,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
@@ -55,6 +56,15 @@ export class AdminService {
             norisRequest.data,
           )
     return this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
+  }
+
+  async updateOverpaymentsFromNoris(data: RequestDateRangeDto) {
+    const norisOverpaymentsData: Partial<NorisPaymentsDto>[] =
+      await this.norisService.getOverpaymentsDataFromNorisByDateRange(data)
+    const result = await this.norisService.updatePaymentsFromNorisWithData(
+      norisOverpaymentsData,
+    )
+    return result
   }
 
   async updateDeliveryMethodsInNoris({

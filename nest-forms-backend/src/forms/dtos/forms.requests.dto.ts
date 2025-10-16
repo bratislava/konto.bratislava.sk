@@ -13,7 +13,6 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  IsUUID,
   ValidateNested,
 } from 'class-validator'
 
@@ -132,7 +131,8 @@ export class FormUpdateBodyDto {
     default: 'e5c84a71-5985-40c7-bb19-e4ad22eda41c',
   })
   @IsOptional()
-  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
   userCognitoID?: string
 
   @ApiPropertyOptional({

@@ -394,14 +394,22 @@ export class TasksService {
 
     // Find users without tax this year
     const year = new Date().getFullYear()
-    const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
-      select: { birthNumber: true },
-      where: { taxes: { none: { year, type: TaxType.DZN } } },
-      orderBy: { updatedAt: 'asc' },
-      take: UPLOAD_BIRTHNUMBERS_BATCH,
-    })
 
-    const birthNumbers = taxPayersFromDb.map((p) => p.birthNumber)
+    const prioritized = await this.prismaService.$queryRaw<
+      { birthNumber: string }[]
+    >`
+      SELECT tp."birthNumber"
+      FROM "TaxPayer" tp
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM "Tax" t
+        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = 'DZN'
+      )
+      ORDER BY (tp."createdAt" = tp."updatedAt") DESC, tp."updatedAt" ASC
+      LIMIT ${UPLOAD_BIRTHNUMBERS_BATCH}
+    `
+
+    const birthNumbers = prioritized.map((p) => p.birthNumber)
 
     if (birthNumbers.length === 0) {
       return

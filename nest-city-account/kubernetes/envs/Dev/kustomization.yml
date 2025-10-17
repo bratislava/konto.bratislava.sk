@@ -1,7 +1,7 @@
 resources:
   - ../../base
   - secrets/database.secret.yml
-  - scaler.yml
+  - ./secrets/cognito.secret.yml
 
 generatorOptions:
   disableNameSuffixHash: true

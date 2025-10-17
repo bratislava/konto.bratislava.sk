@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsEnum,
@@ -10,7 +11,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/noris.types'
+import { DeliveryMethod } from '../../noris/utils/noris.types'
 
 export class RequestPostNorisLoadDataDto {
   @ApiProperty({
@@ -20,18 +21,8 @@ export class RequestPostNorisLoadDataDto {
   year: number
 
   @ApiProperty({
-    description: 'Birth numbers or ALL',
+    description: 'Birth numbers in format with slash',
     default: ['000000/0000'],
-  })
-  birthNumbers: string[] | 'All'
-}
-
-export class CreateBirthNumbersRequestDto {
-  @ApiProperty({
-    description:
-      'Birth numbers which should be added to tax payers in database. They must be in format with slash.',
-    default: ['000000/0000'],
-    type: [String],
   })
   birthNumbers: string[]
 }
@@ -41,25 +32,29 @@ export class RequestPostNorisPaymentDataLoadDto {
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'From date - if is not set, take one from database',
     default: '2022-01-01',
   })
+  @IsDateString()
   fromDate: string
 
   @ApiProperty({
     description: 'To date - if is not set, take one from database',
     default: '2022-01-02',
   })
+  @IsDateString()
   toDate: string
 
   @ApiProperty({
     description: 'If you want to count also overpayments.',
     default: false,
   })
-  overPayments: Boolean
+  @IsBoolean()
+  overPayments: boolean
 }
 
 export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
@@ -135,6 +130,13 @@ export class RequestUpdateNorisDeliveryMethodsDto {
 }
 
 export class RequestAdminCreateTestingTaxNorisData {
+  @ApiProperty({
+    description: 'Variable symbol of the tax',
+    example: '0000000001',
+  })
+  @IsString()
+  variableSymbol: string
+
   @ApiProperty({
     description: 'Delivery method for the tax',
     enum: DeliveryMethod,

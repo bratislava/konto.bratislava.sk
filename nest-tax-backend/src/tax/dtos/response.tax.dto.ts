@@ -3,6 +3,7 @@ import {
   DeliveryMethodNamed,
   TaxDetailareaType,
   TaxDetailType,
+  TaxType,
 } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
@@ -69,6 +70,10 @@ export enum InstallmentPaidStatusEnum {
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
+}
+
+export enum PaymentTypeEnum {
+  DZN = 'DzN',
 }
 
 export class ResponseTaxPayerDto {
@@ -550,13 +555,13 @@ export class ResponseTaxDto {
   lastCheckedPayments: Date
 
   @ApiProperty({
-    description:
-      'When were last checked updates for this tax with automatic task.',
-    default: '2023-04-13T14:39:49.004Z',
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
   })
-  @IsDate()
-  @Type(() => Date)
-  lastCheckedUpdates: Date
+  @IsEnum(TaxType)
+  type: TaxType
 
   @ApiProperty({
     description: 'delivery_method',

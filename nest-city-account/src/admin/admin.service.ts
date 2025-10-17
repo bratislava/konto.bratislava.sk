@@ -28,6 +28,7 @@ import { AdminErrorsEnum, AdminErrorsResponseEnum } from './admin.errors.enum'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
+  GetNewVerifiedUsersBirthNumbersResponseDto,
   MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
@@ -44,6 +45,9 @@ import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { CustomErrorAdminTypesEnum, CustomErrorAdminTypesResponseEnum } from './dtos/error.dto'
+
+const USER_REQUEST_LIMIT = 100
 
 @Injectable()
 export class AdminService {
@@ -637,13 +641,65 @@ export class AdminService {
       )
     }
 
-    await this.prismaService.user.update({
-      where: { birthNumber: data.birthNumber },
-      data: {
-        lastTaxYear: null,
-      },
-    })
     await this.taxSubservice.deleteTax(data)
     return { success: true }
+  }
+
+  async getNewVerifiedUsersBirthNumbers(
+    since: Date,
+    take?: number
+  ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+    // Take one more, so that we can return nextSince for the next user
+    // We can't do date+1, because two users can have the same timestamp
+    // This should be sufficient, if we do not expect 100+ users with the same timestamp
+    const limitedTake = Math.min(take ?? USER_REQUEST_LIMIT, USER_REQUEST_LIMIT) + 1
+    const users = await this.prismaService.user.findMany({
+      select: {
+        birthNumber: true,
+        lastVerificationIdentityCard: true,
+      },
+      where: {
+        lastVerificationIdentityCard: { gte: since },
+        birthNumber: {
+          not: null,
+        },
+        ...ACTIVE_USER_FILTER,
+      },
+      orderBy: {
+        lastVerificationIdentityCard: 'asc',
+      },
+      take: limitedTake,
+    })
+
+    if (
+      users.length === limitedTake &&
+      limitedTake >= 2 &&
+      users[0].lastVerificationIdentityCard?.getTime() === users[users.length - 1].lastVerificationIdentityCard?.getTime()
+    ) {
+      // If this happens because of manual edit in the database, please add random jitter to the dates
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorAdminTypesEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
+        CustomErrorAdminTypesResponseEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP
+      )
+    }
+
+    const lastVerify = users.at(-1)?.lastVerificationIdentityCard
+    // Default: no users -> return request timestamp
+    let nextSince: Date = since
+    if (users.length > 0) {
+      if (users.length < limitedTake) {
+        // End of list for now, advance timestamp one millisecond
+        nextSince = new Date(lastVerify!.getTime() + 1)
+      } else {
+        // Last entry is one over take. We want to return the timestamp of this
+        // entry for the next call, but not the entry itself
+        nextSince = lastVerify!
+        users.pop()
+      }
+    }
+
+    const birthNumbers = users.map((user) => user.birthNumber!)
+
+    return { birthNumbers, nextSince }
   }
 }

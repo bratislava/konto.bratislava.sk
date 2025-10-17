@@ -28,7 +28,7 @@ export const createTestingTaxMock = (
 
     // payment data
     specificky_symbol: '2024100000',
-    variabilny_symbol: '0000000001',
+    variabilny_symbol: norisData.variableSymbol,
     uhrazeno: norisData.alreadyPaid,
     zbyva_uhradit: (
       parseFloat(norisData.taxTotal.replace(',', '.')) -
@@ -47,7 +47,6 @@ export const createTestingTaxMock = (
     subjekt_refer: '123456789',
     dan_pozemky: '0',
     dan_stavby_SPOLU: '0',
-    ulica_tb: 'test ulica',
     ulica_tb_cislo: 'test ulica cislo',
     psc_ref_tb: 'test psc',
     psc_naz_tb: 'test psc nazov',
@@ -126,21 +125,6 @@ export const createTestingTaxMock = (
     dan_stavby_viac: '300,25',
     dan_byty: norisData.taxTotal,
     adresa_tp_sidlo: 'test sidlo',
-
-    // envelope data
-    obalka_ulica: 'Testovacia ulica 123',
-    obalka_psc: '85000',
-    obalka_mesto: 'Bratislava',
-    obalka_stat: 'Slovensko',
-
-    // money transfer data
-    pouk_cena_bez_hal: norisData.taxTotal.split(',')[0],
-    pouk_cena_hal: norisData.taxTotal.includes(',')
-      ? norisData.taxTotal.split(',')[1]
-      : '00',
-
-    // user attribute
-    uzivatelsky_atribut: 'Test attribute',
 
     // user type
     TYP_USER: 'FO',

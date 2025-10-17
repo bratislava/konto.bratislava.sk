@@ -453,6 +453,17 @@ export class TasksService {
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async loadOverpaymentsFromNoris() {
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'OVERPAYMENTS_FROM_NORIS_ENABLED',
+    ])
+
+    if (config.OVERPAYMENTS_FROM_NORIS_ENABLED !== 'true') {
+      this.logger.log('Overpayments from Noris are not enabled. Skipping task.')
+      return
+    }
+
+    this.logger.log('Starting loadOverpaymentsFromNoris task')
+
     const fromDate = dayjs().subtract(3, 'day').toDate()
     const data = {
       fromDate,

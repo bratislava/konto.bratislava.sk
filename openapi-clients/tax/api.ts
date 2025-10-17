@@ -132,9 +132,9 @@ export interface RequestPostNorisLoadDataDto {
    */
   year: number
   /**
-   * Birth numbers or ALL
+   * Birth numbers in format with slash
    */
-  birthNumbers: object
+  birthNumbers: Array<string>
 }
 export interface RequestPostNorisPaymentDataLoadDto {
   /**
@@ -152,7 +152,7 @@ export interface RequestPostNorisPaymentDataLoadDto {
   /**
    * If you want to count also overpayments.
    */
-  overPayments: object
+  overPayments: boolean
 }
 export interface RequestPostReportingSendReport {
   /**
@@ -682,10 +682,6 @@ export interface ResponseTaxDto {
    */
   lastCheckedPayments: string
   /**
-   * When were last checked updates for this tax with automatic task.
-   */
-  lastCheckedUpdates: string
-  /**
    * Type of tax
    */
   type: TaxType
@@ -1026,8 +1022,8 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
-     * @summary Integrate data from noris if not exists by birth numbers or all
+     * Loads new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Loads new data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1122,8 +1118,8 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
-     * @summary Integrate data from noris
+     * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1341,8 +1337,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     *
-     * @summary Integrate data from noris if not exists by birth numbers or all
+     * Loads new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Loads new data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1400,8 +1396,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     *
-     * @summary Integrate data from noris
+     * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1529,8 +1525,8 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
-     * @summary Integrate data from noris if not exists by birth numbers or all
+     * Loads new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Loads new data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1559,8 +1555,8 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
-     * @summary Integrate data from noris
+     * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1643,8 +1639,8 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
-   *
-   * @summary Integrate data from noris if not exists by birth numbers or all
+   * Loads new data from Noris by birth numbers and year, and saves it to our database.
+   * @summary Loads new data from Noris.
    * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -1675,8 +1671,8 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
-   *
-   * @summary Integrate data from noris
+   * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+   * @summary Updates data from Noris.
    * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

@@ -72,6 +72,10 @@ export enum InstallmentPaidStatusEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
 }
 
+export enum PaymentTypeEnum {
+  DZN = 'DzN',
+}
+
 export class ResponseTaxPayerDto {
   @ApiProperty({
     description: 'Numeric id of tax payer',
@@ -549,15 +553,6 @@ export class ResponseTaxDto {
   @IsDate()
   @Type(() => Date)
   lastCheckedPayments: Date
-
-  @ApiProperty({
-    description:
-      'When were last checked updates for this tax with automatic task.',
-    default: '2023-04-13T14:39:49.004Z',
-  })
-  @IsDate()
-  @Type(() => Date)
-  lastCheckedUpdates: Date
 
   @ApiProperty({
     description: 'Type of tax',

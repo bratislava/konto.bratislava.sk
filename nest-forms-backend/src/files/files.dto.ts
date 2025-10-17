@@ -10,6 +10,7 @@ import {
   IsBoolean,
   IsDate,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -101,8 +102,9 @@ export class FormInfo {
     example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
     nullable: true,
   })
-  @IsUUID()
   @IsOptional()
+  @IsString()
+  @IsNotEmpty()
   declare userExternalId?: string | null
 }
 

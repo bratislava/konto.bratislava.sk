@@ -62,9 +62,6 @@ export class BloomreachService {
     if (subType === GDPRSubTypeEnum.unsubscribe) {
       result.action = BloomreachConsentActionEnum.REJECT
     }
-    if (category === GDPRCategoryEnum.ESBS && type === GDPRTypeEnum.LICENSE) {
-      result.category = BloomreachConsentCategoryEnum.ESBS_LICENSE
-    }
     if (category === GDPRCategoryEnum.ESBS && type === GDPRTypeEnum.MARKETING) {
       result.category = BloomreachConsentCategoryEnum.ESBS_MARKETING
     }

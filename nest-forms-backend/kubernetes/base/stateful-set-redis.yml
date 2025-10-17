@@ -134,7 +134,7 @@ spec:
     spec:
       initContainers:
         - name: volume-permissions
-          image: docker.io/bitnami/bitnami-shell-archived:11-debian-11-r72
+          image: docker.io/bitnamilegacy/bitnami-shell-archived:11-debian-11-r72
           imagePullPolicy: "IfNotPresent"
           command:
             - /bin/bash

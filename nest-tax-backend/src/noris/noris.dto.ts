@@ -97,13 +97,11 @@ export interface NorisTaxPayersDto {
   SPL4_4: string
   specificky_symbol: string
   uhrazeno: string
-  zbyva_uhradit: string
 }
 
 export interface NorisPaymentsDto {
   variabilny_symbol: string
   uhrazeno: string
-  zbyva_uhradit: string
   specificky_symbol: string
 }
 

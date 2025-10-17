@@ -428,4 +428,86 @@ export class TasksService {
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
     )
   }
+
+  private async retryWithDelay<T>(
+    fn: () => Promise<T>,
+    retries = 3,
+    delayMs = 5 * 60 * 1000, // 5 minutes
+  ): Promise<T> {
+    try {
+      return await fn()
+    } catch (error) {
+      if (retries <= 0) {
+        throw error
+      }
+      this.logger.warn(
+        `Retry attempt failed. Retrying in ${(delayMs / 1000).toFixed(2)} seconds. Remaining retries: ${retries - 1}`,
+      )
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, delayMs)
+      })
+      return this.retryWithDelay(fn, retries - 1, delayMs)
+    }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @HandleErrors('Cron Error')
+  async loadOverpaymentsFromNoris() {
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'OVERPAYMENTS_FROM_NORIS_ENABLED',
+    ])
+
+    if (config.OVERPAYMENTS_FROM_NORIS_ENABLED !== 'true') {
+      this.logger.log('Overpayments from Noris are not enabled. Skipping task.')
+      return
+    }
+
+    this.logger.log('Starting loadOverpaymentsFromNoris task')
+
+    const fromDate = dayjs().subtract(3, 'day').toDate()
+    const data = {
+      fromDate,
+    }
+
+    this.logger.log(
+      `TasksService: Loading overpayments from Noris with data: ${JSON.stringify(data)}`,
+    )
+
+    let norisOverpaymentsData: Partial<NorisPaymentsDto>[]
+    try {
+      norisOverpaymentsData = await this.retryWithDelay(async () => {
+        return this.norisService.getOverpaymentsDataFromNorisByDateRange(data)
+      })
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        'Failed to load overpayments from Noris after all retry attempts',
+        undefined,
+        undefined,
+        error,
+      )
+    }
+
+    let result: {
+      created: number
+      alreadyCreated: number
+    }
+    try {
+      result = await this.norisService.updatePaymentsFromNorisWithData(
+        norisOverpaymentsData,
+      )
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        'Failed to update payments from Noris data',
+        undefined,
+        undefined,
+        error,
+      )
+    }
+
+    this.logger.log(
+      `TasksService: Loaded overpayments from Noris, result: ${JSON.stringify(result)}`,
+    )
+  }
 }

@@ -1,10 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus, Tax, TaxPayment } from '@prisma/client'
+import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
 import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
+import pLimit from 'p-limit'
 
 import {
+  RequestDateRangeDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
@@ -20,6 +22,7 @@ import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { NorisPaymentsDto } from '../noris.dto'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
+  queryOverpaymentsFromNorisByDateRange,
   queryPaymentsFromNorisByFromToDate,
   queryPaymentsFromNorisByVariableSymbols,
 } from '../utils/noris.queries'
@@ -28,6 +31,10 @@ import { NorisConnectionSubservice } from './noris-connection.subservice'
 @Injectable()
 export class NorisPaymentSubservice {
   private readonly logger: Logger = new Logger('NorisService')
+
+  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+
+  private readonly concurrencyLimit = pLimit(this.concurrency)
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -126,6 +133,29 @@ export class NorisPaymentSubservice {
     return norisData.recordset
   }
 
+  async getOverpaymentsDataFromNorisByDateRange(data: RequestDateRangeDto) {
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
+
+        request.input('fromDate', data.fromDate)
+        request.input('toDate', data.toDate ?? new Date())
+
+        return request.query(queryOverpaymentsFromNorisByDateRange)
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get overpayments data from Noris by date range.',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
+    return norisData.recordset
+  }
+
   private async createTaxMapByVariableSymbol(
     norisPaymentData: Partial<NorisPaymentsDto>[],
   ) {
@@ -150,12 +180,6 @@ export class NorisPaymentSubservice {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
 
-    // Get all tax IDs from taxesDataByVsMap
-    const taxIds = Array.from(taxesDataByVsMap.values(), (tax) => tax.id)
-
-    // Get aggregate payment data for all taxes at once
-    const taxPaymentDataMap = await this.fetchTaxPaymentAggregateMap(taxIds)
-
     // Get batch data from city account
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
@@ -168,7 +192,6 @@ export class NorisPaymentSubservice {
     const resultList = await this.processNorisPaymentData(
       norisPaymentData,
       taxesDataByVsMap,
-      taxPaymentDataMap,
       userDataFromCityAccount,
     )
     const created = resultList.filter((item) => item === 'CREATED').length
@@ -190,66 +213,35 @@ export class NorisPaymentSubservice {
     }
   }
 
-  private async fetchTaxPaymentAggregateMap(taxIds: number[]) {
-    const aggregateData = await this.prismaService.taxPayment.groupBy({
-      by: ['taxId'],
-      _sum: {
-        amount: true,
-      },
-      _count: {
-        _all: true,
-      },
-      where: {
-        taxId: {
-          in: taxIds,
-        },
-        status: PaymentStatus.SUCCESS,
-      },
-    })
-
-    // Create a map of aggregated data for easy lookup
-    return new Map(
-      aggregateData.map((data) => [
-        data.taxId,
-        {
-          sum: data._sum.amount || 0,
-          count: data._count._all,
-        },
-      ]),
-    )
-  }
-
   private async processNorisPaymentData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     const validPayments = norisPaymentData.filter(
       (norisPayment) =>
         norisPayment.variabilny_symbol !== undefined &&
-        norisPayment.uhrazeno !== undefined &&
-        norisPayment.zbyva_uhradit !== undefined,
+        norisPayment.uhrazeno !== undefined,
     )
 
-    // Step 2: Process each payment separately
+    // Step 2: Process each payment separately with concurrency limit
     const paymentProcesses = validPayments.map((norisPayment) =>
-      this.processIndividualPayment(
-        norisPayment,
-        taxesDataByVsMap,
-        taxPaymentDataMap,
-        userDataFromCityAccount,
+      this.concurrencyLimit(async () =>
+        this.processIndividualPayment(
+          norisPayment,
+          taxesDataByVsMap,
+          userDataFromCityAccount,
+        ),
       ),
     )
 
-    // Step 3: Execute all payment processes concurrently
+    // Step 3: Execute all payment processes with limited concurrency
     return Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(
     norisPayment: Partial<NorisPaymentsDto>,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     try {
@@ -259,22 +251,30 @@ export class NorisPaymentSubservice {
         return 'NOT_EXIST'
       }
 
-      const payerData = taxPaymentDataMap.get(taxData.id) || {
-        sum: 0,
-        count: 0,
-      }
       const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!)
-      const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit!)
 
-      // Early return if payment already recorded
-      if (payerData.sum !== null && payerData.sum >= paidFromNoris) {
-        return 'ALREADY_CREATED'
-      }
+      return await this.prismaService.$transaction(async (tx) => {
+        // Lock the tax row to prevent concurrent updates
+        await tx.$queryRaw`SELECT id FROM "Tax" WHERE id = ${taxData.id} FOR UPDATE`
 
-      await this.prismaService.$transaction(async (tx) => {
+        const currentSum = await tx.taxPayment.aggregate({
+          where: {
+            taxId: taxData.id,
+            status: PaymentStatus.SUCCESS,
+          },
+          _sum: { amount: true },
+        })
+
+        const alreadyPaid = currentSum._sum.amount ?? 0
+        const difference = paidFromNoris - alreadyPaid
+
+        if (difference <= 0) {
+          return 'ALREADY_CREATED'
+        }
+
         const createdTaxPayment = await tx.taxPayment.create({
           data: {
-            amount: paidFromNoris - (payerData.sum ?? 0),
+            amount: difference,
             source: 'BANK_ACCOUNT',
             specificSymbol: norisPayment.specificky_symbol,
             taxId: taxData.id,
@@ -287,15 +287,9 @@ export class NorisPaymentSubservice {
           createdTaxPayment,
           userDataFromCityAccount,
         )
-      })
 
-      this.handlePaymentsErrors(
-        paidFromNoris,
-        taxData,
-        toPayFromNoris,
-        payerData.count,
-      )
-      return 'CREATED'
+        return 'CREATED'
+      })
     } catch (error) {
       return this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -329,53 +323,6 @@ export class NorisPaymentSubservice {
           year: taxData.year,
         },
         userFromCityAccount.externalId,
-      )
-    }
-  }
-
-  // TODO: Eventually we want to get rid of this function, and do some better error handling, than watching these specific cases.
-  /**
-   * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.
-   *
-   * @param paidFromNoris Already paid amount in Noris.
-   * @param taxData Tax object, containing all the information about the tax.
-   * @param forPayment Left to be paid amount in Noris.
-   * @param payerDataCountAll How many payments for this tax we have in the database.
-   */
-  private handlePaymentsErrors(
-    paidFromNoris: number,
-    taxData: Tax,
-    forPayment: number,
-    payerDataCountAll: number,
-  ) {
-    if (paidFromNoris > taxData.amount && forPayment === 0) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
-        ),
-      )
-    } else if (
-      payerDataCountAll === 0 &&
-      paidFromNoris >= taxData.amount &&
-      forPayment > 0
-    ) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
-        ),
-      )
-    } else if (
-      payerDataCountAll > 0 &&
-      paidFromNoris >= taxData.amount &&
-      forPayment > 0
-    ) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
-        ),
       )
     }
   }

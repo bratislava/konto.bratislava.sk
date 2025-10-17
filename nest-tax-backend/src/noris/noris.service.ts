@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import {
+  RequestDateRangeDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
@@ -28,6 +29,10 @@ export class NorisService {
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
     return this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(data)
+  }
+
+  async getOverpaymentsDataFromNorisByDateRange(data: RequestDateRangeDto) {
+    return this.paymentSubservice.getOverpaymentsDataFromNorisByDateRange(data)
   }
 
   async getAndProcessNewNorisTaxDataByBirthNumberAndYear(

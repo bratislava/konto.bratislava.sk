@@ -21,6 +21,7 @@ import { AdminService } from './admin.service'
 import {
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
+  RequestDateRangeDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -67,7 +68,7 @@ export class AdminController {
   @Post('update-data-from-noris')
   async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
-  ): Promise<any> {
+  ): Promise<{ updated: number }> {
     return this.adminService.updateDataFromNoris(data)
   }
 
@@ -84,11 +85,28 @@ export class AdminController {
   @Post('payments-from-noris')
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
-  ): Promise<any> {
+  ): Promise<{ created: number; alreadyCreated: number }> {
     return this.adminService.updatePaymentsFromNoris({
       type: 'fromToDate',
       data,
     })
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Integrate overpayments for day from - to.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Integrate overpayments from Noris to our database inside the specified date range.',
+  })
+  @UseGuards(AdminGuard)
+  @Post('overpayments-from-noris')
+  async updateOverpaymentsFromNoris(
+    @Body() data: RequestDateRangeDto,
+  ): Promise<{ created: number; alreadyCreated: number }> {
+    return this.adminService.updateOverpaymentsFromNoris(data)
   }
 
   @HttpCode(200)

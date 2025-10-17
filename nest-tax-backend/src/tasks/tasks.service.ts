@@ -44,7 +44,7 @@ export class TasksService {
   ) {
     this.logger = new Logger('TasksService')
     // Check if the required environment variable is set
-    this.configService.getOrThrow<boolean>(
+    this.configService.getOrThrow<string>(
       'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
     )
   }
@@ -61,9 +61,9 @@ export class TasksService {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this function "updatePaymentsFromNoris" will overwrite the testing taxes payments which is not desired
     if (
-      !this.configService.getOrThrow<boolean>(
-        'FEATURE_TOGGLE_UPDATE_TAX_FROM_NORRIS',
-      )
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+      ) !== 'true'
     ) {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return
@@ -168,9 +168,9 @@ export class TasksService {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
     if (
-      !this.configService.getOrThrow<boolean>(
-        'FEATURE_TOGGLE_UPDATE_TAX_FROM_NORRIS',
-      )
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+      ) !== 'true'
     ) {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return

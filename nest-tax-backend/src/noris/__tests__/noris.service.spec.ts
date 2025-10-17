@@ -1,4 +1,27 @@
+import { createMock } from '@golevelup/ts-jest'
+import { ConfigService } from '@nestjs/config'
+import { Test, TestingModule } from '@nestjs/testing'
+
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { NorisService } from '../noris.service'
+
 describe('Minimal test suite', () => {
+  let service: NorisService
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        NorisService,
+        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        ThrowerErrorGuard,
+      ],
+    }).compile()
+
+    service = module.get<NorisService>(NorisService)
+  })
+  it('should be defined', () => {
+    expect(service).toBeDefined()
+  })
   test('should pass', () => {
     expect(true).toBe(true)
   })

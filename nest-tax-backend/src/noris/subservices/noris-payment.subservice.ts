@@ -3,6 +3,7 @@ import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
 import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
+import pLimit from 'p-limit'
 
 import {
   RequestDateRangeDto,
@@ -30,6 +31,10 @@ import { NorisConnectionSubservice } from './noris-connection.subservice'
 @Injectable()
 export class NorisPaymentSubservice {
   private readonly logger: Logger = new Logger('NorisService')
+
+  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+
+  private readonly concurrencyLimit = pLimit(this.concurrency)
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -175,12 +180,6 @@ export class NorisPaymentSubservice {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
 
-    // Get all tax IDs from taxesDataByVsMap
-    const taxIds = Array.from(taxesDataByVsMap.values(), (tax) => tax.id)
-
-    // Get aggregate payment data for all taxes at once
-    const taxPaymentDataMap = await this.fetchTaxPaymentAggregateMap(taxIds)
-
     // Get batch data from city account
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
@@ -193,7 +192,6 @@ export class NorisPaymentSubservice {
     const resultList = await this.processNorisPaymentData(
       norisPaymentData,
       taxesDataByVsMap,
-      taxPaymentDataMap,
       userDataFromCityAccount,
     )
     const created = resultList.filter((item) => item === 'CREATED').length
@@ -215,39 +213,9 @@ export class NorisPaymentSubservice {
     }
   }
 
-  private async fetchTaxPaymentAggregateMap(taxIds: number[]) {
-    const aggregateData = await this.prismaService.taxPayment.groupBy({
-      by: ['taxId'],
-      _sum: {
-        amount: true,
-      },
-      _count: {
-        _all: true,
-      },
-      where: {
-        taxId: {
-          in: taxIds,
-        },
-        status: PaymentStatus.SUCCESS,
-      },
-    })
-
-    // Create a map of aggregated data for easy lookup
-    return new Map(
-      aggregateData.map((data) => [
-        data.taxId,
-        {
-          sum: data._sum.amount || 0,
-          count: data._count._all,
-        },
-      ]),
-    )
-  }
-
   private async processNorisPaymentData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     const validPayments = norisPaymentData.filter(
@@ -256,24 +224,24 @@ export class NorisPaymentSubservice {
         norisPayment.uhrazeno !== undefined,
     )
 
-    // Step 2: Process each payment separately
+    // Step 2: Process each payment separately with concurrency limit
     const paymentProcesses = validPayments.map((norisPayment) =>
-      this.processIndividualPayment(
-        norisPayment,
-        taxesDataByVsMap,
-        taxPaymentDataMap,
-        userDataFromCityAccount,
+      this.concurrencyLimit(async () =>
+        this.processIndividualPayment(
+          norisPayment,
+          taxesDataByVsMap,
+          userDataFromCityAccount,
+        ),
       ),
     )
 
-    // Step 3: Execute all payment processes concurrently
+    // Step 3: Execute all payment processes with limited concurrency
     return Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(
     norisPayment: Partial<NorisPaymentsDto>,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     try {
@@ -283,21 +251,30 @@ export class NorisPaymentSubservice {
         return 'NOT_EXIST'
       }
 
-      const payerData = taxPaymentDataMap.get(taxData.id) || {
-        sum: 0,
-        count: 0,
-      }
       const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!)
 
-      // Early return if payment already recorded
-      if (payerData.sum !== null && payerData.sum >= paidFromNoris) {
-        return 'ALREADY_CREATED'
-      }
+      return await this.prismaService.$transaction(async (tx) => {
+        // Lock the tax row to prevent concurrent updates
+        await tx.$queryRaw`SELECT id FROM "Tax" WHERE id = ${taxData.id} FOR UPDATE`
 
-      await this.prismaService.$transaction(async (tx) => {
+        const currentSum = await tx.taxPayment.aggregate({
+          where: {
+            taxId: taxData.id,
+            status: PaymentStatus.SUCCESS,
+          },
+          _sum: { amount: true },
+        })
+
+        const alreadyPaid = currentSum._sum.amount ?? 0
+        const difference = paidFromNoris - alreadyPaid
+
+        if (difference <= 0) {
+          return 'ALREADY_CREATED'
+        }
+
         const createdTaxPayment = await tx.taxPayment.create({
           data: {
-            amount: paidFromNoris - (payerData.sum ?? 0),
+            amount: difference,
             source: 'BANK_ACCOUNT',
             specificSymbol: norisPayment.specificky_symbol,
             taxId: taxData.id,
@@ -310,9 +287,9 @@ export class NorisPaymentSubservice {
           createdTaxPayment,
           userDataFromCityAccount,
         )
-      })
 
-      return 'CREATED'
+        return 'CREATED'
+      })
     } catch (error) {
       return this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

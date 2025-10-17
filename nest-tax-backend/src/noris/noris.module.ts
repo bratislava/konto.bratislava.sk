@@ -11,6 +11,8 @@ import { NorisConnectionSubservice } from './subservices/noris-connection.subser
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
+import { NorisTaxCommunalWasteSubservice } from './subservices/noris-tax/noris-tax.communal-waste.subservice'
+import { NorisTaxRealEstateSubservice } from './subservices/noris-tax/noris-tax.real-estate.subservice'
 
 @Module({
   imports: [PrismaModule, BloomreachModule, ClientsModule],
@@ -23,6 +25,8 @@ import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
     ThrowerErrorGuard,
     CityAccountSubservice,
     QrCodeSubservice,
+    NorisTaxRealEstateSubservice,
+    NorisTaxCommunalWasteSubservice,
   ],
   exports: [NorisService],
   controllers: [],

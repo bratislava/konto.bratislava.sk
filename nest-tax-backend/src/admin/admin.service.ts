@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto } from '../noris/noris.dto'
@@ -13,7 +14,6 @@ import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
@@ -34,16 +34,26 @@ export class AdminService {
   }
 
   async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto,
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 
-  async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
+  async updateDataFromNoris(
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
+  ) {
     return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 
@@ -105,12 +115,18 @@ export class AdminService {
     }
 
     // Process the mock data to create the testing tax
-    await this.norisService.processNorisTaxData([mockTaxRecord], year)
+    await this.norisService.processNorisTaxData(
+      TaxType.DZN,
+      [mockTaxRecord],
+      year,
+    )
   }
 
   async deleteTax({
     year,
     birthNumber,
+    taxType,
+    order,
   }: RequestAdminDeleteTaxDto): Promise<void> {
     const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
     const taxPayer = await this.prismaService.taxPayer.findUnique({
@@ -127,9 +143,11 @@ export class AdminService {
 
     const tax = await this.prismaService.tax.findUnique({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
+          order,
         },
       },
     })
@@ -142,9 +160,11 @@ export class AdminService {
 
     await this.prismaService.tax.delete({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
+          order,
         },
       },
     })
@@ -160,6 +180,8 @@ export class AdminService {
         year,
         amount: 0,
         delivery_method: null,
+        taxType,
+        order,
       },
       userDataFromCityAccount.externalId ?? undefined,
     )

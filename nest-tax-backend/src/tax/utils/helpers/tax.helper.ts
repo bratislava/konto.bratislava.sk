@@ -32,6 +32,7 @@ export const getExistingTaxStatus = (
 
   return TaxStatusEnum.PARTIALLY_PAID
 }
+
 export const checkTaxDateInclusion = (
   currentTime: Dayjs,
   lookingForTaxDate: {
@@ -71,7 +72,9 @@ export const fixInstallmentTexts = (
   })
 }
 
-export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {
+export const generateItemizedRealEstateTaxDetail = (
+  taxDetails: TaxDetail[],
+) => {
   const apartmentTaxDetail = taxDetails
     .filter((detail) => detail.type === TaxDetailType.APARTMENT)
     .map((detail) => {

@@ -1,20 +1,23 @@
+import { todo } from 'node:test'
+
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, Prisma, TaxPayer } from '@prisma/client'
+import { PaymentStatus, Prisma, TaxPayer, TaxType } from '@prisma/client'
 import * as ejs from 'ejs'
 
 import prismaMock from '../../../test/singleton'
 import { PaymentService } from '../../payment/payment.service'
+import * as paymentHelper from '../../payment/utils/payment.helper'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import * as paymentHelper from '../../utils/helpers/payment.helper'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
 import { TaxPaidStatusEnum } from '../dtos/response.tax.dto'
+import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
 import { TaxService } from '../tax.service'
 import * as pdfHelper from '../utils/helpers/pdf.helper'
 import * as taxHelper from '../utils/helpers/tax.helper'
@@ -36,13 +39,15 @@ jest.mock('../utils/unified-tax.util', () => ({
   getTaxDetailPure: jest.fn(),
 }))
 
-jest.mock('../../utils/helpers/payment.helper', () => ({
+jest.mock('../../payment/utils/payment.helper', () => ({
   computeIsPayableYear: jest.fn(),
 }))
 
 jest.mock('../utils/helpers/pdf.helper', () => ({
-  taxDetailsToPdf: jest.fn(),
-  taxTotalsToPdf: jest.fn(),
+  RealEstatePdfHelper: {
+    taxDetailsToPdf: jest.fn(),
+    taxTotalsToPdf: jest.fn(),
+  },
 }))
 
 // Type definitions for the mock objects
@@ -150,6 +155,7 @@ describe('TaxService', () => {
         ThrowerErrorGuard,
         { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
+        TaxRealEstateSubservice,
       ],
     }).compile()
 
@@ -164,7 +170,7 @@ describe('TaxService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('getTaxByYear', () => {
+  describe('getTaxByYearAndType', () => {
     it('should return tax data for valid year and birth number', async () => {
       prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
       prismaMock.taxPayer.findUnique.mockResolvedValue({
@@ -184,13 +190,20 @@ describe('TaxService', () => {
         .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
       jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
 
-      const result = await service.getTaxByYear(2023, '123456/789')
+      const result = await service.getTaxByYearAndType(
+        2023,
+        '123456/789',
+        TaxType.DZN,
+        1,
+      )
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year: {
+          taxPayerId_year_type_order: {
             taxPayerId: 1,
             year: 2023,
+            order: 1,
+            type: TaxType.DZN,
           },
         },
         include: {
@@ -220,7 +233,9 @@ describe('TaxService', () => {
         'NotFoundException',
       )
 
-      await expect(service.getTaxByYear(2023, '')).rejects.toThrow()
+      await expect(
+        service.getTaxByYearAndType(2023, '', TaxType.DZN, 1),
+      ).rejects.toThrow()
 
       expect(notFoundExceptionSpy).toHaveBeenCalledWith(
         CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
@@ -235,7 +250,7 @@ describe('TaxService', () => {
       )
 
       await expect(
-        service.getTaxByYear(null as any, '123456/789'),
+        service.getTaxByYearAndType(null as any, '123456/789', TaxType.DZN, 1),
       ).rejects.toThrow()
 
       expect(notFoundExceptionSpy).toHaveBeenCalledWith(
@@ -263,7 +278,12 @@ describe('TaxService', () => {
         .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
       jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
 
-      const result = await service.getTaxByYear(2023, '123456/789')
+      const result = await service.getTaxByYearAndType(
+        2023,
+        '123456/789',
+        TaxType.DZN,
+        1,
+      )
 
       expect(createQrCodeSpy).toHaveBeenCalledWith({
         amount: 800, // 1000 - 200
@@ -294,11 +314,18 @@ describe('TaxService', () => {
         'createQrCode',
       )
 
-      const result = await service.getTaxByYear(2023, '123456/789')
+      const result = await service.getTaxByYearAndType(
+        2023,
+        '123456/789',
+        TaxType.DZN,
+        1,
+      )
 
       expect(createQrCodeSpy).not.toHaveBeenCalled()
       expect(result.qrCodeWeb).toBeNull()
     })
+
+    todo('test also other types of taxes')
   })
 
   describe('loadTaxes', () => {
@@ -345,7 +372,7 @@ describe('TaxService', () => {
         .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
       jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
 
-      const result = await service.loadTaxes('123456/789')
+      const result = await service.loadTaxes('123456/789', TaxType.DZN)
 
       expect(result).toEqual({
         isInNoris: true,
@@ -375,7 +402,7 @@ describe('TaxService', () => {
         'ForbiddenException',
       )
 
-      await expect(service.loadTaxes('')).rejects.toThrow()
+      await expect(service.loadTaxes('', TaxType.DZN)).rejects.toThrow()
 
       expect(forbiddenExceptionSpy).toHaveBeenCalledWith(
         CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
@@ -388,7 +415,7 @@ describe('TaxService', () => {
       prismaMock.tax.findMany.mockResolvedValue([])
       prismaMock.taxPayer.findUnique.mockResolvedValue(null)
 
-      const result = await service.loadTaxes('123456/789')
+      const result = await service.loadTaxes('123456/789', TaxType.DZN)
 
       expect(result).toEqual({
         isInNoris: false,
@@ -396,6 +423,8 @@ describe('TaxService', () => {
         taxAdministrator: null,
       })
     })
+
+    todo('test also other types of taxes')
   })
 
   describe('generatePdf', () => {
@@ -436,13 +465,22 @@ describe('TaxService', () => {
         .spyOn(taxHelper, 'getTaxStatus')
         .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
       jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
-      jest.spyOn(pdfHelper, 'taxDetailsToPdf').mockReturnValue(mockTaxDetails)
-      jest.spyOn(pdfHelper, 'taxTotalsToPdf').mockReturnValue(mockTaxTotals)
+      jest
+        .spyOn(pdfHelper.RealEstatePdfHelper, 'taxDetailsToPdf')
+        .mockReturnValue(mockTaxDetails)
+      jest
+        .spyOn(pdfHelper.RealEstatePdfHelper, 'taxTotalsToPdf')
+        .mockReturnValue(mockTaxTotals)
       const renderFileSpy = jest
         .spyOn(ejs, 'renderFile')
         .mockResolvedValue('<html>PDF content</html>')
 
-      const result = await service.generatePdf(2023, '123456/789')
+      const result = await service.generatePdf(
+        2023,
+        '123456/789',
+        TaxType.DZN,
+        1,
+      )
 
       expect(renderFileSpy).toHaveBeenCalledWith(
         'public/tax-pdf.ejs',
@@ -471,9 +509,9 @@ describe('TaxService', () => {
         .spyOn(service['throwerErrorGuard'], 'UnprocessableEntityException')
         .mockReturnValue(thrownError)
 
-      await expect(service.generatePdf(2023, '123456/789')).rejects.toThrow(
-        thrownError,
-      )
+      await expect(
+        service.generatePdf(2023, '123456/789', TaxType.DZN, 1),
+      ).rejects.toThrow(thrownError)
 
       expect(
         service['throwerErrorGuard'].UnprocessableEntityException,
@@ -485,9 +523,11 @@ describe('TaxService', () => {
         mockError,
       )
     })
+
+    todo('test also other types of taxes')
   })
 
-  describe('getListOfTaxesByBirthnumber', () => {
+  describe('getListOfTaxesByBirthnumberAndType', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
     beforeAll(async () => {
@@ -506,7 +546,9 @@ describe('TaxService', () => {
         'ForbiddenException',
       )
 
-      await expect(service.getListOfTaxesByBirthnumber('')).rejects.toThrow()
+      await expect(
+        service.getListOfTaxesByBirthnumberAndType('', TaxType.DZN),
+      ).rejects.toThrow()
 
       expect(forbiddenExceptionSpy).toHaveBeenCalledWith(
         CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
@@ -519,7 +561,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(null)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
       expect(result.taxAdministrator).toBeNull()
@@ -534,7 +579,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
@@ -548,7 +596,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
@@ -562,7 +613,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
     })
@@ -576,7 +630,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
@@ -592,7 +649,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       // With no taxes and shouldAddCurrentYear=true => LOOKING_FOR_YOUR_TAX
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
@@ -608,7 +668,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
 
       expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
     })
@@ -624,7 +687,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
 
@@ -638,7 +704,10 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
       expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
     })
 
@@ -652,59 +721,15 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumber('123456/789')
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
       expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
     })
   })
 
   describe('private methods', () => {
-    describe('fetchTaxData', () => {
-      it('should fetch tax data successfully', async () => {
-        prismaMock.taxPayer.findUnique.mockResolvedValue({
-          id: 1,
-        } as TaxPayer)
-        prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
-
-        const result = await service['fetchTaxData'](
-          { birthNumber: '123456/789' },
-          { taxInstallments: true },
-          2023,
-        )
-
-        expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
-          where: {
-            taxPayerId_year: {
-              year: 2023,
-              taxPayerId: 1,
-            },
-          },
-          include: {
-            taxInstallments: true,
-          },
-        })
-        expect(result).toEqual(mockTaxData)
-      })
-
-      it('should throw error when tax not found', async () => {
-        prismaMock.taxPayer.findUnique.mockResolvedValue({
-          id: 1,
-        } as TaxPayer)
-        prismaMock.tax.findUnique.mockResolvedValue(null)
-        const notFoundExceptionSpy = jest.spyOn(
-          service['throwerErrorGuard'],
-          'NotFoundException',
-        )
-        await expect(
-          service['fetchTaxData']({ birthNumber: '123456/789' }, {}, 2023),
-        ).rejects.toThrow()
-
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith(
-          CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-          CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        )
-      })
-    })
-
     describe('getAmountAlreadyPaidByTaxId', () => {
       it('should return total paid amount', async () => {
         prismaMock.taxPayment.aggregate.mockResolvedValue({

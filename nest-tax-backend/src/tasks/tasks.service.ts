@@ -148,28 +148,42 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async updateTaxesFromNoris() {
+    const currentYear = new Date().getFullYear()
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
-        variableSymbol: true,
-        year: true,
+        taxPayer: {
+          select: {
+            birthNumber: true,
+          },
+        },
       },
       where: {
-        dateTaxRuling: null,
+        year: currentYear,
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
       orderBy: {
-        lastCheckedUpdates: 'asc',
+        updatedAt: 'asc',
       },
     })
 
-    if (taxes.length === 0) return
+    if (taxes.length === 0) {
+      return
+    }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
+      `TasksService: Updating taxes from Noris with ids: ${taxes.map((t) => t.id).join(', ')}`,
     )
 
-    await this.norisService.updateTaxesFromNoris(taxes)
+    const { updated } =
+      await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+        {
+          year: currentYear,
+          birthNumbers: taxes.map((t) => t.taxPayer.birthNumber),
+        },
+      )
+
+    this.logger.log(`TasksService: Updated ${updated} taxes from Noris`)
 
     await this.prismaService.tax.updateMany({
       where: {
@@ -178,7 +192,7 @@ export class TasksService {
         },
       },
       data: {
-        lastCheckedUpdates: new Date(),
+        updatedAt: new Date(),
       },
     })
   }
@@ -373,14 +387,22 @@ export class TasksService {
 
     // Find users without tax this year
     const year = new Date().getFullYear()
-    const taxPayersFromDb = await this.prismaService.taxPayer.findMany({
-      select: { birthNumber: true },
-      where: { taxes: { none: { year } } },
-      orderBy: { updatedAt: 'asc' },
-      take: UPLOAD_BIRTHNUMBERS_BATCH,
-    })
 
-    const birthNumbers = taxPayersFromDb.map((p) => p.birthNumber)
+    const prioritized = await this.prismaService.$queryRaw<
+      { birthNumber: string }[]
+    >`
+      SELECT tp."birthNumber"
+      FROM "TaxPayer" tp
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM "Tax" t
+        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year}
+      )
+      ORDER BY (tp."createdAt" = tp."updatedAt") DESC, tp."updatedAt" ASC
+      LIMIT ${UPLOAD_BIRTHNUMBERS_BATCH}
+    `
+
+    const birthNumbers = prioritized.map((p) => p.birthNumber)
 
     if (birthNumbers.length === 0) {
       return

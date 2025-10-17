@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsEnum,
@@ -20,10 +21,10 @@ export class RequestPostNorisLoadDataDto {
   year: number
 
   @ApiProperty({
-    description: 'Birth numbers or ALL',
+    description: 'Birth numbers in format with slash',
     default: ['000000/0000'],
   })
-  birthNumbers: string[] | 'All'
+  birthNumbers: string[]
 }
 
 export class RequestPostNorisPaymentDataLoadDto {
@@ -31,25 +32,29 @@ export class RequestPostNorisPaymentDataLoadDto {
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'From date - if is not set, take one from database',
     default: '2022-01-01',
   })
+  @IsDateString()
   fromDate: string
 
   @ApiProperty({
     description: 'To date - if is not set, take one from database',
     default: '2022-01-02',
   })
+  @IsDateString()
   toDate: string
 
   @ApiProperty({
     description: 'If you want to count also overpayments.',
     default: false,
   })
-  overPayments: Boolean
+  @IsBoolean()
+  overPayments: boolean
 }
 
 export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {

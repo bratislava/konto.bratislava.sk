@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { Injectable } from '@nestjs/common'
-import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
+import { CognitoUserAttributesTierEnum, LegalPerson, Prisma, User } from '@prisma/client'
 import _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { UpvsIdentity } from 'src/upvs-identity-by-uri/dtos/upvsSchema'
@@ -46,6 +46,8 @@ import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorAdminTypesEnum, CustomErrorAdminTypesResponseEnum } from './dtos/error.dto'
+import { VerificationService } from '../user-verification/verification.service'
+import { RequestBodyVerifyIdentityCardDto } from '../user-verification/dtos/requests.verification.dto'
 
 const USER_REQUEST_LIMIT = 100
 
@@ -61,7 +63,8 @@ export class AdminService {
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
     private readonly taxSubservice: TaxSubservice,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly verificationService: VerificationService
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -447,6 +450,86 @@ export class AdminService {
     }
   }
 
+  async manuallySendUserToVerificationQueue(
+    where: Prisma.UserWhereUniqueInput,
+    identityData?: { birthNumber: string; identityCard: string }
+  ) {
+    const cognitoId = where.externalId || (await this.getUserDataWithLatestIdCard(where)).externalId
+    const queueUserData = identityData
+      ? { ...identityData, turnstileToken: '' }
+      : await this.extractIdentityDataFromUser(where)
+
+    if (!queueUserData) {
+      throw this.throwerErrorGuard.NotFoundException(
+        ErrorsEnum.NOT_FOUND_ERROR,
+        `User was found but birthNumber or identityCard were not available in the database. Please provide them manually.`,
+        toLogfmt({ input: where })
+      )
+    }
+
+    const cognitoUser = await this.cognitoSubservice.getDataFromCognito(cognitoId)
+    await this.verificationService.sendToQueue(
+      cognitoUser,
+      queueUserData,
+      CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
+    )
+
+    return { success: true }
+  }
+
+  private async getUserDataWithLatestIdCard(where: Prisma.UserWhereUniqueInput): Promise<{
+    externalId: string
+    userIdCardVerify:
+      | {
+          birthNumber: string
+          idCard: string
+        }
+      | undefined
+  }> {
+    const userData = await this.prismaService.user.findUnique({
+      where,
+      select: {
+        externalId: true,
+        userIdCardVerify: {
+          orderBy: { verifyStart: 'desc' },
+          take: 1,
+          select: { birthNumber: true, idCard: true },
+        },
+      },
+    })
+
+    if (!userData?.externalId) {
+      throw this.throwerErrorGuard.NotFoundException(
+        ErrorsEnum.NOT_FOUND_ERROR,
+        `User was not found with the given input`,
+        toLogfmt({ input: where })
+      )
+    }
+
+    return {
+      externalId: userData.externalId,
+      userIdCardVerify: userData.userIdCardVerify.length
+        ? userData.userIdCardVerify.at(0)
+        : undefined,
+    }
+  }
+
+  private async extractIdentityDataFromUser(
+    where: Prisma.UserWhereUniqueInput
+  ): Promise<RequestBodyVerifyIdentityCardDto | undefined> {
+    const userData = await this.getUserDataWithLatestIdCard(where)
+
+    if (!userData.userIdCardVerify) {
+      return undefined
+    }
+
+    return {
+      birthNumber: decryptData(userData.userIdCardVerify.birthNumber),
+      identityCard: decryptData(userData.userIdCardVerify.idCard),
+      turnstileToken: '',
+    }
+  }
+
   async manuallyVerifyUser(
     email: string,
     data: ManuallyVerifyUserRequestDto
@@ -674,7 +757,8 @@ export class AdminService {
     if (
       users.length === limitedTake &&
       limitedTake >= 2 &&
-      users[0].lastVerificationIdentityCard?.getTime() === users[users.length - 1].lastVerificationIdentityCard?.getTime()
+      users[0].lastVerificationIdentityCard?.getTime() ===
+        users[users.length - 1].lastVerificationIdentityCard?.getTime()
     ) {
       // If this happens because of manual edit in the database, please add random jitter to the dates
       throw this.throwerErrorGuard.InternalServerErrorException(

@@ -479,12 +479,11 @@ export class AdminService {
 
   private async getUserDataWithLatestIdCard(where: Prisma.UserWhereUniqueInput): Promise<{
     externalId: string
-    userIdCardVerify:
-      | {
+    userIdCardVerify?:
+      {
           birthNumber: string
           idCard: string
-        }
-      | undefined
+      }
   }> {
     const userData = await this.prismaService.user.findUnique({
       where,

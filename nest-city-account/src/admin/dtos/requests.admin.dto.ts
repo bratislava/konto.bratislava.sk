@@ -79,14 +79,14 @@ export class ManuallyVerifyUserRequestDto {
 export class IdentityDataDto {
   @ApiProperty({
     description: 'Birth number in format with slash',
-    example: '0000000000',
+    example: '123456/7890',
   })
   @IsBirthNumber()
   birthNumber: string
 
   @ApiProperty({
-    description: 'Birth number in format with slash',
-    example: '0000000000',
+    description: 'ID Card number',
+    example: 'XX024051',
   })
   @IsString()
   identityCard: string

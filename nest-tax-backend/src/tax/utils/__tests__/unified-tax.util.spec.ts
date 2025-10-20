@@ -1,8 +1,13 @@
 /* eslint-disable no-param-reassign */
 
-import { PaymentStatus, TaxDetailareaType, TaxDetailType } from '@prisma/client'
+import {
+  PaymentStatus,
+  TaxDetailareaType,
+  TaxDetailType,
+  TaxType,
+} from '@prisma/client'
 
-import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -750,9 +755,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     ],
     specificSymbol: '2025200000',
     taxPayments: [],
-    taxDefinition: {
-      paymentCalendarThreshold: 6600,
-    } as TaxDefinition,
+    taxDefinition: getTaxDefinitionByType(TaxType.DZN),
   }
 
   it('should generate payment for the first installment', () => {
@@ -812,7 +815,10 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     const options = {
       ...baseOptions,
       overallAmount: 100,
-      paymentCalendarThreshold: 200,
+      taxDefinition: {
+        ...baseOptions.taxDefinition,
+        paymentCalendarThreshold: 200,
+      },
       taxPayments: [],
     }
 
@@ -821,6 +827,31 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
         CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
         CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
       ),
+    )
+  })
+
+  it('should work when threshold is 0', () => {
+    const options = {
+      ...baseOptions,
+      overallAmount: 100,
+      taxDefinition: {
+        ...baseOptions.taxDefinition,
+        paymentCalendarThreshold: 0,
+      },
+      taxPayments: [],
+      installments: [
+        { order: 1, amount: 33 },
+        { order: 2, amount: 33 },
+        { order: 3, amount: 34 },
+      ],
+    }
+
+    const output = getTaxDetailPureForInstallmentGenerator(options)
+    expect(output).toEqual(
+      expect.objectContaining({
+        amount: 33,
+        taxId: 123,
+      }),
     )
   })
 

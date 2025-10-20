@@ -34,7 +34,7 @@
     "generate-and-build": "npm run generate && npm run build"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.23.1",
+    "@openapitools/openapi-generator-cli": "^2.25.0",
     "@types/app-root-dir": "^0.1.4",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.5.2",
@@ -48,8 +48,8 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
-    "tsx": "^4.20.5",
-    "typescript": "5.9.2"
+    "tsx": "^4.20.6",
+    "typescript": "5.9.3"
   },
   "peerDependencies": {
     "axios": "^1.12.2"

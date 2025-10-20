@@ -1,5 +1,6 @@
 import { Injectable, Logger, BadRequestException, UnauthorizedException } from '@nestjs/common'
 import axios, { AxiosError } from 'axios'
+import { Request, Response } from 'express'
 import { PartnerConfig } from './config/partner.config'
 import {
   TokenRequestDto,
@@ -18,6 +19,8 @@ export class OAuthService {
 
   private readonly cognitoDomain: string
 
+  private readonly loginPageUrl: string
+
   constructor() {
     if (!process.env.AWS_COGNITO_REGION || !process.env.AWS_COGNITO_USERPOOL_ID) {
       throw new Error('AWS Cognito configuration is missing')
@@ -31,12 +34,58 @@ export class OAuthService {
     this.cognitoDomain =
       process.env.OAUTH_COGNITO_DOMAIN ||
       `https://${process.env.AWS_COGNITO_USERPOOL_ID}.auth.${this.cognitoRegion}.amazoncognito.com`
+
+    // URL to your Next.js login page (defaults to /prihlasenie)
+    this.loginPageUrl = process.env.OAUTH_LOGIN_PAGE_URL || '/prihlasenie'
   }
 
   /**
-   * Build Cognito authorization URL and redirect
+   * Extract Cognito access token from request cookies
+   * This checks for Amplify's authentication cookies
    */
-  buildAuthorizeUrl(authorizeDto: AuthorizeRequestDto, partner: PartnerConfig): string {
+  private extractAccessTokenFromCookies(req: Request): string | null {
+    const cookies = req.headers.cookie
+    if (!cookies) {
+      return null
+    }
+
+    // Amplify stores tokens in cookies with pattern:
+    // CognitoIdentityServiceProvider.{clientId}.{username}.accessToken
+    const cookiePattern = /CognitoIdentityServiceProvider\.[^.]+\.[^.]+\.accessToken=([^;]+)/
+    const match = cookies.match(cookiePattern)
+
+    return match ? match[1] : null
+  }
+
+  /**
+   * Verify if the user has a valid Cognito session by validating their access token
+   */
+  async hasValidSession(req: Request): Promise<boolean> {
+    const accessToken = this.extractAccessTokenFromCookies(req)
+    if (!accessToken) {
+      return false
+    }
+
+    try {
+      // Validate token by calling Cognito's userInfo endpoint
+      await this.getUserInfo(accessToken)
+      return true
+    } catch (error) {
+      this.logger.debug('Access token validation failed', error)
+      return false
+    }
+  }
+
+  /**
+   * Build authorization URL
+   * If user is already authenticated, redirects to Cognito with identity token
+   * If user is not authenticated, redirects to login page with return URL
+   */
+  buildAuthorizeUrl(
+    authorizeDto: AuthorizeRequestDto,
+    partner: PartnerConfig,
+    req: Request
+  ): string {
     // Validate redirect URI is allowed for this partner
     if (!partner.allowedRedirectUris.includes(authorizeDto.redirect_uri)) {
       throw new BadRequestException(
@@ -67,10 +116,56 @@ export class OAuthService {
       params.append('nonce', authorizeDto.nonce)
     }
 
+    // Extract access token to pass to Cognito (for SSO)
+    const accessToken = this.extractAccessTokenFromCookies(req)
+    if (accessToken) {
+      // If user is already authenticated, include the identity token
+      // This allows Cognito to skip login and directly issue authorization code
+      params.append('identity_provider', 'COGNITO')
+      // Note: We could also use the identity token here if needed
+    }
+
     const authorizeUrl = `${this.cognitoDomain}/oauth2/authorize?${params.toString()}`
-    this.logger.log(`Redirecting to Cognito authorize URL for partner: ${partner.name}`)
+    this.logger.log(
+      `Redirecting to Cognito authorize URL for partner: ${partner.name} (SSO: ${!!accessToken})`
+    )
 
     return authorizeUrl
+  }
+
+  /**
+   * Build login redirect URL for unauthenticated users
+   * Preserves OAuth parameters for post-login redirect
+   */
+  buildLoginRedirectUrl(authorizeDto: AuthorizeRequestDto, baseUrl: string): string {
+    // Build the OAuth authorize URL that user will be redirected to after login
+    const oauthParams = new URLSearchParams({
+      response_type: authorizeDto.response_type,
+      client_id: authorizeDto.client_id,
+      redirect_uri: authorizeDto.redirect_uri,
+    })
+
+    if (authorizeDto.scope) {
+      oauthParams.append('scope', authorizeDto.scope)
+    }
+    if (authorizeDto.state) {
+      oauthParams.append('state', authorizeDto.state)
+    }
+    if (authorizeDto.code_challenge) {
+      oauthParams.append('code_challenge', authorizeDto.code_challenge)
+    }
+    if (authorizeDto.code_challenge_method) {
+      oauthParams.append('code_challenge_method', authorizeDto.code_challenge_method)
+    }
+    if (authorizeDto.nonce) {
+      oauthParams.append('nonce', authorizeDto.nonce)
+    }
+
+    const returnUrl = `${baseUrl}/oauth/authorize?${oauthParams.toString()}`
+    const loginUrl = `${this.loginPageUrl}?redirect=${encodeURIComponent(returnUrl)}`
+
+    this.logger.log('Redirecting unauthenticated user to login page')
+    return loginUrl
   }
 
   /**
@@ -190,6 +285,7 @@ export class OAuthService {
       token_endpoint: `${baseUrl}/oauth/token`,
       userinfo_endpoint: `${baseUrl}/oauth/userinfo`,
       jwks_uri: `${baseUrl}/oauth/.well-known/jwks.json`,
+      end_session_endpoint: `${baseUrl}/oauth/logout`,
       response_types_supported: ['code', 'token'],
       grant_types_supported: ['authorization_code', 'refresh_token', 'client_credentials'],
       subject_types_supported: ['public'],
@@ -208,6 +304,52 @@ export class OAuthService {
       ],
       code_challenge_methods_supported: ['S256', 'plain'],
     }
+  }
+
+  /**
+   * Build logout URL that logs out from Cognito and redirects to specified URI
+   */
+  buildLogoutUrl(clientId?: string, logoutUri?: string, state?: string): string {
+    const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
+    let redirectUri = logoutUri
+
+    // Validate logout URI if provided with client ID
+    if (clientId && logoutUri) {
+      const { findPartnerByClientId } = require('./config/partner.config')
+      const partner = findPartnerByClientId(clientId)
+
+      if (partner && !partner.allowedRedirectUris.includes(logoutUri)) {
+        this.logger.warn(
+          `Logout URI ${logoutUri} not allowed for client ${clientId}, using default`
+        )
+        redirectUri = undefined
+      }
+    }
+
+    // Default logout redirect - your app's home page or login page
+    if (!redirectUri) {
+      redirectUri = `${baseUrl}${this.loginPageUrl}`
+    }
+
+    // Append state if provided
+    if (state && redirectUri) {
+      const separator = redirectUri.includes('?') ? '&' : '?'
+      redirectUri = `${redirectUri}${separator}state=${encodeURIComponent(state)}`
+    }
+
+    // Build Cognito logout URL
+    const logoutParams = new URLSearchParams({
+      logout_uri: redirectUri,
+    })
+
+    if (clientId) {
+      logoutParams.append('client_id', clientId)
+    }
+
+    const cognitoLogoutUrl = `${this.cognitoDomain}/logout?${logoutParams.toString()}`
+    this.logger.log(`Building logout URL with redirect to: ${redirectUri}`)
+
+    return cognitoLogoutUrl
   }
 
   /**

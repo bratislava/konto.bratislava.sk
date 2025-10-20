@@ -38,14 +38,15 @@ export class OAuthController {
 
   /**
    * Authorization endpoint - initiates OAuth flow
-   * Proxies to Cognito's authorize endpoint
+   * Supports SSO: if user is already signed in, continues without re-authentication
    */
   @Get('authorize')
   @UseGuards(PartnerAuthGuard)
   @ApiOperation({
     summary: 'OAuth Authorization Endpoint',
     description:
-      'Initiates the OAuth 2.0 authorization code flow. Redirects to Cognito for authentication.',
+      'Initiates the OAuth 2.0 authorization code flow. If user is already authenticated, ' +
+      'continues without re-authentication (SSO). Otherwise, redirects to login page.',
   })
   @ApiQuery({ name: 'response_type', required: true, enum: ['code', 'token'] })
   @ApiQuery({ name: 'client_id', required: true, type: String })
@@ -57,7 +58,7 @@ export class OAuthController {
   @ApiQuery({ name: 'nonce', required: false, type: String })
   @ApiResponse({
     status: 302,
-    description: 'Redirects to Cognito authorization page',
+    description: 'Redirects to Cognito (if authenticated) or login page (if not)',
   })
   @ApiResponse({
     status: 400,
@@ -73,8 +74,23 @@ export class OAuthController {
       throw new UnauthorizedException('Invalid partner')
     }
 
-    const authorizeUrl = this.oauthService.buildAuthorizeUrl(authorizeDto, req.partner)
-    res.redirect(authorizeUrl)
+    // Check if user has a valid session
+    const hasValidSession = await this.oauthService.hasValidSession(req)
+
+    if (hasValidSession) {
+      // User is already authenticated - redirect directly to Cognito for authorization
+      const authorizeUrl = this.oauthService.buildAuthorizeUrl(
+        authorizeDto,
+        req.partner,
+        req
+      )
+      res.redirect(authorizeUrl)
+    } else {
+      // User is not authenticated - redirect to login page with return URL
+      const baseUrl = process.env.OAUTH_BASE_URL || `${req.protocol}://${req.get('host')}`
+      const loginUrl = this.oauthService.buildLoginRedirectUrl(authorizeDto, baseUrl)
+      res.redirect(loginUrl)
+    }
   }
 
   /**
@@ -242,5 +258,51 @@ export class OAuthController {
     // Cognito supports this via the RevokeToken API
     // For now, returning a success response
     return { message: 'Token revocation endpoint - to be implemented with Cognito RevokeToken API' }
+  }
+
+  /**
+   * Logout endpoint - handles OAuth logout with optional redirect
+   * This is used when a partner wants to log out the user
+   */
+  @Get('logout')
+  @HttpCode(302)
+  @ApiOperation({
+    summary: 'OAuth Logout Endpoint',
+    description:
+      'Logs out the user and optionally redirects to a specified URL. ' +
+      'Also logs out from Cognito to ensure complete session termination.',
+  })
+  @ApiQuery({
+    name: 'client_id',
+    required: false,
+    type: String,
+    description: 'Client ID of the partner requesting logout',
+  })
+  @ApiQuery({
+    name: 'logout_uri',
+    required: false,
+    type: String,
+    description: 'URI to redirect to after logout (must be in allowed redirect URIs)',
+  })
+  @ApiQuery({
+    name: 'state',
+    required: false,
+    type: String,
+    description: 'State parameter to include in redirect',
+  })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to Cognito logout and then to logout_uri or default page',
+  })
+  async logout(
+    @Query('client_id') clientId: string,
+    @Query('logout_uri') logoutUri: string,
+    @Query('state') state: string,
+    @Req() req: Request,
+    @Res() res: Response
+  ): Promise<void> {
+    // Build Cognito logout URL
+    const cognitoLogoutUrl = this.oauthService.buildLogoutUrl(clientId, logoutUri, state)
+    res.redirect(cognitoLogoutUrl)
   }
 }

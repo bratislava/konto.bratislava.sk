@@ -13,6 +13,10 @@ export interface RequestWithPartner extends Request {
   clientSecret?: string
 }
 
+/**
+ * Guard for endpoints that require BOTH client_id AND client_secret
+ * Used for: /oauth/token, /oauth/revoke
+ */
 @Injectable()
 export class PartnerAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -25,6 +29,10 @@ export class PartnerAuthGuard implements CanActivate {
       throw new UnauthorizedException('Client ID is required')
     }
 
+    if (!clientSecret) {
+      throw new UnauthorizedException('Client secret is required')
+    }
+
     // Find partner configuration
     const partner = findPartnerByClientId(clientId)
 
@@ -32,8 +40,8 @@ export class PartnerAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid client credentials')
     }
 
-    // Validate client secret if provided (required for token endpoint)
-    if (clientSecret && partner.clientSecret !== clientSecret) {
+    // Validate client secret
+    if (partner.clientSecret !== clientSecret) {
       throw new UnauthorizedException('Invalid client credentials')
     }
 

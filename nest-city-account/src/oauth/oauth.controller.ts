@@ -44,7 +44,7 @@ export class OAuthController {
    * - If not logged in: shows login form, then redirects back with access_token
    */
   @Get('authorize')
-  @UseGuards(PartnerAuthGuard)
+  @UseGuards(PartnerClientIdGuard)
   @ApiOperation({
     summary: 'OAuth Authorization Endpoint',
     description:
@@ -138,11 +138,7 @@ export class OAuthController {
       throw new UnauthorizedException('Invalid partner')
     }
 
-    // Validate client secret is provided (either in header or body)
-    if (!req.clientSecret && !tokenDto.client_secret) {
-      throw new UnauthorizedException('Client secret is required')
-    }
-
+    // PartnerAuthGuard already validated client_id and client_secret
     return this.oauthService.getToken(tokenDto, req.partner)
   }
 

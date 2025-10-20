@@ -67,7 +67,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     if (sessionInfo.authenticated && sessionInfo.accessToken) {
       // User is logged in - pass access token to backend
-      returnUrl.searchParams.set('session_token', sessionInfo.accessToken)
+      // Note: We use 'access_token' as the parameter name to match what
+      // the login page already does for remote redirects
+      returnUrl.searchParams.set('access_token', sessionInfo.accessToken)
     }
     // If not authenticated, just redirect without token
 

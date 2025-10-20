@@ -58,9 +58,9 @@ Frontend (konto.bratislava.sk)
     nest-city-account/              nest-city-account/
     oauth/authorize/continue        oauth/authorize/continue
     ?state=abc123                   ?state=abc123
-    &session_token=eyJxxx...        (no session_token)
+    &access_token=eyJxxx...         (no access_token)
     ↓                               ↓
-Backend receives session token     Backend receives NO token
+Backend receives access token      Backend receives NO token
     ↓                               ↓
     SSO: Redirects to Cognito       Redirects to login page:
     (auto-approves)                 konto.bratislava.sk/prihlasenie
@@ -217,6 +217,9 @@ OAUTH_MPA_REDIRECT_URIS=https://mpa.example.com/callback
 ```bash
 # Backend URL (for validation only - NO secrets!)
 NEXT_PUBLIC_NEST_CITY_ACCOUNT_URL=https://nest-city-account.bratislava.sk
+
+# Auth Approved Origins - IMPORTANT! Must include backend URL for OAuth redirects
+NEXT_PUBLIC_AUTH_APPROVED_ORIGINS=https://nest-city-account.bratislava.sk,https://nest-forms-backend.bratislava.sk,https://nest-tax-backend.bratislava.sk
 
 # AWS Cognito (already exists)
 AWS_COGNITO_REGION=eu-central-1

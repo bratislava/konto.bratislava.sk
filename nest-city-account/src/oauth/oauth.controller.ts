@@ -87,15 +87,15 @@ export class OAuthController {
 
   /**
    * Authorization continuation endpoint
-   * Step 2: Receives session token from frontend and continues OAuth flow
+   * Step 2: Receives access token from frontend (after login) and continues OAuth flow
    */
   @Get('authorize/continue')
   @HttpCode(302)
   @ApiOperation({
     summary: 'OAuth Authorization Continuation',
     description:
-      'Receives session token from frontend and continues OAuth flow. ' +
-      'If session_token is present, enables SSO. Otherwise, redirects to login.',
+      'Receives access token from frontend and continues OAuth flow. ' +
+      'If access_token is present (user logged in), enables SSO. Otherwise, redirects to login.',
   })
   @ApiQuery({
     name: 'state',
@@ -104,10 +104,10 @@ export class OAuthController {
     description: 'OAuth state ID',
   })
   @ApiQuery({
-    name: 'session_token',
+    name: 'access_token',
     required: false,
     type: String,
-    description: 'User session token from frontend',
+    description: 'User access token from frontend (automatically added after login)',
   })
   @ApiResponse({
     status: 302,
@@ -115,7 +115,7 @@ export class OAuthController {
   })
   async authorizeContinue(
     @Query('state') stateId: string,
-    @Query('session_token') sessionToken: string,
+    @Query('access_token') accessToken: string,
     @Res() res: Response
   ): Promise<void> {
     if (!stateId) {
@@ -130,12 +130,13 @@ export class OAuthController {
 
     const { authorizeParams, partner } = oauthState
 
-    if (sessionToken) {
+    if (accessToken) {
       // User is authenticated - redirect to Cognito with SSO
+      // The access_token proves the user is logged in
       const authorizeUrl = this.oauthService.buildCognitoAuthorizeUrl(
         authorizeParams,
         partner,
-        sessionToken
+        accessToken
       )
       res.redirect(authorizeUrl)
     } else {

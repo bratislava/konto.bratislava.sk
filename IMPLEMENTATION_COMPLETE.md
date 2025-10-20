@@ -89,6 +89,9 @@ OAUTH_MPA_REDIRECT_URIS=https://mpa.example.com/callback
 ```bash
 NEXT_PUBLIC_NEST_CITY_ACCOUNT_URL=https://nest-city-account.bratislava.sk
 
+# CRITICAL: Add backend URL to approved origins for OAuth redirects!
+NEXT_PUBLIC_AUTH_APPROVED_ORIGINS=https://nest-city-account.bratislava.sk,https://nest-forms-backend.bratislava.sk,https://nest-tax-backend.bratislava.sk
+
 # Cognito config (already exists)
 AWS_COGNITO_REGION=eu-central-1
 AWS_COGNITO_USERPOOL_ID=your-pool-id

@@ -334,11 +334,3 @@ export class OAuthController {
     res.redirect(frontendLogoutUrl.toString())
   }
 }
-   }
-    if (state) {
-      frontendLogoutUrl.searchParams.set('state', state)
-    }
-
-    res.redirect(frontendLogoutUrl.toString())
-  }
-}

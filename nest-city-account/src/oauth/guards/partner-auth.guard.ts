@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common'
 import { Request } from 'express'
 import { findPartnerByClientId, PartnerConfig } from '../config/partner.config'
@@ -15,6 +16,7 @@ export interface RequestWithPartner extends Request {
 
 /**
  * Guard for endpoints that require BOTH client_id AND client_secret
+ * Also validates redirect_uri if present
  * Used for: /oauth/token, /oauth/revoke
  */
 @Injectable()
@@ -43,6 +45,16 @@ export class PartnerAuthGuard implements CanActivate {
     // Validate client secret
     if (partner.clientSecret !== clientSecret) {
       throw new UnauthorizedException('Invalid client credentials')
+    }
+
+    // Validate redirect_uri if present
+    const redirectUri = request.body?.redirect_uri || request.query?.redirect_uri
+    if (redirectUri && typeof redirectUri === 'string') {
+      if (!partner.allowedRedirectUris.includes(redirectUri)) {
+        throw new BadRequestException(
+          `Redirect URI '${redirectUri}' is not allowed for this client`
+        )
+      }
     }
 
     // Attach partner config to request for use in controllers/services

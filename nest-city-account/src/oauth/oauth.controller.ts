@@ -24,7 +24,6 @@ import { Response } from 'express'
 import { OAuthService } from './oauth.service'
 import { PartnerAuthGuard, RequestWithPartner } from './guards/partner-auth.guard'
 import { PartnerClientIdGuard } from './guards/partner-client-id.guard'
-import { RedirectUriValidationGuard } from './guards/redirect-uri-validation.guard'
 import { findPartnerByClientId } from './config/partner.config'
 import {
   AuthorizeRequestDto,
@@ -48,7 +47,7 @@ export class OAuthController {
    * - If not logged in: shows login form, then redirects back with access_token
    */
   @Get('authorize')
-  @UseGuards(PartnerClientIdGuard, RedirectUriValidationGuard)
+  @UseGuards(PartnerClientIdGuard)
   @ApiOperation({
     summary: 'OAuth Authorization Endpoint',
     description:
@@ -111,7 +110,7 @@ export class OAuthController {
    */
   @Post('token')
   @HttpCode(200)
-  @UseGuards(PartnerAuthGuard, RedirectUriValidationGuard)
+  @UseGuards(PartnerAuthGuard)
   @ApiOperation({
     summary: 'OAuth Token Endpoint',
     description:

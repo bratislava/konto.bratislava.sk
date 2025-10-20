@@ -1,4 +1,6 @@
 import { TaxFragment } from '@clients/graphql-strapi/api'
+import { ROUTES } from 'frontend/api/constants'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import Alert from '../../../info-components/Alert'
@@ -11,13 +13,15 @@ type TaxesChannelChangeEffectiveNextYearAlertProps = {
 const TaxesChannelChangeEffectiveNextYearAlert = ({
   strapiTax: { channelChangeEffectiveNextYearTitle, channelChangeEffectiveNextYearText },
 }: TaxesChannelChangeEffectiveNextYearAlertProps) => {
+  const { t } = useTranslation('account')
+
   if (!channelChangeEffectiveNextYearTitle && !channelChangeEffectiveNextYearText) {
     return null
   }
 
   return (
     <Alert
-      type="info"
+      type="warning"
       fullWidth
       message={
         <>
@@ -29,6 +33,12 @@ const TaxesChannelChangeEffectiveNextYearAlert = ({
           ) : null}
         </>
       }
+      buttons={[
+        {
+          title: t('account_section_payment.effective_next_year_link_text'),
+          link: ROUTES.HELP,
+        },
+      ]}
     />
   )
 }

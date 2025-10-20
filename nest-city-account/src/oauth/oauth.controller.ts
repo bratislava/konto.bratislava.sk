@@ -23,6 +23,8 @@ import {
 import { Response } from 'express'
 import { OAuthService } from './oauth.service'
 import { PartnerAuthGuard, RequestWithPartner } from './guards/partner-auth.guard'
+import { PartnerClientIdGuard } from './guards/partner-client-id.guard'
+import { findPartnerByClientId } from './config/partner.config'
 import {
   AuthorizeRequestDto,
   TokenRequestDto,

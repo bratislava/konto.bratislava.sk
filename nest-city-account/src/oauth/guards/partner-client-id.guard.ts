@@ -4,14 +4,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common'
-import { Request } from 'express'
-import { findPartnerByClientId, PartnerConfig } from '../config/partner.config'
-
-export interface RequestWithPartner extends Request {
-  partner?: PartnerConfig
-  clientId?: string
-  clientSecret?: string
-}
+import { findPartnerByClientId } from '../config/partner.config'
+import { RequestWithPartner } from './partner-auth.guard'
 
 /**
  * Guard for endpoints that only need client_id validation (no secret required)

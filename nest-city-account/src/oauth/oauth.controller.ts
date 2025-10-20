@@ -10,6 +10,7 @@ import {
   HttpCode,
   Headers,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common'
 import {
   ApiTags,

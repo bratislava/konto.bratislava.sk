@@ -22,23 +22,13 @@ export class OAuthService {
 
   private readonly frontendLoginUrl: string
 
-  // Temporary storage for OAuth state (in production, use Redis or database)
-  private readonly oauthStateStore = new Map<
-    string,
-    {
-      authorizeParams: AuthorizeRequestDto
-      partner: PartnerConfig
-      createdAt: number
-    }
-  >()
-
   constructor() {
     if (!process.env.AWS_COGNITO_REGION || !process.env.AWS_COGNITO_USERPOOL_ID) {
       throw new Error('AWS Cognito configuration is missing')
     }
 
     if (!process.env.OAUTH_FRONTEND_URL) {
-      throw new Error('OAUTH_FRONTEND_URL is required for session checking')
+      throw new Error('OAUTH_FRONTEND_URL is required')
     }
 
     this.cognitoRegion = process.env.AWS_COGNITO_REGION
@@ -53,9 +43,6 @@ export class OAuthService {
     // Frontend URLs
     this.frontendUrl = process.env.OAUTH_FRONTEND_URL // e.g., https://konto.bratislava.sk
     this.frontendLoginUrl = process.env.OAUTH_FRONTEND_LOGIN_URL || `${this.frontendUrl}/prihlasenie`
-
-    // Clean up old OAuth states every 10 minutes
-    setInterval(() => this.cleanupExpiredStates(), 10 * 60 * 1000)
   }
 
   /**
@@ -301,7 +288,7 @@ export class OAuthService {
 
     // Default logout redirect - your app's home page or login page
     if (!redirectUri) {
-      redirectUri = `${baseUrl}${this.loginPageUrl}`
+      redirectUri = this.frontendLoginUrl
     }
 
     // Append state if provided

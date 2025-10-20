@@ -226,9 +226,7 @@ export class UserInfoResponseDto {
   })
   name?: string
 
-  @ApiPropertyOptional({
-    description: 'Custom attributes',
-  })
+  // Allow additional custom attributes (no decorator for index signature)
   [key: string]: unknown
 }
 

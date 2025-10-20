@@ -38,14 +38,16 @@ export class OAuthController {
 
   /**
    * Authorization endpoint - initiates OAuth flow
-   * Step 1: Store OAuth parameters and redirect to frontend for session check
+   * Redirects to frontend login page which automatically:
+   * - If user logged in: redirects back here with access_token (SSO)
+   * - If not logged in: shows login form, then redirects back with access_token
    */
   @Get('authorize')
   @UseGuards(PartnerAuthGuard)
   @ApiOperation({
     summary: 'OAuth Authorization Endpoint',
     description:
-      'Initiates the OAuth 2.0 authorization code flow. Redirects to frontend for session check.',
+      'Initiates the OAuth 2.0 authorization code flow. Redirects to frontend login page which handles session detection.',
   })
   @ApiQuery({ name: 'response_type', required: true, enum: ['code', 'token'] })
   @ApiQuery({ name: 'client_id', required: true, type: String })
@@ -55,9 +57,15 @@ export class OAuthController {
   @ApiQuery({ name: 'code_challenge', required: false, type: String })
   @ApiQuery({ name: 'code_challenge_method', required: false, enum: ['S256', 'plain'] })
   @ApiQuery({ name: 'nonce', required: false, type: String })
+  @ApiQuery({
+    name: 'access_token',
+    required: false,
+    type: String,
+    description: 'Access token from frontend (auto-added if user was logged in)',
+  })
   @ApiResponse({
     status: 302,
-    description: 'Redirects to frontend session check',
+    description: 'Redirects to frontend login or Cognito authorization',
   })
   @ApiResponse({
     status: 400,
@@ -66,6 +74,7 @@ export class OAuthController {
   })
   async authorize(
     @Query() authorizeDto: AuthorizeRequestDto,
+    @Query('access_token') accessToken: string,
     @Req() req: RequestWithPartner,
     @Res() res: Response
   ): Promise<void> {
@@ -73,75 +82,20 @@ export class OAuthController {
       throw new UnauthorizedException('Invalid partner')
     }
 
-    // Generate a temporary state ID to track this OAuth request
-    const crypto = require('crypto')
-    const stateId = crypto.randomBytes(32).toString('hex')
-
-    // Store OAuth parameters temporarily
-    this.oauthService.storeOAuthState(stateId, authorizeDto, req.partner)
-
-    // Redirect to frontend session check
-    const sessionCheckUrl = this.oauthService.buildSessionCheckUrl(stateId)
-    res.redirect(sessionCheckUrl)
-  }
-
-  /**
-   * Authorization continuation endpoint
-   * Step 2: Receives access token from frontend (after login) and continues OAuth flow
-   */
-  @Get('authorize/continue')
-  @HttpCode(302)
-  @ApiOperation({
-    summary: 'OAuth Authorization Continuation',
-    description:
-      'Receives access token from frontend and continues OAuth flow. ' +
-      'If access_token is present (user logged in), enables SSO. Otherwise, redirects to login.',
-  })
-  @ApiQuery({
-    name: 'state',
-    required: true,
-    type: String,
-    description: 'OAuth state ID',
-  })
-  @ApiQuery({
-    name: 'access_token',
-    required: false,
-    type: String,
-    description: 'User access token from frontend (automatically added after login)',
-  })
-  @ApiResponse({
-    status: 302,
-    description: 'Redirects to Cognito or login page',
-  })
-  async authorizeContinue(
-    @Query('state') stateId: string,
-    @Query('access_token') accessToken: string,
-    @Res() res: Response
-  ): Promise<void> {
-    if (!stateId) {
-      throw new BadRequestException('Missing state parameter')
-    }
-
-    // Retrieve stored OAuth state
-    const oauthState = this.oauthService.getAndRemoveOAuthState(stateId)
-    if (!oauthState) {
-      throw new BadRequestException('Invalid or expired OAuth state')
-    }
-
-    const { authorizeParams, partner } = oauthState
-
     if (accessToken) {
-      // User is authenticated - redirect to Cognito with SSO
-      // The access_token proves the user is logged in
+      // User is authenticated (came back from frontend with access_token)
+      // Redirect to Cognito for authorization
       const authorizeUrl = this.oauthService.buildCognitoAuthorizeUrl(
-        authorizeParams,
-        partner,
+        authorizeDto,
+        req.partner,
         accessToken
       )
       res.redirect(authorizeUrl)
     } else {
-      // User is not authenticated - redirect to login page
-      const loginUrl = this.oauthService.buildLoginRedirectUrl(stateId)
+      // No access_token - redirect to login page
+      // Login page will auto-redirect back here with access_token if user is already logged in
+      // Or show login form, then redirect back after successful login
+      const loginUrl = this.oauthService.buildLoginRedirectUrl(authorizeDto, req.partner)
       res.redirect(loginUrl)
     }
   }

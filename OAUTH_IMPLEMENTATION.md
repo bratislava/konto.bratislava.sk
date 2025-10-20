@@ -40,37 +40,34 @@ Partner (DPB)
     ↓
 Backend (nest-city-account)
     - Validates client_id (DPB partner)
-    - Stores OAuth parameters temporarily (stateId: abc123)
-    - Redirects to frontend for session check
+    - Checks for access_token parameter (not present initially)
+    - No access_token → Redirects to frontend login
     ↓
-    Redirects to: konto.bratislava.sk/api/session-check
-                  ?return_url=nest-city-account.bratislava.sk/oauth/authorize/continue?state=abc123
+    Redirects to: konto.bratislava.sk/prihlasenie
+                  ?redirect=nest-city-account.bratislava.sk/oauth/authorize?...
     ↓
-Frontend (konto.bratislava.sk)
-    - Checks Amplify cookies
-    - Is user logged in?
+Frontend Login Page (SSR - Server-Side Rendering)
+    - Checks if user is logged in (Amplify SSR)
     ↓
     ┌─────────────────────────────────────────────────┐
     │                                                 │
     ▼ YES (User logged in)          ▼ NO (Not logged in)
     
-    Redirects to:                   Redirects to:
-    nest-city-account/              nest-city-account/
-    oauth/authorize/continue        oauth/authorize/continue
-    ?state=abc123                   ?state=abc123
-    &access_token=eyJxxx...         (no access_token)
+    Auto-redirects to:              Shows login form
+    nest-city-account/              ↓
+    oauth/authorize?...             User enters credentials
+    &access_token=eyJxxx...         ↓
+    (automatically added!)          Login successful
     ↓                               ↓
-Backend receives access token      Backend receives NO token
+Backend receives access token      Auto-redirects to:
+    ↓                               nest-city-account/
+    SSO: Redirects to Cognito       oauth/authorize?...
+    (auto-approves)                 &access_token=eyJxxx...
     ↓                               ↓
-    SSO: Redirects to Cognito       Redirects to login page:
-    (auto-approves)                 konto.bratislava.sk/prihlasenie
-    ↓                               ?redirect=...
-    Cognito authorizes              ↓
-    ↓                               User logs in
-    Partner callback                ↓
-    with auth code                  Redirects back to OAuth flow
-                                    ↓
-                                    Continues as SSO flow →
+    Cognito authorizes              Same as logged in flow →
+    ↓
+    Partner callback
+    with auth code
 ```
 
 ### 2. Token Exchange (No Frontend Involvement)
@@ -132,15 +129,15 @@ Frontend (konto.bratislava.sk)
 #### Modified Files:
 ```
 src/oauth/
-├── oauth.service.ts          # Updated to use frontend session relay
+├── oauth.service.ts          # Simplified - no state storage needed!
 │   - Removed cookie checking
-│   - Added OAuth state storage
-│   - Added session check URL building
+│   - Removed OAuth state storage (not needed)
 │   - Added login redirect URL building
 │
-└── oauth.controller.ts       # Updated authorization flow
-    - /oauth/authorize        → Stores state, redirects to FE
-    - /oauth/authorize/continue → Receives session token, continues flow
+└── oauth.controller.ts       # Simplified authorization flow
+    - /oauth/authorize        → Single endpoint handles everything
+                                 - No access_token? Redirect to login
+                                 - Has access_token? Redirect to Cognito
     - /oauth/logout           → Redirects to FE logout
     - /oauth/token            → (Unchanged) Token exchange
     - /oauth/userinfo         → (Unchanged) User info
@@ -159,17 +156,13 @@ src/oauth/
 
 #### Created Files:
 ```
-pages/api/
-└── session-check.ts          # Session checker endpoint
-    - Checks Amplify cookies
-    - Returns session token if logged in
-    - Redirects back to backend
-
 pages/
 └── odhlasenie-oauth.tsx      # OAuth logout handler
     - Signs out from Amplify
     - Redirects to logout_uri
 ```
+
+**Note:** No session-check endpoint needed! Login page SSR already handles session detection.
 
 #### Modified Files:
 ```

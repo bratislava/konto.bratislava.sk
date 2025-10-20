@@ -59,75 +59,36 @@ export class OAuthService {
   }
 
   /**
-   * Store OAuth state temporarily (valid for 5 minutes)
+   * Build login/session check URL
+   * Frontend login page automatically:
+   * - Checks if user is logged in (SSR)
+   * - If logged in: redirects with access_token
+   * - If not logged in: shows login form
    */
-  storeOAuthState(
-    stateId: string,
+  buildLoginRedirectUrl(
     authorizeParams: AuthorizeRequestDto,
     partner: PartnerConfig
-  ): void {
-    this.oauthStateStore.set(stateId, {
-      authorizeParams,
-      partner,
-      createdAt: Date.now(),
+  ): string {
+    const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
+    
+    // Build the return URL that frontend will redirect back to
+    const returnParams = new URLSearchParams({
+      response_type: authorizeParams.response_type,
+      client_id: authorizeParams.client_id,
+      redirect_uri: authorizeParams.redirect_uri,
     })
-    this.logger.log(`Stored OAuth state: ${stateId}`)
-  }
 
-  /**
-   * Retrieve and remove OAuth state
-   */
-  getAndRemoveOAuthState(stateId: string): {
-    authorizeParams: AuthorizeRequestDto
-    partner: PartnerConfig
-  } | null {
-    const state = this.oauthStateStore.get(stateId)
-    if (!state) {
-      return null
-    }
-
-    // Check if expired (5 minutes)
-    if (Date.now() - state.createdAt > 5 * 60 * 1000) {
-      this.oauthStateStore.delete(stateId)
-      return null
-    }
-
-    this.oauthStateStore.delete(stateId)
-    return state
-  }
-
-  /**
-   * Clean up expired OAuth states
-   */
-  private cleanupExpiredStates(): void {
-    const now = Date.now()
-    const fiveMinutes = 5 * 60 * 1000
-
-    for (const [stateId, state] of this.oauthStateStore.entries()) {
-      if (now - state.createdAt > fiveMinutes) {
-        this.oauthStateStore.delete(stateId)
-        this.logger.debug(`Cleaned up expired OAuth state: ${stateId}`)
-      }
-    }
-  }
-
-  /**
-   * Build URL to frontend session check
-   */
-  buildSessionCheckUrl(stateId: string): string {
-    const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
-    const returnUrl = `${baseUrl}/oauth/authorize/continue?state=${stateId}`
+    if (authorizeParams.scope) returnParams.append('scope', authorizeParams.scope)
+    if (authorizeParams.state) returnParams.append('state', authorizeParams.state)
+    if (authorizeParams.code_challenge) returnParams.append('code_challenge', authorizeParams.code_challenge)
+    if (authorizeParams.code_challenge_method) returnParams.append('code_challenge_method', authorizeParams.code_challenge_method)
+    if (authorizeParams.nonce) returnParams.append('nonce', authorizeParams.nonce)
     
-    return `${this.frontendUrl}/api/session-check?return_url=${encodeURIComponent(returnUrl)}`
-  }
-
-  /**
-   * Build login redirect URL for unauthenticated users
-   */
-  buildLoginRedirectUrl(stateId: string): string {
-    const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
-    const returnUrl = `${baseUrl}/oauth/authorize/continue?state=${stateId}`
+    const returnUrl = `${baseUrl}/oauth/authorize?${returnParams.toString()}`
     
+    // Frontend login page with redirect parameter
+    // If user is logged in, they'll be auto-redirected with access_token
+    // If not, they'll see login form
     return `${this.frontendLoginUrl}?redirect=${encodeURIComponent(returnUrl)}`
   }
 

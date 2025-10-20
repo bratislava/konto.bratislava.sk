@@ -51,15 +51,14 @@ Partner → Backend OAuth Endpoints → Frontend Session Check → Back to Backe
 ### Frontend (Next.js)
 
 **Created:**
-- `pages/api/session-check.ts` - Session checker (NO secrets!)
 - `pages/odhlasenie-oauth.tsx` - OAuth logout handler
 
 **Modified:**
 - `pages/odhlasenie.tsx` - Added OAuth logout detection
 - `.env.example` - Removed OAuth secrets, kept only backend URL
 
-**Deleted:**
-- All previous OAuth API routes (authorize, token, userinfo, logout, discovery)
+**Not Needed:**
+- No custom session-check endpoint - login page SSR does this!
 
 ---
 

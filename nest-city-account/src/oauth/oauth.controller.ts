@@ -38,15 +38,14 @@ export class OAuthController {
 
   /**
    * Authorization endpoint - initiates OAuth flow
-   * Supports SSO: if user is already signed in, continues without re-authentication
+   * Step 1: Store OAuth parameters and redirect to frontend for session check
    */
   @Get('authorize')
   @UseGuards(PartnerAuthGuard)
   @ApiOperation({
     summary: 'OAuth Authorization Endpoint',
     description:
-      'Initiates the OAuth 2.0 authorization code flow. If user is already authenticated, ' +
-      'continues without re-authentication (SSO). Otherwise, redirects to login page.',
+      'Initiates the OAuth 2.0 authorization code flow. Redirects to frontend for session check.',
   })
   @ApiQuery({ name: 'response_type', required: true, enum: ['code', 'token'] })
   @ApiQuery({ name: 'client_id', required: true, type: String })
@@ -58,7 +57,7 @@ export class OAuthController {
   @ApiQuery({ name: 'nonce', required: false, type: String })
   @ApiResponse({
     status: 302,
-    description: 'Redirects to Cognito (if authenticated) or login page (if not)',
+    description: 'Redirects to frontend session check',
   })
   @ApiResponse({
     status: 400,
@@ -74,21 +73,74 @@ export class OAuthController {
       throw new UnauthorizedException('Invalid partner')
     }
 
-    // Check if user has a valid session
-    const hasValidSession = await this.oauthService.hasValidSession(req)
+    // Generate a temporary state ID to track this OAuth request
+    const crypto = require('crypto')
+    const stateId = crypto.randomBytes(32).toString('hex')
 
-    if (hasValidSession) {
-      // User is already authenticated - redirect directly to Cognito for authorization
-      const authorizeUrl = this.oauthService.buildAuthorizeUrl(
-        authorizeDto,
-        req.partner,
-        req
+    // Store OAuth parameters temporarily
+    this.oauthService.storeOAuthState(stateId, authorizeDto, req.partner)
+
+    // Redirect to frontend session check
+    const sessionCheckUrl = this.oauthService.buildSessionCheckUrl(stateId)
+    res.redirect(sessionCheckUrl)
+  }
+
+  /**
+   * Authorization continuation endpoint
+   * Step 2: Receives session token from frontend and continues OAuth flow
+   */
+  @Get('authorize/continue')
+  @HttpCode(302)
+  @ApiOperation({
+    summary: 'OAuth Authorization Continuation',
+    description:
+      'Receives session token from frontend and continues OAuth flow. ' +
+      'If session_token is present, enables SSO. Otherwise, redirects to login.',
+  })
+  @ApiQuery({
+    name: 'state',
+    required: true,
+    type: String,
+    description: 'OAuth state ID',
+  })
+  @ApiQuery({
+    name: 'session_token',
+    required: false,
+    type: String,
+    description: 'User session token from frontend',
+  })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to Cognito or login page',
+  })
+  async authorizeContinue(
+    @Query('state') stateId: string,
+    @Query('session_token') sessionToken: string,
+    @Res() res: Response
+  ): Promise<void> {
+    if (!stateId) {
+      throw new BadRequestException('Missing state parameter')
+    }
+
+    // Retrieve stored OAuth state
+    const oauthState = this.oauthService.getAndRemoveOAuthState(stateId)
+    if (!oauthState) {
+      throw new BadRequestException('Invalid or expired OAuth state')
+    }
+
+    const { authorizeParams, partner } = oauthState
+
+    if (sessionToken) {
+      // User is authenticated - redirect to Cognito with SSO
+      const authorizeUrl = this.oauthService.buildCognitoAuthorizeUrl(
+        authorizeParams,
+        partner,
+        sessionToken
       )
       res.redirect(authorizeUrl)
     } else {
-      // User is not authenticated - redirect to login page with return URL
-      const baseUrl = process.env.OAUTH_BASE_URL || `${req.protocol}://${req.get('host')}`
-      const loginUrl = this.oauthService.buildLoginRedirectUrl(authorizeDto, baseUrl)
+      // User is not authenticated - redirect to login page
+      const loginUrl = this.oauthService.buildLoginRedirectUrl(stateId)
       res.redirect(loginUrl)
     }
   }
@@ -262,7 +314,7 @@ export class OAuthController {
 
   /**
    * Logout endpoint - handles OAuth logout with optional redirect
-   * This is used when a partner wants to log out the user
+   * Redirects to frontend to clear session, then frontend redirects back
    */
   @Get('logout')
   @HttpCode(302)
@@ -270,7 +322,7 @@ export class OAuthController {
     summary: 'OAuth Logout Endpoint',
     description:
       'Logs out the user and optionally redirects to a specified URL. ' +
-      'Also logs out from Cognito to ensure complete session termination.',
+      'Redirects to frontend to clear Amplify session.',
   })
   @ApiQuery({
     name: 'client_id',
@@ -292,17 +344,38 @@ export class OAuthController {
   })
   @ApiResponse({
     status: 302,
-    description: 'Redirects to Cognito logout and then to logout_uri or default page',
+    description: 'Redirects to frontend logout page',
   })
   async logout(
     @Query('client_id') clientId: string,
     @Query('logout_uri') logoutUri: string,
     @Query('state') state: string,
-    @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    // Build Cognito logout URL
-    const cognitoLogoutUrl = this.oauthService.buildLogoutUrl(clientId, logoutUri, state)
-    res.redirect(cognitoLogoutUrl)
+    // Validate logout URI if provided
+    if (clientId && logoutUri) {
+      const { findPartnerByClientId } = require('./config/partner.config')
+      const partner = findPartnerByClientId(clientId)
+
+      if (partner && !partner.allowedRedirectUris.includes(logoutUri)) {
+        throw new BadRequestException('Invalid logout_uri for this client')
+      }
+    }
+
+    // Build frontend logout URL with parameters
+    const frontendUrl = process.env.OAUTH_FRONTEND_URL || 'https://konto.bratislava.sk'
+    const frontendLogoutUrl = new URL(`${frontendUrl}/odhlasenie`)
+
+    // Add oauth_logout parameter so frontend knows to handle OAuth logout
+    frontendLogoutUrl.searchParams.set('oauth_logout', 'true')
+
+    if (logoutUri) {
+      frontendLogoutUrl.searchParams.set('logout_uri', logoutUri)
+    }
+    if (state) {
+      frontendLogoutUrl.searchParams.set('state', state)
+    }
+
+    res.redirect(frontendLogoutUrl.toString())
   }
 }

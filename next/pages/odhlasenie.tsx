@@ -11,10 +11,26 @@ import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async (context) => {
+    const { oauth_logout, logout_uri, state } = context.query
+
+    // If this is an OAuth logout, redirect to the OAuth logout handler
+    if (oauth_logout === 'true') {
+      const params = new URLSearchParams()
+      if (logout_uri) params.set('logout_uri', logout_uri as string)
+      if (state) params.set('state', state as string)
+
+      return {
+        redirect: {
+          destination: `/odhlasenie-oauth?${params.toString()}`,
+          permanent: false,
+        },
+      }
+    }
+
     return {
       props: {
-        ...(await slovakServerSideTranslations()),
+        ...(await (await import('../frontend/utils/slovakServerSideTranslations')).slovakServerSideTranslations()),
       },
     }
   },

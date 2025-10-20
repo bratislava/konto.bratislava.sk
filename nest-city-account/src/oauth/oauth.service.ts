@@ -1,6 +1,5 @@
 import { Injectable, Logger, BadRequestException, UnauthorizedException } from '@nestjs/common'
 import axios, { AxiosError } from 'axios'
-import { Request, Response } from 'express'
 import { PartnerConfig } from './config/partner.config'
 import {
   TokenRequestDto,
@@ -19,11 +18,27 @@ export class OAuthService {
 
   private readonly cognitoDomain: string
 
-  private readonly loginPageUrl: string
+  private readonly frontendUrl: string
+
+  private readonly frontendLoginUrl: string
+
+  // Temporary storage for OAuth state (in production, use Redis or database)
+  private readonly oauthStateStore = new Map<
+    string,
+    {
+      authorizeParams: AuthorizeRequestDto
+      partner: PartnerConfig
+      createdAt: number
+    }
+  >()
 
   constructor() {
     if (!process.env.AWS_COGNITO_REGION || !process.env.AWS_COGNITO_USERPOOL_ID) {
       throw new Error('AWS Cognito configuration is missing')
+    }
+
+    if (!process.env.OAUTH_FRONTEND_URL) {
+      throw new Error('OAUTH_FRONTEND_URL is required for session checking')
     }
 
     this.cognitoRegion = process.env.AWS_COGNITO_REGION
@@ -35,56 +50,95 @@ export class OAuthService {
       process.env.OAUTH_COGNITO_DOMAIN ||
       `https://${process.env.AWS_COGNITO_USERPOOL_ID}.auth.${this.cognitoRegion}.amazoncognito.com`
 
-    // URL to your Next.js login page (defaults to /prihlasenie)
-    this.loginPageUrl = process.env.OAUTH_LOGIN_PAGE_URL || '/prihlasenie'
+    // Frontend URLs
+    this.frontendUrl = process.env.OAUTH_FRONTEND_URL // e.g., https://konto.bratislava.sk
+    this.frontendLoginUrl = process.env.OAUTH_FRONTEND_LOGIN_URL || `${this.frontendUrl}/prihlasenie`
+
+    // Clean up old OAuth states every 10 minutes
+    setInterval(() => this.cleanupExpiredStates(), 10 * 60 * 1000)
   }
 
   /**
-   * Extract Cognito access token from request cookies
-   * This checks for Amplify's authentication cookies
+   * Store OAuth state temporarily (valid for 5 minutes)
    */
-  private extractAccessTokenFromCookies(req: Request): string | null {
-    const cookies = req.headers.cookie
-    if (!cookies) {
+  storeOAuthState(
+    stateId: string,
+    authorizeParams: AuthorizeRequestDto,
+    partner: PartnerConfig
+  ): void {
+    this.oauthStateStore.set(stateId, {
+      authorizeParams,
+      partner,
+      createdAt: Date.now(),
+    })
+    this.logger.log(`Stored OAuth state: ${stateId}`)
+  }
+
+  /**
+   * Retrieve and remove OAuth state
+   */
+  getAndRemoveOAuthState(stateId: string): {
+    authorizeParams: AuthorizeRequestDto
+    partner: PartnerConfig
+  } | null {
+    const state = this.oauthStateStore.get(stateId)
+    if (!state) {
       return null
     }
 
-    // Amplify stores tokens in cookies with pattern:
-    // CognitoIdentityServiceProvider.{clientId}.{username}.accessToken
-    const cookiePattern = /CognitoIdentityServiceProvider\.[^.]+\.[^.]+\.accessToken=([^;]+)/
-    const match = cookies.match(cookiePattern)
+    // Check if expired (5 minutes)
+    if (Date.now() - state.createdAt > 5 * 60 * 1000) {
+      this.oauthStateStore.delete(stateId)
+      return null
+    }
 
-    return match ? match[1] : null
+    this.oauthStateStore.delete(stateId)
+    return state
   }
 
   /**
-   * Verify if the user has a valid Cognito session by validating their access token
+   * Clean up expired OAuth states
    */
-  async hasValidSession(req: Request): Promise<boolean> {
-    const accessToken = this.extractAccessTokenFromCookies(req)
-    if (!accessToken) {
-      return false
-    }
+  private cleanupExpiredStates(): void {
+    const now = Date.now()
+    const fiveMinutes = 5 * 60 * 1000
 
-    try {
-      // Validate token by calling Cognito's userInfo endpoint
-      await this.getUserInfo(accessToken)
-      return true
-    } catch (error) {
-      this.logger.debug('Access token validation failed', error)
-      return false
+    for (const [stateId, state] of this.oauthStateStore.entries()) {
+      if (now - state.createdAt > fiveMinutes) {
+        this.oauthStateStore.delete(stateId)
+        this.logger.debug(`Cleaned up expired OAuth state: ${stateId}`)
+      }
     }
   }
 
   /**
-   * Build authorization URL
-   * If user is already authenticated, redirects to Cognito with identity token
-   * If user is not authenticated, redirects to login page with return URL
+   * Build URL to frontend session check
    */
-  buildAuthorizeUrl(
+  buildSessionCheckUrl(stateId: string): string {
+    const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
+    const returnUrl = `${baseUrl}/oauth/authorize/continue?state=${stateId}`
+    
+    return `${this.frontendUrl}/api/session-check?return_url=${encodeURIComponent(returnUrl)}`
+  }
+
+  /**
+   * Build login redirect URL for unauthenticated users
+   */
+  buildLoginRedirectUrl(stateId: string): string {
+    const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
+    const returnUrl = `${baseUrl}/oauth/authorize/continue?state=${stateId}`
+    
+    return `${this.frontendLoginUrl}?redirect=${encodeURIComponent(returnUrl)}`
+  }
+
+  /**
+   * Build Cognito authorization URL
+   * If sessionToken is provided, validates it and continues with SSO
+   */
+  buildCognitoAuthorizeUrl(
     authorizeDto: AuthorizeRequestDto,
     partner: PartnerConfig,
-    req: Request
+    sessionToken?: string
   ): string {
     // Validate redirect URI is allowed for this partner
     if (!partner.allowedRedirectUris.includes(authorizeDto.redirect_uri)) {
@@ -116,56 +170,14 @@ export class OAuthService {
       params.append('nonce', authorizeDto.nonce)
     }
 
-    // Extract access token to pass to Cognito (for SSO)
-    const accessToken = this.extractAccessTokenFromCookies(req)
-    if (accessToken) {
-      // If user is already authenticated, include the identity token
-      // This allows Cognito to skip login and directly issue authorization code
-      params.append('identity_provider', 'COGNITO')
-      // Note: We could also use the identity token here if needed
-    }
-
+    // If we have a session token, it means user is authenticated
+    // Cognito will handle SSO automatically with the user's existing session
     const authorizeUrl = `${this.cognitoDomain}/oauth2/authorize?${params.toString()}`
     this.logger.log(
-      `Redirecting to Cognito authorize URL for partner: ${partner.name} (SSO: ${!!accessToken})`
+      `Building Cognito authorize URL for partner: ${partner.name} (SSO: ${!!sessionToken})`
     )
 
     return authorizeUrl
-  }
-
-  /**
-   * Build login redirect URL for unauthenticated users
-   * Preserves OAuth parameters for post-login redirect
-   */
-  buildLoginRedirectUrl(authorizeDto: AuthorizeRequestDto, baseUrl: string): string {
-    // Build the OAuth authorize URL that user will be redirected to after login
-    const oauthParams = new URLSearchParams({
-      response_type: authorizeDto.response_type,
-      client_id: authorizeDto.client_id,
-      redirect_uri: authorizeDto.redirect_uri,
-    })
-
-    if (authorizeDto.scope) {
-      oauthParams.append('scope', authorizeDto.scope)
-    }
-    if (authorizeDto.state) {
-      oauthParams.append('state', authorizeDto.state)
-    }
-    if (authorizeDto.code_challenge) {
-      oauthParams.append('code_challenge', authorizeDto.code_challenge)
-    }
-    if (authorizeDto.code_challenge_method) {
-      oauthParams.append('code_challenge_method', authorizeDto.code_challenge_method)
-    }
-    if (authorizeDto.nonce) {
-      oauthParams.append('nonce', authorizeDto.nonce)
-    }
-
-    const returnUrl = `${baseUrl}/oauth/authorize?${oauthParams.toString()}`
-    const loginUrl = `${this.loginPageUrl}?redirect=${encodeURIComponent(returnUrl)}`
-
-    this.logger.log('Redirecting unauthenticated user to login page')
-    return loginUrl
   }
 
   /**

@@ -11,7 +11,7 @@ import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async (context) => {
+  async ({ context }) => {
     const { oauth_logout, logout_uri, state } = context.query
 
     // If this is an OAuth logout, redirect to the OAuth logout handler
@@ -30,7 +30,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
     return {
       props: {
-        ...(await (await import('../frontend/utils/slovakServerSideTranslations')).slovakServerSideTranslations()),
+        ...(await slovakServerSideTranslations()),
       },
     }
   },

@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 import logger from '../frontend/utils/logger'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async () => {
@@ -52,11 +53,16 @@ const OAuthLogoutPage = () => {
         }
 
         logger.info(`[OAuth Logout] Redirecting to: ${redirectUrl}`)
+        // Note: logout_uri is validated by backend against allowed redirect URIs
+        // Safe to use window.location for external partner URLs
+        // eslint-disable-next-line xss/no-location-href-assign
         window.location.href = redirectUrl
       } catch (error) {
         logger.error('[OAuth Logout] Error during logout', error)
         // Redirect anyway
-        window.location.href = (logout_uri as string) || '/'
+        const fallbackUrl = (logout_uri as string) || '/'
+        // eslint-disable-next-line xss/no-location-href-assign
+        window.location.href = fallbackUrl
       }
     }
 

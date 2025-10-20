@@ -310,7 +310,6 @@ export class OAuthController {
   ): Promise<void> {
     // Validate logout URI if provided
     if (clientId && logoutUri) {
-      const { findPartnerByClientId } = require('./config/partner.config')
       const partner = findPartnerByClientId(clientId)
 
       if (partner && !partner.allowedRedirectUris.includes(logoutUri)) {
@@ -328,6 +327,14 @@ export class OAuthController {
     if (logoutUri) {
       frontendLogoutUrl.searchParams.set('logout_uri', logoutUri)
     }
+    if (state) {
+      frontendLogoutUrl.searchParams.set('state', state)
+    }
+
+    res.redirect(frontendLogoutUrl.toString())
+  }
+}
+   }
     if (state) {
       frontendLogoutUrl.searchParams.set('state', state)
     }

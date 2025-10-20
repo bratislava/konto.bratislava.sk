@@ -1,6 +1,6 @@
 import { Injectable, Logger, BadRequestException, UnauthorizedException } from '@nestjs/common'
 import axios, { AxiosError } from 'axios'
-import { PartnerConfig } from './config/partner.config'
+import { PartnerConfig, findPartnerByClientId } from './config/partner.config'
 import {
   TokenRequestDto,
   TokenResponseDto,
@@ -52,10 +52,7 @@ export class OAuthService {
    * - If logged in: redirects with access_token
    * - If not logged in: shows login form
    */
-  buildLoginRedirectUrl(
-    authorizeParams: AuthorizeRequestDto,
-    partner: PartnerConfig
-  ): string {
+  buildLoginRedirectUrl(authorizeParams: AuthorizeRequestDto, partner: PartnerConfig): string {
     const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
     
     // Build the return URL that frontend will redirect back to
@@ -76,6 +73,7 @@ export class OAuthService {
     // Frontend login page with redirect parameter
     // If user is logged in, they'll be auto-redirected with access_token
     // If not, they'll see login form
+    this.logger.log(`Building login redirect for partner: ${partner.name}`)
     return `${this.frontendLoginUrl}?redirect=${encodeURIComponent(returnUrl)}`
   }
 
@@ -270,12 +268,10 @@ export class OAuthService {
    * Build logout URL that logs out from Cognito and redirects to specified URI
    */
   buildLogoutUrl(clientId?: string, logoutUri?: string, state?: string): string {
-    const baseUrl = process.env.OAUTH_BASE_URL || 'https://nest-city-account.bratislava.sk'
     let redirectUri = logoutUri
 
     // Validate logout URI if provided with client ID
     if (clientId && logoutUri) {
-      const { findPartnerByClientId } = require('./config/partner.config')
       const partner = findPartnerByClientId(clientId)
 
       if (partner && !partner.allowedRedirectUris.includes(logoutUri)) {

@@ -80,19 +80,13 @@ export class OAuthService {
   /**
    * Build Cognito authorization URL
    * If sessionToken is provided, validates it and continues with SSO
+   * Note: redirect_uri is already validated by RedirectUriValidationGuard
    */
   buildCognitoAuthorizeUrl(
     authorizeDto: AuthorizeRequestDto,
     partner: PartnerConfig,
     sessionToken?: string
   ): string {
-    // Validate redirect URI is allowed for this partner
-    if (!partner.allowedRedirectUris.includes(authorizeDto.redirect_uri)) {
-      throw new BadRequestException(
-        `Redirect URI ${authorizeDto.redirect_uri} not allowed for this client`
-      )
-    }
-
     const params = new URLSearchParams({
       response_type: authorizeDto.response_type,
       client_id: partner.clientId,
@@ -128,6 +122,7 @@ export class OAuthService {
 
   /**
    * Exchange authorization code for tokens or refresh tokens
+   * Note: redirect_uri is already validated by RedirectUriValidationGuard
    */
   async getToken(
     tokenDto: TokenRequestDto,
@@ -147,13 +142,6 @@ export class OAuthService {
         }
         if (!tokenDto.redirect_uri) {
           throw new BadRequestException('Redirect URI is required for authorization_code grant')
-        }
-
-        // Validate redirect URI
-        if (!partner.allowedRedirectUris.includes(tokenDto.redirect_uri)) {
-          throw new BadRequestException(
-            `Redirect URI ${tokenDto.redirect_uri} not allowed for this client`
-          )
         }
 
         body.append('code', tokenDto.code)

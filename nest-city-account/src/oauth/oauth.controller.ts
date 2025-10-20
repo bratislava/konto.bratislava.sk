@@ -214,7 +214,7 @@ export class OAuthController {
 
   /**
    * Revocation endpoint - revokes tokens
-   * Note: Cognito supports token revocation
+   * Proxies to Cognito's revoke endpoint
    */
   @Post('revoke')
   @HttpCode(200)
@@ -232,7 +232,7 @@ export class OAuthController {
         token_type_hint: {
           type: 'string',
           enum: ['access_token', 'refresh_token'],
-          description: 'Hint about the type of token being revoked',
+          description: 'Hint about the type of token being revoked (optional)',
         },
       },
       required: ['token'],
@@ -251,19 +251,17 @@ export class OAuthController {
     @Body('token') token: string,
     @Body('token_type_hint') tokenTypeHint: string,
     @Req() req: RequestWithPartner
-  ): Promise<{ message: string }> {
+  ): Promise<void> {
     if (!req.partner) {
       throw new UnauthorizedException('Invalid partner')
     }
 
     if (!token) {
-      throw new UnauthorizedException('Token is required')
+      throw new BadRequestException('Token is required')
     }
 
-    // Note: You'll need to implement token revocation with Cognito
-    // Cognito supports this via the RevokeToken API
-    // For now, returning a success response
-    return { message: 'Token revocation endpoint - to be implemented with Cognito RevokeToken API' }
+    // Revoke the token via Cognito
+    await this.oauthService.revokeToken(token, req.partner)
   }
 
   /**

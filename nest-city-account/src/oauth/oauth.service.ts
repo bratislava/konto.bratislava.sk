@@ -215,6 +215,35 @@ export class OAuthService {
   }
 
   /**
+   * Revoke a token (access token or refresh token)
+   */
+  async revokeToken(token: string, partner: PartnerConfig): Promise<void> {
+    try {
+      const revokeUrl = `${this.cognitoDomain}/oauth2/revoke`
+
+      // Use partner's Cognito client secret for authentication with Cognito
+      const authHeader = Buffer.from(`${partner.clientId}:${partner.cognitoClientSecret}`).toString(
+        'base64'
+      )
+
+      const body = new URLSearchParams()
+      body.append('token', token)
+
+      await axios.post(revokeUrl, body.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${authHeader}`,
+        },
+      })
+
+      this.logger.log(`Token revoked successfully for partner: ${partner.name}`)
+    } catch (error) {
+      this.handleCognitoError(error)
+      throw error
+    }
+  }
+
+  /**
    * Get JWKS (JSON Web Key Set) from Cognito
    */
   async getJwks(): Promise<unknown> {

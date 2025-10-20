@@ -189,6 +189,30 @@ export class TokenResponseDto {
   scope?: string
 }
 
+export enum TokenTypeHint {
+  ACCESS_TOKEN = 'access_token',
+  REFRESH_TOKEN = 'refresh_token',
+}
+
+export class RevokeTokenRequestDto {
+  @ApiProperty({
+    description: 'The token to revoke (access token or refresh token)',
+    example: 'eyJjdHkiOiJKV1QiLxxx...',
+  })
+  @IsString()
+  @IsNotEmpty()
+  token!: string
+
+  @ApiPropertyOptional({
+    description: 'Hint about the type of token being revoked',
+    enum: TokenTypeHint,
+    example: TokenTypeHint.REFRESH_TOKEN,
+  })
+  @IsEnum(TokenTypeHint)
+  @IsOptional()
+  token_type_hint?: TokenTypeHint
+}
+
 export class UserInfoResponseDto {
   @ApiProperty({
     description: 'Subject (user ID)',

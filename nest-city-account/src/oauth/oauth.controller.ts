@@ -32,6 +32,7 @@ import {
   UserInfoResponseDto,
   OAuthErrorDto,
   OpenIdConfigurationDto,
+  RevokeTokenRequestDto,
 } from './dtos/oauth.dto'
 
 @ApiTags('OAuth')
@@ -224,23 +225,15 @@ export class OAuthController {
     description: 'Revokes an access token or refresh token.',
   })
   @ApiBasicAuth('client_credentials')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        token: { type: 'string', description: 'The token to revoke' },
-        token_type_hint: {
-          type: 'string',
-          enum: ['access_token', 'refresh_token'],
-          description: 'Hint about the type of token being revoked (optional)',
-        },
-      },
-      required: ['token'],
-    },
-  })
+  @ApiBody({ type: RevokeTokenRequestDto })
   @ApiResponse({
     status: 200,
     description: 'Token successfully revoked',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+    type: OAuthErrorDto,
   })
   @ApiResponse({
     status: 401,
@@ -248,20 +241,15 @@ export class OAuthController {
     type: OAuthErrorDto,
   })
   async revoke(
-    @Body('token') token: string,
-    @Body('token_type_hint') tokenTypeHint: string,
+    @Body() revokeDto: RevokeTokenRequestDto,
     @Req() req: RequestWithPartner
   ): Promise<void> {
     if (!req.partner) {
       throw new UnauthorizedException('Invalid partner')
     }
 
-    if (!token) {
-      throw new BadRequestException('Token is required')
-    }
-
     // Revoke the token via Cognito
-    await this.oauthService.revokeToken(token, req.partner)
+    await this.oauthService.revokeToken(revokeDto.token, req.partner)
   }
 
   /**

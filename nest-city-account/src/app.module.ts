@@ -13,6 +13,7 @@ import { TaxSubservice } from './utils/subservices/tax.subservice'
 import { ConfigModule } from '@nestjs/config'
 import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
+import { OAuthModule } from './oauth/oauth.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TasksModule } from './tasks/tasks.module'
     UserModule,
     VerificationModule,
     AdminModule,
+    OAuthModule,
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule,

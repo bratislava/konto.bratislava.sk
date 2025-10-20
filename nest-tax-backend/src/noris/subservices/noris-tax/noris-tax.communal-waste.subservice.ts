@@ -19,10 +19,10 @@ import { baseNorisCommunalWasteTaxSchema } from '../../noris.schema'
 import { getCommunalWasteTaxesFromNoris } from '../../utils/noris.queries'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
-import { NorisTaxByType } from './noris-tax-by-type.abstract'
+import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
-export class NorisTaxCommunalWasteSubservice extends NorisTaxByType {
+export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice {
   constructor(
     private readonly connectionService: NorisConnectionSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,

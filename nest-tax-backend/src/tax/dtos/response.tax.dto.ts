@@ -417,6 +417,7 @@ export class ResponseTaxDto {
   @Type(() => Date)
   dateTaxRuling: Date | null
 
+  // TODO generalize for multiple tax types - PKO does not have taxConstructions, taxFlat, taxLand
   @ApiProperty({
     description: 'Part of tax amount for lands in cents in Eur.',
     default: 1000,

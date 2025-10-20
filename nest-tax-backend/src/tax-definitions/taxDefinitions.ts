@@ -12,6 +12,7 @@ export const taxDefinitions: TaxDefinitionsMap = {
   [TaxType.DZN]: {
     type: TaxType.DZN,
     isUnique: true,
+    paymentCalendarThreshold: 6600,
     mapNorisToTaxData: mapNorisToRealEstateTaxData,
     mapNorisToTaxDetailData: mapNorisToRealEstateTaxDetailData,
     getTaxDetailPure: getRealEstateTaxDetailPure,
@@ -23,6 +24,7 @@ export const taxDefinitions: TaxDefinitionsMap = {
   [TaxType.KO]: {
     type: TaxType.KO,
     isUnique: false,
+    paymentCalendarThreshold: 0,
     mapNorisToTaxData: () => {
       throw new Error('Not implemented')
     },

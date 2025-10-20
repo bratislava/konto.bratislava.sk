@@ -1,10 +1,10 @@
-class TaxInstallmentToPdfDto {
+type TaxInstallmentToPdf = {
   text: string | null
 
   amount: string
 }
 
-export class RealEstateTaxTotalsToPdfDto {
+export type RealEstateTaxTotalsToPdf = {
   total: string
 
   taxFlat: string
@@ -13,5 +13,5 @@ export class RealEstateTaxTotalsToPdfDto {
 
   taxLand: string
 
-  taxInstallments: TaxInstallmentToPdfDto[]
+  taxInstallments: TaxInstallmentToPdf[]
 }

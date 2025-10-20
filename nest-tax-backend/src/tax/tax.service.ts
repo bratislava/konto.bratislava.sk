@@ -30,10 +30,9 @@ import {
 } from './dtos/response.tax.dto'
 import { TaxRealEstateSubservice } from './subservices/tax/tax.real-estate.subservice'
 import {
-  paymentCalendarThreshold,
+  AbstractTaxSubservice,
   specificSymbol,
-  TaxSubserviceByType,
-} from './subservices/tax/tax-by-type.abstract'
+} from './subservices/tax/tax.subservice.abstract'
 import {
   checkTaxDateInclusion,
   fixInstallmentTexts,
@@ -62,7 +61,7 @@ export class TaxService {
     private readonly taxRealEstateSubservice: TaxRealEstateSubservice,
   ) {}
 
-  private getImplementationByType(taxType: TaxType): TaxSubserviceByType {
+  private getImplementationByType(taxType: TaxType): AbstractTaxSubservice {
     // eslint-disable-next-line sonarjs/no-small-switch
     switch (taxType) {
       case TaxType.DZN:
@@ -452,7 +451,6 @@ export class TaxService {
       taxYear: year,
       today,
       overallAmount: tax.amount,
-      paymentCalendarThreshold,
       variableSymbol: tax.variableSymbol,
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,

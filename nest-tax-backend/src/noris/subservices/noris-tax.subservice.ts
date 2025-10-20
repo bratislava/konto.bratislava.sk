@@ -6,7 +6,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NorisTaxPayersDto } from '../noris.dto'
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
-import { NorisTaxByType } from './noris-tax/noris-tax-by-type.abstract'
+import { AbstractNorisTaxSubservice } from './noris-tax/noris-tax.subservice.abstract'
 
 @Injectable()
 export class NorisTaxSubservice {
@@ -16,7 +16,9 @@ export class NorisTaxSubservice {
     private readonly norisTaxCommunalWasteSubservice: NorisTaxCommunalWasteSubservice,
   ) {}
 
-  private getImplementationByType(taxType: TaxType): NorisTaxByType {
+  private getImplementationByType(
+    taxType: TaxType,
+  ): AbstractNorisTaxSubservice {
     switch (taxType) {
       case TaxType.DZN:
         return this.norisTaxRealEstateSubservice

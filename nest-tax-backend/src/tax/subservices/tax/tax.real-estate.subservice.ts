@@ -5,6 +5,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../../../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
@@ -16,22 +17,22 @@ import {
 import { getTaxStatus } from '../../utils/helpers/tax.helper'
 import { getRealEstateTaxDetailPure } from '../../utils/unified-tax.util'
 import {
-  paymentCalendarThreshold,
+  AbstractTaxSubservice,
   specificSymbol,
-  TaxSubserviceByType,
-} from './tax-by-type.abstract'
+} from './tax.subservice.abstract'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 @Injectable()
-export class TaxRealEstateSubservice extends TaxSubserviceByType {
+export class TaxRealEstateSubservice extends AbstractTaxSubservice {
   constructor(
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     private readonly qrCodeSubservice: QrCodeSubservice,
   ) {
-    super(prismaService, throwerErrorGuard)
+    const taxDefinition = getTaxDefinitionByType(TaxType.DZN)
+    super(prismaService, throwerErrorGuard, taxDefinition)
   }
 
   async getTaxDetail(
@@ -62,7 +63,7 @@ export class TaxRealEstateSubservice extends TaxSubserviceByType {
       taxYear: +year,
       today: today.toDate(),
       overallAmount: tax.amount,
-      paymentCalendarThreshold,
+      paymentCalendarThreshold: this.taxDefinition.paymentCalendarThreshold,
       variableSymbol: tax.variableSymbol,
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,

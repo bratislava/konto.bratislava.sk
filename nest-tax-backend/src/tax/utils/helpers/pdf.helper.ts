@@ -7,7 +7,7 @@ import {
 } from '@prisma/client'
 import currency from 'currency.js'
 
-import { RealEstateTaxTotalsToPdfDto } from '../../dtos/response.pdf.dto'
+import { RealEstateTaxTotalsToPdf } from '../../dtos/response.pdf.dto'
 
 type RealEstateTaxDetailsToPdfResponse = {
   [typeKey in TaxDetailType]?: {
@@ -19,17 +19,27 @@ type RealEstateTaxDetailsToPdfResponse = {
   }
 }
 
-export interface PdfHelper {
-  taxDetailsToPdf: (
-    taxDetails: TaxDetail[],
-  ) => RealEstateTaxDetailsToPdfResponse
+export interface PdfHelper<
+  TTaxDetail,
+  TTaxDetailsToPdfResponse,
+  TTaxTotalsToPdfResponse,
+> {
+  taxDetailsToPdf: (taxDetails: TTaxDetail[]) => TTaxDetailsToPdfResponse
   taxTotalsToPdf: (
     tax: Tax,
     taxInstallments: TaxInstallment[],
-  ) => RealEstateTaxTotalsToPdfDto
+  ) => TTaxTotalsToPdfResponse
 }
 
-export const RealEstatePdfHelper: PdfHelper = {
+const formatAmountForPdf = (amount: number) => {
+  return currency(amount, { fromCents: true }).toString().replace('.', ',')
+}
+
+export const RealEstatePdfHelper: PdfHelper<
+  TaxDetail,
+  RealEstateTaxDetailsToPdfResponse,
+  RealEstateTaxTotalsToPdf
+> = {
   taxDetailsToPdf: (taxDetails: TaxDetail[]) => {
     const response: RealEstateTaxDetailsToPdfResponse = {}
     taxDetails.forEach((taxDetail) => {
@@ -38,12 +48,8 @@ export const RealEstatePdfHelper: PdfHelper = {
       }
       response[taxDetail.type]![taxDetail.areaType] = {
         area: taxDetail.area,
-        base: currency(taxDetail.base, { fromCents: true })
-          .toString()
-          .replace('.', ','),
-        amount: currency(taxDetail.amount, { fromCents: true })
-          .toString()
-          .replace('.', ','),
+        base: formatAmountForPdf(taxDetail.base),
+        amount: formatAmountForPdf(taxDetail.amount),
       }
     })
     return response
@@ -52,30 +58,26 @@ export const RealEstatePdfHelper: PdfHelper = {
   taxTotalsToPdf: (
     tax: Tax,
     taxInstallments: TaxInstallment[],
-  ): RealEstateTaxTotalsToPdfDto => {
-    const total: RealEstateTaxTotalsToPdfDto = {
-      total: currency(tax.amount, { fromCents: true })
-        .toString()
-        .replace('.', ','),
-      taxFlat: currency(tax.taxFlat ?? 0, { fromCents: true })
-        .toString()
-        .replace('.', ','),
-      taxConstructions: currency(tax.taxConstructions ?? 0, { fromCents: true })
-        .toString()
-        .replace('.', ','),
-      taxLand: currency(tax.taxLand ?? 0, { fromCents: true })
-        .toString()
-        .replace('.', ','),
+  ): RealEstateTaxTotalsToPdf => {
+    const total: RealEstateTaxTotalsToPdf = {
+      total: formatAmountForPdf(tax.amount),
+      taxFlat: formatAmountForPdf(tax.taxFlat ?? 0),
+      taxConstructions: formatAmountForPdf(tax.taxConstructions ?? 0),
+      taxLand: formatAmountForPdf(tax.taxLand ?? 0),
       taxInstallments: [],
     }
     taxInstallments.forEach((taxInstallment) => {
       total.taxInstallments.push({
         text: taxInstallment.text,
-        amount: currency(taxInstallment.amount, { fromCents: true })
-          .toString()
-          .replace('.', ','),
+        amount: formatAmountForPdf(taxInstallment.amount),
       })
     })
     return total
   },
 }
+
+export type PdfHelperImplemented = PdfHelper<
+  TaxDetail,
+  RealEstateTaxDetailsToPdfResponse,
+  RealEstateTaxTotalsToPdf
+> /* | Other PDF helpers */

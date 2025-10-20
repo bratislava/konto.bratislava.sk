@@ -17,10 +17,10 @@ import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { queryPayersFromNoris } from '../../utils/noris.queries'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
-import { NorisTaxByType } from './noris-tax-by-type.abstract'
+import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
-export class NorisTaxRealEstateSubservice extends NorisTaxByType {
+export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
   private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
 
   private readonly concurrencyLimit = pLimit(this.concurrency)

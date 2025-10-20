@@ -12,6 +12,7 @@ export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
   [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
 }
 
+// TODO generalize for multiple tax types - PKO does not have taxConstructions, taxFlat, taxLand
 export type GetTaxDetailPureOptions = {
   taxYear: number // daňový rok
   today: Date // aktuálny dátum

@@ -656,7 +656,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   taxYear: number
   today: Date
   overallAmount: number
-  paymentCalendarThreshold: number
   variableSymbol: string
   dateOfValidity: Date | null
   installments: { order: number; amount: number }[]
@@ -672,13 +671,13 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     taxYear,
     today,
     overallAmount,
-    paymentCalendarThreshold,
     variableSymbol,
     dateOfValidity,
     installments,
     specificSymbol,
     taxPayments,
   } = options
+  const { paymentCalendarThreshold } = taxDefinition
 
   // Reuse the existing tax detail calculation
   const taxDetail = taxDefinition.getTaxDetailPure({

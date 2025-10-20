@@ -1,6 +1,7 @@
 import { Prisma, TaxType } from '@prisma/client'
 
 import { PrismaService } from '../../../prisma/prisma.service'
+import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
   CustomErrorTaxTypesEnum,
@@ -8,18 +9,17 @@ import {
 } from '../../dtos/error.dto'
 import { ResponseTaxSummaryDetailDto } from '../../dtos/response.tax.dto'
 
-export const paymentCalendarThreshold = 6600
-
 export const specificSymbol = '2025200000'
 
-export abstract class TaxSubserviceByType {
+export abstract class AbstractTaxSubservice {
   constructor(
     protected readonly prisma: PrismaService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
+    protected readonly taxDefinition: TaxDefinition,
   ) {}
 
   /**
-   * Gets the tax detail for a given birth number, year and order.
+   * Gets the tax detail, with installments and payment info from database, for a given birth number, year and order.
    *
    * @param birthNumber - Birth number of the tax payer
    * @param year - Year of the tax

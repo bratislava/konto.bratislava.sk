@@ -1,13 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import {
-  PaymentStatus,
-  TaxDetailareaType,
-  TaxDetailType,
-  TaxType,
-} from '@prisma/client'
+import { PaymentStatus, TaxDetailareaType, TaxDetailType } from '@prisma/client'
 
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -746,7 +741,6 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     taxYear: 2025,
     today: new Date('2025-01-01'),
     overallAmount: 6600,
-    paymentCalendarThreshold: 6600,
     variableSymbol: '1234567890',
     dateOfValidity: new Date('2025-01-01'),
     installments: [
@@ -756,7 +750,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     ],
     specificSymbol: '2025200000',
     taxPayments: [],
-    taxDefinition: getTaxDefinitionByType(TaxType.DZN),
+    taxDefinition: {
+      paymentCalendarThreshold: 6600,
+    } as TaxDefinition,
   }
 
   it('should generate payment for the first installment', () => {

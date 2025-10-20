@@ -18,7 +18,7 @@ import {
   mapNorisToTaxPayerData,
 } from '../../utils/mapping.helper'
 
-export abstract class NorisTaxByType {
+export abstract class AbstractNorisTaxSubservice {
   constructor(
     protected readonly qrCodeSubservice: QrCodeSubservice,
     protected readonly prismaService: PrismaService,

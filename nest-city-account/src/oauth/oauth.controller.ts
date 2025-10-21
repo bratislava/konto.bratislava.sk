@@ -45,6 +45,9 @@ export class OAuthController {
    * Redirects to frontend login page which automatically:
    * - If user logged in: redirects back here with access_token (SSO)
    * - If not logged in: shows login form, then redirects back with access_token
+   * 
+   * When access_token is present, directly generates authorization code
+   * bypassing Cognito's hosted UI to avoid session cookie domain issues
    */
   @Get('authorize')
   @UseGuards(PartnerClientIdGuard)
@@ -69,7 +72,7 @@ export class OAuthController {
   })
   @ApiResponse({
     status: 302,
-    description: 'Redirects to frontend login or Cognito authorization',
+    description: 'Redirects to frontend login or partner callback with authorization code',
   })
   @ApiResponse({
     status: 400,
@@ -88,13 +91,22 @@ export class OAuthController {
 
     if (accessToken) {
       // User is authenticated (came back from frontend with access_token)
-      // Redirect to Cognito for authorization
-      const authorizeUrl = this.oauthService.buildCognitoAuthorizeUrl(
+      // Generate authorization code directly, bypassing Cognito's OAuth authorize endpoint
+      // This avoids session cookie domain issues between konto.bratislava.sk and Cognito
+      const authCode = await this.oauthService.generateAuthorizationCode(
+        accessToken,
         authorizeDto,
-        req.partner,
-        accessToken
+        req.partner
       )
-      res.redirect(authorizeUrl)
+
+      // Redirect to partner's callback with authorization code
+      const callbackUrl = new URL(authorizeDto.redirect_uri)
+      callbackUrl.searchParams.set('code', authCode)
+      if (authorizeDto.state) {
+        callbackUrl.searchParams.set('state', authorizeDto.state)
+      }
+
+      res.redirect(callbackUrl.toString())
     } else {
       // No access_token - redirect to login page
       // Login page will auto-redirect back here with access_token if user is already logged in

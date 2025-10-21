@@ -1,7 +1,5 @@
 import { Injectable, Logger, BadRequestException, UnauthorizedException } from '@nestjs/common'
 import axios, { AxiosError } from 'axios'
-import { createHash } from 'crypto'
-import { v4 as uuidv4 } from 'uuid'
 import { PartnerConfig, findPartnerByClientId } from './config/partner.config'
 import {
   TokenRequestDto,
@@ -23,22 +21,6 @@ export class OAuthService {
   private readonly frontendUrl: string
 
   private readonly frontendLoginUrl: string
-
-  // In-memory storage for authorization codes
-  // TODO: Use Redis in production for multi-instance deployments
-  private readonly authCodeStorage = new Map<
-    string,
-    {
-      accessToken: string
-      clientId: string
-      redirectUri: string
-      scope: string
-      codeChallenge?: string
-      codeChallengeMethod?: string
-      nonce?: string
-      expiresAt: number
-    }
-  >()
 
   constructor() {
     if (!process.env.AWS_COGNITO_REGION || !process.env.AWS_COGNITO_USERPOOL_ID) {
@@ -96,141 +78,55 @@ export class OAuthService {
   }
 
   /**
-   * Generate an authorization code directly from user's access token
-   * This bypasses Cognito's OAuth authorize endpoint to avoid session cookie issues
-   * between konto.bratislava.sk and Cognito's OAuth domain
+   * Build Cognito OAuth authorization URL
+   * Frontend will redirect to this after user logs in with Amplify
+   * Cognito recognizes the Amplify session and auto-approves
    */
-  async generateAuthorizationCode(
-    accessToken: string,
+  buildCognitoAuthorizeUrl(
     authorizeDto: AuthorizeRequestDto,
     partner: PartnerConfig
-  ): Promise<string> {
-    // Validate the access token by fetching user info
-    try {
-      await this.getUserInfo(accessToken)
-    } catch (error) {
-      this.logger.error('Invalid access token provided for authorization code generation', error)
-      throw new UnauthorizedException('Invalid access token')
-    }
-
-    // Generate unique authorization code
-    const authCode = uuidv4()
-
-    // Store authorization code with associated data (expires in 5 minutes)
-    this.authCodeStorage.set(authCode, {
-      accessToken,
-      clientId: partner.clientId,
-      redirectUri: authorizeDto.redirect_uri,
+  ): string {
+    const params = new URLSearchParams({
+      response_type: authorizeDto.response_type,
+      client_id: partner.clientId,
+      redirect_uri: authorizeDto.redirect_uri,
       scope: authorizeDto.scope || 'openid profile email',
-      codeChallenge: authorizeDto.code_challenge,
-      codeChallengeMethod: authorizeDto.code_challenge_method,
-      nonce: authorizeDto.nonce,
-      expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
     })
 
-    this.logger.log(`Generated authorization code for partner: ${partner.name}`)
-    return authCode
+    if (authorizeDto.state) {
+      params.append('state', authorizeDto.state)
+    }
+
+    if (authorizeDto.code_challenge) {
+      params.append('code_challenge', authorizeDto.code_challenge)
+    }
+
+    if (authorizeDto.code_challenge_method) {
+      params.append('code_challenge_method', authorizeDto.code_challenge_method)
+    }
+
+    if (authorizeDto.nonce) {
+      params.append('nonce', authorizeDto.nonce)
+    }
+
+    const authorizeUrl = `${this.cognitoDomain}/oauth2/authorize?${params.toString()}`
+    this.logger.log(`Building Cognito authorize URL for partner: ${partner.name}`)
+
+    return authorizeUrl
+  }
+
+  /**
+   * Get frontend login URL
+   */
+  getFrontendLoginUrl(): string {
+    return this.frontendLoginUrl
   }
 
   /**
    * Exchange authorization code for tokens or refresh tokens
-   * Note: redirect_uri is already validated by RedirectUriValidationGuard
+   * Proxies to Cognito's token endpoint
    */
   async getToken(
-    tokenDto: TokenRequestDto,
-    partner: PartnerConfig
-  ): Promise<TokenResponseDto> {
-    // Check if this is our custom authorization code
-    if (tokenDto.grant_type === 'authorization_code' && tokenDto.code) {
-      const codeData = this.authCodeStorage.get(tokenDto.code)
-
-      if (codeData) {
-        // Our custom auth code! Exchange it directly
-        return this.exchangeCustomAuthCode(tokenDto, partner, codeData)
-      }
-    }
-
-    // Fall back to Cognito for other flows (refresh_token, client_credentials, etc.)
-    return this.exchangeWithCognito(tokenDto, partner)
-  }
-
-  /**
-   * Exchange our custom authorization code for tokens
-   */
-  private async exchangeCustomAuthCode(
-    tokenDto: TokenRequestDto,
-    partner: PartnerConfig,
-    codeData: {
-      accessToken: string
-      clientId: string
-      redirectUri: string
-      scope: string
-      codeChallenge?: string
-      codeChallengeMethod?: string
-      nonce?: string
-      expiresAt: number
-    }
-  ): Promise<TokenResponseDto> {
-    // Validate expiration
-    if (codeData.expiresAt < Date.now()) {
-      this.authCodeStorage.delete(tokenDto.code!)
-      throw new UnauthorizedException('Authorization code expired')
-    }
-
-    // Validate client_id
-    if (codeData.clientId !== partner.clientId) {
-      throw new UnauthorizedException('Client ID mismatch')
-    }
-
-    // Validate redirect_uri
-    if (codeData.redirectUri !== tokenDto.redirect_uri) {
-      throw new BadRequestException('Redirect URI mismatch')
-    }
-
-    // Validate PKCE if present
-    if (codeData.codeChallenge) {
-      if (!tokenDto.code_verifier) {
-        throw new BadRequestException('Code verifier is required for PKCE')
-      }
-
-      const isValid = this.validatePKCE(
-        tokenDto.code_verifier,
-        codeData.codeChallenge,
-        codeData.codeChallengeMethod
-      )
-
-      if (!isValid) {
-        throw new UnauthorizedException('Invalid code verifier')
-      }
-    }
-
-    // Delete auth code (single use only)
-    this.authCodeStorage.delete(tokenDto.code!)
-
-    // Get user info to include in id_token
-    const userInfo = await this.getUserInfo(codeData.accessToken)
-
-    // Build id_token (simplified - in production, use proper JWT signing)
-    const idToken = this.buildIdToken(userInfo, partner.clientId, codeData.nonce)
-
-    this.logger.log(`Successfully exchanged custom auth code for partner: ${partner.name}`)
-
-    // Return tokens
-    // Note: The access_token from Amplify is already valid for this Cognito user pool
-    return {
-      access_token: codeData.accessToken,
-      token_type: 'Bearer',
-      expires_in: 3600,
-      id_token: idToken,
-      // Note: refresh_token would require storing it during initial login
-      // For now, partners can't refresh these tokens
-    }
-  }
-
-  /**
-   * Exchange with Cognito (for non-custom auth codes)
-   */
-  private async exchangeWithCognito(
     tokenDto: TokenRequestDto,
     partner: PartnerConfig
   ): Promise<TokenResponseDto> {
@@ -279,61 +175,12 @@ export class OAuthService {
         },
       })
 
-      this.logger.log(`Token obtained successfully from Cognito for partner: ${partner.name}`)
+      this.logger.log(`Token obtained successfully for partner: ${partner.name}`)
       return response.data
     } catch (error) {
       this.handleCognitoError(error)
       throw error
     }
-  }
-
-  /**
-   * Validate PKCE code challenge
-   */
-  private validatePKCE(
-    verifier: string,
-    challenge: string,
-    method?: string
-  ): boolean {
-    if (method === 'S256') {
-      const hash = createHash('sha256').update(verifier).digest('base64url')
-      return hash === challenge
-    } else {
-      // plain method
-      return verifier === challenge
-    }
-  }
-
-  /**
-   * Build a simple id_token JWT
-   * Note: In production, use proper JWT library with signing
-   */
-  private buildIdToken(userInfo: UserInfoResponseDto, clientId: string, nonce?: string): string {
-    const header = {
-      alg: 'RS256',
-      typ: 'JWT',
-    }
-
-    const payload = {
-      sub: userInfo.sub,
-      email: userInfo.email,
-      email_verified: userInfo.email_verified,
-      name: userInfo.name,
-      given_name: userInfo.given_name,
-      family_name: userInfo.family_name,
-      aud: clientId,
-      iss: `https://cognito-idp.${this.cognitoRegion}.amazonaws.com/${this.cognitoUserPoolId}`,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 3600,
-      ...(nonce && { nonce }),
-    }
-
-    // TODO: In production, properly sign this JWT with Cognito's private key
-    // For now, return a base64-encoded unsigned token (for testing only!)
-    const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url')
-    const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url')
-
-    return `${encodedHeader}.${encodedPayload}.UNSIGNED`
   }
 
   /**

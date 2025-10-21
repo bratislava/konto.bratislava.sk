@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
@@ -39,8 +40,13 @@ export class TasksService {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new Logger('TasksService')
+    // Check if the required environment variable is set
+    this.configService.getOrThrow<string>(
+      'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+    )
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -51,6 +57,17 @@ export class TasksService {
       id: number
       year: number
     }[] = []
+
+    // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
+    // this function "updatePaymentsFromNoris" will overwrite the testing taxes payments which is not desired
+    if (
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+      ) !== 'true'
+    ) {
+      this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
+      return
+    }
     try {
       variableSymbolsDb = await this.prismaService.$transaction(
         async (prisma) => {
@@ -148,6 +165,16 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async updateTaxesFromNoris() {
+    // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
+    // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
+    if (
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+      ) !== 'true'
+    ) {
+      this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
+      return
+    }
     const currentYear = new Date().getFullYear()
     const taxes = await this.prismaService.tax.findMany({
       select: {

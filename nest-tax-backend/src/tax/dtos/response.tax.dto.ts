@@ -72,10 +72,6 @@ export enum InstallmentPaidStatusEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
 }
 
-export enum PaymentTypeEnum {
-  DZN = 'DzN',
-}
-
 export class ResponseTaxPayerDto {
   @ApiProperty({
     description: 'Numeric id of tax payer',
@@ -376,6 +372,13 @@ export class ResponseTaxDto {
   amount: number
 
   @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
+
+  @ApiProperty({
     description: 'Amount which was already paid in cents - integer',
     default: 1000,
   })
@@ -414,6 +417,7 @@ export class ResponseTaxDto {
   @Type(() => Date)
   dateTaxRuling: Date | null
 
+  // TODO generalize for multiple tax types - PKO does not have taxConstructions, taxFlat, taxLand
   @ApiProperty({
     description: 'Part of tax amount for lands in cents in Eur.',
     default: 1000,
@@ -597,36 +601,43 @@ export class ResponseGetTaxesBodyDto {
     description: 'Numeric id of tax',
     default: 1,
   })
+  @IsNumber()
   id: number
 
   @ApiProperty({
     description: 'Uuid of tax',
     default: '00000000-0000-0000-0000-000000000000',
   })
+  @IsUUID()
   uuid: string
 
   @ApiProperty({
     description: 'Date of tax creation in backend',
     default: '2024-01-01',
   })
+  @IsDate()
+  @Type(() => Date)
   createdAt: Date
 
   @ApiProperty({
     description: 'Amount to paid in cents',
     default: 1000,
   })
+  @IsNumber()
   amount: number
 
   @ApiProperty({
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'Amount already paid',
     default: 900,
   })
+  @IsNumber()
   paidAmount: number
 
   @ApiProperty({
@@ -635,6 +646,7 @@ export class ResponseGetTaxesBodyDto {
     enumName: 'TaxPaidStatusEnum',
     enum: TaxPaidStatusEnum,
   })
+  @IsEnum(TaxPaidStatusEnum)
   paidStatus: TaxPaidStatusEnum
 
   @ApiProperty({
@@ -642,7 +654,17 @@ export class ResponseGetTaxesBodyDto {
       'Is tax payable (is tax from this year), and frontend can show payment data?',
     example: true,
   })
+  @IsBoolean()
   isPayable: boolean
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  type: TaxType
 }
 
 export class ResponseGetTaxesDto {
@@ -706,6 +728,22 @@ export class ResponseGetTaxesListBodyDto {
   })
   @IsEnum(TaxStatusEnum)
   status: TaxStatusEnum
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  type: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class ResponseGetTaxesListDto {

@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   HttpCode,
+  Param,
+  ParseEnumPipe,
   ParseIntPipe,
   Query,
   Res,
@@ -14,13 +16,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
+import { TaxType } from '@prisma/client'
 import pdf, { CreateOptions } from 'html-pdf'
+import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
 import { Tiers } from '../utils/decorators/tier.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
-import { CognitoTiersEnum } from '../utils/global-dtos/cognito.dto'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
@@ -63,15 +66,22 @@ export class TaxController {
     description: 'Internal server error',
     type: ResponseInternalServerErrorDto,
   })
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Get('get-tax-by-year')
+  @Get('get-tax-by-year-and-type')
   async getActualTaxes(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year', ParseIntPipe) year: number,
+    @Query('order', ParseIntPipe) order: number,
+    @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseTaxDto> {
-    return this.taxService.getTaxByYear(year, baUser.birthNumber)
+    return this.taxService.getTaxByYearAndType(
+      year,
+      baUser.birthNumber,
+      type,
+      order,
+    )
   }
 
   @HttpCode(200)
@@ -94,19 +104,23 @@ export class TaxController {
     description: 'Internal server error',
     type: ResponseInternalServerErrorDto,
   })
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
   @Get('get-tax-pdf-by-year')
   async getTaxByYearPdf(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year', ParseIntPipe) year: number,
+    @Query('order', ParseIntPipe) order: number,
+    @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
     @Res() res: any,
   ) {
     try {
       const pdfData = await this.taxService.generatePdf(
         year,
         baUser.birthNumber,
+        type,
+        order,
       )
       const options: CreateOptions = {
         format: 'A4',
@@ -156,15 +170,16 @@ export class TaxController {
     description: 'Internal server error',
     type: ResponseInternalServerErrorDto,
   })
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Get('taxes')
+  @Get('taxes/:type')
   async getArchivedTaxes(
     @BratislavaUser() baUser: BratislavaUserDto,
+    @Param('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseGetTaxesDto> {
     // TODO - pagination - but it will be issue after in year 2040 :D
-    const response = await this.taxService.loadTaxes(baUser.birthNumber)
+    const response = await this.taxService.loadTaxes(baUser.birthNumber, type)
     return response
   }
 }

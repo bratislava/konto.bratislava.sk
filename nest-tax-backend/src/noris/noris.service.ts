@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 
 import {
-  RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -31,10 +31,14 @@ export class NorisService {
   }
 
   async getAndProcessNewNorisTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 
@@ -47,17 +51,22 @@ export class NorisService {
   }
 
   async processNorisTaxData(
+    taxType: TaxType,
     norisData: NorisTaxPayersDto[],
     year: number,
   ): Promise<string[]> {
-    return this.taxSubservice.processNorisTaxData(norisData, year)
+    return this.taxSubservice.processNorisTaxData(taxType, norisData, year)
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    data: RequestPostNorisLoadDataDto,
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
   ) {
     return this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 

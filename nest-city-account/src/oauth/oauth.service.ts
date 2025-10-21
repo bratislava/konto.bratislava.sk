@@ -78,14 +78,13 @@ export class OAuthService {
   }
 
   /**
-   * Build Cognito authorization URL
-   * If sessionToken is provided, validates it and continues with SSO
-   * Note: redirect_uri is already validated by RedirectUriValidationGuard
+   * Build Cognito OAuth authorization URL
+   * Frontend will redirect to this after user logs in with Amplify
+   * Cognito recognizes the Amplify session and auto-approves
    */
   buildCognitoAuthorizeUrl(
     authorizeDto: AuthorizeRequestDto,
-    partner: PartnerConfig,
-    sessionToken?: string
+    partner: PartnerConfig
   ): string {
     const params = new URLSearchParams({
       response_type: authorizeDto.response_type,
@@ -110,19 +109,22 @@ export class OAuthService {
       params.append('nonce', authorizeDto.nonce)
     }
 
-    // If we have a session token, it means user is authenticated
-    // Cognito will handle SSO automatically with the user's existing session
     const authorizeUrl = `${this.cognitoDomain}/oauth2/authorize?${params.toString()}`
-    this.logger.log(
-      `Building Cognito authorize URL for partner: ${partner.name} (SSO: ${!!sessionToken})`
-    )
+    this.logger.log(`Building Cognito authorize URL for partner: ${partner.name}`)
 
     return authorizeUrl
   }
 
   /**
+   * Get frontend login URL
+   */
+  getFrontendLoginUrl(): string {
+    return this.frontendLoginUrl
+  }
+
+  /**
    * Exchange authorization code for tokens or refresh tokens
-   * Note: redirect_uri is already validated by RedirectUriValidationGuard
+   * Proxies to Cognito's token endpoint
    */
   async getToken(
     tokenDto: TokenRequestDto,

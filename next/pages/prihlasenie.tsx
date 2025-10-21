@@ -20,7 +20,19 @@ import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async (context) => {
+    const cognitoRedirect = context.query.cognito_redirect as string | undefined
+    
+    // If user is logged in and there's a Cognito redirect, go there immediately (SSO)
+    if (cognitoRedirect) {
+      return {
+        redirect: {
+          destination: cognitoRedirect,
+          permanent: false,
+        },
+      }
+    }
+    
     return {
       props: {
         ...(await slovakServerSideTranslations()),
@@ -59,6 +71,18 @@ const LoginPage = () => {
         // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
         // there might be some cases where user is not there yet.
         await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        
+        // Check for Cognito OAuth redirect parameter
+        const cognitoRedirect = router.query.cognito_redirect as string | undefined
+        if (cognitoRedirect) {
+          // OAuth flow - redirect to Cognito authorize endpoint
+          // Cognito will recognize the Amplify session and auto-approve
+          logger.info('[AUTH] OAuth flow detected, redirecting to Cognito authorize')
+          window.location.href = cognitoRedirect
+          return
+        }
+        
+        // Normal login flow
         await redirect()
         return
       }

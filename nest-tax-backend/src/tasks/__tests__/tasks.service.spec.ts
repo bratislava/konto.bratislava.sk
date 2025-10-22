@@ -1,4 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
+import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -17,6 +18,7 @@ describe('TasksService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TasksService,
+        { provide: ConfigService, useValue: createMock<ConfigService>() },
         ThrowerErrorGuard,
         { provide: NorisService, useValue: createMock<NorisService>() },
         { provide: PrismaService, useValue: createMock<PrismaService>() },

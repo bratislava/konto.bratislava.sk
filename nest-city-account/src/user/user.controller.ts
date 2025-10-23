@@ -53,7 +53,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Get or create user with his data',
     description:
-      'This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.',
+      'This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.',
   })
   @ApiResponse({
     status: 200,

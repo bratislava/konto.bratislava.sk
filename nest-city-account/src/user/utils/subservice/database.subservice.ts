@@ -51,6 +51,7 @@ export class DatabaseSubserviceUser {
           externalId: externalId,
         },
       })
+      await this.bloomreachService.trackCustomer(externalId)
     } else if (!user && externalId) {
       user = await this.prisma.user.findUnique({
         where: { externalId: externalId },
@@ -62,25 +63,21 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
+        await this.bloomreachService.trackCustomer(externalId)
         await this.changeUserGdprData(user.id, [
-          {
-            type: GDPRTypeEnum.LICENSE,
-            category: GDPRCategoryEnum.ESBS,
-            subType: GDPRSubTypeEnum.subscribe,
-          },
           {
             type: GDPRTypeEnum.MARKETING,
             category: GDPRCategoryEnum.ESBS,
             subType: GDPRSubTypeEnum.subscribe,
           },
         ])
-        await this.bloomreachService.trackCustomer(externalId)
       } else if (user.email != email) {
         const oldEmail = user.email
         user = await this.prisma.user.update({
           where: { externalId },
           data: { email },
         })
+        await this.bloomreachService.trackCustomer(externalId)
         this.logger.log(
           `Email changed for user ${externalId}. Old email: ${oldEmail}, new email: ${email}.`
         )
@@ -99,13 +96,6 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.changeUserGdprData(user.id, [
-        {
-          type: GDPRTypeEnum.LICENSE,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-      ])
       if (externalId) {
         await this.bloomreachService.trackCustomer(externalId)
       }
@@ -130,6 +120,7 @@ export class DatabaseSubserviceUser {
           externalId: externalId,
         },
       })
+      await this.bloomreachService.trackCustomer(externalId)
     } else if (!legalPerson && externalId) {
       legalPerson = await this.prisma.legalPerson.findUnique({
         where: { externalId: externalId },
@@ -141,12 +132,8 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
+        await this.bloomreachService.trackCustomer(externalId)
         await this.changeLegalPersonGdprData(legalPerson.id, [
-          {
-            type: GDPRTypeEnum.LICENSE,
-            category: GDPRCategoryEnum.ESBS,
-            subType: GDPRSubTypeEnum.subscribe,
-          },
           {
             type: GDPRTypeEnum.MARKETING,
             category: GDPRCategoryEnum.ESBS,
@@ -159,6 +146,7 @@ export class DatabaseSubserviceUser {
           where: { externalId },
           data: { email },
         })
+        await this.bloomreachService.trackCustomer(externalId)
         this.logger.log(
           `Email changed for legal person ${externalId}. Old email: ${oldEmail}, new email: ${email}.`
         )
@@ -177,13 +165,9 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.changeLegalPersonGdprData(legalPerson.id, [
-        {
-          type: GDPRTypeEnum.LICENSE,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-      ])
+      if (externalId) {
+        await this.bloomreachService.trackCustomer(externalId)
+      }
     }
     return legalPerson
   }

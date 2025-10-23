@@ -165,6 +165,13 @@ export class AdminService {
           toLogfmt(user)
         )
       }
+      if (!user.UserCreateDate) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          toLogfmt(user)
+        )
+      }
       try {
         await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
       } catch (error) {
@@ -674,7 +681,8 @@ export class AdminService {
     if (
       users.length === limitedTake &&
       limitedTake >= 2 &&
-      users[0].lastVerificationIdentityCard?.getTime() === users[users.length - 1].lastVerificationIdentityCard?.getTime()
+      users[0].lastVerificationIdentityCard?.getTime() ===
+        users[users.length - 1].lastVerificationIdentityCard?.getTime()
     ) {
       // If this happens because of manual edit in the database, please add random jitter to the dates
       throw this.throwerErrorGuard.InternalServerErrorException(

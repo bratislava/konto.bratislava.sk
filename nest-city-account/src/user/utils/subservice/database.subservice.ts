@@ -18,6 +18,7 @@ import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
+import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -26,12 +27,14 @@ export class DatabaseSubserviceUser {
   constructor(
     private prisma: PrismaService,
     private bloomreachService: BloomreachService,
+    private cognitoSubservice: CognitoSubservice,
     private throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
 
-  async getOrCreateUser(externalId: string | null, email: string) {
+  async getOrCreateUser(externalId: string, email: string) {
+    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
     let user = await this.prisma.user.findUnique({
       where: { email: email },
     })
@@ -49,6 +52,7 @@ export class DatabaseSubserviceUser {
         },
         data: {
           externalId: externalId,
+          registeredAt: cognitoData.UserCreateDate,
         },
       })
     } else if (!user && externalId) {
@@ -60,6 +64,7 @@ export class DatabaseSubserviceUser {
           data: {
             externalId: externalId,
             email: email,
+            registeredAt: cognitoData.UserCreateDate,
           },
         })
         await this.changeUserGdprData(user.id, [
@@ -79,7 +84,7 @@ export class DatabaseSubserviceUser {
         const oldEmail = user.email
         user = await this.prisma.user.update({
           where: { externalId },
-          data: { email },
+          data: { email, registeredAt: cognitoData.UserCreateDate },
         })
         this.logger.log(
           `Email changed for user ${externalId}. Old email: ${oldEmail}, new email: ${email}.`
@@ -97,6 +102,7 @@ export class DatabaseSubserviceUser {
         create: {
           externalId: externalId,
           email: email,
+          registeredAt: cognitoData.UserCreateDate,
         },
       })
       await this.changeUserGdprData(user.id, [
@@ -115,9 +121,10 @@ export class DatabaseSubserviceUser {
   }
 
   async getOrCreateLegalPerson(
-    externalId: string | null,
+    externalId: string,
     email: string
   ): Promise<ResponseLegalPersonDataSimpleDto> {
+    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
     let legalPerson = await this.prisma.legalPerson.findUnique({
       where: { email: email },
     })
@@ -128,6 +135,7 @@ export class DatabaseSubserviceUser {
         },
         data: {
           externalId: externalId,
+          registeredAt: cognitoData.UserCreateDate,
         },
       })
     } else if (!legalPerson && externalId) {
@@ -139,6 +147,7 @@ export class DatabaseSubserviceUser {
           data: {
             externalId: externalId,
             email: email,
+            registeredAt: cognitoData.UserCreateDate,
           },
         })
         await this.changeLegalPersonGdprData(legalPerson.id, [
@@ -157,7 +166,7 @@ export class DatabaseSubserviceUser {
         const oldEmail = legalPerson.email
         legalPerson = await this.prisma.legalPerson.update({
           where: { externalId },
-          data: { email },
+          data: { email, registeredAt: cognitoData.UserCreateDate },
         })
         this.logger.log(
           `Email changed for legal person ${externalId}. Old email: ${oldEmail}, new email: ${email}.`
@@ -171,10 +180,12 @@ export class DatabaseSubserviceUser {
         update: {
           externalId: externalId,
           email: email,
+          registeredAt: cognitoData.UserCreateDate,
         },
         create: {
           externalId: externalId,
           email: email,
+          registeredAt: cognitoData.UserCreateDate,
         },
       })
       await this.changeLegalPersonGdprData(legalPerson.id, [

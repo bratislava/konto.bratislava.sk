@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common'
 
 import {
   GdprDataDto,
-  RequestPublicSubscriptionDto,
   ResponsePublicUnsubscribeDto,
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
@@ -147,36 +146,6 @@ export class UserService {
     )
     const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
-  }
-
-  async subscribePublicUser(data: RequestPublicSubscriptionDto): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(null, data.email)
-    await this.databaseSubservice.changeUserGdprData(
-      user.id,
-      data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe }))
-    )
-
-    await this.bloomreachService.trackEventConsents(
-      data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe })),
-      user.externalId,
-      user.id,
-      false
-    )
-    const officialCorrespondenceChannel =
-      await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
-    const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(
-        user.id,
-        user.birthNumber ? true : false
-      )
-    const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
-    return {
-      ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      gdprData: getGdprData,
-    }
   }
 
   async unsubscribePublicUser(

@@ -181,7 +181,7 @@ export class TasksService {
     })
   }
 
-  // @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('CronError')
   async updateEdesk(): Promise<void> {
     const lookBackDate = new Date()

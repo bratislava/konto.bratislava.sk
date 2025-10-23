@@ -165,13 +165,6 @@ export class AdminService {
           toLogfmt(user)
         )
       }
-      if (!user.UserCreateDate) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          toLogfmt(user)
-        )
-      }
       try {
         await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
       } catch (error) {

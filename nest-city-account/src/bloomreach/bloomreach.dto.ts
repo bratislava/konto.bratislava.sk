@@ -10,7 +10,6 @@ export enum BloomreachConsentActionEnum {
 }
 
 export enum BloomreachConsentCategoryEnum {
-  ESBS_LICENSE = 'ESBS-LICENSE',
   ESBS_MARKETING = 'ESBS-MARKETING',
   TAX_COMMUNICATION = 'TAX-COMMUNICATION',
   OTHER = 'Other',
@@ -41,13 +40,13 @@ export class ConsentBloomreachDataDto {
 
   @ApiProperty({
     description: 'Category of consent',
-    example: BloomreachConsentCategoryEnum.ESBS_LICENSE,
+    example: BloomreachConsentCategoryEnum.ESBS_MARKETING,
   })
   category: BloomreachConsentCategoryEnum | string
 
   @ApiProperty({
     description: 'Timestamp of end of validity of consent. It is Datetime or Date or "unlimited"',
-    example: BloomreachConsentCategoryEnum.ESBS_LICENSE,
+    example: BloomreachConsentCategoryEnum.ESBS_MARKETING,
   })
   valid_until: string
 }

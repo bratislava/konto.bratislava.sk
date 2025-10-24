@@ -320,7 +320,7 @@ export class NorisPaymentSubservice {
       userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
 
     if (userFromCityAccount && userFromCityAccount.externalId) {
-      await this.bloomreachService.trackEventTaxPayment(
+      const result = await this.bloomreachService.trackEventTaxPayment(
         {
           amount: createdTaxPayment.amount,
           payment_source: 'BANK_ACCOUNT',
@@ -328,6 +328,12 @@ export class NorisPaymentSubservice {
         },
         userFromCityAccount.externalId,
       )
+      if (!result) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to track payment in Bloomreach.',
+        )
+      }
     }
   }
 }

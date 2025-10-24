@@ -14,7 +14,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import ConfigSubservice from '../subservices/config.subservice'
+import TasksConfigSubservice from '../subservices/config.subservice'
 import { TasksService } from '../tasks.service'
 
 describe('TasksService', () => {
@@ -41,8 +41,8 @@ describe('TasksService', () => {
           useValue: createMock<CityAccountSubservice>(),
         },
         {
-          provide: ConfigSubservice,
-          useValue: createMock<ConfigSubservice>(),
+          provide: TasksConfigSubservice,
+          useValue: createMock<TasksConfigSubservice>(),
         },
         {
           provide: BloomreachService,

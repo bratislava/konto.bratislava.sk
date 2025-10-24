@@ -7,7 +7,7 @@ import { NorisModule } from '../noris/noris.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
-import ConfigSubservice from './subservices/config.subservice'
+import TasksConfigSubservice from './subservices/config.subservice'
 import { TasksService } from './tasks.service'
 
 @Module({
@@ -22,7 +22,7 @@ import { TasksService } from './tasks.service'
     ThrowerErrorGuard,
     DatabaseSubservice,
     CityAccountSubservice,
-    ConfigSubservice,
+    TasksConfigSubservice,
   ],
   exports: [TasksService],
 })

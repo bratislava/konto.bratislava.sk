@@ -1,14 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT } from '../../utils/constants'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
-export default class ConfigSubservice {
-  private readonly logger: Logger
+export default class TasksConfigSubservice {
+  private readonly logger: LineLoggerSubservice
 
   constructor(private readonly prismaService: PrismaService) {
-    this.logger = new Logger('ConfigSubservice')
+    this.logger = new LineLoggerSubservice(TasksConfigSubservice.name)
   }
 
   async resetOverpaymentsLookbackDays(): Promise<void> {
@@ -25,20 +26,37 @@ export default class ConfigSubservice {
     )
   }
 
-  async incrementOverpaymentsLookbackDays(lookbackDays: number): Promise<void> {
-    const newDays = lookbackDays + 1
+  async incrementOverpaymentsLookbackDays(
+    incrementBy: number = 1,
+  ): Promise<void> {
+    await this.prismaService.$transaction(async (tx) => {
+      const config = await tx.config.findFirst({
+        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+      })
 
-    await this.prismaService.config.updateMany({
-      where: {
-        key: 'OVERPAYMENTS_LOOKBACK_DAYS',
-      },
-      data: {
-        value: newDays.toString(),
-      },
+      const currentValue = config ? parseInt(config.value, 10) : 0
+
+      if (Number.isNaN(currentValue)) {
+        throw new TypeError(
+          `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${config?.value ?? 'null'}, type number expected, got ${typeof config?.value}.`,
+        )
+      }
+
+      const newValue = currentValue + incrementBy
+
+      await tx.config.updateMany({
+        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+        data: { value: newValue.toString() },
+      })
+
+      this.logger.log(
+        `Incremented OVERPAYMENTS_LOOKBACK_DAYS from ${currentValue} to ${newValue}`,
+      )
+
+      return {
+        currentValue,
+        newValue,
+      }
     })
-
-    this.logger.log(
-      `Incremented OVERPAYMENTS_LOOKBACK_DAYS from ${lookbackDays} to ${newDays}`,
-    )
   }
 }

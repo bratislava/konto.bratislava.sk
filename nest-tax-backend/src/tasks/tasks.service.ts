@@ -25,7 +25,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
-import ConfigSubservice from './subservices/config.subservice'
+import TasksConfigSubservice from './subservices/config.subservice'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
@@ -41,7 +41,7 @@ export class TasksService {
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
-    private readonly configSubservice: ConfigSubservice,
+    private readonly configSubservice: TasksConfigSubservice,
     private readonly norisService: NorisService,
     private readonly configService: ConfigService,
   ) {
@@ -536,9 +536,7 @@ export class TasksService {
       )
     } catch (error) {
       // Failure: increment lookback days for next run
-      await this.configSubservice.incrementOverpaymentsLookbackDays(
-        lookbackDays,
-      )
+      await this.configSubservice.incrementOverpaymentsLookbackDays()
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
         'Failed to load overpayments from Noris after all retry attempts',

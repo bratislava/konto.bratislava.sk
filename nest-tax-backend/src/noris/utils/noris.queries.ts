@@ -11,7 +11,7 @@ SELECT
     (case 
         when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
         else 0 end 
-    ) uhrazeno,
+    ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
     subjekt_doklad_sub.reference_subjektu subjekt_refer, 
     ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
     lcs.dane21_priznanie.rok, 
@@ -388,6 +388,20 @@ LEFT OUTER JOIN
     lcs.uda_21_organizacia_mag uda_21_organizacia_mag
     ON
         uda_21_organizacia_mag.cislo_subjektu=lcs.dane21_priznanie.subjekt
+
+LEFT OUTER JOIN (
+    SELECT 
+        dane21_doklad_overpayment.podklad,
+        dane21_doklad_overpayment.rok_podkladu,
+        SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+    FROM lcs.dane21_doklad dane21_doklad_overpayment
+    JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
+        ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+    WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+    GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
+) overpayment_sum
+    ON overpayment_sum.podklad = lcs.dane21_doklad.podklad 
+    AND overpayment_sum.rok_podkladu = lcs.dane21_doklad.rok_podkladu
 
 WHERE 
     (

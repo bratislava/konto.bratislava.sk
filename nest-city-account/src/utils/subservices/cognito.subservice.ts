@@ -264,9 +264,9 @@ export class CognitoSubservice {
 
   /**
    * Returns all formatted users from cognito user pool
-   * @returns CognitoGetUserAttributesData[]
+   * @returns CognitoGetUserData[]
    */
-  async getAllCognitoUsers(): Promise<CognitoGetUserAttributesData[]> {
+  async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
     const result: Array<UserType> = []
     const params: ListUsersCommandInput = {
       UserPoolId: this.config.cognitoUserPoolId,
@@ -277,7 +277,15 @@ export class CognitoSubservice {
       result.push(...(cognitoData.Users ?? []))
       params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
-
-    return result.map((user) => this.attributesToObject(user.Attributes ?? []))
+    return result.map((user) => {
+      return {
+        idUser: user.Username ?? '',
+        ...this.attributesToObject(user.Attributes ?? []),
+        UserCreateDate: user.UserCreateDate,
+        UserLastModifiedDate: user.UserLastModifiedDate,
+        Enabled: user.Enabled ?? false,
+        UserStatus: user.UserStatus as CognitoUserStatusEnum,
+      }
+    })
   }
 }

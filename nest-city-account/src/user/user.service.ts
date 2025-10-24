@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common'
 
 import {
   GdprDataDto,
-  RequestPublicSubscriptionDto,
   ResponsePublicUnsubscribeDto,
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
@@ -20,7 +19,7 @@ import {
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { GDPRSubTypeEnum } from '@prisma/client'
-import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
+import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
 @Injectable()
 export class UserService {
@@ -39,8 +38,8 @@ export class UserService {
     return verificationDate < verificationDeadlineDate
   }
 
-  async getOrCreateUserData(id: string, email: string): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(id, email)
+  async getOrCreateUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
+    const user = await this.databaseSubservice.getOrCreateUser(cognitoUserData)
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
@@ -58,8 +57,10 @@ export class UserService {
     }
   }
 
-  async getOrCreateLegalPersonData(id: string, email: string): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.databaseSubservice.getOrCreateLegalPerson(id, email)
+  async getOrCreateLegalPersonData(
+    cognitoUserData: CognitoGetUserData
+  ): Promise<ResponseLegalPersonDataDto> {
+    const user = await this.databaseSubservice.getOrCreateLegalPerson(cognitoUserData)
     const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
   }
@@ -96,12 +97,11 @@ export class UserService {
   }
 
   async subUnsubUser(
-    externalId: string,
+    cognitoUserData: CognitoGetUserData,
     gdprSubType: GDPRSubTypeEnum,
-    email: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(externalId, email)
+    const user = await this.databaseSubservice.getOrCreateUser(cognitoUserData)
     await this.databaseSubservice.changeUserGdprData(
       user.id,
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
@@ -132,12 +132,11 @@ export class UserService {
   }
 
   async subUnsubLegalPerson(
-    externalId: string,
+    cognitoUserData: CognitoGetUserData,
     gdprSubType: GDPRSubTypeEnum,
-    email: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.databaseSubservice.getOrCreateLegalPerson(externalId, email)
+    const user = await this.databaseSubservice.getOrCreateLegalPerson(cognitoUserData)
     await this.databaseSubservice.changeLegalPersonGdprData(
       user.id,
       gdprData.map((elem) => ({
@@ -147,37 +146,6 @@ export class UserService {
     )
     const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
-  }
-
-  // TODO shouldn't this ('subscribePublicUser') function be same as 'unsubscribePublicUser'?
-  async subscribePublicUser(data: RequestPublicSubscriptionDto): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(null, data.email)
-    await this.databaseSubservice.changeUserGdprData(
-      user.id,
-      data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe }))
-    )
-
-    await this.bloomreachService.trackEventConsents(
-      data.gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.subscribe })),
-      user.externalId,
-      user.id,
-      false
-    )
-    const officialCorrespondenceChannel =
-      await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
-    const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(
-        user.id,
-        user.birthNumber ? true : false
-      )
-    const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
-    return {
-      ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      gdprData: getGdprData,
-    }
   }
 
   async unsubscribePublicUser(
@@ -282,18 +250,17 @@ export class UserService {
 
   async getOrCreateUserOrLegalPerson(
     accountType: CognitoUserAccountTypesEnum,
-    idUser: string,
-    email: string
+    cognitoUserData: CognitoGetUserData
   ) {
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const result = await this.databaseSubservice.getOrCreateUser(idUser, email)
+      const result = await this.databaseSubservice.getOrCreateUser(cognitoUserData, true)
       return result
     }
     if (
       accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
       accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      const result = await this.databaseSubservice.getOrCreateLegalPerson(idUser, email)
+      const result = await this.databaseSubservice.getOrCreateLegalPerson(cognitoUserData)
       return result
     }
   }

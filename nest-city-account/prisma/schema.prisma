@@ -57,6 +57,7 @@ model User {
   id                                   String                         @id @default(uuid()) @db.Uuid
   createdAt                            DateTime                       @default(now())
   updatedAt                            DateTime                       @updatedAt
+  registeredAt                         DateTime?                      
   externalId                           String?                        @unique
   email                                String?                        @unique
   ifo                                  String?                        @unique
@@ -140,6 +141,7 @@ model LegalPerson {
   id                                 String                         @id @default(uuid()) @db.Uuid
   createdAt                          DateTime                       @default(now())
   updatedAt                          DateTime                       @updatedAt
+  registeredAt                       DateTime?
   externalId                         String?                        @unique
   email                              String?                        @unique
   ico                                String?

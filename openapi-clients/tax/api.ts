@@ -2119,7 +2119,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year and tax type if there is no payment.
-     * @param {string} year
+     * @param {number} year
      * @param {string} type
      * @param {number} order
      * @param {*} [options] Override http request option.
@@ -2127,7 +2127,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     paymentControllerPayment: async (
-      year: string,
+      year: number,
       type: string,
       order: number,
       options: RawAxiosRequestConfig = {},
@@ -2387,7 +2387,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
     /**
      * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year and tax type if there is no payment.
-     * @param {string} year
+     * @param {number} year
      * @param {string} type
      * @param {number} order
      * @param {*} [options] Override http request option.
@@ -2395,7 +2395,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async paymentControllerPayment(
-      year: string,
+      year: number,
       type: string,
       order: number,
       options?: RawAxiosRequestConfig,
@@ -2548,7 +2548,7 @@ export const PaymentApiFactory = function (
     /**
      * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year and tax type if there is no payment.
-     * @param {string} year
+     * @param {number} year
      * @param {string} type
      * @param {number} order
      * @param {*} [options] Override http request option.
@@ -2556,7 +2556,7 @@ export const PaymentApiFactory = function (
      * @throws {RequiredError}
      */
     paymentControllerPayment(
-      year: string,
+      year: number,
       type: string,
       order: number,
       options?: RawAxiosRequestConfig,
@@ -2666,7 +2666,7 @@ export class PaymentApi extends BaseAPI {
   /**
    * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
    * @summary Generate payment link to logged user for submitted year and tax type if there is no payment.
-   * @param {string} year
+   * @param {number} year
    * @param {string} type
    * @param {number} order
    * @param {*} [options] Override http request option.
@@ -2674,7 +2674,7 @@ export class PaymentApi extends BaseAPI {
    * @throws {RequiredError}
    */
   public paymentControllerPayment(
-    year: string,
+    year: number,
     type: string,
     order: number,
     options?: RawAxiosRequestConfig,

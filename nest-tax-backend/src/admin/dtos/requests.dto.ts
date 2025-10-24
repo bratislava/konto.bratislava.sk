@@ -77,7 +77,7 @@ export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
   variableSymbols: string[]
 }
 
-export class RequestDateRangeDto {
+export class DateRangeDto {
   @ApiProperty({
     description: 'From date',
     default: '2025-10-10',

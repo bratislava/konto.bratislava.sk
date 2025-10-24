@@ -6,7 +6,7 @@ import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
 import {
-  RequestDateRangeDto,
+  DateRangeDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
@@ -19,6 +19,7 @@ import {
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
+import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
 import { NorisPaymentsDto } from '../noris.dto'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
@@ -133,8 +134,10 @@ export class NorisPaymentSubservice {
     return norisData.recordset
   }
 
-  async getOverpaymentsDataFromNorisByDateRange(data: RequestDateRangeDto) {
-    const norisData = await this.connectionService.withConnection(
+  async updateOverpaymentsDataFromNorisByDateRange(
+    data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    const overpaymentsData = await this.connectionService.withConnection(
       async (connection) => {
         const request = new Request(connection)
 
@@ -153,7 +156,8 @@ export class NorisPaymentSubservice {
         )
       },
     )
-    return norisData.recordset
+
+    return this.updatePaymentsFromNorisWithData(overpaymentsData.recordset)
   }
 
   private async createTaxMapByVariableSymbol(
@@ -176,7 +180,7 @@ export class NorisPaymentSubservice {
 
   async updatePaymentsFromNorisWithData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
-  ) {
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
 

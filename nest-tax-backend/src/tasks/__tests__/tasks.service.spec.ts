@@ -14,6 +14,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import ConfigSubservice from '../subservices/config.subservice'
 import { TasksService } from '../tasks.service'
 
 describe('TasksService', () => {
@@ -38,6 +39,10 @@ describe('TasksService', () => {
         {
           provide: CityAccountSubservice,
           useValue: createMock<CityAccountSubservice>(),
+        },
+        {
+          provide: ConfigSubservice,
+          useValue: createMock<ConfigSubservice>(),
         },
         {
           provide: BloomreachService,
@@ -177,6 +182,7 @@ describe('TasksService', () => {
         .spyOn(service['databaseSubservice'], 'getConfigByKeys')
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
+          OVERPAYMENTS_LOOKBACK_DAYS: '3',
         })
     })
 
@@ -189,15 +195,17 @@ describe('TasksService', () => {
         .spyOn(service['databaseSubservice'], 'getConfigByKeys')
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'false',
+          OVERPAYMENTS_LOOKBACK_DAYS: '3',
         })
 
       await service.loadOverpaymentsFromNoris()
 
       expect(getConfigByKeysMock).toHaveBeenCalledWith([
         'OVERPAYMENTS_FROM_NORIS_ENABLED',
+        'OVERPAYMENTS_LOOKBACK_DAYS',
       ])
       expect(
-        service['norisService'].getOverpaymentsDataFromNorisByDateRange,
+        service['norisService'].updateOverpaymentsDataFromNorisByDateRange,
       ).not.toHaveBeenCalled()
       expect(
         service['norisService'].updatePaymentsFromNorisWithData,
@@ -205,19 +213,6 @@ describe('TasksService', () => {
     })
 
     it('should successfully load and process overpayments when feature is enabled', async () => {
-      const mockOverpaymentsData = [
-        {
-          variabilny_symbol: '1234567890',
-          uhrazeno: 1000,
-          specificky_symbol: '9876543210',
-        },
-        {
-          variabilny_symbol: '0987654321',
-          uhrazeno: 2000,
-          specificky_symbol: '1234567890',
-        },
-      ]
-
       const mockResult = {
         created: 2,
         alreadyCreated: 0,
@@ -228,18 +223,122 @@ describe('TasksService', () => {
       const getOverpaymentsDataMock = jest
         .spyOn(
           service['norisService'],
-          'getOverpaymentsDataFromNorisByDateRange',
+          'updateOverpaymentsDataFromNorisByDateRange',
         )
-        .mockResolvedValue(mockOverpaymentsData as any)
-
-      const updatePaymentsMock = jest
-        .spyOn(service['norisService'], 'updatePaymentsFromNorisWithData')
         .mockResolvedValue(mockResult)
 
       await service.loadOverpaymentsFromNoris()
 
       expect(getConfigByKeysMock).toHaveBeenCalledWith([
         'OVERPAYMENTS_FROM_NORIS_ENABLED',
+        'OVERPAYMENTS_LOOKBACK_DAYS',
+      ])
+
+      const expectedFromDate = dayjs().subtract(3, 'day').toDate()
+      expect(getOverpaymentsDataMock).toHaveBeenCalledWith({
+        fromDate: expectedFromDate,
+      })
+    })
+
+    it('should use configurable lookback days from database config', async () => {
+      const mockResult = {
+        created: 1,
+        alreadyCreated: 0,
+      }
+
+      jest.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
+
+      getConfigByKeysMock = jest
+        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+        .mockResolvedValue({
+          OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
+          OVERPAYMENTS_LOOKBACK_DAYS: '7',
+        })
+
+      const getOverpaymentsDataMock = jest
+        .spyOn(
+          service['norisService'],
+          'updateOverpaymentsDataFromNorisByDateRange',
+        )
+        .mockResolvedValue(mockResult)
+
+      await service.loadOverpaymentsFromNoris()
+
+      expect(getConfigByKeysMock).toHaveBeenCalledWith([
+        'OVERPAYMENTS_FROM_NORIS_ENABLED',
+        'OVERPAYMENTS_LOOKBACK_DAYS',
+      ])
+
+      const expectedFromDate = dayjs().subtract(7, 'day').toDate()
+      expect(getOverpaymentsDataMock).toHaveBeenCalledWith({
+        fromDate: expectedFromDate,
+      })
+    })
+
+    it('should throw error when config is invalid', async () => {
+      getConfigByKeysMock = jest
+        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+        .mockResolvedValue({
+          OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
+          OVERPAYMENTS_LOOKBACK_DAYS: 'invalid',
+        })
+
+      jest
+        .spyOn(LineLoggerSubservice.prototype, 'error')
+        .mockImplementation(() => {})
+
+      const updateOverpaymentsDataFromNorisByDateRangeSpy = jest.spyOn(
+        service['norisService'],
+        'updateOverpaymentsDataFromNorisByDateRange',
+      )
+
+      const internalServerErrorExceptionSpy = jest
+        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
+        .mockReturnValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        )
+
+      // The error is caught by @HandleErrors decorator, so we expect it to not throw
+      const result = await service.loadOverpaymentsFromNoris()
+
+      expect(result).toBeNull()
+      expect(
+        updateOverpaymentsDataFromNorisByDateRangeSpy,
+      ).not.toHaveBeenCalled()
+      expect(internalServerErrorExceptionSpy).toHaveBeenCalled()
+      expect(getConfigByKeysMock).toHaveBeenCalledWith([
+        'OVERPAYMENTS_FROM_NORIS_ENABLED',
+        'OVERPAYMENTS_LOOKBACK_DAYS',
+      ])
+    })
+
+    it('should reset lookback days to default on success', async () => {
+      const mockResult = {
+        created: 1,
+        alreadyCreated: 0,
+      }
+
+      jest.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
+
+      const getOverpaymentsDataMock = jest
+        .spyOn(
+          service['norisService'],
+          'updateOverpaymentsDataFromNorisByDateRange',
+        )
+        .mockResolvedValue(mockResult)
+
+      const configSubserviceMock = jest
+        .spyOn(service['configSubservice'], 'resetOverpaymentsLookbackDays')
+        .mockResolvedValue()
+
+      await service.loadOverpaymentsFromNoris()
+
+      expect(getConfigByKeysMock).toHaveBeenCalledWith([
+        'OVERPAYMENTS_FROM_NORIS_ENABLED',
+        'OVERPAYMENTS_LOOKBACK_DAYS',
       ])
 
       const expectedFromDate = dayjs().subtract(3, 'day').toDate()
@@ -247,33 +346,49 @@ describe('TasksService', () => {
         fromDate: expectedFromDate,
       })
 
-      expect(updatePaymentsMock).toHaveBeenCalledWith(mockOverpaymentsData)
+      expect(configSubserviceMock).toHaveBeenCalled()
+    })
+
+    it('should increment lookback days on failure', async () => {
+      jest.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
+
+      const error = new Error('Noris service failed')
+
+      const retryWithDelayMock = jest
+        .spyOn(service as any, 'retryWithDelay')
+        .mockRejectedValue(error)
+
+      const configSubserviceMock = jest
+        .spyOn(service['configSubservice'], 'incrementOverpaymentsLookbackDays')
+        .mockResolvedValue()
+
+      jest
+        .spyOn(LineLoggerSubservice.prototype, 'error')
+        .mockImplementation(() => {})
+
+      // The error is caught by @HandleErrors decorator, so we expect it to not throw
+      const result = await service.loadOverpaymentsFromNoris()
+      expect(result).toBeNull()
+
+      expect(retryWithDelayMock).toHaveBeenCalled()
+      expect(configSubserviceMock).toHaveBeenCalledWith(3)
     })
 
     it('should handle error when updating payments fails', async () => {
-      const mockOverpaymentsData = [
-        {
-          variabilny_symbol: '1234567890',
-          uhrazeno: 1000,
-          specificky_symbol: '9876543210',
-        },
-      ]
-
       jest
         .spyOn(service['databaseSubservice'], 'getConfigByKeys')
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
+          OVERPAYMENTS_LOOKBACK_DAYS: '3',
         })
-
-      jest
-        .spyOn(service as any, 'retryWithDelay')
-        .mockResolvedValue(mockOverpaymentsData)
 
       const error = new Error('Payment update failed')
 
-      jest
-        .spyOn(service['norisService'], 'updatePaymentsFromNorisWithData')
-        .mockRejectedValue(error)
+      jest.spyOn(service as any, 'retryWithDelay').mockRejectedValue(error)
+
+      const configSubserviceMock = jest
+        .spyOn(service['configSubservice'], 'incrementOverpaymentsLookbackDays')
+        .mockResolvedValue()
 
       const throwerErrorGuardMock = jest
         .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
@@ -290,6 +405,7 @@ describe('TasksService', () => {
       const result = await service.loadOverpaymentsFromNoris()
 
       expect(result).toBeNull()
+      expect(configSubserviceMock).toHaveBeenCalledWith(3)
       expect(throwerErrorGuardMock).toHaveBeenCalledWith(
         CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
         expect.any(String),
@@ -304,6 +420,7 @@ describe('TasksService', () => {
         .spyOn(service['databaseSubservice'], 'getConfigByKeys')
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
+          OVERPAYMENTS_LOOKBACK_DAYS: '3',
         })
 
       const error = new Error('Retry failed')
@@ -451,6 +568,7 @@ describe('TasksService', () => {
       expect(mockFn).toHaveBeenCalledTimes(2)
       expect(logMock).toHaveBeenCalledWith(
         'Retry attempt failed. Retrying in 0.10 seconds. Remaining retries: 1',
+        expect.any(String),
       )
     })
 

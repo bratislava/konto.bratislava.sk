@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus } from '@prisma/client'
+import { PaymentStatus, Tax } from '@prisma/client'
 import * as mssql from 'mssql'
 
 import prismaMock from '../../../../test/singleton'
@@ -44,6 +44,7 @@ describe('NorisPaymentSubservice', () => {
   let bloomreachService: BloomreachService
   let connectionService: NorisConnectionSubservice
   let throwerErrorGuard: ThrowerErrorGuard
+  let cityAccountSubservice: CityAccountSubservice
 
   beforeEach(async () => {
     jest.clearAllMocks()
@@ -80,13 +81,16 @@ describe('NorisPaymentSubservice', () => {
       NorisConnectionSubservice,
     )
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    cityAccountSubservice = module.get<CityAccountSubservice>(
+      CityAccountSubservice,
+    )
   })
 
   it('should be defined', () => {
     expect(service).toBeDefined()
   })
 
-  describe('getOverpaymentsDataFromNorisByDateRange', () => {
+  describe('updateOverpaymentsDataFromNorisByDateRange', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
     beforeAll(async () => {
@@ -102,7 +106,7 @@ describe('NorisPaymentSubservice', () => {
       jest.useRealTimers()
     })
 
-    it('should successfully retrieve overpayments data from Noris', async () => {
+    it('should successfully retrieve overpayments data from Noris and create payments', async () => {
       const mockData = {
         fromDate: new Date('2024-01-01'),
         toDate: new Date('2024-01-31'),
@@ -137,14 +141,78 @@ describe('NorisPaymentSubservice', () => {
           return fn({} as any)
         })
 
+      const mockTaxData = [
+        {
+          id: 1,
+          variableSymbol: '1234567890',
+          taxPayer: {
+            id: 1,
+            birthNumber: '123456/7890',
+          },
+        },
+        {
+          id: 2,
+          variableSymbol: '0987654321',
+          taxPayer: {
+            id: 2,
+            birthNumber: '098765/4321',
+          },
+        },
+      ] as unknown as Tax[]
+      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
+
+      jest
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/7890': {
+            externalId: 'external-123',
+            birthNumber: '123456/7890',
+            email: 'test1@example.com',
+            userAttribute: {},
+          },
+          '098765/4321': {
+            externalId: 'external-456',
+            birthNumber: '098765/4321',
+            email: 'test2@example.com',
+            userAttribute: {},
+          },
+        })
+
+      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+        return callback({
+          $queryRaw: jest.fn().mockResolvedValue([]),
+          taxPayment: {
+            aggregate: jest.fn().mockResolvedValue({
+              _sum: { amount: 0 },
+            }),
+            create: jest.fn().mockResolvedValue({
+              id: 1,
+              amount: 150_000,
+              source: 'BANK_ACCOUNT',
+              specificSymbol: '9876543210',
+              taxId: 1,
+              status: PaymentStatus.SUCCESS,
+            }),
+          },
+        })
+      })
+      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+
+      jest
+        .spyOn(bloomreachService, 'trackEventTaxPayment')
+        .mockResolvedValue(true)
+
       const result =
-        await service.getOverpaymentsDataFromNorisByDateRange(mockData)
+        await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
 
       expect(withConnectionMock).toHaveBeenCalledWith(
         expect.any(Function),
         expect.any(Function),
       )
-      expect(result).toEqual(mockRecordset)
+      expect(result).toEqual({
+        created: 2,
+        alreadyCreated: 0,
+      })
     })
 
     it('should handle connection errors and throw appropriate exception', async () => {
@@ -168,7 +236,7 @@ describe('NorisPaymentSubservice', () => {
         })
 
       await expect(
-        service.getOverpaymentsDataFromNorisByDateRange(mockData),
+        service.updateOverpaymentsDataFromNorisByDateRange(mockData),
       ).rejects.toThrow('Internal Server Error')
 
       expect(throwerErrorGuardMock).toHaveBeenCalledWith(
@@ -180,7 +248,260 @@ describe('NorisPaymentSubservice', () => {
       )
     })
 
-    it('should handle empty result set', async () => {
+    it('should handle mixed scenarios with some payments already created', async () => {
+      const mockData = {
+        fromDate: new Date('2024-01-01'),
+        toDate: new Date('2024-01-31'),
+      }
+
+      const mockRecordset = [
+        {
+          variabilny_symbol: '1111111111',
+          uhrazeno_sum_saldo: 1000,
+          uhrazeno_overpayment: 0,
+          uhrazeno: '1000',
+          specificky_symbol: '1111111111',
+        },
+        {
+          variabilny_symbol: '2222222222',
+          uhrazeno_sum_saldo: 2000,
+          uhrazeno_overpayment: 500,
+          uhrazeno: '2500',
+          specificky_symbol: '2222222222',
+        },
+      ]
+
+      const mockConnectionResult = {
+        recordset: mockRecordset,
+      }
+
+      mockRequest.query.mockResolvedValue(mockConnectionResult)
+
+      jest
+        .spyOn(connectionService, 'withConnection')
+        .mockImplementation(async (fn) => {
+          return fn({} as any)
+        })
+
+      const mockTaxData = [
+        {
+          id: 1,
+          variableSymbol: '1111111111',
+          taxPayer: {
+            id: 1,
+            birthNumber: '111111/1111',
+          },
+        },
+        {
+          id: 2,
+          variableSymbol: '2222222222',
+          taxPayer: {
+            id: 2,
+            birthNumber: '222222/2222',
+          },
+        },
+      ] as unknown as Tax[]
+      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
+
+      jest
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '111111/1111': {
+            externalId: 'external-111',
+            birthNumber: '111111/1111',
+            email: 'test1@example.com',
+            userAttribute: {},
+          },
+          '222222/2222': {
+            externalId: 'external-222',
+            birthNumber: '222222/2222',
+            email: 'test2@example.com',
+            userAttribute: {},
+          },
+        })
+
+      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+        return callback({
+          $queryRaw: jest.fn().mockResolvedValue([]),
+          taxPayment: {
+            aggregate: jest.fn().mockImplementation(({ where }) => {
+              // First tax (1111111111) already has full payment
+              if (where.taxId === 1) {
+                return Promise.resolve({
+                  _sum: { amount: 100_000 }, // Already paid 1000
+                })
+              }
+              // Second tax (2222222222) has partial payment
+              return Promise.resolve({
+                _sum: { amount: 150_000 }, // Already paid 1500, needs 1000 more
+              })
+            }),
+            create: jest.fn().mockResolvedValue({
+              id: 2,
+              amount: 100_000,
+              source: 'BANK_ACCOUNT',
+              specificSymbol: '2222222222',
+              taxId: 2,
+              status: PaymentStatus.SUCCESS,
+            }),
+          },
+        })
+      })
+      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+
+      jest
+        .spyOn(bloomreachService, 'trackEventTaxPayment')
+        .mockResolvedValue(true)
+
+      const result =
+        await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
+
+      expect(result).toEqual({
+        created: 1,
+        alreadyCreated: 1,
+      })
+    })
+
+    it('should handle null toDate by using current date and process payments', async () => {
+      const mockData = {
+        fromDate: new Date('2024-01-01'),
+        toDate: undefined,
+      }
+
+      const mockRecordset = [
+        {
+          variabilny_symbol: '3333333333',
+          uhrazeno_sum_saldo: 500,
+          uhrazeno_overpayment: 200,
+          uhrazeno: '700',
+          specificky_symbol: '3333333333',
+        },
+      ]
+
+      const mockConnectionResult = {
+        recordset: mockRecordset,
+      }
+
+      mockRequest.query.mockResolvedValue(mockConnectionResult)
+
+      jest
+        .spyOn(connectionService, 'withConnection')
+        .mockImplementation(async (fn) => {
+          return fn({} as any)
+        })
+
+      const mockTaxData = [
+        {
+          id: 3,
+          variableSymbol: '3333333333',
+          taxPayer: {
+            id: 3,
+            birthNumber: '333333/3333',
+          },
+        },
+      ] as unknown as Tax[]
+      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
+
+      jest
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '333333/3333': {
+            externalId: 'external-333',
+            birthNumber: '333333/3333',
+            email: 'test3@example.com',
+            userAttribute: {},
+          },
+        })
+
+      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+        return callback({
+          $queryRaw: jest.fn().mockResolvedValue([]),
+          taxPayment: {
+            aggregate: jest.fn().mockResolvedValue({
+              _sum: { amount: 0 },
+            }),
+            create: jest.fn().mockResolvedValue({
+              id: 3,
+              amount: 70_000,
+              source: 'BANK_ACCOUNT',
+              specificSymbol: '3333333333',
+              taxId: 3,
+              status: PaymentStatus.SUCCESS,
+            }),
+          },
+        })
+      })
+      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+
+      jest
+        .spyOn(bloomreachService, 'trackEventTaxPayment')
+        .mockResolvedValue(true)
+
+      const result =
+        await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
+
+      expect(mockRequest.input).toHaveBeenCalledWith(
+        'fromDate',
+        mockData.fromDate,
+      )
+      expect(mockRequest.input).toHaveBeenCalledWith('toDate', DEFAULT_TEST_NOW)
+      expect(result).toEqual({
+        created: 1,
+        alreadyCreated: 0,
+      })
+    })
+
+    it('should handle case where no matching taxes exist (both created and alreadyCreated are 0)', async () => {
+      const mockData = {
+        fromDate: new Date('2024-01-01'),
+        toDate: new Date('2024-01-31'),
+      }
+
+      const mockRecordset = [
+        {
+          variabilny_symbol: '9999999999',
+          uhrazeno_sum_saldo: 1000,
+          uhrazeno_overpayment: 0,
+          uhrazeno: '1000',
+          specificky_symbol: '9999999999',
+        },
+        {
+          variabilny_symbol: '8888888888',
+          uhrazeno_sum_saldo: 2000,
+          uhrazeno_overpayment: 500,
+          uhrazeno: '2500',
+          specificky_symbol: '8888888888',
+        },
+      ]
+
+      const mockConnectionResult = {
+        recordset: mockRecordset,
+      }
+
+      mockRequest.query.mockResolvedValue(mockConnectionResult)
+
+      jest
+        .spyOn(connectionService, 'withConnection')
+        .mockImplementation(async (fn) => {
+          return fn({} as any)
+        })
+
+      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue([])
+
+      jest
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .mockResolvedValue({})
+
+      const result =
+        await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
+
+      expect(result).toEqual({
+        created: 0,
+        alreadyCreated: 0,
+      })
+    })
+
+    it('should handle empty recordset from Noris database', async () => {
       const mockData = {
         fromDate: new Date('2024-01-01'),
         toDate: new Date('2024-01-31'),
@@ -198,49 +519,33 @@ describe('NorisPaymentSubservice', () => {
           return fn({} as any)
         })
 
-      const result =
-        await service.getOverpaymentsDataFromNorisByDateRange(mockData)
-
-      expect(result).toEqual([])
-    })
-
-    it('should handle null toDate by using current date', async () => {
-      const mockData = {
-        fromDate: new Date('2024-01-01'),
-        toDate: undefined,
-      }
-
-      const mockRecordset = [
-        {
-          variabilny_symbol: '1234567890',
-          uhrazeno_sum_saldo: 1000,
-          uhrazeno_overpayment: 500,
-          uhrazeno: '1500',
-          specificky_symbol: '9876543210',
-        },
-      ]
-
-      const mockConnectionResult = {
-        recordset: mockRecordset,
-      }
-
-      mockRequest.query.mockResolvedValue(mockConnectionResult)
-
+      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue([])
       jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => {
-          return fn({} as any)
-        })
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .mockResolvedValue({})
 
       const result =
-        await service.getOverpaymentsDataFromNorisByDateRange(mockData)
+        await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
 
-      expect(mockRequest.input).toHaveBeenCalledWith(
-        'fromDate',
-        mockData.fromDate,
+      expect(result).toEqual({
+        created: 0,
+        alreadyCreated: 0,
+      })
+
+      expect(prismaMock.tax.findMany).toHaveBeenCalledWith({
+        where: {
+          variableSymbol: {
+            in: [],
+          },
+        },
+        include: {
+          taxPayer: true,
+        },
+      })
+
+      expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
+        [],
       )
-      expect(mockRequest.input).toHaveBeenCalledWith('toDate', DEFAULT_TEST_NOW)
-      expect(result).toEqual(mockRecordset)
     })
   })
 
@@ -650,7 +955,7 @@ describe('NorisPaymentSubservice', () => {
 
       const mockCreatedPayment = {
         id: 1,
-        amount: 150_050, // Converted to cents
+        amount: 150_050,
         source: 'BANK_ACCOUNT',
         specificSymbol: '9876543210',
         taxId: 1,
@@ -704,12 +1009,7 @@ describe('NorisPaymentSubservice', () => {
 
       const mockTransaction = jest.fn().mockImplementation(async (callback) => {
         return callback({
-          $queryRaw: jest.fn().mockImplementation((strings) => {
-            // Handle template literal calls
-            if (typeof strings === 'string') {
-              return Promise.resolve([])
-            }
-            // Handle tagged template literal calls
+          $queryRaw: jest.fn().mockImplementation(() => {
             return Promise.resolve([])
           }),
           taxPayment: {

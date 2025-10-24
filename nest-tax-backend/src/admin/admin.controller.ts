@@ -17,11 +17,12 @@ import {
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
+import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { AdminService } from './admin.service'
 import {
+  DateRangeDto,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestDateRangeDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -80,12 +81,13 @@ export class AdminController {
     status: 200,
     description:
       'Integrate Paid for day from Noris to our database from date of last integration to today',
+    type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
   @Post('payments-from-noris')
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
-  ): Promise<{ created: number; alreadyCreated: number }> {
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
     return this.adminService.updatePaymentsFromNoris({
       type: 'fromToDate',
       data,
@@ -94,19 +96,20 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Integrate overpayments for day from - to.',
+    summary: 'Pull overpayments from Noris for a specified date range.',
   })
   @ApiResponse({
     status: 200,
     description:
-      'Integrate overpayments from Noris to our database inside the specified date range.',
+      'Pulls payment records with overpayments from Noris database to local database for the specified date range. Creates new records and updates existing ones that have changed.',
+    type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
   @Post('overpayments-from-noris')
   async updateOverpaymentsFromNoris(
-    @Body() data: RequestDateRangeDto,
-  ): Promise<{ created: number; alreadyCreated: number }> {
-    return this.adminService.updateOverpaymentsFromNoris(data)
+    @Body() data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data)
   }
 
   @HttpCode(200)

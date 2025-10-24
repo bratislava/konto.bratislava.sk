@@ -149,6 +149,7 @@ export class UserService {
     return { ...user, gdprData: getGdprData }
   }
 
+  // TODO shouldn't this ('subscribePublicUser') function be same as 'unsubscribePublicUser'?
   async subscribePublicUser(data: RequestPublicSubscriptionDto): Promise<ResponseUserDataDto> {
     const user = await this.databaseSubservice.getOrCreateUser(null, data.email)
     await this.databaseSubservice.changeUserGdprData(

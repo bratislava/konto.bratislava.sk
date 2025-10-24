@@ -39,6 +39,16 @@ export interface CreateBirthNumbersResponseDto {
    */
   birthNumbers: Array<string>
 }
+export interface DateRangeDto {
+  /**
+   * From date
+   */
+  fromDate: string
+  /**
+   * To date
+   */
+  toDate?: string
+}
 /**
  * delivery_method
  */
@@ -125,16 +135,6 @@ export interface RequestAdminDeleteTaxDto {
    * Birth number in format with slash
    */
   birthNumber: string
-}
-export interface RequestDateRangeDto {
-  /**
-   * From date
-   */
-  fromDate: string
-  /**
-   * To date
-   */
-  toDate?: string
 }
 export interface RequestPostNorisLoadDataDto {
   /**
@@ -255,6 +255,16 @@ export interface ResponseConstructionTaxDetailDto {
   amount: number
 }
 
+export interface ResponseCreatedAlreadyCreatedDto {
+  /**
+   * Number of created records
+   */
+  created: number
+  /**
+   * Number of records that already existed in the database
+   */
+  alreadyCreated: number
+}
 export interface ResponseErrorDto {
   /**
    * statusCode
@@ -1233,21 +1243,17 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
     },
     /**
      *
-     * @summary Integrate overpayments for day from - to.
-     * @param {RequestDateRangeDto} requestDateRangeDto
+     * @summary Pull overpayments from Noris for a specified date range.
+     * @param {DateRangeDto} dateRangeDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerUpdateOverpaymentsFromNoris: async (
-      requestDateRangeDto: RequestDateRangeDto,
+      dateRangeDto: DateRangeDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'requestDateRangeDto' is not null or undefined
-      assertParamExists(
-        'adminControllerUpdateOverpaymentsFromNoris',
-        'requestDateRangeDto',
-        requestDateRangeDto,
-      )
+      // verify required parameter 'dateRangeDto' is not null or undefined
+      assertParamExists('adminControllerUpdateOverpaymentsFromNoris', 'dateRangeDto', dateRangeDto)
       const localVarPath = `/admin/overpayments-from-noris`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -1273,7 +1279,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        requestDateRangeDto,
+        dateRangeDto,
         localVarRequestOptions,
         configuration,
       )
@@ -1516,18 +1522,20 @@ export const AdminApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary Integrate overpayments for day from - to.
-     * @param {RequestDateRangeDto} requestDateRangeDto
+     * @summary Pull overpayments from Noris for a specified date range.
+     * @param {DateRangeDto} dateRangeDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async adminControllerUpdateOverpaymentsFromNoris(
-      requestDateRangeDto: RequestDateRangeDto,
+      dateRangeDto: DateRangeDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCreatedAlreadyCreatedDto>
+    > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerUpdateOverpaymentsFromNoris(
-          requestDateRangeDto,
+          dateRangeDto,
           options,
         )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -1553,7 +1561,9 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminControllerUpdatePaymentsFromNoris(
       requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCreatedAlreadyCreatedDto>
+    > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerUpdatePaymentsFromNoris(
           requestPostNorisPaymentDataLoadDto,
@@ -1677,17 +1687,17 @@ export const AdminApiFactory = function (
     },
     /**
      *
-     * @summary Integrate overpayments for day from - to.
-     * @param {RequestDateRangeDto} requestDateRangeDto
+     * @summary Pull overpayments from Noris for a specified date range.
+     * @param {DateRangeDto} dateRangeDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerUpdateOverpaymentsFromNoris(
-      requestDateRangeDto: RequestDateRangeDto,
+      dateRangeDto: DateRangeDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<ResponseCreatedAlreadyCreatedDto> {
       return localVarFp
-        .adminControllerUpdateOverpaymentsFromNoris(requestDateRangeDto, options)
+        .adminControllerUpdateOverpaymentsFromNoris(dateRangeDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1700,7 +1710,7 @@ export const AdminApiFactory = function (
     adminControllerUpdatePaymentsFromNoris(
       requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<ResponseCreatedAlreadyCreatedDto> {
       return localVarFp
         .adminControllerUpdatePaymentsFromNoris(requestPostNorisPaymentDataLoadDto, options)
         .then((request) => request(axios, basePath))
@@ -1810,17 +1820,17 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @summary Integrate overpayments for day from - to.
-   * @param {RequestDateRangeDto} requestDateRangeDto
+   * @summary Pull overpayments from Noris for a specified date range.
+   * @param {DateRangeDto} dateRangeDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public adminControllerUpdateOverpaymentsFromNoris(
-    requestDateRangeDto: RequestDateRangeDto,
+    dateRangeDto: DateRangeDto,
     options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminControllerUpdateOverpaymentsFromNoris(requestDateRangeDto, options)
+      .adminControllerUpdateOverpaymentsFromNoris(dateRangeDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

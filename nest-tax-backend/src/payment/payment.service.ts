@@ -388,34 +388,36 @@ export class PaymentService {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
       }
 
-      const taxPayment = await this.prisma.taxPayment.update({
-        where: { orderId: ORDERNUMBER },
-        data: {
-          status: PaymentStatus.SUCCESS,
-          source: 'CARD',
-        },
-        include: {
-          tax: {
-            select: {
-              year: true,
+      await this.prisma.$transaction(async (tx) => {
+        const taxPayment = await tx.taxPayment.update({
+          where: { orderId: ORDERNUMBER },
+          data: {
+            status: PaymentStatus.SUCCESS,
+            source: 'CARD',
+          },
+          include: {
+            tax: {
+              select: {
+                year: true,
+              },
             },
           },
-        },
-      })
+        })
 
-      const user = await this.cityAccountSubservice.getUserDataAdmin(
-        payment.tax.taxPayer.birthNumber,
-      )
-      if (user?.externalId) {
-        await this.bloomreachService.trackEventTaxPayment(
-          {
-            amount: taxPayment.amount,
-            payment_source: TaxPaymentSource.CARD,
-            year: taxPayment.tax.year,
-          },
-          user.externalId,
+        const user = await this.cityAccountSubservice.getUserDataAdmin(
+          payment.tax.taxPayer.birthNumber,
         )
-      }
+        if (user?.externalId) {
+          await this.bloomreachService.trackEventTaxPayment(
+            {
+              amount: taxPayment.amount,
+              payment_source: TaxPaymentSource.CARD,
+              year: taxPayment.tax.year,
+            },
+            user.externalId,
+          )
+        }
+      })
 
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
     } catch (error) {

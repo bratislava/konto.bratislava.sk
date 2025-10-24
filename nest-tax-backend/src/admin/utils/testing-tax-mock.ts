@@ -30,11 +30,6 @@ export const createTestingTaxMock = (
     specificky_symbol: '2024100000',
     variabilny_symbol: norisData.variableSymbol,
     uhrazeno: norisData.alreadyPaid,
-    zbyva_uhradit: (
-      parseFloat(norisData.taxTotal.replace(',', '.')) -
-      parseFloat(norisData.alreadyPaid.replace(',', '.'))
-    ).toString(),
-
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,
     cislo_poradace: +taxAdministrator.externalId,

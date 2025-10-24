@@ -11,15 +11,7 @@ SELECT
     (case 
         when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
         else 0 end 
-    ) uhrazeno,
-    (case 
-        when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-            case 
-                when dane21_doklad.stav_dokladu='S' then 0 
-                else view_doklad_saldo.zbyva_uhradit 
-            end)
-        else 0 
-    end ) zbyva_uhradit,
+    ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
     subjekt_doklad_sub.reference_subjektu subjekt_refer, 
     ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
     lcs.dane21_priznanie.rok, 
@@ -397,6 +389,20 @@ LEFT OUTER JOIN
     ON
         uda_21_organizacia_mag.cislo_subjektu=lcs.dane21_priznanie.subjekt
 
+LEFT OUTER JOIN (
+    SELECT 
+        dane21_doklad_overpayment.podklad,
+        dane21_doklad_overpayment.rok_podkladu,
+        SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+    FROM lcs.dane21_doklad dane21_doklad_overpayment
+    JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
+        ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+    WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+    GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
+) overpayment_sum
+    ON overpayment_sum.podklad = lcs.dane21_doklad.podklad 
+    AND overpayment_sum.rok_podkladu = lcs.dane21_doklad.rok_podkladu
+
 WHERE 
     (
         lcs.dane21_druh_dokladu.typ_dokladu = 'v'
@@ -420,14 +426,6 @@ const basePaymentsQuery = `
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
         ) uhrazeno,
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-                case 
-                    when dane21_doklad.stav_dokladu='S' then 0 
-                    else view_doklad_saldo.zbyva_uhradit 
-                end)
-            else 0 
-        end ) zbyva_uhradit,
         dane21_doklad.specificky_symbol specificky_symbol
     FROM lcs.dane21_doklad as dane21_doklad
     JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
@@ -469,6 +467,57 @@ export const queryPaymentsFromNorisByVariableSymbols =
     `AND dane21_doklad.variabilny_symbol IN (@variable_symbols)`,
   )
 
+export const queryOverpaymentsFromNorisByDateRange = `
+  SELECT 
+      dane21_doklad.variabilny_symbol as variabilny_symbol,
+      (case 
+          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+          else 0 end 
+      ) uhrazeno_sum_saldo,
+      sum(dane21_doklad_overpayment.suma_mena) as uhrazeno_overpayment, -- TODO use just uhrazeno, these two are only for debugging
+      (case 
+          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+          else 0 end 
+      ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
+      dane21_doklad.specificky_symbol specificky_symbol
+  FROM lcs.dane21_doklad as dane21_doklad
+  JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
+      ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
+      AND view_doklad_saldo.uhrazeno > 0
+      AND view_doklad_saldo.zbyva_uhradit <= 0
+  JOIN lcs.dane21_doklad as dane21_doklad_overpayment
+        ON dane21_doklad_overpayment.podklad = dane21_doklad.podklad AND dane21_doklad_overpayment.rok_podkladu = dane21_doklad.rok_podkladu
+  LEFT OUTER JOIN 
+      lcs.dane21_druh_dokladu as dane21_druh_dokladu
+      ON
+          dane21_doklad.druh_dokladu=dane21_druh_dokladu.cislo_subjektu
+  JOIN lcs.dane21_druh_dokladu as overpayment_druh_dokladu
+      ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+  LEFT JOIN 
+      lcs.dane21_priznanie  
+      ON 
+          dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
+  LEFT JOIN 
+      lcs.pko21_poplatok  
+      ON 
+          dane21_doklad.podklad=lcs.pko21_poplatok.cislo_subjektu
+ WHERE 
+      dane21_druh_dokladu.typ_dokladu = 'V'
+      AND overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+      AND dane21_druh_dokladu.typ_dane IN ('1', '4')
+      AND dane21_doklad.stav_dokladu <> 's'
+      AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
+  GROUP BY 
+      dane21_doklad.variabilny_symbol,
+      dane21_doklad.specificky_symbol,
+      view_doklad_saldo.uhrazeno,
+      dane21_druh_dokladu.generovat_pohladavku
+  HAVING 
+      MAX(dane21_doklad_overpayment.datum_realizacie) >= @fromDate 
+      AND MAX(dane21_doklad_overpayment.datum_realizacie) <= @toDate
+      AND MAX(dane21_doklad_overpayment.datum_realizacie) IS NOT NULL
+`
+
 export const setDeliveryMethodsForUser = `
     UPDATE lcs.uda_21_organizacia_mag
     SET
@@ -504,14 +553,6 @@ export const getCommunalWasteTaxesFromNoris = `
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
         ) uhrazeno,
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-                case 
-                    when doklad.stav_dokladu='S' then 0 
-                    else view_doklad_saldo.zbyva_uhradit 
-                end)
-            else 0 
-        end ) zbyva_uhradit,
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,

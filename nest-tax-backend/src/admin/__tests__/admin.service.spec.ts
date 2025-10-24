@@ -590,7 +590,6 @@ describe('AdminService', () => {
       const mockPayment: NorisPaymentsDto = {
         variabilny_symbol: 'VS123',
         uhrazeno: '500.0',
-        zbyva_uhradit: '0',
         specificky_symbol: 'SS123',
       } as NorisPaymentsDto
 
@@ -646,7 +645,6 @@ describe('AdminService', () => {
       const mockPayment: NorisPaymentsDto = {
         variabilny_symbol: 'VS123',
         uhrazeno: '500.00',
-        zbyva_uhradit: '0',
         specificky_symbol: 'SS123',
       } as NorisPaymentsDto
 

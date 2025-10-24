@@ -18,7 +18,7 @@ import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
-import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
+import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -27,18 +27,22 @@ export class DatabaseSubserviceUser {
   constructor(
     private prisma: PrismaService,
     private bloomreachService: BloomreachService,
-    private cognitoSubservice: CognitoSubservice,
     private throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
 
-  async getOrCreateUser(externalId: string, email: string) {
-    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
+  /**
+   * Gets or creates a user from database using cognito user data.
+   * @param {CognitoGetUserData} cognitoUserData - The cognito user data.
+   * @param {boolean} isAdminCall - Whether the call is made by an admin to bypass the deceased user check.
+   */
+  async getOrCreateUser(cognitoUserData: CognitoGetUserData, isAdminCall: boolean = false) {
+    const { email, idUser: externalId, UserCreateDate: registeredAt } = cognitoUserData
     let user = await this.prisma.user.findUnique({
       where: { email: email },
     })
-    if (user?.isDeceased) {
+    if (!isAdminCall && user?.isDeceased) {
       throw this.throwerErrorGuard.ForbiddenException(
         UserErrorsEnum.USER_IS_DECEASED,
         UserErrorsResponseEnum.USER_IS_DECEASED
@@ -47,25 +51,25 @@ export class DatabaseSubserviceUser {
     if (user && externalId) {
       user = await this.prisma.user.update({
         where: {
-          email: email,
+          email,
           ...ACTIVE_USER_FILTER,
         },
         data: {
-          externalId: externalId,
-          registeredAt: cognitoData.UserCreateDate,
+          externalId,
+          registeredAt,
         },
       })
       await this.bloomreachService.trackCustomer(externalId)
     } else if (!user && externalId) {
       user = await this.prisma.user.findUnique({
-        where: { externalId: externalId },
+        where: { externalId },
       })
       if (!user) {
         user = await this.prisma.user.create({
           data: {
-            externalId: externalId,
-            email: email,
-            registeredAt: cognitoData.UserCreateDate,
+            externalId,
+            email,
+            registeredAt,
           },
         })
         await this.bloomreachService.trackCustomer(externalId)
@@ -80,7 +84,7 @@ export class DatabaseSubserviceUser {
         const oldEmail = user.email
         user = await this.prisma.user.update({
           where: { externalId },
-          data: { email, registeredAt: cognitoData.UserCreateDate },
+          data: { email, registeredAt },
         })
         await this.bloomreachService.trackCustomer(externalId)
         this.logger.log(
@@ -90,16 +94,16 @@ export class DatabaseSubserviceUser {
     } else {
       user = await this.prisma.user.upsert({
         where: {
-          email: email,
+          email,
         },
         update: {
-          externalId: externalId,
-          email: email,
+          externalId,
+          email,
         },
         create: {
-          externalId: externalId,
-          email: email,
-          registeredAt: cognitoData.UserCreateDate,
+          externalId,
+          email,
+          registeredAt,
         },
       })
       if (externalId) {
@@ -111,21 +115,24 @@ export class DatabaseSubserviceUser {
   }
 
   async getOrCreateLegalPerson(
-    externalId: string,
-    email: string
+    cognitoUserData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataSimpleDto> {
-    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
+    const { email, idUser: externalId, UserCreateDate: registeredAt } = cognitoUserData
+
     let legalPerson = await this.prisma.legalPerson.findUnique({
-      where: { email: email },
+      where: { email },
     })
+    // TODO: we are missing attribute for isDeceased,
+    // if we are implemeting it, let's add admin call,
+    // same as in getOrCreateUser
     if (legalPerson && externalId) {
       legalPerson = await this.prisma.legalPerson.update({
         where: {
-          email: email,
+          email,
         },
         data: {
-          externalId: externalId,
-          registeredAt: cognitoData.UserCreateDate,
+          externalId,
+          registeredAt,
         },
       })
       await this.bloomreachService.trackCustomer(externalId)
@@ -136,9 +143,9 @@ export class DatabaseSubserviceUser {
       if (!legalPerson) {
         legalPerson = await this.prisma.legalPerson.create({
           data: {
-            externalId: externalId,
-            email: email,
-            registeredAt: cognitoData.UserCreateDate,
+            externalId,
+            email,
+            registeredAt,
           },
         })
         await this.bloomreachService.trackCustomer(externalId)
@@ -153,7 +160,7 @@ export class DatabaseSubserviceUser {
         const oldEmail = legalPerson.email
         legalPerson = await this.prisma.legalPerson.update({
           where: { externalId },
-          data: { email, registeredAt: cognitoData.UserCreateDate },
+          data: { email, registeredAt },
         })
         await this.bloomreachService.trackCustomer(externalId)
         this.logger.log(
@@ -163,17 +170,17 @@ export class DatabaseSubserviceUser {
     } else {
       legalPerson = await this.prisma.legalPerson.upsert({
         where: {
-          email: email,
+          email,
         },
         update: {
-          externalId: externalId,
-          email: email,
-          registeredAt: cognitoData.UserCreateDate,
+          externalId,
+          email,
+          registeredAt,
         },
         create: {
-          externalId: externalId,
-          email: email,
-          registeredAt: cognitoData.UserCreateDate,
+          externalId,
+          email,
+          registeredAt,
         },
       })
       if (externalId) {

@@ -166,7 +166,7 @@ export class AdminService {
         )
       }
       try {
-        await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
+        await this.userService.getOrCreateUserOrLegalPerson(accountType, user)
       } catch (error) {
         this.logger.error(error)
       }

@@ -398,38 +398,41 @@ export class PaymentService {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
-      const taxPayment = await this.prisma.taxPayment.update({
-        where: { orderId: ORDERNUMBER },
-        data: {
-          status: PaymentStatus.SUCCESS,
-          source: 'CARD',
-        },
-        include: {
-          tax: {
-            select: {
-              year: true,
-              type: true,
-              order: true,
+      await this.prisma.$transaction(async (tx) => {
+        const taxPayment = await tx.taxPayment.update({
+          where: { orderId: ORDERNUMBER },
+          data: {
+            status: PaymentStatus.SUCCESS,
+            source: TaxPaymentSource.CARD,
+          },
+          include: {
+            tax: {
+              select: {
+                year: true,
+                type: true,
+                order: true,
+              },
             },
           },
-        },
-      })
+        })
 
-      const user = await this.cityAccountSubservice.getUserDataAdmin(
-        payment.tax.taxPayer.birthNumber,
-      )
-      if (user?.externalId) {
-        await this.bloomreachService.trackEventTaxPayment(
-          {
-            amount: taxPayment.amount,
-            payment_source: TaxPaymentSource.CARD,
-            year: taxPayment.tax.year,
-            taxType: taxPayment.tax.type,
-            order: taxPayment.tax.order!, // non-null by DB trigger and constraint
-          },
-          user.externalId,
+        const user = await this.cityAccountSubservice.getUserDataAdmin(
+          payment.tax.taxPayer.birthNumber,
         )
-      }
+
+        if (user?.externalId) {
+          await this.bloomreachService.trackEventTaxPayment(
+            {
+              amount: taxPayment.amount,
+              payment_source: TaxPaymentSource.CARD,
+              year: taxPayment.tax.year,
+              taxType: taxPayment.tax.type,
+              order: taxPayment.tax.order!, // non-null by DB trigger and constraint
+            },
+            user.externalId,
+          )
+        }
+      })
 
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${tax?.tax.type}&year=${year}`
     } catch (error) {

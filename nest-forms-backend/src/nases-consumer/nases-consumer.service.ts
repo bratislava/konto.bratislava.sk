@@ -50,6 +50,7 @@ export default class NasesConsumerService {
     private readonly prismaService: PrismaService,
     private readonly nasesService: NasesService,
     private readonly convertPdfService: ConvertPdfService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('NasesConsumerService')
   }
@@ -169,17 +170,25 @@ export default class NasesConsumerService {
   ): Promise<Nack> {
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
 
-    // create a pdf image of the form, upload it to minio and at it among form files
-    await this.convertPdfService.createPdfImageInFormFiles(
-      data.formId,
-      formDefinition,
-    )
-
     try {
+      // create a pdf image of the form, upload it to minio and at it among form files
+      await this.convertPdfService.createPdfImageInFormFiles(
+        data.formId,
+        formDefinition,
+      )
+
       await this.nasesService.sendToNasesAndUpdateState(jwt, form, data, {
         type: SendMessageNasesSenderType.Self,
       })
     } catch (error) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Error during SlovenskoSkForm handling',
+          undefined,
+          error,
+        ),
+      )
       if (data.tries <= 1) {
         const toEmail = data.userData.email || form.email
         if (data.tries === 1 && toEmail) {

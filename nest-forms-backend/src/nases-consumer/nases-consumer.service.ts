@@ -184,7 +184,7 @@ export default class NasesConsumerService {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error during SlovenskoSkForm handling',
+          'Error during slovensko.sk form handling',
           undefined,
           error,
         ),

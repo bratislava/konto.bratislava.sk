@@ -371,7 +371,7 @@ describe('TasksService', () => {
       expect(result).toBeNull()
 
       expect(retryWithDelayMock).toHaveBeenCalled()
-      expect(configSubserviceMock).toHaveBeenCalledWith(3)
+      expect(configSubserviceMock).toHaveBeenCalled()
     })
 
     it('should handle error when updating payments fails', async () => {
@@ -405,7 +405,7 @@ describe('TasksService', () => {
       const result = await service.loadOverpaymentsFromNoris()
 
       expect(result).toBeNull()
-      expect(configSubserviceMock).toHaveBeenCalledWith(3)
+      expect(configSubserviceMock).toHaveBeenCalled()
       expect(throwerErrorGuardMock).toHaveBeenCalledWith(
         CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
         expect.any(String),

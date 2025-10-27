@@ -18,6 +18,7 @@ import { stateHolidays } from '../tax/utils/unified-tax.util'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
+  OVERPAYMENTS_LOOKBACK_DAYS,
 } from '../utils/constants'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
@@ -486,7 +487,7 @@ export class TasksService {
   async loadOverpaymentsFromNoris() {
     const config = await this.databaseSubservice.getConfigByKeys([
       'OVERPAYMENTS_FROM_NORIS_ENABLED',
-      'OVERPAYMENTS_LOOKBACK_DAYS',
+      OVERPAYMENTS_LOOKBACK_DAYS,
     ])
 
     if (config.OVERPAYMENTS_FROM_NORIS_ENABLED !== 'true') {

@@ -10,6 +10,7 @@ import { CardPaymentReportingService } from '../../card-payment-reporting/card-p
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../utils/constants'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
@@ -202,7 +203,7 @@ describe('TasksService', () => {
 
       expect(getConfigByKeysMock).toHaveBeenCalledWith([
         'OVERPAYMENTS_FROM_NORIS_ENABLED',
-        'OVERPAYMENTS_LOOKBACK_DAYS',
+        OVERPAYMENTS_LOOKBACK_DAYS,
       ])
       expect(
         service['norisService'].updateOverpaymentsDataFromNorisByDateRange,
@@ -231,7 +232,7 @@ describe('TasksService', () => {
 
       expect(getConfigByKeysMock).toHaveBeenCalledWith([
         'OVERPAYMENTS_FROM_NORIS_ENABLED',
-        'OVERPAYMENTS_LOOKBACK_DAYS',
+        OVERPAYMENTS_LOOKBACK_DAYS,
       ])
 
       const expectedFromDate = dayjs().subtract(3, 'day').toDate()
@@ -266,7 +267,7 @@ describe('TasksService', () => {
 
       expect(getConfigByKeysMock).toHaveBeenCalledWith([
         'OVERPAYMENTS_FROM_NORIS_ENABLED',
-        'OVERPAYMENTS_LOOKBACK_DAYS',
+        OVERPAYMENTS_LOOKBACK_DAYS,
       ])
 
       const expectedFromDate = dayjs().subtract(7, 'day').toDate()
@@ -311,7 +312,7 @@ describe('TasksService', () => {
       expect(internalServerErrorExceptionSpy).toHaveBeenCalled()
       expect(getConfigByKeysMock).toHaveBeenCalledWith([
         'OVERPAYMENTS_FROM_NORIS_ENABLED',
-        'OVERPAYMENTS_LOOKBACK_DAYS',
+        OVERPAYMENTS_LOOKBACK_DAYS,
       ])
     })
 
@@ -338,7 +339,7 @@ describe('TasksService', () => {
 
       expect(getConfigByKeysMock).toHaveBeenCalledWith([
         'OVERPAYMENTS_FROM_NORIS_ENABLED',
-        'OVERPAYMENTS_LOOKBACK_DAYS',
+        OVERPAYMENTS_LOOKBACK_DAYS,
       ])
 
       const expectedFromDate = dayjs().subtract(3, 'day').toDate()

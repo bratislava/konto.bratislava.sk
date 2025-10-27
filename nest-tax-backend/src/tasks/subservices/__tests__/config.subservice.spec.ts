@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT } from '../../../utils/constants'
+import {
+  OVERPAYMENTS_LOOKBACK_DAYS,
+  OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT,
+} from '../../../utils/constants'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import TasksConfigSubservice from '../config.subservice'
 
@@ -32,7 +35,7 @@ describe('TasksConfigSubservice', () => {
 
       expect(updateManyMock).toHaveBeenCalledWith({
         where: {
-          key: 'OVERPAYMENTS_LOOKBACK_DAYS',
+          key: OVERPAYMENTS_LOOKBACK_DAYS,
         },
         data: {
           value: OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT.toString(),
@@ -52,7 +55,7 @@ describe('TasksConfigSubservice', () => {
 
       expect(updateManyMock).toHaveBeenCalledWith({
         where: {
-          key: 'OVERPAYMENTS_LOOKBACK_DAYS',
+          key: OVERPAYMENTS_LOOKBACK_DAYS,
         },
         data: {
           value: OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT.toString(),
@@ -63,7 +66,7 @@ describe('TasksConfigSubservice', () => {
 
   describe('incrementOverpaymentsLookbackDays', () => {
     it('should increment lookback days by 1 when config exists', async () => {
-      const mockConfig = { key: 'OVERPAYMENTS_LOOKBACK_DAYS', value: '5' }
+      const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '5' }
       const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
       const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
 
@@ -82,16 +85,16 @@ describe('TasksConfigSubservice', () => {
       await service.incrementOverpaymentsLookbackDays()
 
       expect(mockFindFirst).toHaveBeenCalledWith({
-        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+        where: { key: OVERPAYMENTS_LOOKBACK_DAYS },
       })
       expect(mockUpdateMany).toHaveBeenCalledWith({
-        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+        where: { key: OVERPAYMENTS_LOOKBACK_DAYS },
         data: { value: '6' },
       })
     })
 
     it('should increment lookback days by custom value', async () => {
-      const mockConfig = { key: 'OVERPAYMENTS_LOOKBACK_DAYS', value: '10' }
+      const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '10' }
       const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
       const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
 
@@ -110,7 +113,7 @@ describe('TasksConfigSubservice', () => {
       await service.incrementOverpaymentsLookbackDays(3)
 
       expect(mockUpdateMany).toHaveBeenCalledWith({
-        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+        where: { key: OVERPAYMENTS_LOOKBACK_DAYS },
         data: { value: '13' },
       })
     })
@@ -134,7 +137,7 @@ describe('TasksConfigSubservice', () => {
       await service.incrementOverpaymentsLookbackDays(2)
 
       expect(mockUpdateMany).toHaveBeenCalledWith({
-        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+        where: { key: OVERPAYMENTS_LOOKBACK_DAYS },
         data: { value: '2' },
       })
     })
@@ -151,7 +154,7 @@ describe('TasksConfigSubservice', () => {
     })
 
     it('should handle invalid configuration', async () => {
-      const mockConfig = { key: 'OVERPAYMENTS_LOOKBACK_DAYS', value: 'invalid' }
+      const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: 'invalid' }
       const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
       const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
 

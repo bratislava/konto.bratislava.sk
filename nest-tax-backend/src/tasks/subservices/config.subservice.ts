@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
-import { OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT } from '../../utils/constants'
+import {
+  OVERPAYMENTS_LOOKBACK_DAYS,
+  OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT,
+} from '../../utils/constants'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
@@ -15,7 +18,7 @@ export default class TasksConfigSubservice {
   async resetOverpaymentsLookbackDays(): Promise<void> {
     await this.prismaService.config.updateMany({
       where: {
-        key: 'OVERPAYMENTS_LOOKBACK_DAYS',
+        key: OVERPAYMENTS_LOOKBACK_DAYS,
       },
       data: {
         value: OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT.toString(),
@@ -31,7 +34,7 @@ export default class TasksConfigSubservice {
   ): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       const config = await tx.config.findFirst({
-        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+        where: { key: OVERPAYMENTS_LOOKBACK_DAYS },
       })
 
       const currentValue = config ? parseInt(config.value, 10) : 0
@@ -45,7 +48,7 @@ export default class TasksConfigSubservice {
       const newValue = currentValue + incrementBy
 
       await tx.config.updateMany({
-        where: { key: 'OVERPAYMENTS_LOOKBACK_DAYS' },
+        where: { key: OVERPAYMENTS_LOOKBACK_DAYS },
         data: { value: newValue.toString() },
       })
 

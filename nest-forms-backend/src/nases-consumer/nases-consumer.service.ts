@@ -22,7 +22,9 @@ import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ } from '../utils/constants'
+import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import alertError, {
   LineLoggerSubservice,
@@ -61,8 +63,21 @@ export default class NasesConsumerService {
     exchange: RABBIT_MQ.EXCHANGE,
     routingKey: RABBIT_MQ.ROUTING_KEY,
     queue: RABBIT_MQ.QUEUE,
+    errorHandler: (channel, msg, error) => {
+      const logger = new LineLoggerSubservice('NasesConsumerService')
+      const throwerErrorGuard = new ThrowerErrorGuard()
+
+      logger.error(
+        throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Error during NasesConsumerService handling',
+          error.message,
+          error,
+        ),
+      )
+      channel.reject(msg, false)
+    },
   })
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(data: RabbitPayloadDto): Promise<Nack> {
     this.logger.debug(
       `Consuming message for formId: ${data.formId} on try: ${data.tries}`,

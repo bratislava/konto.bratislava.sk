@@ -16,6 +16,7 @@ export enum NasesErrorsEnum {
   UNABLE_SEND_FORM_TO_NASES = 'UNABLE_SEND_FORM_TO_NASES',
   SEND_TO_GINIS_ERROR = 'SEND_TO_GINIS_ERROR',
   FAILED_FORM_REGISTRATION_VERIFICATION = 'FAILED_FORM_REGISTRATION_VERIFICATION',
+  CREATE_PDF_IMAGE_ERROR = 'CREATE_PDF_IMAGE_ERROR',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -36,6 +37,7 @@ export enum NasesErrorsResponseEnum {
   UNABLE_SEND_FORM_TO_NASES = 'Unable to send form to NASES.',
   SEND_TO_GINIS_ERROR = 'There was an error when sending to Ginis.',
   FAILED_FORM_REGISTRATION_VERIFICATION = 'Failed to verify form registration in Slovensko.sk.',
+  CREATE_PDF_IMAGE_ERROR = 'Error while creating pdf image.',
 }
 
 export enum NasesErrorCodesEnum {

@@ -120,6 +120,8 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
     return {
       ...detailWithoutQrCode,
       year,
+      order,
+      type: TaxType.DZN,
       paidStatus,
       oneTimePayment,
       installmentPayment,

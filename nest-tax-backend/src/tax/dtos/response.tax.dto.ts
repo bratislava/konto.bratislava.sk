@@ -1176,6 +1176,20 @@ export class ResponseTaxSummaryDetailDto {
   @IsPositive()
   year: number
 
+  @ApiProperty({ description: 'Order of tax', example: 1 })
+  @IsNumber()
+  @IsPositive()
+  order: number
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  type: TaxType
+
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()
   @IsPositive()

@@ -11,7 +11,6 @@ export const baseNorisCommunalWasteTaxSchema = z.object({
   rok: z.number(),
   dan_spolu: z.string(),
   uhrazeno: z.string(),
-  zbyva_uhradit: z.string(),
   subjekt_refer: z.string(),
   subjekt_nazev: z.string(),
   akt_datum: z.string(),

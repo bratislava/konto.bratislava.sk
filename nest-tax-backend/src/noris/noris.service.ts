@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 
 import {
+  DateRangeDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from '../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../admin/dtos/responses.dto'
+import { ResponseCreatedAlreadyCreatedDto } from './dtos/response.dto'
 import { NorisPaymentsDto, NorisTaxPayersDto } from './noris.dto'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
@@ -30,6 +32,14 @@ export class NorisService {
     return this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(data)
   }
 
+  async updateOverpaymentsDataFromNorisByDateRange(
+    data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    return this.paymentSubservice.updateOverpaymentsDataFromNorisByDateRange(
+      data,
+    )
+  }
+
   async getAndProcessNewNorisTaxDataByBirthNumberAndYear(
     taxType: TaxType,
     year: number,
@@ -44,7 +54,7 @@ export class NorisService {
 
   async updatePaymentsFromNorisWithData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
-  ) {
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
     return this.paymentSubservice.updatePaymentsFromNorisWithData(
       norisPaymentData,
     )

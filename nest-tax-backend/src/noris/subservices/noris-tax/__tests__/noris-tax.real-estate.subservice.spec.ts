@@ -134,7 +134,6 @@ describe('NorisTaxRealEstateSubservice', () => {
       SPL4_4: '4',
       specificky_symbol: '2024100000',
       uhrazeno: '0.00',
-      zbyva_uhradit: '1000.00',
     },
   ]
 

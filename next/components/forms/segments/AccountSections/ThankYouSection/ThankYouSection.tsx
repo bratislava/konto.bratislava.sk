@@ -24,7 +24,6 @@ const statusToTranslationPath = {
   [PaymentStatusOptions.ALREADY_PAID]: {
     title: 'thank_you.result.payment_already_paid.title',
     content: 'thank_you.result.payment_already_paid.content',
-    feedbackTitle: 'thank_you.result.payment_already_paid.feedback_title',
   },
   [PaymentStatusOptions.FAILED]: {
     title: 'thank_you.result.payment_failed.title',
@@ -33,7 +32,6 @@ const statusToTranslationPath = {
   [PaymentStatusOptions.SUCCESS]: {
     title: 'thank_you.result.payment_success.title',
     content: 'thank_you.result.payment_success.content',
-    feedbackTitle: 'thank_you.result.payment_success.feedback_title',
   },
 }
 
@@ -60,7 +58,7 @@ const ThankYouSection = () => {
   }, [router.query, status])
 
   return (
-    <div className="flex h-screen flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">
+    <div className="flex flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-8">
       <div className="flex flex-col">
         {success ? (
           <ThankYouCard
@@ -69,14 +67,13 @@ const ThankYouSection = () => {
             content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_profil_text')}
-            feedbackTitle={t(statusToTranslationPath[status].feedbackTitle!)}
             feedbackLink={paymentSuccessFeedbackLink ?? undefined}
           />
         ) : (
           <ThankYouCard
             success={success}
             title={t(statusToTranslationPath[status].title)}
-            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}`}
+            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
             firstButtonTitle={t('thank_you.button_restart_text')}
             secondButtonTitle={t('thank_you.button_cancel_text')}
           />

@@ -247,7 +247,7 @@ describe('NasesService', () => {
       ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
     })
 
-    it('should log and throw error if creating pdf fails, and the last update should be with state: QUEUED', async () => {
+    it('should log and throw error if creating pdf fails, and the last update should be with state: DRAFT', async () => {
       jest
         .spyOn(service['formsService'], 'checkFormBeforeSending')
         .mockResolvedValue({
@@ -278,13 +278,13 @@ describe('NasesService', () => {
 
       await expect(
         service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
-      ).rejects.toThrow()
+      ).rejects.toThrow(NasesErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR)
       expect(sendToNasesSpy).not.toHaveBeenCalled()
-      expect(service['logger'].error).toHaveBeenCalled()
       expect(updateSpy).toHaveBeenLastCalledWith(
         '1',
         expect.objectContaining({
-          state: FormState.QUEUED,
+          state: FormState.DRAFT,
+          error: FormError.NASES_SEND_ERROR,
         }),
       )
     })

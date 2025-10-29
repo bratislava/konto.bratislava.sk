@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { config, connect, ConnectionPool } from 'mssql'
 
@@ -6,7 +6,11 @@ import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 @Injectable()
-export class NorisConnectionSubservice {
+export class NorisConnectionSubservice
+  implements OnModuleInit, OnModuleDestroy
+{
+  private connectionPool: ConnectionPool
+
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -24,7 +28,15 @@ export class NorisConnectionSubservice {
     }
   }
 
-  private async createConnection(
+  async onModuleInit() {
+    this.connectionPool = await this.createConnectionPool()
+  }
+
+  async onModuleDestroy() {
+    await this.connectionPool.close()
+  }
+
+  private async createConnectionPool(
     configOverrides?: Partial<config>,
   ): Promise<ConnectionPool> {
     const connection = await connect({
@@ -43,13 +55,6 @@ export class NorisConnectionSubservice {
     })
 
     return connection
-  }
-
-  private async createOptimizedConnection(): Promise<ConnectionPool> {
-    return this.createConnection({
-      connectionTimeout: 60_000,
-      requestTimeout: 180_000,
-    })
   }
 
   private async waitForConnection(
@@ -87,20 +92,13 @@ export class NorisConnectionSubservice {
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
     errorHandler: (error: any) => never,
-    useOptimized: boolean = false,
   ): Promise<T> {
-    const connection = useOptimized
-      ? await this.createOptimizedConnection()
-      : await this.createConnection()
-
     try {
-      await this.waitForConnection(connection)
-      const result = await operation(connection)
+      await this.waitForConnection(this.connectionPool)
+      const result = await operation(this.connectionPool)
       return result
     } catch (error) {
       return errorHandler(error)
-    } finally {
-      await connection.close()
     }
   }
 }

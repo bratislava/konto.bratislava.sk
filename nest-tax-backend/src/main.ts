@@ -27,6 +27,7 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Accept, Authorization',
   }
   app.enableCors(corsOptions)
+  app.enableShutdownHooks()
   app.useGlobalPipes(new ValidationPipe())
   app.useGlobalFilters(new ErrorFilter()) // This filter must be first
   app.useGlobalFilters(new TypeErrorFilter())

@@ -9,6 +9,11 @@ import {
 } from '../../user-verification/verification.errors.enum'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 import { AxiosError } from 'axios'
+import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../../oauth2/oauth2.error.enum'
+import {
+  OAuth2AuthorizationErrorDto,
+  OAuth2TokenErrorDto,
+} from '../../oauth2/dtos/errors.oauth2.dto'
 
 @Injectable()
 export default class ThrowerErrorGuard {
@@ -197,6 +202,79 @@ export default class ThrowerErrorGuard {
     }
 
     return exception
+  }
+
+  // OAuth2 errors
+
+  /**
+   * Creates an OAuth2 authorization error redirect URL per RFC 6749 Section 4.1.2.1 / 4.2.2.1
+   * Authorization errors MUST redirect to client's redirect_uri with error parameters
+   *
+   * @example
+   *   } catch (error) {
+   *     const errorUrl = this.throwerErrorGuard.OAuth2AuthorizationErrorRedirect(
+   *       query.redirect_uri || 'https://fallback-url.com',
+   *       OAuth2AuthorizationErrorCode.SERVER_ERROR,
+   *       'An unexpected error occurred',
+   *       query.state
+   *     )
+   *     return res.redirect(errorUrl)
+   *   }
+   * @param redirectUri - Client's registered redirect_uri
+   * @param errorCode - OAuth2 authorization error code
+   * @param errorDescription - Optional human-readable error description
+   * @param state - REQUIRED if state was present in authorization request
+   * @param errorUri - Optional URI identifying a human-readable error page
+   * @returns Redirect URL string with error parameters
+   */
+  OAuth2AuthorizationErrorRedirect(
+    redirectUri: string,
+    errorCode: OAuth2AuthorizationErrorCode,
+    errorDescription?: string,
+    state?: string,
+    errorUri?: string
+  ): string {
+    const params = new URLSearchParams()
+    params.append('error', errorCode)
+
+    if (errorDescription) {
+      params.append('error_description', errorDescription)
+    }
+
+    if (state) {
+      params.append('state', state)
+    }
+
+    if (errorUri) {
+      params.append('error_uri', errorUri)
+    }
+
+    // Check if redirect_uri already has query parameters
+    const separator = redirectUri.includes('?') ? '&' : '?'
+    return `${redirectUri}${separator}${params.toString()}`
+  }
+
+  /**
+   * Creates an OAuth2 token endpoint error per RFC 6749 Section 5.2
+   * Token errors return HTTP 400 with JSON body
+   *
+   * @param errorCode - OAuth2 token error code
+   * @param errorDescription - Optional human-readable error description
+   * @param errorUri - Optional URI identifying a human-readable error page
+   * @returns HttpException with 400 status
+   */
+  OAuth2TokenException(
+    errorCode: OAuth2TokenErrorCode,
+    errorDescription?: string,
+    errorUri?: string
+  ): HttpException {
+    const response: OAuth2TokenErrorDto = {
+      error: errorCode,
+      error_description: errorDescription,
+      error_uri: errorUri,
+    }
+
+    return new HttpException(response, HttpStatus.BAD_REQUEST)
   }
 }
 

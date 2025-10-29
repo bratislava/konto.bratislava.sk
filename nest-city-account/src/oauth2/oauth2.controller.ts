@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import {
-  ApiBadRequestResponse,
   ApiOperation, ApiResponse,
   ApiTags
 } from '@nestjs/swagger'
@@ -28,7 +27,7 @@ import {
   TokenRequestDto,
 } from './dtos/requests.oauth2.dto'
 import {
-  AuthorizationErrorResponseDto, TokenErrorResponseDto,
+
   TokenResponseDto
 } from './dtos/responses.oautuh2.dto'
 import { AuthorizationContinueGuard, RequestWithAuthorizationContinue } from './guards/authorization-continue.guard'
@@ -54,10 +53,6 @@ export class OAuth2Controller {
   @ApiResponse({
     status: 303,
     description: 'Redirects to frontend for user authentication',
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid authorization request',
-    type: AuthorizationErrorResponseDto,
   })
   async authorize(
     @Query() query: AuthorizationRequestDto,
@@ -85,10 +80,6 @@ export class OAuth2Controller {
     status: 200,
     description: 'Token exchange successful',
     type: TokenResponseDto,
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid token request',
-    type: TokenErrorResponseDto,
   })
   async token(
     @Body() body: TokenRequestDto | RefreshTokenRequestDto,
@@ -120,10 +111,6 @@ export class OAuth2Controller {
   @ApiResponse({
     status: 303,
     description: 'Successfully redirects to client redirect_uri with authorization code and state (if provided)',
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid continue request',
-    type: AuthorizationErrorResponseDto,
   })
   async continue(
     @Body() body: ContinueRequestDto,

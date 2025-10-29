@@ -31,6 +31,6 @@ import { TasksModule } from './tasks/tasks.module'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*')
+    consumer.apply(AppLoggerMiddleware).exclude('oauth2/(.*)').forRoutes('*')
   }
 }

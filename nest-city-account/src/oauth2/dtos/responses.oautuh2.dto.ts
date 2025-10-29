@@ -146,27 +146,3 @@ export class AuthorizationErrorResponseDto {
   })
   state?: string
 }
-
-/**
- * Response DTO for Continue Endpoint
- * Completes the authorization flow by generating authorization code
- */
-export class ContinueResponseDto {
-  @ApiProperty({
-    description: 'Authorization code to be exchanged for tokens',
-    example: 'SplxlOBeZQQYbYS6WxSbIA',
-  })
-  code!: string
-
-  @ApiPropertyOptional({
-    description: 'The state parameter value from the original request (CSRF protection). Only included if state was present in request',
-    example: 'xK8F2j9pL3mN7qR',
-  })
-  state?: string
-
-  @ApiProperty({
-    description: 'Redirect URI to return to',
-    example: 'https://example.com/callback',
-  })
-  redirect_uri!: string
-}

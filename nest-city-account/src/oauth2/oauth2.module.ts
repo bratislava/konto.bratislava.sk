@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common'
 
 import { OAuth2Controller } from './oauth2.controller'
 import { OAuth2Service } from './oauth2.service'
-import { ClientAuthGuard } from './guards/client-auth.guard'
-import { ClientIdGuard } from './guards/client-id.guard'
-import { ContinuePayloadGuard } from './guards/continue-payload.guard'
+import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
+import { TokenRequestGuard } from './guards/token-request.guard'
+import { AuthorizationContinueGuard } from './guards/authorization-continue.guard'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -16,11 +16,11 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
     CognitoSubservice,
     ThrowerErrorGuard,
     OAuth2ValidationSubservice,
-    ClientAuthGuard,
-    ClientIdGuard,
-    ContinuePayloadGuard,
+    AuthorizationRequestGuard,
+    TokenRequestGuard,
+    AuthorizationContinueGuard,
   ],
-  exports: [ClientAuthGuard, ClientIdGuard],
+  exports: [AuthorizationRequestGuard, TokenRequestGuard],
   controllers: [OAuth2Controller],
 })
 export class OAuth2Module {}

@@ -1,16 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
-import { ClientConfig } from '../config/client.config'
 import { OAuth2ValidationSubservice, AuthorizationParams } from '../subservices/oauth2-validation.subservice'
-
-export interface RequestWithClientId extends Request {
-  client?: ClientConfig
-  clientId?: string
-}
 
 /**
  * Guard for OAuth2 Authorization Endpoint
- * Validates client_id, redirect_uri, scope, and PKCE requirements
+ * Validates authorization request parameters (client_id, redirect_uri, scope, PKCE)
  * Does NOT require client_secret (public clients)
  * 
  * Used for: /oauth2/authorize
@@ -19,11 +13,11 @@ export interface RequestWithClientId extends Request {
  * and for authorization code grant requests
  */
 @Injectable()
-export class ClientIdGuard implements CanActivate {
+export class AuthorizationRequestGuard implements CanActivate {
   constructor(private readonly validationSubservice: OAuth2ValidationSubservice) {}
   
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<RequestWithClientId>()
+    const request = context.switchToHttp().getRequest<Request>()
     const query = request.query
 
     // Extract parameters from query string
@@ -36,14 +30,9 @@ export class ClientIdGuard implements CanActivate {
     }
 
     // Validate using shared validation subservice
-    const validationResult = this.validationSubservice.validateAuthorizationRequest(
-      params,
-      'Invalid request'
-    )
-
-    // Attach client info to request for use in controller/service
-    request.client = validationResult.client
-    request.clientId = validationResult.clientId
+    // All validation is done here - client_id, redirect_uri, scope, PKCE are all checked
+    // Service layer can access client_id from query params if needed
+    this.validationSubservice.validateAuthorizationRequest(params, 'Invalid request')
 
     return true
   }

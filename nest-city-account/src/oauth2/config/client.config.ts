@@ -25,7 +25,7 @@
  * ```
  * 
  * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID, OAUTH2_{PREFIX}_CLIENT_SECRET
- * @optional - OAUTH2_{PREFIX}_ALLOWED_URIS, ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, CLIENT_NAME, REQUIRES_PKCE, CLIENT_URI, LOGO_URI
+ * @optional - OAUTH2_{PREFIX}_ALLOWED_URIS, ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, CLIENT_NAME, REQUIRES_PKCE, CLIENT_URI
  */
 
 export interface ClientConfig {
@@ -52,9 +52,6 @@ export interface ClientConfig {
   
   /** Client application URI */
   clientUri?: string
-  
-  /** Client application logo URI */
-  logoUri?: string
 }
 
 /**
@@ -94,7 +91,6 @@ function loadClientsFromEnv(): ClientConfig[] {
       allowedGrantTypes,
       requiresPkce: process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] === 'true',
       clientUri: process.env[`OAUTH2_${prefix}_CLIENT_URI`],
-      logoUri: process.env[`OAUTH2_${prefix}_LOGO_URI`],
     }
 
     clients.push(client)

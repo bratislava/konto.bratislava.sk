@@ -201,10 +201,76 @@ export class OAuth2ValidationSubservice {
   }
 
   /**
-   * Validate client authentication (client_id + client_secret)
-   * Used by /token endpoint
+   * Validate client authentication for token endpoint
+   * Handles different grant types with appropriate authentication requirements
+   * 
+   * For authorization_code: Requires both client_id and client_secret
+   * For refresh_token: Client authentication is optional (RFC 6749 Section 6)
+   * 
+   * @param params - Client authentication parameters and request context
+   * @returns Validated client information, or undefined if no credentials provided (refresh_token only)
    */
-  validateClientAuthentication(
+  validateTokenEndpointClientAuth(
+    params: ClientAuthParams
+  ): ClientAuthValidationResult | undefined {
+    const { clientId, clientSecret, grantType } = params
+
+    // For authorization_code grant, client authentication is REQUIRED
+    if (grantType === 'authorization_code') {
+      return this.validateClientAuthentication(params)
+    }
+
+    // For refresh_token grant, client authentication is OPTIONAL
+    if (grantType === 'refresh_token') {
+      if (clientId && clientSecret) {
+        // Both credentials provided - validate full authentication
+        return this.validateClientAuthentication({
+          ...params,
+          redirectUri: undefined, // Not applicable for refresh_token
+          codeVerifier: undefined, // Not applicable for refresh_token
+        })
+      } else if (clientId) {
+        // Only client_id provided (public client scenario)
+        // Must validate that client exists - unknown client_id is unauthorized
+        const client = findClientById(clientId.trim())
+        if (!client) {
+          throw this.throwerErrorGuard.UnauthorizedException(
+            ErrorsEnum.UNAUTHORIZED_ERROR,
+            'Invalid client credentials'
+          )
+        }
+        return {
+          client,
+          clientId: clientId.trim(),
+        }
+      }
+      // No credentials provided - return undefined, client will be identified from refresh token
+      return undefined
+    }
+
+    // Unknown grant type - if client_id provided, validate it exists
+    if (clientId) {
+      const client = findClientById(clientId.trim())
+      if (!client) {
+        throw this.throwerErrorGuard.UnauthorizedException(
+          ErrorsEnum.UNAUTHORIZED_ERROR,
+          'Invalid client credentials'
+        )
+      }
+      return {
+        client,
+        clientId: clientId.trim(),
+      }
+    }
+
+    return undefined
+  }
+
+  /**
+   * Validate client authentication (client_id + client_secret)
+   * Used for authorization_code grant or when full authentication is required
+   */
+  private validateClientAuthentication(
     params: ClientAuthParams
   ): ClientAuthValidationResult {
     const { clientId, clientSecret } = params

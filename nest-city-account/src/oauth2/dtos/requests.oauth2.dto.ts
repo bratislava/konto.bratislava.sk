@@ -5,9 +5,8 @@ import {
   IsString,
   IsIn,
   IsUrl,
-  Matches,
-  MaxLength,
-  MinLength,
+  IsUUID,
+  Matches, MinLength
 } from 'class-validator'
 
 /**
@@ -79,22 +78,6 @@ export class AuthorizationRequestDto {
   @IsString()
   @IsIn(['S256', 'plain'], { message: 'code_challenge_method must be "S256" or "plain"' })
   code_challenge_method?: string
-
-  @ApiPropertyOptional({
-    description: 'End-user authentication hint',
-    example: 'user@example.com',
-  })
-  @IsOptional()
-  @IsString()
-  login_hint?: string
-
-  @ApiPropertyOptional({
-    description: 'Hint about the login identifier the End-User might use',
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  ui_locales?: string
 }
 
 /**
@@ -193,11 +176,11 @@ export class ContinueRequestDto {
   refresh_token?: string
 
   @ApiProperty({
-    description: 'Base64-encoded payload containing the original authorization request parameters',
-    example: 'eyJjbGllbnRfaWQiOiJteS1jbGllbnQtaWQiLCJyZWRpcmVjdF91cmkiOiJodHRwczovL2V4YW1wbGUuY29tL2NhbGxiYWNrIn0=',
+    description: 'UUID of the authorization request stored in the database',
+    example: '550e8400-e29b-41d4-a716-446655440000',
   })
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   payload!: string
 }
 

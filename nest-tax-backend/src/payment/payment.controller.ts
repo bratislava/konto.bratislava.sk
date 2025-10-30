@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   Param,
   ParseIntPipe,
   Post,
@@ -40,45 +39,6 @@ export class PaymentController {
 
   constructor(private readonly paymentService: PaymentService) {
     this.logger = new LineLoggerSubservice(PaymentController.name)
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary:
-      'Generate payment link to logged user for submitted year if there is no payment.',
-    description:
-      'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
-    deprecated: true,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Create url to GP webpay with payment details',
-    type: ResponseGetPaymentUrlDto,
-  })
-  @ApiResponse({
-    status: 422,
-    description: 'Custom error to create url',
-    type: ResponseErrorDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: ResponseInternalServerErrorDto,
-  })
-  @ApiBearerAuth()
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
-  @UseGuards(TiersGuard)
-  @UseGuards(AuthenticationGuard)
-  @Post('cardpay/by-year/:year')
-  async payment(
-    @BratislavaUser() baUser: BratislavaUserDto,
-    @Param('year') year: string,
-  ) {
-    const urlToRedirect = await this.paymentService.getPayGateUrlByUserAndYear(
-      year,
-      baUser.birthNumber,
-    )
-    return { url: urlToRedirect }
   }
 
   @HttpCode(200)
@@ -160,45 +120,6 @@ export class PaymentController {
       )
 
     return { url: urlToRedirect }
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Generate payment link and redirect to this link to gpwebpay.',
-    description:
-      'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
-    deprecated: true,
-  })
-  @ApiResponse({
-    status: 302,
-    description: 'Redirect to GP webpay',
-  })
-  @ApiResponse({
-    status: 422,
-    description: 'Error to redirect',
-    type: ResponseErrorDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: ResponseInternalServerErrorDto,
-  })
-  @Get('cardpay/by-tax-id/:uuid')
-  async paymentByTaxId(@Param('uuid') uuid: string, @Res() res: any) {
-    try {
-      const url = await this.paymentService.redirectToPayGateByTaxId(uuid)
-      res.redirect(url)
-    } catch (error) {
-      this.logger.error(error)
-      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
-      const response = (error as HttpException).getResponse()
-      if (typeof response === 'object' && 'messageSk' in response) {
-        res.end(response.messageSk)
-      } else {
-        // Handle unexpected error format
-        res.end('An unexpected error occurred')
-      }
-    }
   }
 
   @ApiResponse({

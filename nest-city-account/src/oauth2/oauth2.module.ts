@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
 import { OAuth2Controller } from './oauth2.controller'
 import { OAuth2Service } from './oauth2.service'

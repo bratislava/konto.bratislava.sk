@@ -19,7 +19,8 @@ import { IsEnum, IsOptional, IsString } from 'class-validator'
  * - Display error to resource owner
  *
  * This prevents open redirector vulnerabilities when redirect_uri is compromised.
- */{}
+ */ {
+}
 export class OAuth2AuthorizationErrorDto {
   @ApiProperty({
     description: 'Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)',
@@ -32,7 +33,8 @@ export class OAuth2AuthorizationErrorDto {
   error!: string
 
   @ApiPropertyOptional({
-    description: 'Human-readable ASCII text providing additional information for debugging (not displayed to end-user)',
+    description:
+      'Human-readable ASCII text providing additional information for debugging (not displayed to end-user)',
     example: 'The request is missing the required redirect_uri parameter',
   })
   @IsOptional()
@@ -48,7 +50,8 @@ export class OAuth2AuthorizationErrorDto {
   error_uri?: string
 
   @ApiPropertyOptional({
-    description: 'Exact value received from the client in the authorization request. REQUIRED if and only if the state parameter was present in the client authorization request. Only included when redirecting (not in direct error responses).',
+    description:
+      'Exact value received from the client in the authorization request. REQUIRED if and only if the state parameter was present in the client authorization request. Only included when redirecting (not in direct error responses).',
     example: 'xK8F2j9pL3mN7qR',
   })
   @IsOptional()
@@ -79,7 +82,8 @@ export class OAuth2TokenErrorDto {
   error!: string
 
   @ApiPropertyOptional({
-    description: 'Human-readable ASCII text providing additional information for debugging (not displayed to end-user)',
+    description:
+      'Human-readable ASCII text providing additional information for debugging (not displayed to end-user)',
     example: 'The provided authorization code is invalid or expired',
   })
   @IsOptional()

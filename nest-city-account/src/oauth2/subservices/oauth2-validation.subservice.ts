@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { timingSafeEqual } from 'node:crypto'
-import { areScopesAllowed, ClientConfig, findClientById, isRedirectUriAllowed, } from '../config/client.config'
+import {
+  areScopesAllowed,
+  ClientConfig,
+  findClientById,
+  isRedirectUriAllowed,
+} from '../config/client.config'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 
@@ -30,7 +35,6 @@ export interface ClientAuthParams {
   codeVerifier?: string
 }
 
-
 /**
  * Subservice for OAuth2 validation logic
  * Handles validation for both authorization requests and client authentication
@@ -43,7 +47,7 @@ export class OAuth2ValidationSubservice {
   /**
    * Validate authorization request parameters
    * Used by both /authorize and /continue endpoints
-   * 
+   *
    * @param params - The authorization parameters (from query or decoded payload)
    * @param errorPrefix - Prefix for error messages (e.g., "Invalid request" or "Invalid payload")
    * @returns Validated authorization parameters and client config
@@ -88,7 +92,8 @@ export class OAuth2ValidationSubservice {
 
     // Validate scope if provided
     const scope = params.scope as string | undefined
-    if (scope && typeof scope === 'string' && !areScopesAllowed(client, scope)) { // TODO type of scope is always string
+    if (scope && typeof scope === 'string' && !areScopesAllowed(client, scope)) {
+      // TODO type of scope is always string
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_SCOPE,
         `${errorPrefix}: Invalid scope requested` // TODO description
@@ -182,7 +187,8 @@ export class OAuth2ValidationSubservice {
       const expectedBuffer = Buffer.from(expected, 'utf-8')
       const providedBuffer = Buffer.from(provided, 'utf-8')
       const dummyBuffer = Buffer.alloc(expectedBuffer.length)
-      const comparebuffer = expectedBuffer.length === providedBuffer.length ? providedBuffer : dummyBuffer
+      const comparebuffer =
+        expectedBuffer.length === providedBuffer.length ? providedBuffer : dummyBuffer
 
       return timingSafeEqual(expectedBuffer, comparebuffer)
     } catch (error) {
@@ -194,15 +200,13 @@ export class OAuth2ValidationSubservice {
   /**
    * Validate client authentication for token endpoint
    * Handles different grant types with appropriate authentication requirements
-   * 
+   *
    * For authorization_code: Requires client_id (client_secret optional if client doesn't have one configured)
    * For refresh_token: Client authentication is optional (RFC 6749 Section 6)
-   * 
+   *
    * @param params - Client authentication parameters and request context
    */
-  validateTokenEndpointClientAuth(
-    params: ClientAuthParams
-  ): void {
+  validateTokenEndpointClientAuth(params: ClientAuthParams): void {
     const { clientId, clientSecret, grantType } = params
 
     // For authorization_code grant, client authentication is REQUIRED
@@ -255,9 +259,7 @@ export class OAuth2ValidationSubservice {
    * Validates client_secret only if client has one configured
    * Used for authorization_code grant or when authentication is required
    */
-  private validateClientAuthentication(
-    params: ClientAuthParams
-  ): void {
+  private validateClientAuthentication(params: ClientAuthParams): void {
     const { clientId, clientSecret } = params
 
     if (!clientId) {
@@ -304,7 +306,11 @@ export class OAuth2ValidationSubservice {
 
     // Business logic validation: PKCE code_verifier (for authorization_code grant)
     if (params.grantType === 'authorization_code' && client.requiresPkce) {
-      if (!params.codeVerifier || typeof params.codeVerifier !== 'string' || !params.codeVerifier.trim()) {
+      if (
+        !params.codeVerifier ||
+        typeof params.codeVerifier !== 'string' ||
+        !params.codeVerifier.trim()
+      ) {
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_REQUEST,
           'PKCE is required for this client: code_verifier is required' // TODO description
@@ -313,4 +319,3 @@ export class OAuth2ValidationSubservice {
     }
   }
 }
-

@@ -4,7 +4,7 @@ import { OAuth2Controller } from './oauth2.controller'
 import { OAuth2Service } from './oauth2.service'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
-import { AuthorizationPayloadGuard } from './guards/authorization-continue.guard'
+import { AuthorizationPayloadGuard } from './guards/authorization-payload.guard'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -20,7 +20,7 @@ import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
     AuthorizationRequestGuard,
     TokenRequestGuard,
     AuthorizationPayloadGuard,
-    OAuth2ExceptionFilter
+    OAuth2ExceptionFilter,
   ],
   exports: [AuthorizationRequestGuard, TokenRequestGuard],
   controllers: [OAuth2Controller],

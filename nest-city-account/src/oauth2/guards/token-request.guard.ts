@@ -5,16 +5,16 @@ import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.sub
 /**
  * Guard for OAuth2 Token Endpoint
  * Validates token request with client authentication requirements based on grant type
- * 
+ *
  * For authorization_code grant: Requires client_id (client_secret optional if client doesn't have one configured)
  * For refresh_token grant: Client authentication is optional (RFC 6749 Section 6)
- * 
+ *
  * Used for: /oauth2/token
  */
 @Injectable()
 export class TokenRequestGuard implements CanActivate {
   constructor(private readonly validationSubservice: OAuth2ValidationSubservice) {}
-  
+
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>()
 
@@ -35,4 +35,3 @@ export class TokenRequestGuard implements CanActivate {
     return true
   }
 }
-

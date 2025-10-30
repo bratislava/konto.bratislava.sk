@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { AuthorizationRequestDto, RefreshTokenRequestDto, TokenRequestDto, } from './dtos/requests.oauth2.dto'
-import { AuthorizationResponseDto, TokenResponseDto, } from './dtos/responses.oautuh2.dto'
+import {
+  AuthorizationRequestDto,
+  RefreshTokenRequestDto,
+  TokenRequestDto,
+} from './dtos/requests.oauth2.dto'
+import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oautuh2.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
@@ -9,20 +13,17 @@ import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.err
 export class OAuth2Service {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Service.name)
 
-   constructor(private readonly throwerErrorGuard:ThrowerErrorGuard) {
-   }
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
+
   /**
    * Build frontend redirect URL for authorization request
    * Includes redirect_uri and state for frontend error handling
-   * 
+   *
    * @param request - Authorization request DTO with all parameters
    * @param authRequestId - ID of the stored authorization request
    * @returns Redirect URL to frontend with client_id, payload, redirect_uri, and state parameters
    */
-  buildLoginRedirectUrl(
-    request: AuthorizationRequestDto,
-    authRequestId: string
-  ): string {
+  buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
     // TODO: Get frontend URL from environment variable or configuration service
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000' // FIXME: Use actual frontend URL config
     const redirectUrl = new URL('/oauth2/auth', frontendUrl)
@@ -38,7 +39,7 @@ export class OAuth2Service {
   /**
    * Handle OAuth2 authorization request
    * Stores authorization request parameters and generates authorization request ID
-   * 
+   *
    * @returns Authorization request ID that references the stored authorization request
    */
   async authorize(request: AuthorizationRequestDto): Promise<string> {
@@ -62,16 +63,16 @@ export class OAuth2Service {
    * Handle OAuth2 token request
    * Routes to appropriate handler based on grant_type
    * Implements RFC 6749 Section 5
-   * 
+   *
    * @returns Token response DTO per RFC 6749 Section 5.1
    */
   async token(request: TokenRequestDto | RefreshTokenRequestDto): Promise<TokenResponseDto> {
     this.logger.debug('Processing token request', { grant_type: request.grant_type })
 
     if (request.grant_type === 'authorization_code') {
-      return await this.exchangeCode(request as TokenRequestDto)
+      return this.exchangeCode(request as TokenRequestDto)
     } else if (request.grant_type === 'refresh_token') {
-      return await this.refreshToken(request as RefreshTokenRequestDto)
+      return this.refreshToken(request as RefreshTokenRequestDto)
     } else {
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
@@ -83,7 +84,7 @@ export class OAuth2Service {
   /**
    * Exchange authorization code for access token (with PKCE)
    * Implements RFC 7636 Section 4.3
-   * 
+   *
    * @returns Token response DTO with access_token, refresh_token, etc.
    */
   async exchangeCode(request: TokenRequestDto): Promise<TokenResponseDto> {
@@ -105,7 +106,7 @@ export class OAuth2Service {
   /**
    * Refresh access token using refresh token
    * Implements RFC 6749 Section 6
-   * 
+   *
    * @returns Token response DTO with new access_token and expiration time
    */
   async refreshToken(request: RefreshTokenRequestDto): Promise<TokenResponseDto> {
@@ -132,7 +133,7 @@ export class OAuth2Service {
     authRequestId: string,
     accessToken: string,
     idToken: string | undefined,
-    refreshToken: string | undefined,
+    refreshToken: string | undefined
   ): Promise<void> {
     this.logger.debug('Storing tokens for authorization request', { authRequestId: authRequestId })
 
@@ -151,7 +152,7 @@ export class OAuth2Service {
 
   /**
    * Check if tokens are stored for an authorization request
-   * 
+   *
    * @param authRequestId - ID of the authorization request
    * @returns True if tokens are stored and ready
    */
@@ -170,7 +171,7 @@ export class OAuth2Service {
 
   /**
    * Load authorization request parameters from database using authorization request ID
-   * 
+   *
    * @param authRequestId - ID of the stored authorization request
    * @returns Authorization request parameters or undefined if not found
    */
@@ -193,7 +194,7 @@ export class OAuth2Service {
   /**
    * Build client redirect URL for authorization response
    * Implements RFC 6749 Section 4.1.2
-   * 
+   *
    * @param redirectUri - Client's redirect URI (validated in guard)
    * @param response - Authorization response DTO
    * @returns Redirect URL to client's redirect_uri with code and state query parameters
@@ -213,21 +214,24 @@ export class OAuth2Service {
   /**
    * Continue authorization flow after tokens are stored
    * Generates authorization code and returns authorization response
-   * 
+   *
    * Flow:
    * 1. authorize endpoint → redirects to FE for user authentication
    * 2. FE → calls POST /continue with tokens and authorization request ID (stores tokens)
    * 3. FE → calls GET /continue with authorization request ID (generates grant and redirects)
-   * 
+   *
    * @param authRequestId - ID of the authorization request
    * @param authorizationRequest - Authorization request parameters (already validated)
    * @returns Authorization response DTO with code and state (if present)
    */
   async continueAuthorization(
     authRequestId: string,
-    authorizationRequest: AuthorizationRequestDto,
+    authorizationRequest: AuthorizationRequestDto
   ): Promise<AuthorizationResponseDto> {
-    this.logger.debug('Continuing authorization flow', { client_id: authorizationRequest.client_id, authRequestId })
+    this.logger.debug('Continuing authorization flow', {
+      client_id: authorizationRequest.client_id,
+      authRequestId,
+    })
 
     // TODO: Implement continue logic
     // 1. Verify tokens are stored for authorization request ID (call areTokensStoredForAuthRequest)

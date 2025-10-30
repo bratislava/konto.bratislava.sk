@@ -26,7 +26,10 @@ import {
   TokenRequestDto,
 } from './dtos/requests.oauth2.dto'
 
-import { AuthorizationPayloadGuard, RequestWithAuthorizationPayload } from './guards/authorization-continue.guard'
+import {
+  AuthorizationPayloadGuard,
+  RequestWithAuthorizationPayload,
+} from './guards/authorization-payload.guard'
 import { TokenResponseDto } from './dtos/responses.oautuh2.dto'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
@@ -39,7 +42,7 @@ export class OAuth2Controller {
 
   constructor(
     private readonly oauth2Service: OAuth2Service,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
   // FIXME force TLS use, if feasible (check if it is enough to set on the network/ingress side or anything else is needed here)
@@ -47,16 +50,14 @@ export class OAuth2Controller {
   @UseGuards(AuthorizationRequestGuard)
   @ApiOperation({
     summary: 'OAuth2 Authorization Endpoint',
-    description: 'Initiate OAuth2 authorization flow with PKCE (RFC 7636). Redirects to frontend for user authentication (HTTP 303 See Other).',
+    description:
+      'Initiate OAuth2 authorization flow with PKCE (RFC 7636). Redirects to frontend for user authentication (HTTP 303 See Other).',
   })
   @ApiResponse({
     status: 303,
     description: 'Redirects to frontend for user authentication',
   })
-  async authorize(
-    @Query() query: AuthorizationRequestDto,
-    @Res() res: Response,
-  ): Promise<void> {
+  async authorize(@Query() query: AuthorizationRequestDto, @Res() res: Response): Promise<void> {
     this.logger.debug(`Authorization request received for client_id: ${query.client_id}`)
 
     // Service stores parameters and returns authorization request ID
@@ -73,19 +74,18 @@ export class OAuth2Controller {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'OAuth2 Token Endpoint',
-    description: 'Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.',
+    description:
+      'Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.',
   })
   @ApiResponse({
     status: 200,
     description: 'Token exchange successful',
     type: TokenResponseDto,
   })
-  async token(
-    @Body() body: TokenRequestDto | RefreshTokenRequestDto,
-  ): Promise<TokenResponseDto> {
+  async token(@Body() body: TokenRequestDto | RefreshTokenRequestDto): Promise<TokenResponseDto> {
     this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
 
-      return await this.oauth2Service.token(body)
+    return this.oauth2Service.token(body)
   }
 
   @Post('store')
@@ -93,16 +93,14 @@ export class OAuth2Controller {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'OAuth2 Store Tokens Endpoint',
-    description: 'Store tokens after user authentication. Called by frontend with tokens and authorization request ID. Returns 200 OK after storing tokens.',
+    description:
+      'Store tokens after user authentication. Called by frontend with tokens and authorization request ID. Returns 200 OK after storing tokens.',
   })
   @ApiResponse({
     status: 200,
     description: 'Tokens successfully stored',
   })
-  async storeTokens(
-    @Body() body: StoreTokensRequestDto,
-    @Req() req: Request,
-  ): Promise<void> {
+  async storeTokens(@Body() body: StoreTokensRequestDto, @Req() req: Request): Promise<void> {
     const request = req as RequestWithAuthorizationPayload
     const authorizationRequest = request.authorizationPayload!
 
@@ -117,7 +115,7 @@ export class OAuth2Controller {
       body.payload,
       body.access_token,
       body.id_token,
-      body.refresh_token,
+      body.refresh_token
     )
   }
 
@@ -125,16 +123,18 @@ export class OAuth2Controller {
   @UseGuards(AuthorizationPayloadGuard)
   @ApiOperation({
     summary: 'OAuth2 Continue Endpoint',
-    description: 'Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).',
+    description:
+      'Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).',
   })
   @ApiResponse({
     status: 303,
-    description: 'Successfully redirects to client redirect_uri with authorization code and state (if provided)',
+    description:
+      'Successfully redirects to client redirect_uri with authorization code and state (if provided)',
   })
   async continueComplete(
     @Query() query: ContinueRequestDto,
     @Req() req: Request,
-    @Res() res: Response,
+    @Res() res: Response
   ): Promise<void> {
     const request = req as RequestWithAuthorizationPayload
     const authorizationRequest = request.authorizationPayload!
@@ -149,14 +149,14 @@ export class OAuth2Controller {
     if (!tokensStored) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
-        'Tokens not found for this authorization request. Please store tokens first using POST /oauth2/store',
+        'Tokens not found for this authorization request. Please store tokens first using POST /oauth2/store'
       )
     }
 
     // Service generates authorization code and returns response DTO
     const authResponse = await this.oauth2Service.continueAuthorization(
       query.payload,
-      authorizationRequest,
+      authorizationRequest
     )
 
     // Controller builds redirect URL using service builder function

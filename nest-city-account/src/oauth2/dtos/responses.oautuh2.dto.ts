@@ -15,7 +15,8 @@ export class AuthorizationResponseDto {
   code!: string
 
   @ApiPropertyOptional({
-    description: 'The state parameter value from the request (CSRF protection). Only included if state was present in request (RFC 6749 Section 4.1.2)',
+    description:
+      'The state parameter value from the request (CSRF protection). Only included if state was present in request (RFC 6749 Section 4.1.2)',
     example: 'xK8F2j9pL3mN7qR',
   })
   state?: string
@@ -69,4 +70,3 @@ export class TokenResponseDto {
   })
   id_token?: string
 }
-

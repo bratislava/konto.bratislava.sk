@@ -1,5 +1,3 @@
-
-
 /**
  * OAuth2 Authorization Endpoint Error Codes
  * RFC 6749 Sections 4.1.2.1 and 4.2.2.1

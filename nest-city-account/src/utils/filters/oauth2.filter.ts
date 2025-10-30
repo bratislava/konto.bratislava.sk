@@ -1,7 +1,10 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
-import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from '../../oauth2/dtos/errors.oauth2.dto'
+import {
+  OAuth2AuthorizationErrorDto,
+  OAuth2TokenErrorDto,
+} from '../../oauth2/dtos/errors.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../../oauth2/oauth2.error.enum'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
@@ -22,6 +25,7 @@ import { toLogfmt } from '../logging'
 @Catch(HttpException)
 export class OAuth2ExceptionFilter implements ExceptionFilter {
   private readonly logger = new LineLoggerSubservice(OAuth2ExceptionFilter.name)
+
   private readonly throwerErrorGuard = new ThrowerErrorGuard()
 
   catch(exception: HttpException, host: ArgumentsHost) {
@@ -74,11 +78,13 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         exceptionResponse,
       })
 
-      response.status(status).json(
-        typeof exceptionResponse === 'object'
-          ? exceptionResponse
-          : { error: 'invalid_request', error_description: exceptionResponse }
-      )
+      response
+        .status(status)
+        .json(
+          typeof exceptionResponse === 'object'
+            ? exceptionResponse
+            : { error: 'invalid_request', error_description: exceptionResponse }
+        )
       return
     }
 
@@ -88,11 +94,13 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     // RFC 6749 Section 4.1.2.1: state is REQUIRED if present in request
     if (state) {
       if (errorResponse.state && errorResponse.state !== state) {
-        this.logger.warn(this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'State mismatch detected, using original request state',
-          toLogfmt({originalState: state, errorState: errorResponse.state})
-        ))
+        this.logger.warn(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'State mismatch detected, using original request state',
+            toLogfmt({ originalState: state, errorState: errorResponse.state })
+          )
+        )
       }
       errorResponse.state = state
     }
@@ -119,7 +127,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
     this.logger.warn('Returning token endpoint error', {
       error: errorResponse.error,
-      status: HttpStatus.BAD_REQUEST
+      status: HttpStatus.BAD_REQUEST,
     })
 
     // RFC 6749 Section 5.2: Token errors always return 400
@@ -149,9 +157,10 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
     // Map HTTP status to OAuth2 error code
     const error = this.mapStatusToAuthorizationError(status)
-    const error_description = typeof exceptionResponse === 'string'
-      ? exceptionResponse
-      : (exceptionResponse as any).message || 'An error occurred'
+    const error_description =
+      typeof exceptionResponse === 'string'
+        ? exceptionResponse
+        : (exceptionResponse as any).message || 'An error occurred'
 
     return { error, error_description }
   }
@@ -178,9 +187,10 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
     // Map HTTP status to OAuth2 error code
     const error = this.mapStatusToTokenError(status)
-    const error_description = typeof exceptionResponse === 'string'
-      ? exceptionResponse
-      : (exceptionResponse as any).message || 'An error occurred'
+    const error_description =
+      typeof exceptionResponse === 'string'
+        ? exceptionResponse
+        : (exceptionResponse as any).message || 'An error occurred'
 
     return { error, error_description }
   }

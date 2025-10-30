@@ -173,9 +173,9 @@ export class OAuth2Service {
    * @returns Redirect URL to frontend with client_id, payload, redirect_uri, and state parameters
    */
   buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL')
-    if (!frontendUrl) {
-      this.logger.error('FRONTEND_URL environment variable is not configured', {
+    const oAuth2LoginUrl = this.configService.get<string>('OAUTH2_LOGIN_URL')
+    if (!oAuth2LoginUrl) {
+      this.logger.error('OAUTH2_LOGIN_URL environment variable is not configured', {
         clientId: request.client_id,
         authRequestId,
       })
@@ -184,7 +184,7 @@ export class OAuth2Service {
         'Authorization redirect error: server misconfiguration'
       )
     }
-    const redirectUrl = new URL('/oauth2/auth', frontendUrl)
+    const redirectUrl = new URL(oAuth2LoginUrl)
     redirectUrl.searchParams.set('client_id', request.client_id)
     redirectUrl.searchParams.set('payload', authRequestId)
     redirectUrl.searchParams.set('redirect_uri', request.redirect_uri)

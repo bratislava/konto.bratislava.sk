@@ -57,12 +57,17 @@ export interface ClientConfig {
  */
 function loadClientsFromEnv(): ClientConfig[] {
   const clientList = process.env.OAUTH2_CLIENT_LIST
-  if (!clientList) {
-    console.warn('No OAUTH2_CLIENT_LIST environment variable found. No OAuth2 clients configured.')
+  if (!clientList || clientList.trim().length === 0) {
+    console.warn(
+      'No OAUTH2_CLIENT_LIST environment variable found or it is empty. No OAuth2 clients configured.'
+    )
     return []
   }
 
-  const clientPrefixes = clientList.split(',').map((p) => p.trim())
+  const clientPrefixes = clientList
+    .split(',')
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0) // Filter out empty strings (e.g., from "MPA,,DPB" or ",MPA,")
   const clients: ClientConfig[] = []
 
   for (const prefix of clientPrefixes) {

@@ -8,6 +8,7 @@ import { AuthorizationPayloadGuard } from './guards/authorization-continue.guard
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 
 @Module({
   imports: [],
@@ -19,6 +20,7 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
     AuthorizationRequestGuard,
     TokenRequestGuard,
     AuthorizationPayloadGuard,
+    OAuth2ExceptionFilter
   ],
   exports: [AuthorizationRequestGuard, TokenRequestGuard],
   controllers: [OAuth2Controller],

@@ -8,6 +8,7 @@ import {
   Query,
   Req,
   Res,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
@@ -33,9 +34,12 @@ import {
 } from './dtos/responses.oautuh2.dto'
 import { AuthorizationPayloadGuard, RequestWithAuthorizationPayload } from './guards/authorization-continue.guard'
 import { OAuth2Service } from './oauth2.service'
+import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { OAuth2AuthorizationErrorDto } from './dtos/errors.oauth2.dto'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
+@UseFilters(new OAuth2ExceptionFilter())
 export class OAuth2Controller {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Controller.name)
 

@@ -442,9 +442,14 @@ describe('NorisPaymentSubservice', () => {
 
       expect(mockRequest.input).toHaveBeenCalledWith(
         'fromDate',
+        mssql.SmallDateTime,
         mockData.fromDate,
       )
-      expect(mockRequest.input).toHaveBeenCalledWith('toDate', DEFAULT_TEST_NOW)
+      expect(mockRequest.input).toHaveBeenCalledWith(
+        'toDate',
+        mssql.SmallDateTime,
+        DEFAULT_TEST_NOW,
+      )
       expect(result).toEqual({
         created: 1,
         alreadyCreated: 0,

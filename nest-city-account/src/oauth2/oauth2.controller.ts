@@ -10,11 +10,13 @@ import {
   Res,
   UseFilters,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
+import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -151,6 +153,7 @@ export class OAuth2Controller {
   }
 
   @Post('token')
+  @UsePipes(new TokenRequestValidationPipe())
   @UseGuards(TokenRequestGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

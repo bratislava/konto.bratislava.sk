@@ -33,10 +33,12 @@ import {
 import { TokenResponseDto } from './dtos/responses.oautuh2.dto'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { HttpsGuard } from '../utils/guards/https.guard'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
-@UseFilters(new OAuth2ExceptionFilter())
+@UseGuards(HttpsGuard)
+@UseFilters(OAuth2ExceptionFilter)
 export class OAuth2Controller {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Controller.name)
 
@@ -45,7 +47,6 @@ export class OAuth2Controller {
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
-  // FIXME force TLS use, if feasible (check if it is enough to set on the network/ingress side or anything else is needed here)
   @Get('authorize')
   @UseGuards(AuthorizationRequestGuard)
   @ApiOperation({

@@ -1,7 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-// FIXME make sure that all responses (error or not) contain `Cache-Control: no-store` and `Pragma: no-cache` headers
-
 /**
  * Response DTO for Authorization Endpoint
  * Returns authorization code to be exchanged for tokens

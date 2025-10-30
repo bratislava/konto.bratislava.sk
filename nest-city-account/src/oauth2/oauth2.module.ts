@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
 import { OAuth2Controller } from './oauth2.controller'
 import { OAuth2Service } from './oauth2.service'
@@ -10,6 +10,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 import { PrismaService } from '../prisma/prisma.service'
+import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
 
 @Module({
   imports: [],
@@ -27,4 +28,8 @@ import { PrismaService } from '../prisma/prisma.service'
   exports: [AuthorizationRequestGuard, TokenRequestGuard],
   controllers: [OAuth2Controller],
 })
-export class OAuth2Module {}
+export class OAuth2Module implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(NoCacheMiddleware).forRoutes(OAuth2Controller)
+  }
+}

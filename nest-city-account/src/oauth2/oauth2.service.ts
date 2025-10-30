@@ -1,19 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import {
-  AuthorizationRequestDto,
-  RefreshTokenRequestDto,
-  TokenRequestDto,
-} from './dtos/requests.oauth2.dto'
-import {
-  AuthorizationResponseDto,
-  TokenResponseDto,
-} from './dtos/responses.oautuh2.dto'
+import { AuthorizationRequestDto, RefreshTokenRequestDto, TokenRequestDto, } from './dtos/requests.oauth2.dto'
+import { AuthorizationResponseDto, TokenResponseDto, } from './dtos/responses.oautuh2.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
 
 @Injectable()
 export class OAuth2Service {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Service.name)
 
+   constructor(private readonly throwerErrorGuard:ThrowerErrorGuard) {
+   }
   /**
    * Build frontend redirect URL for authorization request
    * Includes redirect_uri and state for frontend error handling
@@ -55,7 +52,10 @@ export class OAuth2Service {
     // 5. Generate and return authorization request ID that references the stored request
     // Controller will build redirect URL using buildLoginRedirectUrl()
 
-    throw new Error('Authorization endpoint not yet implemented')
+    throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      OAuth2AuthorizationErrorCode.SERVER_ERROR,
+      'Authorization endpoint not yet implemented'
+    )
   }
 
   /**
@@ -73,7 +73,10 @@ export class OAuth2Service {
     } else if (request.grant_type === 'refresh_token') {
       return await this.refreshToken(request as RefreshTokenRequestDto)
     } else {
-      throw new Error(`Unsupported grant_type: ${request.grant_type}`)
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+        `Unsupported grant_type: ${request.grant_type}`
+      )
     }
   }
 
@@ -93,7 +96,10 @@ export class OAuth2Service {
     // 4. Generate access token and refresh token
     // 5. Return TokenResponseDto (controller will return JSON response per RFC 6749 Section 5.1)
 
-    throw new Error('Token exchange endpoint not yet implemented')
+    throw this.throwerErrorGuard.OAuth2TokenException(
+      OAuth2TokenErrorCode.INVALID_REQUEST,
+      'Token exchange endpoint not yet implemented'
+    )
   }
 
   /**
@@ -112,7 +118,10 @@ export class OAuth2Service {
     // 4. Optionally issue new refresh token
     // 5. Return TokenResponseDto (controller will return JSON response per RFC 6749 Section 5.1)
 
-    throw new Error('Refresh token endpoint not yet implemented')
+    throw this.throwerErrorGuard.OAuth2TokenException(
+      OAuth2TokenErrorCode.INVALID_REQUEST,
+      'Refresh token endpoint not yet implemented'
+    )
   }
 
   /**
@@ -134,7 +143,10 @@ export class OAuth2Service {
     // 4. Store expiration times
     // 5. Handle token refresh logic
 
-    throw new Error('storeTokensForAuthRequest not yet implemented')
+    throw this.throwerErrorGuard.OAuth2TokenException(
+      OAuth2TokenErrorCode.INVALID_REQUEST,
+      'storeTokensForAuthRequest not yet implemented'
+    )
   }
 
   /**
@@ -150,7 +162,10 @@ export class OAuth2Service {
     // 1. Query database for stored tokens associated with authorization request ID
     // 2. Return true if tokens exist and are valid
 
-    throw new Error('areTokensStoredForAuthRequest not yet implemented')
+    throw this.throwerErrorGuard.OAuth2TokenException(
+      OAuth2TokenErrorCode.INVALID_REQUEST,
+      'areTokensStoredForAuthRequest not yet implemented'
+    )
   }
 
   /**
@@ -169,7 +184,10 @@ export class OAuth2Service {
     // 2. Return stored AuthorizationRequestDto if found
     // 3. Return undefined if not found or expired
 
-    throw new Error('loadAuthorizationRequest not yet implemented')
+    throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      OAuth2AuthorizationErrorCode.SERVER_ERROR,
+      'loadAuthorizationRequest not yet implemented'
+    )
   }
 
   /**
@@ -221,6 +239,9 @@ export class OAuth2Service {
     // 7. Return AuthorizationResponseDto with code and optional state
     // Controller will build redirect URL using buildAuthorizationResponseRedirectUrl()
 
-    throw new Error('Continue authorization endpoint not yet implemented')
+    throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      OAuth2AuthorizationErrorCode.SERVER_ERROR,
+      'Continue authorization endpoint not yet implemented'
+    )
   }
 }

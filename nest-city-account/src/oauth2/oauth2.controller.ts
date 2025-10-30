@@ -12,10 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
-import {
-  ApiOperation, ApiResponse,
-  ApiTags
-} from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -23,19 +20,18 @@ import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   AuthorizationRequestDto,
-  StoreTokensRequestDto,
   ContinueRequestDto,
   RefreshTokenRequestDto,
+  StoreTokensRequestDto,
   TokenRequestDto,
 } from './dtos/requests.oauth2.dto'
-import {
 
-  TokenResponseDto
-} from './dtos/responses.oautuh2.dto'
 import { AuthorizationPayloadGuard, RequestWithAuthorizationPayload } from './guards/authorization-continue.guard'
+import { TokenResponseDto } from './dtos/responses.oautuh2.dto'
+import { AuthorizationContinueGuard, RequestWithAuthorizationContinue } from './guards/authorization-continue.guard'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
-import { OAuth2AuthorizationErrorDto } from './dtos/errors.oauth2.dto'
+import { OAuth2TokenErrorCode } from './oauth2.error.enum'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
@@ -91,20 +87,7 @@ export class OAuth2Controller {
   ): Promise<TokenResponseDto> {
     this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
 
-    try {
-      // RFC 6749 Section 5.1: Token endpoint must return JSON response, not redirect
-      // The response is sent as JSON in the response body with application/json content type
       return await this.oauth2Service.token(body)
-    } catch (error) {
-      // Handle unsupported grant_type errors from service
-      if (error instanceof Error && error.message.startsWith('Unsupported grant_type:')) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          error.message
-        )
-      }
-      throw error
-    }
   }
 
   @Post('store')

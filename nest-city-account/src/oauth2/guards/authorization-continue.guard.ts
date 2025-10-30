@@ -1,10 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2Service } from '../oauth2.service'
-import { OAuth2ValidationSubservice, AuthorizationParams } from '../subservices/oauth2-validation.subservice'
+import { AuthorizationParams, OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
+import { OAuth2AuthorizationErrorCode } from '../oauth2.error.enum'
 
 export interface RequestWithAuthorizationPayload extends Request {
   authorizationPayload?: AuthorizationRequestDto
@@ -34,9 +34,9 @@ export class AuthorizationPayloadGuard implements CanActivate {
     // Support both POST (body.payload) and GET (query.payload)
     const authRequestId = request.body?.payload || request.query?.payload
     if (!authRequestId || typeof authRequestId !== 'string') {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Invalid request: payload is required'
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+        'Invalid request: payload is required' // TODO description
       )
     }
 
@@ -44,9 +44,9 @@ export class AuthorizationPayloadGuard implements CanActivate {
     const authorizationRequest = await this.oauth2Service.loadAuthorizationRequest(authRequestId)
     
     if (!authorizationRequest) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Invalid payload: authorization request not found or expired'
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+        'Invalid payload: authorization request not found or expired' // TODO description
       )
     }
 

@@ -44,8 +44,8 @@ export class AuthorizationPayloadGuard implements CanActivate {
         method: request.method,
       })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
-        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        'Invalid request: payload is required' // TODO description
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: missing payload'
       )
     }
 
@@ -58,12 +58,23 @@ export class AuthorizationPayloadGuard implements CanActivate {
         method: request.method,
       })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
-        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        'Invalid payload: authorization request not found or expired' // TODO description
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: authorization request not found or expired'
       )
     }
 
-    this.validationSubservice.validateAuthorizationRequest(authorizationRequest, 'Invalid payload')
+    try {
+      this.validationSubservice.validateAuthorizationRequest(authorizationRequest)
+    } catch (error) {
+      this.logger.error('Invalid authorization request from payload', {
+        authRequestId,
+        method: request.method,
+      })
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: authorization request parameters are corrupted'
+      )
+    }
 
     // Attach validated authorization request to request for controller/service
     request.authorizationPayload = authorizationRequest

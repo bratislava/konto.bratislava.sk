@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import {
   AuthorizationRequestDto,
   RefreshTokenRequestDto,
@@ -23,7 +24,8 @@ export class OAuth2Service {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
-    private readonly validationSubservice: OAuth2ValidationSubservice
+    private readonly validationSubservice: OAuth2ValidationSubservice,
+    private readonly configService: ConfigService
   ) {}
 
   /**
@@ -115,8 +117,8 @@ export class OAuth2Service {
     if (!existingRequest) {
       this.logger.error('Unknown authorization request ID', { authRequestId })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
-        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        'Unknown authorization request ID'
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: unknown authorization request'
       )
     }
 
@@ -138,7 +140,7 @@ export class OAuth2Service {
       this.logger.error('Failed to encrypt tokens', { error, authRequestId })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Failed to process tokens'
+        'Authorization server error: failed to process tokens'
       )
     }
 
@@ -171,8 +173,17 @@ export class OAuth2Service {
    * @returns Redirect URL to frontend with client_id, payload, redirect_uri, and state parameters
    */
   buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
-    // TODO: Get frontend URL from environment variable or configuration service
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000' // FIXME: Use actual frontend URL config
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL')
+    if (!frontendUrl) {
+      this.logger.error('FRONTEND_URL environment variable is not configured', {
+        clientId: request.client_id,
+        authRequestId,
+      })
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization redirect error: server misconfiguration'
+      )
+    }
     const redirectUrl = new URL('/oauth2/auth', frontendUrl)
     redirectUrl.searchParams.set('client_id', request.client_id)
     redirectUrl.searchParams.set('payload', authRequestId)
@@ -296,7 +307,7 @@ export class OAuth2Service {
       this.logger.error('Authorization code not found', { hasCode: !!request.code })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid authorization code'
+        'Invalid grant: authorization code not found'
       )
     }
 
@@ -315,7 +326,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid authorization code'
+        'Invalid grant: authorization code already used or deleted'
       )
     }
 
@@ -326,7 +337,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Authorization code expired'
+        'Invalid grant: authorization code missing creation timestamp'
       )
     }
     const maxAge = 5 * 60 * 1000 // 5 minutes
@@ -340,7 +351,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Authorization code expired'
+        'Invalid grant: authorization code expired'
       )
     }
 
@@ -353,7 +364,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        'redirect_uri mismatch'
+        'Invalid request: redirect_uri mismatch'
       )
     }
 
@@ -379,7 +390,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Tokens not available for this authorization code'
+        'Invalid grant: tokens not available for this authorization code'
       )
     }
 
@@ -430,7 +441,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        'Invalid code_challenge_method'
+        'Invalid request: invalid code_challenge_method'
       )
     }
 
@@ -442,7 +453,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        'Invalid code_verifier'
+        'Invalid request: invalid code_verifier'
       )
     }
   }
@@ -466,7 +477,7 @@ export class OAuth2Service {
       this.logger.error('Missing client_id in refresh token request')
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
-        'Invalid client credentials'
+        'Invalid client: client_id required'
       )
     }
 
@@ -476,8 +487,8 @@ export class OAuth2Service {
     } catch (error) {
       this.logger.error('Failed to decrypt refresh token', { error, clientId })
       throw this.throwerErrorGuard.OAuth2TokenException(
-        OAuth2TokenErrorCode.INVALID_REQUEST,
-        'Invalid refresh token'
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid request: invalid refresh token'
       )
     }
 
@@ -488,7 +499,7 @@ export class OAuth2Service {
       this.logger.error('Failed to refresh tokens via Cognito', { error, clientId })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Unable to refresh access token'
+        'Invalid grant: unable to refresh access token'
       )
     }
 
@@ -499,7 +510,7 @@ export class OAuth2Service {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Unable to refresh access token'
+        'Invalid grant: unable to refresh access token'
       )
     }
 

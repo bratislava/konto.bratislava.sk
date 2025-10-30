@@ -11,6 +11,7 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 import { PrismaService } from '../prisma/prisma.service'
 import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
+import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
 
 @Module({
   imports: [],
@@ -24,6 +25,7 @@ import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
     TokenRequestGuard,
     AuthorizationPayloadGuard,
     OAuth2ExceptionFilter,
+    TokenRequestValidationPipe,
   ],
   exports: [AuthorizationRequestGuard, TokenRequestGuard],
   controllers: [OAuth2Controller],

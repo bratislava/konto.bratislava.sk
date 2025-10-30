@@ -18,7 +18,6 @@ import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   AuthorizationRequestDto,
@@ -36,6 +35,7 @@ import { TokenResponseDto } from './dtos/responses.oautuh2.dto'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'
+import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
@@ -78,7 +78,7 @@ export class OAuth2Controller {
   @ApiOperation({
     summary: 'OAuth2 Store Tokens Endpoint',
     description:
-      'Store tokens after user authentication. Called by frontend with tokens and authorization request ID. Returns 200 OK after storing tokens.',
+      'Store tokens after user authentication. Called by frontend with tokens and authorization request ID.',
   })
   @ApiResponse({
     status: 200,
@@ -131,9 +131,9 @@ export class OAuth2Controller {
     // Check if tokens are stored
     const tokensStored = await this.oauth2Service.areTokensStoredForAuthRequest(query.payload)
     if (!tokensStored) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Tokens not found for this authorization request. Please store tokens first using POST /oauth2/store'
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: unable to provide tokens for this authorization request'
       )
     }
 
@@ -153,7 +153,7 @@ export class OAuth2Controller {
   }
 
   @Post('token')
-  @UsePipes(new TokenRequestValidationPipe())
+  @UsePipes(TokenRequestValidationPipe)
   @UseGuards(TokenRequestGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

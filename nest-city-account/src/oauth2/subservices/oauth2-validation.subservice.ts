@@ -47,88 +47,74 @@ export class OAuth2ValidationSubservice {
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 
-  private static readonly INVALID_CLIENT_MSG = 'Invalid client credentials'
-
   /**
    * Validate authorization request parameters
    * Used by both /authorize and /continue endpoints
    *
    * @param params - The authorization parameters (from query or decoded payload)
-   * @param errorPrefix - Prefix for error messages (e.g., "Invalid request" or "Invalid payload")
    * @returns Validated authorization parameters and client config
    */
-  validateAuthorizationRequest(
-    params: AuthorizationParams,
-    errorPrefix: string = 'Invalid request' // TODO This seems weird,
-  ): AuthorizationValidationResult {
+  validateAuthorizationRequest(params: AuthorizationParams): AuthorizationValidationResult {
     // Extract and validate client_id
     const clientId = params.client_id as string | undefined
-    if (!clientId || typeof clientId !== 'string' || !clientId.trim()) {
+    if (!clientId || typeof clientId !== 'string' || clientId.length === 0) {
       this.logger.error('Missing or invalid client_id in authorization request', {
         hasClientId: !!clientId,
         clientIdType: typeof clientId,
-        errorPrefix,
       })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        `${errorPrefix}: client_id is required` // TODO description
+        `Invalid request: client_id is required`
       )
     }
 
     // Find and validate client exists
-    const trimmedClientId = clientId.trim()
-    const client = findClientById(trimmedClientId)
+    const client = findClientById(clientId)
     if (!client) {
       this.logger.error('Client not found', {
-        clientId: trimmedClientId,
-        errorPrefix,
+        clientId: clientId,
       })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT,
-        `${errorPrefix}: Invalid client_id` // TODO description
+        `Unauthorized client: unknown client`
       )
     }
 
     // Extract and validate redirect_uri
     const redirectUri = params.redirect_uri as string | undefined
-    if (!redirectUri || typeof redirectUri !== 'string' || !redirectUri.trim()) {
+    if (!redirectUri || typeof redirectUri !== 'string' || redirectUri.length === 0) {
       this.logger.error('Missing or invalid redirect_uri in authorization request', {
-        clientId: trimmedClientId,
+        clientId: clientId,
         hasRedirectUri: !!redirectUri,
         redirectUriType: typeof redirectUri,
-        errorPrefix,
       })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        `${errorPrefix}: redirect_uri is required` // TODO description
+        `Invalid request: redirect_uri is required`
       )
     }
 
-    const trimmedRedirectUri = redirectUri.trim()
-    if (!isRedirectUriAllowed(client, trimmedRedirectUri)) {
+    if (!isRedirectUriAllowed(client, redirectUri)) {
       this.logger.error('Redirect URI not allowed for client', {
-        clientId: trimmedClientId,
-        redirectUri: trimmedRedirectUri,
-        errorPrefix,
+        clientId: clientId,
+        redirectUri: redirectUri,
       })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
-        OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT,
-        `${errorPrefix}: Redirect URI is not allowed for this client` // TODO description
+        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+        `Invalid request: provided redirect URI is not allowed for this client`
       )
     }
 
     // Validate scope if provided
     const scope = params.scope as string | undefined
     if (scope && typeof scope === 'string' && !areScopesAllowed(client, scope)) {
-      // TODO type of scope is always string
       this.logger.error('Invalid scope requested', {
-        clientId: trimmedClientId,
+        clientId: clientId,
         requestedScope: scope,
-        errorPrefix,
       })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_SCOPE,
-        `${errorPrefix}: Invalid scope requested` // TODO description
+        `Invalid scope: requested scope is invalid, unknown, or malformed`
       )
     }
 
@@ -141,14 +127,13 @@ export class OAuth2ValidationSubservice {
     if (codeChallenge || codeChallengeMethod) {
       if (!codeChallenge || !codeChallengeMethod) {
         this.logger.error('PKCE parameters incomplete', {
-          clientId: trimmedClientId,
+          clientId: clientId,
           hasCodeChallenge: !!codeChallenge,
           hasCodeChallengeMethod: !!codeChallengeMethod,
-          errorPrefix,
         })
         throw this.throwerErrorGuard.OAuth2AuthorizationException(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          `${errorPrefix}: Both code_challenge and code_challenge_method must be provided when using PKCE` // TODO description
+          `Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE`
         )
       }
     }
@@ -157,25 +142,24 @@ export class OAuth2ValidationSubservice {
     if (client.requiresPkce) {
       if (!codeChallenge || !codeChallengeMethod) {
         this.logger.error('PKCE required but not provided', {
-          clientId: trimmedClientId,
+          clientId: clientId,
           hasCodeChallenge: !!codeChallenge,
           hasCodeChallengeMethod: !!codeChallengeMethod,
-          errorPrefix,
         })
         throw this.throwerErrorGuard.OAuth2AuthorizationException(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          `${errorPrefix}: PKCE is required for this client: code_challenge and code_challenge_method are required` // TODO description
+          `Invalid request: PKCE is required for this client: code_challenge and code_challenge_method are required`
         )
       }
     }
 
     return {
       client,
-      clientId: trimmedClientId,
-      redirectUri: trimmedRedirectUri,
-      scope: scope ? scope.trim() : undefined,
-      codeChallenge: codeChallenge?.trim(),
-      codeChallengeMethod: codeChallengeMethod?.trim(),
+      clientId: clientId,
+      redirectUri: redirectUri,
+      scope: scope,
+      codeChallenge: codeChallenge,
+      codeChallengeMethod: codeChallengeMethod,
     }
   }
 
@@ -210,12 +194,12 @@ export class OAuth2ValidationSubservice {
       const bodyClientId = request.body?.client_id
       const bodyClientSecret = request.body?.client_secret
 
-      // Validate that values are non-empty strings
-      if (typeof bodyClientId === 'string' && bodyClientId.trim()) {
-        clientId = bodyClientId.trim()
+      // Validate that values are non-empty strings (do not trim client-provided values)
+      if (typeof bodyClientId === 'string' && bodyClientId.length > 0) {
+        clientId = bodyClientId
       }
-      if (typeof bodyClientSecret === 'string' && bodyClientSecret.trim()) {
-        clientSecret = bodyClientSecret.trim()
+      if (typeof bodyClientSecret === 'string' && bodyClientSecret.length > 0) {
+        clientSecret = bodyClientSecret
       }
     }
 
@@ -279,20 +263,19 @@ export class OAuth2ValidationSubservice {
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
-        OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
+        'Invalid request: client_id is required'
       )
     }
 
-    const trimmedClientId = clientId.trim()
-    const client = findClientById(trimmedClientId)
+    const client = findClientById(clientId)
     if (!client) {
       this.logger.error('Client not found for token request', {
-        clientId: trimmedClientId,
+        clientId: clientId,
         grantType,
       })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
-        OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
+        `Unauthorized client: unknown client`
       )
     }
 
@@ -300,39 +283,38 @@ export class OAuth2ValidationSubservice {
     if (client.clientSecret) {
       if (!clientSecret) {
         this.logger.error('Client secret required but not provided', {
-          clientId: trimmedClientId,
+          clientId: clientId,
           grantType,
         })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
-          OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
+          'Invalid client: client_secret is required'
         )
       }
       if (!this.isValidSecret(client.clientSecret, clientSecret)) {
         this.logger.error('Invalid client secret provided', {
-          clientId: trimmedClientId,
+          clientId: clientId,
           grantType,
           hasClientSecret: !!clientSecret,
         })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
-          OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
+          'Invalid client: invalid client_secret'
         )
       }
     }
 
     // Validate redirect_uri if present
     if (params.redirectUri && typeof params.redirectUri === 'string') {
-      const trimmedUri = params.redirectUri.trim()
-      if (!isRedirectUriAllowed(client, trimmedUri)) {
+      if (!isRedirectUriAllowed(client, params.redirectUri)) {
         this.logger.error('Redirect URI not allowed for client in token request', {
-          clientId: trimmedClientId,
-          redirectUri: trimmedUri,
+          clientId: clientId,
+          redirectUri: params.redirectUri,
           grantType,
         })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_REQUEST,
-          'Redirect URI is not allowed for this client' // TODO description
+          `Invalid request: provided redirect URI is not allowed for this client`
         )
       }
     }
@@ -342,16 +324,16 @@ export class OAuth2ValidationSubservice {
       if (
         !params.codeVerifier ||
         typeof params.codeVerifier !== 'string' ||
-        !params.codeVerifier.trim()
+        params.codeVerifier.length === 0
       ) {
         this.logger.error('PKCE code_verifier required but not provided', {
-          clientId: trimmedClientId,
+          clientId: clientId,
           grantType: params.grantType,
           hasCodeVerifier: !!params.codeVerifier,
         })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_REQUEST,
-          'PKCE is required for this client: code_verifier is required' // TODO description
+          'Invalid request: PKCE code_verifier is required'
         )
       }
     }

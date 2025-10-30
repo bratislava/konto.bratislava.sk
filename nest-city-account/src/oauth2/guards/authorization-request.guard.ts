@@ -35,7 +35,7 @@ export class AuthorizationRequestGuard implements CanActivate {
     // Validate using shared validation subservice
     // All validation is done here - client_id, redirect_uri, scope, PKCE are all checked
     // Service layer can access client_id from query params if needed
-    this.validationSubservice.validateAuthorizationRequest(params, 'Invalid request')
+    this.validationSubservice.validateAuthorizationRequest(params)
 
     return true
   }

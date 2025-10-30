@@ -7,11 +7,12 @@ import {
 import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oautuh2.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
+import { OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { PrismaService } from '../prisma/prisma.service'
 import { encryptData } from '../utils/crypto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import * as jwt from 'jsonwebtoken'
+import { randomBytes } from 'node:crypto'
 
 @Injectable()
 export class OAuth2Service {
@@ -203,20 +204,24 @@ export class OAuth2Service {
       authRequestId,
     })
 
-    // TODO: Implement continue logic
-    // 1. Verify tokens are stored for authorization request ID (call areTokensStoredForAuthRequest)
-    // 2. Load stored tokens
-    // 3. Extract user info from tokens (decode JWT if needed)
-    // 4. Generate authorization code
-    // 5. Store code_challenge for PKCE verification
-    // 6. Associate code with original authorization request and tokens
-    // 7. Return AuthorizationResponseDto with code and optional state
-    // Controller will build redirect URL using buildAuthorizationResponseRedirectUrl()
+    const authorizationCode = randomBytes(64).toString('base64url')
 
-    throw this.throwerErrorGuard.OAuth2AuthorizationException(
-      OAuth2AuthorizationErrorCode.SERVER_ERROR,
-      'Continue authorization endpoint not yet implemented'
-    )
+    await this.prisma.oAuth2Data.update({
+      where: { id: authRequestId },
+      data: { authorizationCode, authorizationCodeCreatedAt: new Date() },
+    })
+
+    this.logger.debug('Authorization code generated and stored', {
+      authRequestId,
+      client_id: authorizationRequest.client_id,
+    })
+
+    const response: AuthorizationResponseDto = {
+      code: authorizationCode,
+      ...(authorizationRequest.state && { state: authorizationRequest.state }),
+    }
+
+    return response
   }
 
   /**

@@ -11,6 +11,7 @@ CREATE TABLE "OAuth2Data" (
     "codeChallenge" TEXT,
     "codeChallengeMethod" TEXT,
     "authorizationCode" TEXT,
+    "authorizationCodeCreatedAt" TIMESTAMP(3),
     "accessTokenEnc" TEXT,
     "accessTokenExpiresAt" TIMESTAMP(3),
     "idTokenEnc" TEXT,

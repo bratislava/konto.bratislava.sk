@@ -14,20 +14,18 @@
  * OAUTH2_MPA_ALLOWED_URIS=http://localhost:3000/callback,https://mpa.example.com/callback
  * OAUTH2_MPA_ALLOWED_SCOPES=openid,profile,email
  * OAUTH2_MPA_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
- * OAUTH2_MPA_CLIENT_NAME=MPA Client
  * OAUTH2_MPA_REQUIRES_PKCE=true
  * 
  * # For DPB client:
  * OAUTH2_DPB_CLIENT_ID=dpb-client-id
  * OAUTH2_DPB_CLIENT_SECRET=dpb-secret-key
  * OAUTH2_DPB_ALLOWED_URIS=https://dpb.example.com/callback
- * OAUTH2_DPB_CLIENT_NAME=DPB Client
  * ```
  * 
  * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID
  * @optional - OAUTH2_{PREFIX}_CLIENT_SECRET
  * @required - OAUTH2_{PREFIX}_ALLOWED_URIS (at least one redirect URI required)
- * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, CLIENT_NAME, REQUIRES_PKCE
+ * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE
  */
 
 export interface ClientConfig {
@@ -37,8 +35,8 @@ export interface ClientConfig {
   /** Client secret (optional - if not provided, secret validation is skipped) */
   clientSecret?: string
   
-  /** Human-readable name for the client */
-  clientName?: string
+  /** Human-readable name for the client (always the prefix from OAUTH2_CLIENT_LIST) */
+  clientName: string
   
   /** List of allowed redirect URIs for this client */
   allowedRedirectUris: string[]
@@ -87,17 +85,24 @@ function loadClientsFromEnv(): ClientConfig[] {
       console.warn(`Invalid configuration for client prefix: ${prefix} - ALLOWED_URIS must contain at least one URI`)
       continue
     }
-    const allowedScopes = process.env[`OAUTH2_${prefix}_ALLOWED_SCOPES`]?.split(',').map(s => s.trim())
-    const allowedGrantTypes = process.env[`OAUTH2_${prefix}_ALLOWED_GRANT_TYPES`]?.split(',').map(g => g.trim())
+
+    // Parse optional comma-separated arrays (filter out empty values)
+    const allowedScopesEnv = process.env[`OAUTH2_${prefix}_ALLOWED_SCOPES`]
+    const allowedScopes = allowedScopesEnv?.split(',').map(s => s.trim()).filter(s => s.length > 0)
+    
+    const allowedGrantTypesEnv = process.env[`OAUTH2_${prefix}_ALLOWED_GRANT_TYPES`]
+    const allowedGrantTypes = allowedGrantTypesEnv?.split(',').map(g => g.trim()).filter(g => g.length > 0)
+
+    const requiresPkce = process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] === 'true'
 
     const client: ClientConfig = {
       clientId,
-      ...(clientSecret && { clientSecret }), // Only include clientSecret if provided
-      clientName: process.env[`OAUTH2_${prefix}_CLIENT_NAME`] || prefix,
+      clientName: prefix, // Always use the prefix as the client name
       allowedRedirectUris,
-      allowedScopes,
-      allowedGrantTypes,
-      requiresPkce: process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] === 'true',
+      requiresPkce,
+      ...(clientSecret && { clientSecret }), // Only include if provided
+      ...(allowedScopes && allowedScopes.length > 0 && { allowedScopes }), // Only include if non-empty
+      ...(allowedGrantTypes && allowedGrantTypes.length > 0 && { allowedGrantTypes }), // Only include if non-empty
     }
 
     clients.push(client)

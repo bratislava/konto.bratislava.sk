@@ -207,51 +207,27 @@ export default class ThrowerErrorGuard {
   // OAuth2 errors
 
   /**
-   * Creates an OAuth2 authorization error redirect URL per RFC 6749 Section 4.1.2.1 / 4.2.2.1
-   * Authorization errors MUST redirect to client's redirect_uri with error parameters
+   * Throws an OAuth2 authorization error
+   * The OAuth2ExceptionFilter will automatically convert this to a 303 redirect
    *
-   * @example
-   *   } catch (error) {
-   *     const errorUrl = this.throwerErrorGuard.OAuth2AuthorizationErrorRedirect(
-   *       query.redirect_uri || 'https://fallback-url.com',
-   *       OAuth2AuthorizationErrorCode.SERVER_ERROR,
-   *       'An unexpected error occurred',
-   *       query.state
-   *     )
-   *     return res.redirect(errorUrl)
-   *   }
-   * @param redirectUri - Client's registered redirect_uri
    * @param errorCode - OAuth2 authorization error code
    * @param errorDescription - Optional human-readable error description
-   * @param state - REQUIRED if state was present in authorization request
    * @param errorUri - Optional URI identifying a human-readable error page
-   * @returns Redirect URL string with error parameters
+   * @returns HttpException that will be intercepted by OAuth2ExceptionFilter
    */
-  OAuth2AuthorizationErrorRedirect(
-    redirectUri: string,
+  OAuth2AuthorizationException(
     errorCode: OAuth2AuthorizationErrorCode,
     errorDescription?: string,
-    state?: string,
     errorUri?: string
-  ): string {
-    const params = new URLSearchParams()
-    params.append('error', errorCode)
-
-    if (errorDescription) {
-      params.append('error_description', errorDescription)
+  ): HttpException {
+    const response: OAuth2AuthorizationErrorDto = {
+      error: errorCode,
+      error_description: errorDescription,
+      error_uri: errorUri,
     }
 
-    if (state) {
-      params.append('state', state)
-    }
-
-    if (errorUri) {
-      params.append('error_uri', errorUri)
-    }
-
-    // Check if redirect_uri already has query parameters
-    const separator = redirectUri.includes('?') ? '&' : '?'
-    return `${redirectUri}${separator}${params.toString()}`
+    // Note: state will be automatically added by OAuth2ExceptionFilter from request query
+    return new HttpException(response, HttpStatus.BAD_REQUEST)
   }
 
   /**

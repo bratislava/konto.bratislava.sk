@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   Req,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common'
 import { Request } from 'express'
@@ -28,23 +29,24 @@ import {
   TokenRequestDto,
 } from './dtos/requests.oauth2.dto'
 import {
-  AuthorizationErrorResponseDto,
   AuthorizationResponseDto,
   ContinueResponseDto,
-  TokenErrorResponseDto,
   TokenResponseDto,
 } from './dtos/responses.oautuh2.dto'
 import { ContinuePayloadGuard, RequestWithContinuePayload } from './guards/continue-payload.guard'
 import { OAuth2Service } from './oauth2.service'
+import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { OAuth2AuthorizationErrorDto } from './dtos/errors.oauth2.dto'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
+@UseFilters(new OAuth2ExceptionFilter())
 export class OAuth2Controller {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Controller.name)
 
   constructor(
     private readonly oauth2Service: OAuth2Service,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
   // FIXME set the OK response status to be 303 See Other (or 302 Found, check https://datatracker.ietf.org/doc/html/rfc9700#name-307-redirect)
@@ -62,11 +64,9 @@ export class OAuth2Controller {
   })
   @ApiBadRequestResponse({
     description: 'Invalid authorization request',
-    type: AuthorizationErrorResponseDto,
+    type: OAuth2AuthorizationErrorDto | { },
   })
-  async authorize(
-    @Query() query: AuthorizationRequestDto,
-  ): Promise<AuthorizationResponseDto> {
+  async authorize(@Query() query: AuthorizationRequestDto): Promise<AuthorizationResponseDto> {
     this.logger.debug(`Authorization request received for client_id: ${query.client_id}`)
 
     return await this.oauth2Service.authorize(query)
@@ -87,9 +87,7 @@ export class OAuth2Controller {
     description: 'Invalid token request',
     type: TokenErrorResponseDto,
   })
-  async token(
-    @Body() body: TokenRequestDto | RefreshTokenRequestDto,
-  ): Promise<TokenResponseDto> {
+  async token(@Body() body: TokenRequestDto | RefreshTokenRequestDto): Promise<TokenResponseDto> {
     this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
 
     if (body.grant_type === 'authorization_code') {
@@ -109,7 +107,8 @@ export class OAuth2Controller {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'OAuth2 Continue Endpoint',
-    description: 'Continue authorization flow after user authentication. Called by frontend with tokens and original authorize request payload.',
+    description:
+      'Continue authorization flow after user authentication. Called by frontend with tokens and original authorize request payload.',
   })
   @ApiOkResponse({
     description: 'Authorization flow continued, returns authorization code and redirect URI',
@@ -121,7 +120,7 @@ export class OAuth2Controller {
   })
   async continue(
     @Body() body: ContinueRequestDto,
-    @Req() req: Request,
+    @Req() req: Request
   ): Promise<ContinueResponseDto> {
     const request = req as RequestWithContinuePayload
     const authorizationRequest = request.continuePayload!

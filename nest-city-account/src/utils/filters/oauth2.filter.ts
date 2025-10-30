@@ -43,7 +43,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
     // Handle token endpoint errors (JSON response)
     if (request.path.includes('/oauth2/token')) {
-      this.handleTokenError(response, status, exceptionResponse)
+      this.handleTokenError(request, response, status, exceptionResponse)
       return
     }
 
@@ -71,11 +71,18 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     // RFC 6749 Section 4.1.2.1: If redirect_uri is invalid/missing, return error directly
     // (do not redirect to prevent open redirector vulnerability)
     if (!redirectUri) {
-      this.logger.warn('Authorization error without redirect_uri, returning direct error', {
-        path: request.path,
-        status,
-        hasState: !!state,
-        exceptionResponse,
+      this.logger.error({
+        method: request.method,
+        originalUrl: request.originalUrl,
+        statusCode: status,
+        userAgent: request.get('user-agent') || '',
+        requestBody: request.body,
+        queryParams: request.query,
+        ip: request.ip ?? '<NO IP>',
+        error: typeof exceptionResponse === 'object' ? (exceptionResponse as any).error : 'invalid_request',
+        message: 'Authorization error without redirect_uri, returning direct error',
+        hasRedirectUri: false,
+        responseData: typeof exceptionResponse === 'object' ? exceptionResponse : { error: 'invalid_request', error_description: exceptionResponse },
       })
 
       response
@@ -108,7 +115,20 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     // Build redirect URL with error parameters
     const redirectUrl = this.buildErrorRedirectUrl(redirectUri, errorResponse)
 
-    // TODO logging
+    this.logger.error({
+      method: request.method,
+      originalUrl: request.originalUrl,
+      statusCode: HttpStatus.SEE_OTHER,
+      userAgent: request.get('user-agent') || '',
+      requestBody: request.body,
+      queryParams: request.query,
+      ip: request.ip ?? '<NO IP>',
+      error: errorResponse.error,
+      message: 'Authorization failed, sending redirect error.',
+      redirectUrl,
+      hasRedirectUri: !!redirectUri,
+      "response-data": {redirectUrl, errorResponse},
+    })
 
     // RFC 9700: Use 303 See Other for OAuth2 redirects
     response.redirect(HttpStatus.SEE_OTHER, redirectUrl)
@@ -119,15 +139,25 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
    * Returns 400 Bad Request with JSON body
    */
   private handleTokenError(
+    request: Request,
     response: Response,
     status: number,
     exceptionResponse: string | object
   ): void {
     const errorResponse = this.extractOAuth2TokenError(exceptionResponse, status)
 
-    this.logger.warn('Returning token endpoint error', {
+    this.logger.error({
+      method: request.method,
+      originalUrl: request.originalUrl,
+      statusCode: HttpStatus.BAD_REQUEST,
+      userAgent: request.get('user-agent') || '',
+      requestBody: request.body,
+      queryParams: request.query,
+      ip: request.ip ?? '<NO IP>',
       error: errorResponse.error,
-      status: HttpStatus.BAD_REQUEST,
+      message: 'Returning token endpoint error',
+      hasRedirectUri: false,
+      responseData: errorResponse,
     })
 
     // RFC 6749 Section 5.2: Token errors always return 400

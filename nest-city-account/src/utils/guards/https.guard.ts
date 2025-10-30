@@ -14,6 +14,7 @@ export class HttpsGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<Request>()
 
+    // TODO check this on dev cluster - we don't know what the cluster provides.
     // Check if request is secure (various common headers set by proxies/load balancers)
     const isSecure =
       request.secure ||

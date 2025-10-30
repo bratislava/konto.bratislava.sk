@@ -47,7 +47,6 @@ export class OAuth2Controller {
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
-  // FIXME force TLS use, if feasible (check if it is enough to set on the network/ingress side or anything else is needed here)
   @Get('authorize')
   @UseGuards(AuthorizationRequestGuard)
   @ApiOperation({

@@ -61,7 +61,7 @@ export class OAuth2Controller {
     this.logger.debug(`Authorization request received for client_id: ${query.client_id}`)
 
     // Service stores parameters and returns authorization request ID
-    const authRequestId = await this.oauth2Service.authorize(query)
+    const authRequestId = await this.oauth2Service.storeAuthorizationRequest(query)
 
     // Controller builds redirect URL using service builder function
     // Includes redirect_uri and state for frontend error handling (frontend may send them back, but they're already stored in DB)

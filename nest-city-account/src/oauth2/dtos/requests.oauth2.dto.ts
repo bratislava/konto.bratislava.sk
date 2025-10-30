@@ -181,7 +181,7 @@ export class StoreTokensRequestDto {
   })
   @IsOptional()
   @IsString()
-  refresh_token?: string
+  refresh_token!: string
 
   @ApiProperty({
     description: 'UUID of the authorization request stored in the database',

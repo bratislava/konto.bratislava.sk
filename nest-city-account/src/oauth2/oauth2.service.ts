@@ -8,12 +8,16 @@ import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oau
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
+import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class OAuth2Service {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Service.name)
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly prisma: PrismaService
+  ) {}
 
   /**
    * Build frontend redirect URL for authorization request
@@ -37,26 +41,64 @@ export class OAuth2Service {
   }
 
   /**
-   * Handle OAuth2 authorization request
-   * Stores authorization request parameters and generates authorization request ID
+   * Store OAuth2 authorization request parameters and return its ID
    *
    * @returns Authorization request ID that references the stored authorization request
    */
-  async authorize(request: AuthorizationRequestDto): Promise<string> {
+  async storeAuthorizationRequest(request: AuthorizationRequestDto): Promise<string> {
     this.logger.debug('Processing authorization request', { client_id: request.client_id })
 
-    // TODO: Implement authorization logic
-    // 1. Validate client_id (already done in guard)
-    // 2. Validate redirect_uri (already done in guard)
-    // 3. Validate scope (already done in guard)
-    // 4. Store authorization request parameters in database
-    // 5. Generate and return authorization request ID that references the stored request
-    // Controller will build redirect URL using buildLoginRedirectUrl()
+    const storedRequest = await this.prisma.authorizationRequest.create({
+      data: {
+        responseType: request.response_type,
+        clientId: request.client_id,
+        redirectUri: request.redirect_uri,
+        scope: request.scope || null,
+        state: request.state || null,
+        codeChallenge: request.code_challenge || null,
+        codeChallengeMethod: request.code_challenge_method || null,
+      },
+    })
 
-    throw this.throwerErrorGuard.OAuth2AuthorizationException(
-      OAuth2AuthorizationErrorCode.SERVER_ERROR,
-      'Authorization endpoint not yet implemented'
-    )
+    this.logger.debug('Authorization request stored', {
+      authRequestId: storedRequest.id,
+      clientId: request.client_id,
+    })
+
+    return storedRequest.id
+  }
+
+  /**
+   * Load authorization request parameters from database using authorization request ID
+   *
+   * @param authRequestId - ID of the stored authorization request
+   * @returns Authorization request parameters or undefined if not found
+   */
+  async loadAuthorizationRequest(
+    authRequestId: string
+  ): Promise<AuthorizationRequestDto | undefined> {
+    this.logger.debug('Loading authorization request from database', { authRequestId })
+
+    const storedRequest = await this.prisma.authorizationRequest.findUnique({
+      where: { id: authRequestId },
+    })
+
+    if (!storedRequest) {
+      this.logger.debug('Authorization request not found', { authRequestId })
+      return undefined
+    }
+
+    const request: AuthorizationRequestDto = {
+      response_type: storedRequest.responseType,
+      client_id: storedRequest.clientId,
+      redirect_uri: storedRequest.redirectUri,
+      scope: storedRequest.scope || undefined,
+      state: storedRequest.state || undefined,
+      code_challenge: storedRequest.codeChallenge || undefined,
+      code_challenge_method: storedRequest.codeChallengeMethod || undefined,
+    }
+
+    return request
   }
 
   /**
@@ -110,7 +152,11 @@ export class OAuth2Service {
    * @returns Token response DTO with new access_token and expiration time
    */
   async refreshToken(request: RefreshTokenRequestDto): Promise<TokenResponseDto> {
-    this.logger.debug('Processing refresh token request')
+    this.logger.debug('Processing refresh token request', {
+      grant_type: request.grant_type,
+      hasRefreshToken: !!request.refresh_token,
+      clientId: request.client_id,
+    })
 
     // TODO: Implement refresh token logic
     // 1. Validate refresh token
@@ -133,9 +179,17 @@ export class OAuth2Service {
     authRequestId: string,
     accessToken: string,
     idToken: string | undefined,
-    refreshToken: string | undefined
+    refreshToken: string
   ): Promise<void> {
-    this.logger.debug('Storing tokens for authorization request', { authRequestId: authRequestId })
+    this.logger.debug('Storing tokens for authorization request', {
+      authRequestId: authRequestId,
+      hasAccessToken: !!accessToken,
+      hasIdToken: !!idToken,
+      hasRefreshToken: !!refreshToken,
+      accessTokenLength: accessToken?.length || 0,
+      idTokenLength: idToken?.length || 0,
+      refreshTokenLength: refreshToken?.length || 0,
+    })
 
     // TODO: Implement token storage logic
     // 1. Validate authorization request exists
@@ -166,28 +220,6 @@ export class OAuth2Service {
     throw this.throwerErrorGuard.OAuth2TokenException(
       OAuth2TokenErrorCode.INVALID_REQUEST,
       'areTokensStoredForAuthRequest not yet implemented'
-    )
-  }
-
-  /**
-   * Load authorization request parameters from database using authorization request ID
-   *
-   * @param authRequestId - ID of the stored authorization request
-   * @returns Authorization request parameters or undefined if not found
-   */
-  async loadAuthorizationRequest(
-    authRequestId: string
-  ): Promise<AuthorizationRequestDto | undefined> {
-    this.logger.debug('Loading authorization request', { authRequestId })
-
-    // TODO: Implement database lookup
-    // 1. Query database for authorization request with this ID
-    // 2. Return stored AuthorizationRequestDto if found
-    // 3. Return undefined if not found or expired
-
-    throw this.throwerErrorGuard.OAuth2AuthorizationException(
-      OAuth2AuthorizationErrorCode.SERVER_ERROR,
-      'loadAuthorizationRequest not yet implemented'
     )
   }
 

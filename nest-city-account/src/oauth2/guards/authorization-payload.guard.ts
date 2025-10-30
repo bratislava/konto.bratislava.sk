@@ -3,10 +3,7 @@ import { Request } from 'express'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2Service } from '../oauth2.service'
-import {
-  AuthorizationParams,
-  OAuth2ValidationSubservice,
-} from '../subservices/oauth2-validation.subservice'
+import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
 import { OAuth2AuthorizationErrorCode } from '../oauth2.error.enum'
 
 export interface RequestWithAuthorizationPayload extends Request {
@@ -53,18 +50,7 @@ export class AuthorizationPayloadGuard implements CanActivate {
       )
     }
 
-    // Validate loaded authorization request parameters using shared validation subservice
-    // This ensures the stored parameters are still valid
-    const params: AuthorizationParams = {
-      client_id: authorizationRequest.client_id,
-      redirect_uri: authorizationRequest.redirect_uri,
-      scope: authorizationRequest.scope,
-      code_challenge: authorizationRequest.code_challenge,
-      code_challenge_method: authorizationRequest.code_challenge_method,
-    }
-
-    // Validate using shared validation subservice (same logic as AuthorizationRequestGuard)
-    this.validationSubservice.validateAuthorizationRequest(params, 'Invalid payload')
+    this.validationSubservice.validateAuthorizationRequest(authorizationRequest, 'Invalid payload')
 
     // Attach validated authorization request to request for controller/service
     request.authorizationPayload = authorizationRequest

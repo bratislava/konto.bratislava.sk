@@ -9,11 +9,13 @@ import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subs
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { PrismaService } from '../prisma/prisma.service'
 
 @Module({
   imports: [],
   providers: [
     OAuth2Service,
+    PrismaService,
     CognitoSubservice,
     ThrowerErrorGuard,
     OAuth2ValidationSubservice,

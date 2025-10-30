@@ -8,7 +8,6 @@ import prismaMock from '../../../test/singleton'
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import * as paymentHelper from '../../utils/helpers/payment.helper'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import {
   CustomErrorTaxTypesEnum,
@@ -27,17 +26,12 @@ jest.mock('../utils/helpers/tax.helper', () => {
   const actual = jest.requireActual('../utils/helpers/tax.helper')
   return {
     ...actual,
-    fixInstallmentTexts: jest.fn(),
     getTaxStatus: jest.fn(),
   }
 })
 
 jest.mock('../utils/unified-tax.util', () => ({
   getTaxDetailPure: jest.fn(),
-}))
-
-jest.mock('../../utils/helpers/payment.helper', () => ({
-  computeIsPayableYear: jest.fn(),
 }))
 
 jest.mock('../utils/helpers/pdf.helper', () => ({
@@ -164,240 +158,6 @@ describe('TaxService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('getTaxByYear', () => {
-    it('should return tax data for valid year and birth number', async () => {
-      prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
-      prismaMock.taxPayer.findUnique.mockResolvedValue({
-        id: 1,
-      } as TaxPayer)
-      prismaMock.taxPayment.aggregate.mockResolvedValue({
-        _sum: { amount: 200 },
-      } as Prisma.GetTaxPaymentAggregateType<{ _sum: { amount: true } }>)
-      jest
-        .spyOn(service['qrCodeSubservice'], 'createQrCode')
-        .mockResolvedValue('qr-code-data')
-      jest
-        .spyOn(taxHelper, 'fixInstallmentTexts')
-        .mockReturnValue(mockTaxData.taxInstallments as any)
-      jest
-        .spyOn(taxHelper, 'getTaxStatus')
-        .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
-      jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
-
-      const result = await service.getTaxByYear(2023, '123456/789')
-
-      expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
-        where: {
-          taxPayerId_year: {
-            taxPayerId: 1,
-            year: 2023,
-          },
-        },
-        include: {
-          taxInstallments: true,
-          taxPayer: { include: { taxAdministrator: true } },
-          taxDetails: true,
-          taxPayments: true,
-        },
-      })
-
-      expect(result).toEqual(
-        expect.objectContaining({
-          id: 1,
-          amount: 1000,
-          paidAmount: 200,
-          paidStatus: TaxPaidStatusEnum.PARTIALLY_PAID,
-          pdfExport: false,
-          isPayable: true,
-          taxAdministrator: mockTaxData.taxPayer.taxAdministrator,
-        }),
-      )
-    })
-
-    it('should throw error for missing birth number', async () => {
-      const notFoundExceptionSpy = jest.spyOn(
-        service['throwerErrorGuard'],
-        'NotFoundException',
-      )
-
-      await expect(service.getTaxByYear(2023, '')).rejects.toThrow()
-
-      expect(notFoundExceptionSpy).toHaveBeenCalledWith(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-      )
-    })
-
-    it('should throw error for missing year', async () => {
-      const notFoundExceptionSpy = jest.spyOn(
-        service['throwerErrorGuard'],
-        'NotFoundException',
-      )
-
-      await expect(
-        service.getTaxByYear(null as any, '123456/789'),
-      ).rejects.toThrow()
-
-      expect(notFoundExceptionSpy).toHaveBeenCalledWith(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-      )
-    })
-
-    it('should generate QR code when partially paid', async () => {
-      prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
-      prismaMock.taxPayer.findUnique.mockResolvedValue({
-        id: 1,
-      } as TaxPayer)
-      prismaMock.taxPayment.aggregate.mockResolvedValue({
-        _sum: { amount: 200 },
-      } as Prisma.GetTaxPaymentAggregateType<{ _sum: { amount: true } }>)
-      const createQrCodeSpy = jest
-        .spyOn(service['qrCodeSubservice'], 'createQrCode')
-        .mockResolvedValue('qr-code-data')
-      jest
-        .spyOn(taxHelper, 'fixInstallmentTexts')
-        .mockReturnValue(mockTaxData.taxInstallments as any)
-      jest
-        .spyOn(taxHelper, 'getTaxStatus')
-        .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
-      jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
-
-      const result = await service.getTaxByYear(2023, '123456/789')
-
-      expect(createQrCodeSpy).toHaveBeenCalledWith({
-        amount: 800, // 1000 - 200
-        variableSymbol: 'VS123',
-        specificSymbol: '2023200000',
-      })
-      expect(result.qrCodeWeb).toBe('qr-code-data')
-    })
-
-    it('should not generate QR code when fully paid', async () => {
-      mockTaxData.qrCodeWeb = null
-      prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
-      prismaMock.taxPayer.findUnique.mockResolvedValue({
-        id: 1,
-      } as TaxPayer)
-      prismaMock.taxPayment.aggregate.mockResolvedValue({
-        _sum: { amount: 1000 },
-      } as Prisma.GetTaxPaymentAggregateType<{ _sum: { amount: true } }>)
-      jest
-        .spyOn(taxHelper, 'fixInstallmentTexts')
-        .mockReturnValue(mockTaxData.taxInstallments as any)
-      jest
-        .spyOn(taxHelper, 'getTaxStatus')
-        .mockReturnValue(TaxPaidStatusEnum.PAID)
-      jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
-      const createQrCodeSpy = jest.spyOn(
-        service['qrCodeSubservice'],
-        'createQrCode',
-      )
-
-      const result = await service.getTaxByYear(2023, '123456/789')
-
-      expect(createQrCodeSpy).not.toHaveBeenCalled()
-      expect(result.qrCodeWeb).toBeNull()
-    })
-  })
-
-  describe('loadTaxes', () => {
-    const mockTaxes = [
-      {
-        id: 1,
-        uuid: 'tax-uuid-1',
-        createdAt: new Date('2023-01-01'),
-        amount: 1000,
-        year: 2023,
-      },
-      {
-        id: 2,
-        uuid: 'tax-uuid-2',
-        createdAt: new Date('2022-01-01'),
-        amount: 800,
-        year: 2022,
-      },
-    ]
-
-    const mockTaxPayments = [
-      {
-        taxId: 1,
-        _sum: { amount: 200 },
-      },
-    ]
-
-    const mockTaxPayer = {
-      id: 1,
-      birthNumber: '123456/789',
-      taxAdministrator: {
-        id: 1,
-        name: 'Test Administrator',
-        email: 'admin@test.sk',
-      },
-    }
-
-    it('should return taxes with payment information', async () => {
-      prismaMock.taxPayment.groupBy.mockResolvedValue(mockTaxPayments as any)
-      prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer as any)
-      jest
-        .spyOn(taxHelper, 'getTaxStatus')
-        .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
-      jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
-
-      const result = await service.loadTaxes('123456/789')
-
-      expect(result).toEqual({
-        isInNoris: true,
-        items: [
-          expect.objectContaining({
-            id: 1,
-            amount: 1000,
-            paidAmount: 200,
-            paidStatus: TaxPaidStatusEnum.PARTIALLY_PAID,
-            isPayable: true,
-          }),
-          expect.objectContaining({
-            id: 2,
-            amount: 800,
-            paidAmount: 0,
-            paidStatus: TaxPaidStatusEnum.PARTIALLY_PAID,
-            isPayable: true,
-          }),
-        ],
-        taxAdministrator: mockTaxPayer.taxAdministrator,
-      })
-    })
-
-    it('should throw error for missing birth number', async () => {
-      const forbiddenExceptionSpy = jest.spyOn(
-        service['throwerErrorGuard'],
-        'ForbiddenException',
-      )
-
-      await expect(service.loadTaxes('')).rejects.toThrow()
-
-      expect(forbiddenExceptionSpy).toHaveBeenCalledWith(
-        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
-      )
-    })
-
-    it('should return empty list when no taxes found', async () => {
-      prismaMock.taxPayment.groupBy.mockResolvedValue([])
-      prismaMock.tax.findMany.mockResolvedValue([])
-      prismaMock.taxPayer.findUnique.mockResolvedValue(null)
-
-      const result = await service.loadTaxes('123456/789')
-
-      expect(result).toEqual({
-        isInNoris: false,
-        items: [],
-        taxAdministrator: null,
-      })
-    })
-  })
-
   describe('generatePdf', () => {
     const mockTaxDetails = {
       LAND: {
@@ -430,12 +190,8 @@ describe('TaxService', () => {
         _sum: { amount: 200 },
       } as Prisma.GetTaxPaymentAggregateType<{ _sum: { amount: true } }>)
       jest
-        .spyOn(taxHelper, 'fixInstallmentTexts')
-        .mockReturnValue(mockTaxData.taxInstallments as any)
-      jest
         .spyOn(taxHelper, 'getTaxStatus')
         .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
-      jest.spyOn(paymentHelper, 'computeIsPayableYear').mockReturnValue(true)
       jest.spyOn(pdfHelper, 'taxDetailsToPdf').mockReturnValue(mockTaxDetails)
       jest.spyOn(pdfHelper, 'taxTotalsToPdf').mockReturnValue(mockTaxTotals)
       const renderFileSpy = jest

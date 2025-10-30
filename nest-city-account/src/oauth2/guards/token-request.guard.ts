@@ -6,10 +6,8 @@ import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.sub
  * Guard for OAuth2 Token Endpoint
  * Validates token request with client authentication requirements based on grant type
  * 
- * For authorization_code grant: Requires client_id AND client_secret (both required)
+ * For authorization_code grant: Requires client_id (client_secret optional if client doesn't have one configured)
  * For refresh_token grant: Client authentication is optional (RFC 6749 Section 6)
- *  - Public clients (no secret) may omit client credentials
- *  - Confidential clients may provide credentials for additional security
  * 
  * Used for: /oauth2/token
  */

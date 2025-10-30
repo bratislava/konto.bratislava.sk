@@ -35,10 +35,6 @@ export interface ClientAuthParams {
   codeVerifier?: string
 }
 
-export interface ClientAuthValidationResult {
-  client: ClientConfig
-  clientId: string
-}
 
 /**
  * Subservice for OAuth2 validation logic
@@ -204,34 +200,34 @@ export class OAuth2ValidationSubservice {
    * Validate client authentication for token endpoint
    * Handles different grant types with appropriate authentication requirements
    * 
-   * For authorization_code: Requires both client_id and client_secret
+   * For authorization_code: Requires client_id (client_secret optional if client doesn't have one configured)
    * For refresh_token: Client authentication is optional (RFC 6749 Section 6)
    * 
    * @param params - Client authentication parameters and request context
-   * @returns Validated client information, or undefined if no credentials provided (refresh_token only)
    */
   validateTokenEndpointClientAuth(
     params: ClientAuthParams
-  ): ClientAuthValidationResult | undefined {
+  ): void {
     const { clientId, clientSecret, grantType } = params
 
     // For authorization_code grant, client authentication is REQUIRED
     if (grantType === 'authorization_code') {
-      return this.validateClientAuthentication(params)
+      this.validateClientAuthentication(params)
+      return
     }
 
     // For refresh_token grant, client authentication is OPTIONAL
     if (grantType === 'refresh_token') {
       if (clientId && clientSecret) {
         // Both credentials provided - validate full authentication
-        return this.validateClientAuthentication({
+        this.validateClientAuthentication({
           ...params,
           redirectUri: undefined, // Not applicable for refresh_token
           codeVerifier: undefined, // Not applicable for refresh_token
         })
+        return
       } else if (clientId) {
-        // Only client_id provided (public client scenario)
-        // Must validate that client exists - unknown client_id is unauthorized
+        // Only client_id provided - validate that client exists
         const client = findClientById(clientId.trim())
         if (!client) {
           throw this.throwerErrorGuard.UnauthorizedException(
@@ -239,13 +235,10 @@ export class OAuth2ValidationSubservice {
             'Invalid client credentials'
           )
         }
-        return {
-          client,
-          clientId: clientId.trim(),
-        }
+        return
       }
-      // No credentials provided - return undefined, client will be identified from refresh token
-      return undefined
+      // No credentials provided - validation passes, client will be identified from refresh token
+      return
     }
 
     // Unknown grant type - if client_id provided, validate it exists
@@ -257,25 +250,22 @@ export class OAuth2ValidationSubservice {
           'Invalid client credentials'
         )
       }
-      return {
-        client,
-        clientId: clientId.trim(),
-      }
+      return
     }
-
-    return undefined
   }
 
   /**
-   * Validate client authentication (client_id + client_secret)
-   * Used for authorization_code grant or when full authentication is required
+   * Validate client authentication
+   * Requires client_id (always required)
+   * Validates client_secret only if client has one configured
+   * Used for authorization_code grant or when authentication is required
    */
   private validateClientAuthentication(
     params: ClientAuthParams
-  ): ClientAuthValidationResult {
+  ): void {
     const { clientId, clientSecret } = params
 
-    if (!clientId || !clientSecret) {
+    if (!clientId) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         'Invalid client credentials'
@@ -290,11 +280,20 @@ export class OAuth2ValidationSubservice {
       )
     }
 
-    if (!this.isValidClientSecret(client.clientSecret, clientSecret)) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        'Invalid client credentials'
-      )
+    // Only validate client_secret if client has one configured
+    if (client.clientSecret) {
+      if (!clientSecret) {
+        throw this.throwerErrorGuard.UnauthorizedException(
+          ErrorsEnum.UNAUTHORIZED_ERROR,
+          'Invalid client credentials'
+        )
+      }
+      if (!this.isValidClientSecret(client.clientSecret, clientSecret)) {
+        throw this.throwerErrorGuard.UnauthorizedException(
+          ErrorsEnum.UNAUTHORIZED_ERROR,
+          'Invalid client credentials'
+        )
+      }
     }
 
     // Validate redirect_uri if present
@@ -316,11 +315,6 @@ export class OAuth2ValidationSubservice {
           'PKCE is required for this client: code_verifier is required'
         )
       }
-    }
-
-    return {
-      client,
-      clientId: clientId.trim(),
     }
   }
 }

@@ -24,16 +24,18 @@
  * OAUTH2_DPB_CLIENT_NAME=DPB Client
  * ```
  * 
- * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID, OAUTH2_{PREFIX}_CLIENT_SECRET
- * @optional - OAUTH2_{PREFIX}_ALLOWED_URIS, ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, CLIENT_NAME, REQUIRES_PKCE, CLIENT_URI
+ * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID
+ * @optional - OAUTH2_{PREFIX}_CLIENT_SECRET
+ * @required - OAUTH2_{PREFIX}_ALLOWED_URIS (at least one redirect URI required)
+ * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, CLIENT_NAME, REQUIRES_PKCE
  */
 
 export interface ClientConfig {
   /** Unique client identifier */
   clientId: string
   
-  /** Client secret (should be stored securely, hashed in production) */
-  clientSecret: string
+  /** Client secret (optional - if not provided, secret validation is skipped) */
+  clientSecret?: string
   
   /** Human-readable name for the client */
   clientName?: string
@@ -49,9 +51,6 @@ export interface ClientConfig {
   
   /** Whether this client requires PKCE */
   requiresPkce?: boolean
-  
-  /** Client application URI */
-  clientUri?: string
 }
 
 /**
@@ -72,25 +71,33 @@ function loadClientsFromEnv(): ClientConfig[] {
     const clientId = process.env[`OAUTH2_${prefix}_CLIENT_ID`]
     const clientSecret = process.env[`OAUTH2_${prefix}_CLIENT_SECRET`]
 
-    if (!clientId || !clientSecret) {
-      console.warn(`Missing configuration for client prefix: ${prefix}`)
+    if (!clientId) {
+      console.warn(`Missing configuration for client prefix: ${prefix} - CLIENT_ID is required`)
       continue
     }
 
-    // Parse comma-separated values
-    const allowedRedirectUris = process.env[`OAUTH2_${prefix}_ALLOWED_URIS`]?.split(',').map(u => u.trim()) || []
+    // Parse allowed redirect URIs (required - at least one must be configured)
+    const allowedRedirectUrisEnv = process.env[`OAUTH2_${prefix}_ALLOWED_URIS`]
+    if (!allowedRedirectUrisEnv) {
+      console.warn(`Missing configuration for client prefix: ${prefix} - ALLOWED_URIS is required`)
+      continue
+    }
+    const allowedRedirectUris = allowedRedirectUrisEnv.split(',').map(u => u.trim()).filter(u => u.length > 0)
+    if (allowedRedirectUris.length === 0) {
+      console.warn(`Invalid configuration for client prefix: ${prefix} - ALLOWED_URIS must contain at least one URI`)
+      continue
+    }
     const allowedScopes = process.env[`OAUTH2_${prefix}_ALLOWED_SCOPES`]?.split(',').map(s => s.trim())
     const allowedGrantTypes = process.env[`OAUTH2_${prefix}_ALLOWED_GRANT_TYPES`]?.split(',').map(g => g.trim())
 
     const client: ClientConfig = {
       clientId,
-      clientSecret,
+      ...(clientSecret && { clientSecret }), // Only include clientSecret if provided
       clientName: process.env[`OAUTH2_${prefix}_CLIENT_NAME`] || prefix,
       allowedRedirectUris,
       allowedScopes,
       allowedGrantTypes,
       requiresPkce: process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] === 'true',
-      clientUri: process.env[`OAUTH2_${prefix}_CLIENT_URI`],
     }
 
     clients.push(client)

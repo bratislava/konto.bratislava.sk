@@ -8,7 +8,7 @@ export class HttpsGuard implements CanActivate {
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 
   canActivate(context: ExecutionContext): boolean {
-    if (process.env.DISABLE_HTTPS === 'true') {
+    if (process.env.REQUIRE_HTTPS === 'false') {
       return true
     }
 

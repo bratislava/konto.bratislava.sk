@@ -12,7 +12,7 @@ export interface RequestWithAuthorizationContinue extends Request {
 
 /**
  * Guard for OAuth2 Continue Endpoint
- * Validates payload UUID and loads authorization request parameters from database
+ * Validates authorization request ID and loads authorization request parameters from database
  * Uses the same validation logic as AuthorizationRequestGuard via OAuth2ValidationSubservice
  * 
  * Used for: /oauth2/continue
@@ -30,10 +30,10 @@ export class AuthorizationContinueGuard implements CanActivate {
   
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<RequestWithAuthorizationContinue>()
-    const body = request.body
-
-    const payloadUuid = body?.payload
-    if (!payloadUuid || typeof payloadUuid !== 'string') {
+    
+    // Support both POST (body.payload) and GET (query.payload)
+    const authRequestId = request.body?.payload || request.query?.payload
+    if (!authRequestId || typeof authRequestId !== 'string') {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
         'Invalid request: payload is required'
@@ -41,7 +41,7 @@ export class AuthorizationContinueGuard implements CanActivate {
     }
 
     // Load authorization request from database using UUID
-    const authorizationRequest = await this.oauth2Service.loadAuthorizationRequestFromPayload(payloadUuid)
+    const authorizationRequest = await this.oauth2Service.loadAuthorizationRequest(authRequestId)
     
     if (!authorizationRequest) {
       throw this.throwerErrorGuard.BadRequestException(

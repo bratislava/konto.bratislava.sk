@@ -147,10 +147,10 @@ export class TokenRequestDto {
 }
 
 /**
- * Request DTO for OAuth2 Continue Endpoint
- * Called by frontend after user authentication to complete the authorization flow
+ * Request DTO for OAuth2 Store Tokens Endpoint (POST)
+ * Called by frontend after user authentication to store tokens
  */
-export class ContinueRequestDto {
+export class StoreTokensRequestDto {
   @ApiProperty({
     description: 'Access token from user authentication (e.g., from Cognito)',
     example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
@@ -175,6 +175,20 @@ export class ContinueRequestDto {
   @IsString()
   refresh_token?: string
 
+  @ApiProperty({
+    description: 'UUID of the authorization request stored in the database',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @IsNotEmpty()
+  @IsUUID()
+  payload!: string
+}
+
+/**
+ * Request DTO for OAuth2 Continue Endpoint (GET)
+ * Called by frontend to complete authorization flow after tokens are stored via POST /oauth2/store
+ */
+export class ContinueRequestDto {
   @ApiProperty({
     description: 'UUID of the authorization request stored in the database',
     example: '550e8400-e29b-41d4-a716-446655440000',

@@ -22,6 +22,7 @@ import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   AuthorizationRequestDto,
+  StoreTokensRequestDto,
   ContinueRequestDto,
   RefreshTokenRequestDto,
   TokenRequestDto,
@@ -60,12 +61,12 @@ export class OAuth2Controller {
   ): Promise<void> {
     this.logger.debug(`Authorization request received for client_id: ${query.client_id}`)
 
-    // Service stores parameters and returns payload UUID
-    const payloadUuid = await this.oauth2Service.authorize(query)
+    // Service stores parameters and returns authorization request ID
+    const authRequestId = await this.oauth2Service.authorize(query)
 
     // Controller builds redirect URL using service builder function
     // Includes redirect_uri and state for frontend error handling (frontend may send them back, but they're already stored in DB)
-    const loginUrl = this.oauth2Service.buildLoginRedirectUrl(query, payloadUuid)
+    const loginUrl = this.oauth2Service.buildLoginRedirectUrl(query, authRequestId)
     res.redirect(303, loginUrl)
   }
 
@@ -102,35 +103,75 @@ export class OAuth2Controller {
     }
   }
 
-  @Post('continue')
+  @Post('store')
+  @UseGuards(AuthorizationContinueGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'OAuth2 Store Tokens Endpoint',
+    description: 'Store tokens after user authentication. Called by frontend with tokens and authorization request ID. Returns 200 OK after storing tokens.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Tokens successfully stored',
+  })
+  async storeTokens(
+    @Body() body: StoreTokensRequestDto,
+    @Req() req: Request,
+  ): Promise<void> {
+    const request = req as RequestWithAuthorizationContinue
+    const authorizationRequest = request.continuePayload!
+
+    this.logger.debug('Store tokens request received', {
+      client_id: authorizationRequest.client_id,
+      payload: body.payload,
+      hasTokens: !!(body.access_token && body.refresh_token),
+    })
+
+    // Service stores tokens for the authorization request ID
+    await this.oauth2Service.storeTokensForAuthRequest(
+      body.payload,
+      body.access_token,
+      body.id_token,
+      body.refresh_token,
+    )
+  }
+
+  @Get('continue')
   @UseGuards(AuthorizationContinueGuard)
   @ApiOperation({
     summary: 'OAuth2 Continue Endpoint',
-    description: 'Continue authorization flow after user authentication. Called by frontend with tokens and payload UUID. The server handles the redirect to the client redirect_uri with authorization code (HTTP 303 See Other).',
+    description: 'Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).',
   })
   @ApiResponse({
     status: 303,
     description: 'Successfully redirects to client redirect_uri with authorization code and state (if provided)',
   })
-  async continue(
-    @Body() body: ContinueRequestDto,
+  async continueComplete(
+    @Query() query: ContinueRequestDto,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
     const request = req as RequestWithAuthorizationContinue
     const authorizationRequest = request.continuePayload!
 
-    this.logger.debug('Continue request received', {
+    this.logger.debug('Continue complete request received', {
       client_id: authorizationRequest.client_id,
-      hasTokens: !!(body.access_token && body.refresh_token),
+      payload: query.payload,
     })
+
+    // Check if tokens are stored
+    const tokensStored = await this.oauth2Service.areTokensStoredForAuthRequest(query.payload)
+    if (!tokensStored) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Tokens not found for this authorization request. Please store tokens first using POST /oauth2/store',
+      )
+    }
 
     // Service generates authorization code and returns response DTO
     const authResponse = await this.oauth2Service.continueAuthorization(
+      query.payload,
       authorizationRequest,
-      body.access_token,
-      body.id_token,
-      body.refresh_token,
     )
 
     // Controller builds redirect URL using service builder function

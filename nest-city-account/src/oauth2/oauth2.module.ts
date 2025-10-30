@@ -29,6 +29,7 @@ import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
   controllers: [OAuth2Controller],
 })
 export class OAuth2Module implements NestModule {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   configure(consumer: MiddlewareConsumer): any {
     consumer.apply(NoCacheMiddleware).forRoutes(OAuth2Controller)
   }

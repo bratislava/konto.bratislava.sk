@@ -31,7 +31,7 @@ import {
 
   TokenResponseDto
 } from './dtos/responses.oautuh2.dto'
-import { AuthorizationContinueGuard, RequestWithAuthorizationContinue } from './guards/authorization-continue.guard'
+import { AuthorizationPayloadGuard, RequestWithAuthorizationPayload } from './guards/authorization-continue.guard'
 import { OAuth2Service } from './oauth2.service'
 
 @ApiTags('OAuth2')
@@ -104,7 +104,7 @@ export class OAuth2Controller {
   }
 
   @Post('store')
-  @UseGuards(AuthorizationContinueGuard)
+  @UseGuards(AuthorizationPayloadGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'OAuth2 Store Tokens Endpoint',
@@ -118,8 +118,8 @@ export class OAuth2Controller {
     @Body() body: StoreTokensRequestDto,
     @Req() req: Request,
   ): Promise<void> {
-    const request = req as RequestWithAuthorizationContinue
-    const authorizationRequest = request.continuePayload!
+    const request = req as RequestWithAuthorizationPayload
+    const authorizationRequest = request.authorizationPayload!
 
     this.logger.debug('Store tokens request received', {
       client_id: authorizationRequest.client_id,
@@ -137,7 +137,7 @@ export class OAuth2Controller {
   }
 
   @Get('continue')
-  @UseGuards(AuthorizationContinueGuard)
+  @UseGuards(AuthorizationPayloadGuard)
   @ApiOperation({
     summary: 'OAuth2 Continue Endpoint',
     description: 'Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).',
@@ -151,8 +151,8 @@ export class OAuth2Controller {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const request = req as RequestWithAuthorizationContinue
-    const authorizationRequest = request.continuePayload!
+    const request = req as RequestWithAuthorizationPayload
+    const authorizationRequest = request.authorizationPayload!
 
     this.logger.debug('Continue complete request received', {
       client_id: authorizationRequest.client_id,

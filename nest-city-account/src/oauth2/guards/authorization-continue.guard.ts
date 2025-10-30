@@ -6,22 +6,22 @@ import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2Service } from '../oauth2.service'
 import { OAuth2ValidationSubservice, AuthorizationParams } from '../subservices/oauth2-validation.subservice'
 
-export interface RequestWithAuthorizationContinue extends Request {
-  continuePayload?: AuthorizationRequestDto
+export interface RequestWithAuthorizationPayload extends Request {
+  authorizationPayload?: AuthorizationRequestDto
 }
 
 /**
- * Guard for OAuth2 Continue Endpoint
- * Validates authorization request ID and loads authorization request parameters from database
+ * Guard for OAuth2 endpoints that use authorization request payload
+ * Validates authorization request ID (payload) and loads authorization request parameters from database
  * Uses the same validation logic as AuthorizationRequestGuard via OAuth2ValidationSubservice
  * 
- * Used for: /oauth2/continue
+ * Used for: /oauth2/store, /oauth2/continue
  * 
- * The payload is a UUID that references stored authorization request parameters in the database.
+ * The payload is an authorization request ID that references stored authorization request parameters in the database.
  * This prevents tampering since parameters are not included in the request.
  */
 @Injectable()
-export class AuthorizationContinueGuard implements CanActivate {
+export class AuthorizationPayloadGuard implements CanActivate {
   constructor(
     private readonly oauth2Service: OAuth2Service,
     private readonly validationSubservice: OAuth2ValidationSubservice,
@@ -29,7 +29,7 @@ export class AuthorizationContinueGuard implements CanActivate {
   ) {}
   
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<RequestWithAuthorizationContinue>()
+    const request = context.switchToHttp().getRequest<RequestWithAuthorizationPayload>()
     
     // Support both POST (body.payload) and GET (query.payload)
     const authRequestId = request.body?.payload || request.query?.payload
@@ -64,7 +64,7 @@ export class AuthorizationContinueGuard implements CanActivate {
     this.validationSubservice.validateAuthorizationRequest(params, 'Invalid payload')
 
     // Attach validated authorization request to request for controller/service
-    request.continuePayload = authorizationRequest
+    request.authorizationPayload = authorizationRequest
 
     return true
   }

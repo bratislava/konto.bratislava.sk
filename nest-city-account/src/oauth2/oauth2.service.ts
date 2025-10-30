@@ -12,8 +12,9 @@ import { PrismaService } from '../prisma/prisma.service'
 import { decryptData, encryptData } from '../utils/crypto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import * as jwt from 'jsonwebtoken'
-import { randomBytes } from 'node:crypto'
+import { createHash, randomBytes } from 'node:crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 
 @Injectable()
 export class OAuth2Service {
@@ -22,7 +23,8 @@ export class OAuth2Service {
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly prisma: PrismaService,
-    private readonly cognitoSubservice: CognitoSubservice
+    private readonly cognitoSubservice: CognitoSubservice,
+    private readonly validationSubservice: OAuth2ValidationSubservice
   ) {}
 
   /**
@@ -275,19 +277,119 @@ export class OAuth2Service {
    * @returns Token response DTO with access_token, refresh_token, etc.
    */
   async exchangeCode(request: TokenRequestDto): Promise<TokenResponseDto> {
-    this.logger.debug('Processing token exchange request', { code: request.code })
+    this.logger.debug('Processing token exchange request', { hasCode: !!request.code })
 
-    // TODO: Implement token exchange logic
-    // 1. Validate authorization code
-    // 2. Verify PKCE code_verifier matches code_challenge
-    // 3. Validate redirect_uri matches original request
-    // 4. Generate access token and refresh token
-    // 5. Return TokenResponseDto (controller will return JSON response per RFC 6749 Section 5.1)
+    const oauth2Data = await this.prisma.oAuth2Data.findFirst({
+      where: { authorizationCode: request.code },
+    })
 
-    throw this.throwerErrorGuard.OAuth2TokenException(
-      OAuth2TokenErrorCode.INVALID_REQUEST,
-      'Token exchange endpoint not yet implemented'
-    )
+    if (!oauth2Data) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid authorization code'
+      )
+    }
+
+    if (!oauth2Data.authorizationCodeCreatedAt) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Authorization code expired'
+      )
+    }
+    const maxAge = 5 * 60 * 1000 // 5 minutes
+    const codeAge = Date.now() - oauth2Data.authorizationCodeCreatedAt.getTime()
+    if (codeAge > maxAge) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Authorization code expired'
+      )
+    }
+
+    if (oauth2Data.redirectUri !== request.redirect_uri) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'redirect_uri mismatch'
+      )
+    }
+
+    if (oauth2Data.codeChallenge) {
+      this.validatePkce(
+        request.code_verifier,
+        oauth2Data.codeChallenge,
+        oauth2Data.codeChallengeMethod
+      )
+    }
+
+    if (
+      !oauth2Data.accessTokenEnc ||
+      !oauth2Data.refreshTokenEnc ||
+      !oauth2Data.accessTokenExpiresAt
+    ) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Tokens not available for this authorization code'
+      )
+    }
+
+    const expiresIn = Math.floor((oauth2Data.accessTokenExpiresAt.getTime() - Date.now()) / 1000)
+
+    // Delete the OAuth2Data row (authorization code is single-use)
+    await this.prisma.oAuth2Data.delete({
+      where: { id: oauth2Data.id },
+    })
+
+    this.logger.debug('Authorization code exchanged successfully', {
+      clientId: oauth2Data.clientId,
+    })
+
+    // Build and return response
+    const response: TokenResponseDto = {
+      access_token: oauth2Data.accessTokenEnc,
+      token_type: 'Bearer',
+      expires_in: Math.max(0, expiresIn),
+      refresh_token: oauth2Data.refreshTokenEnc,
+      ...(oauth2Data.scope && { scope: oauth2Data.scope }),
+    }
+
+    return response
+  }
+
+  /**
+   * Validate PKCE code_verifier against stored code_challenge
+   * Implements RFC 7636 Section 4.6
+   *
+   * @param codeVerifier - The code verifier from the token request
+   * @param codeChallenge - The code challenge stored during authorization
+   * @param codeChallengeMethod - The challenge method ('S256' or 'plain')
+   */
+  private validatePkce(
+    codeVerifier: string,
+    codeChallenge: string,
+    codeChallengeMethod: string | null
+  ): void {
+    let expectedChallenge: string
+
+    if (codeChallengeMethod === 'S256') {
+      // S256: SHA256(code_verifier) base64url-encoded
+      const hash = createHash('sha256').update(codeVerifier).digest()
+      expectedChallenge = hash.toString('base64url')
+    } else if (codeChallengeMethod === 'plain') {
+      // Plain: code_verifier itself
+      expectedChallenge = codeVerifier
+    } else {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid code_challenge_method'
+      )
+    }
+
+    // Use timing-safe comparison from validation subservice
+    if (!this.validationSubservice.isValidSecret(codeChallenge, expectedChallenge)) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid code_verifier'
+      )
+    }
   }
 
   /**

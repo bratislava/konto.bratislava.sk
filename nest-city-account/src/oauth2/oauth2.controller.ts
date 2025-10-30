@@ -28,10 +28,8 @@ import {
 
 import { AuthorizationPayloadGuard, RequestWithAuthorizationPayload } from './guards/authorization-continue.guard'
 import { TokenResponseDto } from './dtos/responses.oautuh2.dto'
-import { AuthorizationContinueGuard, RequestWithAuthorizationContinue } from './guards/authorization-continue.guard'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
-import { OAuth2TokenErrorCode } from './oauth2.error.enum'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')

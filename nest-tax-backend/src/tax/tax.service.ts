@@ -18,8 +18,6 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
-  ResponseGetTaxesBodyDto,
-  ResponseGetTaxesDto,
   ResponseGetTaxesListBodyDto,
   ResponseGetTaxesListDto,
   ResponseInstallmentPaymentDetailDto,
@@ -183,81 +181,6 @@ export class TaxService {
       pdfExport,
       isPayable,
       taxAdministrator: tax.taxPayer.taxAdministrator,
-    }
-  }
-
-  async loadTaxes(birthNumber: string): Promise<ResponseGetTaxesDto> {
-    if (!birthNumber) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
-      )
-    }
-    const taxPayments = await this.prisma.taxPayment.groupBy({
-      by: ['taxId'],
-      where: {
-        tax: {
-          taxPayer: {
-            birthNumber,
-          },
-        },
-        status: PaymentStatus.SUCCESS,
-      },
-      _sum: {
-        amount: true,
-      },
-      orderBy: { taxId: 'desc' },
-    })
-
-    const taxes = await this.prisma.tax.findMany({
-      where: {
-        taxPayer: {
-          birthNumber,
-        },
-      },
-      orderBy: {
-        taxId: 'desc',
-      },
-      select: {
-        id: true,
-        uuid: true,
-        createdAt: true,
-        amount: true,
-        year: true,
-      },
-    })
-
-    const taxPayer = await this.prisma.taxPayer.findUnique({
-      where: {
-        birthNumber,
-      },
-      include: {
-        taxAdministrator: true,
-      },
-    })
-
-    const items: ResponseGetTaxesBodyDto[] = taxes.map((tax) => {
-      const taxPaymentItem = taxPayments.find(
-        (taxPayment) => taxPayment.taxId === tax.id,
-      )
-
-      const paidAmount = taxPaymentItem?._sum.amount ?? 0
-      const paidStatus = getTaxStatus(tax.amount, paidAmount || undefined)
-
-      const isPayable = computeIsPayableYear(tax.year)
-
-      return {
-        ...tax,
-        paidAmount,
-        paidStatus,
-        isPayable,
-      }
-    })
-
-    return {
-      isInNoris: items.length > 0,
-      items,
-      taxAdministrator: taxPayer ? taxPayer.taxAdministrator : null,
     }
   }
 

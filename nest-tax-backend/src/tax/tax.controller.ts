@@ -28,7 +28,7 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
-import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/response.tax.dto'
+import { ResponseTaxDto } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
 @ApiTags('tax')
@@ -77,7 +77,6 @@ export class TaxController {
   @HttpCode(200)
   @ApiOperation({
     summary: 'Get tax by year and how much is paid',
-    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -134,37 +133,5 @@ export class TaxController {
         error,
       )
     }
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Get all taxes (paid and not paid)',
-    deprecated: true,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Load list of taxes by limit, default value 5',
-    type: ResponseGetTaxesDto,
-  })
-  @ApiResponse({
-    status: 422,
-    description: 'Error to load tax data',
-    type: ResponseErrorDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: ResponseInternalServerErrorDto,
-  })
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
-  @UseGuards(TiersGuard)
-  @UseGuards(AuthenticationGuard)
-  @Get('taxes')
-  async getArchivedTaxes(
-    @BratislavaUser() baUser: BratislavaUserDto,
-  ): Promise<ResponseGetTaxesDto> {
-    // TODO - pagination - but it will be issue after in year 2040 :D
-    const response = await this.taxService.loadTaxes(baUser.birthNumber)
-    return response
   }
 }

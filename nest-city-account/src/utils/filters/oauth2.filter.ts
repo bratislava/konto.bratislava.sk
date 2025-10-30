@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// FIXME look into the any usage
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
@@ -79,10 +81,16 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         requestBody: request.body,
         queryParams: request.query,
         ip: request.ip ?? '<NO IP>',
-        error: typeof exceptionResponse === 'object' ? (exceptionResponse as any).error : 'invalid_request',
+        error:
+          typeof exceptionResponse === 'object'
+            ? (exceptionResponse as any).error
+            : 'invalid_request',
         message: 'Authorization error without redirect_uri, returning direct error',
         hasRedirectUri: false,
-        responseData: typeof exceptionResponse === 'object' ? exceptionResponse : { error: 'invalid_request', error_description: exceptionResponse },
+        responseData:
+          typeof exceptionResponse === 'object'
+            ? exceptionResponse
+            : { error: 'invalid_request', error_description: exceptionResponse },
       })
 
       response
@@ -127,7 +135,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       message: 'Authorization failed, sending redirect error.',
       redirectUrl,
       hasRedirectUri: !!redirectUri,
-      "response-data": {redirectUrl, errorResponse},
+      'response-data': { redirectUrl, errorResponse },
     })
 
     // RFC 9700: Use 303 See Other for OAuth2 redirects
@@ -187,6 +195,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
     // Map HTTP status to OAuth2 error code
     const error = this.mapStatusToAuthorizationError(status)
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const error_description =
       typeof exceptionResponse === 'string'
         ? exceptionResponse
@@ -217,6 +226,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
     // Map HTTP status to OAuth2 error code
     const error = this.mapStatusToTokenError(status)
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const error_description =
       typeof exceptionResponse === 'string'
         ? exceptionResponse

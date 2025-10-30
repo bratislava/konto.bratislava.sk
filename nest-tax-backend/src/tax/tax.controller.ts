@@ -28,7 +28,6 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
-import { ResponseTaxDto } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
 @ApiTags('tax')
@@ -50,38 +49,7 @@ export class TaxController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Load tax data about user',
-    type: ResponseTaxDto,
-  })
-  @ApiResponse({
-    status: 422,
-    description: 'Error to load tax data',
-    type: ResponseErrorDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: ResponseInternalServerErrorDto,
-  })
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
-  @UseGuards(TiersGuard)
-  @UseGuards(AuthenticationGuard)
-  @Get('get-tax-by-year')
-  async getActualTaxes(
-    @BratislavaUser() baUser: BratislavaUserDto,
-    @Query('year', ParseIntPipe) year: number,
-  ): Promise<ResponseTaxDto> {
-    return this.taxService.getTaxByYear(year, baUser.birthNumber)
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Get tax by year and how much is paid',
-  })
-  @ApiResponse({
-    status: 200,
     description: 'Return pdf',
-    type: ResponseTaxDto,
   })
   @ApiResponse({
     status: 422,

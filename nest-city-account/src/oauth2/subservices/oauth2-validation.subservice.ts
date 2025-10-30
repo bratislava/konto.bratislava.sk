@@ -44,6 +44,8 @@ export interface ClientAuthParams {
 export class OAuth2ValidationSubservice {
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 
+  private static readonly INVALID_CLIENT_MSG = 'Invalid client credentials'
+
   /**
    * Validate authorization request parameters
    * Used by both /authorize and /continue endpoints
@@ -202,55 +204,21 @@ export class OAuth2ValidationSubservice {
    * Handles different grant types with appropriate authentication requirements
    *
    * For authorization_code: Requires client_id (client_secret optional if client doesn't have one configured)
-   * For refresh_token: Client authentication is optional (RFC 6749 Section 6)
+   * For refresh_token: client_id optional (should be resolved from JWT before calling this); if client has a configured secret, both client_id and client_secret MUST be provided and valid
    *
    * @param params - Client authentication parameters and request context
    */
   validateTokenEndpointClientAuth(params: ClientAuthParams): void {
-    const { clientId, clientSecret, grantType } = params
-
-    // For authorization_code grant, client authentication is REQUIRED
-    if (grantType === 'authorization_code') {
-      this.validateClientAuthentication(params)
+    if (params.grantType === 'refresh_token') {
+      this.validateClientAuthentication({
+        ...params,
+        redirectUri: undefined, // Not applicable for refresh_token
+        codeVerifier: undefined, // Not applicable for refresh_token
+      })
       return
     }
 
-    // For refresh_token grant, client authentication is OPTIONAL
-    if (grantType === 'refresh_token') {
-      if (clientId && clientSecret) {
-        // Both credentials provided - validate full authentication
-        this.validateClientAuthentication({
-          ...params,
-          redirectUri: undefined, // Not applicable for refresh_token
-          codeVerifier: undefined, // Not applicable for refresh_token
-        })
-        return
-      } else if (clientId) {
-        // Only client_id provided - validate that client exists
-        const client = findClientById(clientId.trim())
-        if (!client) {
-          throw this.throwerErrorGuard.OAuth2TokenException(
-            OAuth2TokenErrorCode.INVALID_CLIENT,
-            'Invalid client credentials' // TODO description
-          )
-        }
-        return
-      }
-      // No credentials provided - validation passes, client will be identified from refresh token
-      return
-    }
-
-    // Unknown grant type - if client_id provided, validate it exists
-    if (clientId) {
-      const client = findClientById(clientId.trim())
-      if (!client) {
-        throw this.throwerErrorGuard.OAuth2TokenException(
-          OAuth2TokenErrorCode.INVALID_CLIENT,
-          'Invalid client credentials' // TODO description
-        )
-      }
-      return
-    }
+    this.validateClientAuthentication(params)
   }
 
   /**
@@ -265,7 +233,7 @@ export class OAuth2ValidationSubservice {
     if (!clientId) {
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
-        'Invalid client credentials' // TODO description
+        OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
       )
     }
 
@@ -273,7 +241,7 @@ export class OAuth2ValidationSubservice {
     if (!client) {
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
-        'Invalid client credentials' // TODO description
+        OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
       )
     }
 
@@ -282,13 +250,13 @@ export class OAuth2ValidationSubservice {
       if (!clientSecret) {
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
-          'Invalid client credentials' // TODO description
+          OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
         )
       }
       if (!this.isValidClientSecret(client.clientSecret, clientSecret)) {
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
-          'Invalid client credentials' // TODO description
+          OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
         )
       }
     }

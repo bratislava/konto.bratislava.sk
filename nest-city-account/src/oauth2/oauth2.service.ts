@@ -9,10 +9,11 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { PrismaService } from '../prisma/prisma.service'
-import { encryptData } from '../utils/crypto'
+import { decryptData, encryptData } from '../utils/crypto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import * as jwt from 'jsonwebtoken'
 import { randomBytes } from 'node:crypto'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 @Injectable()
 export class OAuth2Service {
@@ -20,7 +21,8 @@ export class OAuth2Service {
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly cognitoSubservice: CognitoSubservice
   ) {}
 
   /**
@@ -292,25 +294,63 @@ export class OAuth2Service {
    * Refresh access token using refresh token
    * Implements RFC 6749 Section 6
    *
+   * @param request - Refresh token request DTO
+
    * @returns Token response DTO with new access_token and expiration time
    */
   async refreshToken(request: RefreshTokenRequestDto): Promise<TokenResponseDto> {
+    const clientId = request.client_id
     this.logger.debug('Processing refresh token request', {
       grant_type: request.grant_type,
       hasRefreshToken: !!request.refresh_token,
-      clientId: request.client_id,
+      clientId,
     })
 
-    // TODO: Implement refresh token logic
-    // 1. Validate refresh token
-    // 2. Validate client credentials (if required)
-    // 3. Generate new access token
-    // 4. Optionally issue new refresh token
-    // 5. Return TokenResponseDto (controller will return JSON response per RFC 6749 Section 5.1)
+    if (!clientId) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_CLIENT,
+        'Invalid client credentials'
+      )
+    }
 
-    throw this.throwerErrorGuard.OAuth2TokenException(
-      OAuth2TokenErrorCode.INVALID_REQUEST,
-      'Refresh token endpoint not yet implemented'
-    )
+    let refreshTokenPlain: string
+    try {
+      refreshTokenPlain = decryptData(request.refresh_token)
+    } catch (_) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid refresh token'
+      )
+    }
+
+    const refreshed = await this.cognitoSubservice.refreshTokens(refreshTokenPlain, clientId)
+    // FIXME try catch refreshTokens
+
+    if (!refreshed.accessToken) {
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Unable to refresh access token'
+      )
+    }
+
+    // Compute expires_in from JWT exp (default 3600 if missing)
+    let expiresIn = 3600
+    try {
+      const decoded = jwt.decode(refreshed.accessToken) as { exp?: number } | null
+      if (typeof decoded?.exp === 'number') {
+        const secondsUntilExp = Math.max(0, decoded.exp - Math.floor(Date.now() / 1000))
+        expiresIn = secondsUntilExp
+      }
+    } catch (_) {
+      // keep default
+    }
+
+    const response: TokenResponseDto = {
+      access_token: refreshed.accessToken,
+      token_type: 'Bearer',
+      expires_in: expiresIn,
+    }
+
+    return response
   }
 }

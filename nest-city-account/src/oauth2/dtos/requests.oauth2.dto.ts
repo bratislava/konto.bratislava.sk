@@ -129,7 +129,8 @@ export class TokenRequestDto {
   code_verifier!: string
 
   @ApiPropertyOptional({
-    description: 'The client identifier (optional if using client_secret)',
+    description:
+      'The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header',
     example: 'your-client-id',
   })
   @IsOptional()
@@ -137,7 +138,8 @@ export class TokenRequestDto {
   client_id?: string
 
   @ApiPropertyOptional({
-    description: 'The client secret (if required by authorization server)',
+    description:
+      'The client secret. Required if client has a secret configured. Can be provided via HTTP Basic Authentication or this parameter',
     example: 'your-client-secret',
   })
   @IsOptional()
@@ -237,7 +239,8 @@ export class RefreshTokenRequestDto {
   scope?: string
 
   @ApiPropertyOptional({
-    description: 'The client identifier (optional if using client_secret)',
+    description:
+      'The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header',
     example: 'your-client-id',
   })
   @IsOptional()
@@ -245,7 +248,8 @@ export class RefreshTokenRequestDto {
   client_id?: string
 
   @ApiPropertyOptional({
-    description: 'The client secret (if required by authorization server)',
+    description:
+      'The client secret. Required if client has a secret configured. Can be provided via HTTP Basic Authentication or this parameter',
     example: 'your-client-secret',
   })
   @IsOptional()

@@ -9,6 +9,7 @@ import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subs
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
 
 @Module({
   imports: [],
@@ -25,4 +26,8 @@ import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
   exports: [AuthorizationRequestGuard, TokenRequestGuard],
   controllers: [OAuth2Controller],
 })
-export class OAuth2Module {}
+export class OAuth2Module implements NestModule{
+  configure(consumer:MiddlewareConsumer):any {
+    consumer.apply(NoCacheMiddleware).forRoutes(OAuth2Controller)
+  }
+}

@@ -36,7 +36,7 @@ import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
-@UseFilters(new OAuth2ExceptionFilter())
+@UseFilters(OAuth2ExceptionFilter)
 export class OAuth2Controller {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Controller.name)
 

@@ -9,7 +9,7 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { convertYearToNumber } from 'frontend/utils/general'
-import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
+import { ResponseTaxSummaryDetailDto, TaxType } from 'openapi-clients/tax'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
@@ -42,7 +42,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
-        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, {
+        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, 1, TaxType.Dzn, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),

@@ -81,22 +81,6 @@ export class RequestValidatePhysicalEntityRfoDto {
   physicalEntityId!: string
 }
 
-export class RequestDeleteTaxDto {
-  @ApiProperty({
-    description: 'Year of tax',
-    default: 2022,
-  })
-  @IsNumber()
-  year: number
-
-  @ApiProperty({
-    description: 'Birth number in format with slash',
-    example: '0000000000',
-  })
-  @IsString()
-  birthNumber: string
-}
-
 export class MarkDeceasedAccountRequestDto {
   @ApiProperty({
     description: 'List of birthnumbers/external IDs to mark as deceased',

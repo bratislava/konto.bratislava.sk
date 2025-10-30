@@ -6,8 +6,8 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
-import { CognitoTiersEnum } from '../global-dtos/cognito.dto'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 
@@ -59,14 +59,17 @@ export class CognitoSubservice {
     }
   }
 
-  async getUserTierFromCognito(userId: string): Promise<CognitoTiersEnum> {
+  async getUserTierFromCognito(
+    userId: string,
+  ): Promise<UserVerifyStateCognitoTierEnum> {
     const cognitoData = await this.getUser(userId)
-    let result: CognitoTiersEnum = CognitoTiersEnum.NEW
+    let result: UserVerifyStateCognitoTierEnum =
+      UserVerifyStateCognitoTierEnum.New
     cognitoData.UserAttributes?.forEach((elem) => {
       if (elem.Name === 'custom:tier') {
         result = elem.Value
-          ? (elem.Value as CognitoTiersEnum)
-          : CognitoTiersEnum.NEW
+          ? (elem.Value as UserVerifyStateCognitoTierEnum)
+          : UserVerifyStateCognitoTierEnum.New
       }
     })
     return result

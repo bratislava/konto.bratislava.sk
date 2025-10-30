@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  Prisma,
+  TaxType,
+} from '@prisma/client'
 import dayjs from 'dayjs'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -168,7 +173,7 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
-  async updateTaxesFromNoris() {
+  async updateRealEstateTaxesFromNoris() {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
     if (
@@ -179,6 +184,7 @@ export class TasksService {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return
     }
+
     const currentYear = new Date().getFullYear()
     const taxes = await this.prismaService.tax.findMany({
       select: {
@@ -191,6 +197,7 @@ export class TasksService {
       },
       where: {
         year: currentYear,
+        type: TaxType.DZN,
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
       orderBy: {
@@ -208,13 +215,12 @@ export class TasksService {
 
     const { updated } =
       await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-        {
-          year: currentYear,
-          birthNumbers: taxes.map((t) => t.taxPayer.birthNumber),
-        },
+        TaxType.DZN,
+        currentYear,
+        taxes.map((t) => t.taxPayer.birthNumber),
       )
 
-    this.logger.log(`TasksService: Updated ${updated} taxes from Noris`)
+    this.logger.log(`TasksService: Updated ${updated} DZN taxes from Noris`)
 
     await this.prismaService.tax.updateMany({
       where: {
@@ -258,6 +264,8 @@ export class TasksService {
       select: {
         id: true,
         year: true,
+        type: true,
+        order: true,
         taxPayer: {
           select: {
             birthNumber: true,
@@ -321,7 +329,7 @@ export class TasksService {
           userDataFromCityAccount[tax.taxPayer.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           await this.bloomreachService.trackEventUnpaidTaxReminder(
-            { year: tax.year },
+            { year: tax.year, taxType: tax.type, order: tax.order! },
             userFromCityAccount.externalId,
           )
         }
@@ -413,8 +421,8 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   @HandleErrors('Cron Error')
-  async loadTaxesForUsers() {
-    this.logger.log('Starting loadTaxesForUsers task')
+  async loadRealEstateTaxesForUsers() {
+    this.logger.log('Starting loadRealEstateTaxesForUsers task')
 
     // Find users without tax this year
     const year = new Date().getFullYear()
@@ -427,7 +435,7 @@ export class TasksService {
       WHERE NOT EXISTS (
         SELECT 1
         FROM "Tax" t
-        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year}
+        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = 'DZN'
       )
       ORDER BY (tp."createdAt" = tp."updatedAt") DESC, tp."updatedAt" ASC
       LIMIT ${UPLOAD_BIRTHNUMBERS_BATCH}
@@ -440,10 +448,11 @@ export class TasksService {
     }
 
     const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+        TaxType.DZN,
         year,
         birthNumbers,
-      })
+      )
 
     // Move all requested TaxPayers to the end of the queue
     await this.prismaService.taxPayer.updateMany({

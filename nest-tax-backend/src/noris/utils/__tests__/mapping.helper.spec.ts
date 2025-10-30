@@ -4,9 +4,9 @@ import { NorisTaxPayersDto } from '../../noris.dto'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,
+  mapNorisToRealEstateTaxData,
+  mapNorisToRealEstateTaxDetailData,
   mapNorisToTaxAdministratorData,
-  mapNorisToTaxData,
-  mapNorisToTaxDetailData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from '../mapping.helper'
@@ -107,7 +107,7 @@ describe('mapNorisToTaxAdministratorData', () => {
   })
 })
 
-describe('mapNorisToTaxData', () => {
+describe('mapNorisToRealEstateTaxData', () => {
   const mockNorisData: NorisTaxPayersDto = {
     dan_spolu: '100,50',
     variabilny_symbol: 'VS123',
@@ -120,7 +120,7 @@ describe('mapNorisToTaxData', () => {
   } as NorisTaxPayersDto
 
   it('should map Noris data to Tax data correctly', () => {
-    const result = mapNorisToTaxData(
+    const result = mapNorisToRealEstateTaxData(
       mockNorisData,
       2023,
       1,
@@ -145,7 +145,7 @@ describe('mapNorisToTaxData', () => {
   })
 
   it('should convert currency values to integers', () => {
-    const result = mapNorisToTaxData(
+    const result = mapNorisToRealEstateTaxData(
       mockNorisData,
       2023,
       1,
@@ -264,7 +264,7 @@ describe('mapDeliveryMethodToNoris', () => {
   })
 })
 
-describe('taxDetail', () => {
+describe('mapNorisToRealEstateTaxDetailData', () => {
   const mockTaxId = 123
 
   const mockNorisTaxPayersData: Partial<NorisTaxPayersDto> = {
@@ -324,7 +324,7 @@ describe('taxDetail', () => {
   }
 
   it('should process apartment (byt) tax details correctly', () => {
-    const result = mapNorisToTaxDetailData(
+    const result = mapNorisToRealEstateTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )
@@ -355,7 +355,7 @@ describe('taxDetail', () => {
   })
 
   it('should process ground (pozemky) tax details correctly', () => {
-    const result = mapNorisToTaxDetailData(
+    const result = mapNorisToRealEstateTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )
@@ -394,7 +394,7 @@ describe('taxDetail', () => {
   })
 
   it('should process construction (stavba) tax details correctly', () => {
-    const result = mapNorisToTaxDetailData(
+    const result = mapNorisToRealEstateTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )
@@ -439,7 +439,7 @@ describe('taxDetail', () => {
       det_dan_byty_byt: '10.50', // Using dot instead of comma
     }
 
-    const result = mapNorisToTaxDetailData(
+    const result = mapNorisToRealEstateTaxDetailData(
       invalidData as NorisTaxPayersDto,
       mockTaxId,
     )
@@ -447,7 +447,7 @@ describe('taxDetail', () => {
   })
 
   it('should process all configured types for each category', () => {
-    const result = mapNorisToTaxDetailData(
+    const result = mapNorisToRealEstateTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )

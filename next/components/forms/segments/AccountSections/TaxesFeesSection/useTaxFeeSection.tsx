@@ -27,7 +27,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
   const { mutate: redirectToFullPaymentMutate, isPending: redirectToFullPaymentIsPending } =
     useMutation({
       mutationFn: () =>
-        taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, {
+        taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, taxData.type, taxData.order, {
           authStrategy: 'authOnly',
         }),
       networkMode: 'always',
@@ -49,7 +49,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     isPending: redirectToInstallmentPaymentIsPending,
   } = useMutation({
     mutationFn: () =>
-      taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, {
+      taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, taxData.type, taxData.order, {
         authStrategy: 'authOnly',
       }),
     networkMode: 'always',
@@ -84,7 +84,8 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
   }
 
   const downloadPdf = async () => {
-    const { data } = await taxClient.taxControllerGetTaxByYearPdf(taxData.year, {
+    const { year, order, type } = taxData
+    const { data } = await taxClient.taxControllerGetTaxByYearPdf(year, order, type, {
       authStrategy: 'authOnly',
       responseType: 'blob',
     })

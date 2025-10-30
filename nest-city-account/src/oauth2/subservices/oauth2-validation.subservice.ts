@@ -9,6 +9,7 @@ import {
 } from '../config/client.config'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 export interface AuthorizationParams {
   client_id?: string | unknown
@@ -42,6 +43,8 @@ export interface ClientAuthParams {
  */
 @Injectable()
 export class OAuth2ValidationSubservice {
+  private readonly logger = new LineLoggerSubservice(OAuth2ValidationSubservice.name)
+
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 
   private static readonly INVALID_CLIENT_MSG = 'Invalid client credentials'
@@ -61,6 +64,11 @@ export class OAuth2ValidationSubservice {
     // Extract and validate client_id
     const clientId = params.client_id as string | undefined
     if (!clientId || typeof clientId !== 'string' || !clientId.trim()) {
+      this.logger.error('Missing or invalid client_id in authorization request', {
+        hasClientId: !!clientId,
+        clientIdType: typeof clientId,
+        errorPrefix,
+      })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `${errorPrefix}: client_id is required` // TODO description
@@ -68,8 +76,13 @@ export class OAuth2ValidationSubservice {
     }
 
     // Find and validate client exists
-    const client = findClientById(clientId.trim())
+    const trimmedClientId = clientId.trim()
+    const client = findClientById(trimmedClientId)
     if (!client) {
+      this.logger.error('Client not found', {
+        clientId: trimmedClientId,
+        errorPrefix,
+      })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT,
         `${errorPrefix}: Invalid client_id` // TODO description
@@ -79,13 +92,25 @@ export class OAuth2ValidationSubservice {
     // Extract and validate redirect_uri
     const redirectUri = params.redirect_uri as string | undefined
     if (!redirectUri || typeof redirectUri !== 'string' || !redirectUri.trim()) {
+      this.logger.error('Missing or invalid redirect_uri in authorization request', {
+        clientId: trimmedClientId,
+        hasRedirectUri: !!redirectUri,
+        redirectUriType: typeof redirectUri,
+        errorPrefix,
+      })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `${errorPrefix}: redirect_uri is required` // TODO description
       )
     }
 
-    if (!isRedirectUriAllowed(client, redirectUri.trim())) {
+    const trimmedRedirectUri = redirectUri.trim()
+    if (!isRedirectUriAllowed(client, trimmedRedirectUri)) {
+      this.logger.error('Redirect URI not allowed for client', {
+        clientId: trimmedClientId,
+        redirectUri: trimmedRedirectUri,
+        errorPrefix,
+      })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT,
         `${errorPrefix}: Redirect URI is not allowed for this client` // TODO description
@@ -96,6 +121,11 @@ export class OAuth2ValidationSubservice {
     const scope = params.scope as string | undefined
     if (scope && typeof scope === 'string' && !areScopesAllowed(client, scope)) {
       // TODO type of scope is always string
+      this.logger.error('Invalid scope requested', {
+        clientId: trimmedClientId,
+        requestedScope: scope,
+        errorPrefix,
+      })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_SCOPE,
         `${errorPrefix}: Invalid scope requested` // TODO description
@@ -110,6 +140,12 @@ export class OAuth2ValidationSubservice {
     // If code_challenge or code_challenge_method is provided, both must be provided
     if (codeChallenge || codeChallengeMethod) {
       if (!codeChallenge || !codeChallengeMethod) {
+        this.logger.error('PKCE parameters incomplete', {
+          clientId: trimmedClientId,
+          hasCodeChallenge: !!codeChallenge,
+          hasCodeChallengeMethod: !!codeChallengeMethod,
+          errorPrefix,
+        })
         throw this.throwerErrorGuard.OAuth2AuthorizationException(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
           `${errorPrefix}: Both code_challenge and code_challenge_method must be provided when using PKCE` // TODO description
@@ -120,6 +156,12 @@ export class OAuth2ValidationSubservice {
     // Business logic: Check if PKCE is required by client config
     if (client.requiresPkce) {
       if (!codeChallenge || !codeChallengeMethod) {
+        this.logger.error('PKCE required but not provided', {
+          clientId: trimmedClientId,
+          hasCodeChallenge: !!codeChallenge,
+          hasCodeChallengeMethod: !!codeChallengeMethod,
+          errorPrefix,
+        })
         throw this.throwerErrorGuard.OAuth2AuthorizationException(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
           `${errorPrefix}: PKCE is required for this client: code_challenge and code_challenge_method are required` // TODO description
@@ -129,8 +171,8 @@ export class OAuth2ValidationSubservice {
 
     return {
       client,
-      clientId: clientId.trim(),
-      redirectUri: redirectUri.trim(),
+      clientId: trimmedClientId,
+      redirectUri: trimmedRedirectUri,
       scope: scope ? scope.trim() : undefined,
       codeChallenge: codeChallenge?.trim(),
       codeChallengeMethod: codeChallengeMethod?.trim(),
@@ -183,7 +225,7 @@ export class OAuth2ValidationSubservice {
   /**
    * Timing-safe comparison of client secrets to prevent timing attacks
    */
-  isValidClientSecret(expected: string, provided: string): boolean {
+  isValidSecret(expected: string, provided: string): boolean {
     try {
       // Convert strings to buffers for timing-safe comparison
       const expectedBuffer = Buffer.from(expected, 'utf-8')
@@ -228,17 +270,26 @@ export class OAuth2ValidationSubservice {
    * Used for authorization_code grant or when authentication is required
    */
   private validateClientAuthentication(params: ClientAuthParams): void {
-    const { clientId, clientSecret } = params
+    const { clientId, clientSecret, grantType } = params
 
     if (!clientId) {
+      this.logger.error('Missing client_id in token request', {
+        grantType,
+        hasClientSecret: !!clientSecret,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
         OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
       )
     }
 
-    const client = findClientById(clientId.trim())
+    const trimmedClientId = clientId.trim()
+    const client = findClientById(trimmedClientId)
     if (!client) {
+      this.logger.error('Client not found for token request', {
+        clientId: trimmedClientId,
+        grantType,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
         OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
@@ -248,12 +299,21 @@ export class OAuth2ValidationSubservice {
     // Only validate client_secret if client has one configured
     if (client.clientSecret) {
       if (!clientSecret) {
+        this.logger.error('Client secret required but not provided', {
+          clientId: trimmedClientId,
+          grantType,
+        })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
           OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
         )
       }
-      if (!this.isValidClientSecret(client.clientSecret, clientSecret)) {
+      if (!this.isValidSecret(client.clientSecret, clientSecret)) {
+        this.logger.error('Invalid client secret provided', {
+          clientId: trimmedClientId,
+          grantType,
+          hasClientSecret: !!clientSecret,
+        })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
           OAuth2ValidationSubservice.INVALID_CLIENT_MSG // TODO description
@@ -265,6 +325,11 @@ export class OAuth2ValidationSubservice {
     if (params.redirectUri && typeof params.redirectUri === 'string') {
       const trimmedUri = params.redirectUri.trim()
       if (!isRedirectUriAllowed(client, trimmedUri)) {
+        this.logger.error('Redirect URI not allowed for client in token request', {
+          clientId: trimmedClientId,
+          redirectUri: trimmedUri,
+          grantType,
+        })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_REQUEST,
           'Redirect URI is not allowed for this client' // TODO description
@@ -279,6 +344,11 @@ export class OAuth2ValidationSubservice {
         typeof params.codeVerifier !== 'string' ||
         !params.codeVerifier.trim()
       ) {
+        this.logger.error('PKCE code_verifier required but not provided', {
+          clientId: trimmedClientId,
+          grantType: params.grantType,
+          hasCodeVerifier: !!params.codeVerifier,
+        })
         throw this.throwerErrorGuard.OAuth2TokenException(
           OAuth2TokenErrorCode.INVALID_REQUEST,
           'PKCE is required for this client: code_verifier is required' // TODO description

@@ -7,10 +7,9 @@ import {
 import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oautuh2.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { OAuth2TokenErrorCode } from './oauth2.error.enum'
+import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { PrismaService } from '../prisma/prisma.service'
 import { decryptData, encryptData } from '../utils/crypto'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import * as jwt from 'jsonwebtoken'
 import { createHash, randomBytes } from 'node:crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -114,8 +113,9 @@ export class OAuth2Service {
       select: { id: true },
     })
     if (!existingRequest) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
+      this.logger.error('Unknown authorization request ID', { authRequestId })
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         'Unknown authorization request ID'
       )
     }
@@ -124,10 +124,23 @@ export class OAuth2Service {
     const accessTokenExpiresAt =
       this.extractJwtExpiration(accessToken) ?? new Date(Date.now() + 60 * 60 * 1000)
 
-    // Encrypt tokens; encryptData already returns base64
-    const accessTokenEnc = encryptData(accessToken)
-    const idTokenEnc = idToken ? encryptData(idToken) : null
-    const refreshTokenEnc = encryptData(refreshToken)
+    // Encrypt tokens; encryptData can fail if CRYPTO_SECRET_KEY is not set
+    let accessTokenEnc: string
+    let idTokenEnc: string | null = null
+    let refreshTokenEnc: string
+    try {
+      accessTokenEnc = encryptData(accessToken)
+      if (idToken) {
+        idTokenEnc = encryptData(idToken)
+      }
+      refreshTokenEnc = encryptData(refreshToken)
+    } catch (error) {
+      this.logger.error('Failed to encrypt tokens', { error, authRequestId })
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Failed to process tokens'
+      )
+    }
 
     // Update tokens on the same OAuth2Data row
     await this.prisma.oAuth2Data.update({
@@ -189,11 +202,6 @@ export class OAuth2Service {
   /**
    * Continue authorization flow after tokens are stored
    * Generates authorization code and returns authorization response
-   *
-   * Flow:
-   * 1. authorize endpoint → redirects to FE for user authentication
-   * 2. FE → calls POST /continue with tokens and authorization request ID (stores tokens)
-   * 3. FE → calls GET /continue with authorization request ID (generates grant and redirects)
    *
    * @param authRequestId - ID of the authorization request
    * @param authorizationRequest - Authorization request parameters (already validated)
@@ -263,6 +271,7 @@ export class OAuth2Service {
     } else if (request.grant_type === 'refresh_token') {
       return this.refreshToken(request as RefreshTokenRequestDto)
     } else {
+      this.logger.error('Unsupported grant type', { grant_type: request.grant_type })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
         `Unsupported grant_type: ${request.grant_type}`
@@ -284,6 +293,26 @@ export class OAuth2Service {
     })
 
     if (!oauth2Data) {
+      this.logger.error('Authorization code not found', { hasCode: !!request.code })
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid authorization code'
+      )
+    }
+
+    // Delete immediately after finding the code to prevent race conditions (RFC 6749: codes are single-use)
+    // If deletion fails (e.g., already deleted by another request), the code was invalid anyway
+    try {
+      await this.prisma.oAuth2Data.delete({
+        where: { id: oauth2Data.id },
+      })
+    } catch (deleteError) {
+      // Code was already used or deleted - treat as invalid grant
+      this.logger.error('Authorization code already used or deleted', {
+        error: deleteError,
+        authRequestId: oauth2Data.id,
+        clientId: oauth2Data.clientId,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid authorization code'
@@ -291,6 +320,10 @@ export class OAuth2Service {
     }
 
     if (!oauth2Data.authorizationCodeCreatedAt) {
+      this.logger.error('Authorization code missing creation timestamp', {
+        authRequestId: oauth2Data.id,
+        clientId: oauth2Data.clientId,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Authorization code expired'
@@ -299,6 +332,12 @@ export class OAuth2Service {
     const maxAge = 5 * 60 * 1000 // 5 minutes
     const codeAge = Date.now() - oauth2Data.authorizationCodeCreatedAt.getTime()
     if (codeAge > maxAge) {
+      this.logger.error('Authorization code expired', {
+        authRequestId: oauth2Data.id,
+        clientId: oauth2Data.clientId,
+        codeAgeMs: codeAge,
+        maxAgeMs: maxAge,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Authorization code expired'
@@ -306,6 +345,12 @@ export class OAuth2Service {
     }
 
     if (oauth2Data.redirectUri !== request.redirect_uri) {
+      this.logger.error('Redirect URI mismatch', {
+        authRequestId: oauth2Data.id,
+        clientId: oauth2Data.clientId,
+        storedRedirectUri: oauth2Data.redirectUri,
+        requestedRedirectUri: request.redirect_uri,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'redirect_uri mismatch'
@@ -325,6 +370,13 @@ export class OAuth2Service {
       !oauth2Data.refreshTokenEnc ||
       !oauth2Data.accessTokenExpiresAt
     ) {
+      this.logger.error('Tokens not available for authorization code', {
+        authRequestId: oauth2Data.id,
+        clientId: oauth2Data.clientId,
+        hasAccessToken: !!oauth2Data.accessTokenEnc,
+        hasRefreshToken: !!oauth2Data.refreshTokenEnc,
+        hasExpiresAt: !!oauth2Data.accessTokenExpiresAt,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Tokens not available for this authorization code'
@@ -332,11 +384,6 @@ export class OAuth2Service {
     }
 
     const expiresIn = Math.floor((oauth2Data.accessTokenExpiresAt.getTime() - Date.now()) / 1000)
-
-    // Delete the OAuth2Data row (authorization code is single-use)
-    await this.prisma.oAuth2Data.delete({
-      where: { id: oauth2Data.id },
-    })
 
     this.logger.debug('Authorization code exchanged successfully', {
       clientId: oauth2Data.clientId,
@@ -377,14 +424,22 @@ export class OAuth2Service {
       // Plain: code_verifier itself
       expectedChallenge = codeVerifier
     } else {
+      this.logger.error('Invalid code_challenge_method', {
+        codeChallengeMethod,
+        validMethods: ['S256', 'plain'],
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid code_challenge_method'
       )
     }
 
-    // Use timing-safe comparison from validation subservice
     if (!this.validationSubservice.isValidSecret(codeChallenge, expectedChallenge)) {
+      this.logger.error('PKCE code_verifier validation failed', {
+        codeChallengeMethod,
+        hasCodeVerifier: !!codeVerifier,
+        hasCodeChallenge: !!codeChallenge,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid code_verifier'
@@ -397,7 +452,6 @@ export class OAuth2Service {
    * Implements RFC 6749 Section 6
    *
    * @param request - Refresh token request DTO
-
    * @returns Token response DTO with new access_token and expiration time
    */
   async refreshToken(request: RefreshTokenRequestDto): Promise<TokenResponseDto> {
@@ -409,6 +463,7 @@ export class OAuth2Service {
     })
 
     if (!clientId) {
+      this.logger.error('Missing client_id in refresh token request')
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
         'Invalid client credentials'
@@ -418,17 +473,30 @@ export class OAuth2Service {
     let refreshTokenPlain: string
     try {
       refreshTokenPlain = decryptData(request.refresh_token)
-    } catch (_) {
+    } catch (error) {
+      this.logger.error('Failed to decrypt refresh token', { error, clientId })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid refresh token'
       )
     }
 
-    const refreshed = await this.cognitoSubservice.refreshTokens(refreshTokenPlain, clientId)
-    // FIXME try catch refreshTokens
+    let refreshed: { accessToken?: string; idToken?: string }
+    try {
+      refreshed = await this.cognitoSubservice.refreshTokens(refreshTokenPlain, clientId)
+    } catch (error) {
+      this.logger.error('Failed to refresh tokens via Cognito', { error, clientId })
+      throw this.throwerErrorGuard.OAuth2TokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Unable to refresh access token'
+      )
+    }
 
     if (!refreshed.accessToken) {
+      this.logger.error('No access token returned from Cognito refresh', {
+        clientId,
+        hasRefreshToken: !!refreshTokenPlain,
+      })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Unable to refresh access token'

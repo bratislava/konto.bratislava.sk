@@ -5,6 +5,7 @@ import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2Service } from '../oauth2.service'
 import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
 import { OAuth2AuthorizationErrorCode } from '../oauth2.error.enum'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 export interface RequestWithAuthorizationPayload extends Request {
   authorizationPayload?: AuthorizationRequestDto
@@ -22,6 +23,8 @@ export interface RequestWithAuthorizationPayload extends Request {
  */
 @Injectable()
 export class AuthorizationPayloadGuard implements CanActivate {
+  private readonly logger = new LineLoggerSubservice(AuthorizationPayloadGuard.name)
+
   constructor(
     private readonly oauth2Service: OAuth2Service,
     private readonly validationSubservice: OAuth2ValidationSubservice,
@@ -34,6 +37,12 @@ export class AuthorizationPayloadGuard implements CanActivate {
     // Support both POST (body.payload) and GET (query.payload)
     const authRequestId = request.body?.payload || request.query?.payload
     if (!authRequestId || typeof authRequestId !== 'string') {
+      this.logger.error('Missing or invalid payload parameter', {
+        hasBodyPayload: !!request.body?.payload,
+        hasQueryPayload: !!request.query?.payload,
+        payloadType: typeof authRequestId,
+        method: request.method,
+      })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         'Invalid request: payload is required' // TODO description
@@ -44,6 +53,10 @@ export class AuthorizationPayloadGuard implements CanActivate {
     const authorizationRequest = await this.oauth2Service.loadAuthorizationRequest(authRequestId)
 
     if (!authorizationRequest) {
+      this.logger.error('Authorization request not found for payload', {
+        authRequestId,
+        method: request.method,
+      })
       throw this.throwerErrorGuard.OAuth2AuthorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         'Invalid payload: authorization request not found or expired' // TODO description

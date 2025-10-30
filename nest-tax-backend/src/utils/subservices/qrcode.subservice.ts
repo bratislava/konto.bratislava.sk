@@ -10,8 +10,9 @@ import { QrCodeGeneratorDto } from './dtos/qrcode.dto'
 @Injectable()
 export class QrCodeSubservice {
   constructor(private readonly configService: ConfigService) {
-    // Check if the required environment variable is set
+    // Check if the required environment variables are set
     this.configService.getOrThrow<string>('PAYMENT_QR_IBAN')
+    this.configService.getOrThrow<string>('PAYMENT_QR_BENEFICIARY_NAME')
   }
 
   async createQrCode(qrCodeData: QrCodeGeneratorDto) {
@@ -24,6 +25,11 @@ export class QrCodeSubservice {
           bankAccounts: [
             { iban: this.configService.getOrThrow<string>('PAYMENT_QR_IBAN') },
           ],
+          beneficiary: {
+            name: this.configService.getOrThrow<string>(
+              'PAYMENT_QR_BENEFICIARY_NAME',
+            ),
+          },
           currencyCode: 'EUR',
           variableSymbol: qrCodeData.variableSymbol,
           specificSymbol: qrCodeData.specificSymbol,

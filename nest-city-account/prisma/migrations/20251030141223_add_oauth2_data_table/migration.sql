@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "AuthorizationRequest" (
+CREATE TABLE "OAuth2Data" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -10,6 +10,11 @@ CREATE TABLE "AuthorizationRequest" (
     "state" TEXT,
     "codeChallenge" TEXT,
     "codeChallengeMethod" TEXT,
+    "authorizationCode" TEXT,
+    "accessTokenEnc" TEXT,
+    "accessTokenExpiresAt" TIMESTAMP(3),
+    "idTokenEnc" TEXT,
+    "refreshTokenEnc" TEXT,
 
-    CONSTRAINT "AuthorizationRequest_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "OAuth2Data_pkey" PRIMARY KEY ("id")
 );

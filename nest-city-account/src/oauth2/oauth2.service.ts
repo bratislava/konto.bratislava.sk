@@ -9,6 +9,9 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { PrismaService } from '../prisma/prisma.service'
+import { encryptData } from '../utils/crypto'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import * as jwt from 'jsonwebtoken'
 
 @Injectable()
 export class OAuth2Service {
@@ -20,27 +23,6 @@ export class OAuth2Service {
   ) {}
 
   /**
-   * Build frontend redirect URL for authorization request
-   * Includes redirect_uri and state for frontend error handling
-   *
-   * @param request - Authorization request DTO with all parameters
-   * @param authRequestId - ID of the stored authorization request
-   * @returns Redirect URL to frontend with client_id, payload, redirect_uri, and state parameters
-   */
-  buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
-    // TODO: Get frontend URL from environment variable or configuration service
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000' // FIXME: Use actual frontend URL config
-    const redirectUrl = new URL('/oauth2/auth', frontendUrl)
-    redirectUrl.searchParams.set('client_id', request.client_id)
-    redirectUrl.searchParams.set('payload', authRequestId)
-    redirectUrl.searchParams.set('redirect_uri', request.redirect_uri)
-    if (request.state) {
-      redirectUrl.searchParams.set('state', request.state)
-    }
-    return redirectUrl.toString()
-  }
-
-  /**
    * Store OAuth2 authorization request parameters and return its ID
    *
    * @returns Authorization request ID that references the stored authorization request
@@ -48,7 +30,7 @@ export class OAuth2Service {
   async storeAuthorizationRequest(request: AuthorizationRequestDto): Promise<string> {
     this.logger.debug('Processing authorization request', { client_id: request.client_id })
 
-    const storedRequest = await this.prisma.authorizationRequest.create({
+    const storedRequest = await this.prisma.oAuth2Data.create({
       data: {
         responseType: request.response_type,
         clientId: request.client_id,
@@ -79,7 +61,7 @@ export class OAuth2Service {
   ): Promise<AuthorizationRequestDto | undefined> {
     this.logger.debug('Loading authorization request from database', { authRequestId })
 
-    const storedRequest = await this.prisma.authorizationRequest.findUnique({
+    const storedRequest = await this.prisma.oAuth2Data.findUnique({
       where: { id: authRequestId },
     })
 
@@ -99,6 +81,162 @@ export class OAuth2Service {
     }
 
     return request
+  }
+
+  /**
+   * Store tokens for an authorization request
+   * Called by POST /continue endpoint to store tokens before authorization grant generation
+   */
+  async storeTokensForAuthRequest(
+    authRequestId: string,
+    accessToken: string,
+    idToken: string | undefined,
+    refreshToken: string
+  ): Promise<void> {
+    this.logger.debug('Storing tokens for authorization request', {
+      authRequestId: authRequestId,
+      hasAccessToken: !!accessToken,
+      hasIdToken: !!idToken,
+      hasRefreshToken: !!refreshToken,
+      accessTokenLength: accessToken?.length || 0,
+      idTokenLength: idToken?.length || 0,
+      refreshTokenLength: refreshToken?.length || 0,
+    })
+
+    // Ensure the authorization request exists
+    const existingRequest = await this.prisma.oAuth2Data.findUnique({
+      where: { id: authRequestId },
+      select: { id: true },
+    })
+    if (!existingRequest) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Unknown authorization request ID'
+      )
+    }
+
+    // Extract expiration from JWT access token; if not present, assume 1 hour
+    const accessTokenExpiresAt =
+      this.extractJwtExpiration(accessToken) ?? new Date(Date.now() + 60 * 60 * 1000)
+
+    // Encrypt tokens; encryptData already returns base64
+    const accessTokenEnc = encryptData(accessToken)
+    const idTokenEnc = idToken ? encryptData(idToken) : null
+    const refreshTokenEnc = encryptData(refreshToken)
+
+    // Update tokens on the same OAuth2Data row
+    await this.prisma.oAuth2Data.update({
+      where: { id: authRequestId },
+      data: {
+        accessTokenEnc,
+        accessTokenExpiresAt,
+        idTokenEnc,
+        refreshTokenEnc,
+      },
+    })
+  }
+
+  private extractJwtExpiration(jwtToken: string): Date | undefined {
+    const decoded = jwt.decode(jwtToken) as jwt.JwtPayload | null
+    if (typeof decoded?.exp === 'number') {
+      return new Date(decoded.exp * 1000)
+    }
+    return undefined
+  }
+
+  /**
+   * Build frontend redirect URL for authorization request
+   * Includes redirect_uri and state for frontend error handling
+   *
+   * @param request - Authorization request DTO with all parameters
+   * @param authRequestId - ID of the stored authorization request
+   * @returns Redirect URL to frontend with client_id, payload, redirect_uri, and state parameters
+   */
+  buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
+    // TODO: Get frontend URL from environment variable or configuration service
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000' // FIXME: Use actual frontend URL config
+    const redirectUrl = new URL('/oauth2/auth', frontendUrl)
+    redirectUrl.searchParams.set('client_id', request.client_id)
+    redirectUrl.searchParams.set('payload', authRequestId)
+    redirectUrl.searchParams.set('redirect_uri', request.redirect_uri)
+    if (request.state) {
+      redirectUrl.searchParams.set('state', request.state)
+    }
+    return redirectUrl.toString()
+  }
+
+  /**
+   * Check if tokens are stored for an authorization request
+   *
+   * @param authRequestId - ID of the authorization request
+   * @returns True if tokens are stored and ready
+   */
+  async areTokensStoredForAuthRequest(authRequestId: string): Promise<boolean> {
+    this.logger.debug('Checking if tokens are stored for authorization request', { authRequestId })
+
+    const row = await this.prisma.oAuth2Data.findUnique({
+      where: { id: authRequestId },
+      select: { accessTokenEnc: true, refreshTokenEnc: true, accessTokenExpiresAt: true },
+    })
+    return !!(row && row.accessTokenEnc && row.refreshTokenEnc && row.accessTokenExpiresAt)
+  }
+
+  /**
+   * Continue authorization flow after tokens are stored
+   * Generates authorization code and returns authorization response
+   *
+   * Flow:
+   * 1. authorize endpoint → redirects to FE for user authentication
+   * 2. FE → calls POST /continue with tokens and authorization request ID (stores tokens)
+   * 3. FE → calls GET /continue with authorization request ID (generates grant and redirects)
+   *
+   * @param authRequestId - ID of the authorization request
+   * @param authorizationRequest - Authorization request parameters (already validated)
+   * @returns Authorization response DTO with code and state (if present)
+   */
+  async continueAuthorization(
+    authRequestId: string,
+    authorizationRequest: AuthorizationRequestDto
+  ): Promise<AuthorizationResponseDto> {
+    this.logger.debug('Continuing authorization flow', {
+      client_id: authorizationRequest.client_id,
+      authRequestId,
+    })
+
+    // TODO: Implement continue logic
+    // 1. Verify tokens are stored for authorization request ID (call areTokensStoredForAuthRequest)
+    // 2. Load stored tokens
+    // 3. Extract user info from tokens (decode JWT if needed)
+    // 4. Generate authorization code
+    // 5. Store code_challenge for PKCE verification
+    // 6. Associate code with original authorization request and tokens
+    // 7. Return AuthorizationResponseDto with code and optional state
+    // Controller will build redirect URL using buildAuthorizationResponseRedirectUrl()
+
+    throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      OAuth2AuthorizationErrorCode.SERVER_ERROR,
+      'Continue authorization endpoint not yet implemented'
+    )
+  }
+
+  /**
+   * Build client redirect URL for authorization response
+   * Implements RFC 6749 Section 4.1.2
+   *
+   * @param redirectUri - Client's redirect URI (validated in guard)
+   * @param response - Authorization response DTO
+   * @returns Redirect URL to client's redirect_uri with code and state query parameters
+   */
+  buildAuthorizationResponseRedirectUrl(
+    redirectUri: string,
+    response: AuthorizationResponseDto
+  ): string {
+    const redirectUrl = new URL(redirectUri)
+    redirectUrl.searchParams.set('code', response.code)
+    if (response.state) {
+      redirectUrl.searchParams.set('state', response.state)
+    }
+    return redirectUrl.toString()
   }
 
   /**
@@ -168,116 +306,6 @@ export class OAuth2Service {
     throw this.throwerErrorGuard.OAuth2TokenException(
       OAuth2TokenErrorCode.INVALID_REQUEST,
       'Refresh token endpoint not yet implemented'
-    )
-  }
-
-  /**
-   * Store tokens for an authorization request
-   * Called by POST /continue endpoint to store tokens before authorization grant generation
-   */
-  async storeTokensForAuthRequest(
-    authRequestId: string,
-    accessToken: string,
-    idToken: string | undefined,
-    refreshToken: string
-  ): Promise<void> {
-    this.logger.debug('Storing tokens for authorization request', {
-      authRequestId: authRequestId,
-      hasAccessToken: !!accessToken,
-      hasIdToken: !!idToken,
-      hasRefreshToken: !!refreshToken,
-      accessTokenLength: accessToken?.length || 0,
-      idTokenLength: idToken?.length || 0,
-      refreshTokenLength: refreshToken?.length || 0,
-    })
-
-    // TODO: Implement token storage logic
-    // 1. Validate authorization request exists
-    // 2. Store access_token, id_token, refresh_token associated with authorization request ID
-    // 3. Associate with user ID (extract from tokens if JWT)
-    // 4. Store expiration times
-    // 5. Handle token refresh logic
-
-    throw this.throwerErrorGuard.OAuth2TokenException(
-      OAuth2TokenErrorCode.INVALID_REQUEST,
-      'storeTokensForAuthRequest not yet implemented'
-    )
-  }
-
-  /**
-   * Check if tokens are stored for an authorization request
-   *
-   * @param authRequestId - ID of the authorization request
-   * @returns True if tokens are stored and ready
-   */
-  async areTokensStoredForAuthRequest(authRequestId: string): Promise<boolean> {
-    this.logger.debug('Checking if tokens are stored for authorization request', { authRequestId })
-
-    // TODO: Implement check logic
-    // 1. Query database for stored tokens associated with authorization request ID
-    // 2. Return true if tokens exist and are valid
-
-    throw this.throwerErrorGuard.OAuth2TokenException(
-      OAuth2TokenErrorCode.INVALID_REQUEST,
-      'areTokensStoredForAuthRequest not yet implemented'
-    )
-  }
-
-  /**
-   * Build client redirect URL for authorization response
-   * Implements RFC 6749 Section 4.1.2
-   *
-   * @param redirectUri - Client's redirect URI (validated in guard)
-   * @param response - Authorization response DTO
-   * @returns Redirect URL to client's redirect_uri with code and state query parameters
-   */
-  buildAuthorizationResponseRedirectUrl(
-    redirectUri: string,
-    response: AuthorizationResponseDto
-  ): string {
-    const redirectUrl = new URL(redirectUri)
-    redirectUrl.searchParams.set('code', response.code)
-    if (response.state) {
-      redirectUrl.searchParams.set('state', response.state)
-    }
-    return redirectUrl.toString()
-  }
-
-  /**
-   * Continue authorization flow after tokens are stored
-   * Generates authorization code and returns authorization response
-   *
-   * Flow:
-   * 1. authorize endpoint → redirects to FE for user authentication
-   * 2. FE → calls POST /continue with tokens and authorization request ID (stores tokens)
-   * 3. FE → calls GET /continue with authorization request ID (generates grant and redirects)
-   *
-   * @param authRequestId - ID of the authorization request
-   * @param authorizationRequest - Authorization request parameters (already validated)
-   * @returns Authorization response DTO with code and state (if present)
-   */
-  async continueAuthorization(
-    authRequestId: string,
-    authorizationRequest: AuthorizationRequestDto
-  ): Promise<AuthorizationResponseDto> {
-    this.logger.debug('Continuing authorization flow', {
-      client_id: authorizationRequest.client_id,
-      authRequestId,
-    })
-
-    // TODO: Implement continue logic
-    // 1. Verify tokens are stored for authorization request ID (call areTokensStoredForAuthRequest)
-    // 2. Load stored tokens
-    // 3. Extract user info from tokens (decode JWT if needed)
-    // 4. Generate authorization code
-    // 5. Store code_challenge for PKCE verification
-    // 6. Associate code with original authorization request and tokens
-    // 7. Return AuthorizationResponseDto with code and optional state
-    // Controller will build redirect URL using buildAuthorizationResponseRedirectUrl()
-
-    throw this.throwerErrorGuard.OAuth2AuthorizationException(
-      OAuth2AuthorizationErrorCode.SERVER_ERROR,
-      'Continue authorization endpoint not yet implemented'
     )
   }
 }

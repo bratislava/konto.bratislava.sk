@@ -70,25 +70,6 @@ export class OAuth2Controller {
     res.redirect(303, loginUrl)
   }
 
-  @Post('token')
-  @UseGuards(TokenRequestGuard)
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'OAuth2 Token Endpoint',
-    description:
-      'Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Token exchange successful',
-    type: TokenResponseDto,
-  })
-  async token(@Body() body: TokenRequestDto | RefreshTokenRequestDto): Promise<TokenResponseDto> {
-    this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
-
-    return this.oauth2Service.token(body)
-  }
-
   @Post('store')
   @UseGuards(AuthorizationPayloadGuard)
   @HttpCode(HttpStatus.OK)
@@ -167,5 +148,24 @@ export class OAuth2Controller {
     )
 
     res.redirect(303, redirectUrl)
+  }
+
+  @Post('token')
+  @UseGuards(TokenRequestGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'OAuth2 Token Endpoint',
+    description:
+      'Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Token exchange successful',
+    type: TokenResponseDto,
+  })
+  async token(@Body() body: TokenRequestDto | RefreshTokenRequestDto): Promise<TokenResponseDto> {
+    this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
+
+    return this.oauth2Service.token(body)
   }
 }

@@ -78,9 +78,16 @@ const LoginPage = () => {
           logger.info(`[AUTH] Clearing locale storage`)
           clearLocalStorage()
 
-          logger.info(`[AUTH] Calling Continue endpoint with payload=${payload}`)
+          logger.info(
+            `[AUTH] Calling Continue endpoint with payload=${payload}, clientId=${clientId}, redirectUri=${redirectUri}, state=${state}`,
+          )
           // TODO OAuth: check if payload exists
-          cityAccountClient.oAuth2ControllerContinueComplete(payload ?? '')
+          cityAccountClient.oAuth2ControllerContinueComplete(
+            payload ?? '',
+            clientId ?? undefined,
+            redirectUri ?? undefined,
+            state ?? undefined,
+          )
 
           return
         }

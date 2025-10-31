@@ -79,6 +79,7 @@ export const LoginRegisterNavBar = ({
         <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}
           <Brand
+            // TODO OAuth: Disable link to home when using oauth login
             url={ROUTES.HOME}
             className="mx-auto"
             title={

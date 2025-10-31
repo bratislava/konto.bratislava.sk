@@ -31,8 +31,7 @@ import { TokenRequestValidationPipe } from './pipes/token-request-validation.pip
   controllers: [OAuth2Controller],
 })
 export class OAuth2Module implements NestModule {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  configure(consumer: MiddlewareConsumer): any {
+  configure(consumer: MiddlewareConsumer) {
     consumer.apply(NoCacheMiddleware).forRoutes(OAuth2Controller)
   }
 }

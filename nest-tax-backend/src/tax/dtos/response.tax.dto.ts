@@ -555,6 +555,15 @@ export class ResponseTaxDto {
   lastCheckedPayments: Date
 
   @ApiProperty({
+    description:
+      'When were last checked updates for this tax with automatic task.',
+    default: '2023-04-13T14:39:49.004Z',
+  })
+  @IsDate()
+  @Type(() => Date)
+  lastCheckedUpdates: Date
+
+  @ApiProperty({
     description: 'Type of tax',
     example: TaxType.DZN,
     enumName: 'TaxType',

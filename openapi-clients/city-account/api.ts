@@ -263,11 +263,77 @@ export type MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum =
   (typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum)[keyof typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum]
 
 /**
+ * Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)
+ */
+
+export const OAuth2AuthorizationErrorCode = {
+  InvalidRequest: 'invalid_request',
+  UnauthorizedClient: 'unauthorized_client',
+  AccessDenied: 'access_denied',
+  UnsupportedResponseType: 'unsupported_response_type',
+  InvalidScope: 'invalid_scope',
+  ServerError: 'server_error',
+  TemporarilyUnavailable: 'temporarily_unavailable',
+} as const
+
+export type OAuth2AuthorizationErrorCode =
+  (typeof OAuth2AuthorizationErrorCode)[keyof typeof OAuth2AuthorizationErrorCode]
+
+export interface OAuth2AuthorizationErrorDto {
+  /**
+   * Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)
+   */
+  error: OAuth2AuthorizationErrorCode
+  /**
+   * Human-readable ASCII text providing additional information for debugging (not displayed to end-user)
+   */
+  error_description?: string
+  /**
+   * URI identifying a human-readable web page with information about the error
+   */
+  error_uri?: string
+  /**
+   * Exact value received from the client in the authorization request. REQUIRED if and only if the state parameter was present in the client authorization request. Only included when redirecting (not in direct error responses).
+   */
+  state?: string
+}
+
+/**
  * @type OAuth2ControllerTokenRequest
  */
 export type OAuth2ControllerTokenRequest =
   | ({ grant_type: 'authorization_code' } & TokenRequestDto)
   | ({ grant_type: 'refresh_token' } & RefreshTokenRequestDto)
+
+/**
+ * Single ASCII error code per OAuth 2.0 specification (Token Endpoint)
+ */
+
+export const OAuth2TokenErrorCode = {
+  InvalidRequest: 'invalid_request',
+  InvalidClient: 'invalid_client',
+  InvalidGrant: 'invalid_grant',
+  UnauthorizedClient: 'unauthorized_client',
+  UnsupportedGrantType: 'unsupported_grant_type',
+  InvalidScope: 'invalid_scope',
+} as const
+
+export type OAuth2TokenErrorCode = (typeof OAuth2TokenErrorCode)[keyof typeof OAuth2TokenErrorCode]
+
+export interface OAuth2TokenErrorDto {
+  /**
+   * Single ASCII error code per OAuth 2.0 specification (Token Endpoint)
+   */
+  error: OAuth2TokenErrorCode
+  /**
+   * Human-readable ASCII text providing additional information for debugging (not displayed to end-user)
+   */
+  error_description?: string
+  /**
+   * URI identifying a human-readable web page with information about the error
+   */
+  error_uri?: string
+}
 
 export interface OnlySuccessDto {
   /**

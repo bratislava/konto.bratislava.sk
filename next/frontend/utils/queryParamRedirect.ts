@@ -1,4 +1,5 @@
 import { AuthSession } from 'aws-amplify/auth'
+import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import qs from 'qs'
 
 import { environment } from '../../environment'
@@ -7,6 +8,7 @@ import { ROUTES } from '../api/constants'
 export enum SafeRedirectType {
   Local = 'local',
   Remote = 'remote',
+  RemoteWithRefresh = 'remoteWithRefresh',
 }
 
 export const redirectQueryParam = 'from'
@@ -51,6 +53,13 @@ export const getSafeRedirect = (queryParam: unknown) => {
       return {
         url: queryParam,
         type: SafeRedirectType.Remote,
+      }
+    }
+
+    if (environment.oAuthApprovedOrigins.includes(url.origin)) {
+      return {
+        url: queryParam,
+        type: SafeRedirectType.RemoteWithRefresh,
       }
     }
     // eslint-disable-next-line no-empty
@@ -104,8 +113,9 @@ export const removeRedirectQueryParamFromUrl = (resolvedUrl: string) => {
 }
 
 /**
- * Returns the URL to redirect to. Remote URLs in redirect query params are used to pass the access token to the target
+ * Returns the URL to redirect to. "Remote" URLs in redirect query params are used to pass the access token to the target
  * domain, therefore we add the access token to the query string.
+ * "RemoteWithRefresh" URLs should get all token before the redirect, so we do not add any tokens for them. (This should only be our BE)
  */
 export const getRedirectUrl = async (
   safeRedirect: SafeRedirect,
@@ -119,6 +129,11 @@ export const getRedirectUrl = async (
       parsedUrl.searchParams.set('access_token', accessToken)
     }
     return parsedUrl.toString()
+  }
+
+  // TODO OAuth: remove if not needed
+  if (safeRedirect.type === SafeRedirectType.RemoteWithRefresh) {
+    // Do nothing special
   }
 
   return safeRedirect.url
@@ -141,4 +156,11 @@ export const postMessageToApprovedDomains = (message: CityAccountPostMessage) =>
   environment.authApprovedOrigins.forEach((domain) => {
     window?.top?.postMessage(message, domain)
   })
+}
+
+export const handlePostOAuthTokens = async () => {
+  console.log('[AUTH] POST OAuth tokens to BE')
+  const tokesFromStore = await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()
+
+  console.log('tokesFromStore', tokesFromStore)
 }

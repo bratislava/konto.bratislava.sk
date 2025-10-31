@@ -12,12 +12,14 @@ import { useRef, useState } from 'react'
 import OAuthConfigureContainer from '../components/forms/segments/OAuthConfigure/OAuthConfigureContainer'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import {
   removeAllCookiesAndClearLocalStorage,
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(
@@ -33,12 +35,17 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 
+// TODO OAuth: Show partially filled form (username) for oauth instead of redirecting
 const LoginPage = () => {
   const router = useRouter()
   const { redirect, getRouteWithRedirect, getRedirectQueryParams } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
+
+  const { isOAuthLogin, amplifyConfigure } = useOAuthParams()
+
+  // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -50,16 +57,30 @@ const LoginPage = () => {
 
   const onLogin = async (email: string, password: string) => {
     logger.info(`[AUTH] Attempting to sign in for email ${email}`)
+    // Make sure we call amplify with correct clientId
+    amplifyConfigure()
+
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
-        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-        removeAmplifyGuestIdentityIdCookies()
-        await prepareFormMigration()
-        // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
-        // there might be some cases where user is not there yet.
-        await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        if (isOAuthLogin) {
+          // TODO OAuth: POST /oauth2/store
+          await handlePostOAuthTokens()
+
+          // TODO OAuth: add client_id param to userControllerGetOrCreateUser after implemented on BE
+          // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
+          // there might be some cases where user is not there yet.
+          await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        } else {
+          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+          removeAmplifyGuestIdentityIdCookies()
+          await prepareFormMigration()
+          // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
+          // there might be some cases where user is not there yet.
+          await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        }
+
         await redirect()
         return
       }

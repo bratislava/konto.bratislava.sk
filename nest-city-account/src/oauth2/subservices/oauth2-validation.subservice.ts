@@ -12,6 +12,7 @@ import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.er
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 export interface AuthorizationParams {
+  response_type?: string | unknown
   client_id?: string | unknown
   redirect_uri?: string | unknown
   scope?: string | unknown
@@ -55,7 +56,26 @@ export class OAuth2ValidationSubservice {
    * @returns Validated authorization parameters and client config
    */
   validateAuthorizationRequest(params: AuthorizationParams): AuthorizationValidationResult {
-    // Extract and validate client_id
+    const { clientId, client } = this.validateClientId(params)
+    const redirectUri = this.validateRedirectUri(params, clientId, client)
+    const scope = this.validateScope(params, clientId, client)
+    const { codeChallenge, codeChallengeMethod } = this.validatePkceParameters(params, clientId)
+    this.validateResponseType(params, clientId, client, codeChallenge, codeChallengeMethod)
+
+    return {
+      client,
+      clientId: clientId,
+      redirectUri: redirectUri,
+      scope: scope,
+      codeChallenge: codeChallenge,
+      codeChallengeMethod: codeChallengeMethod,
+    }
+  }
+
+  private validateClientId(params: AuthorizationParams): {
+    clientId: string
+    client: ClientConfig
+  } {
     const clientId = params.client_id as string | undefined
     if (!clientId || typeof clientId !== 'string' || clientId.length === 0) {
       this.logger.error('Missing or invalid client_id in authorization request', {
@@ -68,7 +88,6 @@ export class OAuth2ValidationSubservice {
       )
     }
 
-    // Find and validate client exists
     const client = findClientById(clientId)
     if (!client) {
       this.logger.error('Client not found', {
@@ -80,7 +99,14 @@ export class OAuth2ValidationSubservice {
       )
     }
 
-    // Extract and validate redirect_uri
+    return { clientId, client }
+  }
+
+  private validateRedirectUri(
+    params: AuthorizationParams,
+    clientId: string,
+    client: ClientConfig
+  ): string {
     const redirectUri = params.redirect_uri as string | undefined
     if (!redirectUri || typeof redirectUri !== 'string' || redirectUri.length === 0) {
       this.logger.error('Missing or invalid redirect_uri in authorization request', {
@@ -105,7 +131,14 @@ export class OAuth2ValidationSubservice {
       )
     }
 
-    // Validate scope if provided
+    return redirectUri
+  }
+
+  private validateScope(
+    params: AuthorizationParams,
+    clientId: string,
+    client: ClientConfig
+  ): string | undefined {
     const scope = params.scope as string | undefined
     if (scope && typeof scope === 'string' && !areScopesAllowed(client, scope)) {
       this.logger.error('Invalid scope requested', {
@@ -117,13 +150,16 @@ export class OAuth2ValidationSubservice {
         `Invalid scope: requested scope is invalid, unknown, or malformed`
       )
     }
+    return scope
+  }
 
-    // Extract PKCE parameters
+  private validatePkceParameters(
+    params: AuthorizationParams,
+    clientId: string
+  ): { codeChallenge?: string; codeChallengeMethod?: string } {
     const codeChallenge = params.code_challenge as string | undefined
     const codeChallengeMethod = params.code_challenge_method as string | undefined
 
-    // Business logic validation: PKCE
-    // If code_challenge or code_challenge_method is provided, both must be provided
     if (codeChallenge || codeChallengeMethod) {
       if (!codeChallenge || !codeChallengeMethod) {
         this.logger.error('PKCE parameters incomplete', {
@@ -138,7 +174,40 @@ export class OAuth2ValidationSubservice {
       }
     }
 
-    // Business logic: Check if PKCE is required by client config
+    return { codeChallenge, codeChallengeMethod }
+  }
+
+  private validateResponseType(
+    params: AuthorizationParams,
+    clientId: string,
+    client: ClientConfig,
+    codeChallenge: string | undefined,
+    codeChallengeMethod: string | undefined
+  ): string {
+    const responseType = params.response_type as string | undefined
+    if (!responseType || typeof responseType !== 'string') {
+      this.logger.error('Missing or invalid response_type in authorization request', {
+        clientId: clientId,
+        hasResponseType: !!responseType,
+        responseTypeValue: responseType,
+      })
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+        `Invalid request: response_type is required`
+      )
+    }
+
+    if (!['code', 'token'].includes(responseType)) {
+      this.logger.error('Unsupported response_type', {
+        clientId: clientId,
+        responseType: responseType,
+      })
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
+        `Unsupported response_type: ${responseType} - must be "code" or "token"`
+      )
+    }
+
     if (client.requiresPkce) {
       if (!codeChallenge || !codeChallengeMethod) {
         this.logger.error('PKCE required but not provided', {
@@ -151,16 +220,23 @@ export class OAuth2ValidationSubservice {
           `Invalid request: PKCE is required for this client: code_challenge and code_challenge_method are required`
         )
       }
+
+      if (responseType !== 'code') {
+        throw this.throwerErrorGuard.OAuth2AuthorizationException(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          `Invalid request: response_type must be "code" when PKCE is required for this client`
+        )
+      }
     }
 
-    return {
-      client,
-      clientId: clientId,
-      redirectUri: redirectUri,
-      scope: scope,
-      codeChallenge: codeChallenge,
-      codeChallengeMethod: codeChallengeMethod,
+    if (responseType === 'token') {
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
+        `Unsupported response_type: "token" response_type is not supported - use "code" with PKCE instead`
+      )
     }
+
+    return responseType
   }
 
   /**

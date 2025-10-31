@@ -16,12 +16,13 @@ import {
  */
 export class AuthorizationRequestDto {
   @ApiProperty({
-    description: 'Must be "code" for Authorization Code flow with PKCE',
+    description:
+      'Response type. Must be "code" for Authorization Code flow. "token" is not allowed if PKCE is required.',
     example: 'code',
-    enum: ['code'],
+    enum: ['code', 'token'],
   })
   @IsString()
-  @IsIn(['code'], { message: 'response_type must be "code"' })
+  @IsIn(['code', 'token'], { message: 'response_type must be "code" or "token"' })
   response_type!: string
 
   @ApiProperty({

@@ -25,6 +25,7 @@ export class AuthorizationRequestGuard implements CanActivate {
 
     // Extract parameters from query string
     const params: AuthorizationParams = {
+      response_type: query?.response_type,
       client_id: query?.client_id,
       redirect_uri: query?.redirect_uri,
       scope: query?.scope,

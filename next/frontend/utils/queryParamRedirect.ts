@@ -10,6 +10,10 @@ export enum SafeRedirectType {
 }
 
 export const redirectQueryParam = 'from'
+export const clientIdQueryParam = 'client_id'
+export const payloadQueryParam = 'payload'
+export const redirectUriQueryParam = 'redirect_uri'
+export const stateQueryParam = 'state'
 
 export type SafeRedirect = {
   url: string

@@ -5,11 +5,16 @@ import { useCallback, useMemo } from 'react'
 
 import { ROUTES } from '../api/constants'
 import {
+  clientIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
   isHomeRedirect,
+  payloadQueryParam,
   redirectQueryParam,
+  redirectUriQueryParam,
+  stateQueryParam,
 } from '../utils/queryParamRedirect'
+import { useOAuthParams } from './useOAuthParams'
 
 export const useQueryParamRedirect = () => {
   const router = useRouter()
@@ -19,6 +24,8 @@ export const useQueryParamRedirect = () => {
     const param = searchParams.get(redirectQueryParam)
     return getSafeRedirect(param)
   }, [searchParams])
+
+  const { clientId, payload, redirectUri, state } = useOAuthParams()
 
   /**
    * If redirect param exists in the current URL the function appends it to the next route. Should be only used for
@@ -40,11 +47,17 @@ export const useQueryParamRedirect = () => {
    */
   const getRedirectQueryParams = useCallback(() => {
     if (!isHomeRedirect(safeRedirect)) {
-      return { [redirectQueryParam]: safeRedirect.url }
+      return {
+        [redirectQueryParam]: safeRedirect.url,
+        [clientIdQueryParam]: clientId,
+        [payloadQueryParam]: payload,
+        [redirectUriQueryParam]: redirectUri,
+        [stateQueryParam]: state,
+      }
     }
 
     return null
-  }, [safeRedirect])
+  }, [clientId, payload, redirectUri, safeRedirect, state])
 
   /**
    * Appends the current URL to the next route. Should be used when redirecting to login, signup, when want to return

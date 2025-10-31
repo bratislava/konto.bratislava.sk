@@ -552,9 +552,21 @@ export class OAuth2Service {
     } catch (_) {
       // keep default
     }
+    let accessTokenEnc: string
+    try {
+      accessTokenEnc = encryptData(refreshed.accessToken)
+    } catch (error) {
+      throw this.oAuth2ErrorThrower.tokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: unable to process access token after refresh',
+        undefined,
+        'Failed to encrypt access token after refresh',
+        { error, clientId }
+      )
+    }
 
     const response: TokenResponseDto = {
-      access_token: refreshed.accessToken,
+      access_token: accessTokenEnc,
       token_type: 'Bearer',
       expires_in: expiresIn,
     }

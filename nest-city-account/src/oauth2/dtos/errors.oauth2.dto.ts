@@ -19,8 +19,7 @@ import { IsEnum, IsOptional, IsString } from 'class-validator'
  * - Display error to resource owner
  *
  * This prevents open redirector vulnerabilities when redirect_uri is compromised.
- */ {
-}
+ */
 export class OAuth2AuthorizationErrorDto {
   @ApiProperty({
     description: 'Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)',

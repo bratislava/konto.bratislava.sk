@@ -44,7 +44,7 @@ const LoginPage = () => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, amplifyConfigure, payload } = useOAuthParams()
+  const { isOAuthLogin, amplifyConfigure, payload, clientId, redirectUri, state } = useOAuthParams()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
@@ -66,7 +66,7 @@ const LoginPage = () => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         if (isOAuthLogin) {
-          await handlePostOAuthTokens({ payload })
+          await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
           clearLocalStorage()
 
           // TODO OAuth: add client_id param to userControllerGetOrCreateUser after implemented on BE

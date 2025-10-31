@@ -85,7 +85,7 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, amplifyConfigure, payload } = useOAuthParams()
+  const { isOAuthLogin, amplifyConfigure, payload, clientId, redirectUri, state } = useOAuthParams()
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -295,7 +295,7 @@ const RegisterPage = () => {
         confirmLabel: t('identity_verification_link'),
         // TODO OAuth: handle errors
         onConfirm: async () => {
-          await handlePostOAuthTokens({ payload })
+          await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
           clearLocalStorage()
           await redirect()
         },

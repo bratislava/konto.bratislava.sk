@@ -161,7 +161,17 @@ export const postMessageToApprovedDomains = (message: CityAccountPostMessage) =>
 }
 
 // TODO OAuth: types + check if all arguments exists...
-export const handlePostOAuthTokens = async ({ payload }: { payload: string | null }) => {
+export const handlePostOAuthTokens = async ({
+  payload,
+  clientId,
+  redirectUri,
+  state,
+}: {
+  payload: string | null
+  clientId?: string | null
+  redirectUri?: string | null
+  state?: string | null
+}) => {
   logger.info(`[AUTH] POST tokens`)
   const { accessToken, idToken, refreshToken } =
     (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
@@ -182,6 +192,9 @@ export const handlePostOAuthTokens = async ({ payload }: { payload: string | nul
       id_token,
       refresh_token,
       payload,
+      client_id: clientId ?? undefined,
+      redirect_uri: redirectUri ?? undefined,
+      state: state ?? undefined,
     })
   } catch (error) {
     // TODO OAuth: handle error

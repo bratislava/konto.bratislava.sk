@@ -36,6 +36,13 @@ export const removeAmplifyGuestIdentityIdCookies = () => {
   })
 }
 
+/**
+ * Clear temporarily stored tokens in locale storage when using OAuth sign up or sign in
+ */
+export const clearLocalStorage = () => {
+  localStorage.clear()
+}
+
 export const useSignOut = () => {
   const router = useRouter()
   const queryClient = useQueryClient()

@@ -179,7 +179,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
   /**
    * Handle token endpoint errors per RFC 6749 Section 5.2
-   * Returns 400 Bad Request with JSON body
+   * Returns 400 Bad Request with JSON body (except invalid_client which returns 401)
    */
   private handleTokenError(
     request: Request,
@@ -189,10 +189,21 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
   ): void {
     const errorResponse = this.extractOAuth2TokenError(exceptionResponse, status)
 
+    // RFC 6749 Section 5.2: invalid_client errors should return 401 with WWW-Authenticate header
+    // when client authentication fails
+    let statusCode = HttpStatus.BAD_REQUEST
+    if (errorResponse.error === OAuth2TokenErrorCode.INVALID_CLIENT) {
+      statusCode = HttpStatus.UNAUTHORIZED
+
+      // RFC 6749: Include WWW-Authenticate header indicating supported authentication schemes
+      // This server supports HTTP Basic authentication for client credentials
+      response.setHeader('WWW-Authenticate', 'Basic realm="OAuth2 Token Endpoint"')
+    }
+
     this.logger.error({
       method: request.method,
       originalUrl: request.originalUrl,
-      statusCode: HttpStatus.BAD_REQUEST,
+      statusCode,
       userAgent: request.get('user-agent') || '',
       requestBody: request.body,
       queryParams: request.query,
@@ -203,8 +214,10 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       responseData: errorResponse,
     })
 
-    // RFC 6749 Section 5.2: Token errors always return 400
-    response.status(HttpStatus.BAD_REQUEST).json(errorResponse)
+    response
+      .status(statusCode)
+      .header('Content-Type', 'application/json;charset=UTF-8')
+      .json(errorResponse)
   }
 
   /**

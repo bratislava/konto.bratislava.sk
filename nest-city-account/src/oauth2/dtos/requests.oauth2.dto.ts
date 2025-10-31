@@ -62,7 +62,7 @@ export class AuthorizationRequestDto {
   @IsString()
   @Matches(/^[A-Za-z0-9\-._~]{43,128}$/, {
     message:
-      'code_challenge must be between 43 and 128 characters and contain only A-Z, a-z, 0-9, and -._~',
+      'code_challenge must be between 43 and 128 characters and contain only A-Z, a-z, 0-9, -, _, ., and ~ (RFC 7636 Section 4.2)',
   })
   code_challenge?: string
 

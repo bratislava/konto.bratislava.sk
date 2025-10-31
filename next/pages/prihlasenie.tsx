@@ -20,7 +20,7 @@ import {
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
+import { getContinueUrl, handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(
@@ -81,13 +81,8 @@ const LoginPage = () => {
           logger.info(
             `[AUTH] Calling Continue endpoint with payload=${payload}, clientId=${clientId}, redirectUri=${redirectUri}, state=${state}`,
           )
-          // TODO OAuth: check if payload exists
-          cityAccountClient.oAuth2ControllerContinueComplete(
-            payload ?? '',
-            clientId ?? undefined,
-            redirectUri ?? undefined,
-            state ?? undefined,
-          )
+          // TODO OAuth: check if payload exists, handle errors
+          await router.push(getContinueUrl({ payload, clientId, redirectUri, state }))
 
           return
         }

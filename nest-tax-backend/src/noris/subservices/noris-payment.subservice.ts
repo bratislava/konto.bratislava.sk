@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
-import { Request } from 'mssql'
+import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
@@ -50,12 +50,12 @@ export class NorisPaymentSubservice {
 
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('fromDate', fromDate)
-        request.input('toDate', toDate)
-        request.input('overPayments', overPayments ? 1 : 0)
-        request.input('years', year)
+        request.input('fromDate', mssql.SmallDateTime, fromDate)
+        request.input('toDate', mssql.SmallDateTime, toDate)
+        request.input('overPayments', mssql.TinyInt, overPayments ? 1 : 0)
+        request.input('years', mssql.Int, year)
 
         return request.query(queryPaymentsFromNorisByFromToDate)
       },
@@ -99,20 +99,24 @@ export class NorisPaymentSubservice {
 
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
         const yearPlaceholders = data.years
           .map((_, index) => `@year${index}`)
           .join(',')
         data.years.forEach((year, index) => {
-          request.input(`year${index}`, year)
+          request.input(`year${index}`, mssql.Int, year)
         })
 
         const variableSymbolsPlaceholders = filteredVariableSymbols
           .map((_, index) => `@variable_symbol${index}`)
           .join(',')
         filteredVariableSymbols.forEach((variableSymbol, index) => {
-          request.input(`variable_symbol${index}`, variableSymbol)
+          request.input(
+            `variable_symbol${index}`,
+            mssql.VarChar(20),
+            variableSymbol,
+          )
         })
 
         return request.query(
@@ -139,10 +143,10 @@ export class NorisPaymentSubservice {
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const overpaymentsData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('fromDate', data.fromDate)
-        request.input('toDate', data.toDate ?? new Date())
+        request.input('fromDate', mssql.SmallDateTime, data.fromDate)
+        request.input('toDate', mssql.SmallDateTime, data.toDate ?? new Date())
 
         return request.query(queryOverpaymentsFromNorisByDateRange)
       },

@@ -69,11 +69,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       alert: 1,
     })
 
-    response.status(status).json(
-      typeof exceptionResponse === 'object'
-        ? exceptionResponse
-        : { message: exceptionResponse }
-    )
+    response
+      .status(status)
+      .json(
+        typeof exceptionResponse === 'object' ? exceptionResponse : { message: exceptionResponse }
+      )
   }
 
   private handleAuthorizationStoreError(
@@ -82,14 +82,13 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     status: number,
     exceptionResponse: string | object
   ) {
-    const state = request.query.state as string | undefined
 
     const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
     this.logger.error({
       method: request.method,
       originalUrl: request.originalUrl,
-      statusCode: HttpStatus.SEE_OTHER,
+      statusCode: status,
       userAgent: request.get('user-agent') || '',
       requestBody: request.body,
       queryParams: request.query,

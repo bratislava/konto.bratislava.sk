@@ -476,8 +476,8 @@ export class OAuth2Service {
     if (!clientId) {
       this.logger.error('Missing client_id in refresh token request')
       throw this.throwerErrorGuard.OAuth2TokenException(
-        OAuth2TokenErrorCode.INVALID_CLIENT,
-        'Invalid client: client_id required'
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: client_id required'
       )
     }
 
@@ -488,7 +488,7 @@ export class OAuth2Service {
       this.logger.error('Failed to decrypt refresh token', { error, clientId })
       throw this.throwerErrorGuard.OAuth2TokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid request: invalid refresh token'
+        'Invalid grant: invalid refresh token'
       )
     }
 

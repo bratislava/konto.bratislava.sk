@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // FIXME look into the any usage
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
+import { plainToInstance } from 'class-transformer'
+import { validateSync } from 'class-validator'
 import { Request, Response } from 'express'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 import {
@@ -49,8 +51,26 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       return
     }
 
-    // For other OAuth2 endpoints, use default handling
-    throw exception
+    // For other OAuth2 endpoints (like /oauth2/store), return JSON error
+    // This handles cases like HTTPS guard failures on OAuth2 endpoints
+    this.logger.error({
+      method: request.method,
+      originalUrl: request.originalUrl,
+      statusCode: status,
+      userAgent: request.get('user-agent') || '',
+      requestBody: request.body,
+      queryParams: request.query,
+      ip: request.ip ?? '<NO IP>',
+      error: exceptionResponse,
+      message: 'OAuth2 endpoint error - ENDPOINT ERRORS NOT HANDLED!!!.',
+      alert: 1,
+    })
+
+    response.status(status).json(
+      typeof exceptionResponse === 'object'
+        ? exceptionResponse
+        : { message: exceptionResponse }
+    )
   }
 
   private isOAuth2Endpoint(path: string): boolean {
@@ -73,6 +93,9 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     // RFC 6749 Section 4.1.2.1: If redirect_uri is invalid/missing, return error directly
     // (do not redirect to prevent open redirector vulnerability)
     if (!redirectUri) {
+      // Extract or construct OAuth2 error response
+      const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
+
       this.logger.error({
         method: request.method,
         originalUrl: request.originalUrl,
@@ -81,25 +104,13 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         requestBody: request.body,
         queryParams: request.query,
         ip: request.ip ?? '<NO IP>',
-        error:
-          typeof exceptionResponse === 'object'
-            ? (exceptionResponse as any).error
-            : 'invalid_request',
+        error: exceptionResponse,
         message: 'Authorization error without redirect_uri, returning direct error',
         hasRedirectUri: false,
-        responseData:
-          typeof exceptionResponse === 'object'
-            ? exceptionResponse
-            : { error: 'invalid_request', error_description: exceptionResponse },
+        responseData: errorResponse,
       })
 
-      response
-        .status(status)
-        .json(
-          typeof exceptionResponse === 'object'
-            ? exceptionResponse
-            : { error: 'invalid_request', error_description: exceptionResponse }
-        )
+      response.status(status).json(errorResponse)
       return
     }
 
@@ -179,29 +190,59 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     exceptionResponse: string | object,
     status: number
   ): OAuth2AuthorizationErrorDto {
-    if (typeof exceptionResponse === 'object') {
-      const resp = exceptionResponse as any
+    let errorResponse: OAuth2AuthorizationErrorDto
 
-      // If it's already an OAuth2 error format, use it
-      if (resp.error) {
-        return {
-          error: resp.error,
-          error_description: resp.error_description,
-          error_uri: resp.error_uri,
-          state: resp.state,
+    if (typeof exceptionResponse === 'object') {
+      // Try to transform and validate the response as OAuth2AuthorizationErrorDto
+      const candidate = plainToInstance(OAuth2AuthorizationErrorDto, exceptionResponse)
+      const errors = validateSync(candidate, { skipMissingProperties: false })
+
+      if (errors.length === 0 && candidate.error) {
+        // It's already a valid OAuth2 error format, extract plain values
+        errorResponse = {
+          error: candidate.error,
+          error_description: candidate.error_description,
+          error_uri: candidate.error_uri,
+          state: candidate.state,
         }
+        return errorResponse
+      }
+
+      // Check if response has a message property (standard NestJS error format)
+      const message = this.extractMessageFromObject(exceptionResponse)
+      const error = this.mapStatusToAuthorizationError(status)
+      errorResponse = {
+        error,
+        error_description: message,
+      }
+    } else {
+      // Map HTTP status to OAuth2 error code
+      const error = this.mapStatusToAuthorizationError(status)
+      errorResponse = {
+        error,
+        error_description: exceptionResponse,
       }
     }
 
-    // Map HTTP status to OAuth2 error code
-    const error = this.mapStatusToAuthorizationError(status)
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const error_description =
-      typeof exceptionResponse === 'string'
-        ? exceptionResponse
-        : (exceptionResponse as any).message || 'An error occurred'
+    // Validate the created error response
+    const validationInstance = plainToInstance(OAuth2AuthorizationErrorDto, errorResponse)
+    const validationErrors = validateSync(validationInstance, { skipMissingProperties: true })
+    if (validationErrors.length > 0) {
+      this.logger.warn(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to create valid OAuth2AuthorizationErrorDto',
+          toLogfmt({ validationErrors: validationErrors.map((e) => e.toString()) })
+        )
+      )
+      // Fallback to a valid error
+      return {
+        error: OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        error_description: 'An error occurred',
+      }
+    }
 
-    return { error, error_description }
+    return errorResponse
   }
 
   /**
@@ -211,28 +252,70 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     exceptionResponse: string | object,
     status: number
   ): OAuth2TokenErrorDto {
-    if (typeof exceptionResponse === 'object') {
-      const resp = exceptionResponse as any
+    let errorResponse: OAuth2TokenErrorDto
 
-      // If it's already an OAuth2 error format, use it
-      if (resp.error) {
-        return {
-          error: resp.error,
-          error_description: resp.error_description,
-          error_uri: resp.error_uri,
+    if (typeof exceptionResponse === 'object') {
+      // Try to transform and validate the response as OAuth2TokenErrorDto
+      const candidate = plainToInstance(OAuth2TokenErrorDto, exceptionResponse)
+      const errors = validateSync(candidate, { skipMissingProperties: false })
+
+      if (errors.length === 0 && candidate.error) {
+        // It's already a valid OAuth2 error format, extract plain values
+        errorResponse = {
+          error: candidate.error,
+          error_description: candidate.error_description,
+          error_uri: candidate.error_uri,
         }
+        return errorResponse
+      }
+      // Check if response has a message property (standard NestJS error format)
+      const message = this.extractMessageFromObject(exceptionResponse)
+      const error = this.mapStatusToTokenError(status)
+      errorResponse = {
+        error,
+        error_description: message,
+      }
+    } else {
+      // Map HTTP status to OAuth2 error code
+      const error = this.mapStatusToTokenError(status)
+      errorResponse = {
+        error,
+        error_description: exceptionResponse,
       }
     }
 
-    // Map HTTP status to OAuth2 error code
-    const error = this.mapStatusToTokenError(status)
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const error_description =
-      typeof exceptionResponse === 'string'
-        ? exceptionResponse
-        : (exceptionResponse as any).message || 'An error occurred'
+    // Validate the created error response
+    const validationInstance = plainToInstance(OAuth2TokenErrorDto, errorResponse)
+    const validationErrors = validateSync(validationInstance, { skipMissingProperties: true })
+    if (validationErrors.length > 0) {
+      this.logger.warn(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to create valid OAuth2TokenErrorDto',
+          toLogfmt({ validationErrors: validationErrors.map((e) => e.toString()) })
+        )
+      )
+      // Fallback to a valid error
+      return {
+        error: OAuth2TokenErrorCode.INVALID_REQUEST,
+        error_description: 'An error occurred',
+      }
+    }
 
-    return { error, error_description }
+    return errorResponse
+  }
+
+  /**
+   * Safely extract message from an object response
+   */
+  private extractMessageFromObject(obj: object): string {
+    if ('message' in obj && typeof obj.message === 'string') {
+      return obj.message
+    }
+    if ('error_description' in obj && typeof obj.error_description === 'string') {
+      return obj.error_description
+    }
+    return 'An error occurred'
   }
 
   /**

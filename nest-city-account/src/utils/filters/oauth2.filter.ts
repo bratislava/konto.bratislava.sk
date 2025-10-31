@@ -45,6 +45,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       return
     }
 
+    if (request.path.includes('/oauth2/store')) {
+      this.handleAuthorizationStoreError(request, response, status, exceptionResponse)
+      return
+    }
+
     // Handle token endpoint errors (JSON response)
     if (request.path.includes('/oauth2/token')) {
       this.handleTokenError(request, response, status, exceptionResponse)
@@ -75,6 +80,32 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
   private isOAuth2Endpoint(path: string): boolean {
     return path.includes('/oauth2/')
+  }
+
+  private handleAuthorizationStoreError(
+    request: Request,
+    response: Response,
+    status: number,
+    exceptionResponse: string | object
+  ) {
+    const state = request.query.state as string | undefined
+
+    const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
+
+    this.logger.error({
+      method: request.method,
+      originalUrl: request.originalUrl,
+      statusCode: HttpStatus.SEE_OTHER,
+      userAgent: request.get('user-agent') || '',
+      requestBody: request.body,
+      queryParams: request.query,
+      ip: request.ip ?? '<NO IP>',
+      error: errorResponse.error,
+      message: 'Store failed, sending redirect error.',
+      'response-data': errorResponse,
+    })
+
+    response.status(status).json(errorResponse)
   }
 
   /**

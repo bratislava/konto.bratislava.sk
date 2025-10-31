@@ -13,6 +13,7 @@ import { TaxSubservice } from './utils/subservices/tax.subservice'
 import { ConfigModule } from '@nestjs/config'
 import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
+import { OAuth2Module } from './oauth2/oauth2.module'
 
 @Module({
   imports: [
@@ -25,12 +26,13 @@ import { TasksModule } from './tasks/tasks.module'
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule,
     TasksModule,
+    OAuth2Module,
   ],
   controllers: [AppController],
   providers: [TaxSubservice, ThrowerErrorGuard],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*')
+    consumer.apply(AppLoggerMiddleware).exclude('oauth2/(.*)').forRoutes('*')
   }
 }

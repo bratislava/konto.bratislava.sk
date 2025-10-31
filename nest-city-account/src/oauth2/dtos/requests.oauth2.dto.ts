@@ -10,6 +10,8 @@ import {
   MinLength,
 } from 'class-validator'
 
+const EXAMPLE_CLIENT_ID = 'a1b2c3d4e5f67890abcdef1234567890'
+
 /**
  * Request DTO for OAuth2 Authorization Endpoint
  * Implements RFC 6749 (OAuth 2.0) + RFC 7636 (PKCE)
@@ -27,7 +29,7 @@ export class AuthorizationRequestDto {
 
   @ApiProperty({
     description: 'The client identifier for your application',
-    example: 'your-client-id',
+    example: EXAMPLE_CLIENT_ID,
   })
   @IsNotEmpty()
   @IsString()
@@ -43,7 +45,7 @@ export class AuthorizationRequestDto {
 
   @ApiPropertyOptional({
     description: 'Space-delimited list of scopes',
-    example: 'openid profile email',
+    example: 'read write',
     default: '',
   })
   @IsOptional()
@@ -132,7 +134,7 @@ export class TokenRequestDto {
   @ApiPropertyOptional({
     description:
       'The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header',
-    example: 'your-client-id',
+    example: EXAMPLE_CLIENT_ID,
   })
   @IsOptional()
   @IsString()
@@ -171,7 +173,7 @@ export class StoreTokensRequestDto {
   access_token!: string
 
   @ApiPropertyOptional({
-    description: 'ID token from user authentication (if using OpenID Connect)',
+    description: 'ID token from user authentication',
     example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
   @IsOptional()
@@ -289,7 +291,7 @@ export class RefreshTokenRequestDto {
 
   @ApiPropertyOptional({
     description: 'Space-delimited list of scopes (optional - should not request new scopes)',
-    example: 'openid profile email',
+    example: 'read write',
   })
   @IsOptional()
   @IsString()
@@ -298,7 +300,7 @@ export class RefreshTokenRequestDto {
   @ApiPropertyOptional({
     description:
       'The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header',
-    example: 'your-client-id',
+    example: EXAMPLE_CLIENT_ID,
   })
   @IsOptional()
   @IsString()
@@ -313,3 +315,10 @@ export class RefreshTokenRequestDto {
   @IsString()
   client_secret?: string
 }
+
+/**
+ * Unified type for OAuth2 Token Endpoint requests
+ * This is a union type that represents either TokenRequestDto or RefreshTokenRequestDto
+ * based on the grant_type discriminator field
+ */
+export type TokenRequestUnion = TokenRequestDto | RefreshTokenRequestDto

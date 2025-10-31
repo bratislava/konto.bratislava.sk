@@ -33,7 +33,7 @@ export class AuthorizationResponseDto {
 export class TokenResponseDto {
   @ApiProperty({
     description: 'Access token issued by the authorization server',
-    example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
+    example: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0...',
   })
   access_token!: string
 
@@ -58,7 +58,7 @@ export class TokenResponseDto {
 
   @ApiPropertyOptional({
     description: 'Space-delimited list of scopes granted',
-    example: 'openid profile email',
+    example: 'read write',
   })
   scope?: string
 }

@@ -13,7 +13,14 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
@@ -25,6 +32,7 @@ import {
   RefreshTokenRequestDto,
   StoreTokensRequestDto,
   TokenRequestDto,
+  TokenRequestUnion,
 } from './dtos/requests.oauth2.dto'
 
 import {
@@ -153,6 +161,7 @@ export class OAuth2Controller {
   }
 
   @Post('token')
+  @ApiExtraModels(TokenRequestDto, RefreshTokenRequestDto)
   @UsePipes(TokenRequestValidationPipe)
   @UseGuards(TokenRequestGuard)
   @HttpCode(HttpStatus.OK)
@@ -161,12 +170,28 @@ export class OAuth2Controller {
     description:
       'Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.',
   })
+  @ApiBody({
+    description: 'Token request - use authorization_code or refresh_token grant type',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(TokenRequestDto) },
+        { $ref: getSchemaPath(RefreshTokenRequestDto) },
+      ],
+      discriminator: {
+        propertyName: 'grant_type',
+        mapping: {
+          authorization_code: getSchemaPath(TokenRequestDto),
+          refresh_token: getSchemaPath(RefreshTokenRequestDto),
+        },
+      },
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'Token exchange successful',
     type: TokenResponseDto,
   })
-  async token(@Body() body: TokenRequestDto | RefreshTokenRequestDto): Promise<TokenResponseDto> {
+  async token(@Body() body: TokenRequestUnion): Promise<TokenResponseDto> {
     this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
 
     return this.oauth2Service.token(body)

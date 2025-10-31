@@ -9,6 +9,7 @@ import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 
+import OAuthConfigureContainer from '../components/forms/segments/OAuthConfigure/OAuthConfigureContainer'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
@@ -117,6 +118,8 @@ const LoginPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
+      <OAuthConfigureContainer />
+
       <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
         <LoginForm onSubmit={onLogin} error={loginError} />
       </AccountContainer>

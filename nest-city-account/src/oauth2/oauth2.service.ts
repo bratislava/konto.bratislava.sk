@@ -301,7 +301,7 @@ export class OAuth2Service {
   async exchangeCode(request: TokenRequestDto): Promise<TokenResponseDto> {
     this.logger.debug('Processing token exchange request', { hasCode: !!request.code })
 
-    const oauth2Data = await this.prisma.oAuth2Data.findFirst({
+    const oauth2Data = await this.prisma.oAuth2Data.findUnique({
       where: { authorizationCode: request.code },
     })
 

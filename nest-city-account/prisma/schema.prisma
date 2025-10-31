@@ -202,7 +202,7 @@ model OAuth2Data {
   codeChallengeMethod        String?  // PKCE code challenge method: 'S256' or 'plain'
 
   // Grant generated during authorization
-  authorizationCode          String?
+  authorizationCode          String?   @unique
   authorizationCodeCreatedAt DateTime?
 
   // Encrypted (and base64-encoded) token values

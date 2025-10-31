@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// FIXME look into the any usage
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'

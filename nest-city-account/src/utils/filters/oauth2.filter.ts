@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// FIXME look into the any usage
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
@@ -76,10 +74,6 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         ? exceptionResponse
         : { message: exceptionResponse }
     )
-  }
-
-  private isOAuth2Endpoint(path: string): boolean {
-    return path.includes('/oauth2/')
   }
 
   private handleAuthorizationStoreError(

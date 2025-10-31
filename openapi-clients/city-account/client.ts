@@ -3,8 +3,8 @@ import {
   AppApiFactory,
   AuthApiFactory,
   OAuth2ApiFactory,
-  UsersManipulationApiFactory,
   UserVerificationsApiFactory,
+  UsersManipulationApiFactory,
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
 import type { AxiosInstance } from 'axios'

@@ -163,11 +163,18 @@ export const postMessageToApprovedDomains = (message: CityAccountPostMessage) =>
 // TODO OAuth: types + check if all arguments exists...
 export const handlePostOAuthTokens = async ({ payload }: { payload: string | null }) => {
   logger.info(`[AUTH] POST tokens`)
-  const tokesFromStore = await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()
+  const { accessToken, idToken, refreshToken } =
+    (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
 
-  const access_token = tokesFromStore?.accessToken.toString()
-  const id_token = tokesFromStore?.idToken?.toString()
-  const refresh_token = tokesFromStore?.refreshToken
+  const access_token = accessToken?.toString()
+  const id_token = idToken?.toString()
+  const refresh_token = refreshToken
+
+  if (!access_token || !payload) {
+    logger.error(`[AUTH] Missing access token or payload in handlePostOAuthTokens`)
+    // TODO OAuth: handle error
+    return
+  }
 
   try {
     await cityAccountClient.oAuth2ControllerStoreTokens({
@@ -177,7 +184,7 @@ export const handlePostOAuthTokens = async ({ payload }: { payload: string | nul
       payload,
     })
   } catch (error) {
-    // TODO OAuth: handle errors
+    // TODO OAuth: handle error
     console.log(error)
   }
 }

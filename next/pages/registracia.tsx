@@ -297,7 +297,8 @@ const RegisterPage = () => {
         onConfirm: async () => {
           await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
           clearLocalStorage()
-          await redirect()
+          // TODO OAuth: check if payload exists
+          await cityAccountClient.oAuth2ControllerContinueComplete(payload ?? '')
         },
       }
     }
@@ -320,14 +321,17 @@ const RegisterPage = () => {
       onConfirm: () => redirect(),
     }
   }, [
+    clientId,
     getRouteWithRedirect,
     isOAuthLogin,
     payload,
     redirect,
+    redirectUri,
     registrationStatus,
     router,
     safeRedirect.type,
     safeRedirect.url,
+    state,
     t,
   ])
 

@@ -66,23 +66,33 @@ const LoginPage = () => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         if (isOAuthLogin) {
+          logger.info(`[AUTH] Proceeding to OAuth login (isOAuthLogin=${isOAuthLogin})`)
           await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
-          clearLocalStorage()
 
+          logger.info(`[AUTH] Calling userControllerGetOrCreateUser`)
           // TODO OAuth: add client_id param to userControllerGetOrCreateUser after implemented on BE
           // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
           // there might be some cases where user is not there yet.
           await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
-        } else {
-          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-          removeAmplifyGuestIdentityIdCookies()
-          await prepareFormMigration()
-          // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
-          // there might be some cases where user is not there yet.
-          await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+
+          logger.info(`[AUTH] Clearing locale storage`)
+          clearLocalStorage()
+
+          logger.info(`[AUTH] Calling Continue endpoint with payload=${payload}`)
+          // TODO OAuth: check if payload exists
+          cityAccountClient.oAuth2ControllerContinueComplete(payload ?? '')
+
+          return
         }
 
+        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+        removeAmplifyGuestIdentityIdCookies()
+        await prepareFormMigration()
+        // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
+        // there might be some cases where user is not there yet.
+        await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
         await redirect()
+
         return
       }
       if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {

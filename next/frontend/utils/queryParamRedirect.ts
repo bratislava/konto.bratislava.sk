@@ -172,30 +172,35 @@ export const handlePostOAuthTokens = async ({
   redirectUri?: string | null
   state?: string | null
 }) => {
-  logger.info(`[AUTH] POST tokens`)
   const { accessToken, idToken, refreshToken } =
     (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
 
   const access_token = accessToken?.toString()
   const id_token = idToken?.toString()
   const refresh_token = refreshToken
+  // TODO OAuth remove tokens from logger
+  logger.info(`[AUTH] Storing tokens to BE`)
 
-  if (!access_token || !payload) {
-    logger.error(`[AUTH] Missing access token or payload in handlePostOAuthTokens`)
+  if (!access_token || !refresh_token || !payload) {
+    logger.error(`[AUTH] Missing access_token or refresh_token or payload in handlePostOAuthTokens`)
     // TODO OAuth: handle error
     return
   }
 
   try {
-    await cityAccountClient.oAuth2ControllerStoreTokens({
-      access_token,
-      id_token,
-      refresh_token,
-      payload,
-      client_id: clientId ?? undefined,
-      redirect_uri: redirectUri ?? undefined,
-      state: state ?? undefined,
-    })
+    await cityAccountClient.oAuth2ControllerStoreTokens(
+      {
+        access_token,
+        id_token,
+        refresh_token,
+        payload,
+        client_id: clientId ?? undefined,
+        redirect_uri: redirectUri ?? undefined,
+        state: state ?? undefined,
+      },
+      // TODO OAuth: revisit and check if this is what we wanted
+      { authStrategy: false },
+    )
   } catch (error) {
     // TODO OAuth: handle error
     console.log(error)

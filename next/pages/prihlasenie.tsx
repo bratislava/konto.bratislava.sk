@@ -43,7 +43,7 @@ const LoginPage = () => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, amplifyConfigure } = useOAuthParams()
+  const { isOAuthLogin, amplifyConfigure, payload } = useOAuthParams()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
@@ -65,8 +65,7 @@ const LoginPage = () => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         if (isOAuthLogin) {
-          // TODO OAuth: POST /oauth2/store
-          await handlePostOAuthTokens()
+          await handlePostOAuthTokens({ payload })
 
           // TODO OAuth: add client_id param to userControllerGetOrCreateUser after implemented on BE
           // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,

@@ -1,9 +1,11 @@
+import { cityAccountClient } from '@clients/city-account'
 import { AuthSession } from 'aws-amplify/auth'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import qs from 'qs'
 
 import { environment } from '../../environment'
 import { ROUTES } from '../api/constants'
+import logger from './logger'
 
 export enum SafeRedirectType {
   Local = 'local',
@@ -158,9 +160,24 @@ export const postMessageToApprovedDomains = (message: CityAccountPostMessage) =>
   })
 }
 
-export const handlePostOAuthTokens = async () => {
-  console.log('[AUTH] POST OAuth tokens to BE')
+// TODO OAuth: types + check if all arguments exists...
+export const handlePostOAuthTokens = async ({ payload }: { payload: string | null }) => {
+  logger.info(`[AUTH] POST tokens`)
   const tokesFromStore = await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()
 
-  console.log('tokesFromStore', tokesFromStore)
+  const access_token = tokesFromStore?.accessToken.toString()
+  const id_token = tokesFromStore?.idToken?.toString()
+  const refresh_token = tokesFromStore?.refreshToken
+
+  try {
+    await cityAccountClient.oAuth2ControllerStoreTokens({
+      access_token,
+      id_token,
+      refresh_token,
+      payload,
+    })
+  } catch (error) {
+    // TODO OAuth: handle errors
+    console.log(error)
+  }
 }

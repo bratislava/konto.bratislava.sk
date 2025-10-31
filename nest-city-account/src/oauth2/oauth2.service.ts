@@ -198,6 +198,11 @@ export class OAuth2Service {
     if (request.state) {
       redirectUrl.searchParams.set('state', request.state)
     }
+    redirectUrl.searchParams.set(
+      'from',
+      this.configService.get<string>('OAUTH2_LOGIN_FROM_URL') ||
+        'https://nest-city-account.dev.bratislava.sk'
+    )
     return redirectUrl.toString()
   }
 

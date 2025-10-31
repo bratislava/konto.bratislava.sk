@@ -25,7 +25,6 @@ export interface RequestWithAuthorizationPayload extends Request {
  */
 @Injectable()
 export class AuthorizationPayloadGuard implements CanActivate {
-
   constructor(
     private readonly oauth2Service: OAuth2Service,
     private readonly validationSubservice: OAuth2ValidationSubservice,
@@ -42,7 +41,8 @@ export class AuthorizationPayloadGuard implements CanActivate {
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
         'Authorization server error: missing payload',
         undefined,
-        'Missing or invalid payload parameter', {
+        'Missing or invalid payload parameter',
+        {
           hasBodyPayload: !!request.body?.payload,
           hasQueryPayload: !!request.query?.payload,
           payloadType: typeof authRequestId,
@@ -52,17 +52,26 @@ export class AuthorizationPayloadGuard implements CanActivate {
     }
 
     // Load authorization request from database using UUID
-    const authorizationRequest = await this.oauth2Service.loadAuthorizationRequest(authRequestId)
+    let authorizationRequest: AuthorizationRequestDto | undefined
+    try {
+      authorizationRequest = await this.oauth2Service.loadAuthorizationRequest(authRequestId)
+    } catch (error) {
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: failed to process authorization request',
+        undefined,
+        'Failed to load authorization request',
+        { authRequestId, error }
+      )
+    }
 
     if (!authorizationRequest) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
         'Authorization server error: authorization request not found or expired',
         undefined,
-        'Authorization request not found for payload', {
-          authRequestId,
-          method: request.method,
-        }
+        'Authorization request not found for payload',
+        { authRequestId, method: request.method }
       )
     }
 
@@ -83,10 +92,8 @@ export class AuthorizationPayloadGuard implements CanActivate {
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
         'Authorization server error: authorization request parameters are corrupted',
         undefined,
-        'Invalid authorization request from payload', {
-          authRequestId,
-          method: request.method,
-        }
+        'Invalid authorization request from payload',
+        { authRequestId, method: request.method }
       )
     }
 

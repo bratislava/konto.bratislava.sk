@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { useOAuthParams } from '../../../../frontend/hooks/useOAuthParams'
+import { isProductionDeployment } from '../../../../frontend/utils/general'
 import { AccountContainer } from '../AccountContainer/AccountContainer'
 
 export const getOAuthClientName = (clientId: string | null) => {
@@ -21,7 +22,7 @@ const OAuthConfigureContainer = () => {
     setCurrentClientId(userPoolClientId || null)
   }, [amplifyConfigure])
 
-  return (
+  return isProductionDeployment() ? null : (
     <AccountContainer className="mb-0 whitespace-pre-wrap md:pt-6">
       isOAuthLogin: {String(isOAuthLogin)}
       <br />

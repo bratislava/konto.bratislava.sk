@@ -29,6 +29,7 @@ export class AuthorizationRequestGuard implements CanActivate {
       clientId: query?.client_id,
       redirectUri: query?.redirect_uri,
       scope: query?.scope,
+      state: query?.state,
       codeChallenge: query?.code_challenge,
       codeChallengeMethod: query?.code_challenge_method,
     }

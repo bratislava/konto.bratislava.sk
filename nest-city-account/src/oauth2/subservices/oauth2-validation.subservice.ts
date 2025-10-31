@@ -15,6 +15,7 @@ export interface AuthorizationParams {
   clientId?: string | unknown
   redirectUri?: string | unknown
   scope?: string | unknown
+  state?: string | unknown
   codeChallenge?: string | unknown
   codeChallengeMethod?: string | unknown
 }

@@ -19,7 +19,7 @@ export class TokenRequestGuard implements CanActivate {
 
     // Validate client authentication based on grant type
     // All validation is done here - client_id, client_secret, redirect_uri, PKCE are all checked
-    this.validationSubservice.validateTokenEndpointClientAuth({
+    this.validationSubservice.validateTokenRequest({
       clientId,
       clientSecret,
       redirectUri: request.body?.redirect_uri || request.query?.redirect_uri,

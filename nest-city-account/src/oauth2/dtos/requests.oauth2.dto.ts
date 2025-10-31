@@ -100,7 +100,7 @@ export class TokenRequestDto {
   })
   @IsString()
   @IsIn(['authorization_code'], { message: 'grant_type must be "authorization_code"' })
-  grant_type!: string
+  grant_type!: 'authorization_code'
 
   @ApiProperty({
     description: 'Authorization code received from the authorization endpoint',
@@ -279,7 +279,7 @@ export class RefreshTokenRequestDto {
   })
   @IsString()
   @IsIn(['refresh_token'], { message: 'grant_type must be "refresh_token"' })
-  grant_type!: string
+  grant_type!: 'refresh_token'
 
   @ApiProperty({
     description: 'The refresh token issued by the authorization server',

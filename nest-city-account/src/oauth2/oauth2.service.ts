@@ -4,6 +4,7 @@ import {
   AuthorizationRequestDto,
   RefreshTokenRequestDto,
   TokenRequestDto,
+  TokenRequestUnion,
 } from './dtos/requests.oauth2.dto'
 import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -274,20 +275,21 @@ export class OAuth2Service {
    *
    * @returns Token response DTO per RFC 6749 Section 5.1
    */
-  async token(request: TokenRequestDto | RefreshTokenRequestDto): Promise<TokenResponseDto> {
+  async token(request: TokenRequestUnion): Promise<TokenResponseDto> {
     this.logger.debug('Processing token request', { grant_type: request.grant_type })
 
     if (request.grant_type === 'authorization_code') {
-      return this.exchangeCode(request as TokenRequestDto)
-    } else if (request.grant_type === 'refresh_token') {
-      return this.refreshToken(request as RefreshTokenRequestDto)
-    } else {
-      this.logger.error('Unsupported grant type', { grant_type: request.grant_type })
-      throw this.throwerErrorGuard.OAuth2TokenException(
-        OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
-        `Unsupported grant_type: ${request.grant_type}`
-      )
+      return this.exchangeCode(request)
     }
+    if (request.grant_type === 'refresh_token') {
+      return this.refreshToken(request)
+    }
+
+    this.logger.error('Unsupported grant type. Should have been handled by the guard.')
+    throw this.throwerErrorGuard.OAuth2TokenException(
+      OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+      `Unsupported grant type`
+    )
   }
 
   /**

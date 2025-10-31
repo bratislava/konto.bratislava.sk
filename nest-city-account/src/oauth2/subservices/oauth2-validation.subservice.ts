@@ -287,7 +287,12 @@ export class OAuth2ValidationSubservice {
    *
    * @param params - Client authentication parameters and request context
    */
-  validateTokenEndpointClientAuth(params: ClientAuthParams): void {
+  validateTokenRequest(params: ClientAuthParams): void {
+    if (params.grantType === 'authorization_code') {
+      this.validateClientAuthentication(params)
+      return
+    }
+
     if (params.grantType === 'refresh_token') {
       this.validateClientAuthentication({
         ...params,
@@ -297,7 +302,13 @@ export class OAuth2ValidationSubservice {
       return
     }
 
-    this.validateClientAuthentication(params)
+    this.logger.error('Unsupported grant type', {
+      grantType: params.grantType,
+    })
+    throw this.throwerErrorGuard.OAuth2TokenException(
+      OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+      `Unsupported grant type: ${params.grantType}`
+    )
   }
 
   /**

@@ -15,6 +15,7 @@ import { ROUTES } from '../frontend/api/constants'
 import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import {
+  clearLocalStorage,
   removeAllCookiesAndClearLocalStorage,
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
@@ -66,6 +67,7 @@ const LoginPage = () => {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         if (isOAuthLogin) {
           await handlePostOAuthTokens({ payload })
+          clearLocalStorage()
 
           // TODO OAuth: add client_id param to userControllerGetOrCreateUser after implemented on BE
           // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,

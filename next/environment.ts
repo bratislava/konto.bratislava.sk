@@ -86,6 +86,10 @@ export const environment = {
     'NEXT_PUBLIC_AUTH_APPROVED_ORIGINS',
     process.env.NEXT_PUBLIC_AUTH_APPROVED_ORIGINS,
   ),
+  oAuthApprovedOrigins: getOriginsArray(
+    'NEXT_PUBLIC_OAUTH_APPROVED_ORIGINS',
+    process.env.NEXT_PUBLIC_OAUTH_APPROVED_ORIGINS,
+  ),
   embeddedFormsOloOrigins: getOriginsArray(
     'NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS',
     process.env.NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS,

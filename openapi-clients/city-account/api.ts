@@ -883,7 +883,7 @@ export interface StoreTokensRequestDto {
   /**
    * Refresh token from user authentication
    */
-  refresh_token?: string
+  refresh_token: string
   /**
    * UUID of the authorization request stored in the database
    */

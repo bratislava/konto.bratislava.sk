@@ -180,11 +180,11 @@ export class StoreTokensRequestDto {
   @IsString()
   id_token?: string
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Refresh token from user authentication',
     example: 'def50200f3b2a7b4e8b1c...',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   refresh_token!: string
 

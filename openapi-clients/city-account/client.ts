@@ -2,8 +2,9 @@ import {
   ADMINApiFactory,
   AppApiFactory,
   AuthApiFactory,
-  UserVerificationsApiFactory,
+  OAuth2ApiFactory,
   UsersManipulationApiFactory,
+  UserVerificationsApiFactory,
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
 import type { AxiosInstance } from 'axios'
@@ -28,6 +29,7 @@ export const createCityAccountClient = ({
     ...ADMINApiFactory(...args),
     ...AppApiFactory(...args),
     ...AuthApiFactory(...args),
+    ...OAuth2ApiFactory(...args),
     ...UserVerificationsApiFactory(...args),
     ...UsersManipulationApiFactory(...args),
   }

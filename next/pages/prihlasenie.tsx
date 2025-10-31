@@ -80,7 +80,12 @@ const LoginPage = () => {
 
           logger.info(`[AUTH] Calling Continue endpoint with payload=${payload}`)
           // TODO OAuth: check if payload exists
-          cityAccountClient.oAuth2ControllerContinueComplete(payload ?? '')
+          cityAccountClient.oAuth2ControllerContinueComplete(
+            payload ?? '',
+            clientId ?? undefined,
+            redirectUri ?? undefined,
+            state ?? undefined,
+          )
 
           return
         }

@@ -25,12 +25,12 @@ export class AuthorizationRequestGuard implements CanActivate {
 
     // Extract parameters from query string
     const params: AuthorizationParams = {
-      response_type: query?.response_type,
-      client_id: query?.client_id,
-      redirect_uri: query?.redirect_uri,
+      responseType: query?.response_type,
+      clientId: query?.client_id,
+      redirectUri: query?.redirect_uri,
       scope: query?.scope,
-      code_challenge: query?.code_challenge,
-      code_challenge_method: query?.code_challenge_method,
+      codeChallenge: query?.code_challenge,
+      codeChallengeMethod: query?.code_challenge_method,
     }
 
     // Validate using shared validation subservice

@@ -12,12 +12,12 @@ import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.er
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 export interface AuthorizationParams {
-  response_type?: string | unknown
-  client_id?: string | unknown
-  redirect_uri?: string | unknown
+  responseType?: string | unknown
+  clientId?: string | unknown
+  redirectUri?: string | unknown
   scope?: string | unknown
-  code_challenge?: string | unknown
-  code_challenge_method?: string | unknown
+  codeChallenge?: string | unknown
+  codeChallengeMethod?: string | unknown
 }
 
 export interface ClientAuthParams {
@@ -46,23 +46,18 @@ export class OAuth2ValidationSubservice {
    * @param params - The authorization parameters (from query or decoded payload)
    */
   validateAuthorizationRequest(params: AuthorizationParams) {
-    const client = this.validateClientId(params.client_id as string | undefined)
-    this.validateRedirectUri(params.redirect_uri as string | undefined, client)
-    this.validateScope(params.scope as string | undefined, client)
+    const client = this.validateClientId(params.clientId)
+    this.validateRedirectUri(params.redirectUri, client)
+    this.validateScope(params.scope, client)
     const { codeChallenge, codeChallengeMethod } = this.validatePkceParameters(
-      params.code_challenge as string | undefined,
-      params.code_challenge_method as string | undefined,
+      params.codeChallenge,
+      params.codeChallengeMethod,
       client.clientId
     )
-    this.validateResponseType(
-      params.response_type as string | undefined,
-      client,
-      codeChallenge,
-      codeChallengeMethod
-    )
+    this.validateResponseType(params.responseType, client, codeChallenge, codeChallengeMethod)
   }
 
-  private validateClientId(clientId: string | undefined): ClientConfig {
+  private validateClientId(clientId: string | unknown): ClientConfig {
     if (!clientId || typeof clientId !== 'string' || clientId.length === 0) {
       this.logger.error('Missing or invalid client_id in authorization request', {
         hasClientId: !!clientId,
@@ -88,7 +83,7 @@ export class OAuth2ValidationSubservice {
     return client
   }
 
-  private validateRedirectUri(redirectUri: string | undefined, client: ClientConfig): string {
+  private validateRedirectUri(redirectUri: string | unknown, client: ClientConfig): string {
     if (!redirectUri || typeof redirectUri !== 'string' || redirectUri.length === 0) {
       this.logger.error('Missing or invalid redirect_uri in authorization request', {
         clientId: client.clientId,
@@ -115,8 +110,11 @@ export class OAuth2ValidationSubservice {
     return redirectUri
   }
 
-  private validateScope(scope: string | undefined, client: ClientConfig): string | undefined {
-    if (scope && typeof scope === 'string' && !areScopesAllowed(client, scope)) {
+  private validateScope(scope: string | unknown, client: ClientConfig): string | undefined {
+    if (scope === undefined) {
+      return undefined
+    }
+    if (typeof scope !== 'string' || !areScopesAllowed(client, scope as string)) {
       this.logger.error('Invalid scope requested', {
         clientId: client.clientId,
         requestedScope: scope,
@@ -130,32 +128,39 @@ export class OAuth2ValidationSubservice {
   }
 
   private validatePkceParameters(
-    codeChallenge: string | undefined,
-    codeChallengeMethod: string | undefined,
+    codeChallenge: string | unknown,
+    codeChallengeMethod: string | unknown,
     clientId: string
   ): { codeChallenge?: string; codeChallengeMethod?: string } {
-    if (codeChallenge || codeChallengeMethod) {
-      if (!codeChallenge || !codeChallengeMethod) {
-        this.logger.error('PKCE parameters incomplete', {
-          clientId: clientId,
-          hasCodeChallenge: !!codeChallenge,
-          hasCodeChallengeMethod: !!codeChallengeMethod,
-        })
-        throw this.throwerErrorGuard.OAuth2AuthorizationException(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          `Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE`
-        )
-      }
+    if (codeChallenge === undefined && codeChallengeMethod === undefined) {
+      return { codeChallenge: undefined, codeChallengeMethod: undefined }
+    }
+
+    if (
+      typeof codeChallenge !== 'string' ||
+      codeChallenge.length === 0 ||
+      typeof codeChallengeMethod !== 'string' ||
+      codeChallengeMethod.length === 0
+    ) {
+      this.logger.error('PKCE parameters incomplete', {
+        clientId: clientId,
+        hasCodeChallenge: !!codeChallenge,
+        hasCodeChallengeMethod: !!codeChallengeMethod,
+      })
+      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+        `Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE`
+      )
     }
 
     return { codeChallenge, codeChallengeMethod }
   }
 
   private validateResponseType(
-    responseType: string | undefined,
+    responseType: string | unknown,
     client: ClientConfig,
-    codeChallenge: string | undefined,
-    codeChallengeMethod: string | undefined
+    codeChallenge?: string,
+    codeChallengeMethod?: string
   ): string {
     if (!responseType || typeof responseType !== 'string') {
       this.logger.error('Missing or invalid response_type in authorization request', {

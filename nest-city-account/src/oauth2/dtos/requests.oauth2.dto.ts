@@ -193,6 +193,34 @@ export class StoreTokensRequestDto {
   @IsNotEmpty()
   @IsUUID()
   payload!: string
+
+  @ApiPropertyOptional({
+    description:
+      'Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request',
+    example: EXAMPLE_CLIENT_ID,
+  })
+  @IsOptional()
+  @IsString()
+  client_id?: string
+
+  @ApiPropertyOptional({
+    description:
+      'Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request',
+    example: 'https://your-app.com/callback',
+  })
+  @IsOptional()
+  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  redirect_uri?: string
+
+  @ApiPropertyOptional({
+    description:
+      'Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749',
+    example: 'xK8F2j9pL3mN7qR',
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  state?: string
 }
 
 /**
@@ -207,6 +235,34 @@ export class ContinueRequestDto {
   @IsNotEmpty()
   @IsUUID()
   payload!: string
+
+  @ApiPropertyOptional({
+    description:
+      'Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request',
+    example: EXAMPLE_CLIENT_ID,
+  })
+  @IsOptional()
+  @IsString()
+  client_id?: string
+
+  @ApiPropertyOptional({
+    description:
+      'Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request',
+    example: 'https://your-app.com/callback',
+  })
+  @IsOptional()
+  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  redirect_uri?: string
+
+  @ApiPropertyOptional({
+    description:
+      'Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749',
+    example: 'xK8F2j9pL3mN7qR',
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  state?: string
 }
 
 /**

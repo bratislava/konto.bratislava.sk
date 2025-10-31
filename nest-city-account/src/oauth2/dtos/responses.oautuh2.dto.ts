@@ -61,10 +61,4 @@ export class TokenResponseDto {
     example: 'openid profile email',
   })
   scope?: string
-
-  @ApiPropertyOptional({
-    description: 'ID Token for OpenID Connect (if requested)',
-    example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
-  })
-  id_token?: string
 }

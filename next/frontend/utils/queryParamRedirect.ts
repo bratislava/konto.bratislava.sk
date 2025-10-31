@@ -10,7 +10,6 @@ import logger from './logger'
 export enum SafeRedirectType {
   Local = 'local',
   Remote = 'remote',
-  RemoteWithRefresh = 'remoteWithRefresh',
 }
 
 export const redirectQueryParam = 'from'
@@ -58,12 +57,6 @@ export const getSafeRedirect = (queryParam: unknown) => {
       }
     }
 
-    if (environment.oAuthApprovedOrigins.includes(url.origin)) {
-      return {
-        url: queryParam,
-        type: SafeRedirectType.RemoteWithRefresh,
-      }
-    }
     // eslint-disable-next-line no-empty
   } catch (error) {}
 
@@ -117,7 +110,6 @@ export const removeRedirectQueryParamFromUrl = (resolvedUrl: string) => {
 /**
  * Returns the URL to redirect to. "Remote" URLs in redirect query params are used to pass the access token to the target
  * domain, therefore we add the access token to the query string.
- * "RemoteWithRefresh" URLs should get all token before the redirect, so we do not add any tokens for them. (This should only be our BE)
  */
 export const getRedirectUrl = async (
   safeRedirect: SafeRedirect,
@@ -131,11 +123,6 @@ export const getRedirectUrl = async (
       parsedUrl.searchParams.set('access_token', accessToken)
     }
     return parsedUrl.toString()
-  }
-
-  // TODO OAuth: remove if not needed
-  if (safeRedirect.type === SafeRedirectType.RemoteWithRefresh) {
-    // Do nothing special
   }
 
   return safeRedirect.url

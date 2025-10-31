@@ -43,20 +43,21 @@ export const useQueryParamRedirect = () => {
   )
 
   /**
-   * Returns the redirect query params to be used in the next route.
+   * Returns the redirect query params to be used in the next route. // TODO OAuth update comment
    */
   const getRedirectQueryParams = useCallback(() => {
     if (!isHomeRedirect(safeRedirect)) {
       return {
         [redirectQueryParam]: safeRedirect.url,
-        [clientIdQueryParam]: clientId,
-        [payloadQueryParam]: payload,
-        [redirectUriQueryParam]: redirectUri,
-        [stateQueryParam]: state,
       }
     }
 
-    return null
+    return {
+      ...(clientId && { [clientIdQueryParam]: clientId }),
+      ...(payload && { [payloadQueryParam]: payload }),
+      ...(redirectUri && { [redirectUriQueryParam]: redirectUri }),
+      ...(state && { [stateQueryParam]: state }),
+    }
   }, [clientId, payload, redirectUri, safeRedirect, state])
 
   /**

@@ -78,10 +78,6 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     )
   }
 
-  private isOAuth2Endpoint(path: string): boolean {
-    return path.includes('/oauth2/')
-  }
-
   private handleAuthorizationStoreError(
     request: Request,
     response: Response,

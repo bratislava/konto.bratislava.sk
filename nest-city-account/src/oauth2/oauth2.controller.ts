@@ -44,6 +44,7 @@ import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'
 import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
+import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
@@ -67,6 +68,17 @@ export class OAuth2Controller {
   @ApiResponse({
     status: 303,
     description: 'Redirects to frontend for user authentication',
+  })
+  @ApiResponse({
+    status: 303,
+    description:
+      'Redirects to client redirect_uri with OAuth2 error parameters (error, error_description, error_uri, state) if authorization fails with valid redirect_uri (RFC 6749 Section 4.1.2.1)',
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Returns OAuth2 error as JSON if authorization fails without valid redirect_uri to prevent open redirector vulnerability (RFC 6749 Section 4.1.2.1)',
+    type: OAuth2AuthorizationErrorDto,
   })
   async authorize(@Query() query: AuthorizationRequestDto, @Res() res: Response): Promise<void> {
     this.logger.debug(`Authorization request received for client_id: ${query.client_id}`)
@@ -190,6 +202,12 @@ export class OAuth2Controller {
     status: 200,
     description: 'Token exchange successful',
     type: TokenResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Token request failed with OAuth2 error (RFC 6749 Section 5.2). Always returns HTTP 400 Bad Request with error details in JSON body',
+    type: OAuth2TokenErrorDto,
   })
   async token(@Body() body: TokenRequestUnion): Promise<TokenResponseDto> {
     this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)

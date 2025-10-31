@@ -19,8 +19,9 @@ const AccountLink = ({ description, label, href, variant = 'black' }: Props) => 
         href={href}
         // data-cy={`${name}-button`}
         className={cn('font-semibold underline', {
-          'text-category-700 hover:text-gray-600 focus:text-category-800': variant === 'black',
-          'text-gray-700 hover:text-category-600 focus:text-gray-800': variant === 'category',
+          'text-gray-700 hover:text-gray-600 focus:text-gray-800': variant === 'black',
+          'text-category-700 hover:text-category-600 focus:text-category-800':
+            variant === 'category',
         })}
       >
         {label}

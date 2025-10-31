@@ -39,7 +39,7 @@ import {
   AuthorizationPayloadGuard,
   RequestWithAuthorizationPayload,
 } from './guards/authorization-payload.guard'
-import { TokenResponseDto } from './dtos/responses.oautuh2.dto'
+import { TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'

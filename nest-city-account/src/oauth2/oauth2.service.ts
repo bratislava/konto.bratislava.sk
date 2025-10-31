@@ -5,7 +5,7 @@ import {
   RefreshTokenRequestDto,
   TokenRequestDto,
 } from './dtos/requests.oauth2.dto'
-import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oautuh2.dto'
+import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'

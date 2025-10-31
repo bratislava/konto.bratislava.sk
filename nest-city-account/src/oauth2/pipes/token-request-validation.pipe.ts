@@ -2,8 +2,8 @@ import { ArgumentMetadata, Injectable, PipeTransform, Type } from '@nestjs/commo
 import { plainToInstance } from 'class-transformer'
 import { validate } from 'class-validator'
 import { TokenRequestDto, RefreshTokenRequestDto } from '../dtos/requests.oauth2.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { OAuth2TokenErrorCode } from '../oauth2.error.enum'
+import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
 
 /**
  * Custom validation pipe for OAuth2 token endpoint
@@ -11,7 +11,7 @@ import { OAuth2TokenErrorCode } from '../oauth2.error.enum'
  */
 @Injectable()
 export class TokenRequestValidationPipe implements PipeTransform {
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
+  constructor(private readonly oAuth2ErrorThrower: OAuth2ErrorThrower) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async transform(value: unknown, _metadata: ArgumentMetadata) {
@@ -27,7 +27,7 @@ export class TokenRequestValidationPipe implements PipeTransform {
     } else if (grantType === 'refresh_token') {
       DtoClass = RefreshTokenRequestDto
     } else {
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
         `Unsupported grant_type: ${grantType || '(grant_type missing)'} - must be 'authorization_code' or 'refresh_token'`
       )
@@ -46,7 +46,7 @@ export class TokenRequestValidationPipe implements PipeTransform {
       const errorMessages = errors.map((error) => {
         return Object.values(error.constraints || {}).join(', ')
       })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
         `Invalid request: ${errorMessages.join('; ')}`
       )

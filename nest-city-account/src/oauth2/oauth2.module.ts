@@ -1,3 +1,4 @@
+
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
 import { OAuth2Controller } from './oauth2.controller'
@@ -12,14 +13,16 @@ import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
 import { PrismaService } from '../prisma/prisma.service'
 import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
+import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 
 @Module({
-  imports: [],
+  imports: [], // TODO we should import modules
   providers: [
     OAuth2Service,
     PrismaService,
     CognitoSubservice,
     ThrowerErrorGuard,
+    OAuth2ErrorThrower,
     OAuth2ValidationSubservice,
     AuthorizationRequestGuard,
     TokenRequestGuard,

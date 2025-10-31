@@ -24,7 +24,7 @@ import {
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   AuthorizationRequestDto,
@@ -55,7 +55,7 @@ export class OAuth2Controller {
 
   constructor(
     private readonly oauth2Service: OAuth2Service,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower
   ) {}
 
   @Get('authorize')
@@ -151,7 +151,7 @@ export class OAuth2Controller {
     // Check if tokens are stored
     const tokensStored = await this.oauth2Service.areTokensStoredForAuthRequest(query.payload)
     if (!tokensStored) {
-      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
         'Authorization server error: unable to provide tokens for this authorization request'
       )

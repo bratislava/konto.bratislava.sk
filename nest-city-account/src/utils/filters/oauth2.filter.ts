@@ -11,6 +11,7 @@ import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../../oauth2
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import { toLogfmt } from '../logging'
+import { OAuth2ErrorMetadata, OAuth2Exception } from '../../oauth2/oauth2.exception'
 
 /**
  * Exception filter for OAuth2 error handling per RFC 6749 and RFC 9700
@@ -37,43 +38,50 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus()
     const exceptionResponse = exception.getResponse()
 
+    // Extract OAuth2 metadata if this is an OAuth2Exception
+    const oauth2Metadata: OAuth2ErrorMetadata =
+      exception instanceof OAuth2Exception ? exception.oauth2Metadata : {}
+
+    // Route to appropriate handler and get log object
+    let logObject: Record<string, unknown>
+
     // Handle authorization endpoint errors (redirect)
     if (request.path.includes('/oauth2/authorize') || request.path.includes('/oauth2/continue')) {
-      this.handleAuthorizationError(request, response, status, exceptionResponse)
-      return
+      logObject = this.handleAuthorizationError(request, response, status, exceptionResponse)
+    }
+    else if (request.path.includes('/oauth2/store')) {
+      logObject = this.handleAuthorizationStoreError(request, response, status, exceptionResponse)
+    }
+    else if (request.path.includes('/oauth2/token')) {
+      logObject = this.handleTokenError(request, response, status, exceptionResponse)
+    } else {
+      logObject = {
+        method: request.method,
+        originalUrl: request.originalUrl,
+        statusCode: status,
+        userAgent: request.get('user-agent') || '',
+        requestBody: request.body,
+        queryParams: request.query,
+        ip: request.ip ?? '<NO IP>',
+        error: exceptionResponse,
+        message: 'OAuth2 endpoint error - ENDPOINT ERRORS NOT HANDLED!!!.',
+        alert: 1,
+      }
+
+      response
+        .status(status)
+        .json(
+          typeof exceptionResponse === 'object' ? exceptionResponse : { message: exceptionResponse }
+        )
     }
 
-    if (request.path.includes('/oauth2/store')) {
-      this.handleAuthorizationStoreError(request, response, status, exceptionResponse)
-      return
-    }
-
-    // Handle token endpoint errors (JSON response)
-    if (request.path.includes('/oauth2/token')) {
-      this.handleTokenError(request, response, status, exceptionResponse)
-      return
-    }
-
-    // For other OAuth2 endpoints (like /oauth2/store), return JSON error
-    // This handles cases like HTTPS guard failures on OAuth2 endpoints
+    // Merge log object with OAuth2 metadata and log
     this.logger.error({
-      method: request.method,
-      originalUrl: request.originalUrl,
-      statusCode: status,
-      userAgent: request.get('user-agent') || '',
-      requestBody: request.body,
-      queryParams: request.query,
-      ip: request.ip ?? '<NO IP>',
-      error: exceptionResponse,
-      message: 'OAuth2 endpoint error - ENDPOINT ERRORS NOT HANDLED!!!.',
-      alert: 1,
+      ...logObject,
+      consoleMessage: oauth2Metadata.consoleMessage,
+      alert: oauth2Metadata.alert,
+      ...oauth2Metadata.metadata,
     })
-
-    response
-      .status(status)
-      .json(
-        typeof exceptionResponse === 'object' ? exceptionResponse : { message: exceptionResponse }
-      )
   }
 
   private handleAuthorizationStoreError(
@@ -82,10 +90,10 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     status: number,
     exceptionResponse: string | object
   ) {
-
     const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
-    this.logger.error({
+    response.status(status).json(errorResponse)
+    return {
       method: request.method,
       originalUrl: request.originalUrl,
       statusCode: status,
@@ -96,9 +104,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       error: errorResponse.error,
       message: 'Store failed, sending redirect error.',
       'response-data': errorResponse,
-    })
-
-    response.status(status).json(errorResponse)
+    }
   }
 
   /**
@@ -110,7 +116,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     response: Response,
     status: number,
     exceptionResponse: string | object
-  ): void {
+  ) {
     const redirectUri = request.query.redirect_uri as string | undefined
     const state = request.query.state as string | undefined
 
@@ -120,7 +126,8 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       // Extract or construct OAuth2 error response
       const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
-      this.logger.error({
+      response.status(status).json(errorResponse)
+      return {
         method: request.method,
         originalUrl: request.originalUrl,
         statusCode: status,
@@ -132,10 +139,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         message: 'Authorization error without redirect_uri, returning direct error',
         hasRedirectUri: false,
         responseData: errorResponse,
-      })
-
-      response.status(status).json(errorResponse)
-      return
+      }
     }
 
     // Extract or construct OAuth2 error response
@@ -158,7 +162,10 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     // Build redirect URL with error parameters
     const redirectUrl = this.buildErrorRedirectUrl(redirectUri, errorResponse)
 
-    this.logger.error({
+    // RFC 9700: Use 303 See Other for OAuth2 redirects
+    response.redirect(HttpStatus.SEE_OTHER, redirectUrl)
+
+    return {
       method: request.method,
       originalUrl: request.originalUrl,
       statusCode: HttpStatus.SEE_OTHER,
@@ -171,10 +178,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       redirectUrl,
       hasRedirectUri: !!redirectUri,
       'response-data': { redirectUrl, errorResponse },
-    })
-
-    // RFC 9700: Use 303 See Other for OAuth2 redirects
-    response.redirect(HttpStatus.SEE_OTHER, redirectUrl)
+    }
   }
 
   /**
@@ -186,7 +190,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     response: Response,
     status: number,
     exceptionResponse: string | object
-  ): void {
+  ) {
     const errorResponse = this.extractOAuth2TokenError(exceptionResponse, status)
 
     // RFC 6749 Section 5.2: invalid_client errors should return 401 with WWW-Authenticate header
@@ -200,7 +204,12 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       response.setHeader('WWW-Authenticate', 'Basic realm="OAuth2 Token Endpoint"')
     }
 
-    this.logger.error({
+    response
+      .status(statusCode)
+      .header('Content-Type', 'application/json;charset=UTF-8')
+      .json(errorResponse)
+
+    return {
       method: request.method,
       originalUrl: request.originalUrl,
       statusCode,
@@ -212,12 +221,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       message: 'Returning token endpoint error',
       hasRedirectUri: false,
       responseData: errorResponse,
-    })
-
-    response
-      .status(statusCode)
-      .header('Content-Type', 'application/json;charset=UTF-8')
-      .json(errorResponse)
+    }
   }
 
   /**

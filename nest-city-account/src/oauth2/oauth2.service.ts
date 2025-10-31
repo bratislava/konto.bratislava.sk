@@ -8,7 +8,7 @@ import {
 } from './dtos/requests.oauth2.dto'
 import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { PrismaService } from '../prisma/prisma.service'
 import { decryptData, encryptData } from '../utils/crypto'
@@ -22,7 +22,7 @@ export class OAuth2Service {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Service.name)
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly validationSubservice: OAuth2ValidationSubservice,
@@ -116,10 +116,12 @@ export class OAuth2Service {
       select: { id: true },
     })
     if (!existingRequest) {
-      this.logger.error('Unknown authorization request ID', { authRequestId })
-      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization server error: unknown authorization request'
+        'Authorization server error: unknown authorization request',
+        undefined,
+        'Unknown authorization request ID',
+        { authRequestId }
       )
     }
 
@@ -138,10 +140,12 @@ export class OAuth2Service {
       }
       refreshTokenEnc = encryptData(refreshToken)
     } catch (error) {
-      this.logger.error('Failed to encrypt tokens', { error, authRequestId })
-      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization server error: failed to process tokens'
+        'Authorization server error: failed to process tokens',
+        undefined,
+        'Failed to encrypt tokens',
+        { error, authRequestId }
       )
     }
 
@@ -176,13 +180,15 @@ export class OAuth2Service {
   buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
     const oAuth2LoginUrl = this.configService.get<string>('OAUTH2_LOGIN_URL')
     if (!oAuth2LoginUrl) {
-      this.logger.error('OAUTH2_LOGIN_URL environment variable is not configured', {
-        clientId: request.client_id,
-        authRequestId,
-      })
-      throw this.throwerErrorGuard.OAuth2AuthorizationException(
+      throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization redirect error: server misconfiguration'
+        'Authorization redirect error: server misconfiguration',
+        undefined,
+        'OAUTH2_LOGIN_URL environment variable is not configured',
+        {
+          clientId: request.client_id,
+          authRequestId,
+        }
       )
     }
     const redirectUrl = new URL(oAuth2LoginUrl)
@@ -285,10 +291,11 @@ export class OAuth2Service {
       return this.refreshToken(request)
     }
 
-    this.logger.error('Unsupported grant type. Should have been handled by the guard.')
-    throw this.throwerErrorGuard.OAuth2TokenException(
+    throw this.oAuth2ErrorThrower.tokenException(
       OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
-      `Unsupported grant type`
+      `Unsupported grant type`,
+      undefined,
+      'Unsupported grant type. Should have been handled by the guard.'
     )
   }
 
@@ -306,10 +313,12 @@ export class OAuth2Service {
     })
 
     if (!oauth2Data) {
-      this.logger.error('Authorization code not found', { hasCode: !!request.code })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: authorization code not found'
+        'Invalid grant: authorization code not found',
+        undefined,
+        'Authorization code not found',
+        { hasCode: !!request.code }
       )
     }
 
@@ -321,52 +330,59 @@ export class OAuth2Service {
       })
     } catch (deleteError) {
       // Code was already used or deleted - treat as invalid grant
-      this.logger.error('Authorization code already used or deleted', {
-        error: deleteError,
-        authRequestId: oauth2Data.id,
-        clientId: oauth2Data.clientId,
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: authorization code already used or deleted'
+        'Invalid grant: authorization code already used or deleted',
+        undefined,
+        'Authorization code already used or deleted',
+        {
+          error: deleteError,
+          authRequestId: oauth2Data.id,
+          clientId: oauth2Data.clientId,
+        }
       )
     }
 
     if (!oauth2Data.authorizationCodeCreatedAt) {
-      this.logger.error('Authorization code missing creation timestamp', {
-        authRequestId: oauth2Data.id,
-        clientId: oauth2Data.clientId,
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: authorization code missing creation timestamp'
+        'Invalid grant: authorization code missing creation timestamp',
+        undefined,
+        'Authorization code missing creation timestamp',
+        {
+          authRequestId: oauth2Data.id,
+          clientId: oauth2Data.clientId,
+        }
       )
     }
     const maxAge = 5 * 60 * 1000 // 5 minutes
     const codeAge = Date.now() - oauth2Data.authorizationCodeCreatedAt.getTime()
     if (codeAge > maxAge) {
-      this.logger.error('Authorization code expired', {
-        authRequestId: oauth2Data.id,
-        clientId: oauth2Data.clientId,
-        codeAgeMs: codeAge,
-        maxAgeMs: maxAge,
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: authorization code expired'
+        'Invalid grant: authorization code expired',
+        undefined,
+        'Authorization code expired',
+        {
+          authRequestId: oauth2Data.id,
+          clientId: oauth2Data.clientId,
+          codeAgeMs: codeAge,
+          maxAgeMs: maxAge,
+        }
       )
     }
 
     if (oauth2Data.redirectUri !== request.redirect_uri) {
-      this.logger.error('Redirect URI mismatch', {
-        authRequestId: oauth2Data.id,
-        clientId: oauth2Data.clientId,
-        storedRedirectUri: oauth2Data.redirectUri,
-        requestedRedirectUri: request.redirect_uri,
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        'Invalid request: redirect_uri mismatch'
+        'Invalid request: redirect_uri mismatch',
+        undefined,
+        'Redirect URI mismatch', {
+          authRequestId: oauth2Data.id,
+          clientId: oauth2Data.clientId,
+          storedRedirectUri: oauth2Data.redirectUri,
+          requestedRedirectUri: request.redirect_uri,
+        }
       )
     }
 
@@ -383,16 +399,17 @@ export class OAuth2Service {
       !oauth2Data.refreshTokenEnc ||
       !oauth2Data.accessTokenExpiresAt
     ) {
-      this.logger.error('Tokens not available for authorization code', {
-        authRequestId: oauth2Data.id,
-        clientId: oauth2Data.clientId,
-        hasAccessToken: !!oauth2Data.accessTokenEnc,
-        hasRefreshToken: !!oauth2Data.refreshTokenEnc,
-        hasExpiresAt: !!oauth2Data.accessTokenExpiresAt,
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: tokens not available for this authorization code'
+        'Invalid grant: tokens not available for this authorization code',
+        undefined,
+        'Tokens not available for authorization code', {
+          authRequestId: oauth2Data.id,
+          clientId: oauth2Data.clientId,
+          hasAccessToken: !!oauth2Data.accessTokenEnc,
+          hasRefreshToken: !!oauth2Data.refreshTokenEnc,
+          hasExpiresAt: !!oauth2Data.accessTokenExpiresAt,
+        }
       )
     }
 
@@ -437,25 +454,27 @@ export class OAuth2Service {
       // Plain: code_verifier itself
       expectedChallenge = codeVerifier
     } else {
-      this.logger.error('Invalid code_challenge_method', {
-        codeChallengeMethod,
-        validMethods: ['S256', 'plain'],
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        'Invalid request: invalid code_challenge_method'
+        'Invalid request: invalid code_challenge_method',
+        undefined,
+        'Invalid code_challenge_method', {
+          codeChallengeMethod,
+          validMethods: ['S256', 'plain'],
+        }
       )
     }
 
     if (!this.validationSubservice.isValidSecret(codeChallenge, expectedChallenge)) {
-      this.logger.error('PKCE code_verifier validation failed', {
-        codeChallengeMethod,
-        hasCodeVerifier: !!codeVerifier,
-        hasCodeChallenge: !!codeChallenge,
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        'Invalid request: invalid code_verifier'
+        'Invalid request: invalid code_verifier',
+        undefined,
+        'PKCE code_verifier validation failed', {
+          codeChallengeMethod,
+          hasCodeVerifier: !!codeVerifier,
+          hasCodeChallenge: !!codeChallenge,
+        }
       )
     }
   }
@@ -476,10 +495,11 @@ export class OAuth2Service {
     })
 
     if (!clientId) {
-      this.logger.error('Missing client_id in refresh token request')
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        'Invalid request: client_id required'
+        'Invalid request: client_id required',
+        undefined,
+        'Missing client_id in refresh token request'
       )
     }
 
@@ -487,10 +507,12 @@ export class OAuth2Service {
     try {
       refreshTokenPlain = decryptData(request.refresh_token)
     } catch (error) {
-      this.logger.error('Failed to decrypt refresh token', { error, clientId })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: invalid refresh token'
+        'Invalid grant: invalid refresh token',
+        undefined,
+        'Failed to decrypt refresh token',
+        { error, clientId }
       )
     }
 
@@ -498,21 +520,24 @@ export class OAuth2Service {
     try {
       refreshed = await this.cognitoSubservice.refreshTokens(refreshTokenPlain, clientId)
     } catch (error) {
-      this.logger.error('Failed to refresh tokens via Cognito', { error, clientId })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: unable to refresh access token'
+        'Invalid grant: unable to refresh access token',
+        undefined,
+        'Failed to refresh tokens via Cognito',
+        { error, clientId }
       )
     }
 
     if (!refreshed.accessToken) {
-      this.logger.error('No access token returned from Cognito refresh', {
-        clientId,
-        hasRefreshToken: !!refreshTokenPlain,
-      })
-      throw this.throwerErrorGuard.OAuth2TokenException(
+      throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
-        'Invalid grant: unable to refresh access token'
+        'Invalid grant: unable to refresh access token',
+        undefined,
+        'No access token returned from Cognito refresh', {
+          clientId,
+          hasRefreshToken: !!refreshTokenPlain,
+        }
       )
     }
 

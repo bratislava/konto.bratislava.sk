@@ -203,55 +203,6 @@ export default class ThrowerErrorGuard {
 
     return exception
   }
-
-  // OAuth2 errors
-
-  /**
-   * Throws an OAuth2 authorization error
-   * The OAuth2ExceptionFilter will automatically convert this to a 303 redirect
-   *
-   * @param errorCode - OAuth2 authorization error code
-   * @param errorDescription - Optional human-readable error description
-   * @param errorUri - Optional URI identifying a human-readable error page
-   * @returns HttpException that will be intercepted by OAuth2ExceptionFilter
-   */
-  OAuth2AuthorizationException(
-    errorCode: OAuth2AuthorizationErrorCode,
-    errorDescription?: string,
-    errorUri?: string
-  ): HttpException {
-    const response: OAuth2AuthorizationErrorDto = {
-      error: errorCode,
-      error_description: errorDescription,
-      error_uri: errorUri,
-    }
-
-    // Note: state will be automatically added by OAuth2ExceptionFilter from request query
-    return new HttpException(response, HttpStatus.BAD_REQUEST)
-  }
-
-  /**
-   * Creates an OAuth2 token endpoint error per RFC 6749 Section 5.2
-   * Token errors return HTTP 400 with JSON body
-   *
-   * @param errorCode - OAuth2 token error code
-   * @param errorDescription - Optional human-readable error description
-   * @param errorUri - Optional URI identifying a human-readable error page
-   * @returns HttpException with 400 status
-   */
-  OAuth2TokenException(
-    errorCode: OAuth2TokenErrorCode,
-    errorDescription?: string,
-    errorUri?: string
-  ): HttpException {
-    const response: OAuth2TokenErrorDto = {
-      error: errorCode,
-      error_description: errorDescription,
-      error_uri: errorUri,
-    }
-
-    return new HttpException(response, HttpStatus.BAD_REQUEST)
-  }
 }
 
 @Injectable()

@@ -23,7 +23,11 @@ import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { clearLocalStorage } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
-import { handlePostOAuthTokens, SafeRedirectType } from '../frontend/utils/queryParamRedirect'
+import {
+  getContinueUrl,
+  handlePostOAuthTokens,
+  SafeRedirectType,
+} from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 import { loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
 
@@ -297,8 +301,8 @@ const RegisterPage = () => {
         onConfirm: async () => {
           await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
           clearLocalStorage()
-          // TODO OAuth: check if payload exists
-          await cityAccountClient.oAuth2ControllerContinueComplete(payload ?? '')
+          // TODO OAuth: check if payload exists, handle errors
+          await router.push(getContinueUrl({ payload, clientId, redirectUri, state }))
         },
       }
     }

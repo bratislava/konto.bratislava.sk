@@ -193,3 +193,30 @@ export const handlePostOAuthTokens = async ({
     console.log(error)
   }
 }
+
+export const getContinueUrl = ({
+  payload,
+  clientId,
+  redirectUri,
+  state,
+}: {
+  payload: string | null
+  clientId?: string | null
+  redirectUri?: string | null
+  state?: string | null
+}) => {
+  const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
+  if (payload) {
+    parsedUrl.searchParams.set(payloadQueryParam, payload)
+  }
+  if (clientId) {
+    parsedUrl.searchParams.set(clientIdQueryParam, clientId)
+  }
+  if (redirectUri) {
+    parsedUrl.searchParams.set(redirectUriQueryParam, redirectUri)
+  }
+  if (state) {
+    parsedUrl.searchParams.set(stateQueryParam, state)
+  }
+  return parsedUrl
+}

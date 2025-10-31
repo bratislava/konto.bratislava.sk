@@ -1,14 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsIn,
-  IsUrl,
-  IsUUID,
-  Matches,
-  MinLength,
-} from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString, IsIn, IsUUID, Matches, MinLength } from 'class-validator'
 
 const EXAMPLE_CLIENT_ID = 'a1b2c3d4e5f67890abcdef1234567890'
 
@@ -40,7 +31,7 @@ export class AuthorizationRequestDto {
     example: 'https://your-app.com/callback',
   })
   @IsNotEmpty()
-  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  @IsString()
   redirect_uri!: string
 
   @ApiPropertyOptional({
@@ -115,7 +106,7 @@ export class TokenRequestDto {
     example: 'https://your-app.com/callback',
   })
   @IsNotEmpty()
-  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  @IsString()
   redirect_uri!: string
 
   @ApiProperty({
@@ -211,7 +202,7 @@ export class StoreTokensRequestDto {
     example: 'https://your-app.com/callback',
   })
   @IsOptional()
-  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  @IsString()
   redirect_uri?: string
 
   @ApiPropertyOptional({
@@ -253,7 +244,7 @@ export class ContinueRequestDto {
     example: 'https://your-app.com/callback',
   })
   @IsOptional()
-  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  @IsString()
   redirect_uri?: string
 
   @ApiPropertyOptional({

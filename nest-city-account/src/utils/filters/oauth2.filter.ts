@@ -13,6 +13,8 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
 import { toLogfmt } from '../logging'
 import { OAuth2ErrorMetadata, OAuth2Exception } from '../../oauth2/oauth2.exception'
 
+const USER_AGENT = 'user-agent'
+
 /**
  * Exception filter for OAuth2 error handling per RFC 6749 and RFC 9700
  *
@@ -48,18 +50,16 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     // Handle authorization endpoint errors (redirect)
     if (request.path.includes('/oauth2/authorize') || request.path.includes('/oauth2/continue')) {
       logObject = this.handleAuthorizationError(request, response, status, exceptionResponse)
-    }
-    else if (request.path.includes('/oauth2/store')) {
+    } else if (request.path.includes('/oauth2/store')) {
       logObject = this.handleAuthorizationStoreError(request, response, status, exceptionResponse)
-    }
-    else if (request.path.includes('/oauth2/token')) {
+    } else if (request.path.includes('/oauth2/token')) {
       logObject = this.handleTokenError(request, response, status, exceptionResponse)
     } else {
       logObject = {
         method: request.method,
         originalUrl: request.originalUrl,
         statusCode: status,
-        userAgent: request.get('user-agent') || '',
+        userAgent: request.get(USER_AGENT) || '',
         requestBody: request.body,
         queryParams: request.query,
         ip: request.ip ?? '<NO IP>',
@@ -97,7 +97,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       method: request.method,
       originalUrl: request.originalUrl,
       statusCode: status,
-      userAgent: request.get('user-agent') || '',
+      userAgent: request.get(USER_AGENT) || '',
       requestBody: request.body,
       queryParams: request.query,
       ip: request.ip ?? '<NO IP>',
@@ -131,7 +131,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         method: request.method,
         originalUrl: request.originalUrl,
         statusCode: status,
-        userAgent: request.get('user-agent') || '',
+        userAgent: request.get(USER_AGENT) || '',
         requestBody: request.body,
         queryParams: request.query,
         ip: request.ip ?? '<NO IP>',
@@ -169,7 +169,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       method: request.method,
       originalUrl: request.originalUrl,
       statusCode: HttpStatus.SEE_OTHER,
-      userAgent: request.get('user-agent') || '',
+      userAgent: request.get(USER_AGENT) || '',
       requestBody: request.body,
       queryParams: request.query,
       ip: request.ip ?? '<NO IP>',
@@ -213,7 +213,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       method: request.method,
       originalUrl: request.originalUrl,
       statusCode,
-      userAgent: request.get('user-agent') || '',
+      userAgent: request.get(USER_AGENT) || '',
       requestBody: request.body,
       queryParams: request.query,
       ip: request.ip ?? '<NO IP>',

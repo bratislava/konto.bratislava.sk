@@ -87,6 +87,8 @@ spec:
             name: ${BUILD_REPOSITORY_NAME}-cipher-key-secret
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-tax-backend-secret
+        - secretRef:
+            name: ${BUILD_REPOSITORY_NAME}-oauth2-mpa-secret
         - configMapRef:
             name: ${BUILD_REPOSITORY_NAME}-env
         readinessProbe:

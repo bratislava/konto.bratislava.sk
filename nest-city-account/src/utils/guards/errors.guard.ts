@@ -9,6 +9,11 @@ import {
 } from '../../user-verification/verification.errors.enum'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 import { AxiosError } from 'axios'
+import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../../oauth2/oauth2.error.enum'
+import {
+  OAuth2AuthorizationErrorDto,
+  OAuth2TokenErrorDto,
+} from '../../oauth2/dtos/errors.oauth2.dto'
 
 @Injectable()
 export default class ThrowerErrorGuard {

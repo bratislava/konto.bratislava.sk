@@ -2,7 +2,10 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2Service } from '../oauth2.service'
-import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
+import {
+  AuthorizationParams,
+  OAuth2ValidationSubservice,
+} from '../subservices/oauth2-validation.subservice'
 import { OAuth2AuthorizationErrorCode } from '../oauth2.error.enum'
 import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
 
@@ -63,8 +66,18 @@ export class AuthorizationPayloadGuard implements CanActivate {
       )
     }
 
+    const params: AuthorizationParams = {
+      responseType: authorizationRequest?.response_type,
+      clientId: authorizationRequest?.client_id,
+      redirectUri: authorizationRequest?.redirect_uri,
+      scope: authorizationRequest?.scope,
+      state: authorizationRequest?.state,
+      codeChallenge: authorizationRequest?.code_challenge,
+      codeChallengeMethod: authorizationRequest?.code_challenge_method,
+    }
+
     try {
-      this.validationSubservice.validateAuthorizationRequest(authorizationRequest)
+      this.validationSubservice.validateAuthorizationRequest(params)
     } catch (error) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,

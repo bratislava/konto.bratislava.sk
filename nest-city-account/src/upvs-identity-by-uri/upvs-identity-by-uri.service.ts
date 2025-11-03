@@ -5,7 +5,6 @@ import { NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { parseBirthNumberFromUri } from '../utils/upvs'
-import { UpvsIdentity, UpvsIdentitySchema } from './dtos/upvsSchema'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import {
   VerificationErrorsEnum,
@@ -76,18 +75,10 @@ export class UpvsIdentityByUriService {
     const birthNumbersWithSuccessfulUris = new Set<string>()
     for (const result of results) {
       // validate the result format - for info only, continue either way
-      const parsedResult = UpvsIdentitySchema.safeParse(result)
-      if (!parsedResult.success) {
-        this.logger.error(
-          'Failed to parse result from nases. Will still attempt to save the data, and continue if we fail. Result JSON: ',
-          JSON.stringify(result)
-        )
-      }
       try {
-        const forcefullyTypedResult = result as UpvsIdentity
-        if (!forcefullyTypedResult.uri) continue
+        if (!result.uri) continue
 
-        const parsedBirthNumber = parseBirthNumberFromUri(forcefullyTypedResult.uri)
+        const parsedBirthNumber = parseBirthNumberFromUri(result.uri)
         if (parsedBirthNumber === null) continue
 
         const physicalEntityIds = _.uniq(
@@ -110,8 +101,8 @@ export class UpvsIdentityByUriService {
             await this.prismaService.upvsIdentityByUri.create({
               data: {
                 physicalEntityId: successfulPhysicalEntityId,
-                uri: forcefullyTypedResult.uri,
-                data: forcefullyTypedResult,
+                uri: result.uri,
+                data: JSON.stringify(result),
               },
             })
           )

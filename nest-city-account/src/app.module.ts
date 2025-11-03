@@ -33,6 +33,6 @@ import { OAuth2Module } from './oauth2/oauth2.module'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).exclude('oauth2/(.*)').forRoutes('*')
+    consumer.apply(AppLoggerMiddleware).exclude('oauth2/{*path}').forRoutes('*')
   }
 }

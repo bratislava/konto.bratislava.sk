@@ -201,7 +201,7 @@ export class TasksService {
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
       orderBy: {
-        updatedAt: 'asc',
+        lastCheckedUpdates: 'asc',
       },
     })
 
@@ -229,7 +229,7 @@ export class TasksService {
         },
       },
       data: {
-        updatedAt: new Date(),
+        lastCheckedUpdates: new Date(),
       },
     })
   }

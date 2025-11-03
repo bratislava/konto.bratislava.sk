@@ -318,13 +318,15 @@ export class NorisTaxSubservice {
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
   ) {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
-    const taxAdministrator = await transaction.taxAdministrator.upsert({
-      where: {
-        id: dataFromNoris.vyb_id,
-      },
-      create: taxAdministratorData,
-      update: taxAdministratorData,
-    })
+    const taxAdministrator = taxAdministratorData
+      ? await transaction.taxAdministrator.upsert({
+          where: {
+            id: taxAdministratorData.id,
+          },
+          create: taxAdministratorData,
+          update: taxAdministratorData,
+        })
+      : undefined
 
     const taxPayerData = mapNorisToTaxPayerData(dataFromNoris, taxAdministrator)
     const taxPayer = await transaction.taxPayer.upsert({

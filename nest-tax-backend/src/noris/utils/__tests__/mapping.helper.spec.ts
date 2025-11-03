@@ -102,8 +102,32 @@ describe('mapNorisToTaxAdministratorData', () => {
 
   it('should convert cislo_poradace to string for externalId', () => {
     const result = mapNorisToTaxAdministratorData(mockNorisData)
-    expect(typeof result.externalId).toBe('string')
-    expect(result.externalId).toBe('123')
+    expect(typeof result?.externalId).toBe('string')
+    expect(result?.externalId).toBe('123')
+  })
+
+  it('should return undefined if vyb_id is not present', () => {
+    const result = mapNorisToTaxAdministratorData({
+      ...mockNorisData,
+      vyb_id: null,
+    })
+    expect(result).toBeUndefined()
+  })
+
+  it('should return undefined if vyb_telefon_prace is not present', () => {
+    const result = mapNorisToTaxAdministratorData({
+      ...mockNorisData,
+      vyb_telefon_prace: null,
+    })
+    expect(result).toBeUndefined()
+  })
+
+  it('should return undefined if vyb_email is not present', () => {
+    const result = mapNorisToTaxAdministratorData({
+      ...mockNorisData,
+      vyb_email: null,
+    })
+    expect(result).toBeUndefined()
   })
 })
 
@@ -112,7 +136,7 @@ describe('mapNorisToTaxData', () => {
     dan_spolu: '100,50',
     variabilny_symbol: 'VS123',
     akt_datum: '2023-01-01',
-    datum_platnosti: '2023-12-31',
+    datum_platnosti: new Date('2023-12-31'),
     cislo_konania: 'CK123',
     dan_pozemky: '20,00',
     dan_stavby_SPOLU: '50,25',
@@ -128,7 +152,7 @@ describe('mapNorisToTaxData', () => {
       taxPayerId: 1,
       variableSymbol: 'VS123',
       dateCreateTax: '2023-01-01',
-      dateTaxRuling: '2023-12-31',
+      dateTaxRuling: mockNorisData.datum_platnosti,
       taxId: 'CK123',
       taxLand: 2000,
       taxConstructions: 5025,

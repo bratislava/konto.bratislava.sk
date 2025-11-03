@@ -3,9 +3,9 @@ import { z } from 'zod'
 import {
   baseNorisCommunalWasteTaxSchema,
   norisCommunalWasteTaxGroupedSchema,
-  norisPaymentsSchema,
+  norisPaymentSchema,
   norisRawCommunalWasteTaxSchema,
-  norisTaxPayersSchema,
+  norisRealEstateTaxSchema,
 } from './noris.schema'
 
 // Type inference from schemas
@@ -26,5 +26,5 @@ export type NorisCommunalWasteTaxGrouped = z.infer<
   typeof norisCommunalWasteTaxGroupedSchema
 >
 
-export type NorisRealEstateTax = z.infer<typeof norisTaxPayersSchema>
-export type NorisPayment = z.infer<typeof norisPaymentsSchema>
+export type NorisRealEstateTax = z.infer<typeof norisRealEstateTaxSchema>
+export type NorisPayment = z.infer<typeof norisPaymentSchema>

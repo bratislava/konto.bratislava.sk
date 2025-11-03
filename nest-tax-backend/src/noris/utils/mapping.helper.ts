@@ -15,7 +15,7 @@ export const convertCurrencyToInt = (value: string): number => {
 // Helper mapping functions to improve maintainability
 export const mapNorisToTaxPayerData = (
   data: NorisRealEstateTax,
-  taxAdministrator: TaxAdministrator,
+  taxAdministrator?: TaxAdministrator,
 ) => {
   return {
     birthNumber: data.ICO_RC,
@@ -27,18 +27,30 @@ export const mapNorisToTaxPayerData = (
     permanentResidenceStreetTxt: data.TXT_UL,
     permanentResidenceCity: data.obec_nazev_tb,
     nameTxt: data.TXT_MENO,
-    taxAdministratorId: taxAdministrator.id,
+    taxAdministratorId: taxAdministrator?.id,
   }
 }
 
-export const mapNorisToTaxAdministratorData = (data: NorisRealEstateTax) => {
-  return {
-    email: data.vyb_email,
-    externalId: data.cislo_poradace.toString(),
-    id: data.vyb_id,
-    name: data.vyb_nazov,
-    phoneNumber: data.vyb_telefon_prace,
-  }
+type NorisTaxAdministratorData = {
+  email: string
+  externalId: string
+  id: number
+  name: string
+  phoneNumber: string
+}
+
+export const mapNorisToTaxAdministratorData = (
+  data: NorisRealEstateTax,
+): NorisTaxAdministratorData | undefined => {
+  return data.vyb_id && data.vyb_telefon_prace && data.vyb_email
+    ? {
+        email: data.vyb_email,
+        externalId: data.cislo_poradace.toString(),
+        id: data.vyb_id,
+        name: data.vyb_nazov,
+        phoneNumber: data.vyb_telefon_prace,
+      }
+    : undefined
 }
 
 export const mapNorisToTaxData = (

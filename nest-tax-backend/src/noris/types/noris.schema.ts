@@ -71,27 +71,27 @@ export const norisCommunalWasteTaxGroupedSchema =
     ),
   })
 
-export const norisTaxPayersSchema = z.object({
-  adresa_tp_sidlo: z.string(),
-  sposob_dorucenia: z.string(),
+export const norisRealEstateTaxSchema = z.object({
+  adresa_tp_sidlo: z.string().nullable(),
+  sposob_dorucenia: z.string().nullable(),
   cislo_poradace: z.number(),
   cislo_subjektu: z.number(),
-  cislo_konania: z.string(),
-  variabilny_symbol: z.string(),
-  subjekt_refer: z.string(),
-  subjekt_nazev: z.string(),
+  cislo_konania: z.string().nullable(),
+  variabilny_symbol: z.string(), // If it is null, we should not process the tax. Currently all were non-null, thus we can expect it to be non-null, otherwise throw error when parsing.
+  subjekt_refer: z.string().nullable(),
+  subjekt_nazev: z.string().nullable(),
   rok: z.number(),
-  ulica_tb_cislo: z.string(),
-  psc_ref_tb: z.string(),
-  psc_naz_tb: z.string(),
-  stat_nazov_plny: z.string(),
-  obec_nazev_tb: z.string(),
-  akt_datum: z.string(),
-  datum_platnosti: z.string().nullable(),
+  ulica_tb_cislo: z.string().nullable(),
+  psc_ref_tb: z.string().nullable(),
+  psc_naz_tb: z.string().nullable(),
+  stat_nazov_plny: z.string().nullable(),
+  obec_nazev_tb: z.string().nullable(),
+  akt_datum: z.string().nullable(),
+  datum_platnosti: z.date().nullable(),
   vyb_nazov: z.string(),
-  vyb_telefon_prace: z.string(),
-  vyb_email: z.string(),
-  vyb_id: z.number(),
+  vyb_telefon_prace: z.string().nullable(),
+  vyb_email: z.string().nullable(),
+  vyb_id: z.number().nullable(),
   dan_spolu: z.string(),
   dan_byty: z.string(),
   dan_pozemky: z.string(),
@@ -160,12 +160,12 @@ export const norisTaxPayersSchema = z.object({
   SPL4_3: z.string(),
   TXTSPL4_4: z.string(),
   SPL4_4: z.string(),
-  specificky_symbol: z.string(),
-  uhrazeno: z.string(),
+  specificky_symbol: z.string().nullable(),
+  uhrazeno: z.coerce.number(),
 })
 
-export const norisPaymentsSchema = z.object({
-  variabilny_symbol: z.string(),
-  uhrazeno: z.string(),
-  specificky_symbol: z.string(),
+export const norisPaymentSchema = z.object({
+  variabilny_symbol: z.string().nullable(),
+  uhrazeno: z.coerce.number(),
+  specificky_symbol: z.string().nullable(),
 })

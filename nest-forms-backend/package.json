@@ -89,7 +89,7 @@
     "@types/node": "^24.2.1",
     "@types/nodemailer": "^7.0.2",
     "@types/passport-http": "^0.3.11",
-    "@types/passport-http-bearer": "^1.0.41",
+    "@types/passport-http-bearer": "^1.0.42",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.3",
     "@types/xml2js": "^0.4.14",

@@ -1,4 +1,3 @@
-
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
 import { OAuth2Controller } from './oauth2.controller'
@@ -7,6 +6,7 @@ import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
 import { AuthorizationPayloadGuard } from './guards/authorization-payload.guard'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
+import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
@@ -23,6 +23,7 @@ import { OAuth2ErrorThrower } from './oauth2-error.thrower'
     CognitoSubservice,
     ThrowerErrorGuard,
     OAuth2ErrorThrower,
+    OAuth2ClientSubservice,
     OAuth2ValidationSubservice,
     AuthorizationRequestGuard,
     TokenRequestGuard,

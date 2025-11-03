@@ -1,18 +1,14 @@
-import path from 'node:path'
-
 import { Injectable } from '@nestjs/common'
 import { PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
-import ejs from 'ejs'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
-  CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
@@ -26,7 +22,6 @@ import {
   TaxAvailabilityStatus,
   TaxStatusEnum,
 } from './dtos/response.tax.dto'
-import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import {
   checkTaxDateInclusion,
   getExistingTaxStatus,
@@ -204,41 +199,6 @@ export class TaxService {
       availabilityStatus: TaxAvailabilityStatus.AVAILABLE,
       items,
       taxAdministrator,
-    }
-  }
-
-  async generatePdf(year: number, birthNumber: string): Promise<string> {
-    try {
-      const user = await this.fetchTaxData(
-        { birthNumber },
-        {
-          taxDetails: true,
-          taxInstallments: true,
-        },
-        year,
-      )
-      const taxDetails = taxDetailsToPdf(user.taxDetails)
-      const totals = taxTotalsToPdf(
-        user,
-        user.taxInstallments.map((data) => ({
-          ...data,
-          order: data.order ? +data.order : 1,
-        })),
-      )
-      return await ejs.renderFile('public/tax-pdf.ejs', {
-        user,
-        logo: path.resolve('public/logoBaTax.png'),
-        taxDetails,
-        totals,
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
-        'Error to create pdf',
-        'Error to create pdf',
-        undefined,
-        error,
-      )
     }
   }
 

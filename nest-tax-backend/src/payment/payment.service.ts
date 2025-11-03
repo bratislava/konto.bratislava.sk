@@ -10,10 +10,6 @@ import formurlencoded from 'form-urlencoded'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
-import {
-  CustomErrorTaxTypesEnum,
-  CustomErrorTaxTypesResponseEnum,
-} from '../tax/dtos/error.dto'
 import { PaymentTypeEnum } from '../tax/dtos/response.tax.dto'
 import { TaxService } from '../tax/tax.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -24,7 +20,6 @@ import { TaxPaymentWithTaxYear } from '../utils/types/types.prisma'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
-  CustomErrorPaymentTypesResponseEnum,
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
@@ -271,22 +266,5 @@ export class PaymentService {
         error,
       )
     }
-  }
-
-  async getQrCodeByTaxUuid(uuid: string): Promise<string> {
-    const qrBase64 = await this.prisma.tax.findUnique({ where: { uuid } })
-    if (!qrBase64) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-      )
-    }
-    if (!qrBase64.qrCodeEmail) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.QR_CODE_NOT_FOUND,
-        CustomErrorPaymentTypesResponseEnum.QR_CODE_NOT_FOUND,
-      )
-    }
-    return qrBase64.qrCodeEmail
   }
 }

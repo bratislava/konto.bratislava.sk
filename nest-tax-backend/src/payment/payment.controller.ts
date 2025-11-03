@@ -7,7 +7,6 @@ import {
   Post,
   Query,
   Redirect,
-  Res,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -140,26 +139,5 @@ export class PaymentController {
   @Get('cardpay/response')
   async paymentResponse(@Query() query: PaymentResponseQueryDto) {
     return { url: await this.paymentService.processPaymentResponse(query) }
-  }
-
-  @ApiResponse({
-    status: 200,
-    description: 'Return image',
-  })
-  @ApiResponse({
-    status: 422,
-    description: 'Error to redirect',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: ResponseErrorDto,
-  })
-  @Get('qrcode/email/:taxUuid')
-  async getQrCodeByTaxUuid(@Param('taxUuid') taxUuid: string, @Res() res: any) {
-    const qrBase64 = await this.paymentService.getQrCodeByTaxUuid(taxUuid)
-    const buffer = Buffer.from(qrBase64, 'base64')
-    res.writeHead(200, { 'Content-Type': 'image/png' })
-    res.end(buffer)
   }
 }

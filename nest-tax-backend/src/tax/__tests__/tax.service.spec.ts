@@ -1,8 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
-import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Prisma, TaxPayer } from '@prisma/client'
-import * as ejs from 'ejs'
 
 import prismaMock from '../../../test/singleton'
 import { PaymentService } from '../../payment/payment.service'
@@ -13,30 +11,10 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
-import { TaxPaidStatusEnum } from '../dtos/response.tax.dto'
 import { TaxService } from '../tax.service'
-import * as pdfHelper from '../utils/helpers/pdf.helper'
-import * as taxHelper from '../utils/helpers/tax.helper'
-
-jest.mock('ejs', () => ({
-  renderFile: jest.fn(),
-}))
-
-jest.mock('../utils/helpers/tax.helper', () => {
-  const actual = jest.requireActual('../utils/helpers/tax.helper')
-  return {
-    ...actual,
-    getTaxStatus: jest.fn(),
-  }
-})
 
 jest.mock('../utils/unified-tax.util', () => ({
   getTaxDetailPure: jest.fn(),
-}))
-
-jest.mock('../utils/helpers/pdf.helper', () => ({
-  taxDetailsToPdf: jest.fn(),
-  taxTotalsToPdf: jest.fn(),
 }))
 
 // Type definitions for the mock objects
@@ -88,7 +66,6 @@ describe('TaxService', () => {
     amount: 1000,
     variableSymbol: 'VS123',
     dateTaxRuling: new Date('2023-01-01'),
-    qrCodeWeb: null,
     taxConstructions: 0,
     taxFlat: 0,
     taxLand: 0,
@@ -156,91 +133,6 @@ describe('TaxService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('generatePdf', () => {
-    const mockTaxDetails = {
-      LAND: {
-        AREA: {
-          area: null,
-          base: '500,00',
-          amount: '500,00',
-        },
-      },
-    } as any
-    const mockTaxTotals = {
-      total: 'formatted-tax-totals',
-      taxFlat: '0',
-      taxConstructions: '0',
-      taxLand: '0',
-      taxInstallments: [
-        {
-          text: 'First installment',
-          amount: '500,00',
-        },
-      ],
-    } as any
-
-    it('should generate PDF successfully', async () => {
-      prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
-      prismaMock.taxPayer.findUnique.mockResolvedValue({
-        id: 1,
-      } as TaxPayer)
-      prismaMock.taxPayment.aggregate.mockResolvedValue({
-        _sum: { amount: 200 },
-      } as Prisma.GetTaxPaymentAggregateType<{ _sum: { amount: true } }>)
-      jest
-        .spyOn(taxHelper, 'getTaxStatus')
-        .mockReturnValue(TaxPaidStatusEnum.PARTIALLY_PAID)
-      jest.spyOn(pdfHelper, 'taxDetailsToPdf').mockReturnValue(mockTaxDetails)
-      jest.spyOn(pdfHelper, 'taxTotalsToPdf').mockReturnValue(mockTaxTotals)
-      const renderFileSpy = jest
-        .spyOn(ejs, 'renderFile')
-        .mockResolvedValue('<html>PDF content</html>')
-
-      const result = await service.generatePdf(2023, '123456/789')
-
-      expect(renderFileSpy).toHaveBeenCalledWith(
-        'public/tax-pdf.ejs',
-        expect.objectContaining({
-          user: expect.any(Object),
-          logo: expect.stringContaining('logoBaTax.png'),
-          taxDetails: mockTaxDetails,
-          totals: mockTaxTotals,
-        }),
-      )
-      expect(result).toBe('<html>PDF content</html>')
-    })
-
-    it('should handle PDF generation error', async () => {
-      const mockError = new Error('PDF generation failed')
-      const thrownError = new HttpException(
-        'PDF create error',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      )
-
-      prismaMock.taxPayer.findUnique.mockResolvedValue({
-        id: 1,
-      } as TaxPayer)
-      prismaMock.tax.findUnique.mockRejectedValue(mockError)
-      jest
-        .spyOn(service['throwerErrorGuard'], 'UnprocessableEntityException')
-        .mockReturnValue(thrownError)
-
-      await expect(service.generatePdf(2023, '123456/789')).rejects.toThrow(
-        thrownError,
-      )
-
-      expect(
-        service['throwerErrorGuard'].UnprocessableEntityException,
-      ).toHaveBeenCalledWith(
-        expect.any(String),
-        'Error to create pdf',
-        'Error to create pdf',
-        undefined,
-        mockError,
-      )
-    })
   })
 
   describe('getListOfTaxesByBirthnumber', () => {

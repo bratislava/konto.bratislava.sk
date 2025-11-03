@@ -1877,46 +1877,6 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} taxUuid
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    paymentControllerGetQrCodeByTaxUuid: async (
-      taxUuid: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'taxUuid' is not null or undefined
-      assertParamExists('paymentControllerGetQrCodeByTaxUuid', 'taxUuid', taxUuid)
-      const localVarPath = `/payment/qrcode/email/{taxUuid}`.replace(
-        `{${'taxUuid'}}`,
-        encodeURIComponent(String(taxUuid)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2074,33 +2034,6 @@ export const PaymentApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} taxUuid
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async paymentControllerGetQrCodeByTaxUuid(
-      taxUuid: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.paymentControllerGetQrCodeByTaxUuid(
-        taxUuid,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['PaymentApi.paymentControllerGetQrCodeByTaxUuid']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2189,20 +2122,6 @@ export const PaymentApiFactory = function (
     },
     /**
      *
-     * @param {string} taxUuid
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    paymentControllerGetQrCodeByTaxUuid(
-      taxUuid: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .paymentControllerGetQrCodeByTaxUuid(taxUuid, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2274,18 +2193,6 @@ export class PaymentApi extends BaseAPI {
 
   /**
    *
-   * @param {string} taxUuid
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public paymentControllerGetQrCodeByTaxUuid(taxUuid: string, options?: RawAxiosRequestConfig) {
-    return PaymentApiFp(this.configuration)
-      .paymentControllerGetQrCodeByTaxUuid(taxUuid, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
    * @param {string} dIGEST
    * @param {string} dIGEST1
    * @param {string} oPERATION
@@ -2326,52 +2233,6 @@ export class PaymentApi extends BaseAPI {
  */
 export const TaxApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
-    /**
-     *
-     * @summary Get tax by year and how much is paid
-     * @param {number} year
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerGetTaxByYearPdf: async (
-      year: number,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'year' is not null or undefined
-      assertParamExists('taxControllerGetTaxByYearPdf', 'year', year)
-      const localVarPath = `/tax/get-tax-pdf-by-year`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (year !== undefined) {
-        localVarQueryParameter['year'] = year
-      }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
     /**
      *
      * @summary Get tax detail by year.
@@ -2467,33 +2328,6 @@ export const TaxApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @summary Get tax by year and how much is paid
-     * @param {number} year
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async taxControllerGetTaxByYearPdf(
-      year: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerGetTaxByYearPdf(
-        year,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['TaxApi.taxControllerGetTaxByYearPdf']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
      * @summary Get tax detail by year.
      * @param {number} year
      * @param {*} [options] Override http request option.
@@ -2562,21 +2396,6 @@ export const TaxApiFactory = function (
   return {
     /**
      *
-     * @summary Get tax by year and how much is paid
-     * @param {number} year
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerGetTaxByYearPdf(
-      year: number,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .taxControllerGetTaxByYearPdf(year, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
      * @summary Get tax detail by year.
      * @param {number} year
      * @param {*} [options] Override http request option.
@@ -2610,19 +2429,6 @@ export const TaxApiFactory = function (
  * TaxApi - object-oriented interface
  */
 export class TaxApi extends BaseAPI {
-  /**
-   *
-   * @summary Get tax by year and how much is paid
-   * @param {number} year
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public taxControllerGetTaxByYearPdf(year: number, options?: RawAxiosRequestConfig) {
-    return TaxApiFp(this.configuration)
-      .taxControllerGetTaxByYearPdf(year, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
   /**
    *
    * @summary Get tax detail by year.

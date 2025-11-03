@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma, TaxType } from '@prisma/client'
-import { Request } from 'mssql'
+import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
@@ -59,14 +59,14 @@ export class NorisTaxSubservice {
   ): Promise<NorisTaxPayersDto[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('year', data.year)
+        request.input('year', mssql.Int, data.year)
         const birthNumbersPlaceholders = data.birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
         data.birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
 
         return request.query(
@@ -401,15 +401,15 @@ export class NorisTaxSubservice {
   ): Promise<NorisRawCommunalWasteTaxDto[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
         const birthNumbersPlaceholders = data.birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
         data.birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
-        request.input('year', data.year)
+        request.input('year', mssql.Int, data.year)
 
         const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
           '@birth_numbers',

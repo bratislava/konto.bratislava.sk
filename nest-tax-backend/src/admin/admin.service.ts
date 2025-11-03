@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
-import { NorisPaymentsDto } from '../noris/types/noris.types'
 import { NorisService } from '../noris/noris.service'
+import { NorisPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -52,7 +52,7 @@ export class AdminService {
   async updatePaymentsFromNoris(
     norisRequest: NorisRequestGeneral,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    const norisPaymentData: Partial<NorisPaymentsDto>[] =
+    const norisPaymentData: Partial<NorisPayment>[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(

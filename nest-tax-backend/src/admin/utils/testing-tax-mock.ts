@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto'
 
 import { TaxAdministrator } from '@prisma/client'
 
-import { NorisTaxPayersDto } from '../../noris/types/noris.types'
+import { NorisRealEstateTax } from '../../noris/types/noris.types'
 import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
 
 /**
@@ -12,7 +12,7 @@ export const createTestingTaxMock = (
   norisData: RequestAdminCreateTestingTaxNorisData,
   taxAdministrator: TaxAdministrator,
   year: number,
-): NorisTaxPayersDto => {
+): NorisRealEstateTax => {
   // This is not exact, but makes sure the total will be correct
   const total = parseFloat(norisData.taxTotal.replace(',', '.'))
   const spl1 = total / 3

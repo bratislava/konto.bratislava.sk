@@ -20,7 +20,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
-import { NorisPaymentsDto } from '../types/noris.types'
+import { NorisPayment } from '../types/noris.types'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
   queryOverpaymentsFromNorisByDateRange,
@@ -165,7 +165,7 @@ export class NorisPaymentSubservice {
   }
 
   private async createTaxMapByVariableSymbol(
-    norisPaymentData: Partial<NorisPaymentsDto>[],
+    norisPaymentData: Partial<NorisPayment>[],
   ) {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
@@ -183,7 +183,7 @@ export class NorisPaymentSubservice {
   }
 
   async updatePaymentsFromNorisWithData(
-    norisPaymentData: Partial<NorisPaymentsDto>[],
+    norisPaymentData: Partial<NorisPayment>[],
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
@@ -222,7 +222,7 @@ export class NorisPaymentSubservice {
   }
 
   private async processNorisPaymentData(
-    norisPaymentData: Partial<NorisPaymentsDto>[],
+    norisPaymentData: Partial<NorisPayment>[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
@@ -248,7 +248,7 @@ export class NorisPaymentSubservice {
   }
 
   private async processIndividualPayment(
-    norisPayment: Partial<NorisPaymentsDto>,
+    norisPayment: Partial<NorisPayment>,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {

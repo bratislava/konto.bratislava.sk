@@ -1,7 +1,7 @@
 import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisTaxPayersDto } from '../types/noris.types'
+import { NorisRealEstateTax } from '../types/noris.types'
 import {
   AreaTypesEnum,
   DeliveryMethod,
@@ -14,7 +14,7 @@ export const convertCurrencyToInt = (value: string): number => {
 
 // Helper mapping functions to improve maintainability
 export const mapNorisToTaxPayerData = (
-  data: NorisTaxPayersDto,
+  data: NorisRealEstateTax,
   taxAdministrator: TaxAdministrator,
 ) => {
   return {
@@ -31,7 +31,7 @@ export const mapNorisToTaxPayerData = (
   }
 }
 
-export const mapNorisToTaxAdministratorData = (data: NorisTaxPayersDto) => {
+export const mapNorisToTaxAdministratorData = (data: NorisRealEstateTax) => {
   return {
     email: data.vyb_email,
     externalId: data.cislo_poradace.toString(),
@@ -42,7 +42,7 @@ export const mapNorisToTaxAdministratorData = (data: NorisTaxPayersDto) => {
 }
 
 export const mapNorisToTaxData = (
-  data: NorisTaxPayersDto,
+  data: NorisRealEstateTax,
   year: number,
   taxPayerId: number,
 ) => {
@@ -68,7 +68,7 @@ type TaxInstallment = {
 }
 
 export const mapNorisToTaxInstallmentsData = (
-  data: NorisTaxPayersDto,
+  data: NorisRealEstateTax,
   taxId: number,
 ): TaxInstallment[] => {
   if (data.SPL4_2 === '') {
@@ -131,7 +131,7 @@ export type TaxDetail = {
   area: string | null
 }
 export const mapNorisToTaxDetailData = (
-  data: NorisTaxPayersDto,
+  data: NorisRealEstateTax,
   taxId: number,
 ): TaxDetail[] => {
   const config: Record<
@@ -174,9 +174,9 @@ export const mapNorisToTaxDetailData = (
       const prefix = keyTaxConfig === 'byt' ? 'det' : `det_${keyTaxConfig}`
 
       const baseKey =
-        `${prefix}_${valueTaxConfig.base}_${taxType}` as keyof NorisTaxPayersDto
+        `${prefix}_${valueTaxConfig.base}_${taxType}` as keyof NorisRealEstateTax
       const amountKey =
-        `${prefix}_${valueTaxConfig.amount}_${taxType}` as keyof NorisTaxPayersDto
+        `${prefix}_${valueTaxConfig.amount}_${taxType}` as keyof NorisRealEstateTax
 
       const taxDetailItem: TaxDetail = {
         taxId,
@@ -187,7 +187,7 @@ export const mapNorisToTaxDetailData = (
           .intValue,
         area: valueTaxConfig.area
           ? (data[
-              `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisTaxPayersDto
+              `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisRealEstateTax
             ] as string)
           : null,
       }

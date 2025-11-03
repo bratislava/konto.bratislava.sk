@@ -117,7 +117,7 @@ export class OAuth2ValidationSubservice {
     if (scope === undefined) {
       return undefined
     }
-    if (typeof scope !== 'string' || !areScopesAllowed(client, scope as string)) {
+    if (typeof scope !== 'string' || !areScopesAllowed(client, scope)) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_SCOPE,
         `Invalid scope: requested scope is invalid, unknown, or malformed`,

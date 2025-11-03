@@ -20,7 +20,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
-import { NorisPaymentsDto } from '../noris.dto'
+import { NorisPaymentsDto } from '../types/noris.types'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
   queryOverpaymentsFromNorisByDateRange,

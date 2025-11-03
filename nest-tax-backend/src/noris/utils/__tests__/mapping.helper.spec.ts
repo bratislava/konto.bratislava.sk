@@ -1,6 +1,6 @@
 import { TaxAdministrator } from '@prisma/client'
 
-import { NorisTaxPayersDto } from '../../noris.dto'
+import { NorisTaxPayersDto } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,

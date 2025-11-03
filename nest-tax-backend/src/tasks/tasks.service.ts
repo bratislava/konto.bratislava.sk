@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
-import { NorisPaymentsDto } from '../noris/noris.dto'
+import { NorisPaymentsDto } from '../noris/types/noris.types'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'

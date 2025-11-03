@@ -18,9 +18,9 @@ import {
   NorisCommunalWasteTaxGroupedDto,
   NorisRawCommunalWasteTaxDto,
   NorisTaxPayersDto,
-} from '../noris.dto'
+} from '../types/noris.types'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
-import { baseNorisCommunalWasteTaxSchema } from '../noris.schema'
+import { baseNorisCommunalWasteTaxSchema } from '../types/noris.schema'
 import {
   convertCurrencyToInt,
   mapNorisToTaxAdministratorData,

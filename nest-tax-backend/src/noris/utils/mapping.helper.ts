@@ -1,7 +1,7 @@
 import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisTaxPayersDto } from '../noris.dto'
+import { NorisTaxPayersDto } from '../types/noris.types'
 import {
   AreaTypesEnum,
   DeliveryMethod,

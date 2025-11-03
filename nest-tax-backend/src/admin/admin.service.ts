@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
-import { NorisPaymentsDto } from '../noris/noris.dto'
+import { NorisPaymentsDto } from '../noris/types/noris.types'
 import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'

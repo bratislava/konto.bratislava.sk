@@ -9,7 +9,7 @@ import {
 } from '../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../admin/dtos/responses.dto'
 import { ResponseCreatedAlreadyCreatedDto } from './dtos/response.dto'
-import { NorisPaymentsDto, NorisTaxPayersDto } from './noris.dto'
+import { NorisPaymentsDto, NorisTaxPayersDto } from './types/noris.types'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'

@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto'
 
 import { TaxAdministrator } from '@prisma/client'
 
-import { NorisTaxPayersDto } from '../../noris/noris.dto'
+import { NorisTaxPayersDto } from '../../noris/types/noris.types'
 import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
 
 /**

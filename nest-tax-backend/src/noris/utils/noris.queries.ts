@@ -1,28 +1,20 @@
+/* eslint-disable no-secrets/no-secrets */
 export const queryPayersFromNoris = `
 SELECT
     lcs.dane21_doklad.sposob_dorucenia,
-    subjekty_a.cislo_poradace,
-    lcs.dane21_doklad.cislo_subjektu, 
-    subjekty_d1.nazev_subjektu adresa_tp_sidlo,
-    subjekty_a.reference_subjektu cislo_konania , 
+    subjekt_doklad.cislo_poradace,
+    lcs.dane21_doklad.cislo_subjektu,
+    subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
+    subjekt_doklad.reference_subjektu cislo_konania , 
     lcs.dane21_doklad.datum_platnosti,
     lcs.dane21_doklad.variabilny_symbol, 
     (case 
         when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
         else 0 end 
-    ) uhrazeno,
-    (case 
-        when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-            case 
-                when dane21_doklad.stav_dokladu='S' then 0 
-                else view_doklad_saldo.zbyva_uhradit 
-            end)
-        else 0 
-    end ) zbyva_uhradit,
-    subjekty_c.reference_subjektu subjekt_refer, 
+    ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
+    subjekt_doklad_sub.reference_subjektu subjekt_refer, 
     ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
     lcs.dane21_priznanie.rok, 
-    a_tb.ulica_nazev as ulica_tb, 
     a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_priznanie.adr_tp_sup_cislo, lcs.dane21_priznanie.adr_tp_or_cislo), '') as ulica_tb_cislo, 
     a_tb.psc_refer as psc_ref_tb,
     a_tb.psc_nazev as psc_naz_tb, 
@@ -170,20 +162,9 @@ SELECT
         else  ''
     end  ) SPL4_4, 
 
-   /* --------- Texty splátok výmeru end ----------------------------*/       /* obalka start */  
+   /* --------- Texty splátok výmeru end ----------------------------*/
    
-    (a_post_doklad.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_doklad.adr_po_sup_cislo, lcs.dane21_doklad.adr_po_or_cislo), '')  +
-        (case 
-            when  a_post_doklad.ulica is not null and isnull(a_post_doklad.psc_nazev, '')<>'' and a_post_doklad.obec_nazev<>left(isnull(a_post_doklad.psc_nazev, ''), len(a_post_doklad.obec_nazev)) then ', '+a_post_doklad.obec_nazev else '' 
-        end)
-    )   obalka_ulica, 
-    a_post_doklad.psc_refer  obalka_psc, 
-    a_post_doklad.psc_nazev  obalka_mesto, 
-    a_post_doklad.stat_nazov_plny  obalka_stat, 
-        left(replace (cast(floor( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), len(replace (cast(floor( (  view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''))-2) pouk_cena_bez_hal, 
-        right(replace (cast(( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), 2) pouk_cena_hal,     
-    lcs.dane21_doklad.specificky_symbol,
-    lcs.nf_valuace_atributu(21276, 0, 'lcs.dane21_doklad.uzivatelsky_atribut', lcs.dane21_doklad.uzivatelsky_atribut) as uzivatelsky_atribut
+    lcs.dane21_doklad.specificky_symbol
 FROM 
     lcs.dane21_doklad  
 
@@ -194,14 +175,14 @@ FROM
 --         kont.hid=host_id()  
 
 LEFT OUTER JOIN 
-    lcs.subjekty subjekty_a  
+    lcs.subjekty subjekt_doklad  
     ON 
-        lcs.dane21_doklad.cislo_subjektu=subjekty_a.cislo_subjektu  
+        lcs.dane21_doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu  
 
 LEFT OUTER JOIN 
-    lcs.subjekty subjekty_c  
+    lcs.subjekty subjekt_doklad_sub  
     ON 
-        lcs.dane21_doklad.subjekt=subjekty_c.cislo_subjektu  
+        lcs.dane21_doklad.subjekt=subjekt_doklad_sub.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_d  
@@ -224,14 +205,14 @@ JOIN
         lcs.dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu  
 
 JOIN 
-    lcs.subjekty subjekty_a1  
+    lcs.subjekty subjekt_priznanie  
     ON 
-        subjekty_a1.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu  
+        subjekt_priznanie.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.dane21_priznanie_config dp_conf  
     ON 
-        subjekty_a1.cislo_poradace=dp_conf.cislo_poradace  
+        subjekt_priznanie.cislo_poradace=dp_conf.cislo_poradace  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_vybav  
@@ -244,9 +225,9 @@ LEFT OUTER JOIN
         z_vybav.cislo_subjektu=dp_conf.vybavuje  
 
 LEFT OUTER JOIN 
-    lcs.subjekty subjekty_d1  
+    lcs.subjekty subjekt_tp_adresa  
     ON 
-        lcs.dane21_priznanie.adresa_tp_sidlo=subjekty_d1.cislo_subjektu  
+        lcs.dane21_priznanie.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_e1  
@@ -408,89 +389,133 @@ LEFT OUTER JOIN
     ON
         uda_21_organizacia_mag.cislo_subjektu=lcs.dane21_priznanie.subjekt
 
+LEFT OUTER JOIN (
+    SELECT 
+        dane21_doklad_overpayment.podklad,
+        dane21_doklad_overpayment.rok_podkladu,
+        SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+    FROM lcs.dane21_doklad dane21_doklad_overpayment
+    JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
+        ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+    WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+    GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
+) overpayment_sum
+    ON overpayment_sum.podklad = lcs.dane21_doklad.podklad 
+    AND overpayment_sum.rok_podkladu = lcs.dane21_doklad.rok_podkladu
+
 WHERE 
     (
         lcs.dane21_druh_dokladu.typ_dokladu = 'v'
         AND lcs.dane21_druh_dokladu.typ_dane = '1'
         AND lcs.dane21_doklad.stav_dokladu<>'s'  
-        AND lcs.dane21_doklad.rok_podkladu = {%YEAR%}
-        AND lcs.dane21_priznanie.rok = {%YEAR%}
+        AND lcs.dane21_doklad.rok_podkladu = @year
+        AND lcs.dane21_priznanie.rok = @year
         AND lcs.dane21_priznanie.podnikatel = 'N'
         AND lcs.dane21_doklad.pohladavka IS NOT NULL
+        AND lcs.dane21_priznanie.rodne_cislo IN (@birth_numbers)
     )
-    {%BIRTHNUMBERS%}
 
 ORDER BY 
     lcs.dane21_priznanie.obchodny_nazov 
 `
 
-export const queryPaymentsFromNoris = `
-SELECT 
+const basePaymentsQuery = `
+    SELECT 
         dane21_doklad.variabilny_symbol as variabilny_symbol,
         (case 
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
         ) uhrazeno,
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
-                case 
-                    when dane21_doklad.stav_dokladu='S' then 0 
-                    else view_doklad_saldo.zbyva_uhradit 
-                end)
-            else 0 
-        end ) zbyva_uhradit,
         dane21_doklad.specificky_symbol specificky_symbol
-    FROM 
-        (SELECT
-            *
-        FROM
-            lcs.dane21_doklad
-        WHERE
-            lcs.dane21_doklad.rok_podkladu {%YEARS%}
-            AND lcs.dane21_doklad.rok_podkladu {%YEARS%}
-        ) as dane21_doklad
-    JOIN 
-        (SELECT 
-            *
-        FROM
-            lcs.dane21_doklad_sum_saldo
-       WHERE
-        lcs.dane21_doklad_sum_saldo.uhrazeno > 0
-        {%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}
-        ) as view_doklad_saldo
-        ON 
-            view_doklad_saldo.cislo_subjektu=dane21_doklad.cislo_subjektu
+    FROM lcs.dane21_doklad as dane21_doklad
+    JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
+        ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
+        AND view_doklad_saldo.uhrazeno > 0
     LEFT OUTER JOIN 
         lcs.dane21_druh_dokladu
         ON
             dane21_doklad.druh_dokladu=lcs.dane21_druh_dokladu.cislo_subjektu
-    LEFT OUTER JOIN
-        lcs.dane_21_all_poplatky vpodklad
-        ON
-            vpodklad.cislo_subjektu=dane21_doklad.podklad
-    JOIN(
-        SELECT
-            distinct
-            cislo_subjektu
-        FROM
-            lcs.subjekty subjekty_a
-       WHERE
-           reference_subjektu LIKE '1/%'
-    ) as subjekty_a ON dane21_doklad.cislo_subjektu=subjekty_a.cislo_subjektu
     LEFT JOIN 
-    lcs.dane21_priznanie  
-    ON 
-        dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
-    JOIN 
-    lcs.subjekty subjekty_a1  
-    ON 
-        subjekty_a1.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu
+        lcs.dane21_priznanie  
+        ON 
+            dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
+    LEFT JOIN 
+        lcs.pko21_poplatok  
+        ON 
+            dane21_doklad.podklad=lcs.pko21_poplatok.cislo_subjektu
    WHERE 
         lcs.dane21_druh_dokladu.typ_dokladu = 'v'
-        AND lcs.dane21_druh_dokladu.typ_dane = '1'
-        AND dane21_doklad.stav_dokladu<>'s'
-        AND lcs.dane21_priznanie.podnikatel = 'N'
-        {%VARIABLE_SYMBOLS%}
+        AND lcs.dane21_druh_dokladu.typ_dane IN ('1', '4')
+        AND dane21_doklad.stav_dokladu <> 's'
+        AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
+        AND dane21_doklad.rok_podkladu IN (@years)
+        {%ADDITIONAL_CONDITIONS%}
+`
+
+export const queryPaymentsFromNorisByFromToDate = basePaymentsQuery.replace(
+  '{%ADDITIONAL_CONDITIONS%}',
+  `
+    AND (
+        (@overPayments = 0 AND view_doklad_saldo.datum_posledni_platby >= @fromDate AND view_doklad_saldo.datum_posledni_platby <= @toDate)
+        OR (@overPayments = 1 AND view_doklad_saldo.datum_posledni_platby IS NULL)
+    )`,
+)
+
+export const queryPaymentsFromNorisByVariableSymbols =
+  basePaymentsQuery.replace(
+    '{%ADDITIONAL_CONDITIONS%}',
+    `AND dane21_doklad.variabilny_symbol IN (@variable_symbols)`,
+  )
+
+export const queryOverpaymentsFromNorisByDateRange = `
+  SELECT 
+      dane21_doklad.variabilny_symbol as variabilny_symbol,
+      (case 
+          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+          else 0 end 
+      ) uhrazeno_sum_saldo,
+      sum(dane21_doklad_overpayment.suma_mena) as uhrazeno_overpayment, -- TODO use just uhrazeno, these two are only for debugging
+      (case 
+          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+          else 0 end 
+      ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
+      dane21_doklad.specificky_symbol specificky_symbol
+  FROM lcs.dane21_doklad as dane21_doklad
+  JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
+      ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
+      AND view_doklad_saldo.uhrazeno > 0
+      AND view_doklad_saldo.zbyva_uhradit <= 0
+  JOIN lcs.dane21_doklad as dane21_doklad_overpayment
+        ON dane21_doklad_overpayment.podklad = dane21_doklad.podklad AND dane21_doklad_overpayment.rok_podkladu = dane21_doklad.rok_podkladu
+  LEFT OUTER JOIN 
+      lcs.dane21_druh_dokladu as dane21_druh_dokladu
+      ON
+          dane21_doklad.druh_dokladu=dane21_druh_dokladu.cislo_subjektu
+  JOIN lcs.dane21_druh_dokladu as overpayment_druh_dokladu
+      ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+  LEFT JOIN 
+      lcs.dane21_priznanie  
+      ON 
+          dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
+  LEFT JOIN 
+      lcs.pko21_poplatok  
+      ON 
+          dane21_doklad.podklad=lcs.pko21_poplatok.cislo_subjektu
+ WHERE 
+      dane21_druh_dokladu.typ_dokladu = 'V'
+      AND overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+      AND dane21_druh_dokladu.typ_dane IN ('1', '4')
+      AND dane21_doklad.stav_dokladu <> 's'
+      AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
+  GROUP BY 
+      dane21_doklad.variabilny_symbol,
+      dane21_doklad.specificky_symbol,
+      view_doklad_saldo.uhrazeno,
+      dane21_druh_dokladu.generovat_pohladavku
+  HAVING 
+      MAX(dane21_doklad_overpayment.datum_realizacie) >= @fromDate 
+      AND MAX(dane21_doklad_overpayment.datum_realizacie) <= @toDate
+      AND MAX(dane21_doklad_overpayment.datum_realizacie) IS NOT NULL
 `
 
 export const setDeliveryMethodsForUser = `
@@ -508,9 +533,218 @@ export const setDeliveryMethodsForUser = `
         )
 `
 
-export const getNorisDataForUpdate = `
-    SELECT variabilny_symbol, datum_platnosti
-    FROM lcs.dane21_doklad
-    WHERE rok_podkladu IN (@years)
-    AND variabilny_symbol IN (@variable_symbols)
+/**
+ * @remarks
+ * ⚠️ **Warning:** This returns a record for each communal waste container.
+ * The data must be grouped and processed by birth number, so we process only one record internally, with all containers for one person as one record.
+ */
+export const getCommunalWasteTaxesFromNoris = `
+    SELECT 
+        subjekt_doklad.cislo_poradace,
+        doklad.cislo_subjektu,
+        subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
+        subjekt_doklad.reference_subjektu cislo_konania,
+        doklad.datum_platnosti,
+        doklad.variabilny_symbol,
+        doklad.specificky_symbol,
+        poplatok.rok rok,
+        lcs.fn21_dec2string( dsum.dan_spolu_nezaokr , 2) as dan_spolu, 
+        (case 
+            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+            else 0 end 
+        ) uhrazeno,
+        subjekt_doklad_sub.reference_subjektu subjekt_refer,
+        ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
+        CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,
+        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov, 
+
+        /* ----------------------------Texty splátok výmeru start------------------------------------*/   
+        
+        (case
+            when doklad.rok_podkladu<2008 then 
+                (case 
+                    when doklad.datum_spl2 is not null then ''
+                    else  '-  naraz do '+convert(varchar(10), doklad.datum_spl1, 104) +' v sume:'      
+                end)
+            else      
+                (case 
+                    when doklad.datum_spl2 is not null then '' 
+                    else  'v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic) +' v sume:'       
+                end)
+        end)  TXTSPL1, 
+        (case 
+            when doklad.datum_spl2 is not null then ''         
+            else lcs.fn21_dec2string(doklad.suma_mena, 2)   
+        end ) SPL1, 
+        (case 
+            when doklad.rok_podkladu<2008 then
+                (case 
+                    when doklad.datum_spl2 is not null then '-  Splátka 1 do '+convert(varchar(10), doklad.datum_spl1, 104)  +' v sume:'                    else  ''               end  )        else             (case when doklad.datum_spl2 is not null then '- prvá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                    else  '' 
+                end)
+        end) TXTSPL4_1, 
+        (case 
+            when doklad.datum_spl2 is not null then lcs.fn21_dec2string( doklad.suma_spl1 , 2)
+            else  ''
+        end  ) SPL4_1, 
+        (case 
+            when doklad.datum_spl2 is not null then
+                (case 
+                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_2_splatnost, 112), 4)) as datetime)>=doklad.datum_spl2                  then '- druhá splátka v termíne do '+convert(varchar(10), doklad.datum_spl2, 104) +' v sume:'
+                    else '- druhá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                end )
+            else  ''
+        end) TXTSPL4_2, 
+        (case 
+            when doklad.datum_spl2 is not null then lcs.fn21_dec2string( doklad.suma_spl2 , 2)
+            else  '' 
+        end) SPL4_2, 
+        (case 
+            when doklad.datum_spl3 is not null then
+                (case 
+                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_3_splatnost, 112), 4)) as datetime)>=doklad.datum_spl3  then '- tretia splátka v termíne do '+convert(varchar(10), doklad.datum_spl3, 104) +' v sume:'
+                    else '- tretia splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                end )
+            else  ''
+        end  ) TXTSPL4_3, 
+        (case 
+            when  doklad.datum_spl3 is not null  then lcs.fn21_dec2string( doklad.suma_spl3 , 2)
+            else  ''
+        end  ) SPL4_3, 
+        (case 
+            when  doklad.datum_spl4 is not null  then 
+                (case 
+                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_4_splatnost, 112), 4)) as datetime)>=doklad.datum_spl4 then '- štvrtá splátka v termíne do '+convert(varchar(10), doklad.datum_spl4, 104)  +' v sume:'
+                    else '- štvrtá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
+                    end )
+            else  ''
+        end  ) TXTSPL4_4, 
+        (case 
+            when  doklad.datum_spl4 is not null  then lcs.fn21_dec2string( doklad.suma_spl4 , 2)
+            else  ''
+        end  ) SPL4_4,
+
+        /* --------- Texty splátok výmeru end ----------------------------*/
+
+        (case 
+            when poplatok.podnikatel='N' then 'Meno a priezvisko:' 
+            else 'Obchodné meno:' 
+        end  ) TXT_MENO, 
+        (case 
+            when poplatok.podnikatel='N' then 'Adresa trvalého pobytu:' 
+            else 'Sídlo:'
+        end  ) TXT_UL, 
+        (case 
+            when poplatok.podnikatel='N' then 'Rodné číslo:' 
+            else 'IČO/DIČ:' 
+        end  ) TYP_USER, 
+        (case 
+            when poplatok.podnikatel='N' then poplatok.rodne_cislo 
+            else  isnull(poplatok.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
+        end) ICO_RC, 
+
+        a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, poplatok.adr_tp_sup_cislo, poplatok.adr_tp_or_cislo), '') as ulica_tb_cislo, 
+        a_tb.psc_refer as psc_ref_tb,
+        a_tb.psc_nazev as psc_naz_tb, 
+        a_tb.stat_nazov_plny, 
+        a_tb.obec_nazev obec_nazev_tb, 
+
+        z_vybav.telefon_prace vyb_telefon_prace, 
+        z_vybav.e_mail vyb_email, 
+        pop_conf.vybavuje vyb_id,
+
+        ------ Info about the container
+        nadoba.objem objem_nadoby,
+        nadoba.pocet_nadob pocet_nadob,
+        nadoba.pocet_odvozov pocet_odvozov,
+        nadoba.sadzba_mena sadzba,
+        nadoba.suma_uhrada_mena poplatok,
+        nadoba.druh_nadoby druh_nadoby,
+        CASE 
+                WHEN CHARINDEX(',', sub_adresa.nazev_subjektu) > 0 
+                        THEN LEFT(sub_adresa.nazev_subjektu, CHARINDEX(',', sub_adresa.nazev_subjektu) - 1)
+                ELSE sub_adresa.nazev_subjektu
+            END AS ulica,
+        nadoba.orientacne_cislo orientacne_cislo
+
+    FROM lcs.pko21_nadoba nadoba
+
+    JOIN lcs.pko21_poplatok poplatok ON nadoba.pko_poplatok = poplatok.cislo_subjektu
+    JOIN lcs.subjekty sub_adresa ON sub_adresa.cislo_subjektu = nadoba.adresa
+    JOIN lcs.dane21_doklad doklad ON doklad.podklad = poplatok.cislo_subjektu
+    JOIN lcs.organizace_vlastni ov  ON 1=1
+    JOIN 
+        lcs.dane21_druh_dokladu
+        ON
+            doklad.druh_dokladu=lcs.dane21_druh_dokladu.cislo_subjektu
+    JOIN 
+        lcs.subjekty subjekt_poplatok  
+        ON 
+            subjekt_poplatok.cislo_subjektu=poplatok.cislo_subjektu  
+
+    LEFT OUTER JOIN 
+        lcs.pko21_poplatok_config pop_conf  
+        ON 
+            subjekt_poplatok.cislo_poradace=pop_conf.cislo_poradace  
+
+    LEFT OUTER JOIN 
+        lcs.subjekty subjekty_vybav  
+        ON 
+            subjekty_vybav.cislo_subjektu=pop_conf.vybavuje  
+
+    LEFT OUTER JOIN 
+        lcs.zamestnanci z_vybav  
+        ON 
+            z_vybav.cislo_subjektu=pop_conf.vybavuje  
+
+    JOIN 
+        lcs.subjekty subjekt_doklad  
+        ON 
+            doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu
+
+    JOIN 
+        lcs.subjekty subjekt_tp_adresa  
+        ON 
+            poplatok.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu
+
+    JOIN 
+        lcs.subjekty subjekt_doklad_sub  
+        ON 
+            doklad.subjekt=subjekt_doklad_sub.cislo_subjektu
+
+    JOIN 
+        lcs.dane_21_sum_pko_popl_celkom dsum  
+        ON
+            dsum.cs_dan_prizn=poplatok.cislo_subjektu
+
+    LEFT OUTER JOIN 
+        lcs.organizace org_cudz  
+        ON
+            doklad.subjekt=org_cudz.cislo_subjektu  
+
+    LEFT OUTER JOIN
+        lcs.evidence_dic ev_dic_cudz  
+        ON 
+            org_cudz.evidence_dic=ev_dic_cudz.cislo_subjektu  
+
+    JOIN
+        lcs.dane21_doklad_sum_saldo view_doklad_saldo  
+        ON
+            view_doklad_saldo.cislo_subjektu=doklad.cislo_subjektu
+
+    JOIN 
+        lcs.dane_21_adresa_view a_tb  
+        ON 
+            poplatok.adresa_tp_sidlo=a_tb.cislo_subjektu
+    WHERE 
+        poplatok.rodne_cislo IN (@birth_numbers) AND
+        nadoba.druh_odpadu IS NULL AND
+        poplatok.rok = @year AND
+        poplatok.podnikatel = 'N' AND
+        doklad.pohladavka IS NOT NULL AND 
+        lcs.dane21_druh_dokladu.typ_dokladu = 'V'AND
+        lcs.dane21_druh_dokladu.typ_dane = '4' AND
+        doklad.stav_dokladu<>'s' AND
+        doklad.rok_podkladu = @year
 `
+/* eslint-enable no-secrets/no-secrets */

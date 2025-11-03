@@ -17,8 +17,10 @@ import {
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
+import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { AdminService } from './admin.service'
 import {
+  DateRangeDto,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
@@ -35,11 +37,14 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Integrate data from noris if not exists by birth numbers or all',
+    summary: 'Loads new data from Noris.',
+    description:
+      'Loads new data from Noris by birth numbers and year, and saves it to our database.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Load data from noris',
+    description:
+      'Birth numbers of tax payers, whose taxes were successfully loaded from Noris.',
     type: CreateBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
@@ -52,17 +57,19 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Integrate data from noris',
+    summary: 'Updates data from Noris.',
+    description:
+      'Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Load data from noris',
+    description: 'Number of records updated in Noris',
   })
   @UseGuards(AdminGuard)
   @Post('update-data-from-noris')
   async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
-  ): Promise<any> {
+  ): Promise<{ updated: number }> {
     return this.adminService.updateDataFromNoris(data)
   }
 
@@ -74,16 +81,35 @@ export class AdminController {
     status: 200,
     description:
       'Integrate Paid for day from Noris to our database from date of last integration to today',
+    type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
   @Post('payments-from-noris')
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
-  ): Promise<any> {
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
     return this.adminService.updatePaymentsFromNoris({
       type: 'fromToDate',
       data,
     })
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Pull overpayments from Noris for a specified date range.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Pulls payment records with overpayments from Noris database to local database for the specified date range. Creates new records and updates existing ones that have changed.',
+    type: ResponseCreatedAlreadyCreatedDto,
+  })
+  @UseGuards(AdminGuard)
+  @Post('overpayments-from-noris')
+  async updateOverpaymentsFromNoris(
+    @Body() data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data)
   }
 
   @HttpCode(200)

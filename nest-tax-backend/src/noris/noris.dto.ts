@@ -1,3 +1,11 @@
+import z from 'zod'
+
+import {
+  baseNorisCommunalWasteTaxSchema,
+  norisCommunalWasteTaxGroupedSchema,
+  norisRawCommunalWasteTaxSchema,
+} from './noris.schema'
+
 export interface NorisTaxPayersDto {
   adresa_tp_sidlo: string
   sposob_dorucenia: string
@@ -8,7 +16,6 @@ export interface NorisTaxPayersDto {
   subjekt_refer: string
   subjekt_nazev: string
   rok: number
-  ulica_tb: string
   ulica_tb_cislo: string
   psc_ref_tb: string
   psc_naz_tb: string
@@ -88,26 +95,30 @@ export interface NorisTaxPayersDto {
   SPL4_3: string
   TXTSPL4_4: string
   SPL4_4: string
-  obalka_ulica: string
-  obalka_psc: string
-  obalka_mesto: string
-  obalka_stat: string
-  pouk_cena_bez_hal: string
-  pouk_cena_hal: string
   specificky_symbol: string
-  uzivatelsky_atribut: string
   uhrazeno: string
-  zbyva_uhradit: string
 }
 
 export interface NorisPaymentsDto {
   variabilny_symbol: string
   uhrazeno: string
-  zbyva_uhradit: string
   specificky_symbol: string
 }
 
-export interface NorisUpdateDto {
-  variabilny_symbol: string
-  datum_platnosti: string | null
-}
+// Type inference from schemas
+export type BaseNorisCommunalWasteTaxDto = z.infer<
+  typeof baseNorisCommunalWasteTaxSchema
+>
+/**
+ * @remarks
+ * ⚠️ **Warning:** This represents raw data from Noris where each record corresponds to a single container.
+ * Multiple records with the same variable symbol belong to the same tax payer.
+ * These records need to be grouped and transformed into NorisCommunalWasteTaxGroupedDto,
+ * where containers are nested within a single tax payer record.
+ */
+export type NorisRawCommunalWasteTaxDto = z.infer<
+  typeof norisRawCommunalWasteTaxSchema
+>
+export type NorisCommunalWasteTaxGroupedDto = z.infer<
+  typeof norisCommunalWasteTaxGroupedSchema
+>

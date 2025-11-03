@@ -4,6 +4,7 @@ metadata:
   name: ${BUILD_REPOSITORY_NAME}-rabbitmq
   namespace: ${NAMESPACE}
 spec:
+  image: docker.io/bitnamilegacy/rabbitmq:3.10.19-debian-11-r4
   replicas: 1
   resources:
     limits:

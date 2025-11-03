@@ -39,6 +39,16 @@ export interface CreateBirthNumbersResponseDto {
    */
   birthNumbers: Array<string>
 }
+export interface DateRangeDto {
+  /**
+   * From date
+   */
+  fromDate: string
+  /**
+   * To date
+   */
+  toDate?: string
+}
 /**
  * delivery_method
  */
@@ -132,9 +142,9 @@ export interface RequestPostNorisLoadDataDto {
    */
   year: number
   /**
-   * Birth numbers or ALL
+   * Birth numbers in format with slash
    */
-  birthNumbers: object
+  birthNumbers: Array<string>
 }
 export interface RequestPostNorisPaymentDataLoadDto {
   /**
@@ -152,7 +162,7 @@ export interface RequestPostNorisPaymentDataLoadDto {
   /**
    * If you want to count also overpayments.
    */
-  overPayments: object
+  overPayments: boolean
 }
 export interface RequestPostReportingSendReport {
   /**
@@ -245,6 +255,16 @@ export interface ResponseConstructionTaxDetailDto {
   amount: number
 }
 
+export interface ResponseCreatedAlreadyCreatedDto {
+  /**
+   * Number of created records
+   */
+  created: number
+  /**
+   * Number of records that already existed in the database
+   */
+  alreadyCreated: number
+}
 export interface ResponseErrorDto {
   /**
    * statusCode
@@ -1026,8 +1046,8 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
-     * @summary Integrate data from noris if not exists by birth numbers or all
+     * Loads new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Loads new data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1122,8 +1142,8 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
-     * @summary Integrate data from noris
+     * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1216,6 +1236,54 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
         requestUpdateNorisDeliveryMethodsDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Pull overpayments from Noris for a specified date range.
+     * @param {DateRangeDto} dateRangeDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateOverpaymentsFromNoris: async (
+      dateRangeDto: DateRangeDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'dateRangeDto' is not null or undefined
+      assertParamExists('adminControllerUpdateOverpaymentsFromNoris', 'dateRangeDto', dateRangeDto)
+      const localVarPath = `/admin/overpayments-from-noris`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        dateRangeDto,
         localVarRequestOptions,
         configuration,
       )
@@ -1341,8 +1409,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     *
-     * @summary Integrate data from noris if not exists by birth numbers or all
+     * Loads new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Loads new data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1400,8 +1468,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     *
-     * @summary Integrate data from noris
+     * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1458,6 +1526,37 @@ export const AdminApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary Pull overpayments from Noris for a specified date range.
+     * @param {DateRangeDto} dateRangeDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerUpdateOverpaymentsFromNoris(
+      dateRangeDto: DateRangeDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCreatedAlreadyCreatedDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerUpdateOverpaymentsFromNoris(
+          dateRangeDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerUpdateOverpaymentsFromNoris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
      * @summary Integrate Paid for day from - to.
      * @param {RequestPostNorisPaymentDataLoadDto} requestPostNorisPaymentDataLoadDto
      * @param {*} [options] Override http request option.
@@ -1466,7 +1565,9 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminControllerUpdatePaymentsFromNoris(
       requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCreatedAlreadyCreatedDto>
+    > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerUpdatePaymentsFromNoris(
           requestPostNorisPaymentDataLoadDto,
@@ -1529,8 +1630,8 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
-     * @summary Integrate data from noris if not exists by birth numbers or all
+     * Loads new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Loads new data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1559,8 +1660,8 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
-     * @summary Integrate data from noris
+     * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+     * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1590,6 +1691,21 @@ export const AdminApiFactory = function (
     },
     /**
      *
+     * @summary Pull overpayments from Noris for a specified date range.
+     * @param {DateRangeDto} dateRangeDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateOverpaymentsFromNoris(
+      dateRangeDto: DateRangeDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseCreatedAlreadyCreatedDto> {
+      return localVarFp
+        .adminControllerUpdateOverpaymentsFromNoris(dateRangeDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary Integrate Paid for day from - to.
      * @param {RequestPostNorisPaymentDataLoadDto} requestPostNorisPaymentDataLoadDto
      * @param {*} [options] Override http request option.
@@ -1598,7 +1714,7 @@ export const AdminApiFactory = function (
     adminControllerUpdatePaymentsFromNoris(
       requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<ResponseCreatedAlreadyCreatedDto> {
       return localVarFp
         .adminControllerUpdatePaymentsFromNoris(requestPostNorisPaymentDataLoadDto, options)
         .then((request) => request(axios, basePath))
@@ -1643,8 +1759,8 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
-   *
-   * @summary Integrate data from noris if not exists by birth numbers or all
+   * Loads new data from Noris by birth numbers and year, and saves it to our database.
+   * @summary Loads new data from Noris.
    * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -1675,8 +1791,8 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
-   *
-   * @summary Integrate data from noris
+   * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
+   * @summary Updates data from Noris.
    * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -1703,6 +1819,22 @@ export class AdminApi extends BaseAPI {
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerUpdateDeliveryMethodsInNoris(requestUpdateNorisDeliveryMethodsDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Pull overpayments from Noris for a specified date range.
+   * @param {DateRangeDto} dateRangeDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public adminControllerUpdateOverpaymentsFromNoris(
+    dateRangeDto: DateRangeDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerUpdateOverpaymentsFromNoris(dateRangeDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

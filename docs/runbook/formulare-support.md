@@ -1,6 +1,7 @@
 # Formuláre Support
 
 <!-- TOC -->
+
 - [Formuláre Support](#formuláre-support)
   - [Stavy formulárov](#stavy-formulárov)
     - [Hlavné stavy](#hlavné-stavy)
@@ -23,7 +24,6 @@
       - [Kontrola podania v Ginise](#kontrola-podania-v-ginise)
       - [Kontrola formulára v Ginise](#kontrola-formulára-v-ginise)
       - [Kontrola vlastnosti `FormId` v Ginise](#kontrola-vlastnosti-formid-v-ginise)
-<!-- TOC -->
 
 ## Stavy formulárov
 
@@ -87,7 +87,7 @@ Treba brať ohľad na to, kedy boli formuláre odoslané. Ak sú odoslané nedá
 
 ### Zaseknutý formulár v `RUNNING_UPLOAD_ATTACHMENTS`
 
-1. Pristúpiť do `nest-forms-backend` databázy (IP: `10.10.10.45`)
+1. Pristúpiť do `nest-forms-backend` databázy (IP: `10.10.30.74`)
 2. Nájsť formulár v tabuľke `Forms` podľa `id` (alebo `ginisDocumentId`)
 3. Nájsť všetky súbory daného formulára v tabuľke `Files` podľa `formId` (pozor, použiť `id`, nie `ginisDocumentId`)
 4. Ak sú nejaké súbory s `true` flagom `ginisUploadedError`, tak treba [skontrolovať prílohy priamo v Ginise](#kontrola-formulára-v-ginise) a manuálne v DB nastaviť `ginisUploaded` na `true` pre všetky súbory, čo sú v Ginise, a na `false` pre ostatné. Potom nastaviť **všetky** `ginisUploadedError` na `false`.
@@ -172,12 +172,12 @@ Na konci treba všetky tieto záznamy vymazať, a až potom zopakovať odoslanie
 
 ### Kontrola Ginis logov z `nest-forms-backend`
 
-Logy sú [dostupné v Grafane](https://grafana.bratislava.sk/explore?schemaVersion=1&panes=%7B%2226p%22:%7B%22datasource%22:%22ae2xijssitedce%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22ae2xijssitedce%22%7D,%22editorMode%22:%22builder%22,%22expr%22:%22%7Bapp%3D%5C%22nest-forms-backend%5C%22,%20cluster%3D%5C%22tkg-innov-prod%5C%22%7D%20%7C%3D%20%60%60%20%7C%20label_format%20raw%3D%60%7B%7B__line__%7D%7D%60%20%7C%20decolorize%20%7C%20logfmt%20%7C%20line_format%20%60%7B%7B.raw%7D%7D%60%20%7C%20drop%20raw%20%7C%20context%20%3D%20%60GinisService%60%22,%22intervalMs%22:1000,%22maxDataPoints%22:43200,%22queryType%22:%22range%22%7D%5D,%22range%22:%7B%22from%22:%22now-24h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1), pričom `context` je v tomto prípade `GinisService`.
+Logy sú [dostupné v Grafane](https://grafana.bratislava.sk/explore?schemaVersion=1&panes=%7B%2226p%22:%7B%22datasource%22:%22ae2xijssitedce%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22ae2xijssitedce%22%7D,%22editorMode%22:%22builder%22,%22expr%22:%22%7Bapp%3D%5C%22nest-forms-backend%5C%22,%20cluster%3D%5C%22production%5C%22%7D%20%7C%3D%20%60%60%20%7C%20label_format%20raw%3D%60%7B%7B__line__%7D%7D%60%20%7C%20decolorize%20%7C%20logfmt%20%7C%20line_format%20%60%7B%7B.raw%7D%7D%60%20%7C%20drop%20raw%20%7C%20context%20%3D%20%60GinisService%60%22,%22intervalMs%22:1000,%22maxDataPoints%22:43200,%22queryType%22:%22range%22%7D%5D,%22range%22:%7B%22from%22:%22now-24h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1), pričom `context` je v tomto prípade `GinisService`.
 
 Query pre Loki:
 
 ```js
-{app="nest-forms-backend", cluster="tkg-innov-prod"} |= `` | label_format raw=`{{__line__}}` | decolorize | logfmt | line_format `{{.raw}}` | drop raw | context = `GinisService`
+{app="nest-forms-backend", cluster="production"} |= `` | label_format raw=`{{__line__}}` | decolorize | logfmt | line_format `{{.raw}}` | drop raw | context = `GinisService`
 ```
 
 Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains` / `Text to find` a zvoliť adekvátny časový interval.

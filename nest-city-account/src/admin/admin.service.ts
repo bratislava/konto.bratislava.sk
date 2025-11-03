@@ -166,7 +166,7 @@ export class AdminService {
         )
       }
       try {
-        await this.userService.getOrCreateUserOrLegalPerson(accountType, user.sub, user.email)
+        await this.userService.getOrCreateUserOrLegalPerson(accountType, user)
       } catch (error) {
         this.logger.error(error)
       }
@@ -674,7 +674,8 @@ export class AdminService {
     if (
       users.length === limitedTake &&
       limitedTake >= 2 &&
-      users[0].lastVerificationIdentityCard === users[users.length - 1].lastVerificationIdentityCard
+      users[0].lastVerificationIdentityCard?.getTime() ===
+        users[users.length - 1].lastVerificationIdentityCard?.getTime()
     ) {
       // If this happens because of manual edit in the database, please add random jitter to the dates
       throw this.throwerErrorGuard.InternalServerErrorException(

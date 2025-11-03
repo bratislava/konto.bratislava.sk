@@ -1,9 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus, Tax, TaxPayment } from '@prisma/client'
+import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
+import { Request } from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
+import pLimit from 'p-limit'
 
 import {
+  DateRangeDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
@@ -16,14 +19,23 @@ import {
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
+import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
 import { NorisPaymentsDto } from '../noris.dto'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
-import { queryPaymentsFromNoris } from '../utils/noris.queries'
+import {
+  queryOverpaymentsFromNorisByDateRange,
+  queryPaymentsFromNorisByFromToDate,
+  queryPaymentsFromNorisByVariableSymbols,
+} from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 
 @Injectable()
 export class NorisPaymentSubservice {
   private readonly logger: Logger = new Logger('NorisService')
+
+  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+
+  private readonly concurrencyLimit = pLimit(this.concurrency)
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -34,58 +46,49 @@ export class NorisPaymentSubservice {
   ) {}
 
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
-    const connection = await this.connectionService.createConnection()
-    let { fromDate } = data
-    let { toDate } = data
-    if (!fromDate) {
-      const newFromDate = new Date(`${data.year}-04-01`)
-      fromDate = newFromDate.toDateString()
-    }
-    if (!toDate) {
-      const newToDate = new Date()
-      newToDate.setHours(0, 0, 0, 0)
-      toDate = newToDate.toDateString()
-    }
-    let overpayments = ''
-    if (data.overPayments) {
-      overpayments =
-        'OR lcs.dane21_doklad_sum_saldo.datum_posledni_platby is NULL'
-    }
-    const norisData = await connection.query(
-      queryPaymentsFromNoris
-        .replaceAll(
-          '{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}',
-          `AND (
-            (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= '${fromDate}' AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= '${toDate}')
-            ${overpayments}
-        )`,
+    const { fromDate, toDate, overPayments, year } = data
+
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
+
+        request.input('fromDate', fromDate)
+        request.input('toDate', toDate)
+        request.input('overPayments', overPayments ? 1 : 0)
+        request.input('years', year)
+
+        return request.query(queryPaymentsFromNorisByFromToDate)
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get payment data from Noris by date range.',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
         )
-        .replaceAll('{%YEARS%}', `= ${data.year.toString()}`)
-        .replaceAll('{%VARIABLE_SYMBOLS%}', ''),
+      },
     )
-    connection.close()
     return norisData.recordset
   }
 
   async getPaymentDataFromNorisByVariableSymbols(
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
-    const connection = await this.connectionService.createConnection()
-
-    let variableSymbols = ''
-    data.variableSymbols.forEach((variableSymbol) => {
-      if (/^\d+$/.test(variableSymbol)) {
-        variableSymbols += `'${variableSymbol}',`
-      } else {
+    const filteredVariableSymbols = data.variableSymbols.filter(
+      (variableSymbol) => {
+        if (/^\d+$/.test(variableSymbol)) {
+          return true
+        }
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
             `Variable symbol has a wrong format: "${variableSymbol}"`,
           ),
         )
-      }
-    })
-    variableSymbols = `(${variableSymbols.slice(0, -1)})`
+        return false
+      },
+    )
 
     if (data.years.length === 0) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -94,17 +97,67 @@ export class NorisPaymentSubservice {
       )
     }
 
-    const norisData = await connection.query(
-      queryPaymentsFromNoris
-        .replaceAll('{%YEARS%}', `IN (${data.years.join(',')})`)
-        .replaceAll(
-          '{%VARIABLE_SYMBOLS%}',
-          `AND dane21_doklad.variabilny_symbol IN ${variableSymbols}`,
+    const norisData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
+
+        const yearPlaceholders = data.years
+          .map((_, index) => `@year${index}`)
+          .join(',')
+        data.years.forEach((year, index) => {
+          request.input(`year${index}`, year)
+        })
+
+        const variableSymbolsPlaceholders = filteredVariableSymbols
+          .map((_, index) => `@variable_symbol${index}`)
+          .join(',')
+        filteredVariableSymbols.forEach((variableSymbol, index) => {
+          request.input(`variable_symbol${index}`, variableSymbol)
+        })
+
+        return request.query(
+          queryPaymentsFromNorisByVariableSymbols
+            .replaceAll('@years', yearPlaceholders)
+            .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
         )
-        .replaceAll('{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}', ''),
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get payment data from Noris by variable symbols.',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
     )
-    connection.close()
     return norisData.recordset
+  }
+
+  async updateOverpaymentsDataFromNorisByDateRange(
+    data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    const overpaymentsData = await this.connectionService.withConnection(
+      async (connection) => {
+        const request = new Request(connection)
+
+        request.input('fromDate', data.fromDate)
+        request.input('toDate', data.toDate ?? new Date())
+
+        return request.query(queryOverpaymentsFromNorisByDateRange)
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get overpayments data from Noris by date range.',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
+
+    return this.updatePaymentsFromNorisWithData(overpaymentsData.recordset)
   }
 
   private async createTaxMapByVariableSymbol(
@@ -127,15 +180,9 @@ export class NorisPaymentSubservice {
 
   async updatePaymentsFromNorisWithData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
-  ) {
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
-
-    // Get all tax IDs from taxesDataByVsMap
-    const taxIds = Array.from(taxesDataByVsMap.values(), (tax) => tax.id)
-
-    // Get aggregate payment data for all taxes at once
-    const taxPaymentDataMap = await this.fetchTaxPaymentAggregateMap(taxIds)
 
     // Get batch data from city account
     const userDataFromCityAccount =
@@ -149,7 +196,6 @@ export class NorisPaymentSubservice {
     const resultList = await this.processNorisPaymentData(
       norisPaymentData,
       taxesDataByVsMap,
-      taxPaymentDataMap,
       userDataFromCityAccount,
     )
     const created = resultList.filter((item) => item === 'CREATED').length
@@ -171,66 +217,35 @@ export class NorisPaymentSubservice {
     }
   }
 
-  private async fetchTaxPaymentAggregateMap(taxIds: number[]) {
-    const aggregateData = await this.prismaService.taxPayment.groupBy({
-      by: ['taxId'],
-      _sum: {
-        amount: true,
-      },
-      _count: {
-        _all: true,
-      },
-      where: {
-        taxId: {
-          in: taxIds,
-        },
-        status: PaymentStatus.SUCCESS,
-      },
-    })
-
-    // Create a map of aggregated data for easy lookup
-    return new Map(
-      aggregateData.map((data) => [
-        data.taxId,
-        {
-          sum: data._sum.amount || 0,
-          count: data._count._all,
-        },
-      ]),
-    )
-  }
-
   private async processNorisPaymentData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     const validPayments = norisPaymentData.filter(
       (norisPayment) =>
         norisPayment.variabilny_symbol !== undefined &&
-        norisPayment.uhrazeno !== undefined &&
-        norisPayment.zbyva_uhradit !== undefined,
+        norisPayment.uhrazeno !== undefined,
     )
 
-    // Step 2: Process each payment separately
+    // Step 2: Process each payment separately with concurrency limit
     const paymentProcesses = validPayments.map((norisPayment) =>
-      this.processIndividualPayment(
-        norisPayment,
-        taxesDataByVsMap,
-        taxPaymentDataMap,
-        userDataFromCityAccount,
+      this.concurrencyLimit(async () =>
+        this.processIndividualPayment(
+          norisPayment,
+          taxesDataByVsMap,
+          userDataFromCityAccount,
+        ),
       ),
     )
 
-    // Step 3: Execute all payment processes concurrently
+    // Step 3: Execute all payment processes with limited concurrency
     return Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(
     norisPayment: Partial<NorisPaymentsDto>,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     try {
@@ -240,22 +255,30 @@ export class NorisPaymentSubservice {
         return 'NOT_EXIST'
       }
 
-      const payerData = taxPaymentDataMap.get(taxData.id) || {
-        sum: 0,
-        count: 0,
-      }
       const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!)
-      const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit!)
 
-      // Early return if payment already recorded
-      if (payerData.sum !== null && payerData.sum >= paidFromNoris) {
-        return 'ALREADY_CREATED'
-      }
+      return await this.prismaService.$transaction(async (tx) => {
+        // Lock the tax row to prevent concurrent updates
+        await tx.$queryRaw`SELECT id FROM "Tax" WHERE id = ${taxData.id} FOR UPDATE`
 
-      await this.prismaService.$transaction(async (tx) => {
+        const currentSum = await tx.taxPayment.aggregate({
+          where: {
+            taxId: taxData.id,
+            status: PaymentStatus.SUCCESS,
+          },
+          _sum: { amount: true },
+        })
+
+        const alreadyPaid = currentSum._sum.amount ?? 0
+        const difference = paidFromNoris - alreadyPaid
+
+        if (difference <= 0) {
+          return 'ALREADY_CREATED'
+        }
+
         const createdTaxPayment = await tx.taxPayment.create({
           data: {
-            amount: paidFromNoris - (payerData.sum ?? 0),
+            amount: difference,
             source: 'BANK_ACCOUNT',
             specificSymbol: norisPayment.specificky_symbol,
             taxId: taxData.id,
@@ -268,15 +291,9 @@ export class NorisPaymentSubservice {
           createdTaxPayment,
           userDataFromCityAccount,
         )
-      })
 
-      this.handlePaymentsErrors(
-        paidFromNoris,
-        taxData,
-        toPayFromNoris,
-        payerData.count,
-      )
-      return 'CREATED'
+        return 'CREATED'
+      })
     } catch (error) {
       return this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -303,7 +320,7 @@ export class NorisPaymentSubservice {
       userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
 
     if (userFromCityAccount && userFromCityAccount.externalId) {
-      await this.bloomreachService.trackEventTaxPayment(
+      const result = await this.bloomreachService.trackEventTaxPayment(
         {
           amount: createdTaxPayment.amount,
           payment_source: 'BANK_ACCOUNT',
@@ -311,53 +328,12 @@ export class NorisPaymentSubservice {
         },
         userFromCityAccount.externalId,
       )
-    }
-  }
-
-  // TODO: Eventually we want to get rid of this function, and do some better error handling, than watching these specific cases.
-  /**
-   * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.
-   *
-   * @param paidFromNoris Already paid amount in Noris.
-   * @param taxData Tax object, containing all the information about the tax.
-   * @param forPayment Left to be paid amount in Noris.
-   * @param payerDataCountAll How many payments for this tax we have in the database.
-   */
-  private handlePaymentsErrors(
-    paidFromNoris: number,
-    taxData: Tax,
-    forPayment: number,
-    payerDataCountAll: number,
-  ) {
-    if (paidFromNoris > taxData.amount && forPayment === 0) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
+      if (!result) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
-        ),
-      )
-    } else if (
-      payerDataCountAll === 0 &&
-      paidFromNoris >= taxData.amount &&
-      forPayment > 0
-    ) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
-        ),
-      )
-    } else if (
-      payerDataCountAll > 0 &&
-      paidFromNoris >= taxData.amount &&
-      forPayment > 0
-    ) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
-        ),
-      )
+          'Failed to track payment in Bloomreach.',
+        )
+      }
     }
   }
 }

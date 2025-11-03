@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { NorisPaymentsDto } from '../noris/noris.dto'
 import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -10,6 +11,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
+  DateRangeDto,
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
@@ -47,7 +49,9 @@ export class AdminService {
     )
   }
 
-  async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
+  async updatePaymentsFromNoris(
+    norisRequest: NorisRequestGeneral,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const norisPaymentData: Partial<NorisPaymentsDto>[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
@@ -55,6 +59,12 @@ export class AdminService {
             norisRequest.data,
           )
     return this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
+  }
+
+  async updateOverpaymentsDataFromNorisByDateRange(
+    data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    return this.norisService.updateOverpaymentsDataFromNorisByDateRange(data)
   }
 
   async updateDeliveryMethodsInNoris({

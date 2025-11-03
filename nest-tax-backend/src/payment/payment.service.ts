@@ -16,6 +16,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
+import { PaymentTypeEnum } from '../tax/dtos/response.tax.dto'
 import { TaxService } from '../tax/tax.service'
 import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -318,6 +319,13 @@ export class PaymentService {
     if (!ORDERNUMBER) {
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
+    const tax = await this.prisma.taxPayment.findUnique({
+      where: { orderId: ORDERNUMBER },
+      include: { tax: true },
+    })
+    const year = tax?.tax.year
+    // TODO tax type when PKO is implemented
+
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
         OPERATION,
@@ -342,7 +350,7 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
       }
 
       const payment = await this.prisma.taxPayment.findUnique({
@@ -359,11 +367,11 @@ export class PaymentService {
       })
 
       if (!payment) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
       }
 
       if (payment.status === PaymentStatus.SUCCESS) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
       }
 
       // TODO: when user has taxPayment with status SUCCESS,
@@ -377,39 +385,41 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
       }
 
-      const taxPayment = await this.prisma.taxPayment.update({
-        where: { orderId: ORDERNUMBER },
-        data: {
-          status: PaymentStatus.SUCCESS,
-          source: 'CARD',
-        },
-        include: {
-          tax: {
-            select: {
-              year: true,
+      await this.prisma.$transaction(async (tx) => {
+        const taxPayment = await tx.taxPayment.update({
+          where: { orderId: ORDERNUMBER },
+          data: {
+            status: PaymentStatus.SUCCESS,
+            source: 'CARD',
+          },
+          include: {
+            tax: {
+              select: {
+                year: true,
+              },
             },
           },
-        },
+        })
+
+        const user = await this.cityAccountSubservice.getUserDataAdmin(
+          payment.tax.taxPayer.birthNumber,
+        )
+        if (user?.externalId) {
+          await this.bloomreachService.trackEventTaxPayment(
+            {
+              amount: taxPayment.amount,
+              payment_source: TaxPaymentSource.CARD,
+              year: taxPayment.tax.year,
+            },
+            user.externalId,
+          )
+        }
       })
 
-      const user = await this.cityAccountSubservice.getUserDataAdmin(
-        payment.tax.taxPayer.birthNumber,
-      )
-      if (user?.externalId) {
-        await this.bloomreachService.trackEventTaxPayment(
-          {
-            amount: taxPayment.amount,
-            payment_source: TaxPaymentSource.CARD,
-            year: taxPayment.tax.year,
-          },
-          user.externalId,
-        )
-      }
-
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

@@ -9,6 +9,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import { toLogfmt } from '../../utils/logging'
 import { OAuth2ErrorMetadata, OAuth2Exception } from '../oauth2.exception'
+import { RequestWithAuthorizationPayload } from 'src/oauth2/guards/authorization-payload.guard'
 
 const USER_AGENT = 'user-agent'
 
@@ -114,8 +115,16 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     status: number,
     exceptionResponse: string | object
   ) {
-    const redirectUri = request.query.redirect_uri as string | undefined
-    const state = request.query.state as string | undefined
+    const requestWithPayload = request as RequestWithAuthorizationPayload
+    let redirectUri = requestWithPayload.authorizationPayload?.redirect_uri
+    let state = requestWithPayload.authorizationPayload?.state
+
+    if (!redirectUri) {
+      redirectUri = request.query.redirect_uri as string | undefined
+    }
+    if (!state) {
+      state = request.query.state as string | undefined
+    }
 
     // RFC 6749 Section 4.1.2.1: If redirect_uri is invalid/missing, return error directly
     // (do not redirect to prevent open redirector vulnerability)
@@ -131,6 +140,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         userAgent: request.get(USER_AGENT) || '',
         requestBody: request.body,
         queryParams: request.query,
+        authorizationPayload: requestWithPayload.authorizationPayload ?? '<NO PAYLOAD>',
         ip: request.ip ?? '<NO IP>',
         error: exceptionResponse,
         message: 'Authorization error without redirect_uri, returning direct error',
@@ -169,6 +179,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       userAgent: request.get(USER_AGENT) || '',
       requestBody: request.body,
       queryParams: request.query,
+      authorizationPayload: requestWithPayload.authorizationPayload ?? '<NO PAYLOAD>',
       ip: request.ip ?? '<NO IP>',
       error: errorResponse.error,
       message: 'Authorization failed, sending redirect error.',

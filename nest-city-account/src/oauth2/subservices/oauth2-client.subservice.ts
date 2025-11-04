@@ -51,7 +51,7 @@ export class OAuth2Client {
   readonly allowedGrantTypes?: string[]
 
   /** Whether this client requires PKCE */
-  readonly requiresPkce?: boolean
+  readonly requiresPkce: boolean
 
   constructor(config: {
     clientId: string
@@ -60,7 +60,7 @@ export class OAuth2Client {
     allowedRedirectUris: string[]
     allowedScopes?: string[]
     allowedGrantTypes?: string[]
-    requiresPkce?: boolean
+    requiresPkce: boolean
   }) {
     this.clientId = config.clientId
     this.clientSecret = config.clientSecret
@@ -187,7 +187,8 @@ export class OAuth2ClientSubservice {
         .map((g) => g.trim())
         .filter((g) => g.length > 0)
 
-      const requiresPkce = process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] === 'true'
+      // Default to true if not specified
+      const requiresPkce = process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] !== 'false'
 
       const client = new OAuth2Client({
         clientId,

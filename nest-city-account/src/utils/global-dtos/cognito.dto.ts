@@ -120,6 +120,7 @@ export interface CognitoAccessTokenDto {
   device_key: string
   iss: string
   client_id: string
+  aud?: string // Optional: present in ID tokens, may be present in customized access tokens
   origin_jti: string
   event_id: string
   token_use: CognitoTokenType

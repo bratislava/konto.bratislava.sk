@@ -2,6 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 /**
+ * Well-known OAuth2 client names
+ * These correspond to the prefixes used in OAUTH2_CLIENT_LIST environment variable
+ */
+export enum OAuth2ClientName {
+  MPA = 'MPA',
+  DPB = 'DPB',
+}
+
+/**
  * OAuth2 Client Configuration
  *
  * Configuration is loaded from environment variables with the following pattern:
@@ -126,73 +135,82 @@ export class OAuth2ClientSubservice {
   }
 
   /**
+   * Parse a comma-separated string into an array of trimmed, non-empty values
+   *
+   * @param value - The comma-separated string to parse (optional)
+   * @returns Array of trimmed, non-empty strings
+   */
+  private parseCommaSeparatedList(value?: string): string[] {
+    if (!value) {
+      return []
+    }
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0)
+  }
+
+  /**
    * Load clients from environment variables
    * Environment variable pattern: OAUTH2_{PREFIX}_{PROPERTY}
    */
   private loadClientsFromEnv(): OAuth2Client[] {
-    const clientList = process.env.OAUTH2_CLIENT_LIST
-    if (!clientList || clientList.trim().length === 0) {
+    // Get well-known clients from enum
+    const enumClientNames = Object.values(OAuth2ClientName)
+    // Get clients from environment variable
+    const envClientNames = this.parseCommaSeparatedList(process.env.OAUTH2_CLIENT_LIST)
+
+    // Merge into a Set to avoid duplicates
+    const clientNames = new Set<string>([...enumClientNames, ...envClientNames])
+
+    if (clientNames.size === 0) {
       this.logger.warn(
-        'No OAUTH2_CLIENT_LIST environment variable found or it is empty. No OAuth2 clients configured.'
+        'No OAuth2 clients configured. No well-known clients found and OAUTH2_CLIENT_LIST is empty or not set.'
       )
       return []
     }
 
-    const clientPrefixes = clientList
-      .split(',')
-      .map((p) => p.trim())
-      .filter((p) => p.length > 0) // Filter out empty strings (e.g., from "MPA,,DPB" or ",MPA,")
     const clients: OAuth2Client[] = []
 
-    for (const prefix of clientPrefixes) {
-      const clientId = process.env[`OAUTH2_${prefix}_CLIENT_ID`]
-      const clientSecret = process.env[`OAUTH2_${prefix}_CLIENT_SECRET`]
+    for (const name of clientNames) {
+      const clientId = process.env[`OAUTH2_${name}_CLIENT_ID`]
+      const clientSecret = process.env[`OAUTH2_${name}_CLIENT_SECRET`]
 
       if (!clientId) {
         this.logger.error(
-          `Missing configuration for client prefix: ${prefix} - CLIENT_ID is required`
+          `Missing configuration for client name: ${name} - CLIENT_ID is required`,
+          { alert: 1 }
         )
         continue
       }
 
       // Parse allowed redirect URIs (required - at least one must be configured)
-      const allowedRedirectUrisEnv = process.env[`OAUTH2_${prefix}_ALLOWED_URIS`]
-      if (!allowedRedirectUrisEnv) {
-        this.logger.error(
-          `Missing configuration for client prefix: ${prefix} - ALLOWED_URIS is required`
-        )
-        continue
-      }
-      const allowedRedirectUris = allowedRedirectUrisEnv
-        .split(',')
-        .map((u) => u.trim())
-        .filter((u) => u.length > 0)
+      const allowedRedirectUris = this.parseCommaSeparatedList(
+        process.env[`OAUTH2_${name}_ALLOWED_URIS`]
+      )
       if (allowedRedirectUris.length === 0) {
         this.logger.error(
-          `Invalid configuration for client prefix: ${prefix} - ALLOWED_URIS must contain at least one URI`
+          `Invalid configuration for client name: ${name} - ALLOWED_URIS is required and must contain at least one URI`,
+          { alert: 1 }
         )
         continue
       }
 
       // Parse optional comma-separated arrays (filter out empty values)
-      const allowedScopesEnv = process.env[`OAUTH2_${prefix}_ALLOWED_SCOPES`]
-      const allowedScopes = allowedScopesEnv
-        ?.split(',')
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0)
+      const allowedScopes = this.parseCommaSeparatedList(
+        process.env[`OAUTH2_${name}_ALLOWED_SCOPES`]
+      )
 
-      const allowedGrantTypesEnv = process.env[`OAUTH2_${prefix}_ALLOWED_GRANT_TYPES`]
-      const allowedGrantTypes = allowedGrantTypesEnv
-        ?.split(',')
-        .map((g) => g.trim())
-        .filter((g) => g.length > 0)
+      const allowedGrantTypes = this.parseCommaSeparatedList(
+        process.env[`OAUTH2_${name}_ALLOWED_GRANT_TYPES`]
+      )
 
       // Default to true if not specified
-      const requiresPkce = process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] !== 'false'
+      const requiresPkce = process.env[`OAUTH2_${name}_REQUIRES_PKCE`] !== 'false'
 
       const client = new OAuth2Client({
         clientId,
-        clientName: prefix, // Always use the prefix as the client name
+        clientName: name,
         allowedRedirectUris,
         requiresPkce,
         ...(clientSecret && { clientSecret }), // Only include if provided
@@ -210,7 +228,7 @@ export class OAuth2ClientSubservice {
    * Get all configured clients (lazy loaded from environment)
    */
   private getClients(): OAuth2Client[] {
-    if (this.clients.length === 0 && process.env.OAUTH2_CLIENT_LIST) {
+    if (this.clients.length === 0) {
       this.clients = this.loadClientsFromEnv()
     }
     return this.clients
@@ -225,5 +243,16 @@ export class OAuth2ClientSubservice {
   findClientById(clientId: string): OAuth2Client | undefined {
     const clients = this.getClients()
     return clients.find((client) => client.clientId === clientId)
+  }
+
+  /**
+   * Find a client by client name
+   *
+   * @param clientName - The client name (prefix from OAUTH2_CLIENT_LIST) to search for
+   * @returns The client configuration if found, undefined otherwise
+   */
+  findClientByName(clientName: string): OAuth2Client | undefined {
+    const clients = this.getClients()
+    return clients.find((client) => client.clientName === clientName)
   }
 }

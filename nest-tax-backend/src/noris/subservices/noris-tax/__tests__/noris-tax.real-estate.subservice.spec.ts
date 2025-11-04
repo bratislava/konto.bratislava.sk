@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
+import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
 import prismaMock from '../../../../../test/singleton'
@@ -33,6 +34,8 @@ jest.mock('mssql', () => ({
     input: jest.fn(),
     query: jest.fn().mockResolvedValue({ recordset: [] }),
   })),
+  VarChar: jest.fn(),
+  Int: jest.fn(),
 }))
 
 describe('NorisTaxRealEstateSubservice', () => {
@@ -145,8 +148,6 @@ describe('NorisTaxRealEstateSubservice', () => {
       amount: 100_000,
       variableSymbol: 'VS123',
       dateTaxRuling: new Date('2023-01-01'),
-      qrCodeEmail: 'qr-email',
-      qrCodeWeb: 'qr-web',
       taxConstructions: 20_000,
       taxFlat: 50_000,
       taxLand: 30_000,
@@ -246,9 +247,10 @@ describe('NorisTaxRealEstateSubservice', () => {
       ])
 
       expect(connectionService.withConnection).toHaveBeenCalled()
-      expect(mockRequest.input).toHaveBeenCalledWith('year', 2023)
+      expect(mockRequest.input).toHaveBeenCalledWith('year', mssql.Int, 2023)
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number0',
+        mssql.VarChar(expect.any(Number)),
         '123456/7890',
       )
       expect(result).toEqual(mockNorisData)
@@ -303,10 +305,12 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number0',
+        mssql.VarChar(expect.any(Number)),
         '123456/7890',
       )
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number1',
+        mssql.VarChar(expect.any(Number)),
         '987654/3210',
       )
     })
@@ -755,8 +759,6 @@ describe('NorisTaxRealEstateSubservice', () => {
           amount: 100_000,
           variableSymbol: 'VS123',
           dateTaxRuling: new Date('2023-01-01'),
-          qrCodeEmail: 'qr-email',
-          qrCodeWeb: 'qr-web',
           taxConstructions: 20_000,
           taxFlat: 50_000,
           taxLand: 30_000,
@@ -824,7 +826,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         })
         expect(
           mockTaxDefinitionForInsert.mapNorisToTaxData,
-        ).toHaveBeenCalledWith(mockNorisData[0], 2023, 1, 'qr-code', 'qr-code')
+        ).toHaveBeenCalledWith(mockNorisData[0], 2023, 1)
         expect(
           mockTaxDefinitionForInsert.mapNorisToTaxDetailData,
         ).toHaveBeenCalledWith(mockNorisData[0], 1)
@@ -880,8 +882,6 @@ describe('NorisTaxRealEstateSubservice', () => {
           amount: 100_000,
           variableSymbol: 'VS123',
           dateTaxRuling: new Date('2023-01-01'),
-          qrCodeEmail: 'qr-email',
-          qrCodeWeb: 'qr-web',
           taxConstructions: 20_000,
           taxFlat: 50_000,
           taxLand: 30_000,

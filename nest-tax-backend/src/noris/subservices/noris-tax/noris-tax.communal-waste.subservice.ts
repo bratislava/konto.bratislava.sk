@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import groupBy from 'lodash/groupBy'
-import { Request } from 'mssql'
+import * as mssql from 'mssql'
 
+import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -71,20 +72,19 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice 
    * @returns An array of records for given birth numbers and year.
    */
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
-    year: number,
-    birthNumbers: string[],
+    data: RequestPostNorisLoadDataDto,
   ): Promise<NorisRawCommunalWasteTaxDto[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        const birthNumbersPlaceholders = birthNumbers
-          .map((birthNumber, index) => `@birth_number${index}`)
+        const birthNumbersPlaceholders = data.birthNumbers
+          .map((_, index) => `@birth_number${index}`)
           .join(',')
-        birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+        data.birthNumbers.forEach((birthNumber, index) => {
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
-        request.input('year', year)
+        request.input('year', mssql.Int, data.year)
 
         const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
           '@birth_numbers',

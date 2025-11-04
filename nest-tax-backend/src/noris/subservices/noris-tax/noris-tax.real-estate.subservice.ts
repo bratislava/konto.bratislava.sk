@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
-import { Request } from 'mssql'
+import * as mssql from 'mssql'
 import pLimit from 'p-limit'
 
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
@@ -51,14 +51,14 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
   ): Promise<NorisTaxPayersDto[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('year', year)
+        request.input('year', mssql.Int, year)
         const birthNumbersPlaceholders = birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
         birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
 
         return request.query(

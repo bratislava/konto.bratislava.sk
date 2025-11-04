@@ -47,8 +47,6 @@ model Tax {
   amount                          Int
   order                           Int?  // Will not be null because of set_tax_order() trigger
   variableSymbol                  String
-  qrCodeWeb                       String?
-  qrCodeEmail                     String?
   taxId                           String?
   dateCreateTax                   String?
   dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"

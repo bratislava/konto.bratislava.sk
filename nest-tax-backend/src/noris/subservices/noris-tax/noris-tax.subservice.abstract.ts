@@ -98,27 +98,12 @@ export abstract class AbstractNorisTaxSubservice {
       update: taxPayerData,
     })
 
-    const [qrCodeEmail, qrCodeWeb] = await Promise.all([
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024100000',
-      }),
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024200000',
-      }),
-    ])
-
     // deliveryMethod is missing here, since we do not want to update
     // historical taxes with the current delivery method in Noris
     const taxData = taxDefinition.mapNorisToTaxData(
       dataFromNoris,
       year,
       taxPayer.id,
-      qrCodeEmail,
-      qrCodeWeb,
     )
 
     const whereUnique: Prisma.TaxWhereUniqueInput = {

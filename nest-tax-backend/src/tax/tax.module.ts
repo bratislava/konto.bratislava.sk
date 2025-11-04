@@ -7,7 +7,6 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import { TaxRealEstateSubservice } from './subservices/tax/tax.real-estate.subservice'
-import { TaxController } from './tax.controller'
 import { TaxService } from './tax.service'
 import { TaxControllerV2 } from './tax.v2.controller'
 
@@ -21,6 +20,6 @@ import { TaxControllerV2 } from './tax.v2.controller'
     TaxRealEstateSubservice,
   ],
   exports: [TaxService],
-  controllers: [TaxController, TaxControllerV2],
+  controllers: [TaxControllerV2],
 })
 export class TaxModule {}

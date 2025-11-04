@@ -5,7 +5,6 @@ import {
   RealEstateTaxData,
   RealEstateTaxDetail,
 } from '../noris/utils/mapping.helper'
-import { PdfHelperImplemented } from '../tax/utils/helpers/pdf.helper'
 import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
@@ -23,8 +22,6 @@ export type TaxDefinition = {
     data: NorisTaxPayersDto,
     year: number,
     taxPayerId: number,
-    qrCodeEmail: string,
-    qrCodeWeb: string,
   ) => RealEstateTaxData
 
   /** Threshold for allowing installment payments (splátková hranica) in eurocents */
@@ -40,11 +37,6 @@ export type TaxDefinition = {
   getTaxDetailPure: (
     options: GetTaxDetailPureOptions,
   ) => GetTaxDetailPureResponse
-
-  /** Configuration for PDF generation */
-  pdfOptions:
-    | { generate: false }
-    | { generate: true; pdfHelper: PdfHelperImplemented }
 }
 
 export type TaxDefinitionsMap = Record<TaxType, TaxDefinition>

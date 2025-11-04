@@ -25,7 +25,3 @@ export enum CustomErrorTaxTypesResponseEnum {
   AFTER_DUE_DATE = 'Tax is after due date.',
   BELOW_THRESHOLD = 'Tax amount is below threshold for installment payments.',
 }
-
-export enum CustomErrorPdfCreateTypesEnum {
-  PDF_CREATE_ERROR = 'PDF_CREATE_ERROR',
-}

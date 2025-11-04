@@ -52,16 +52,12 @@ export type RealEstateTaxData = {
   taxLand: number
   taxConstructions: number
   taxFlat: number
-  qrCodeEmail: string
-  qrCodeWeb: string
 }
 
 export const mapNorisToRealEstateTaxData = (
   data: NorisTaxPayersDto,
   year: number,
   taxPayerId: number,
-  qrCodeEmail: string,
-  qrCodeWeb: string,
 ): RealEstateTaxData => {
   return {
     amount: convertCurrencyToInt(data.dan_spolu),
@@ -74,8 +70,6 @@ export const mapNorisToRealEstateTaxData = (
     taxLand: convertCurrencyToInt(data.dan_pozemky),
     taxConstructions: convertCurrencyToInt(data.dan_stavby_SPOLU),
     taxFlat: convertCurrencyToInt(data.dan_byty),
-    qrCodeEmail,
-    qrCodeWeb,
   }
 }
 

@@ -45,7 +45,6 @@ describe('TaxRealEstateSubservice', () => {
       amount: 1000,
       variableSymbol: 'VS123',
       dateTaxRuling: new Date('2023-01-01'),
-      qrCodeWeb: null,
       taxConstructions: 0,
       taxFlat: 0,
       taxLand: 0,

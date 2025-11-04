@@ -83,16 +83,6 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     )
   }
 
-  const downloadPdf = async () => {
-    const { year, order, type } = taxData
-    const { data } = await taxClient.taxControllerGetTaxByYearPdf(year, order, type, {
-      authStrategy: 'authOnly',
-      responseType: 'blob',
-    })
-    // @ts-expect-error `taxControllerGetTaxByYearPdf` returns wrong type
-    downloadBlob(data as Blob, `Dan-z-nehnutelnosti-${taxData.year}.pdf`)
-  }
-
   return {
     taxData,
     redirectToFullPaymentMutate,
@@ -101,7 +91,6 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     redirectToInstallmentPaymentIsPending,
     downloadQrCodeOneTimePayment,
     downloadQrCodeInstallmentPayment,
-    downloadPdf,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
     strapiTaxAdministrator,

@@ -1,29 +1,21 @@
-import path from 'node:path'
-
 import { Injectable } from '@nestjs/common'
 import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
-import ejs from 'ejs'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
-import { computeIsPayableYear } from '../payment/utils/payment.helper'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
-  CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
-  ResponseGetTaxesBodyDto,
-  ResponseGetTaxesDto,
   ResponseGetTaxesListBodyDto,
   ResponseGetTaxesListDto,
-  ResponseTaxDto,
   ResponseTaxSummaryDetailDto,
   TaxAvailabilityStatus,
   TaxStatusEnum,
@@ -35,9 +27,7 @@ import {
 } from './subservices/tax/tax.subservice.abstract'
 import {
   checkTaxDateInclusion,
-  fixInstallmentTexts,
   getExistingTaxStatus,
-  getTaxStatus,
 } from './utils/helpers/tax.helper'
 import {
   getTaxDetailPureForInstallmentGenerator,
@@ -87,161 +77,6 @@ export class TaxService {
     })
 
     return taxPayment._sum.amount || 0
-  }
-
-  async getTaxByYearAndType(
-    year: number,
-    birthNumber: string,
-    type: TaxType,
-    order: number,
-  ): Promise<ResponseTaxDto> {
-    if (!birthNumber || !year) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-      )
-    }
-
-    const tax = await this.getImplementationByType(type).fetchTaxData(
-      { birthNumber },
-      {
-        taxInstallments: true,
-        taxPayer: {
-          include: {
-            taxAdministrator: true,
-          },
-        },
-        taxDetails: true,
-        taxPayments: true,
-      },
-      year,
-      type,
-      order,
-    )
-
-    const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
-
-    if (paidAmount > 0 && tax.amount - paidAmount > 0) {
-      tax.qrCodeWeb = await this.qrCodeSubservice.createQrCode({
-        amount: tax.amount - paidAmount,
-        variableSymbol: tax.variableSymbol,
-        specificSymbol: '2023200000',
-      })
-    }
-
-    // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
-    const taxInstallments = fixInstallmentTexts(
-      tax.taxInstallments,
-      tax.year,
-    ).map((installment) => ({
-      ...installment,
-      order: installment.order.toString(),
-    }))
-
-    const paidStatus = getTaxStatus(tax.amount, paidAmount)
-
-    // TODO: We stopped generating PDFs in 2024, edit this for advanced logic
-    // const pdfExport = year <= 2023
-    // Temporarily disabled
-    const pdfExport = false
-
-    const isPayable = computeIsPayableYear(tax.year)
-
-    return {
-      ...tax,
-      taxPayer: {
-        ...tax.taxPayer,
-        active: true,
-      },
-      order,
-      taxInstallments,
-      paidAmount,
-      paidStatus,
-      pdfExport,
-      isPayable,
-      taxAdministrator: tax.taxPayer.taxAdministrator,
-    }
-  }
-
-  async loadTaxes(
-    birthNumber: string,
-    type: TaxType,
-  ): Promise<ResponseGetTaxesDto> {
-    if (!birthNumber) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
-      )
-    }
-    const taxPayments = await this.prisma.taxPayment.groupBy({
-      by: ['taxId'],
-      where: {
-        tax: {
-          taxPayer: {
-            birthNumber,
-          },
-          type,
-        },
-        status: PaymentStatus.SUCCESS,
-      },
-      _sum: {
-        amount: true,
-      },
-      orderBy: { taxId: 'desc' },
-    })
-
-    const taxes = await this.prisma.tax.findMany({
-      where: {
-        taxPayer: {
-          birthNumber,
-        },
-        type,
-      },
-      orderBy: {
-        taxId: 'desc',
-      },
-      select: {
-        id: true,
-        uuid: true,
-        createdAt: true,
-        amount: true,
-        year: true,
-        type: true,
-      },
-    })
-
-    const taxPayer = await this.prisma.taxPayer.findUnique({
-      where: {
-        birthNumber,
-      },
-      include: {
-        taxAdministrator: true,
-      },
-    })
-
-    const items: ResponseGetTaxesBodyDto[] = taxes.map((tax) => {
-      const taxPaymentItem = taxPayments.find(
-        (taxPayment) => taxPayment.taxId === tax.id,
-      )
-
-      const paidAmount = taxPaymentItem?._sum.amount ?? 0
-      const paidStatus = getTaxStatus(tax.amount, paidAmount || undefined)
-
-      const isPayable = computeIsPayableYear(tax.year)
-
-      return {
-        ...tax,
-        paidAmount,
-        paidStatus,
-        isPayable,
-      }
-    })
-
-    return {
-      isInNoris: items.length > 0,
-      items,
-      taxAdministrator: taxPayer ? taxPayer.taxAdministrator : null,
-    }
   }
 
   async getListOfTaxesByBirthnumberAndType(
@@ -342,54 +177,6 @@ export class TaxService {
       availabilityStatus: TaxAvailabilityStatus.AVAILABLE,
       items,
       taxAdministrator,
-    }
-  }
-
-  async generatePdf(
-    year: number,
-    birthNumber: string,
-    type: TaxType,
-    order: number,
-  ): Promise<string> {
-    const taxDefinition = getTaxDefinitionByType(type)
-    if (!taxDefinition.pdfOptions.generate) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorTaxTypesEnum.PDF_GENERATE_ERROR,
-        `PDF generation for tax type ${type} is not supported`,
-      )
-    }
-
-    try {
-      const user = await this.getTaxByYearAndType(
-        year,
-        birthNumber,
-        type,
-        order,
-      )
-      const taxDetails = taxDefinition.pdfOptions.pdfHelper.taxDetailsToPdf(
-        user.taxDetails,
-      )
-      const totals = taxDefinition.pdfOptions.pdfHelper.taxTotalsToPdf(
-        user,
-        user.taxInstallments.map((data) => ({
-          ...data,
-          order: data.order ? +data.order : 1,
-        })),
-      )
-      return await ejs.renderFile('public/tax-pdf.ejs', {
-        user,
-        logo: path.resolve('public/logoBaTax.png'),
-        taxDetails,
-        totals,
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
-        'Error to create pdf',
-        'Error to create pdf',
-        undefined,
-        error,
-      )
     }
   }
 

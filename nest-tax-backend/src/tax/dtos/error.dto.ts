@@ -10,7 +10,6 @@ export enum CustomErrorTaxTypesEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
   BELOW_THRESHOLD = 'BELOW_THRESHOLD',
   TAX_TYPE_NOT_FOUND = 'TAX_TYPE_NOT_FOUND',
-  PDF_GENERATE_ERROR = 'PDF_GENERATE_ERROR',
 }
 
 export enum CustomErrorTaxTypesResponseEnum {

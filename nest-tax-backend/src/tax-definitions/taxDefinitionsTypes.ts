@@ -17,7 +17,7 @@ export type TaxDefinition = {
   /** Whether this tax type is unique per taxpayer and year */
   isUnique: boolean
 
-  /** Maps Noris taxp data into format supported by our database. */
+  /** Maps Noris tax data into format supported by our database. */
   mapNorisToTaxData: (
     data: NorisTaxPayersDto,
     year: number,

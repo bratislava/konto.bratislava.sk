@@ -22,7 +22,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
-import { TokenRequestGuard } from './guards/token-request.guard'
+import { TokenRequestGuard, RequestWithClientCredentials } from './guards/token-request.guard'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
 import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -209,8 +209,15 @@ export class OAuth2Controller {
       'Token request failed with OAuth2 error (RFC 6749 Section 5.2). Always returns HTTP 400 Bad Request with error details in JSON body',
     type: OAuth2TokenErrorDto,
   })
-  async token(@Body() body: TokenRequestUnion): Promise<TokenResponseDto> {
+  async token(@Body() body: TokenRequestUnion, @Req() req: Request): Promise<TokenResponseDto> {
     this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
+
+    // Normalize client credentials: extract from validated credentials in request (set by TokenRequestGuard)
+    const request = req as RequestWithClientCredentials
+    if (request.oauth2ClientId && request.oauth2ClientSecret) {
+      body.client_id = request.oauth2ClientId
+      body.client_secret = request.oauth2ClientSecret
+    }
 
     return this.oauth2Service.token(body)
   }

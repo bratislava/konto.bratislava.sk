@@ -279,6 +279,7 @@ export class OAuth2Service {
    * Routes to appropriate handler based on grant_type
    * Implements RFC 6749 Section 5
    *
+   * @param request - Token request DTO (client_id should already be normalized from Basic Auth if needed)
    * @returns Token response DTO per RFC 6749 Section 5.1
    */
   async token(request: TokenRequestUnion): Promise<TokenResponseDto> {

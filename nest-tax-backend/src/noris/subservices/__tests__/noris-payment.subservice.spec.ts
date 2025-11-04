@@ -13,9 +13,10 @@ import {
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
-import { NorisPayment } from '../../types/noris.types'
+import { NorisPaymentWithVariableSymbol } from '../../types/noris.types'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
+import { NorisValidatorSubservice } from '../noris-validator.subservice'
 
 const mockRequest = {
   query: jest.fn(),
@@ -72,6 +73,10 @@ describe('NorisPaymentSubservice', () => {
           provide: ThrowerErrorGuard,
           useValue: createMock<ThrowerErrorGuard>(),
         },
+        {
+          provide: NorisValidatorSubservice,
+          useValue: createMock<NorisValidatorSubservice>(),
+        },
       ],
     }).compile()
 
@@ -84,6 +89,18 @@ describe('NorisPaymentSubservice', () => {
     cityAccountSubservice = module.get<CityAccountSubservice>(
       CityAccountSubservice,
     )
+
+    const norisValidatorSubservice = module.get<NorisValidatorSubservice>(
+      NorisValidatorSubservice,
+    )
+    jest
+      .spyOn(norisValidatorSubservice, 'validateNorisDataArray')
+      .mockImplementation((schema, data) =>
+        data.map((item) => schema.parse(item)),
+      )
+    jest
+      .spyOn(norisValidatorSubservice, 'validateNorisData')
+      .mockImplementation((schema, data) => schema.parse(data))
   })
 
   it('should be defined', () => {
@@ -560,7 +577,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should return NOT_EXIST when tax data is not found', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
         specificky_symbol: '9876543210',
@@ -579,7 +596,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should return ALREADY_CREATED when payment amount is already paid', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
         specificky_symbol: '9876543210',
@@ -625,7 +642,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should create new payment when there is a difference', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1500,
         specificky_symbol: '9876543210',
@@ -708,7 +725,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should handle case when no existing payments exist', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
         specificky_symbol: '9876543210',
@@ -762,7 +779,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should handle case when user has no external ID for tracking', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
         specificky_symbol: '9876543210',
@@ -828,7 +845,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should handle case when user is not found in city account data', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
         specificky_symbol: '9876543210',
@@ -887,7 +904,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should handle database transaction errors', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
         specificky_symbol: '9876543210',
@@ -937,7 +954,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should handle string amount values correctly', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1500.5,
         specificky_symbol: '9876543210',
@@ -991,7 +1008,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it('should handle zero difference correctly', async () => {
-      const mockNorisPayment: Partial<NorisPayment> = {
+      const mockNorisPayment: NorisPaymentWithVariableSymbol = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
         specificky_symbol: '9876543210',

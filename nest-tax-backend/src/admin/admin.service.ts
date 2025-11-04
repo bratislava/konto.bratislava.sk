@@ -52,7 +52,7 @@ export class AdminService {
   async updatePaymentsFromNoris(
     norisRequest: NorisRequestGeneral,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    const norisPaymentData: Partial<NorisPayment>[] =
+    const norisPaymentData: NorisPayment[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(

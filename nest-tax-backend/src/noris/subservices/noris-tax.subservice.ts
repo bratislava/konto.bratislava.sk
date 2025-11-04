@@ -14,7 +14,11 @@ import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subse
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
-import { baseNorisCommunalWasteTaxSchema } from '../types/noris.schema'
+import {
+  BaseNorisCommunalWasteTaxSchema,
+  NorisRawCommunalWasteTaxSchema,
+  NorisRealEstateTaxSchema,
+} from '../types/noris.schema'
 import {
   BaseNorisCommunalWasteTaxDto,
   NorisCommunalWasteTaxGrouped,
@@ -35,6 +39,7 @@ import {
 } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisPaymentSubservice } from './noris-payment.subservice'
+import { NorisValidatorSubservice } from './noris-validator.subservice'
 
 @Injectable()
 export class NorisTaxSubservice {
@@ -52,6 +57,7 @@ export class NorisTaxSubservice {
     private readonly prismaService: PrismaService,
     private readonly bloomreachService: BloomreachService,
     private readonly qrCodeSubservice: QrCodeSubservice,
+    private readonly norisValidatorSubservice: NorisValidatorSubservice,
   ) {}
 
   private async getTaxDataByYearAndBirthNumber(
@@ -86,7 +92,10 @@ export class NorisTaxSubservice {
         )
       },
     )
-    return norisData.recordset
+    return this.norisValidatorSubservice.validateNorisDataArray(
+      NorisRealEstateTaxSchema,
+      norisData.recordset,
+    )
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -411,7 +420,10 @@ export class NorisTaxSubservice {
         )
       },
     )
-    return norisData.recordset
+    return this.norisValidatorSubservice.validateNorisDataArray(
+      NorisRawCommunalWasteTaxSchema,
+      norisData.recordset,
+    )
   }
 
   processWasteTaxRecords(
@@ -449,7 +461,7 @@ export class NorisTaxSubservice {
 
       // Get all keys from BaseNorisCommunalWasteTaxDto
       const baseKeys = Object.keys(
-        baseNorisCommunalWasteTaxSchema.shape,
+        BaseNorisCommunalWasteTaxSchema.shape,
       ) as (keyof BaseNorisCommunalWasteTaxDto)[]
 
       const baseData = Object.fromEntries(

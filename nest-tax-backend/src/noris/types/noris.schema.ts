@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const baseNorisCommunalWasteTaxSchema = z.object({
+export const BaseNorisCommunalWasteTaxSchema = z.object({
   cislo_poradace: z.number(),
   cislo_subjektu: z.number(),
   adresa_tp_sidlo: z.string(),
@@ -39,8 +39,8 @@ export const baseNorisCommunalWasteTaxSchema = z.object({
   vyb_id: z.number(),
 })
 
-export const norisRawCommunalWasteTaxSchema =
-  baseNorisCommunalWasteTaxSchema.extend({
+export const NorisRawCommunalWasteTaxSchema =
+  BaseNorisCommunalWasteTaxSchema.extend({
     objem_nadoby: z.string(),
     pocet_nadob: z.string(),
     pocet_odvozov: z.string(),
@@ -51,8 +51,8 @@ export const norisRawCommunalWasteTaxSchema =
     orientacne_cislo: z.string(),
   })
 
-export const norisCommunalWasteTaxGroupedSchema =
-  baseNorisCommunalWasteTaxSchema.extend({
+export const NorisCommunalWasteTaxGroupedSchema =
+  BaseNorisCommunalWasteTaxSchema.extend({
     containers: z.array(
       z.object({
         address: z.object({
@@ -71,7 +71,7 @@ export const norisCommunalWasteTaxGroupedSchema =
     ),
   })
 
-export const norisRealEstateTaxSchema = z.object({
+export const NorisRealEstateTaxSchema = z.object({
   adresa_tp_sidlo: z.string().nullable(),
   sposob_dorucenia: z.string().nullable(),
   cislo_poradace: z.number(),
@@ -164,7 +164,7 @@ export const norisRealEstateTaxSchema = z.object({
   uhrazeno: z.coerce.number(),
 })
 
-export const norisPaymentSchema = z.object({
+export const NorisPaymentSchema = z.object({
   variabilny_symbol: z.string().nullable(),
   uhrazeno: z.coerce.number(),
   specificky_symbol: z.string().nullable(),

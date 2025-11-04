@@ -1,16 +1,16 @@
 import { z } from 'zod'
 
 import {
-  baseNorisCommunalWasteTaxSchema,
-  norisCommunalWasteTaxGroupedSchema,
-  norisPaymentSchema,
-  norisRawCommunalWasteTaxSchema,
-  norisRealEstateTaxSchema,
+  BaseNorisCommunalWasteTaxSchema,
+  NorisCommunalWasteTaxGroupedSchema,
+  NorisPaymentSchema,
+  NorisRawCommunalWasteTaxSchema,
+  NorisRealEstateTaxSchema,
 } from './noris.schema'
 
 // Type inference from schemas
 export type BaseNorisCommunalWasteTaxDto = z.infer<
-  typeof baseNorisCommunalWasteTaxSchema
+  typeof BaseNorisCommunalWasteTaxSchema
 >
 /**
  * @remarks
@@ -20,11 +20,14 @@ export type BaseNorisCommunalWasteTaxDto = z.infer<
  * where containers are nested within a single tax payer record.
  */
 export type NorisRawCommunalWasteTax = z.infer<
-  typeof norisRawCommunalWasteTaxSchema
+  typeof NorisRawCommunalWasteTaxSchema
 >
 export type NorisCommunalWasteTaxGrouped = z.infer<
-  typeof norisCommunalWasteTaxGroupedSchema
+  typeof NorisCommunalWasteTaxGroupedSchema
 >
 
-export type NorisRealEstateTax = z.infer<typeof norisRealEstateTaxSchema>
-export type NorisPayment = z.infer<typeof norisPaymentSchema>
+export type NorisRealEstateTax = z.infer<typeof NorisRealEstateTaxSchema>
+export type NorisPayment = z.infer<typeof NorisPaymentSchema>
+export type NorisPaymentWithVariableSymbol = NorisPayment & {
+  variabilny_symbol: string
+}

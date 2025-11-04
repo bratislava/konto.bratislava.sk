@@ -49,7 +49,7 @@ export class NorisService {
   }
 
   async updatePaymentsFromNorisWithData(
-    norisPaymentData: Partial<NorisPayment>[],
+    norisPaymentData: NorisPayment[],
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     return this.paymentSubservice.updatePaymentsFromNorisWithData(
       norisPaymentData,

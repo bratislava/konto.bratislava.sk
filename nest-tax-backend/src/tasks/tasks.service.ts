@@ -134,7 +134,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData: Partial<NorisPayment>[] =
+      const norisPaymentData: NorisPayment[] =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(

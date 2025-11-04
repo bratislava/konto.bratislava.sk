@@ -89,7 +89,9 @@ export class OAuth2Controller {
     // Controller builds redirect URL using service builder function
     // Includes redirect_uri and state for frontend error handling (frontend may send them back, but they're already stored in DB)
     const loginUrl = this.oauth2Service.buildLoginRedirectUrl(query, authRequestId)
-    res.redirect(303, loginUrl)
+
+    // RFC 9700: Use 303 See Other for OAuth2 redirects
+    res.redirect(HttpStatus.SEE_OTHER, loginUrl)
   }
 
   @Post('store')
@@ -169,7 +171,8 @@ export class OAuth2Controller {
       authResponse
     )
 
-    res.redirect(303, redirectUrl)
+    // RFC 9700: Use 303 See Other for OAuth2 redirects
+    res.redirect(HttpStatus.SEE_OTHER, redirectUrl)
   }
 
   @Post('token')

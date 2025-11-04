@@ -41,7 +41,7 @@ import {
 } from './guards/authorization-payload.guard'
 import { TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { OAuth2Service } from './oauth2.service'
-import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'
 import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'

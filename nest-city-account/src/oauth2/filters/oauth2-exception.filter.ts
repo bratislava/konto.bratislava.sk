@@ -2,16 +2,13 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { Request, Response } from 'express'
-import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
-import {
-  OAuth2AuthorizationErrorDto,
-  OAuth2TokenErrorDto,
-} from '../../oauth2/dtos/errors.oauth2.dto'
-import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../../oauth2/oauth2.error.enum'
-import ThrowerErrorGuard from '../guards/errors.guard'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import { toLogfmt } from '../logging'
-import { OAuth2ErrorMetadata, OAuth2Exception } from '../../oauth2/oauth2.exception'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from '../dtos/errors.oauth2.dto'
+import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import { toLogfmt } from '../../utils/logging'
+import { OAuth2ErrorMetadata, OAuth2Exception } from '../oauth2.exception'
 
 const USER_AGENT = 'user-agent'
 

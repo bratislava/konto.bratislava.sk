@@ -9,7 +9,7 @@ import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subs
 import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
 import { PrismaService } from '../prisma/prisma.service'
 import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'

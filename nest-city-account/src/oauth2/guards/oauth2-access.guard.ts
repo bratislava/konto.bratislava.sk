@@ -51,6 +51,8 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
 
     // Validate audience before fetching user data
     // Decode (without verification) the JWT to get the payload for audience check
+    let tokenAudience: string | undefined
+
     const authHeader = request.headers.authorization
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const encryptedToken = authHeader.substring(7)
@@ -60,18 +62,18 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
 
         if (decoded) {
           // Validate audience matches client ID
-          const tokenAudience = decoded.aud || decoded.client_id
-          if (tokenAudience !== client.clientId) {
-            throw this.throwerErrorGuard.UnauthorizedException(
-              ErrorsEnum.UNAUTHORIZED_ERROR,
-              `Token audience does not match client ID. Expected: ${client.clientId}, Got: ${tokenAudience}`
-            )
-          }
+          tokenAudience = decoded.aud || decoded.client_id
         }
       } catch (error) {
-        // If decryption/decoding fails, let Passport handle the error
-        // This ensures we don't leak information about the error type
+        // If decryption/decoding fails, the tokenAudience will stay undefined
       }
+    }
+
+    if (tokenAudience !== client.clientId) {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        `Token audience does not match client ID. Expected: ${client.clientId}, Got: ${tokenAudience}`
+      )
     }
 
     // Call parent AuthGuard to validate JWT (decryption, verification, and fetch user data)

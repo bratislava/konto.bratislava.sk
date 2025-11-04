@@ -2,6 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 /**
+ * Well-known OAuth2 client names
+ * These correspond to the prefixes used in OAUTH2_CLIENT_LIST environment variable
+ */
+export enum OAuth2ClientName {
+  MPA = 'MPA',
+  DPB = 'DPB',
+}
+
+/**
  * OAuth2 Client Configuration
  *
  * Configuration is loaded from environment variables with the following pattern:
@@ -225,5 +234,16 @@ export class OAuth2ClientSubservice {
   findClientById(clientId: string): OAuth2Client | undefined {
     const clients = this.getClients()
     return clients.find((client) => client.clientId === clientId)
+  }
+
+  /**
+   * Find a client by client name
+   *
+   * @param clientName - The client name (prefix from OAUTH2_CLIENT_LIST) to search for
+   * @returns The client configuration if found, undefined otherwise
+   */
+  findClientByName(clientName: string): OAuth2Client | undefined {
+    const clients = this.getClients()
+    return clients.find((client) => client.clientName === clientName)
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma, TaxType } from '@prisma/client'
-import { Request } from 'mssql'
+import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
@@ -59,14 +59,14 @@ export class NorisTaxSubservice {
   ): Promise<NorisTaxPayersDto[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('year', data.year)
+        request.input('year', mssql.Int, data.year)
         const birthNumbersPlaceholders = data.birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
         data.birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
 
         return request.query(
@@ -335,28 +335,9 @@ export class NorisTaxSubservice {
       update: taxPayerData,
     })
 
-    const [qrCodeEmail, qrCodeWeb] = await Promise.all([
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024100000',
-      }),
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024200000',
-      }),
-    ])
-
     // deliveryMethod is missing here, since we do not want to update
     // historical taxes with the current delivery method in Noris
-    const taxData = mapNorisToTaxData(
-      dataFromNoris,
-      year,
-      taxPayer.id,
-      qrCodeEmail,
-      qrCodeWeb,
-    )
+    const taxData = mapNorisToTaxData(dataFromNoris, year, taxPayer.id)
     const tax = await transaction.tax.upsert({
       where: {
         taxPayerId_year: {
@@ -401,15 +382,15 @@ export class NorisTaxSubservice {
   ): Promise<NorisRawCommunalWasteTaxDto[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
         const birthNumbersPlaceholders = data.birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
         data.birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
-        request.input('year', data.year)
+        request.input('year', mssql.Int, data.year)
 
         const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
           '@birth_numbers',

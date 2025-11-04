@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import cn from '../../../../frontend/cn'
+import { useOAuthParams } from '../../../../frontend/hooks/useOAuthParams'
 import { getLanguageKey } from '../../../../frontend/utils/general'
 
 interface LoginRegisterNavBarProps {
@@ -37,9 +38,13 @@ export const LoginRegisterNavBar = ({
   desktopNavbarRef,
   mobileNavbarRef,
 }: LoginRegisterNavBarProps) => {
+  const { t } = useTranslation('account')
   const languageKey = getLanguageKey(currentLanguage)
 
-  const { t } = useTranslation('account')
+  const { isOAuthLogin } = useOAuthParams()
+
+  const brandLinkHref = isOAuthLogin ? undefined : ROUTES.HOME
+
   return (
     <div data-cy="navbar" className="contents">
       {/* Desktop */}
@@ -59,9 +64,11 @@ export const LoginRegisterNavBar = ({
           {!backButtonHidden && <BackButton />}
           <Brand
             className="group"
-            url={ROUTES.HOME}
+            url={brandLinkHref}
             title={
-              <p className="text-p2 text-font group-hover:text-gray-600">
+              <p
+                className={cn('text-p2 text-font', { 'group-hover:text-gray-600': brandLinkHref })}
+              >
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
                 {t('common:capitalCity')}
                 {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
@@ -79,10 +86,12 @@ export const LoginRegisterNavBar = ({
         <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}
           <Brand
-            url={ROUTES.HOME}
+            url={brandLinkHref}
             className="mx-auto"
             title={
-              <p className="text-p2 text-font group-hover:text-gray-600">
+              <p
+                className={cn('text-p2 text-font', { 'group-hover:text-gray-600': brandLinkHref })}
+              >
                 <span className="font-semibold">Bratislava</span>
               </p>
             }

@@ -11,6 +11,7 @@ import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import { AmplifyServerContextSpec } from './amplifyTypes'
 import {
+  clientIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
   redirectQueryParam,
@@ -96,7 +97,9 @@ export const amplifyGetServerSideProps = <
         }
 
         const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
-        const shouldRedirectNotSignedOut = options?.requiresSignOut && isSignedIn
+        // TODO OAuth: Double-check if this condition is enough
+        const shouldRedirectNotSignedOut =
+          options?.requiresSignOut && isSignedIn && !context.query[clientIdQueryParam]
 
         if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
           if (options?.redirectQueryParam) {

@@ -1,12 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { timingSafeEqual } from 'node:crypto'
-import {
-  areScopesAllowed,
-  ClientConfig,
-  findClientById,
-  isRedirectUriAllowed,
-} from '../config/client.config'
+import { OAuth2Client, OAuth2ClientSubservice } from './oauth2-client.subservice'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
 
@@ -35,8 +30,10 @@ export interface ClientAuthParams {
  */
 @Injectable()
 export class OAuth2ValidationSubservice {
-
-  constructor(private readonly oAuth2ErrorThrower: OAuth2ErrorThrower) {}
+  constructor(
+    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
+    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
+  ) {}
 
   /**
    * Validate authorization request parameters
@@ -56,41 +53,39 @@ export class OAuth2ValidationSubservice {
     this.validateResponseType(params.responseType, client, codeChallenge, codeChallengeMethod)
   }
 
-  private validateClientId(clientId: string | unknown): ClientConfig {
+  private validateClientId(clientId: string | unknown): OAuth2Client {
     if (!clientId || typeof clientId !== 'string' || clientId.length === 0) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `Invalid request: client_id is required`,
         undefined,
-        'Missing or invalid client_id in authorization request', {
-          hasClientId: !!clientId,
-          clientIdType: typeof clientId,
-        }
+        'Missing or invalid client_id in authorization request',
+        { hasClientId: !!clientId, clientIdType: typeof clientId }
       )
     }
 
-    const client = findClientById(clientId)
+    const client = this.oAuth2ClientSubservice.findClientById(clientId)
     if (!client) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT,
         `Unauthorized client: unknown client`,
         undefined,
-        'Client not found', {
-          clientId: clientId,
-        }
+        'Client not found',
+        { clientId: clientId }
       )
     }
 
     return client
   }
 
-  private validateRedirectUri(redirectUri: string | unknown, client: ClientConfig): string {
+  private validateRedirectUri(redirectUri: string | unknown, client: OAuth2Client): string {
     if (!redirectUri || typeof redirectUri !== 'string' || redirectUri.length === 0) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `Invalid request: redirect_uri is required`,
         undefined,
-        'Missing or invalid redirect_uri in authorization request', {
+        'Missing or invalid redirect_uri in authorization request',
+        {
           clientId: client.clientId,
           hasRedirectUri: !!redirectUri,
           redirectUriType: typeof redirectUri,
@@ -98,34 +93,30 @@ export class OAuth2ValidationSubservice {
       )
     }
 
-    if (!isRedirectUriAllowed(client, redirectUri)) {
+    if (!client.isRedirectUriAllowed(redirectUri)) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `Invalid request: provided redirect URI is not allowed for this client`,
         undefined,
-        'Redirect URI not allowed for client', {
-          clientId: client.clientId,
-          redirectUri: redirectUri,
-        }
+        'Redirect URI not allowed for client',
+        { clientId: client.clientId, redirectUri: redirectUri }
       )
     }
 
     return redirectUri
   }
 
-  private validateScope(scope: string | unknown, client: ClientConfig): string | undefined {
+  private validateScope(scope: string | unknown, client: OAuth2Client): string | undefined {
     if (scope === undefined) {
       return undefined
     }
-    if (typeof scope !== 'string' || !areScopesAllowed(client, scope as string)) {
+    if (typeof scope !== 'string' || !client.areAllScopesAllowed(scope)) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_SCOPE,
         `Invalid scope: requested scope is invalid, unknown, or malformed`,
         undefined,
-        'Invalid scope requested', {
-          clientId: client.clientId,
-          requestedScope: scope,
-        }
+        'Invalid scope requested',
+        { clientId: client.clientId, requestedScope: scope }
       )
     }
     return scope
@@ -150,7 +141,8 @@ export class OAuth2ValidationSubservice {
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE`,
         undefined,
-        'PKCE parameters incomplete', {
+        'PKCE parameters incomplete',
+        {
           clientId: clientId,
           hasCodeChallenge: !!codeChallenge,
           hasCodeChallengeMethod: !!codeChallengeMethod,
@@ -163,7 +155,7 @@ export class OAuth2ValidationSubservice {
 
   private validateResponseType(
     responseType: string | unknown,
-    client: ClientConfig,
+    client: OAuth2Client,
     codeChallenge?: string,
     codeChallengeMethod?: string
   ): string {
@@ -172,7 +164,8 @@ export class OAuth2ValidationSubservice {
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `Invalid request: response_type is required`,
         undefined,
-        'Missing or invalid response_type in authorization request', {
+        'Missing or invalid response_type in authorization request',
+        {
           clientId: client.clientId,
           hasResponseType: !!responseType,
           responseTypeValue: responseType,
@@ -185,10 +178,8 @@ export class OAuth2ValidationSubservice {
         OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
         `Unsupported response_type: ${responseType} - must be "code" or "token"`,
         undefined,
-        'Unsupported response_type', {
-          clientId: client.clientId,
-          responseType: responseType,
-        }
+        'Unsupported response_type',
+        { clientId: client.clientId, responseType: responseType }
       )
     }
 
@@ -198,7 +189,8 @@ export class OAuth2ValidationSubservice {
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
           `Invalid request: PKCE is required for this client: code_challenge and code_challenge_method are required`,
           undefined,
-          'PKCE required but not provided', {
+          'PKCE required but not provided',
+          {
             clientId: client.clientId,
             hasCodeChallenge: !!codeChallenge,
             hasCodeChallengeMethod: !!codeChallengeMethod,
@@ -314,9 +306,8 @@ export class OAuth2ValidationSubservice {
       OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
       `Unsupported grant type: ${params.grantType}`,
       undefined,
-      'Unsupported grant type', {
-        grantType: params.grantType,
-      }
+      'Unsupported grant type',
+      { grantType: params.grantType }
     )
   }
 
@@ -334,23 +325,19 @@ export class OAuth2ValidationSubservice {
         OAuth2TokenErrorCode.INVALID_CLIENT,
         'Invalid request: client_id is required',
         undefined,
-        'Missing client_id in token request', {
-          grantType,
-          hasClientSecret: !!clientSecret,
-        }
+        'Missing client_id in token request',
+        { grantType, hasClientSecret: !!clientSecret }
       )
     }
 
-    const client = findClientById(clientId)
+    const client = this.oAuth2ClientSubservice.findClientById(clientId)
     if (!client) {
       throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_CLIENT,
         `Unauthorized client: unknown client`,
         undefined,
-        'Client not found for token request', {
-          clientId: clientId,
-          grantType,
-        }
+        'Client not found for token request',
+        { clientId: clientId, grantType }
       )
     }
 
@@ -361,10 +348,8 @@ export class OAuth2ValidationSubservice {
           OAuth2TokenErrorCode.INVALID_CLIENT,
           'Invalid client: client_secret is required',
           undefined,
-          'Client secret required but not provided', {
-            clientId: clientId,
-            grantType,
-          }
+          'Client secret required but not provided',
+          { clientId: clientId, grantType }
         )
       }
       if (!this.isValidSecret(client.clientSecret, clientSecret)) {
@@ -372,7 +357,8 @@ export class OAuth2ValidationSubservice {
           OAuth2TokenErrorCode.INVALID_CLIENT,
           'Invalid client: invalid client_secret',
           undefined,
-          'Invalid client secret provided', {
+          'Invalid client secret provided',
+          {
             clientId: clientId,
             grantType,
             hasClientSecret: !!clientSecret,
@@ -383,12 +369,13 @@ export class OAuth2ValidationSubservice {
 
     // Validate redirect_uri if present
     if (params.redirectUri && typeof params.redirectUri === 'string') {
-      if (!isRedirectUriAllowed(client, params.redirectUri)) {
+      if (!client.isRedirectUriAllowed(params.redirectUri)) {
         throw this.oAuth2ErrorThrower.tokenException(
           OAuth2TokenErrorCode.INVALID_REQUEST,
           `Invalid request: provided redirect URI is not allowed for this client`,
           undefined,
-          'Redirect URI not allowed for client in token request', {
+          'Redirect URI not allowed for client in token request',
+          {
             clientId: clientId,
             redirectUri: params.redirectUri,
             grantType,
@@ -408,7 +395,8 @@ export class OAuth2ValidationSubservice {
           OAuth2TokenErrorCode.INVALID_REQUEST,
           'Invalid request: PKCE code_verifier is required',
           undefined,
-          'PKCE code_verifier required but not provided', {
+          'PKCE code_verifier required but not provided',
+          {
             clientId: clientId,
             grantType: params.grantType,
             hasCodeVerifier: !!params.codeVerifier,

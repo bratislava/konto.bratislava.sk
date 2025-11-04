@@ -22,7 +22,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
-import { TokenRequestGuard } from './guards/token-request.guard'
+import { TokenRequestGuard, RequestWithClientCredentials } from './guards/token-request.guard'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
 import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -41,7 +41,7 @@ import {
 } from './guards/authorization-payload.guard'
 import { TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { OAuth2Service } from './oauth2.service'
-import { OAuth2ExceptionFilter } from '../utils/filters/oauth2.filter'
+import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'
 import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
@@ -89,7 +89,9 @@ export class OAuth2Controller {
     // Controller builds redirect URL using service builder function
     // Includes redirect_uri and state for frontend error handling (frontend may send them back, but they're already stored in DB)
     const loginUrl = this.oauth2Service.buildLoginRedirectUrl(query, authRequestId)
-    res.redirect(303, loginUrl)
+
+    // RFC 9700: Use 303 See Other for OAuth2 redirects
+    res.redirect(HttpStatus.SEE_OTHER, loginUrl)
   }
 
   @Post('store')
@@ -169,7 +171,8 @@ export class OAuth2Controller {
       authResponse
     )
 
-    res.redirect(303, redirectUrl)
+    // RFC 9700: Use 303 See Other for OAuth2 redirects
+    res.redirect(HttpStatus.SEE_OTHER, redirectUrl)
   }
 
   @Post('token')
@@ -209,8 +212,15 @@ export class OAuth2Controller {
       'Token request failed with OAuth2 error (RFC 6749 Section 5.2). Always returns HTTP 400 Bad Request with error details in JSON body',
     type: OAuth2TokenErrorDto,
   })
-  async token(@Body() body: TokenRequestUnion): Promise<TokenResponseDto> {
+  async token(@Body() body: TokenRequestUnion, @Req() req: Request): Promise<TokenResponseDto> {
     this.logger.debug(`Token request received for grant_type: ${body.grant_type}`)
+
+    // Normalize client credentials: extract from validated credentials in request (set by TokenRequestGuard)
+    const request = req as RequestWithClientCredentials
+    if (request.oauth2ClientId && request.oauth2ClientSecret) {
+      body.client_id = request.oauth2ClientId
+      body.client_secret = request.oauth2ClientSecret
+    }
 
     return this.oauth2Service.token(body)
   }

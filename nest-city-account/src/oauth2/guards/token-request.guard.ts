@@ -2,6 +2,11 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
 
+export interface RequestWithClientCredentials extends Request {
+  oauth2ClientId?: string
+  oauth2ClientSecret?: string
+}
+
 /**
  * Guard for OAuth2 Token Endpoint
  * Validates token request with client authentication requirements based on grant type
@@ -13,7 +18,7 @@ export class TokenRequestGuard implements CanActivate {
   constructor(private readonly validationSubservice: OAuth2ValidationSubservice) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<Request>()
+    const request = context.switchToHttp().getRequest<RequestWithClientCredentials>()
     // Extract client credentials from request
     const { clientId, clientSecret } = this.validationSubservice.extractClientCredentials(request)
 
@@ -26,6 +31,10 @@ export class TokenRequestGuard implements CanActivate {
       grantType: request.body?.grant_type,
       codeVerifier: request.body?.code_verifier,
     })
+
+    // Attach validated client credentials to request for controller/service
+    request.oauth2ClientId = clientId
+    request.oauth2ClientSecret = clientSecret
 
     return true
   }

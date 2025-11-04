@@ -305,7 +305,7 @@ export class CognitoSubservice {
       if (response.AuthenticationResult === undefined) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-          'AuthenticationResult undefined in response from Cognito'
+          'AuthenticationResult undefined in response to refresh tokens request from Cognito'
         )
       }
       return {
@@ -315,7 +315,7 @@ export class CognitoSubservice {
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+        'Unexpected error occurred when refreshing tokens via Cognito',
         undefined,
         error
       )

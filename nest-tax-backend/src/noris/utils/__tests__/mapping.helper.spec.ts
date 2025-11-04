@@ -120,13 +120,7 @@ describe('mapNorisToTaxData', () => {
   } as NorisTaxPayersDto
 
   it('should map Noris data to Tax data correctly', () => {
-    const result = mapNorisToTaxData(
-      mockNorisData,
-      2023,
-      1,
-      'qr_code_email',
-      'qr_code_web',
-    )
+    const result = mapNorisToTaxData(mockNorisData, 2023, 1)
 
     expect(result).toEqual({
       amount: 10_050,
@@ -139,19 +133,11 @@ describe('mapNorisToTaxData', () => {
       taxLand: 2000,
       taxConstructions: 5025,
       taxFlat: 3025,
-      qrCodeEmail: 'qr_code_email',
-      qrCodeWeb: 'qr_code_web',
     })
   })
 
   it('should convert currency values to integers', () => {
-    const result = mapNorisToTaxData(
-      mockNorisData,
-      2023,
-      1,
-      'qr_code_email',
-      'qr_code_web',
-    )
+    const result = mapNorisToTaxData(mockNorisData, 2023, 1)
 
     expect(result.amount).toBe(10_050)
     expect(result.taxLand).toBe(2000)

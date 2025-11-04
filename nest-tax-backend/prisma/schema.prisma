@@ -45,8 +45,6 @@ model Tax {
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
   variableSymbol                  String
-  qrCodeWeb                       String?
-  qrCodeEmail                     String?
   taxId                           String?
   dateCreateTax                   String?
   dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"

@@ -335,28 +335,9 @@ export class NorisTaxSubservice {
       update: taxPayerData,
     })
 
-    const [qrCodeEmail, qrCodeWeb] = await Promise.all([
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024100000',
-      }),
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024200000',
-      }),
-    ])
-
     // deliveryMethod is missing here, since we do not want to update
     // historical taxes with the current delivery method in Noris
-    const taxData = mapNorisToTaxData(
-      dataFromNoris,
-      year,
-      taxPayer.id,
-      qrCodeEmail,
-      qrCodeWeb,
-    )
+    const taxData = mapNorisToTaxData(dataFromNoris, year, taxPayer.id)
     const tax = await transaction.tax.upsert({
       where: {
         taxPayerId_year: {

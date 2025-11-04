@@ -5,10 +5,7 @@ import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
 } from '../../../payment/dtos/error.dto'
-import {
-  CustomErrorPdfCreateTypesEnum,
-  CustomErrorTaxTypesEnum,
-} from '../../../tax/dtos/error.dto'
+import { CustomErrorTaxTypesEnum } from '../../../tax/dtos/error.dto'
 
 export class ResponseInternalServerErrorDto {
   @ApiProperty({
@@ -119,5 +116,4 @@ export type CustomErrorEnums =
   | CustomErrorTaxTypesEnum
   | CustomErrorPaymentTypesEnum
   | CustomErrorPaymentResponseTypesEnum
-  | CustomErrorPdfCreateTypesEnum
   | CustomErrorNorisTypesEnum

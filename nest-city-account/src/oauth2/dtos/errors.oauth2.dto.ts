@@ -29,7 +29,7 @@ export class OAuth2AuthorizationErrorDto {
   })
   @IsEnum(OAuth2AuthorizationErrorCode)
   @IsString()
-  error!: string
+  error!: OAuth2AuthorizationErrorCode
 
   @ApiPropertyOptional({
     description:
@@ -78,7 +78,7 @@ export class OAuth2TokenErrorDto {
   })
   @IsEnum(OAuth2TokenErrorCode)
   @IsString()
-  error!: string
+  error!: OAuth2TokenErrorCode
 
   @ApiPropertyOptional({
     description:

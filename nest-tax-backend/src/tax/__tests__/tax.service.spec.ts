@@ -109,9 +109,11 @@ describe('TaxService', () => {
     beforeAll(async () => {
       jest.useFakeTimers()
     })
+
     beforeEach(async () => {
       jest.setSystemTime(DEFAULT_TEST_NOW)
     })
+
     afterAll(() => {
       jest.useRealTimers()
     })

@@ -14,6 +14,7 @@ import { ConfigModule } from '@nestjs/config'
 import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
 import { OAuth2Module } from './oauth2/oauth2.module'
+import { DpbModule } from './dpb/dpb.module'
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { OAuth2Module } from './oauth2/oauth2.module'
     ClientsModule,
     TasksModule,
     OAuth2Module,
+    DpbModule,
   ],
   controllers: [AppController],
   providers: [TaxSubservice, ThrowerErrorGuard],

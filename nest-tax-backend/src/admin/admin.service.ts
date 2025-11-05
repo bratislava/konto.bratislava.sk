@@ -63,8 +63,14 @@ export class AdminService {
 
   async updateOverpaymentsDataFromNorisByDateRange(
     data: DateRangeDto,
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return this.norisService.updateOverpaymentsDataFromNorisByDateRange(data)
+    return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
+      data,
+      bloomreachSettings,
+    )
   }
 
   async updateDeliveryMethodsInNoris({

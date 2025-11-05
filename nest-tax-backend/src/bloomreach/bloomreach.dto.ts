@@ -1,6 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { DeliveryMethodNamed, TaxPaymentSource } from '@prisma/client'
-import { IsDefined, IsEnum, IsNumber, IsOptional } from 'class-validator'
+import {
+  IsBoolean,
+  IsDefined,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+} from 'class-validator'
 
 export enum BloomreachEventNameEnum {
   TAX = 'tax',
@@ -13,19 +19,33 @@ export class TaxPaymentBloomreachDataDto {
     description: 'year',
     example: 2024,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'amount',
     example: 13.2,
   })
+  @IsNumber()
   amount: number
 
   @ApiProperty({
     description: 'payment_source',
     example: TaxPaymentSource.CARD,
+    enumName: 'TaxPaymentSource',
+    enum: TaxPaymentSource,
   })
+  @IsEnum(TaxPaymentSource)
   payment_source: TaxPaymentSource
+
+  @ApiPropertyOptional({
+    description:
+      'If true, email will be suppressed. Otherwise, email will be sent.',
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  suppress_email?: boolean
 }
 
 export class TaxBloomreachDataDto {

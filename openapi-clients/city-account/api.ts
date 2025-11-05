@@ -140,6 +140,46 @@ export const DeactivateAccountResponseDtoBloomreachRemovedEnum = {
 export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
   (typeof DeactivateAccountResponseDtoBloomreachRemovedEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedEnum]
 
+export interface DpbUserDto {
+  /**
+   * User ID
+   */
+  id: string
+  /**
+   * User email
+   */
+  email: string
+  /**
+   * Is email verified in cognito?
+   */
+  email_verified?: string
+  /**
+   * Account type
+   */
+  account_type: DpbUserDtoAccountTypeEnum
+  /**
+   * Name (usually company name for legal entities)
+   */
+  name?: string
+  /**
+   * Given name (first name)
+   */
+  given_name?: string
+  /**
+   * Family name (last name)
+   */
+  family_name?: string
+}
+
+export const DpbUserDtoAccountTypeEnum = {
+  Fo: 'fo',
+  Po: 'po',
+  FoP: 'fo-p',
+} as const
+
+export type DpbUserDtoAccountTypeEnum =
+  (typeof DpbUserDtoAccountTypeEnum)[keyof typeof DpbUserDtoAccountTypeEnum]
+
 /**
  * Type of Gdpr category
  */
@@ -982,46 +1022,6 @@ export type UserControllerChangeEmail200Response =
 export type UserControllerGetOrCreateUser200Response =
   | ResponseLegalPersonDataDto
   | ResponseUserDataDto
-
-export interface UserDto {
-  /**
-   * User ID
-   */
-  id: string
-  /**
-   * User email
-   */
-  email: string
-  /**
-   * Is email verified in cognito?
-   */
-  email_verified?: string
-  /**
-   * Account type
-   */
-  account_type: UserDtoAccountTypeEnum
-  /**
-   * Name (usually company name for legal entities)
-   */
-  name?: string
-  /**
-   * Given name (first name)
-   */
-  given_name?: string
-  /**
-   * Family name (last name)
-   */
-  family_name?: string
-}
-
-export const UserDtoAccountTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type UserDtoAccountTypeEnum =
-  (typeof UserDtoAccountTypeEnum)[keyof typeof UserDtoAccountTypeEnum]
 
 /**
  * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
@@ -2861,7 +2861,7 @@ export const DPBApiFp = function (configuration?: Configuration) {
      */
     async dpbControllerUserData(
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DpbUserDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.dpbControllerUserData(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -2893,7 +2893,7 @@ export const DPBApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    dpbControllerUserData(options?: RawAxiosRequestConfig): AxiosPromise<UserDto> {
+    dpbControllerUserData(options?: RawAxiosRequestConfig): AxiosPromise<DpbUserDto> {
       return localVarFp.dpbControllerUserData(options).then((request) => request(axios, basePath))
     },
   }

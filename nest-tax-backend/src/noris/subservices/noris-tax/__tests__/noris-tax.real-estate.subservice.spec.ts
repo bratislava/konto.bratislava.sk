@@ -13,11 +13,12 @@ import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../../utils/types/types.prisma'
-import { NorisTaxPayersDto } from '../../../noris.dto'
 import { CustomErrorNorisTypesEnum } from '../../../noris.errors'
+import { NorisRealEstateTax } from '../../../types/noris.types'
 import { AreaTypesEnum } from '../../../utils/noris.types'
 import { NorisConnectionSubservice } from '../../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../../noris-payment.subservice'
+import { NorisValidatorSubservice } from '../../noris-validator.subservice'
 import { NorisTaxRealEstateSubservice } from '../noris-tax.real-estate.subservice'
 
 jest.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
@@ -45,7 +46,7 @@ describe('NorisTaxRealEstateSubservice', () => {
   let paymentSubservice: jest.Mocked<NorisPaymentSubservice>
   let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
-  const mockNorisData: NorisTaxPayersDto[] = [
+  const mockNorisData: NorisRealEstateTax[] = [
     {
       adresa_tp_sidlo: 'Test Address',
       sposob_dorucenia: 'EMAIL',
@@ -62,7 +63,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       stat_nazov_plny: 'Slovakia',
       obec_nazev_tb: 'Test City',
       akt_datum: '2023-01-01',
-      datum_platnosti: '2023-12-31',
+      datum_platnosti: new Date('2023-12-31'),
       vyb_nazov: 'Test Office',
       vyb_telefon_prace: '+421123456789',
       vyb_email: 'test@test.sk',
@@ -136,7 +137,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       TXTSPL4_4: 'Test spl 4.4',
       SPL4_4: '4',
       specificky_symbol: '2024100000',
-      uhrazeno: '0.00',
+      uhrazeno: 0,
     },
   ]
 
@@ -194,6 +195,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         },
         { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
         { provide: PrismaService, useValue: prismaMock },
+        {
+          provide: NorisValidatorSubservice,
+          useValue: createMock<NorisValidatorSubservice>(),
+        },
       ],
     }).compile()
 
@@ -213,6 +218,15 @@ describe('NorisTaxRealEstateSubservice', () => {
       },
       writable: true,
     })
+
+    jest
+      .spyOn(service['norisValidatorSubservice'], 'validateNorisData')
+      .mockImplementation((schema, data) => {
+        if (Array.isArray(data)) {
+          return data.map((item) => schema.parse(item))
+        }
+        return schema.parse(data)
+      })
   })
 
   afterEach(() => {

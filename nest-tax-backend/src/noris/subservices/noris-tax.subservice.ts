@@ -3,7 +3,7 @@ import { TaxType } from '@prisma/client'
 
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { NorisTaxPayersDto } from '../noris.dto'
+import { NorisRealEstateTax } from '../types/noris.types'
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 import { AbstractNorisTaxSubservice } from './noris-tax/noris-tax.subservice.abstract'
@@ -36,7 +36,7 @@ export class NorisTaxSubservice {
 
   async processNorisTaxData(
     taxType: TaxType,
-    norisData: NorisTaxPayersDto[],
+    norisData: NorisRealEstateTax[],
     year: number,
   ): Promise<string[]> {
     return this.getImplementationByType(taxType).processNorisTaxData(

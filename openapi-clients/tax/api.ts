@@ -96,9 +96,9 @@ export interface RequestAdminCreateTestingTaxNorisData {
    */
   taxTotal: string
   /**
-   * Amount already paid as string
+   * Amount already paid
    */
-  alreadyPaid: string
+  alreadyPaid: number
   /**
    * Date of tax ruling (dátum právoplatnosti)
    */

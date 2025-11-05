@@ -201,19 +201,20 @@ export class RequestAdminCreateTestingTaxNorisData {
   taxTotal: string
 
   @ApiProperty({
-    description: 'Amount already paid as string',
-    example: '0.00',
+    description: 'Amount already paid',
+    example: 10.9,
   })
-  @IsString()
-  alreadyPaid: string
+  @IsNumber()
+  alreadyPaid: number
 
   @ApiProperty({
     description: 'Date of tax ruling (dátum právoplatnosti)',
     example: '2024-01-01T07:31:39.916Z',
   })
-  @IsString()
+  @IsDate()
+  @Type(() => Date)
   @IsOptional()
-  dateTaxRuling: string | null
+  dateTaxRuling: Date | null
 }
 
 export class RequestAdminCreateTestingTaxDto {

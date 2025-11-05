@@ -1,6 +1,6 @@
 import { TaxAdministrator } from '@prisma/client'
 
-import { NorisTaxPayersDto } from '../../noris.dto'
+import { NorisRealEstateTax } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,
@@ -39,7 +39,7 @@ describe('convertCurrencyToInt', () => {
 })
 
 describe('mapNorisToTaxPayerData', () => {
-  const mockNorisData: NorisTaxPayersDto = {
+  const mockNorisData: NorisRealEstateTax = {
     ICO_RC: '1234567890',
     adresa_tp_sidlo: 'Test Address',
     subjekt_refer: 'EXT123',
@@ -49,7 +49,7 @@ describe('mapNorisToTaxPayerData', () => {
     TXT_UL: 'Test Street Text',
     obec_nazev_tb: 'Test City',
     TXT_MENO: 'Test Name',
-  } as NorisTaxPayersDto
+  } as NorisRealEstateTax
 
   const mockTaxAdministrator: TaxAdministrator = {
     id: 1,
@@ -80,13 +80,13 @@ describe('mapNorisToTaxPayerData', () => {
 })
 
 describe('mapNorisToTaxAdministratorData', () => {
-  const mockNorisData: NorisTaxPayersDto = {
+  const mockNorisData: NorisRealEstateTax = {
     vyb_email: 'admin@test.com',
     cislo_poradace: 123,
     vyb_id: 456,
     vyb_nazov: 'Test Admin',
     vyb_telefon_prace: '123456789',
-  } as NorisTaxPayersDto
+  } as NorisRealEstateTax
 
   it('should map Noris data to TaxAdministrator data correctly', () => {
     const result = mapNorisToTaxAdministratorData(mockNorisData)
@@ -102,22 +102,46 @@ describe('mapNorisToTaxAdministratorData', () => {
 
   it('should convert cislo_poradace to string for externalId', () => {
     const result = mapNorisToTaxAdministratorData(mockNorisData)
-    expect(typeof result.externalId).toBe('string')
-    expect(result.externalId).toBe('123')
+    expect(typeof result?.externalId).toBe('string')
+    expect(result?.externalId).toBe('123')
+  })
+
+  it('should return undefined if vyb_id is not present', () => {
+    const result = mapNorisToTaxAdministratorData({
+      ...mockNorisData,
+      vyb_id: null,
+    })
+    expect(result).toBeUndefined()
+  })
+
+  it('should return undefined if vyb_telefon_prace is not present', () => {
+    const result = mapNorisToTaxAdministratorData({
+      ...mockNorisData,
+      vyb_telefon_prace: null,
+    })
+    expect(result).toBeUndefined()
+  })
+
+  it('should return undefined if vyb_email is not present', () => {
+    const result = mapNorisToTaxAdministratorData({
+      ...mockNorisData,
+      vyb_email: null,
+    })
+    expect(result).toBeUndefined()
   })
 })
 
 describe('mapNorisToRealEstateTaxData', () => {
-  const mockNorisData: NorisTaxPayersDto = {
+  const mockNorisData: NorisRealEstateTax = {
     dan_spolu: '100,50',
     variabilny_symbol: 'VS123',
     akt_datum: '2023-01-01',
-    datum_platnosti: '2023-12-31',
+    datum_platnosti: new Date('2023-12-31'),
     cislo_konania: 'CK123',
     dan_pozemky: '20,00',
     dan_stavby_SPOLU: '50,25',
     dan_byty: '30,25',
-  } as NorisTaxPayersDto
+  } as NorisRealEstateTax
 
   it('should map Noris data to Tax data correctly', () => {
     const result = mapNorisToRealEstateTaxData(mockNorisData, 2023, 1)
@@ -128,7 +152,7 @@ describe('mapNorisToRealEstateTaxData', () => {
       taxPayerId: 1,
       variableSymbol: 'VS123',
       dateCreateTax: '2023-01-01',
-      dateTaxRuling: '2023-12-31',
+      dateTaxRuling: mockNorisData.datum_platnosti,
       taxId: 'CK123',
       taxLand: 2000,
       taxConstructions: 5025,
@@ -150,11 +174,11 @@ describe('mapNorisToTaxInstallmentsData', () => {
   const taxId = 1
 
   it('should return single installment when SPL4_2 is empty', () => {
-    const mockNorisData: NorisTaxPayersDto = {
+    const mockNorisData: NorisRealEstateTax = {
       SPL4_2: '',
       SPL1: '100,00',
       TXTSPL1: 'Single Payment',
-    } as NorisTaxPayersDto
+    } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
 
@@ -168,14 +192,14 @@ describe('mapNorisToTaxInstallmentsData', () => {
   })
 
   it('should return three installments when SPL4_2 is not empty', () => {
-    const mockNorisData: NorisTaxPayersDto = {
+    const mockNorisData: NorisRealEstateTax = {
       SPL4_2: '50,00',
       SPL4_1: '30,00',
       SPL4_3: '20,00',
       TXTSPL4_1: 'First Payment',
       TXTSPL4_2: 'Second Payment',
       TXTSPL4_3: 'Third Payment',
-    } as NorisTaxPayersDto
+    } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
 
@@ -203,14 +227,14 @@ describe('mapNorisToTaxInstallmentsData', () => {
   })
 
   it('should convert currency amounts to integers in installments', () => {
-    const mockNorisData: NorisTaxPayersDto = {
+    const mockNorisData: NorisRealEstateTax = {
       SPL4_2: '25,75',
       SPL4_1: '10,25',
       SPL4_3: '15,50',
       TXTSPL4_1: 'First',
       TXTSPL4_2: 'Second',
       TXTSPL4_3: 'Third',
-    } as NorisTaxPayersDto
+    } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
 
@@ -253,7 +277,7 @@ describe('mapDeliveryMethodToNoris', () => {
 describe('mapNorisToRealEstateTaxDetailData', () => {
   const mockTaxId = 123
 
-  const mockNorisTaxPayersData: Partial<NorisTaxPayersDto> = {
+  const mockNorisTaxPayersData: Partial<NorisRealEstateTax> = {
     // Apartment (byt) related fields
     det_zaklad_dane_byt: '100,50',
     det_dan_byty_byt: '10,50',
@@ -311,7 +335,7 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
 
   it('should process apartment (byt) tax details correctly', () => {
     const result = mapNorisToRealEstateTaxDetailData(
-      mockNorisTaxPayersData as NorisTaxPayersDto,
+      mockNorisTaxPayersData as NorisRealEstateTax,
       mockTaxId,
     )
 
@@ -342,7 +366,7 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
 
   it('should process ground (pozemky) tax details correctly', () => {
     const result = mapNorisToRealEstateTaxDetailData(
-      mockNorisTaxPayersData as NorisTaxPayersDto,
+      mockNorisTaxPayersData as NorisRealEstateTax,
       mockTaxId,
     )
 
@@ -381,7 +405,7 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
 
   it('should process construction (stavba) tax details correctly', () => {
     const result = mapNorisToRealEstateTaxDetailData(
-      mockNorisTaxPayersData as NorisTaxPayersDto,
+      mockNorisTaxPayersData as NorisRealEstateTax,
       mockTaxId,
     )
 
@@ -419,14 +443,14 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
   })
 
   it('should handle invalid number formats', () => {
-    const invalidData: Partial<NorisTaxPayersDto> = {
+    const invalidData: Partial<NorisRealEstateTax> = {
       ...mockNorisTaxPayersData,
       det_zaklad_dane_byt: 'invalid',
       det_dan_byty_byt: '10.50', // Using dot instead of comma
     }
 
     const result = mapNorisToRealEstateTaxDetailData(
-      invalidData as NorisTaxPayersDto,
+      invalidData as NorisRealEstateTax,
       mockTaxId,
     )
     expect(() => result).not.toThrow()
@@ -434,7 +458,7 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
 
   it('should process all configured types for each category', () => {
     const result = mapNorisToRealEstateTaxDetailData(
-      mockNorisTaxPayersData as NorisTaxPayersDto,
+      mockNorisTaxPayersData as NorisRealEstateTax,
       mockTaxId,
     )
 

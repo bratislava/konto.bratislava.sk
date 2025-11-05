@@ -262,6 +262,7 @@ export class PaymentService {
               year: taxPayment.tax.year,
               taxType: taxPayment.tax.type,
               order: taxPayment.tax.order!, // non-null by DB trigger and constraint
+              suppress_email: false,
             },
             user.externalId,
           )

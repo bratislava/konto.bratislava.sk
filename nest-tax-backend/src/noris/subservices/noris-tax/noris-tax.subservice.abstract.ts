@@ -10,7 +10,7 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
-import { NorisTaxPayersDto } from '../../noris.dto'
+import { NorisRealEstateTax } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
   mapNorisToTaxAdministratorData,
@@ -47,7 +47,7 @@ export abstract class AbstractNorisTaxSubservice {
    * @returns Birth numbers of the tax payers that were processed
    */
   abstract processNorisTaxData(
-    norisData: NorisTaxPayersDto[],
+    norisData: NorisRealEstateTax[],
     year: number,
   ): Promise<string[]>
 
@@ -75,19 +75,21 @@ export abstract class AbstractNorisTaxSubservice {
    */
   protected async insertTaxDataToDatabase(
     taxDefinition: TaxDefinition,
-    dataFromNoris: NorisTaxPayersDto,
+    dataFromNoris: NorisRealEstateTax,
     year: number,
     transaction: Prisma.TransactionClient,
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
   ): Promise<TaxWithTaxPayer> {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
-    const taxAdministrator = await transaction.taxAdministrator.upsert({
-      where: {
-        id: dataFromNoris.vyb_id,
-      },
-      create: taxAdministratorData,
-      update: taxAdministratorData,
-    })
+    const taxAdministrator = taxAdministratorData
+      ? await transaction.taxAdministrator.upsert({
+          where: {
+            id: taxAdministratorData.id,
+          },
+          create: taxAdministratorData,
+          update: taxAdministratorData,
+        })
+      : undefined
 
     const taxPayerData = mapNorisToTaxPayerData(dataFromNoris, taxAdministrator)
     const taxPayer = await transaction.taxPayer.upsert({
@@ -152,7 +154,7 @@ export abstract class AbstractNorisTaxSubservice {
   protected readonly processTaxRecordFromNoris = async (
     taxDefinition: TaxDefinition,
     birthNumbersResult: Set<string>,
-    norisItem: NorisTaxPayersDto,
+    norisItem: NorisRealEstateTax,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
     year: number,
   ) => {

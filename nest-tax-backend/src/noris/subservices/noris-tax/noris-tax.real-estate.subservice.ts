@@ -12,11 +12,13 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
-import { NorisTaxPayersDto } from '../../noris.dto'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
+import { NorisRealEstateTaxSchema } from '../../types/noris.schema'
+import { NorisRealEstateTax } from '../../types/noris.types'
 import { queryPayersFromNoris } from '../../utils/noris.queries'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
+import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
@@ -29,6 +31,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
     private readonly connectionService: NorisConnectionSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly paymentSubservice: NorisPaymentSubservice,
+    private readonly norisValidatorSubservice: NorisValidatorSubservice,
 
     throwerErrorGuard: ThrowerErrorGuard,
     bloomreachService: BloomreachService,
@@ -48,7 +51,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
   private async getTaxDataByYearAndBirthNumber(
     year: number,
     birthNumbers: string[],
-  ): Promise<NorisTaxPayersDto[]> {
+  ): Promise<NorisRealEstateTax[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
         const request = new mssql.Request(connection)
@@ -78,7 +81,10 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
         )
       },
     )
-    return norisData.recordset
+    return this.norisValidatorSubservice.validateNorisData(
+      NorisRealEstateTaxSchema,
+      norisData.recordset,
+    )
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
@@ -100,7 +106,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
   }
 
   async processNorisTaxData(
-    norisData: NorisTaxPayersDto[],
+    norisData: NorisRealEstateTax[],
     year: number,
   ): Promise<string[]> {
     const birthNumbersResult: Set<string> = new Set()
@@ -164,7 +170,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
     year: number,
     birthNumbers: string[],
   ): Promise<{ updated: number }> {
-    let norisData: NorisTaxPayersDto[]
+    let norisData: NorisRealEstateTax[]
     try {
       norisData = await this.getTaxDataByYearAndBirthNumber(year, birthNumbers)
     } catch (error) {

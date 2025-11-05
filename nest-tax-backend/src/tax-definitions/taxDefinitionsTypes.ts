@@ -1,6 +1,6 @@
 import { TaxType } from '@prisma/client'
 
-import { NorisTaxPayersDto } from '../noris/noris.dto'
+import { NorisRealEstateTax } from '../noris/types/noris.types'
 import {
   RealEstateTaxData,
   RealEstateTaxDetail,
@@ -19,7 +19,7 @@ export type TaxDefinition = {
 
   /** Maps Noris tax data into format supported by our database. */
   mapNorisToTaxData: (
-    data: NorisTaxPayersDto,
+    data: NorisRealEstateTax,
     year: number,
     taxPayerId: number,
   ) => RealEstateTaxData
@@ -29,7 +29,7 @@ export type TaxDefinition = {
 
   /** Maps Noris tax data into detailed tax items. */
   mapNorisToTaxDetailData: (
-    data: NorisTaxPayersDto,
+    data: NorisRealEstateTax,
     taxId: number,
   ) => RealEstateTaxDetail[]
 

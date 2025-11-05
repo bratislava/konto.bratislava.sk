@@ -669,6 +669,10 @@ export const getCommunalWasteTaxesFromNoris = `
 
     FROM lcs.pko21_nadoba nadoba
 
+    JOIN lcs.pko21_poplatok poplatok ON nadoba.pko_poplatok = poplatok.cislo_subjektu
+    JOIN lcs.subjekty sub_adresa ON sub_adresa.cislo_subjektu = nadoba.adresa
+    JOIN lcs.dane21_doklad doklad ON doklad.podklad = poplatok.cislo_subjektu
+
     LEFT OUTER JOIN (
         SELECT 
             dane21_doklad_overpayment.podklad,
@@ -680,12 +684,9 @@ export const getCommunalWasteTaxesFromNoris = `
         WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
         GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
     ) overpayment_sum
-        ON overpayment_sum.podklad = lcs.dane21_doklad.podklad 
-        AND overpayment_sum.rok_podkladu = lcs.dane21_doklad.rok_podkladu
+        ON overpayment_sum.podklad = doklad.podklad 
+        AND overpayment_sum.rok_podkladu = doklad.rok_podkladu
 
-    JOIN lcs.pko21_poplatok poplatok ON nadoba.pko_poplatok = poplatok.cislo_subjektu
-    JOIN lcs.subjekty sub_adresa ON sub_adresa.cislo_subjektu = nadoba.adresa
-    JOIN lcs.dane21_doklad doklad ON doklad.podklad = poplatok.cislo_subjektu
     JOIN lcs.organizace_vlastni ov  ON 1=1
     JOIN 
         lcs.dane21_druh_dokladu

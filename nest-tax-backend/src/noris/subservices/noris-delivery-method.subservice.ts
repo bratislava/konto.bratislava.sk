@@ -46,7 +46,7 @@ export class NorisDeliveryMethodSubservice {
   private async executeDeliveryMethodUpdate(
     connection: mssql.ConnectionPool,
     dataItem: UpdateNorisDeliveryMethods,
-  ) {
+  ): Promise<void> {
     const request = new mssql.Request(connection)
 
     // Set parameters for the query
@@ -74,7 +74,7 @@ export class NorisDeliveryMethodSubservice {
     )
 
     // Execute the query
-    return request.query(queryWithPlaceholders)
+    await request.query(queryWithPlaceholders)
   }
 
   async updateDeliveryMethods({ data }: RequestUpdateNorisDeliveryMethodsDto) {

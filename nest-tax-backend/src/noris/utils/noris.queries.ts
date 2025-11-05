@@ -760,6 +760,7 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.dane21_druh_dokladu.typ_dokladu = 'V'AND
         lcs.dane21_druh_dokladu.typ_dane = '4' AND
         doklad.stav_dokladu<>'s' AND
-        doklad.rok_podkladu = @year
+        doklad.rok_podkladu = @year AND
+        (nadoba.objem IS NOT NULL AND nadoba.pocet_nadob IS NOT NULL AND nadoba.pocet_odvozov IS NOT NULL AND nadoba.sadzba_mena IS NOT NULL AND nadoba.suma_uhrada_mena IS NOT NULL AND nadoba.druh_nadoby IS NOT NULL)
 `
 /* eslint-enable no-secrets/no-secrets */

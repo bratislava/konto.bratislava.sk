@@ -5,7 +5,7 @@ import { ClientName } from '../oauth2/decorators/client-name.decorator'
 import { OAuth2ClientName } from '../oauth2/subservices/oauth2-client.subservice'
 import { User } from '../utils/decorators/request.decorator'
 import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
-import { UserDto } from './dtos/user.dto'
+import { DpbUserDto } from './dtos/user.dto'
 
 @ApiTags('DPB')
 @ApiBearerAuth()
@@ -21,9 +21,9 @@ export class DpbController {
   @ApiResponse({
     status: 200,
     description: 'User data retrieved successfully',
-    type: UserDto,
+    type: DpbUserDto,
   })
-  userData(@User() user: CognitoGetUserData): UserDto {
+  userData(@User() user: CognitoGetUserData): DpbUserDto {
     return {
       id: user.idUser || user.sub,
       email: user.email,

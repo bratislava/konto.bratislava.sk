@@ -71,7 +71,7 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
   // @ts-expect-error - handleRequest can be async at runtime even though interface doesn't reflect it
   async handleRequest<TUser = CognitoGetUserData>(
     error: Error | null,
-    token: CognitoAccessTokenDto,
+    token: CognitoAccessTokenDto | null,
     info: { message?: string } | null,
     context: ExecutionContext
   ): Promise<TUser> {
@@ -82,6 +82,14 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
         `Failed to decrypt or verify token. Info: ${info?.message}`,
         error
+      )
+    }
+
+    if (!token) {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        `Decoded token not found in request. Info: ${info?.message}`
       )
     }
 

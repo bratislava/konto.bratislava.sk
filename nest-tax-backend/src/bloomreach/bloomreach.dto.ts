@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { DeliveryMethodNamed, TaxPaymentSource } from '@prisma/client'
 import {
   IsBoolean,
@@ -38,14 +38,13 @@ export class TaxPaymentBloomreachDataDto {
   @IsEnum(TaxPaymentSource)
   payment_source: TaxPaymentSource
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description:
       'If true, email will be suppressed. Otherwise, email will be sent.',
     example: true,
   })
-  @IsOptional()
   @IsBoolean()
-  suppress_email?: boolean
+  suppress_email: boolean
 }
 
 export class TaxBloomreachDataDto {

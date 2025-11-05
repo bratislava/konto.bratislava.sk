@@ -350,7 +350,7 @@ export class NorisPaymentSubservice {
           amount: createdTaxPayment.amount,
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
-          suppress_email: bloomreachSettings?.suppressEmail,
+          suppress_email: bloomreachSettings?.suppressEmail ?? false,
         },
         userFromCityAccount.externalId,
       )

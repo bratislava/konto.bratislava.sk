@@ -81,15 +81,7 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
     }
 
     // Call parent AuthGuard to validate JWT (decryption, verification, and fetch user data)
-    const canActivate = await super.canActivate(context)
-
-    if (!canActivate) {
-      return false
-    }
-
-    // User data is set by Passport via handleRequest() which calls validate()
-    // It will be available as request.user in controllers
-    return true
+    return !!(await super.canActivate(context))
   }
 
   handleRequest<TUser = CognitoGetUserData>(

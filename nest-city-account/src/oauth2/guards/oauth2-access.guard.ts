@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 import { Request } from 'express'
@@ -7,7 +7,7 @@ import { decryptData } from '../../utils/crypto'
 import { CLIENT_NAME_KEY } from '../decorators/client-name.decorator'
 import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import { CognitoGetUserData, CognitoAccessTokenDto } from '../../utils/global-dtos/cognito.dto'
 
 /**
@@ -35,7 +35,9 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
     ]) as string
 
     if (!clientName) {
-      throw new UnauthorizedException(
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
         'Client name not specified. Use @ClientName() decorator on the endpoint.'
       )
     }
@@ -45,6 +47,7 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
     if (!client) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
         `Client configuration not found for client name: ${clientName}`
       )
     }
@@ -72,7 +75,8 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
     if (tokenAudience !== client.clientId) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
-        `Token audience does not match client ID. Expected: ${client.clientId}, Got: ${tokenAudience}`
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        `Token audience does not match client ID. Expected for ${client.clientName}: ${client.clientId}, Got: ${tokenAudience}`
       )
     }
 
@@ -89,25 +93,28 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
   }
 
   handleRequest<TUser = CognitoGetUserData>(
-    err: Error | null,
+    error: Error | null,
     user: CognitoGetUserData | false,
     info: { message?: string } | null
   ): TUser {
     // Handle errors from Passport
-    if (err || !user) {
-      if (err) {
-        throw this.throwerErrorGuard.UnauthorizedException(
-          ErrorsEnum.UNAUTHORIZED_ERROR,
-          'Failed to decrypt or verify token',
-          undefined,
-          err
-        )
-      }
+    if (error) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        'Failed to decrypt or verify token',
+        error
+      )
+    }
+
+    if (!user) {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
         info?.message || 'Authentication failed'
       )
     }
+
     return user as TUser
   }
 }

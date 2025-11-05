@@ -109,9 +109,7 @@ export class AdminController {
   async updateOverpaymentsFromNoris(
     @Body() data: DateRangeDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data, {
-      suppressEmail: true,
-    })
+    return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data)
   }
 
   @HttpCode(200)

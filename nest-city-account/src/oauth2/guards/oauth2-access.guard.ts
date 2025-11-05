@@ -9,6 +9,7 @@ import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import { CognitoGetUserData, CognitoAccessTokenDto } from '../../utils/global-dtos/cognito.dto'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 /**
  * Guard that validates OAuth2 access tokens using Passport
@@ -17,12 +18,15 @@ import { CognitoGetUserData, CognitoAccessTokenDto } from '../../utils/global-dt
  */
 @Injectable()
 export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
+  private readonly logger: LineLoggerSubservice
+
   constructor(
     private readonly reflector: Reflector,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {
     super()
+    this.logger = new LineLoggerSubservice(OAuth2AccessGuard.name)
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -69,6 +73,10 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
         }
       } catch (error) {
         // If decryption/decoding fails, the tokenAudience will stay undefined
+        this.logger.error(
+          `Failed to decrypt or decode token for audience validation. Client: ${client.clientName}`,
+          error
+        )
       }
     }
 

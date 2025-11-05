@@ -702,6 +702,7 @@ describe('NorisPaymentSubservice', () => {
           amount: 50_000,
           payment_source: 'BANK_ACCOUNT',
           year: 2024,
+          suppress_email: false,
         },
         'external-123',
       )

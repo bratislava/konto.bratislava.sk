@@ -250,6 +250,7 @@ export class PaymentService {
               amount: taxPayment.amount,
               payment_source: TaxPaymentSource.CARD,
               year: taxPayment.tax.year,
+              suppress_email: false,
             },
             user.externalId,
           )

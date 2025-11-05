@@ -154,6 +154,9 @@ export class NorisPaymentSubservice {
 
   async updateOverpaymentsDataFromNorisByDateRange(
     data: DateRangeDto,
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const overpaymentsData = await this.connectionService.withConnection(
       async (connection) => {
@@ -180,7 +183,10 @@ export class NorisPaymentSubservice {
         NorisPaymentSchema,
         overpaymentsData.recordset,
       )
-    return this.updatePaymentsFromNorisWithData(validatedOverpaymentsData)
+    return this.updatePaymentsFromNorisWithData(
+      validatedOverpaymentsData,
+      bloomreachSettings,
+    )
   }
 
   private async createTaxMapByVariableSymbol(norisPaymentData: NorisPayment[]) {
@@ -201,6 +207,9 @@ export class NorisPaymentSubservice {
 
   async updatePaymentsFromNorisWithData(
     norisPaymentData: NorisPayment[],
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
@@ -218,6 +227,7 @@ export class NorisPaymentSubservice {
       norisPaymentData,
       taxesDataByVsMap,
       userDataFromCityAccount,
+      bloomreachSettings,
     )
     const created = resultList.filter((item) => item === 'CREATED').length
     const alreadyCreated = resultList.filter(
@@ -250,6 +260,9 @@ export class NorisPaymentSubservice {
     norisPaymentData: NorisPayment[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ) {
     const validPayments = norisPaymentData.filter((payment) =>
       this.hasVariableSymbol(payment),
@@ -262,6 +275,7 @@ export class NorisPaymentSubservice {
           norisPayment,
           taxesDataByVsMap,
           userDataFromCityAccount,
+          bloomreachSettings,
         ),
       ),
     )
@@ -274,6 +288,9 @@ export class NorisPaymentSubservice {
     norisPayment: NorisPaymentWithVariableSymbol,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ) {
     try {
       const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol)
@@ -317,6 +334,7 @@ export class NorisPaymentSubservice {
           taxData,
           createdTaxPayment,
           userDataFromCityAccount,
+          bloomreachSettings,
         )
 
         return 'CREATED'
@@ -342,6 +360,9 @@ export class NorisPaymentSubservice {
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ) {
     const userFromCityAccount =
       userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
@@ -352,6 +373,7 @@ export class NorisPaymentSubservice {
           amount: createdTaxPayment.amount,
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
+          suppress_email: bloomreachSettings?.suppressEmail ?? false,
         },
         userFromCityAccount.externalId,
       )

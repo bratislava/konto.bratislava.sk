@@ -61,10 +61,18 @@ export class AdminService {
     return this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
   }
 
+  /**
+   * This function pull overpayments from Noris and update the local database.
+   * ⚠️ **Warning:** This function will not send email to the user.
+   * @param data - The date range to pull overpayments from Noris.
+   * @returns The number of created and already created overpayments.
+   */
   async updateOverpaymentsDataFromNorisByDateRange(
     data: DateRangeDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return this.norisService.updateOverpaymentsDataFromNorisByDateRange(data)
+    return this.norisService.updateOverpaymentsDataFromNorisByDateRange(data, {
+      suppressEmail: true,
+    })
   }
 
   async updateDeliveryMethodsInNoris({

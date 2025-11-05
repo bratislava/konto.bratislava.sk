@@ -92,7 +92,7 @@ export class NorisTaxSubservice {
         )
       },
     )
-    return this.norisValidatorSubservice.validateNorisDataArray(
+    return this.norisValidatorSubservice.validateNorisData(
       NorisRealEstateTaxSchema,
       norisData.recordset,
     )
@@ -420,7 +420,7 @@ export class NorisTaxSubservice {
         )
       },
     )
-    return this.norisValidatorSubservice.validateNorisDataArray(
+    return this.norisValidatorSubservice.validateNorisData(
       NorisRawCommunalWasteTaxSchema,
       norisData.recordset,
     )

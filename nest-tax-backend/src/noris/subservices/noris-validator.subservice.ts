@@ -15,8 +15,27 @@ export class NorisValidatorSubservice {
 
   validateNorisData<T extends z.ZodSchema>(
     schema: T,
-    data: unknown,
-  ): z.infer<T> {
+    data: unknown[],
+  ): z.infer<T>[]
+  validateNorisData<T extends z.ZodSchema>(schema: T, data: unknown): z.infer<T>
+  validateNorisData<T extends z.ZodSchema>(
+    schema: T,
+    data: unknown | unknown[],
+  ): z.infer<T> | z.infer<T>[] {
+    if (Array.isArray(data)) {
+      return data
+        .map((item) => {
+          try {
+            return this.validateNorisData(schema, item)
+          } catch (error) {
+            this.logger.error(error)
+            // eslint-disable-next-line unicorn/no-useless-undefined
+            return undefined
+          }
+        })
+        .filter((item): item is z.infer<T> => item !== undefined)
+    }
+
     const result = schema.safeParse(data)
     if (!result.success) {
       throw this.throwerErrorGuard.BadRequestException(
@@ -28,22 +47,5 @@ export class NorisValidatorSubservice {
       )
     }
     return result.data
-  }
-
-  validateNorisDataArray<T extends z.ZodSchema>(
-    schema: T,
-    data: unknown[],
-  ): z.infer<T>[] {
-    return data
-      .map((item) => {
-        try {
-          return this.validateNorisData(schema, item)
-        } catch (error) {
-          this.logger.error(error)
-          // eslint-disable-next-line unicorn/no-useless-undefined
-          return undefined
-        }
-      })
-      .filter((item): item is z.infer<T> => item !== undefined)
   }
 }

@@ -12,7 +12,7 @@ export const testPaymentNoVariableSymbol: NorisPayment = {
   specificky_symbol: '9876543211',
 }
 
-export const testPaymentInvalidUhrazeno = {
+export const testPaymentStringUhrazeno = {
   variabilny_symbol: '1234567892',
   uhrazeno: '1000',
   specificky_symbol: '9876543212',

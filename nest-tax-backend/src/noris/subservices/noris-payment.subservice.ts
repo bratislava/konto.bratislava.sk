@@ -77,7 +77,7 @@ export class NorisPaymentSubservice {
         )
       },
     )
-    return this.norisValidatorSubservice.validateNorisDataArray(
+    return this.norisValidatorSubservice.validateNorisData(
       NorisPaymentSchema,
       norisData.recordset,
     )
@@ -146,7 +146,7 @@ export class NorisPaymentSubservice {
         )
       },
     )
-    return this.norisValidatorSubservice.validateNorisDataArray(
+    return this.norisValidatorSubservice.validateNorisData(
       NorisPaymentSchema,
       norisData.recordset,
     )
@@ -176,7 +176,7 @@ export class NorisPaymentSubservice {
     )
 
     const validatedOverpaymentsData =
-      this.norisValidatorSubservice.validateNorisDataArray(
+      this.norisValidatorSubservice.validateNorisData(
         NorisPaymentSchema,
         overpaymentsData.recordset,
       )
@@ -241,7 +241,9 @@ export class NorisPaymentSubservice {
   private hasVariableSymbol(
     payment: NorisPayment,
   ): payment is NorisPaymentWithVariableSymbol {
-    return payment.variabilny_symbol !== null
+    return (
+      payment.variabilny_symbol !== null && payment.variabilny_symbol !== ''
+    )
   }
 
   private async processNorisPaymentData(

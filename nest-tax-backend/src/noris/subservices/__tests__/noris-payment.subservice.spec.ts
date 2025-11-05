@@ -94,13 +94,13 @@ describe('NorisPaymentSubservice', () => {
       NorisValidatorSubservice,
     )
     jest
-      .spyOn(norisValidatorSubservice, 'validateNorisDataArray')
-      .mockImplementation((schema, data) =>
-        data.map((item) => schema.parse(item)),
-      )
-    jest
       .spyOn(norisValidatorSubservice, 'validateNorisData')
-      .mockImplementation((schema, data) => schema.parse(data))
+      .mockImplementation((schema, data) => {
+        if (Array.isArray(data)) {
+          return data.map((item) => schema.parse(item))
+        }
+        return schema.parse(data)
+      })
   })
 
   it('should be defined', () => {

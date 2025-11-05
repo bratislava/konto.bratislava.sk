@@ -4,8 +4,7 @@ import { passportJwtSecret } from 'jwks-rsa'
 import { Strategy } from 'passport-jwt'
 import { Request } from 'express'
 import { decryptData } from '../../utils/crypto'
-import { CognitoAccessTokenDto, CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
-import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
+import { CognitoAccessTokenDto } from '../../utils/global-dtos/cognito.dto'
 
 /**
  * Custom JWT extractor that decrypts the encrypted token from the Authorization header
@@ -28,11 +27,11 @@ export const extractEncryptedJwt = (req: Request): string | null => {
 /**
  * Passport Strategy for validating encrypted Cognito JWTs
  * Decrypts the token and validates it against Cognito JWKS
- * Fetches full user data from Cognito
+ * Returns the decoded token payload (user data is fetched in the guard after audience validation)
  */
 @Injectable()
 export class EncryptedJwtStrategy extends PassportStrategy(Strategy, 'encrypted-jwt-strategy') {
-  constructor(private cognitoSubservice: CognitoSubservice) {
+  constructor() {
     const issuer = `https://cognito-idp.${process.env.AWS_COGNITO_REGION}.amazonaws.com/${process.env.AWS_COGNITO_USERPOOL_ID}`
 
     super({
@@ -46,13 +45,14 @@ export class EncryptedJwtStrategy extends PassportStrategy(Strategy, 'encrypted-
         jwksRequestsPerMinute: 5,
         jwksUri: `${issuer}/.well-known/jwks.json`,
       }),
-      // Note: audience validation is handled in the guard since it's dynamic per client
-      // passport-jwt requires a static audience, so we validate it in OAuth2AccessGuard instead
+      // Note: audience validation and user data fetching are handled in the guard
+      // since audience is dynamic per client and we want to validate before fetching user data
     })
   }
 
-  async validate(payload: CognitoAccessTokenDto): Promise<CognitoGetUserData> {
-    const data = await this.cognitoSubservice.getDataFromCognito(payload.sub)
-    return data
+  validate(payload: CognitoAccessTokenDto): CognitoAccessTokenDto {
+    // Return only the decoded token payload
+    // User data will be fetched in handleRequest after audience validation
+    return payload
   }
 }

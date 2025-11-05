@@ -2,14 +2,17 @@ import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 import { Request } from 'express'
-import * as jwt from 'jsonwebtoken'
-import { decryptData } from '../../utils/crypto'
 import { CLIENT_NAME_KEY } from '../decorators/client-name.decorator'
-import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
+import { OAuth2ClientSubservice, OAuth2Client } from '../subservices/oauth2-client.subservice'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import { CognitoGetUserData, CognitoAccessTokenDto } from '../../utils/global-dtos/cognito.dto'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
+
+interface RequestWithOAuth2Client extends Request {
+  oauth2Client?: OAuth2Client
+}
 
 /**
  * Guard that validates OAuth2 access tokens using Passport
@@ -23,14 +26,15 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
   constructor(
     private readonly reflector: Reflector,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
+    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice,
+    private readonly cognitoSubservice: CognitoSubservice
   ) {
     super()
     this.logger = new LineLoggerSubservice(OAuth2AccessGuard.name)
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<Request>()
+    const request = context.switchToHttp().getRequest<RequestWithOAuth2Client>()
 
     // Get client name from decorator (enum value)
     const clientName = this.reflector.getAllAndOverride<string>(CLIENT_NAME_KEY, [
@@ -56,30 +60,45 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
       )
     }
 
-    // Validate audience before fetching user data
-    // Decode (without verification) the JWT to get the payload for audience check
-    let tokenAudience: string | undefined
+    // Store client in request for use in handleRequest
+    request.oauth2Client = client
 
-    const authHeader = request.headers.authorization
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const encryptedToken = authHeader.substring(7)
-      try {
-        const decryptedToken = decryptData(encryptedToken)
-        const decoded = jwt.decode(decryptedToken) as CognitoAccessTokenDto | null
+    // Call parent AuthGuard to validate JWT (decryption and verification)
+    // User data will be fetched in handleRequest after audience validation
+    return !!(await super.canActivate(context))
+  }
 
-        if (decoded) {
-          // Validate audience matches client ID
-          tokenAudience = decoded.aud || decoded.client_id
-        }
-      } catch (error) {
-        // If decryption/decoding fails, the tokenAudience will stay undefined
-        this.logger.error(
-          `Failed to decrypt or decode token for audience validation. Client: ${client.clientName}`,
-          error
-        )
-      }
+  // @ts-expect-error - handleRequest can be async at runtime even though interface doesn't reflect it
+  async handleRequest<TUser = CognitoGetUserData>(
+    error: Error | null,
+    token: CognitoAccessTokenDto,
+    info: { message?: string } | null,
+    context: ExecutionContext
+  ): Promise<TUser> {
+    // Handle errors from Passport
+    if (error) {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        `Failed to decrypt or verify token. Info: ${info?.message}`,
+        error
+      )
     }
 
+    // Get client from request (set in canActivate)
+    const request = context.switchToHttp().getRequest<RequestWithOAuth2Client>()
+    const client = request.oauth2Client
+
+    if (!client) {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        'Client configuration not found in request context'
+      )
+    }
+
+    // Validate audience matches client ID before fetching user data
+    const tokenAudience = token.aud || token.client_id
     if (tokenAudience !== client.clientId) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
@@ -88,33 +107,15 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
       )
     }
 
-    // Call parent AuthGuard to validate JWT (decryption, verification, and fetch user data)
-    return !!(await super.canActivate(context))
-  }
-
-  handleRequest<TUser = CognitoGetUserData>(
-    error: Error | null,
-    user: CognitoGetUserData | false,
-    info: { message?: string } | null
-  ): TUser {
-    // Handle errors from Passport
-    if (error) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Failed to decrypt or verify token',
-        error
-      )
-    }
-
+    // Fetch user data from Cognito after audience validation
+    const user = await this.cognitoSubservice.getDataFromCognito(token.sub)
     if (!user) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        info?.message || 'Authentication failed'
+        `User ${token.sub} not found in Cognito`
       )
     }
-
     return user as TUser
   }
 }

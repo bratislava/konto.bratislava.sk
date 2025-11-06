@@ -1,0 +1,71 @@
+import { z } from 'zod/index'
+import { TaxDetailTypeEnum } from '../tax/dtos/response.tax.dto'
+
+export enum RealEstateTaxPropertyType {
+  APARTMENT = 'APARTMENT',
+  CONSTRUCTION = 'CONSTRUCTION',
+  GROUND = 'GROUND',
+}
+
+export enum RealEstateTaxAreaType {
+  NONRESIDENTIAL = 'NONRESIDENTIAL',
+  RESIDENTIAL = 'RESIDENTIAL',
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
+  E = 'E',
+  F = 'F',
+  G = 'G',
+  H = 'H',
+  jH = 'jH',
+  jI = 'jI',
+  byt = 'byt',
+  nebyt = 'nebyt',
+}
+
+export const RealEstateTaxDetailSchema = z.object({
+  propertyDetails: z.array(
+    z.object({
+      type: z.enum(RealEstateTaxPropertyType),
+      areaType: z.enum(RealEstateTaxAreaType),
+      area: z.optional(z.string()),
+      base: z.number().int(),
+      amount: z.number().int(),
+    }),
+  ),
+})
+
+export const CommunalWasteTaxDetailSchema = z.object({
+  containers: z.array(
+    z.object({
+      address: z.object({
+        street: z.string().nullable(),
+        orientationNumber: z.string().nullable(),
+      }),
+      details: z.object({
+        objem_nadoby: z.number(),
+        pocet_nadob: z.number(),
+        pocet_odvozov: z.number(),
+        sadzba: z.number(),
+        poplatok: z.number(),
+        druh_nadoby: z.string(),
+      }),
+    }),
+  ),
+})
+
+export type CommunalWasteTaxDetail = z.infer<
+  typeof CommunalWasteTaxDetailSchema
+>
+
+export type RealEstateTaxDetail = z.infer<typeof RealEstateTaxDetailSchema>
+export type TaxDetail = RealEstateTaxDetail | CommunalWasteTaxDetail
+
+declare global {
+  namespace PrismaJson {
+    type TaxDetailType = TaxDetail
+  }
+}
+
+export {}

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
-export const BaseNorisCommunalWasteTaxSchema = z.object({
+// COMMON SCHEMAS
+export const NorisBaseTaxWithoutPaymentSchema = z.object({
   cislo_poradace: z.number(),
   cislo_subjektu: z.number(),
   adresa_tp_sidlo: z.string().nullable(),
@@ -39,8 +40,20 @@ export const BaseNorisCommunalWasteTaxSchema = z.object({
   vyb_id: z.number().nullable(),
 })
 
+export const NorisTaxPaymentSchema = z.object({
+  variabilny_symbol: z.string().nullable(),
+  uhrazeno: z.coerce.number(),
+  specificky_symbol: z.string().nullable(),
+})
+
+export const NorisBaseTaxSchema = NorisBaseTaxWithoutPaymentSchema.extend(
+  NorisTaxPaymentSchema.shape,
+)
+
+
+// COMMUNAL WASTE SCHEMAS
 export const NorisRawCommunalWasteTaxSchema =
-  BaseNorisCommunalWasteTaxSchema.extend({
+  NorisBaseTaxSchema.extend({
     objem_nadoby: z.number(),
     pocet_nadob: z.number(),
     pocet_odvozov: z.number(),
@@ -51,48 +64,33 @@ export const NorisRawCommunalWasteTaxSchema =
     orientacne_cislo: z.string().nullable(),
   })
 
-export const NorisCommunalWasteTaxGroupedSchema =
-  BaseNorisCommunalWasteTaxSchema.extend({
-    containers: z.array(
-      z.object({
-        address: z.object({
-          street: z.string().nullable(),
-          orientationNumber: z.string().nullable(),
-        }),
-        details: z.object({
-          objem_nadoby: z.number(),
-          pocet_nadob: z.number(),
-          pocet_odvozov: z.number(),
-          sadzba: z.number(),
-          poplatok: z.number(),
-          druh_nadoby: z.string(),
-        }),
+export const NorisCommunalWasteTaxDetailSchema = z.object({
+  containers: z.array(
+    z.object({
+      address: z.object({
+        street: z.string().nullable(),
+        orientationNumber: z.string().nullable(),
       }),
-    ),
-  })
+      details: z.object({
+        objem_nadoby: z.number(),
+        pocet_nadob: z.number(),
+        pocet_odvozov: z.number(),
+        sadzba: z.number(),
+        poplatok: z.number(),
+        druh_nadoby: z.string(),
+      }),
+    }),
+  ),
+})
 
-export const NorisRealEstateTaxSchema = z.object({
-  adresa_tp_sidlo: z.string().nullable(),
-  sposob_dorucenia: z.string().nullable(),
-  cislo_poradace: z.number(),
-  cislo_subjektu: z.number(),
-  cislo_konania: z.string().nullable(),
-  variabilny_symbol: z.string(), // If it is null, we should not process the tax. Currently all were non-null, thus we can expect it to be non-null, otherwise throw error when parsing.
-  subjekt_refer: z.string().nullable(),
-  subjekt_nazev: z.string().nullable(),
-  rok: z.number(),
-  ulica_tb_cislo: z.string().nullable(),
-  psc_ref_tb: z.string().nullable(),
-  psc_naz_tb: z.string().nullable(),
-  stat_nazov_plny: z.string().nullable(),
-  obec_nazev_tb: z.string().nullable(),
-  akt_datum: z.string().nullable(),
-  datum_platnosti: z.date().nullable(),
-  vyb_nazov: z.string(),
-  vyb_telefon_prace: z.string().nullable(),
-  vyb_email: z.string().nullable(),
-  vyb_id: z.number().nullable(),
-  dan_spolu: z.string(),
+export const NorisCommunalWasteTaxGroupedSchema =
+  NorisBaseTaxSchema.extend(
+    NorisCommunalWasteTaxDetailSchema.shape,
+  )
+
+// REAL ESTATE TAX
+
+export const NorisRawRealEstateTaxDetailSchema = z.object({
   dan_byty: z.string(),
   dan_pozemky: z.string(),
   dan_stavby: z.string(),
@@ -146,26 +144,43 @@ export const NorisRealEstateTaxSchema = z.object({
   det_stavba_ZAKLAD_jI: z.string(),
   det_stavba_DAN_H: z.string(),
   det_stavba_ZAKLAD_H: z.string(),
-  TXT_MENO: z.string(),
-  TXT_UL: z.string(),
-  TYP_USER: z.string(),
-  ICO_RC: z.string(),
-  TXTSPL1: z.string(),
-  SPL1: z.string(),
-  TXTSPL4_1: z.string(),
-  SPL4_1: z.string(),
-  TXTSPL4_2: z.string(),
-  SPL4_2: z.string(),
-  TXTSPL4_3: z.string(),
-  SPL4_3: z.string(),
-  TXTSPL4_4: z.string(),
-  SPL4_4: z.string(),
-  specificky_symbol: z.string().nullable(),
-  uhrazeno: z.coerce.number(),
 })
 
-export const NorisPaymentSchema = z.object({
-  variabilny_symbol: z.string().nullable(),
-  uhrazeno: z.coerce.number(),
-  specificky_symbol: z.string().nullable(),
+export enum RealEstateTaxPropertyType {
+  APARTMENT = 'APARTMENT',
+  CONSTRUCTION = 'CONSTRUCTION',
+  GROUND = 'GROUND',
+}
+
+export enum RealEstateTaxAreaType {
+  NONRESIDENTIAL = 'NONRESIDENTIAL',
+  RESIDENTIAL = 'RESIDENTIAL',
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
+  E = 'E',
+  F = 'F',
+  G = 'G',
+  H = 'H',
+  jH = 'jH',
+  jI = 'jI',
+  byt = 'byt',
+  nebyt = 'nebyt',
+}
+
+export const NorisRealEstateTaxDetailSchema = z.object({
+  propertyDetails: z.array(
+    z.object({
+      type: z.enum(RealEstateTaxPropertyType),
+      areaType: z.enum(RealEstateTaxAreaType),
+      area: z.optional(z.string()),
+      base: z.number().int(),
+      amount: z.number().int(),
+    }),
+  ),
 })
+
+export const NorisRawRealEstateTaxSchema = NorisBaseTaxSchema.extend(
+  NorisRawRealEstateTaxDetailSchema.shape,
+).extend(NorisTaxPaymentSchema.shape)

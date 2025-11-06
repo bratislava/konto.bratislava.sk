@@ -15,12 +15,19 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import OAuthConfigureContainer from '../components/forms/segments/OAuthConfigure/OAuthConfigureContainer'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
+import { clearLocalStorage } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
-import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
+import {
+  getContinueUrl,
+  handlePostOAuthTokens,
+  SafeRedirectType,
+} from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 import { loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
 
@@ -82,6 +89,8 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
+  const { isOAuthLogin, amplifyConfigure, payload, clientId, redirectUri, state } = useOAuthParams()
+
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
@@ -114,9 +123,11 @@ const RegisterPage = () => {
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
-        await prepareFormMigration()
+        if (!isOAuthLogin) {
+          await prepareFormMigration()
+        }
         // This endpoint must be called to register user also to the City Account BE
-        await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' }) // TODO OAuth: add client_id param
         setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
       } else {
         throw new Error(
@@ -132,6 +143,7 @@ const RegisterPage = () => {
       }
     }
   }
+
   const handleSignUp = async (
     email: string,
     password: string,
@@ -140,6 +152,9 @@ const RegisterPage = () => {
   ) => {
     try {
       logger.info(`[AUTH] Attempting to sign up for email ${email}`)
+      // Make sure we call amplify with correct clientId
+      amplifyConfigure()
+
       handleErrorChange(null)
       setLastEmail(email)
       const { nextStep } = await signUp({
@@ -164,7 +179,9 @@ const RegisterPage = () => {
         logger.info(
           `[AUTH] Successfully signed up for email ${email}, proceeding to manual sign in`,
         )
-        await prepareFormMigration()
+        if (!isOAuthLogin) {
+          await prepareFormMigration()
+        }
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)
@@ -277,15 +294,57 @@ const RegisterPage = () => {
       }
     }
 
+    if (isOAuthLogin) {
+      return {
+        confirmLabel: t('identity_verification_link'),
+        // TODO OAuth: handle errors
+        onConfirm: async () => {
+          await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
+          clearLocalStorage()
+          // TODO OAuth: check if payload exists, handle errors
+          await router.push(getContinueUrl({ payload, clientId, redirectUri, state }))
+        },
+      }
+    }
+
+    // TODO OAuth: identity verification
+    // const redirectToIdentityVerificationAfterOAuthLogin = TODO
+    //
+    // if (redirectToIdentityVerificationAfterOAuthLogin) {
+    //   return {
+    //     confirmLabel: t('identity_verification_link'),
+    //     onConfirm: () =>
+    //       router
+    //         .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
+    //         .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
+    //   }
+    // }
+
     return {
       confirmLabel: t('identity_verification_not_required'),
       onConfirm: () => redirect(),
     }
-  }, [getRouteWithRedirect, redirect, registrationStatus, router, safeRedirect, t])
+  }, [
+    clientId,
+    getRouteWithRedirect,
+    isOAuthLogin,
+    payload,
+    redirect,
+    redirectUri,
+    registrationStatus,
+    router,
+    safeRedirect.type,
+    safeRedirect.url,
+    state,
+    t,
+  ])
 
   return (
     <LoginRegisterLayout backButtonHidden>
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
+
+      <OAuthConfigureContainer />
+
       <AccountContainer
         dataCyPrefix="registration"
         className="mb-0 md:mb-8 md:pt-6"

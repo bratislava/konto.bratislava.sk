@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { NorisPaymentsDto } from '../noris/noris.dto'
+import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { NorisService } from '../noris/noris.service'
+import { NorisPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -10,6 +11,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
+  DateRangeDto,
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
@@ -47,14 +49,30 @@ export class AdminService {
     )
   }
 
-  async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
-    const norisPaymentData: Partial<NorisPaymentsDto>[] =
+  async updatePaymentsFromNoris(
+    norisRequest: NorisRequestGeneral,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    const norisPaymentData: NorisPayment[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
             norisRequest.data,
           )
     return this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
+  }
+
+  /**
+   * This function pull overpayments from Noris and update the local database.
+   * ⚠️ **Warning:** This function will not send email to the user.
+   * @param data - The date range to pull overpayments from Noris.
+   * @returns The number of created and already created overpayments.
+   */
+  async updateOverpaymentsDataFromNorisByDateRange(
+    data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    return this.norisService.updateOverpaymentsDataFromNorisByDateRange(data, {
+      suppressEmail: true,
+    })
   }
 
   async updateDeliveryMethodsInNoris({

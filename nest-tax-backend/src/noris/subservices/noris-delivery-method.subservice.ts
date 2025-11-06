@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { ConnectionPool, Request } from 'mssql'
+import * as mssql from 'mssql'
 
 import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
@@ -21,7 +21,7 @@ export class NorisDeliveryMethodSubservice {
     private readonly connectionService: NorisConnectionSubservice,
   ) {}
 
-  async updateDeliveryMethodsInNoris(
+  private async updateDeliveryMethodsInNoris(
     data: UpdateNorisDeliveryMethods[],
   ): Promise<void> {
     await this.connectionService.withConnection(
@@ -44,19 +44,21 @@ export class NorisDeliveryMethodSubservice {
   }
 
   private async executeDeliveryMethodUpdate(
-    connection: ConnectionPool,
+    connection: mssql.ConnectionPool,
     dataItem: UpdateNorisDeliveryMethods,
-  ) {
-    const request = new Request(connection)
+  ): Promise<void> {
+    const request = new mssql.Request(connection)
 
     // Set parameters for the query
-    request.input('dkba_stav', dataItem.inCityAccount)
+    request.input('dkba_stav', mssql.VarChar(1), dataItem.inCityAccount)
     request.input(
       'dkba_datum_suhlasu',
+      mssql.DateTime,
       dataItem.date ? new Date(dataItem.date) : null,
     )
     request.input(
       'dkba_sposob_dorucovania',
+      mssql.VarChar(1),
       mapDeliveryMethodToNoris(dataItem.deliveryMethod),
     )
 
@@ -64,7 +66,7 @@ export class NorisDeliveryMethodSubservice {
       .map((_, index) => `@birthnumber${index}`)
       .join(',')
     dataItem.birthNumbers.forEach((birthNumber, index) => {
-      request.input(`birthnumber${index}`, birthNumber)
+      request.input(`birthnumber${index}`, mssql.VarChar(20), birthNumber)
     })
     const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
       '@birth_numbers',
@@ -72,7 +74,7 @@ export class NorisDeliveryMethodSubservice {
     )
 
     // Execute the query
-    return request.query(queryWithPlaceholders)
+    await request.query(queryWithPlaceholders)
   }
 
   async updateDeliveryMethods({ data }: RequestUpdateNorisDeliveryMethodsDto) {

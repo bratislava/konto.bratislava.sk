@@ -140,6 +140,46 @@ export const DeactivateAccountResponseDtoBloomreachRemovedEnum = {
 export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
   (typeof DeactivateAccountResponseDtoBloomreachRemovedEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedEnum]
 
+export interface DpbUserDto {
+  /**
+   * User ID
+   */
+  id: string
+  /**
+   * User email
+   */
+  email: string
+  /**
+   * Is email verified in cognito?
+   */
+  email_verified?: string
+  /**
+   * Account type
+   */
+  account_type: DpbUserDtoAccountTypeEnum
+  /**
+   * Name (usually company name for legal entities)
+   */
+  name?: string
+  /**
+   * Given name (first name)
+   */
+  given_name?: string
+  /**
+   * Family name (last name)
+   */
+  family_name?: string
+}
+
+export const DpbUserDtoAccountTypeEnum = {
+  Fo: 'fo',
+  Po: 'po',
+  FoP: 'fo-p',
+} as const
+
+export type DpbUserDtoAccountTypeEnum =
+  (typeof DpbUserDtoAccountTypeEnum)[keyof typeof DpbUserDtoAccountTypeEnum]
+
 /**
  * Type of Gdpr category
  */
@@ -263,11 +303,77 @@ export type MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum =
   (typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum)[keyof typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum]
 
 /**
+ * Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)
+ */
+
+export const OAuth2AuthorizationErrorCode = {
+  InvalidRequest: 'invalid_request',
+  UnauthorizedClient: 'unauthorized_client',
+  AccessDenied: 'access_denied',
+  UnsupportedResponseType: 'unsupported_response_type',
+  InvalidScope: 'invalid_scope',
+  ServerError: 'server_error',
+  TemporarilyUnavailable: 'temporarily_unavailable',
+} as const
+
+export type OAuth2AuthorizationErrorCode =
+  (typeof OAuth2AuthorizationErrorCode)[keyof typeof OAuth2AuthorizationErrorCode]
+
+export interface OAuth2AuthorizationErrorDto {
+  /**
+   * Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)
+   */
+  error: OAuth2AuthorizationErrorCode
+  /**
+   * Human-readable ASCII text providing additional information for debugging (not displayed to end-user)
+   */
+  error_description?: string
+  /**
+   * URI identifying a human-readable web page with information about the error
+   */
+  error_uri?: string
+  /**
+   * Exact value received from the client in the authorization request. REQUIRED if and only if the state parameter was present in the client authorization request. Only included when redirecting (not in direct error responses).
+   */
+  state?: string
+}
+
+/**
  * @type OAuth2ControllerTokenRequest
  */
 export type OAuth2ControllerTokenRequest =
   | ({ grant_type: 'authorization_code' } & TokenRequestDto)
   | ({ grant_type: 'refresh_token' } & RefreshTokenRequestDto)
+
+/**
+ * Single ASCII error code per OAuth 2.0 specification (Token Endpoint)
+ */
+
+export const OAuth2TokenErrorCode = {
+  InvalidRequest: 'invalid_request',
+  InvalidClient: 'invalid_client',
+  InvalidGrant: 'invalid_grant',
+  UnauthorizedClient: 'unauthorized_client',
+  UnsupportedGrantType: 'unsupported_grant_type',
+  InvalidScope: 'invalid_scope',
+} as const
+
+export type OAuth2TokenErrorCode = (typeof OAuth2TokenErrorCode)[keyof typeof OAuth2TokenErrorCode]
+
+export interface OAuth2TokenErrorDto {
+  /**
+   * Single ASCII error code per OAuth 2.0 specification (Token Endpoint)
+   */
+  error: OAuth2TokenErrorCode
+  /**
+   * Human-readable ASCII text providing additional information for debugging (not displayed to end-user)
+   */
+  error_description?: string
+  /**
+   * URI identifying a human-readable web page with information about the error
+   */
+  error_uri?: string
+}
 
 export interface OnlySuccessDto {
   /**
@@ -817,7 +923,7 @@ export interface StoreTokensRequestDto {
   /**
    * Refresh token from user authentication
    */
-  refresh_token?: string
+  refresh_token: string
   /**
    * UUID of the authorization request stored in the database
    */
@@ -2693,6 +2799,119 @@ export class AuthApi extends BaseAPI {
   public authControllerLogin(options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
       .authControllerLogin(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * DPBApi - axios parameter creator
+ */
+export const DPBApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerUserData: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/dpb/userdata`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * DPBApi - functional programming interface
+ */
+export const DPBApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = DPBApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async dpbControllerUserData(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DpbUserDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.dpbControllerUserData(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DPBApi.dpbControllerUserData']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * DPBApi - factory interface
+ */
+export const DPBApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = DPBApiFp(configuration)
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerUserData(options?: RawAxiosRequestConfig): AxiosPromise<DpbUserDto> {
+      return localVarFp.dpbControllerUserData(options).then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * DPBApi - object-oriented interface
+ */
+export class DPBApi extends BaseAPI {
+  /**
+   * Returns user data for the authenticated user
+   * @summary Get user data
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public dpbControllerUserData(options?: RawAxiosRequestConfig) {
+    return DPBApiFp(this.configuration)
+      .dpbControllerUserData(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

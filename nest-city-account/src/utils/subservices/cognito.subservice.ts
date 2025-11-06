@@ -5,8 +5,10 @@ import {
   AdminGetUserCommandOutput,
   AdminUpdateUserAttributesCommand,
   AttributeType,
+  AuthFlowType,
   CognitoIdentityProviderClient,
   CognitoIdentityProviderServiceException,
+  InitiateAuthCommand,
   ListUsersCommand,
   ListUsersCommandInput,
   UserType,
@@ -264,9 +266,9 @@ export class CognitoSubservice {
 
   /**
    * Returns all formatted users from cognito user pool
-   * @returns CognitoGetUserAttributesData[]
+   * @returns CognitoGetUserData[]
    */
-  async getAllCognitoUsers(): Promise<CognitoGetUserAttributesData[]> {
+  async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
     const result: Array<UserType> = []
     const params: ListUsersCommandInput = {
       UserPoolId: this.config.cognitoUserPoolId,
@@ -277,7 +279,46 @@ export class CognitoSubservice {
       result.push(...(cognitoData.Users ?? []))
       params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
+    return result.map((user) => {
+      return {
+        idUser: user.Username ?? '',
+        ...this.attributesToObject(user.Attributes ?? []),
+        UserCreateDate: user.UserCreateDate,
+        UserLastModifiedDate: user.UserLastModifiedDate,
+        Enabled: user.Enabled ?? false,
+        UserStatus: user.UserStatus as CognitoUserStatusEnum,
+      }
+    })
+  }
 
-    return result.map((user) => this.attributesToObject(user.Attributes ?? []))
+  async refreshTokens(refreshToken: string, clientId: string) {
+    const inputParams = {
+      AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
+      ClientId: clientId,
+      AuthParameters: {
+        REFRESH_TOKEN: refreshToken,
+      },
+    }
+
+    try {
+      const response = await this.cognitoClient.send(new InitiateAuthCommand(inputParams))
+      if (response.AuthenticationResult === undefined) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+          'AuthenticationResult undefined in response to refresh tokens request from Cognito'
+        )
+      }
+      return {
+        accessToken: response.AuthenticationResult.AccessToken,
+        idToken: response.AuthenticationResult.IdToken,
+      }
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+        'Unexpected error occurred when refreshing tokens via Cognito',
+        undefined,
+        error
+      )
+    }
   }
 }

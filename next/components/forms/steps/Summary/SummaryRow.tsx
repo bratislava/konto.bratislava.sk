@@ -16,16 +16,18 @@ interface SummaryRowProps {
   data: SummaryRowData
   size?: 'small' | 'large'
   isEditable?: boolean
+  hasBorder?: boolean
   onGoToStep?: () => void
 }
 
 const SummaryRow = (props: SummaryRowProps) => {
-  const { data, size = 'large', isEditable = true, onGoToStep } = props
+  const { data, size = 'large', isEditable = true, hasBorder = true, onGoToStep } = props
 
-  const containerClassName = cn('flex flex-row flex-wrap gap-2 border-b-2 py-2.5 md:flex-nowrap', {
+  const containerClassName = cn('flex flex-row flex-wrap gap-2 py-2.5 md:flex-nowrap', {
     'border-red-500 [&>div>*]:block': data.isError,
     'border-gray-200 hover:[&>div>*]:block': !data.isError,
     'hover:border-gray-700': isEditable,
+    'border-b-2': hasBorder,
   })
 
   const labelClassName = cn('w-full flex-1', {

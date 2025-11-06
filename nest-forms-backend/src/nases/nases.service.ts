@@ -465,7 +465,21 @@ export default class NasesService {
         data.formId,
         formDefinition,
       )
+    } catch (error) {
+      await this.formsService.updateForm(id, {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
 
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.CREATE_PDF_IMAGE_ERROR,
+        `${NasesErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR} Received form id: ${data.formId}.`,
+        undefined,
+        error,
+      )
+    }
+
+    try {
       await this.sendToNasesAndUpdateState(jwt, form, data, {
         type: SendMessageNasesSenderType.Eid,
         senderUri: nasesUser.sub,

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { CommunalWasteTaxDetailSchema } from '../../prisma/json-types'
 
 // COMMON SCHEMAS
 export const NorisBaseTaxWithoutPaymentSchema = z.object({
@@ -50,45 +51,22 @@ export const NorisBaseTaxSchema = NorisBaseTaxWithoutPaymentSchema.extend(
   NorisTaxPaymentSchema.shape,
 )
 
-
 // COMMUNAL WASTE SCHEMAS
-export const NorisRawCommunalWasteTaxSchema =
-  NorisBaseTaxSchema.extend({
-    objem_nadoby: z.number(),
-    pocet_nadob: z.number(),
-    pocet_odvozov: z.number(),
-    sadzba: z.number(),
-    poplatok: z.number(),
-    druh_nadoby: z.string(),
-    ulica: z.string().nullable(),
-    orientacne_cislo: z.string().nullable(),
-  })
-
-export const NorisCommunalWasteTaxDetailSchema = z.object({
-  containers: z.array(
-    z.object({
-      address: z.object({
-        street: z.string().nullable(),
-        orientationNumber: z.string().nullable(),
-      }),
-      details: z.object({
-        objem_nadoby: z.number(),
-        pocet_nadob: z.number(),
-        pocet_odvozov: z.number(),
-        sadzba: z.number(),
-        poplatok: z.number(),
-        druh_nadoby: z.string(),
-      }),
-    }),
-  ),
+export const NorisRawCommunalWasteTaxSchema = NorisBaseTaxSchema.extend({
+  objem_nadoby: z.number(),
+  pocet_nadob: z.number(),
+  pocet_odvozov: z.number(),
+  sadzba: z.number(),
+  poplatok: z.number(),
+  druh_nadoby: z.string(),
+  ulica: z.string().nullable(),
+  orientacne_cislo: z.string().nullable(),
 })
 
-export const NorisCommunalWasteTaxGroupedSchema =
-  NorisBaseTaxSchema.extend(
-    NorisCommunalWasteTaxDetailSchema.shape,
-  )
-
-// REAL ESTATE TAX
+// TODO this schema is mixing both raw noris data and parsed data. We should probably split them.
+export const NorisCommunalWasteTaxGroupedSchema = NorisBaseTaxSchema.extend(
+  CommunalWasteTaxDetailSchema.shape,
+)
 
 export const NorisRawRealEstateTaxDetailSchema = z.object({
   dan_byty: z.string(),
@@ -146,41 +124,6 @@ export const NorisRawRealEstateTaxDetailSchema = z.object({
   det_stavba_ZAKLAD_H: z.string(),
 })
 
-export enum RealEstateTaxPropertyType {
-  APARTMENT = 'APARTMENT',
-  CONSTRUCTION = 'CONSTRUCTION',
-  GROUND = 'GROUND',
-}
-
-export enum RealEstateTaxAreaType {
-  NONRESIDENTIAL = 'NONRESIDENTIAL',
-  RESIDENTIAL = 'RESIDENTIAL',
-  A = 'A',
-  B = 'B',
-  C = 'C',
-  D = 'D',
-  E = 'E',
-  F = 'F',
-  G = 'G',
-  H = 'H',
-  jH = 'jH',
-  jI = 'jI',
-  byt = 'byt',
-  nebyt = 'nebyt',
-}
-
-export const NorisRealEstateTaxDetailSchema = z.object({
-  propertyDetails: z.array(
-    z.object({
-      type: z.enum(RealEstateTaxPropertyType),
-      areaType: z.enum(RealEstateTaxAreaType),
-      area: z.optional(z.string()),
-      base: z.number().int(),
-      amount: z.number().int(),
-    }),
-  ),
-})
-
-export const NorisRawRealEstateTaxSchema = NorisBaseTaxSchema.extend(
+export const NorisRealEstateTaxSchema = NorisBaseTaxSchema.extend(
   NorisRawRealEstateTaxDetailSchema.shape,
-).extend(NorisTaxPaymentSchema.shape)
+)

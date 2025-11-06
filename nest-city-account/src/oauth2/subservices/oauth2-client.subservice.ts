@@ -32,12 +32,13 @@ export enum OAuth2ClientName {
  * OAUTH2_DPB_CLIENT_ID=dpb-client-id
  * OAUTH2_DPB_CLIENT_SECRET=dpb-secret-key
  * OAUTH2_DPB_ALLOWED_URIS=https://dpb.example.com/callback
+ * OAUTH2_DPB_TITLE=DPB Application
  * ```
  *
  * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID
  * @optional - OAUTH2_{PREFIX}_CLIENT_SECRET
  * @required - OAUTH2_{PREFIX}_ALLOWED_URIS (at least one redirect URI required)
- * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE
+ * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE, TITLE
  */
 
 export class OAuth2Client {
@@ -62,6 +63,9 @@ export class OAuth2Client {
   /** Whether this client requires PKCE */
   readonly requiresPkce: boolean
 
+  /** Human-readable title for the client (for frontend display) */
+  readonly title?: string
+
   constructor(config: {
     clientId: string
     clientSecret?: string
@@ -70,6 +74,7 @@ export class OAuth2Client {
     allowedScopes?: string[]
     allowedGrantTypes?: string[]
     requiresPkce: boolean
+    title?: string
   }) {
     this.clientId = config.clientId
     this.clientSecret = config.clientSecret
@@ -78,6 +83,7 @@ export class OAuth2Client {
     this.allowedScopes = config.allowedScopes
     this.allowedGrantTypes = config.allowedGrantTypes
     this.requiresPkce = config.requiresPkce
+    this.title = config.title
   }
 
   /**
@@ -208,6 +214,9 @@ export class OAuth2ClientSubservice {
       // Default to true if not specified
       const requiresPkce = process.env[`OAUTH2_${name}_REQUIRES_PKCE`] !== 'false'
 
+      // Optional title for frontend display
+      const title = process.env[`OAUTH2_${name}_TITLE`]
+
       const client = new OAuth2Client({
         clientId,
         clientName: name,
@@ -216,6 +225,7 @@ export class OAuth2ClientSubservice {
         ...(clientSecret && { clientSecret }), // Only include if provided
         ...(allowedScopes && allowedScopes.length > 0 && { allowedScopes }), // Only include if non-empty
         ...(allowedGrantTypes && allowedGrantTypes.length > 0 && { allowedGrantTypes }), // Only include if non-empty
+        ...(title && { title }), // Only include if provided
       })
 
       clients.push(client)

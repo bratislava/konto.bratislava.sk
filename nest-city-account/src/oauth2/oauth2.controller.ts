@@ -39,12 +39,13 @@ import {
   AuthorizationPayloadGuard,
   RequestWithAuthorizationPayload,
 } from './guards/authorization-payload.guard'
-import { TokenResponseDto } from './dtos/responses.oauth2.dto'
+import { ClientInfoResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'
 import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
+import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
@@ -55,7 +56,8 @@ export class OAuth2Controller {
 
   constructor(
     private readonly oauth2Service: OAuth2Service,
-    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower
+    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
+    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {}
 
   @Get('authorize')
@@ -223,5 +225,48 @@ export class OAuth2Controller {
     }
 
     return this.oauth2Service.token(body)
+  }
+
+  @Get('info')
+  @UseGuards(AuthorizationPayloadGuard)
+  @ApiOperation({
+    summary: 'OAuth2 Client Info Endpoint',
+    description:
+      'Get client information (name and title) by client_id from authorization request for frontend display.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Client information retrieved successfully',
+    type: ClientInfoResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request or client not found',
+    type: OAuth2AuthorizationErrorDto,
+  })
+  async info(
+    @Query() query: ContinueRequestDto,
+    @Req() req: Request
+  ): Promise<ClientInfoResponseDto> {
+    const request = req as RequestWithAuthorizationPayload
+    const authorizationRequest = request.authorizationPayload!
+
+    this.logger.debug('Info request received', {
+      client_id: authorizationRequest.client_id,
+      payload: query.payload,
+    })
+
+    const client = this.oAuth2ClientSubservice.findClientById(authorizationRequest.client_id)
+    if (!client) {
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        `Client info could not be retrieved for client_id: ${authorizationRequest.client_id}`
+      )
+    }
+
+    return {
+      name: client.clientName,
+      title: client.title,
+    }
   }
 }

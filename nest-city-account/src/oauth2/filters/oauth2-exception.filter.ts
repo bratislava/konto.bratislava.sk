@@ -48,8 +48,8 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     // Handle authorization endpoint errors (redirect)
     if (request.path.includes('/oauth2/authorize') || request.path.includes('/oauth2/continue')) {
       logObject = this.handleAuthorizationError(request, response, status, exceptionResponse)
-    } else if (request.path.includes('/oauth2/store')) {
-      logObject = this.handleAuthorizationStoreError(request, response, status, exceptionResponse)
+    } else if (request.path.includes('/oauth2/store') || request.path.includes('/oauth2/info')) {
+      logObject = this.handleInternalError(request, response, status, exceptionResponse)
     } else if (request.path.includes('/oauth2/token')) {
       logObject = this.handleTokenError(request, response, status, exceptionResponse)
     } else {
@@ -82,7 +82,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     })
   }
 
-  private handleAuthorizationStoreError(
+  private handleInternalError(
     request: Request,
     response: Response,
     status: number,

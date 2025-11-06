@@ -8,6 +8,7 @@ import {
 import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { DeliveryMethodErrorsEnum } from './delivery-method.error'
+import { CustomErrorAdminTypesEnum } from '../../../admin/dtos/error.dto'
 
 // copied over from nest-forms-backend
 export enum ErrorsEnum {
@@ -17,6 +18,7 @@ export enum ErrorsEnum {
   UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
   UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
   BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
+  FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
 }
 
 export enum ErrorsResponseEnum {
@@ -26,6 +28,7 @@ export enum ErrorsResponseEnum {
   UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
   UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
   BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
+  FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
 }
 
 export class ResponseInternalServerErrorDto {
@@ -50,6 +53,7 @@ export type CustomErrorEnums =
   | AdminErrorsEnum
   | SendToQueueErrorsEnum
   | DeliveryMethodErrorsEnum
+  | CustomErrorAdminTypesEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

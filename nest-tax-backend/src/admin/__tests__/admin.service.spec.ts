@@ -16,7 +16,7 @@ import {
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
-import { NorisPaymentsDto, NorisTaxPayersDto } from '../../noris/noris.dto'
+import { NorisPayment, NorisRealEstateTax } from '../../noris/noris.dto'
 import { NorisService } from '../../noris/noris.service'
 import {
   AreaTypesEnum,
@@ -284,106 +284,9 @@ describe('AdminService', () => {
     })
   })
 
-  describe('updateTaxesFromNoris', () => {
-    it('should update taxes with valid data', async () => {
-      const mockTaxes: TaxIdVariableSymbolYear[] = [
-        { id: 1, variableSymbol: 'VS1', year: 2024 },
-        { id: 2, variableSymbol: 'VS2', year: 2025 },
-      ]
-      const mockData = [
-        { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },
-        { variabilny_symbol: 'VS2', datum_platnosti: '2024-01-02' },
-      ]
-
-      jest
-        .spyOn(service['norisService'], 'getDataForUpdate')
-        .mockResolvedValueOnce(mockData)
-      jest
-        .spyOn(service['prismaService'], '$transaction')
-        .mockResolvedValueOnce(
-          mockTaxes.map((tax) => ({
-            ...tax,
-            dateTaxRuling: mockData.find(
-              (item) => item.variabilny_symbol === tax.variableSymbol,
-            )?.datum_platnosti,
-          })),
-        )
-
-      await service.updateTaxesFromNoris(mockTaxes)
-
-      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
-        ['VS1', 'VS2'],
-        [2024, 2025],
-      )
-      expect(service['prismaService'].$transaction).toHaveBeenCalledWith([
-        expect.any(Function),
-        expect.any(Function),
-      ])
-    })
-
-    it('should not update taxes if datum_platnosti is null', async () => {
-      const mockTaxes: TaxIdVariableSymbolYear[] = [
-        { id: 1, variableSymbol: 'VS1', year: 2024 },
-        { id: 2, variableSymbol: 'VS2', year: 2024 },
-      ]
-      const mockData = [
-        { variabilny_symbol: 'VS1', datum_platnosti: null },
-        { variabilny_symbol: 'VS2', datum_platnosti: null },
-      ]
-
-      jest
-        .spyOn(service['norisService'], 'getDataForUpdate')
-        .mockResolvedValueOnce(mockData)
-
-      await service.updateTaxesFromNoris(mockTaxes)
-
-      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
-        ['VS1', 'VS2'],
-        [2024],
-      )
-      expect(service['prismaService'].$transaction).toHaveBeenCalledWith([])
-    })
-
-    it('should propagate errors from norisService', async () => {
-      const mockTaxes: TaxIdVariableSymbolYear[] = [
-        { id: 1, variableSymbol: 'VS1', year: 2024 },
-      ]
-      const mockError = new Error('Update failed')
-
-      jest
-        .spyOn(service['norisService'], 'getDataForUpdate')
-        .mockRejectedValueOnce(mockError)
-
-      await expect(service.updateTaxesFromNoris(mockTaxes)).rejects.toThrow(
-        mockError,
-      )
-    })
-
-    it('should propagate errors from prismaService', async () => {
-      const mockTaxes: TaxIdVariableSymbolYear[] = [
-        { id: 1, variableSymbol: 'VS1', year: 2024 },
-      ]
-      const mockData = [
-        { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },
-      ]
-      const mockError = new Error('Transaction failed')
-
-      jest
-        .spyOn(service['norisService'], 'getDataForUpdate')
-        .mockResolvedValueOnce(mockData)
-      jest
-        .spyOn(service['prismaService'], '$transaction')
-        .mockRejectedValueOnce(mockError)
-
-      await expect(service.updateTaxesFromNoris(mockTaxes)).rejects.toThrow(
-        mockError,
-      )
-    })
-  })
-
   describe('processNorisTaxData', () => {
     it('should process tax data correctly', async () => {
-      const norisData: NorisTaxPayersDto[] = [
+      const norisData: NorisRealEstateTax[] = [
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
@@ -392,7 +295,7 @@ describe('AdminService', () => {
           ICO_RC: '123456/9999',
           dan_spolu: '1000',
         },
-      ] as NorisTaxPayersDto[]
+      ] as NorisRealEstateTax[]
 
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -411,7 +314,7 @@ describe('AdminService', () => {
       const insertSpy = jest
         .spyOn(service as any, 'insertTaxPayerDataToDatabase')
         .mockImplementation((data) =>
-          Promise.resolve({ birthNumber: (data as NorisTaxPayersDto).ICO_RC }),
+          Promise.resolve({ birthNumber: (data as NorisRealEstateTax).ICO_RC }),
         )
       const bloomreachSpy = jest.spyOn(
         service['bloomreachService'],
@@ -426,7 +329,7 @@ describe('AdminService', () => {
     })
 
     it('should return only birth numbers that were processed', async () => {
-      const norisData: NorisTaxPayersDto[] = [
+      const norisData: NorisRealEstateTax[] = [
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
@@ -435,7 +338,7 @@ describe('AdminService', () => {
           ICO_RC: '123456/777',
           dan_spolu: '100',
         },
-      ] as NorisTaxPayersDto[]
+      ] as NorisRealEstateTax[]
 
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -457,11 +360,11 @@ describe('AdminService', () => {
       const insertSpy = jest
         .spyOn(service as any, 'insertTaxPayerDataToDatabase')
         .mockImplementation((data) => {
-          if ((data as NorisTaxPayersDto).ICO_RC === '123456/789') {
+          if ((data as NorisRealEstateTax).ICO_RC === '123456/789') {
             return Promise.reject(new Error('Insert failed'))
           }
           return Promise.resolve({
-            birthNumber: (data as NorisTaxPayersDto).ICO_RC,
+            birthNumber: (data as NorisRealEstateTax).ICO_RC,
           })
         })
 
@@ -474,7 +377,7 @@ describe('AdminService', () => {
     })
 
     it('should create only taxes which are not already in the database', async () => {
-      const norisData: NorisTaxPayersDto[] = [
+      const norisData: NorisRealEstateTax[] = [
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
@@ -487,7 +390,7 @@ describe('AdminService', () => {
           ICO_RC: '123456/888',
           dan_spolu: '100',
         },
-      ] as NorisTaxPayersDto[]
+      ] as NorisRealEstateTax[]
 
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -519,7 +422,7 @@ describe('AdminService', () => {
         .spyOn(service as any, 'insertTaxPayerDataToDatabase')
         .mockImplementation((data) => {
           return Promise.resolve({
-            birthNumber: (data as NorisTaxPayersDto).ICO_RC,
+            birthNumber: (data as NorisRealEstateTax).ICO_RC,
           })
         })
 
@@ -538,7 +441,7 @@ describe('AdminService', () => {
     })
 
     it('should log all errors, not just one', async () => {
-      const norisData: NorisTaxPayersDto[] = [
+      const norisData: NorisRealEstateTax[] = [
         {
           ICO_RC: '123456/789',
           dan_spolu: '1000',
@@ -547,7 +450,7 @@ describe('AdminService', () => {
           ICO_RC: '123456/777',
           dan_spolu: '100',
         },
-      ] as NorisTaxPayersDto[]
+      ] as NorisRealEstateTax[]
 
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -587,7 +490,7 @@ describe('AdminService', () => {
     })
 
     it('should propagate errors', async () => {
-      const mockData: NorisTaxPayersDto = {
+      const mockData: NorisRealEstateTax = {
         ICO_RC: '123456/789',
         dan_spolu: '1000',
         cislo_poradace: '123456',
@@ -597,7 +500,7 @@ describe('AdminService', () => {
         dan_byty: '400',
         SPL4_2: '',
         SPL1: '100',
-      } as unknown as NorisTaxPayersDto
+      } as unknown as NorisRealEstateTax
 
       jest.spyOn(mockTransaction['tax'], 'findMany').mockResolvedValueOnce([])
 
@@ -619,7 +522,7 @@ describe('AdminService', () => {
     })
 
     it('should insert tax payer data correctly', async () => {
-      const mockData: NorisTaxPayersDto = {
+      const mockData: NorisRealEstateTax = {
         ICO_RC: '123456/789',
         dan_spolu: '1000',
         cislo_poradace: '123456',
@@ -629,7 +532,7 @@ describe('AdminService', () => {
         dan_byty: '400',
         SPL4_2: '',
         SPL1: '100',
-      } as unknown as NorisTaxPayersDto
+      } as unknown as NorisRealEstateTax
 
       jest.spyOn(mockTransaction['tax'], 'findMany').mockResolvedValueOnce([])
 
@@ -701,12 +604,11 @@ describe('AdminService', () => {
     })
 
     it('should process individual payment correctly', async () => {
-      const mockPayment: NorisPaymentsDto = {
+      const mockPayment: NorisPayment = {
         variabilny_symbol: 'VS123',
         uhrazeno: '500.0',
-        zbyva_uhradit: '0',
         specificky_symbol: 'SS123',
-      } as NorisPaymentsDto
+      } as NorisPayment
 
       const taxesDataByVsMap: Map<string, TaxWithTaxPayer> = new Map([
         [
@@ -757,12 +659,11 @@ describe('AdminService', () => {
     })
 
     it('should process already paid tax with no action', async () => {
-      const mockPayment: NorisPaymentsDto = {
+      const mockPayment: NorisPayment = {
         variabilny_symbol: 'VS123',
         uhrazeno: '500.00',
-        zbyva_uhradit: '0',
         specificky_symbol: 'SS123',
-      } as NorisPaymentsDto
+      } as NorisPayment
 
       const taxesDataByVsMap: Map<string, TaxWithTaxPayer> = new Map([
         [

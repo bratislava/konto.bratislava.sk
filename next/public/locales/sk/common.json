@@ -133,5 +133,9 @@
       "backTo": "Späť na {backTo}"
     },
     "more": "Ďalšie"
+  },
+  "breadcrumbs": {
+    "back": "Späť",
+    "homepage": "Domov"
   }
 }

@@ -1,8 +1,9 @@
 resources:
   - ../../base
-  - scaler.yml
+  - ./secrets/cognito.secret.yml
   - ./secrets/reporting.secret.yml
   - ./secrets/email.secret.yml
+  - ./secrets/admin.secret.yml
 
 generatorOptions:
   disableNameSuffixHash: true

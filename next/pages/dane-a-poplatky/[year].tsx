@@ -8,7 +8,8 @@ import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import { ResponseTaxDto } from 'openapi-clients/tax'
+import { convertYearToNumber } from 'frontend/utils/general'
+import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
@@ -19,7 +20,7 @@ import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
-  taxData: ResponseTaxDto
+  taxData: ResponseTaxSummaryDetailDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
@@ -27,14 +28,6 @@ type AccountTaxesFeesPageProps = {
 
 type Params = {
   year: string
-}
-
-function convertYearToNumber(input: string | undefined) {
-  if (input === undefined || !/^(20\d{2})$/.test(input)) {
-    return null
-  }
-
-  return parseInt(input, 10)
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
@@ -49,7 +42,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
-        taxClient.taxControllerGetActualTaxes(yearNumber, {
+        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),

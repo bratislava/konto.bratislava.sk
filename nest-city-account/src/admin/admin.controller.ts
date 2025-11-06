@@ -9,6 +9,8 @@ import {
   Post,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common'
 import {
   ApiNotFoundResponse,
@@ -29,6 +31,7 @@ import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
   MarkDeceasedAccountRequestDto,
+  RequestBatchNewUserBirthNumbers,
   RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
   RequestDeleteTaxDto,
@@ -37,6 +40,7 @@ import {
 } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
+  GetNewVerifiedUsersBirthNumbersResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
   MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
@@ -339,5 +343,26 @@ export class AdminController {
   @Post('delete-tax')
   async deleteTax(@Body() data: RequestDeleteTaxDto): Promise<void> {
     await this.adminService.deleteTax(data)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get birth numbers of newly verified users.',
+    description:
+      'Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns list of birth numbers for new verified users.',
+    type: GetNewVerifiedUsersBirthNumbersResponseDto,
+  })
+  @UseGuards(AdminGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Post('get-verified-users-birth-numbers-batch')
+  async getNewVerifiedUsersBirthNumbers(
+    @Body() data: RequestBatchNewUserBirthNumbers
+  ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+    const result = await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
+    return result
   }
 }

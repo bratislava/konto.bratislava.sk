@@ -57,6 +57,7 @@ model User {
   id                                   String                         @id @default(uuid()) @db.Uuid
   createdAt                            DateTime                       @default(now())
   updatedAt                            DateTime                       @updatedAt
+  registeredAt                         DateTime?                      
   externalId                           String?                        @unique
   email                                String?                        @unique
   ifo                                  String?                        @unique
@@ -69,8 +70,6 @@ model User {
   userAttribute                        String?
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
-  lastTaxYear                          Int?
-  lastTaxBackendUploadTry              DateTime?
   lastTaxDeliveryMethodsUpdateYear     Int?
   taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery
@@ -144,6 +143,7 @@ model LegalPerson {
   id                                 String                         @id @default(uuid()) @db.Uuid
   createdAt                          DateTime                       @default(now())
   updatedAt                          DateTime                       @updatedAt
+  registeredAt                       DateTime?
   externalId                         String?                        @unique
   email                              String?                        @unique
   ico                                String?
@@ -187,4 +187,29 @@ model Config {
   updatedAt DateTime @updatedAt
   key       String   @unique
   value     Json
+}
+
+model OAuth2Data {
+  id                         String   @id @default(uuid()) @db.Uuid
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  // Authorization request parameters
+  responseType               String   // 'code' for Authorization Code flow
+  clientId                   String
+  redirectUri                String
+  scope                      String?  // Space-delimited list of scopes
+  state                      String?  // CSRF protection token
+  codeChallenge              String?  // PKCE code challenge
+  codeChallengeMethod        String?  // PKCE code challenge method: 'S256' or 'plain'
+
+  // Grant generated during authorization
+  authorizationCode          String?   @unique
+  authorizationCodeCreatedAt DateTime?
+
+  // Encrypted (and base64-encoded) token values
+  accessTokenEnc             String?
+  accessTokenExpiresAt       DateTime?
+  idTokenEnc                 String?
+  refreshTokenEnc            String?
 }

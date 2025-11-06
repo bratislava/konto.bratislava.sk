@@ -66,6 +66,7 @@ export type RealEstateTaxData = {
   taxFlat: number
 }
 
+
 export const mapNorisToRealEstateTaxData = (
   data: NorisRealEstateTax,
   year: number,
@@ -147,14 +148,6 @@ export const mapDeliveryMethodToNoris = (
   return norisMethod
 }
 
-export type RealEstateTaxDetail = {
-  taxId: number
-  areaType: TaxDetailareaType
-  type: AreaTypesEnum
-  base: number
-  amount: number
-  area: string | null
-}
 
 export const mapNorisToRealEstateTaxDetailData = (
   data: NorisRealEstateTax,

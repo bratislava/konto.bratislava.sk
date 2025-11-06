@@ -1,7 +1,6 @@
 /* eslint-disable no-secrets/no-secrets */
 export const queryPayersFromNoris = `
 SELECT
-    lcs.dane21_doklad.sposob_dorucenia,
     subjekt_doklad.cislo_poradace,
     lcs.dane21_doklad.cislo_subjektu,
     subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,

@@ -113,7 +113,6 @@ export const createTestingTaxMock = (
     det_stavba_DAN_H: '150,75',
 
     // additional required fields
-    sposob_dorucenia: 'TEST',
     cislo_subjektu: 123_456,
     akt_datum: new Date().toISOString().split('T')[0],
     dan_stavby: '600,50',

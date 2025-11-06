@@ -49,7 +49,6 @@ describe('NorisTaxRealEstateSubservice', () => {
   const mockNorisData: NorisRealEstateTax[] = [
     {
       adresa_tp_sidlo: 'Test Address',
-      sposob_dorucenia: 'EMAIL',
       cislo_poradace: 1,
       cislo_subjektu: 123,
       cislo_konania: 'KON123',

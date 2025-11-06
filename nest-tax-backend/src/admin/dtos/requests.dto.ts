@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBoolean,
@@ -20,13 +21,24 @@ export class RequestPostNorisLoadDataDto {
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'Birth numbers in format with slash',
     default: ['000000/0000'],
   })
+  @IsString({ each: true })
   birthNumbers: string[]
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
 }
 
 export class RequestPostNorisPaymentDataLoadDto {
@@ -235,6 +247,22 @@ export class RequestAdminDeleteTaxDto {
   })
   @IsString()
   birthNumber: string
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class RequestPostReportingSendReport {

@@ -17,6 +17,7 @@ model TaxPayer {
   createdAt                   DateTime          @default(now())
   updatedAt                   DateTime          @default(now()) @updatedAt
   birthNumber                 String // with slash
+  // TODO - tax administrator will be one for each type of tax, therefore the relation will be many-to-many
   taxAdministratorId          Int?
   taxAdministrator            TaxAdministrator? @relation(fields: [taxAdministratorId], references: [id])
   permanentResidenceAddress   String?
@@ -44,6 +45,7 @@ model Tax {
   taxPayerId                      Int
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
+  order                           Int?  // Will not be null because of set_tax_order() trigger
   variableSymbol                  String
   taxId                           String?
   dateCreateTax                   String?
@@ -59,8 +61,9 @@ model Tax {
   deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 
-  @@unique([taxPayerId, year])
   @@unique([uuid])
+  @@unique([taxPayerId, year, type, order])
+  @@unique([variableSymbol])
   @@index([year, lastCheckedPayments])
 }
 

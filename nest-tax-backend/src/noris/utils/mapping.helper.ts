@@ -53,11 +53,24 @@ export const mapNorisToTaxAdministratorData = (
     : undefined
 }
 
-export const mapNorisToTaxData = (
+export type RealEstateTaxData = {
+  amount: number
+  year: number
+  taxPayerId: number
+  variableSymbol: string
+  dateCreateTax: string | null
+  dateTaxRuling: Date | null
+  taxId: string | null
+  taxLand: number
+  taxConstructions: number
+  taxFlat: number
+}
+
+export const mapNorisToRealEstateTaxData = (
   data: NorisRealEstateTax,
   year: number,
   taxPayerId: number,
-) => {
+): RealEstateTaxData => {
   return {
     amount: convertCurrencyToInt(data.dan_spolu),
     year,
@@ -134,7 +147,7 @@ export const mapDeliveryMethodToNoris = (
   return norisMethod
 }
 
-export type TaxDetail = {
+export type RealEstateTaxDetail = {
   taxId: number
   areaType: TaxDetailareaType
   type: AreaTypesEnum
@@ -142,10 +155,11 @@ export type TaxDetail = {
   amount: number
   area: string | null
 }
-export const mapNorisToTaxDetailData = (
+
+export const mapNorisToRealEstateTaxDetailData = (
   data: NorisRealEstateTax,
   taxId: number,
-): TaxDetail[] => {
+): RealEstateTaxDetail[] => {
   const config: Record<
     string,
     {
@@ -179,7 +193,7 @@ export const mapNorisToTaxDetailData = (
     },
   }
 
-  const response: TaxDetail[] = []
+  const response: RealEstateTaxDetail[] = []
 
   Object.entries(config).forEach(([keyTaxConfig, valueTaxConfig]) => {
     valueTaxConfig.types.forEach((taxType) => {
@@ -190,7 +204,7 @@ export const mapNorisToTaxDetailData = (
       const amountKey =
         `${prefix}_${valueTaxConfig.amount}_${taxType}` as keyof NorisRealEstateTax
 
-      const taxDetailItem: TaxDetail = {
+      const taxDetailItem: RealEstateTaxDetail = {
         taxId,
         areaType: taxType,
         type: valueTaxConfig.areaType,

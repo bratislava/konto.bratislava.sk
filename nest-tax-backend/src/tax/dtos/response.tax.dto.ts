@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxDetailareaType } from '@prisma/client'
+import { TaxDetailareaType, TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -66,10 +66,6 @@ export enum InstallmentPaidStatusEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
 }
 
-export enum PaymentTypeEnum {
-  DZN = 'DzN',
-}
-
 export class ResponseTaxAdministratorDto {
   @ApiProperty({
     description: 'Name of the tax administrator',
@@ -126,6 +122,22 @@ export class ResponseGetTaxesListBodyDto {
   })
   @IsEnum(TaxStatusEnum)
   status: TaxStatusEnum
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  type: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class ResponseGetTaxesListDto {
@@ -557,6 +569,20 @@ export class ResponseTaxSummaryDetailDto {
   @IsNumber()
   @IsPositive()
   year: number
+
+  @ApiProperty({ description: 'Order of tax', example: 1 })
+  @IsNumber()
+  @IsPositive()
+  order: number
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  type: TaxType
 
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()

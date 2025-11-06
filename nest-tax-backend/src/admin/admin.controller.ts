@@ -52,7 +52,8 @@ export class AdminController {
   async loadDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    return this.adminService.loadDataFromNoris(data)
+    const { taxType, year, birthNumbers } = data
+    return this.adminService.loadDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)
@@ -70,7 +71,8 @@ export class AdminController {
   async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<{ updated: number }> {
-    return this.adminService.updateDataFromNoris(data)
+    const { taxType, year, birthNumbers } = data
+    return this.adminService.updateDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)

@@ -5,12 +5,12 @@ import {
   Prisma,
   TaxPayment,
   TaxPaymentSource,
+  TaxType,
 } from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { PaymentTypeEnum } from '../tax/dtos/response.tax.dto'
 import { TaxService } from '../tax/tax.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
@@ -123,10 +123,14 @@ export class PaymentService {
   async generateFullPaymentLink(
     where: Prisma.TaxPayerWhereUniqueInput,
     year: number,
+    type: TaxType,
+    order: number,
   ) {
     const generator = await this.taxService.getOneTimePaymentGenerator(
       where,
       year,
+      type,
+      order,
     )
 
     return this.getPaymentUrlInternal(generator)
@@ -135,10 +139,14 @@ export class PaymentService {
   async generateInstallmentPaymentLink(
     where: Prisma.TaxPayerWhereUniqueInput,
     year: number,
+    type: TaxType,
+    order: number,
   ) {
     const generator = await this.taxService.getInstallmentPaymentGenerator(
       where,
       year,
+      type,
+      order,
     )
 
     return this.getPaymentUrlInternal(generator)
@@ -161,7 +169,6 @@ export class PaymentService {
       include: { tax: true },
     })
     const year = tax?.tax.year
-    // TODO tax type when PKO is implemented
 
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
@@ -187,7 +194,7 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       const payment = await this.prisma.taxPayment.findUnique({
@@ -204,11 +211,11 @@ export class PaymentService {
       })
 
       if (!payment) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       if (payment.status === PaymentStatus.SUCCESS) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       // TODO: when user has taxPayment with status SUCCESS,
@@ -222,7 +229,7 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${tax?.tax.type}&year=${year}`
       }
 
       await this.prisma.$transaction(async (tx) => {
@@ -230,12 +237,14 @@ export class PaymentService {
           where: { orderId: ORDERNUMBER },
           data: {
             status: PaymentStatus.SUCCESS,
-            source: 'CARD',
+            source: TaxPaymentSource.CARD,
           },
           include: {
             tax: {
               select: {
                 year: true,
+                type: true,
+                order: true,
               },
             },
           },
@@ -244,12 +253,15 @@ export class PaymentService {
         const user = await this.cityAccountSubservice.getUserDataAdmin(
           payment.tax.taxPayer.birthNumber,
         )
+
         if (user?.externalId) {
           await this.bloomreachService.trackEventTaxPayment(
             {
               amount: taxPayment.amount,
               payment_source: TaxPaymentSource.CARD,
               year: taxPayment.tax.year,
+              taxType: taxPayment.tax.type,
+              order: taxPayment.tax.order!, // non-null by DB trigger and constraint
               suppress_email: false,
             },
             user.externalId,
@@ -257,7 +269,7 @@ export class PaymentService {
         }
       })
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${tax?.tax.type}&year=${year}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

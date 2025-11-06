@@ -6,7 +6,7 @@ import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subser
  * These correspond to the prefixes used in OAUTH2_CLIENT_LIST environment variable
  */
 export enum OAuth2ClientName {
-  MPA = 'MPA',
+  PAAS_MPA = 'PAAS_MPA',
   DPB = 'DPB',
 }
 
@@ -18,15 +18,15 @@ export enum OAuth2ClientName {
  * @example Example environment variables:
  * ```bash
  * # List of client prefixes
- * OAUTH2_CLIENT_LIST=MPA,DPB
+ * OAUTH2_CLIENT_LIST=DPB,PAAS_MPA
  *
- * # For MPA client:
- * OAUTH2_MPA_CLIENT_ID=my-client-id
- * OAUTH2_MPA_CLIENT_SECRET=my-secret-key
- * OAUTH2_MPA_ALLOWED_URIS=http://localhost:3000/callback,https://mpa.example.com/callback
- * OAUTH2_MPA_ALLOWED_SCOPES=openid,profile,email
- * OAUTH2_MPA_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
- * OAUTH2_MPA_REQUIRES_PKCE=true
+ * # For PAAS_MPA client:
+ * OAUTH2_PAAS_MPA_CLIENT_ID=my-client-id
+ * OAUTH2_PAAS_MPA_CLIENT_SECRET=my-secret-key
+ * OAUTH2_PAAS_MPA_ALLOWED_URIS=http://localhost:3000/callback,https://paas-mpa.example.com/callback
+ * OAUTH2_PAAS_MPA_ALLOWED_SCOPES=openid,profile,email
+ * OAUTH2_PAAS_MPA_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
+ * OAUTH2_PAAS_MPA_REQUIRES_PKCE=true
  *
  * # For DPB client:
  * OAUTH2_DPB_CLIENT_ID=dpb-client-id

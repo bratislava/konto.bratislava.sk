@@ -481,54 +481,60 @@ export const queryPaymentsFromNorisByVariableSymbols =
   )
 
 export const queryOverpaymentsFromNorisByDateRange = `
-  SELECT 
-      dane21_doklad.variabilny_symbol as variabilny_symbol,
-      (case 
-          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
-          else 0 end 
-      ) uhrazeno_sum_saldo,
-      sum(dane21_doklad_overpayment.suma_mena) as uhrazeno_overpayment, -- TODO use just uhrazeno, these two are only for debugging
-      (case 
-          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
-          else 0 end 
-      ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
-      dane21_doklad.specificky_symbol specificky_symbol
-  FROM lcs.dane21_doklad as dane21_doklad
-  JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
-      ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
-      AND view_doklad_saldo.uhrazeno > 0
-      AND view_doklad_saldo.zbyva_uhradit <= 0
-  JOIN lcs.dane21_doklad as dane21_doklad_overpayment
-        ON dane21_doklad_overpayment.podklad = dane21_doklad.podklad AND dane21_doklad_overpayment.rok_podkladu = dane21_doklad.rok_podkladu
-  LEFT OUTER JOIN 
-      lcs.dane21_druh_dokladu as dane21_druh_dokladu
-      ON
-          dane21_doklad.druh_dokladu=dane21_druh_dokladu.cislo_subjektu
-  JOIN lcs.dane21_druh_dokladu as overpayment_druh_dokladu
-      ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
-  LEFT JOIN 
-      lcs.dane21_priznanie  
-      ON 
-          dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
-  LEFT JOIN 
-      lcs.pko21_poplatok  
-      ON 
-          dane21_doklad.podklad=lcs.pko21_poplatok.cislo_subjektu
- WHERE 
-      dane21_druh_dokladu.typ_dokladu = 'V'
-      AND overpayment_druh_dokladu.typ_dokladu = 'ZAL'
-      AND dane21_druh_dokladu.typ_dane IN ('1', '4')
-      AND dane21_doklad.stav_dokladu <> 's'
-      AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
-  GROUP BY 
-      dane21_doklad.variabilny_symbol,
-      dane21_doklad.specificky_symbol,
-      view_doklad_saldo.uhrazeno,
-      dane21_druh_dokladu.generovat_pohladavku
-  HAVING 
-      MAX(dane21_doklad_overpayment.datum_realizacie) >= @fromDate 
-      AND MAX(dane21_doklad_overpayment.datum_realizacie) <= @toDate
-      AND MAX(dane21_doklad_overpayment.datum_realizacie) IS NOT NULL
+  SELECT DISTINCT
+        dane21_doklad.variabilny_symbol as variabilny_symbol,
+        (case 
+            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+            else 0 end 
+        ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
+        dane21_doklad.specificky_symbol specificky_symbol
+    FROM lcs.dane21_doklad as dane21_doklad
+    JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
+        ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
+        AND view_doklad_saldo.uhrazeno > 0
+        AND view_doklad_saldo.zbyva_uhradit <= 0
+    JOIN (
+        SELECT 
+            dane21_doklad_overpayment.podklad,
+            dane21_doklad_overpayment.rok_podkladu,
+            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+        FROM lcs.dane21_doklad dane21_doklad_overpayment
+        JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
+            ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+        WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+        GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
+    ) overpayment_sum
+        ON overpayment_sum.podklad = dane21_doklad.podklad 
+        AND overpayment_sum.rok_podkladu = dane21_doklad.rok_podkladu
+    JOIN 
+        lcs.dane21_druh_dokladu
+        ON
+            dane21_doklad.druh_dokladu=lcs.dane21_druh_dokladu.cislo_subjektu
+    LEFT JOIN 
+        lcs.dane21_priznanie  
+        ON 
+            dane21_doklad.podklad=lcs.dane21_priznanie.cislo_subjektu
+    LEFT JOIN 
+        lcs.pko21_poplatok  
+        ON 
+            dane21_doklad.podklad=lcs.pko21_poplatok.cislo_subjektu
+    WHERE 
+        lcs.dane21_druh_dokladu.typ_dokladu = 'v'
+        AND lcs.dane21_druh_dokladu.typ_dane IN ('1', '4')
+        AND dane21_doklad.stav_dokladu <> 's'
+        AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
+        AND EXISTS (
+            SELECT 1
+            FROM lcs.dane21_doklad as dane21_doklad_overpayment_in_date_range
+            JOIN lcs.dane21_druh_dokladu as overpayment_in_date_range_druh_dokladu
+                ON overpayment_in_date_range_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment_in_date_range.druh_dokladu
+            WHERE dane21_doklad_overpayment_in_date_range.podklad = dane21_doklad.podklad 
+                AND dane21_doklad_overpayment_in_date_range.rok_podkladu = dane21_doklad.rok_podkladu
+                AND dane21_doklad_overpayment_in_date_range.datum_realizacie >= @fromDate 
+                AND dane21_doklad_overpayment_in_date_range.datum_realizacie <= @toDate
+                AND dane21_doklad_overpayment_in_date_range.datum_realizacie IS NOT NULL
+                AND overpayment_in_date_range_druh_dokladu.typ_dokladu = 'ZAL'
+        )
 `
 
 export const setDeliveryMethodsForUser = `

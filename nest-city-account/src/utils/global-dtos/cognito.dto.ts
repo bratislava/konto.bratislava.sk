@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { IsString } from 'class-validator'
+import { OAuth2ClientName } from 'src/oauth2/subservices/oauth2-client.subservice'
 
 export class CognitoUserAttributesValuesDateDto {
   Name!: CognitoUserAttributesEnum
@@ -20,6 +21,8 @@ export enum CognitoUserAttributesEnum {
   RC_OP_VERIFIED_DATE = 'custom:rc_op_verified_date',
   IFO = 'custom:ifo',
   ACCOUNT_TYPE = 'custom:account_type',
+  OAUTH_ORIGIN_CLIENT_ID = 'custom:origin_client_id',
+  OAUTH_ORIGIN_CLIENT_NAME = 'custom:origin_client_name',
 }
 
 export enum CognitoUserStatusEnum {
@@ -64,7 +67,18 @@ export class CognitoGetUserAttributesData {
     enum: CognitoUserAccountTypesEnum,
     default: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
   })
-  [CognitoUserAttributesEnum.ACCOUNT_TYPE]!: CognitoUserAccountTypesEnum
+  [CognitoUserAttributesEnum.ACCOUNT_TYPE]!: CognitoUserAccountTypesEnum;
+
+  @ApiPropertyOptional({
+    description: 'client_id of the oAuth origin',
+  })
+  [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID]?: string;
+
+  @ApiPropertyOptional({
+    description: `Name of the oAuth origin corresponding to the ${CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID}`,
+    example: OAuth2ClientName.DPB,
+  })
+  [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_NAME]?: string
 
   @ApiPropertyOptional({
     description: 'First name',

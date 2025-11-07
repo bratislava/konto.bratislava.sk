@@ -71,6 +71,14 @@ export interface CognitoGetUserData {
    */
   'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
   /**
+   * client_id of the oAuth origin
+   */
+  'custom:origin_client_id'?: string
+  /**
+   * Name of the oAuth origin corresponding to the custom:origin_client_id
+   */
+  'custom:origin_client_name'?: string
+  /**
    * First name
    */
   given_name?: string

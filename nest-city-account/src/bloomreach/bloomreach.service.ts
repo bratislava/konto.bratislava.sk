@@ -84,6 +84,7 @@ export class BloomreachService {
         name,
         UserCreateDate: registrationDate,
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
+        [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_NAME]: oAuthOriginClientName,
         email,
       } = user
 
@@ -103,6 +104,7 @@ export class BloomreachService {
           ...(registrationDate && { registration_date: registrationDate }),
           ...(email && { email: email }),
           ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
+          ...(oAuthOriginClientName && { oauth_origin_client_name: oAuthOriginClientName }),
         },
       }
       await axios.post(

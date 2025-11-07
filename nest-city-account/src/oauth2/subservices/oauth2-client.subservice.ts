@@ -219,13 +219,13 @@ export class OAuth2ClientSubservice {
 
       const client = new OAuth2Client({
         id: clientId,
+        secret: clientSecret,
         name,
         allowedRedirectUris,
+        allowedScopes,
+        allowedGrantTypes,
         requiresPkce,
-        ...(clientSecret && { secret: clientSecret }), // Only include if provided
-        ...(allowedScopes && allowedScopes.length > 0 && { allowedScopes }), // Only include if non-empty
-        ...(allowedGrantTypes && allowedGrantTypes.length > 0 && { allowedGrantTypes }), // Only include if non-empty
-        ...(title && { title }), // Only include if provided
+        title,
       })
 
       clients.push(client)

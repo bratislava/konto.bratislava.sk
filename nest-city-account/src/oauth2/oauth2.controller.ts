@@ -46,7 +46,6 @@ import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'
 import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
-import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
@@ -57,8 +56,7 @@ export class OAuth2Controller {
 
   constructor(
     private readonly oauth2Service: OAuth2Service,
-    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
-    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
+    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower
   ) {}
 
   @Get('authorize')
@@ -257,17 +255,6 @@ export class OAuth2Controller {
       payload: query.payload,
     })
 
-    const client = this.oAuth2ClientSubservice.findClientById(authorizationRequest.client_id)
-    if (!client) {
-      throw this.oAuth2ErrorThrower.authorizationException(
-        OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        `Client info could not be retrieved for client_id: ${authorizationRequest.client_id}`
-      )
-    }
-
-    return {
-      name: client.name,
-      title: client.title,
-    }
+    return this.oauth2Service.getClientInfo(authorizationRequest.client_id)
   }
 }

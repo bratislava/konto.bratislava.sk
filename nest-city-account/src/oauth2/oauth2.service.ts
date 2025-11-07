@@ -16,6 +16,8 @@ import * as jwt from 'jsonwebtoken'
 import { createHash, randomBytes } from 'node:crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
+import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
+import { ClientInfoResponseDto } from './dtos/responses.oauth2.dto'
 
 @Injectable()
 export class OAuth2Service {
@@ -26,7 +28,8 @@ export class OAuth2Service {
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly validationSubservice: OAuth2ValidationSubservice,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {}
 
   /**
@@ -572,5 +575,27 @@ export class OAuth2Service {
     }
 
     return response
+  }
+
+  /**
+   * Get client information (name and title) by client ID
+   *
+   * @param clientId - The client identifier
+   * @returns Client information with name and title
+   * @throws OAuth2AuthorizationException if client is not found
+   */
+  getClientInfo(clientId: string): ClientInfoResponseDto {
+    const client = this.oAuth2ClientSubservice.findClientById(clientId)
+    if (!client) {
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        `Client info could not be retrieved for client_id: ${clientId}`
+      )
+    }
+
+    return {
+      name: client.name,
+      title: client.title,
+    }
   }
 }

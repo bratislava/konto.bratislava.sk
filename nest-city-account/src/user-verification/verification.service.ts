@@ -300,7 +300,7 @@ export class VerificationService {
   ): Promise<ResponseVerificationDto> {
     const jwtToken = createUserJwtToken(oboToken)
     try {
-      await this.nasesService.getUpvsIdentity(jwtToken)
+      await this.nasesService.getNasesIdentity(jwtToken)
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.VERIFY_EID_ERROR,

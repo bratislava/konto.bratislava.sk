@@ -88,6 +88,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     status: number,
     exceptionResponse: string | object
   ) {
+    const requestWithPayload = request as RequestWithAuthorizationPayload
     const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
     response.status(status).json(errorResponse)
@@ -98,9 +99,10 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       userAgent: request.get(USER_AGENT) || '',
       requestBody: request.body,
       queryParams: request.query,
+      authorizationPayload: requestWithPayload.authorizationPayload ?? '<NO PAYLOAD>',
       ip: request.ip ?? '<NO IP>',
       error: errorResponse.error,
-      message: 'Store failed, sending redirect error.',
+      message: 'Internal function failed, sending redirect error.',
       'response-data': errorResponse,
     }
   }

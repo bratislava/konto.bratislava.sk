@@ -107,11 +107,11 @@ export class OAuth2AccessGuard extends AuthGuard('encrypted-jwt-strategy') {
 
     // Validate audience matches client ID before fetching user data
     const tokenAudience = token.aud || token.client_id
-    if (tokenAudience !== client.clientId) {
+    if (tokenAudience !== client.id) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        `Token audience does not match client ID. Expected for ${client.clientName}: ${client.clientId}, Got: ${tokenAudience}`
+        `Token audience does not match client ID. Expected for ${client.name}: ${client.id}, Got: ${tokenAudience}`
       )
     }
 

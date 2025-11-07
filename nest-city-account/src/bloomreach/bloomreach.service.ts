@@ -83,7 +83,7 @@ export class BloomreachService {
         family_name: lastName,
         name,
         UserCreateDate: registrationDate,
-        'custom:account_type': accountType,
+        [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
         email,
       } = user
 

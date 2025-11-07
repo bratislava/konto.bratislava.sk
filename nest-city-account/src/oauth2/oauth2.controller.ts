@@ -265,7 +265,7 @@ export class OAuth2Controller {
     }
 
     return {
-      name: client.clientName,
+      name: client.name,
       title: client.title,
     }
   }

@@ -43,13 +43,13 @@ export enum OAuth2ClientName {
 
 export class OAuth2Client {
   /** Unique client identifier */
-  readonly clientId: string
+  readonly id: string
 
   /** Client secret (optional - if not provided, secret validation is skipped) */
-  readonly clientSecret?: string
+  readonly secret?: string
 
   /** Human-readable name for the client (always the prefix from OAUTH2_CLIENT_LIST) */
-  readonly clientName: string
+  readonly name: string
 
   /** List of allowed redirect URIs for this client */
   readonly allowedRedirectUris: string[]
@@ -67,18 +67,18 @@ export class OAuth2Client {
   readonly title?: string
 
   constructor(config: {
-    clientId: string
-    clientSecret?: string
-    clientName: string
+    id: string
+    secret?: string
+    name: string
     allowedRedirectUris: string[]
     allowedScopes?: string[]
     allowedGrantTypes?: string[]
     requiresPkce: boolean
     title?: string
   }) {
-    this.clientId = config.clientId
-    this.clientSecret = config.clientSecret
-    this.clientName = config.clientName
+    this.id = config.id
+    this.secret = config.secret
+    this.name = config.name
     this.allowedRedirectUris = config.allowedRedirectUris
     this.allowedScopes = config.allowedScopes
     this.allowedGrantTypes = config.allowedGrantTypes
@@ -218,11 +218,11 @@ export class OAuth2ClientSubservice {
       const title = process.env[`OAUTH2_${name}_TITLE`]
 
       const client = new OAuth2Client({
-        clientId,
-        clientName: name,
+        id: clientId,
+        name,
         allowedRedirectUris,
         requiresPkce,
-        ...(clientSecret && { clientSecret }), // Only include if provided
+        ...(clientSecret && { secret: clientSecret }), // Only include if provided
         ...(allowedScopes && allowedScopes.length > 0 && { allowedScopes }), // Only include if non-empty
         ...(allowedGrantTypes && allowedGrantTypes.length > 0 && { allowedGrantTypes }), // Only include if non-empty
         ...(title && { title }), // Only include if provided
@@ -252,7 +252,7 @@ export class OAuth2ClientSubservice {
    */
   findClientById(clientId: string): OAuth2Client | undefined {
     const clients = this.getClients()
-    return clients.find((client) => client.clientId === clientId)
+    return clients.find((client) => client.id === clientId)
   }
 
   /**
@@ -263,6 +263,6 @@ export class OAuth2ClientSubservice {
    */
   findClientByName(clientName: string): OAuth2Client | undefined {
     const clients = this.getClients()
-    return clients.find((client) => client.clientName === clientName)
+    return clients.find((client) => client.name === clientName)
   }
 }

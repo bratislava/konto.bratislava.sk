@@ -9,15 +9,12 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { environment } from '../../../../environment'
-import { AccountType } from '../../../../frontend/dtos/accountDto'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import { isBrowser } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
 export interface VerificationFormData {
-  ico?: string
   rc: string
   idCard: string
   turnstileToken: string
@@ -29,35 +26,6 @@ interface Props {
 }
 
 // must use `minLength: 1` to implement required field
-const poSchema = {
-  type: 'object',
-  properties: {
-    ico: {
-      type: 'string',
-      minLength: 1,
-      format: 'ico',
-      errorMessage: { minLength: 'account:ico_required', format: 'account:ico_format' },
-    },
-    rc: {
-      type: 'string',
-      minLength: 1,
-      format: 'rc',
-      errorMessage: { minLength: 'account:rc_required', format: 'account:rc_format' },
-    },
-    idCard: {
-      type: 'string',
-      minLength: 1,
-      format: 'idCard',
-      errorMessage: { minLength: 'account:id_card_required', format: 'account:id_card_format' },
-    },
-    turnstileToken: {
-      type: 'string',
-      minLength: 1,
-    },
-  },
-  required: ['ico', 'rc', 'idCard', 'turnstileToken'],
-}
-
 const foSchema = {
   type: 'object',
   properties: {
@@ -81,23 +49,18 @@ const foSchema = {
   required: ['rc', 'idCard', 'turnstileToken'],
 }
 
-const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
+const IdentityVerificationPhysicalEntityForm = ({ onSubmit, error }: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
-  const { isLegalEntity, accountType } = useSsrAuth()
-  const isFoOrFop =
-    accountType === AccountType.FyzickaOsoba || accountType === AccountType.FyzickaOsobaPodnikatel
-  const schema = isLegalEntity ? poSchema : foSchema
-  const defaultValues = isLegalEntity ? { ico: '', rc: '', idCard: '' } : { rc: '', idCard: '' }
   const {
     handleSubmit,
     control,
     errors,
     formState: { isSubmitting },
   } = useHookForm<VerificationFormData>({
-    schema,
-    defaultValues,
+    schema: foSchema,
+    defaultValues: { rc: '', idCard: '' },
   })
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
 
@@ -115,29 +78,9 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
       })}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
-      <p className="text-p2">
-        {t(
-          isLegalEntity
-            ? 'identity_verification_subtitle_legal_entity'
-            : 'identity_verification_subtitle',
-        )}
-      </p>
+      <p className="text-p2">{t('identity_verification_subtitle')}</p>
       <AccountErrorAlert error={error} />
-      {isLegalEntity && (
-        <Controller
-          name="ico"
-          control={control}
-          render={({ field }) => (
-            <InputField
-              required
-              label={t('ico_label')}
-              placeholder={t('ico_placeholder')}
-              {...field}
-              errorMessage={errors.ico}
-            />
-          )}
-        />
-      )}
+
       <Controller
         name="rc"
         control={control}
@@ -145,7 +88,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
           <InputField
             required
             helptext={t('rc_description')}
-            label={t(isFoOrFop ? 'rc_label' : 'rc_label_legal_entity')}
+            label={t('rc_label')}
             placeholder={t('rc_placeholder')}
             {...field}
             errorMessage={errors.rc}
@@ -158,7 +101,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            label={t(isFoOrFop ? 'id_card_label' : 'id_card_label_legal_entity')}
+            label={t('id_card_label')}
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
             {...field}
@@ -217,4 +160,4 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   )
 }
 
-export default IdentityVerificationForm
+export default IdentityVerificationPhysicalEntityForm

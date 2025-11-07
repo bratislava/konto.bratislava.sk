@@ -6,7 +6,7 @@ import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { encryptData } from '../utils/crypto'
-import { createUserJwtToken } from '../utils/eid'
+import NasesUtilsService from '../utils/token.nases.service'
 import {
   CognitoGetUserData,
   CognitoUserAccountTypesEnum,
@@ -53,7 +53,8 @@ export class VerificationService {
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
-    private readonly bloomreachService: BloomreachService
+    private readonly bloomreachService: BloomreachService,
+    private readonly nasesUtilsService: NasesUtilsService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -298,9 +299,9 @@ export class VerificationService {
     user: CognitoGetUserData,
     oboToken: string
   ): Promise<ResponseVerificationDto> {
-    const jwtToken = createUserJwtToken(oboToken)
+    const jwtToken = this.nasesUtilsService.createUserJwtToken(oboToken)
     try {
-      await this.nasesService.getUpvsIdentity(jwtToken)
+      await this.nasesService.getNasesIdentity(jwtToken)
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.VERIFY_EID_ERROR,

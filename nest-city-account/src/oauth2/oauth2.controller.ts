@@ -28,6 +28,7 @@ import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   AuthorizationRequestDto,
+  ClientInfoRequestDto,
   ContinueRequestDto,
   RefreshTokenRequestDto,
   StoreTokensRequestDto,
@@ -245,7 +246,7 @@ export class OAuth2Controller {
     type: OAuth2AuthorizationErrorDto,
   })
   async info(
-    @Query() query: ContinueRequestDto,
+    @Query() query: ClientInfoRequestDto,
     @Req() req: Request
   ): Promise<ClientInfoResponseDto> {
     const request = req as RequestWithAuthorizationPayload

@@ -378,7 +378,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: redirect_uri mismatch',
         undefined,
-        'Redirect URI mismatch', {
+        'Redirect URI mismatch',
+        {
           authRequestId: oauth2Data.id,
           clientId: oauth2Data.clientId,
           storedRedirectUri: oauth2Data.redirectUri,
@@ -404,7 +405,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: tokens not available for this authorization code',
         undefined,
-        'Tokens not available for authorization code', {
+        'Tokens not available for authorization code',
+        {
           authRequestId: oauth2Data.id,
           clientId: oauth2Data.clientId,
           hasAccessToken: !!oauth2Data.accessTokenEnc,
@@ -459,10 +461,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: invalid code_challenge_method',
         undefined,
-        'Invalid code_challenge_method', {
-          codeChallengeMethod,
-          validMethods: ['S256', 'plain'],
-        }
+        'Invalid code_challenge_method',
+        { codeChallengeMethod, validMethods: ['S256', 'plain'] }
       )
     }
 
@@ -471,7 +471,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: invalid code_verifier',
         undefined,
-        'PKCE code_verifier validation failed', {
+        'PKCE code_verifier validation failed',
+        {
           codeChallengeMethod,
           hasCodeVerifier: !!codeVerifier,
           hasCodeChallenge: !!codeChallenge,
@@ -535,10 +536,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: unable to refresh access token',
         undefined,
-        'No access token returned from Cognito refresh', {
-          clientId,
-          hasRefreshToken: !!refreshTokenPlain,
-        }
+        'No access token returned from Cognito refresh',
+        { clientId, hasRefreshToken: !!refreshTokenPlain }
       )
     }
 

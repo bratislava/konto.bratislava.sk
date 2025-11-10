@@ -90,7 +90,7 @@ spec:
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-oauth2-dpb-secret
         - secretRef:
-            name: ${BUILD_REPOSITORY_NAME}-oauth2-mpa-secret
+            name: ${BUILD_REPOSITORY_NAME}-oauth2-paas-mpa-secret
         - configMapRef:
             name: ${BUILD_REPOSITORY_NAME}-env
         readinessProbe:

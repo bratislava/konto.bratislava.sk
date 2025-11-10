@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { IsString } from 'class-validator'
+import { OAuth2ClientName } from 'src/oauth2/subservices/oauth2-client.subservice'
 
 export class CognitoUserAttributesValuesDateDto {
   Name!: CognitoUserAttributesEnum
@@ -20,6 +21,8 @@ export enum CognitoUserAttributesEnum {
   RC_OP_VERIFIED_DATE = 'custom:rc_op_verified_date',
   IFO = 'custom:ifo',
   ACCOUNT_TYPE = 'custom:account_type',
+  OAUTH_ORIGIN_CLIENT_ID = 'custom:origin_client_id',
+  OAUTH_ORIGIN_CLIENT_NAME = 'custom:origin_client_name',
 }
 
 export enum CognitoUserStatusEnum {
@@ -39,7 +42,7 @@ export class CognitoGetUserAttributesData {
   })
   sub!: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Is email verified in cognito?',
     default: 'true',
   })
@@ -50,27 +53,40 @@ export class CognitoGetUserAttributesData {
     example: 'Company s.r.o.',
   })
   @IsString()
-  name?: string
+  name?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Which type of verified tier it is?',
+    enum: CognitoUserAttributesTierEnum,
     default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
   })
-  'custom:tier'?: CognitoUserAttributesTierEnum
+  [CognitoUserAttributesEnum.TIER]?: CognitoUserAttributesTierEnum;
 
   @ApiProperty({
     description: 'Which type of account it is?',
+    enum: CognitoUserAccountTypesEnum,
     default: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
   })
-  'custom:account_type'!: CognitoUserAccountTypesEnum
+  [CognitoUserAttributesEnum.ACCOUNT_TYPE]!: CognitoUserAccountTypesEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
+    description: 'client_id of the oAuth origin',
+  })
+  [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID]?: string;
+
+  @ApiPropertyOptional({
+    description: `Name of the oAuth origin corresponding to the ${CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID}`,
+    example: OAuth2ClientName.DPB,
+  })
+  [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_NAME]?: string
+
+  @ApiPropertyOptional({
     description: 'First name',
     default: 'Jožko',
   })
   given_name?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Last name',
     default: 'Bratislavský',
   })
@@ -90,13 +106,13 @@ export class CognitoGetUserData extends CognitoGetUserAttributesData {
   })
   idUser!: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'User create date',
     default: '2022-01-01 00:00:00',
   })
   UserCreateDate?: Date
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'User updated date',
     default: '2022-01-01 00:00:00',
   })
@@ -108,8 +124,9 @@ export class CognitoGetUserData extends CognitoGetUserAttributesData {
   })
   Enabled!: boolean
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Cognito confirmation statue',
+    enum: CognitoUserStatusEnum,
     default: CognitoUserStatusEnum.CONFIRMED,
   })
   UserStatus?: CognitoUserStatusEnum

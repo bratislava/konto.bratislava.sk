@@ -65,11 +65,19 @@ export interface CognitoGetUserData {
   /**
    * Which type of verified tier it is?
    */
-  'custom:tier'?: object
+  'custom:tier'?: CognitoGetUserDataCustomTierEnum
   /**
    * Which type of account it is?
    */
   'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
+  /**
+   * client_id of the oAuth origin
+   */
+  'custom:origin_client_id'?: string
+  /**
+   * Name of the oAuth origin corresponding to the custom:origin_client_id
+   */
+  'custom:origin_client_name'?: string
   /**
    * First name
    */
@@ -104,6 +112,16 @@ export interface CognitoGetUserData {
   UserStatus?: CognitoGetUserDataUserStatusEnum
 }
 
+export const CognitoGetUserDataCustomTierEnum = {
+  New: 'NEW',
+  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
+  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
+  IdentityCard: 'IDENTITY_CARD',
+  Eid: 'EID',
+} as const
+
+export type CognitoGetUserDataCustomTierEnum =
+  (typeof CognitoGetUserDataCustomTierEnum)[keyof typeof CognitoGetUserDataCustomTierEnum]
 export const CognitoGetUserDataCustomAccountTypeEnum = {
   Fo: 'fo',
   Po: 'po',

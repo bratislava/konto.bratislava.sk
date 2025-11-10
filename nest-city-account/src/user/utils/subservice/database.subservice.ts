@@ -14,7 +14,7 @@ import {
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
-import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
+import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, LegalPerson, User } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
@@ -39,6 +39,8 @@ export class DatabaseSubserviceUser {
    */
   async getOrCreateUser(cognitoUserData: CognitoGetUserData, isAdminCall: boolean = false) {
     const { email, idUser: externalId, UserCreateDate: registeredAt } = cognitoUserData
+    const userData = { externalId, email, registeredAt }
+
     let user = await this.prisma.user.findUnique({
       where: { email: email },
     })
@@ -48,69 +50,53 @@ export class DatabaseSubserviceUser {
         UserErrorsResponseEnum.USER_IS_DECEASED
       )
     }
-    if (user && externalId) {
+
+    if (user) {
+      // user found by email, update data
       user = await this.prisma.user.update({
         where: {
           email,
           ...ACTIVE_USER_FILTER,
         },
-        data: {
-          externalId,
-          registeredAt,
-        },
+        data: userData,
       })
-      await this.bloomreachService.trackCustomer(externalId)
-    } else if (!user && externalId) {
-      user = await this.prisma.user.findUnique({
-        where: { externalId },
-      })
-      if (!user) {
-        user = await this.prisma.user.create({
-          data: {
-            externalId,
-            email,
-            registeredAt,
-          },
-        })
-        await this.bloomreachService.trackCustomer(externalId)
-        await this.changeUserGdprData(user.id, [
-          {
-            type: GDPRTypeEnum.MARKETING,
-            category: GDPRCategoryEnum.ESBS,
-            subType: GDPRSubTypeEnum.subscribe,
-          },
-        ])
-      } else if (user.email != email) {
-        const oldEmail = user.email
-        user = await this.prisma.user.update({
-          where: { externalId },
-          data: { email, registeredAt },
-        })
-        await this.bloomreachService.trackCustomer(externalId)
-        this.logger.log(
-          `Email changed for user ${externalId}. Old email: ${oldEmail}, new email: ${email}.`
-        )
-      }
-    } else {
-      user = await this.prisma.user.upsert({
-        where: {
-          email,
-        },
-        update: {
-          externalId,
-          email,
-        },
-        create: {
-          externalId,
-          email,
-          registeredAt,
-        },
-      })
-      if (externalId) {
-        await this.bloomreachService.trackCustomer(externalId)
-      }
+      return this.postprocessUser(externalId, user)
     }
 
+    user = await this.prisma.user.findUnique({
+      where: { externalId },
+    })
+
+    if (user) {
+      // user found by externalId, email likely changed, update data
+      this.logger.log(
+        `Email changed for user ${externalId}. Old email: ${user.email}, new email: ${email}.`
+      )
+
+      user = await this.prisma.user.update({
+        where: { externalId },
+        data: userData,
+      })
+      return this.postprocessUser(externalId, user)
+    }
+
+    // user not found, create new one
+    user = await this.prisma.user.create({
+      data: userData,
+    })
+    await this.changeUserGdprData(user.id, [
+      {
+        type: GDPRTypeEnum.MARKETING,
+        category: GDPRCategoryEnum.ESBS,
+        subType: GDPRSubTypeEnum.subscribe,
+      },
+    ])
+
+    return this.postprocessUser(externalId, user)
+  }
+
+  async postprocessUser(externalId: string, user: User) {
+    await this.bloomreachService.trackCustomer(externalId)
     return prismaExclude(user, ['ifo'])
   }
 
@@ -118,6 +104,7 @@ export class DatabaseSubserviceUser {
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataSimpleDto> {
     const { email, idUser: externalId, UserCreateDate: registeredAt } = cognitoUserData
+    const legalPersonData = { externalId, email, registeredAt }
 
     let legalPerson = await this.prisma.legalPerson.findUnique({
       where: { email },
@@ -125,68 +112,50 @@ export class DatabaseSubserviceUser {
     // TODO: we are missing attribute for isDeceased,
     // if we are implemeting it, let's add admin call,
     // same as in getOrCreateUser
-    if (legalPerson && externalId) {
+
+    if (legalPerson) {
+      // legal person found by email, update data
       legalPerson = await this.prisma.legalPerson.update({
-        where: {
-          email,
-        },
-        data: {
-          externalId,
-          registeredAt,
-        },
+        where: { email },
+        data: legalPersonData,
       })
-      await this.bloomreachService.trackCustomer(externalId)
-    } else if (!legalPerson && externalId) {
-      legalPerson = await this.prisma.legalPerson.findUnique({
-        where: { externalId: externalId },
-      })
-      if (!legalPerson) {
-        legalPerson = await this.prisma.legalPerson.create({
-          data: {
-            externalId,
-            email,
-            registeredAt,
-          },
-        })
-        await this.bloomreachService.trackCustomer(externalId)
-        await this.changeLegalPersonGdprData(legalPerson.id, [
-          {
-            type: GDPRTypeEnum.MARKETING,
-            category: GDPRCategoryEnum.ESBS,
-            subType: GDPRSubTypeEnum.subscribe,
-          },
-        ])
-      } else if (legalPerson.email != email) {
-        const oldEmail = legalPerson.email
-        legalPerson = await this.prisma.legalPerson.update({
-          where: { externalId },
-          data: { email, registeredAt },
-        })
-        await this.bloomreachService.trackCustomer(externalId)
-        this.logger.log(
-          `Email changed for legal person ${externalId}. Old email: ${oldEmail}, new email: ${email}.`
-        )
-      }
-    } else {
-      legalPerson = await this.prisma.legalPerson.upsert({
-        where: {
-          email,
-        },
-        update: {
-          externalId,
-          email,
-          registeredAt,
-        },
-        create: {
-          externalId,
-          email,
-          registeredAt,
-        },
-      })
-      if (externalId) {
-        await this.bloomreachService.trackCustomer(externalId)
-      }
+      return this.postprocessLegalPerson(externalId, legalPerson)
     }
+
+    legalPerson = await this.prisma.legalPerson.findUnique({
+      where: { externalId },
+    })
+
+    if (legalPerson) {
+      // legal person found by externalId, email likely changed, update data
+      this.logger.log(
+        `Email changed for legal person ${externalId}. Old email: ${legalPerson.email}, new email: ${email}.`
+      )
+
+      legalPerson = await this.prisma.legalPerson.update({
+        where: { externalId },
+        data: legalPersonData,
+      })
+      return this.postprocessLegalPerson(externalId, legalPerson)
+    }
+
+    // legal person not found, create new one
+    legalPerson = await this.prisma.legalPerson.create({
+      data: legalPersonData,
+    })
+    await this.changeLegalPersonGdprData(legalPerson.id, [
+      {
+        type: GDPRTypeEnum.MARKETING,
+        category: GDPRCategoryEnum.ESBS,
+        subType: GDPRSubTypeEnum.subscribe,
+      },
+    ])
+
+    return this.postprocessLegalPerson(externalId, legalPerson)
+  }
+
+  async postprocessLegalPerson(externalId: string, legalPerson: LegalPerson) {
+    await this.bloomreachService.trackCustomer(externalId)
     return legalPerson
   }
 

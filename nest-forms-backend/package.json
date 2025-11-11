@@ -82,7 +82,7 @@
     "@testcontainers/postgresql": "^11.7.1",
     "@types/amqplib": "^0.10.7",
     "@types/content-disposition": "^0.5.9",
-    "@types/express": "^5.0.3",
+    "@types/express": "^5.0.5",
     "@types/jest": "30.0.0",
     "@types/lodash": "4.17.20",
     "@types/mime-types": "^3.0.1",

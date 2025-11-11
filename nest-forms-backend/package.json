@@ -80,7 +80,7 @@
     "@nestjs/testing": "11.1.8",
     "@ngneat/falso": "^8.0.2",
     "@testcontainers/postgresql": "^11.7.1",
-    "@types/amqplib": "^0.10.7",
+    "@types/amqplib": "^0.10.8",
     "@types/content-disposition": "^0.5.9",
     "@types/express": "^5.0.5",
     "@types/jest": "30.0.0",

@@ -169,3 +169,11 @@ export const NorisPaymentSchema = z.object({
   uhrazeno: z.coerce.number(),
   specificky_symbol: z.string().nullable(),
 })
+
+export const NorisDeliveryMethodsUpdateResultSchema = z.object({
+  cislo_subjektu: z.number(),
+})
+
+export const NorisOrganizationResultSchema = z.object({
+  ico: z.string().trim(),
+})

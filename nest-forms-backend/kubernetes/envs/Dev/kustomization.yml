@@ -1,6 +1,5 @@
 resources:
   - ../../base
-  - scaler.yml
   - ./secrets/cognito.secret.yml
   - ./secrets/sharepoint.secret.yml
 

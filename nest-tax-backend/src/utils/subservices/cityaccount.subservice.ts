@@ -82,4 +82,33 @@ export class CityAccountSubservice {
 
     return result
   }
+
+  async getNewUserBirtNumbersAdminBatch(
+    since: Date,
+    take?: number,
+  ): Promise<{ birthNumbers: string[]; nextSince: Date }> {
+    try {
+      const requestResult =
+        await this.clientsService.cityAccountApi.adminControllerGetNewVerifiedUsersBirthNumbers(
+          { since: since.toISOString(), take },
+          {
+            headers: {
+              apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+            },
+          },
+        )
+      const birthNumbers = requestResult.data.birthNumbers.map((bn) =>
+        addSlashToBirthNumber(bn),
+      )
+      return { birthNumbers, nextSince: new Date(requestResult.data.nextSince) }
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Failed to get birth numbers for new verified user accounts.',
+        undefined,
+        undefined,
+        error,
+      )
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { TaxDetail, TaxDetailType, TaxInstallment } from '@prisma/client'
+import { TaxDetail, TaxDetailType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 
 import { TaxPaidStatusEnum, TaxStatusEnum } from '../../dtos/response.tax.dto'
@@ -48,27 +48,6 @@ export const checkTaxDateInclusion = (
     'Europe/Bratislava',
   )
   return currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
-}
-
-export const fixInstallmentTexts = (
-  taxInstallments: TaxInstallment[],
-  year: number,
-): TaxInstallment[] => {
-  return taxInstallments.map((taxInstallment, i) => {
-    if (i === 1) {
-      return {
-        ...taxInstallment,
-        text: `- druhá splátka v termíne do 31.08.${year} v sume:`,
-      }
-    }
-    if (i === 2) {
-      return {
-        ...taxInstallment,
-        text: `- tretia splátka v termíne do 31.10.${year} v sume:`,
-      }
-    }
-    return taxInstallment
-  })
 }
 
 export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {

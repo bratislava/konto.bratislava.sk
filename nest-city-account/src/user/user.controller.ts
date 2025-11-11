@@ -53,7 +53,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Get or create user with his data',
     description:
-      'This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.',
+      'This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.',
   })
   @ApiResponse({
     status: 200,
@@ -78,7 +78,7 @@ export class UserController {
     if (
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
-      const result = await this.userService.getOrCreateUserData(user.idUser, user.email)
+      const result = await this.userService.getOrCreateUserData(user)
       return result
     }
 
@@ -87,7 +87,7 @@ export class UserController {
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
         CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      const result = await this.userService.getOrCreateLegalPersonData(user.idUser, user.email)
+      const result = await this.userService.getOrCreateLegalPersonData(user)
       return result
     }
 
@@ -181,9 +181,8 @@ export class UserController {
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
       const result: ResponseUserDataDto = await this.userService.subUnsubUser(
-        user.idUser,
+        user,
         GDPRSubTypeEnum.subscribe,
-        user.email,
         data.gdprData
       )
       return result
@@ -195,9 +194,8 @@ export class UserController {
         CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
       const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
-        user.idUser,
+        user,
         GDPRSubTypeEnum.subscribe,
-        user.email,
         data.gdprData
       )
       return result
@@ -235,9 +233,8 @@ export class UserController {
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
       const result: ResponseUserDataDto = await this.userService.subUnsubUser(
-        user.idUser,
+        user,
         GDPRSubTypeEnum.unsubscribe,
-        user.email,
         data.gdprData
       )
       return result
@@ -249,9 +246,8 @@ export class UserController {
         CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
       const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
-        user.idUser,
+        user,
         GDPRSubTypeEnum.unsubscribe,
-        user.email,
         data.gdprData
       )
       return result

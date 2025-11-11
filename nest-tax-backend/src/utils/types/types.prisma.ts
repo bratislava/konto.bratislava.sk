@@ -15,11 +15,3 @@ export type TaxWithTaxPayer = Prisma.TaxGetPayload<{
     taxPayer: true
   }
 }>
-
-export type TaxIdVariableSymbolYear = Prisma.TaxGetPayload<{
-  select: {
-    id: true
-    variableSymbol: true
-    year: true
-  }
-}>

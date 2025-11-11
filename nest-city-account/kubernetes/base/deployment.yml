@@ -62,6 +62,8 @@ spec:
             secretKeyRef:
               name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: host
+        - name: RABBIT_MQ_URI
+          value: amqp://$(RABBIT_MQ_USERNAME):$(RABBIT_MQ_PASSWORD)@$(RABBIT_MQ_HOST):$(RABBIT_MQ_PORT)
         - name: DATABASE_URL
           value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-database:5432/$(POSTGRES_DB)?schema=public&connection_limit=500
         envFrom:
@@ -85,6 +87,10 @@ spec:
             name: ${BUILD_REPOSITORY_NAME}-cipher-key-secret
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-tax-backend-secret
+        - secretRef:
+            name: ${BUILD_REPOSITORY_NAME}-oauth2-dpb-secret
+        - secretRef:
+            name: ${BUILD_REPOSITORY_NAME}-oauth2-paas-mpa-secret
         - configMapRef:
             name: ${BUILD_REPOSITORY_NAME}-env
         readinessProbe:

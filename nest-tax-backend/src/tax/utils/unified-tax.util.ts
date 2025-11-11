@@ -20,7 +20,7 @@ import {
   ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxDetailItemizedDto,
+  ResponseRealEstateTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
 import { generateItemizedRealEstateTaxDetail } from './helpers/tax.helper'
 import {
@@ -595,7 +595,7 @@ export const getRealEstateTaxDetailPure = (
     specificSymbol,
   })
 
-  const itemizedDetail: ResponseTaxDetailItemizedDto = {
+  const itemizedDetail: ResponseRealEstateTaxDetailItemizedDto = {
     apartmentTotalAmount: taxFlat,
     groundTotalAmount: taxLand,
     constructionTotalAmount: taxConstructions,

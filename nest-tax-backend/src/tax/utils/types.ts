@@ -5,7 +5,7 @@ import {
   ResponseActiveInstallmentDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxDetailItemizedDto,
+  ResponseRealEstateTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
 
 export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
@@ -43,5 +43,5 @@ export type GetTaxDetailPureResponse = {
   > & {
     activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
   }
-  itemizedDetail: ResponseTaxDetailItemizedDto
+  itemizedDetail: ResponseRealEstateTaxDetailItemizedDto
 }

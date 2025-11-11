@@ -28,22 +28,23 @@ export class LineLoggerSubservice implements LoggerService {
 
   private formatStringMessage(messages: string): string {
     if (messages.length === 0) return ''
-    return isLogfmt(messages)
-      ? ' '.concat(messages)
-      : `message="${escapeForLogfmt(messages)}"`
+    if (process.env.DEV_LOGGING==='true'){
+      return isLogfmt(messages) ? '\n\t'.concat(messages) : `message="${escapeForLogfmt(messages)}"`
+    }
+    return isLogfmt(messages) ? ' '.concat(messages) : `message="${escapeForLogfmt(messages)}"`
   }
 
   private printLog(
     severity: string,
     message: unknown,
     optionalParams: unknown[],
-    colorCode: string,
+    colorCode: string
   ): void {
     const completeArray = [message, ...optionalParams]
 
     const stringMessages = completeArray
       .filter((item): item is string => typeof item === 'string')
-      .join(' ')
+      .join(process.env.DEV_LOGGING==='true' ? '\n\t ' : ' ')
 
     const otherItems = completeArray.filter(
       (item): item is string => typeof item !== 'string',
@@ -51,9 +52,7 @@ export class LineLoggerSubservice implements LoggerService {
 
     const formattedStringMessages = this.formatStringMessage(stringMessages)
 
-    const formattedOtherItems = otherItems
-      .map((item) => toLogfmt(item))
-      .join(' ')
+    const formattedOtherItems = otherItems.map((item) => toLogfmt(item)).join(process.env.DEV_LOGGING==='true' ? '\n\t ' : ' ')
 
     const formattedContext = this.context ? `context="${this.context}"` : ''
 
@@ -74,7 +73,7 @@ export class LineLoggerSubservice implements LoggerService {
           formattedOtherItems,
         ]
           .filter(Boolean)
-          .join(' '),
+          .join(process.env.DEV_LOGGING==='true' ? '\n\t ' : ' '),
         colorEnd,
       ]
         .filter(Boolean)

@@ -13,7 +13,7 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
-import { NorisPayment } from '../noris/types/noris.types'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -139,7 +139,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData: NorisPayment[] =
+      const norisPaymentData: NorisTaxPayment[] =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(

@@ -1,7 +1,7 @@
-import { NorisRawCommunalWasteTax } from '../../../types/noris.types'
+import { NorisCommunalWasteTax } from '../../../types/noris.types'
 
 // Test data 1: Complete data with all fields populated - multiple containers for one person
-export const testCommunalWasteTax1: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax1: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
   cislo_subjektu: 138_546_823,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
@@ -49,7 +49,7 @@ export const testCommunalWasteTax1: NorisRawCommunalWasteTax = {
   orientacne_cislo: '22',
 }
 
-export const testCommunalWasteTax2: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax2: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
   cislo_subjektu: 138_546_823,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
@@ -97,7 +97,7 @@ export const testCommunalWasteTax2: NorisRawCommunalWasteTax = {
   orientacne_cislo: '18',
 }
 
-export const testCommunalWasteTax3: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax3: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
   cislo_subjektu: 138_546_822,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
@@ -145,7 +145,7 @@ export const testCommunalWasteTax3: NorisRawCommunalWasteTax = {
   orientacne_cislo: '21',
 }
 
-export const testCommunalWasteTax4: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax4: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
   cislo_subjektu: 138_546_824,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
@@ -194,7 +194,7 @@ export const testCommunalWasteTax4: NorisRawCommunalWasteTax = {
 }
 
 // Test data 5: Minimal data with some null values
-export const testCommunalWasteTax5: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax5: NorisCommunalWasteTax = {
   cislo_poradace: 98_765,
   cislo_subjektu: 234_567_890,
   adresa_tp_sidlo: null,
@@ -242,7 +242,7 @@ export const testCommunalWasteTax5: NorisRawCommunalWasteTax = {
 }
 
 // Test data 6: Different container type and payment structure
-export const testCommunalWasteTax6: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax6: NorisCommunalWasteTax = {
   cislo_poradace: 54_321,
   cislo_subjektu: 345_678_901,
   adresa_tp_sidlo: 'Druhá ulica,Mesto Test,54321',

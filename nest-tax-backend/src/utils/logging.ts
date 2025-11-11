@@ -12,6 +12,9 @@ import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
  * need for a query.
  */
 export function escapeForLogfmt(value: string): string {
+  if (process.env.DEV_LOGGING === 'true') {
+    return value
+  }
   return value
     .replaceAll(/["\\]/g, String.raw`\$&`)
     .replaceAll('\n', String.raw`\n`)
@@ -70,6 +73,26 @@ export function objToLogfmt(obj: object): string {
   const objAll = {
     ...separatedValues.responseLog,
     ...separatedValues.responseMessage,
+  }
+  if (process.env.DEV_LOGGING === 'true') {
+    return Object.entries(objAll)
+      .map(([key, value]) => {
+        let formattedValue: unknown = value
+        if (typeof formattedValue === 'object') {
+          formattedValue = JSON.stringify(
+            formattedValue,
+            process.env.DEV_LOGGING === 'true' ? () => {} : undefined,
+            process.env.DEV_LOGGING === 'true' ? 2 : undefined,
+          )
+        }
+        // not else if because we want to sanitize strings in objects
+        if (typeof formattedValue === 'string') {
+          formattedValue = escapeForLogfmt(formattedValue)
+        }
+
+        return `${key}="${formattedValue}"`
+      })
+      .join('\n\t')
   }
   return Object.entries(objAll)
     .map(([key, value]) => {

@@ -1,7 +1,10 @@
 import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisRealEstateTax } from '../types/noris.types'
+import {
+  NorisRealEstateTax,
+  RealEstateTaxDetail,
+} from '../types/noris.types'
 import {
   AreaTypesEnum,
   DeliveryMethod,
@@ -152,7 +155,7 @@ export const mapDeliveryMethodToNoris = (
 export const mapNorisToRealEstateTaxDetailData = (
   data: NorisRealEstateTax,
   taxId: number,
-): RealEstateTaxDetail[] => {
+): RealEstateTaxDetail => {
   const config: Record<
     string,
     {

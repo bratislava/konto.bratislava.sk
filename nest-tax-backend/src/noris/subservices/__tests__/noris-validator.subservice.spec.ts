@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
-  NorisPaymentSchema,
+  NorisTaxPaymentSchema,
   NorisRawCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
 } from '../../types/noris.schema'
@@ -56,7 +56,7 @@ describe('NorisValidatorSubservice', () => {
       describe('valid', () => {
         it('should validate valid payment', () => {
           const result = service.validateNorisData(
-            NorisPaymentSchema,
+            NorisTaxPaymentSchema,
             testPaymentValid,
           )
           expect(result).toEqual(testPaymentValid)
@@ -64,7 +64,7 @@ describe('NorisValidatorSubservice', () => {
 
         it('should not throw for string value of uhrazeno, and parse it as number', () => {
           const result = service.validateNorisData(
-            NorisPaymentSchema,
+            NorisTaxPaymentSchema,
             testPaymentStringUhrazeno,
           )
           expect(result).toEqual({
@@ -75,7 +75,7 @@ describe('NorisValidatorSubservice', () => {
 
         it('should not throw for missing variable symbol', () => {
           const result = service.validateNorisData(
-            NorisPaymentSchema,
+            NorisTaxPaymentSchema,
             testPaymentNoVariableSymbol,
           )
           expect(result).toEqual(testPaymentNoVariableSymbol)
@@ -86,14 +86,14 @@ describe('NorisValidatorSubservice', () => {
         it('should throw error for invalid variable symbol, and alert in grafana', () => {
           expect(() => {
             service.validateNorisData(
-              NorisPaymentSchema,
+              NorisTaxPaymentSchema,
               testPaymentInvalidVariabilnySymbol,
             )
           }).toThrow(HttpException)
 
           try {
             service.validateNorisData(
-              NorisPaymentSchema,
+              NorisTaxPaymentSchema,
               testPaymentInvalidVariabilnySymbol,
             )
           } catch (error) {
@@ -245,7 +245,7 @@ describe('NorisValidatorSubservice', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
         .mockImplementation(() => {})
-      const result = service.validateNorisData(NorisPaymentSchema, [
+      const result = service.validateNorisData(NorisTaxPaymentSchema, [
         testPaymentValid,
         testPaymentStringUhrazeno,
         testPaymentNoVariableSymbol,

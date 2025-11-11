@@ -4,7 +4,7 @@ import { TaxType } from '@prisma/client'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { NorisService } from '../noris/noris.service'
-import { NorisPayment } from '../noris/types/noris.types'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -62,7 +62,7 @@ export class AdminService {
   async updatePaymentsFromNoris(
     norisRequest: NorisRequestGeneral,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    const norisPaymentData: NorisPayment[] =
+    const norisPaymentData: NorisTaxPayment[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(

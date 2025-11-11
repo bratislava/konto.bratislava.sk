@@ -18,6 +18,13 @@ export class ErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
 
+    // TODO remove when this is resolved: https://github.com/bratislava/private-konto.bratislava.sk/issues/1069
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(ErrorFilter.name)
+      logger.error(exception)
+      return
+    }
+
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
     if (response.locals.middlewareUsed) {
@@ -42,6 +49,13 @@ export class TypeErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
 
+    // TODO remove when this is resolved: https://github.com/bratislava/private-konto.bratislava.sk/issues/1069
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(TypeErrorFilter.name)
+      logger.error(exception)
+      return
+    }
+
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
     if (response.locals.middlewareUsed) {
@@ -65,6 +79,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const status = exception.getStatus()
+
+    // TODO remove when this is resolved: https://github.com/bratislava/private-konto.bratislava.sk/issues/1069
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(HttpExceptionFilter.name)
+      logger.error(exception)
+      return
+    }
 
     const exceptionResponse = exception.getResponse()
     response.status(status)

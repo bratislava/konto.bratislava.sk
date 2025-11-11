@@ -45,8 +45,6 @@ model Tax {
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
   variableSymbol                  String
-  qrCodeWeb                       String?
-  qrCodeEmail                     String?
   taxId                           String?
   dateCreateTax                   String?
   dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"
@@ -57,6 +55,7 @@ model Tax {
   taxInstallments                 TaxInstallment[]
   taxDetails                      TaxDetail[]
   lastCheckedPayments             DateTime             @default(now())
+  lastCheckedUpdates              DateTime             @default(now())
   deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 

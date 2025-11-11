@@ -1,13 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
-import { NorisPaymentsDto } from '../noris/noris.dto'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
+import { NorisPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -17,12 +18,15 @@ import { stateHolidays } from '../tax/utils/unified-tax.util'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
+  OVERPAYMENTS_LOOKBACK_DAYS,
 } from '../utils/constants'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import TasksConfigSubservice from './subservices/config.subservice'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
@@ -38,9 +42,15 @@ export class TasksService {
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
+    private readonly configSubservice: TasksConfigSubservice,
     private readonly norisService: NorisService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new Logger('TasksService')
+    // Check if the required environment variable is set
+    this.configService.getOrThrow<string>(
+      'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+    )
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -51,6 +61,17 @@ export class TasksService {
       id: number
       year: number
     }[] = []
+
+    // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
+    // this function "updatePaymentsFromNoris" will overwrite the testing taxes payments which is not desired
+    if (
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+      ) !== 'true'
+    ) {
+      this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
+      return
+    }
     try {
       variableSymbolsDb = await this.prismaService.$transaction(
         async (prisma) => {
@@ -113,7 +134,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData: Partial<NorisPaymentsDto>[] =
+      const norisPaymentData: NorisPayment[] =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(
@@ -148,6 +169,16 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async updateTaxesFromNoris() {
+    // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
+    // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
+    if (
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
+      ) !== 'true'
+    ) {
+      this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
+      return
+    }
     const currentYear = new Date().getFullYear()
     const taxes = await this.prismaService.tax.findMany({
       select: {
@@ -163,7 +194,7 @@ export class TasksService {
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
       orderBy: {
-        updatedAt: 'asc',
+        lastCheckedUpdates: 'asc',
       },
     })
 
@@ -192,7 +223,7 @@ export class TasksService {
         },
       },
       data: {
-        updatedAt: new Date(),
+        lastCheckedUpdates: new Date(),
       },
     })
   }
@@ -427,5 +458,93 @@ export class TasksService {
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
     )
+  }
+
+  private async retryWithDelay<T>(
+    fn: () => Promise<T>,
+    retries = 3,
+    delayMs = 5 * 60 * 1000, // 5 minutes
+  ): Promise<T> {
+    try {
+      return await fn()
+    } catch (error) {
+      if (retries <= 0) {
+        throw error
+      }
+      this.logger.warn(
+        `Retry attempt failed. Retrying in ${(delayMs / 1000).toFixed(2)} seconds. Remaining retries: ${retries - 1}`,
+        toLogfmt(error),
+      )
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, delayMs)
+      })
+      return this.retryWithDelay(fn, retries - 1, delayMs)
+    }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @HandleErrors('Cron Error')
+  async loadOverpaymentsFromNoris() {
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'OVERPAYMENTS_FROM_NORIS_ENABLED',
+      OVERPAYMENTS_LOOKBACK_DAYS,
+    ])
+
+    if (config.OVERPAYMENTS_FROM_NORIS_ENABLED !== 'true') {
+      this.logger.log('Overpayments from Noris are not enabled. Skipping task.')
+      return
+    }
+
+    this.logger.log('Starting loadOverpaymentsFromNoris task')
+
+    // Parse the lookback days from config, throw error if invalid
+    const lookbackDays = parseInt(config.OVERPAYMENTS_LOOKBACK_DAYS, 10)
+    if (Number.isNaN(lookbackDays) || lookbackDays <= 0) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${config.OVERPAYMENTS_LOOKBACK_DAYS}. Must be a positive integer.`,
+      )
+    }
+
+    this.logger.log(
+      `Using ${lookbackDays} days lookback period for overpayments`,
+    )
+
+    const fromDate = dayjs().subtract(lookbackDays, 'day').toDate()
+    const data = {
+      fromDate,
+    }
+
+    this.logger.log(
+      `TasksService: Loading overpayments from Noris with data: ${JSON.stringify(data)}`,
+    )
+
+    let result: {
+      created: number
+      alreadyCreated: number
+    }
+    try {
+      result = await this.retryWithDelay(async () => {
+        return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
+          data,
+        )
+      })
+
+      // Success: reset lookback days to default
+      await this.configSubservice.resetOverpaymentsLookbackDays()
+      this.logger.log(
+        `TasksService: Loaded overpayments from Noris successfully, result: ${JSON.stringify(result)}`,
+      )
+    } catch (error) {
+      // Failure: increment lookback days for next run
+      await this.configSubservice.incrementOverpaymentsLookbackDays()
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        'Failed to load overpayments from Noris after all retry attempts',
+        undefined,
+        undefined,
+        error,
+      )
+    }
   }
 }

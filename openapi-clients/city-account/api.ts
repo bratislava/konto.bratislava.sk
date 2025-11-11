@@ -39,6 +39,16 @@ export interface ChangeEmailRequestDto {
    */
   newEmail: string
 }
+export interface ClientInfoResponseDto {
+  /**
+   * Human-readable name for the client (prefix from OAUTH2_CLIENT_LIST)
+   */
+  name: string
+  /**
+   * Human-readable title for the client (for frontend display)
+   */
+  title?: string
+}
 export interface CognitoGetUserData {
   /**
    * Id from cognito
@@ -55,11 +65,19 @@ export interface CognitoGetUserData {
   /**
    * Which type of verified tier it is?
    */
-  'custom:tier'?: object
+  'custom:tier'?: CognitoGetUserDataCustomTierEnum
   /**
    * Which type of account it is?
    */
   'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
+  /**
+   * client_id of the oAuth origin
+   */
+  'custom:origin_client_id'?: string
+  /**
+   * Name of the oAuth origin corresponding to the custom:origin_client_id
+   */
+  'custom:origin_client_name'?: string
   /**
    * First name
    */
@@ -94,6 +112,16 @@ export interface CognitoGetUserData {
   UserStatus?: CognitoGetUserDataUserStatusEnum
 }
 
+export const CognitoGetUserDataCustomTierEnum = {
+  New: 'NEW',
+  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
+  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
+  IdentityCard: 'IDENTITY_CARD',
+  Eid: 'EID',
+} as const
+
+export type CognitoGetUserDataCustomTierEnum =
+  (typeof CognitoGetUserDataCustomTierEnum)[keyof typeof CognitoGetUserDataCustomTierEnum]
 export const CognitoGetUserDataCustomAccountTypeEnum = {
   Fo: 'fo',
   Po: 'po',
@@ -139,6 +167,46 @@ export const DeactivateAccountResponseDtoBloomreachRemovedEnum = {
 
 export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
   (typeof DeactivateAccountResponseDtoBloomreachRemovedEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedEnum]
+
+export interface DpbUserDto {
+  /**
+   * User ID
+   */
+  id: string
+  /**
+   * User email
+   */
+  email: string
+  /**
+   * Is email verified in cognito?
+   */
+  email_verified?: string
+  /**
+   * Account type
+   */
+  account_type: DpbUserDtoAccountTypeEnum
+  /**
+   * Name (usually company name for legal entities)
+   */
+  name?: string
+  /**
+   * Given name (first name)
+   */
+  given_name?: string
+  /**
+   * Family name (last name)
+   */
+  family_name?: string
+}
+
+export const DpbUserDtoAccountTypeEnum = {
+  Fo: 'fo',
+  Po: 'po',
+  FoP: 'fo-p',
+} as const
+
+export type DpbUserDtoAccountTypeEnum =
+  (typeof DpbUserDtoAccountTypeEnum)[keyof typeof DpbUserDtoAccountTypeEnum]
 
 /**
  * Type of Gdpr category
@@ -262,12 +330,115 @@ export const MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum = {
 export type MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum =
   (typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum)[keyof typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum]
 
+/**
+ * Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)
+ */
+
+export const OAuth2AuthorizationErrorCode = {
+  InvalidRequest: 'invalid_request',
+  UnauthorizedClient: 'unauthorized_client',
+  AccessDenied: 'access_denied',
+  UnsupportedResponseType: 'unsupported_response_type',
+  InvalidScope: 'invalid_scope',
+  ServerError: 'server_error',
+  TemporarilyUnavailable: 'temporarily_unavailable',
+} as const
+
+export type OAuth2AuthorizationErrorCode =
+  (typeof OAuth2AuthorizationErrorCode)[keyof typeof OAuth2AuthorizationErrorCode]
+
+export interface OAuth2AuthorizationErrorDto {
+  /**
+   * Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)
+   */
+  error: OAuth2AuthorizationErrorCode
+  /**
+   * Human-readable ASCII text providing additional information for debugging (not displayed to end-user)
+   */
+  error_description?: string
+  /**
+   * URI identifying a human-readable web page with information about the error
+   */
+  error_uri?: string
+  /**
+   * Exact value received from the client in the authorization request. REQUIRED if and only if the state parameter was present in the client authorization request. Only included when redirecting (not in direct error responses).
+   */
+  state?: string
+}
+
+/**
+ * @type OAuth2ControllerTokenRequest
+ */
+export type OAuth2ControllerTokenRequest =
+  | ({ grant_type: 'authorization_code' } & TokenRequestDto)
+  | ({ grant_type: 'refresh_token' } & RefreshTokenRequestDto)
+
+/**
+ * Single ASCII error code per OAuth 2.0 specification (Token Endpoint)
+ */
+
+export const OAuth2TokenErrorCode = {
+  InvalidRequest: 'invalid_request',
+  InvalidClient: 'invalid_client',
+  InvalidGrant: 'invalid_grant',
+  UnauthorizedClient: 'unauthorized_client',
+  UnsupportedGrantType: 'unsupported_grant_type',
+  InvalidScope: 'invalid_scope',
+} as const
+
+export type OAuth2TokenErrorCode = (typeof OAuth2TokenErrorCode)[keyof typeof OAuth2TokenErrorCode]
+
+export interface OAuth2TokenErrorDto {
+  /**
+   * Single ASCII error code per OAuth 2.0 specification (Token Endpoint)
+   */
+  error: OAuth2TokenErrorCode
+  /**
+   * Human-readable ASCII text providing additional information for debugging (not displayed to end-user)
+   */
+  error_description?: string
+  /**
+   * URI identifying a human-readable web page with information about the error
+   */
+  error_uri?: string
+}
+
 export interface OnlySuccessDto {
   /**
    * Marks if the operation has been successful
    */
   success: boolean
 }
+export interface RefreshTokenRequestDto {
+  /**
+   * Grant type, must be \"refresh_token\"
+   */
+  grant_type: RefreshTokenRequestDtoGrantTypeEnum
+  /**
+   * The refresh token issued by the authorization server
+   */
+  refresh_token: string
+  /**
+   * Space-delimited list of scopes (optional - should not request new scopes)
+   */
+  scope?: string
+  /**
+   * The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header
+   */
+  client_id?: string
+  /**
+   * The client secret. Required if client has a secret configured. Can be provided via HTTP Basic Authentication or this parameter
+   */
+  client_secret?: string
+}
+
+export const RefreshTokenRequestDtoGrantTypeEnum = {
+  RefreshToken: 'refresh_token',
+} as const
+
+export type RefreshTokenRequestDtoGrantTypeEnum =
+  (typeof RefreshTokenRequestDtoGrantTypeEnum)[keyof typeof RefreshTokenRequestDtoGrantTypeEnum]
+
 export interface RequestBatchNewUserBirthNumbers {
   /**
    * Date to query.
@@ -767,6 +938,104 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
   (typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum]
+
+export interface StoreTokensRequestDto {
+  /**
+   * Access token from user authentication (e.g., from Cognito)
+   */
+  access_token: string
+  /**
+   * ID token from user authentication
+   */
+  id_token?: string
+  /**
+   * Refresh token from user authentication
+   */
+  refresh_token: string
+  /**
+   * UUID of the authorization request stored in the database
+   */
+  payload: string
+  /**
+   * Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+   */
+  client_id?: string
+  /**
+   * Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+   */
+  redirect_uri?: string
+  /**
+   * Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+   */
+  state?: string
+}
+export interface TokenRequestDto {
+  /**
+   * Grant type, must be \"authorization_code\"
+   */
+  grant_type: TokenRequestDtoGrantTypeEnum
+  /**
+   * Authorization code received from the authorization endpoint
+   */
+  code: string
+  /**
+   * Must be identical to the redirect_uri used in the authorization request
+   */
+  redirect_uri: string
+  /**
+   * Code verifier for PKCE (RFC 7636). Must match the code_challenge from authorization request
+   */
+  code_verifier: string
+  /**
+   * The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header
+   */
+  client_id?: string
+  /**
+   * The client secret. Required if client has a secret configured. Can be provided via HTTP Basic Authentication or this parameter
+   */
+  client_secret?: string
+  /**
+   * The value of the state parameter sent in authorization request (for verification)
+   */
+  state?: string
+}
+
+export const TokenRequestDtoGrantTypeEnum = {
+  AuthorizationCode: 'authorization_code',
+} as const
+
+export type TokenRequestDtoGrantTypeEnum =
+  (typeof TokenRequestDtoGrantTypeEnum)[keyof typeof TokenRequestDtoGrantTypeEnum]
+
+export interface TokenResponseDto {
+  /**
+   * Access token issued by the authorization server
+   */
+  access_token: string
+  /**
+   * Token type, typically \"Bearer\"
+   */
+  token_type: TokenResponseDtoTokenTypeEnum
+  /**
+   * Refresh token used to obtain new access tokens
+   */
+  refresh_token?: string
+  /**
+   * Expiration time of the access token in seconds
+   */
+  expires_in: number
+  /**
+   * Space-delimited list of scopes granted
+   */
+  scope?: string
+}
+
+export const TokenResponseDtoTokenTypeEnum = {
+  Bearer: 'Bearer',
+} as const
+
+export type TokenResponseDtoTokenTypeEnum =
+  (typeof TokenResponseDtoTokenTypeEnum)[keyof typeof TokenResponseDtoTokenTypeEnum]
 
 /**
  * @type UserControllerChangeEmail200Response
@@ -2563,6 +2832,858 @@ export class AuthApi extends BaseAPI {
 }
 
 /**
+ * DPBApi - axios parameter creator
+ */
+export const DPBApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerUserData: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/dpb/userdata`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * DPBApi - functional programming interface
+ */
+export const DPBApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = DPBApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async dpbControllerUserData(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DpbUserDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.dpbControllerUserData(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DPBApi.dpbControllerUserData']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * DPBApi - factory interface
+ */
+export const DPBApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = DPBApiFp(configuration)
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerUserData(options?: RawAxiosRequestConfig): AxiosPromise<DpbUserDto> {
+      return localVarFp.dpbControllerUserData(options).then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * DPBApi - object-oriented interface
+ */
+export class DPBApi extends BaseAPI {
+  /**
+   * Returns user data for the authenticated user
+   * @summary Get user data
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public dpbControllerUserData(options?: RawAxiosRequestConfig) {
+    return DPBApiFp(this.configuration)
+      .dpbControllerUserData(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * OAuth2Api - axios parameter creator
+ */
+export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Initiate OAuth2 authorization flow with PKCE (RFC 7636). Redirects to frontend for user authentication (HTTP 303 See Other).
+     * @summary OAuth2 Authorization Endpoint
+     * @param {OAuth2ControllerAuthorizeResponseTypeEnum} responseType Response type. Must be \&quot;code\&quot; for Authorization Code flow. \&quot;token\&quot; is not allowed if PKCE is required.
+     * @param {string} clientId The client identifier for your application
+     * @param {string} redirectUri The redirect URI registered for your application
+     * @param {string} [scope] Space-delimited list of scopes
+     * @param {string} [state] CSRF protection: random value generated by the app and returned unchanged (RECOMMENDED per RFC 6749)
+     * @param {string} [codeChallenge] Code challenge for PKCE (RFC 7636). Optional - only required if using PKCE or if client requires it
+     * @param {OAuth2ControllerAuthorizeCodeChallengeMethodEnum} [codeChallengeMethod] Code challenge method for PKCE. Optional - required if code_challenge is provided
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerAuthorize: async (
+      responseType: OAuth2ControllerAuthorizeResponseTypeEnum,
+      clientId: string,
+      redirectUri: string,
+      scope?: string,
+      state?: string,
+      codeChallenge?: string,
+      codeChallengeMethod?: OAuth2ControllerAuthorizeCodeChallengeMethodEnum,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'responseType' is not null or undefined
+      assertParamExists('oAuth2ControllerAuthorize', 'responseType', responseType)
+      // verify required parameter 'clientId' is not null or undefined
+      assertParamExists('oAuth2ControllerAuthorize', 'clientId', clientId)
+      // verify required parameter 'redirectUri' is not null or undefined
+      assertParamExists('oAuth2ControllerAuthorize', 'redirectUri', redirectUri)
+      const localVarPath = `/oauth2/authorize`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (responseType !== undefined) {
+        localVarQueryParameter['response_type'] = responseType
+      }
+
+      if (clientId !== undefined) {
+        localVarQueryParameter['client_id'] = clientId
+      }
+
+      if (redirectUri !== undefined) {
+        localVarQueryParameter['redirect_uri'] = redirectUri
+      }
+
+      if (scope !== undefined) {
+        localVarQueryParameter['scope'] = scope
+      }
+
+      if (state !== undefined) {
+        localVarQueryParameter['state'] = state
+      }
+
+      if (codeChallenge !== undefined) {
+        localVarQueryParameter['code_challenge'] = codeChallenge
+      }
+
+      if (codeChallengeMethod !== undefined) {
+        localVarQueryParameter['code_challenge_method'] = codeChallengeMethod
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
+     * @summary OAuth2 Continue Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerContinueComplete: async (
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'payload' is not null or undefined
+      assertParamExists('oAuth2ControllerContinueComplete', 'payload', payload)
+      const localVarPath = `/oauth2/continue`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (payload !== undefined) {
+        localVarQueryParameter['payload'] = payload
+      }
+
+      if (clientId !== undefined) {
+        localVarQueryParameter['client_id'] = clientId
+      }
+
+      if (redirectUri !== undefined) {
+        localVarQueryParameter['redirect_uri'] = redirectUri
+      }
+
+      if (state !== undefined) {
+        localVarQueryParameter['state'] = state
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * @summary OAuth2 Client Info Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerInfo: async (
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'payload' is not null or undefined
+      assertParamExists('oAuth2ControllerInfo', 'payload', payload)
+      const localVarPath = `/oauth2/info`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (payload !== undefined) {
+        localVarQueryParameter['payload'] = payload
+      }
+
+      if (clientId !== undefined) {
+        localVarQueryParameter['client_id'] = clientId
+      }
+
+      if (redirectUri !== undefined) {
+        localVarQueryParameter['redirect_uri'] = redirectUri
+      }
+
+      if (state !== undefined) {
+        localVarQueryParameter['state'] = state
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Store tokens after user authentication. Called by frontend with tokens and authorization request ID.
+     * @summary OAuth2 Store Tokens Endpoint
+     * @param {StoreTokensRequestDto} storeTokensRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerStoreTokens: async (
+      storeTokensRequestDto: StoreTokensRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'storeTokensRequestDto' is not null or undefined
+      assertParamExists(
+        'oAuth2ControllerStoreTokens',
+        'storeTokensRequestDto',
+        storeTokensRequestDto,
+      )
+      const localVarPath = `/oauth2/store`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        storeTokensRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.
+     * @summary OAuth2 Token Endpoint
+     * @param {OAuth2ControllerTokenRequest} oAuth2ControllerTokenRequest Token request - use authorization_code or refresh_token grant type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerToken: async (
+      oAuth2ControllerTokenRequest: OAuth2ControllerTokenRequest,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'oAuth2ControllerTokenRequest' is not null or undefined
+      assertParamExists(
+        'oAuth2ControllerToken',
+        'oAuth2ControllerTokenRequest',
+        oAuth2ControllerTokenRequest,
+      )
+      const localVarPath = `/oauth2/token`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        oAuth2ControllerTokenRequest,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * OAuth2Api - functional programming interface
+ */
+export const OAuth2ApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = OAuth2ApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Initiate OAuth2 authorization flow with PKCE (RFC 7636). Redirects to frontend for user authentication (HTTP 303 See Other).
+     * @summary OAuth2 Authorization Endpoint
+     * @param {OAuth2ControllerAuthorizeResponseTypeEnum} responseType Response type. Must be \&quot;code\&quot; for Authorization Code flow. \&quot;token\&quot; is not allowed if PKCE is required.
+     * @param {string} clientId The client identifier for your application
+     * @param {string} redirectUri The redirect URI registered for your application
+     * @param {string} [scope] Space-delimited list of scopes
+     * @param {string} [state] CSRF protection: random value generated by the app and returned unchanged (RECOMMENDED per RFC 6749)
+     * @param {string} [codeChallenge] Code challenge for PKCE (RFC 7636). Optional - only required if using PKCE or if client requires it
+     * @param {OAuth2ControllerAuthorizeCodeChallengeMethodEnum} [codeChallengeMethod] Code challenge method for PKCE. Optional - required if code_challenge is provided
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async oAuth2ControllerAuthorize(
+      responseType: OAuth2ControllerAuthorizeResponseTypeEnum,
+      clientId: string,
+      redirectUri: string,
+      scope?: string,
+      state?: string,
+      codeChallenge?: string,
+      codeChallengeMethod?: OAuth2ControllerAuthorizeCodeChallengeMethodEnum,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerAuthorize(
+        responseType,
+        clientId,
+        redirectUri,
+        scope,
+        state,
+        codeChallenge,
+        codeChallengeMethod,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OAuth2Api.oAuth2ControllerAuthorize']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
+     * @summary OAuth2 Continue Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async oAuth2ControllerContinueComplete(
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerContinueComplete(
+        payload,
+        clientId,
+        redirectUri,
+        state,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OAuth2Api.oAuth2ControllerContinueComplete']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * @summary OAuth2 Client Info Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async oAuth2ControllerInfo(
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientInfoResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerInfo(
+        payload,
+        clientId,
+        redirectUri,
+        state,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OAuth2Api.oAuth2ControllerInfo']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Store tokens after user authentication. Called by frontend with tokens and authorization request ID.
+     * @summary OAuth2 Store Tokens Endpoint
+     * @param {StoreTokensRequestDto} storeTokensRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async oAuth2ControllerStoreTokens(
+      storeTokensRequestDto: StoreTokensRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerStoreTokens(
+        storeTokensRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OAuth2Api.oAuth2ControllerStoreTokens']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.
+     * @summary OAuth2 Token Endpoint
+     * @param {OAuth2ControllerTokenRequest} oAuth2ControllerTokenRequest Token request - use authorization_code or refresh_token grant type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async oAuth2ControllerToken(
+      oAuth2ControllerTokenRequest: OAuth2ControllerTokenRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerToken(
+        oAuth2ControllerTokenRequest,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OAuth2Api.oAuth2ControllerToken']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * OAuth2Api - factory interface
+ */
+export const OAuth2ApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = OAuth2ApiFp(configuration)
+  return {
+    /**
+     * Initiate OAuth2 authorization flow with PKCE (RFC 7636). Redirects to frontend for user authentication (HTTP 303 See Other).
+     * @summary OAuth2 Authorization Endpoint
+     * @param {OAuth2ControllerAuthorizeResponseTypeEnum} responseType Response type. Must be \&quot;code\&quot; for Authorization Code flow. \&quot;token\&quot; is not allowed if PKCE is required.
+     * @param {string} clientId The client identifier for your application
+     * @param {string} redirectUri The redirect URI registered for your application
+     * @param {string} [scope] Space-delimited list of scopes
+     * @param {string} [state] CSRF protection: random value generated by the app and returned unchanged (RECOMMENDED per RFC 6749)
+     * @param {string} [codeChallenge] Code challenge for PKCE (RFC 7636). Optional - only required if using PKCE or if client requires it
+     * @param {OAuth2ControllerAuthorizeCodeChallengeMethodEnum} [codeChallengeMethod] Code challenge method for PKCE. Optional - required if code_challenge is provided
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerAuthorize(
+      responseType: OAuth2ControllerAuthorizeResponseTypeEnum,
+      clientId: string,
+      redirectUri: string,
+      scope?: string,
+      state?: string,
+      codeChallenge?: string,
+      codeChallengeMethod?: OAuth2ControllerAuthorizeCodeChallengeMethodEnum,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .oAuth2ControllerAuthorize(
+          responseType,
+          clientId,
+          redirectUri,
+          scope,
+          state,
+          codeChallenge,
+          codeChallengeMethod,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
+     * @summary OAuth2 Continue Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerContinueComplete(
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .oAuth2ControllerContinueComplete(payload, clientId, redirectUri, state, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * @summary OAuth2 Client Info Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerInfo(
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ClientInfoResponseDto> {
+      return localVarFp
+        .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Store tokens after user authentication. Called by frontend with tokens and authorization request ID.
+     * @summary OAuth2 Store Tokens Endpoint
+     * @param {StoreTokensRequestDto} storeTokensRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerStoreTokens(
+      storeTokensRequestDto: StoreTokensRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .oAuth2ControllerStoreTokens(storeTokensRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.
+     * @summary OAuth2 Token Endpoint
+     * @param {OAuth2ControllerTokenRequest} oAuth2ControllerTokenRequest Token request - use authorization_code or refresh_token grant type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerToken(
+      oAuth2ControllerTokenRequest: OAuth2ControllerTokenRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<TokenResponseDto> {
+      return localVarFp
+        .oAuth2ControllerToken(oAuth2ControllerTokenRequest, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * OAuth2Api - object-oriented interface
+ */
+export class OAuth2Api extends BaseAPI {
+  /**
+   * Initiate OAuth2 authorization flow with PKCE (RFC 7636). Redirects to frontend for user authentication (HTTP 303 See Other).
+   * @summary OAuth2 Authorization Endpoint
+   * @param {OAuth2ControllerAuthorizeResponseTypeEnum} responseType Response type. Must be \&quot;code\&quot; for Authorization Code flow. \&quot;token\&quot; is not allowed if PKCE is required.
+   * @param {string} clientId The client identifier for your application
+   * @param {string} redirectUri The redirect URI registered for your application
+   * @param {string} [scope] Space-delimited list of scopes
+   * @param {string} [state] CSRF protection: random value generated by the app and returned unchanged (RECOMMENDED per RFC 6749)
+   * @param {string} [codeChallenge] Code challenge for PKCE (RFC 7636). Optional - only required if using PKCE or if client requires it
+   * @param {OAuth2ControllerAuthorizeCodeChallengeMethodEnum} [codeChallengeMethod] Code challenge method for PKCE. Optional - required if code_challenge is provided
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public oAuth2ControllerAuthorize(
+    responseType: OAuth2ControllerAuthorizeResponseTypeEnum,
+    clientId: string,
+    redirectUri: string,
+    scope?: string,
+    state?: string,
+    codeChallenge?: string,
+    codeChallengeMethod?: OAuth2ControllerAuthorizeCodeChallengeMethodEnum,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OAuth2ApiFp(this.configuration)
+      .oAuth2ControllerAuthorize(
+        responseType,
+        clientId,
+        redirectUri,
+        scope,
+        state,
+        codeChallenge,
+        codeChallengeMethod,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
+   * @summary OAuth2 Continue Endpoint
+   * @param {string} payload UUID of the authorization request stored in the database
+   * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+   * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+   * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public oAuth2ControllerContinueComplete(
+    payload: string,
+    clientId?: string,
+    redirectUri?: string,
+    state?: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OAuth2ApiFp(this.configuration)
+      .oAuth2ControllerContinueComplete(payload, clientId, redirectUri, state, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get client information (name and title) by client_id from authorization request for frontend display.
+   * @summary OAuth2 Client Info Endpoint
+   * @param {string} payload UUID of the authorization request stored in the database
+   * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+   * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+   * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public oAuth2ControllerInfo(
+    payload: string,
+    clientId?: string,
+    redirectUri?: string,
+    state?: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OAuth2ApiFp(this.configuration)
+      .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Store tokens after user authentication. Called by frontend with tokens and authorization request ID.
+   * @summary OAuth2 Store Tokens Endpoint
+   * @param {StoreTokensRequestDto} storeTokensRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public oAuth2ControllerStoreTokens(
+    storeTokensRequestDto: StoreTokensRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OAuth2ApiFp(this.configuration)
+      .oAuth2ControllerStoreTokens(storeTokensRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.
+   * @summary OAuth2 Token Endpoint
+   * @param {OAuth2ControllerTokenRequest} oAuth2ControllerTokenRequest Token request - use authorization_code or refresh_token grant type
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public oAuth2ControllerToken(
+    oAuth2ControllerTokenRequest: OAuth2ControllerTokenRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OAuth2ApiFp(this.configuration)
+      .oAuth2ControllerToken(oAuth2ControllerTokenRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+export const OAuth2ControllerAuthorizeResponseTypeEnum = {
+  Code: 'code',
+  Token: 'token',
+} as const
+export type OAuth2ControllerAuthorizeResponseTypeEnum =
+  (typeof OAuth2ControllerAuthorizeResponseTypeEnum)[keyof typeof OAuth2ControllerAuthorizeResponseTypeEnum]
+export const OAuth2ControllerAuthorizeCodeChallengeMethodEnum = {
+  S256: 'S256',
+  Plain: 'plain',
+} as const
+export type OAuth2ControllerAuthorizeCodeChallengeMethodEnum =
+  (typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum)[keyof typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum]
+
+/**
  * UserVerificationsApi - axios parameter creator
  */
 export const UserVerificationsApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -3011,7 +4132,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.
+     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
      * @summary Get or create user with his data
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3394,7 +4515,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.
+     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
      * @summary Get or create user with his data
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3633,7 +4754,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.
+     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
      * @summary Get or create user with his data
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3762,7 +4883,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.
+   * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
    * @summary Get or create user with his data
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

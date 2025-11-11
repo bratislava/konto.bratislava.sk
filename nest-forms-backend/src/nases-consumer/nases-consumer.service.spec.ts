@@ -22,6 +22,7 @@ import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import { FormWithFiles } from '../utils/types/prisma'
 import NasesConsumerService from './nases-consumer.service'
@@ -72,6 +73,10 @@ describe('NasesConsumerService', () => {
         {
           provide: ConvertPdfService,
           useValue: createMock<ConvertPdfService>(),
+        },
+        {
+          provide: ThrowerErrorGuard,
+          useValue: createMock<ThrowerErrorGuard>(),
         },
       ],
     }).compile()

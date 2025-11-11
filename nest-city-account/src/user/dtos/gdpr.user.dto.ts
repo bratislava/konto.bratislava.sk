@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, User } from '@prisma/client'
-import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator'
+import { IsEmail, IsEnum } from 'class-validator'
 
 export class RequestGdprDataDto {
   gdprData!: GdprDataDto[]
@@ -9,16 +9,6 @@ export class RequestGdprDataDto {
 export enum UserAttributeEnum {
   TAX2023 = 'TAX2023',
   TAX2024 = 'TAX2024',
-}
-
-export class RequestPublicSubscriptionDto extends RequestGdprDataDto {
-  @ApiProperty({
-    description: 'Email to subscribe',
-    example: 'test@bratislava.sk',
-  })
-  @IsNotEmpty()
-  @IsEmail()
-  email!: string
 }
 
 export class GdprDataDto {

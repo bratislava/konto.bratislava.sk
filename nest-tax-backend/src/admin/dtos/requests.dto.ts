@@ -1,6 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
 import {
   IsBoolean,
+  IsDate,
   IsDateString,
   IsEmail,
   IsEnum,
@@ -73,6 +75,25 @@ export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
     isArray: true,
   })
   variableSymbols: string[]
+}
+
+export class DateRangeDto {
+  @ApiProperty({
+    description: 'From date',
+    default: '2025-10-10',
+  })
+  @IsDate()
+  @Type(() => Date)
+  fromDate: Date
+
+  @ApiPropertyOptional({
+    description: 'To date',
+    default: '2025-10-16',
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  toDate?: Date
 }
 
 export type RequestUpdateNorisDeliveryMethodsData = {
@@ -168,19 +189,20 @@ export class RequestAdminCreateTestingTaxNorisData {
   taxTotal: string
 
   @ApiProperty({
-    description: 'Amount already paid as string',
-    example: '0.00',
+    description: 'Amount already paid',
+    example: 10.9,
   })
-  @IsString()
-  alreadyPaid: string
+  @IsNumber()
+  alreadyPaid: number
 
   @ApiProperty({
     description: 'Date of tax ruling (dátum právoplatnosti)',
     example: '2024-01-01T07:31:39.916Z',
   })
-  @IsString()
+  @IsDate()
+  @Type(() => Date)
   @IsOptional()
-  dateTaxRuling: string | null
+  dateTaxRuling: Date | null
 }
 
 export class RequestAdminCreateTestingTaxDto {

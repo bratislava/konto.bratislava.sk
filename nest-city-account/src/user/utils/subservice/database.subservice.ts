@@ -38,64 +38,70 @@ export class DatabaseSubserviceUser {
    * @param {boolean} isAdminCall - Whether the call is made by an admin to bypass the deceased user check.
    */
   async getOrCreateUser(cognitoUserData: CognitoGetUserData, isAdminCall: boolean = false) {
-    const { email, idUser: externalId, UserCreateDate: registeredAt } = cognitoUserData
-    const userData = { externalId, email, registeredAt }
+    const userData = {
+      externalId: cognitoUserData.idUser,
+      email: cognitoUserData.email,
+      registeredAt: cognitoUserData.UserCreateDate,
+    }
+
+    let userWhere: Prisma.UserWhereUniqueInput = { email: userData.email }
 
     let user = await this.prisma.user.findUnique({
-      where: { email: email },
+      where: userWhere,
     })
-    if (!isAdminCall && user?.isDeceased) {
+    if (!user) {
+      userWhere = { externalId: userData.externalId }
+      user = await this.prisma.user.findUnique({
+        where: userWhere,
+      })
+    }
+
+    if (!user) {
+      // user not found, create new one
+      user = await this.prisma.user.create({
+        data: userData,
+      })
+
+      return this.postprocessUser(userData.externalId, user, true)
+    }
+
+    if (user.isDeceased) {
+      if (isAdminCall) {
+        return prismaExclude(user, ['ifo'])
+      }
+
       throw this.throwerErrorGuard.ForbiddenException(
         UserErrorsEnum.USER_IS_DECEASED,
         UserErrorsResponseEnum.USER_IS_DECEASED
       )
     }
 
-    if (user) {
-      // user found by email, update data
-      user = await this.prisma.user.update({
-        where: {
-          email,
-          ...ACTIVE_USER_FILTER,
-        },
-        data: userData,
-      })
-      return this.postprocessUser(externalId, user)
-    }
+    // user found, update data
 
-    user = await this.prisma.user.findUnique({
-      where: { externalId },
-    })
-
-    if (user) {
-      // user found by externalId, email likely changed, update data
+    if (user.email !== userData.email) {
       this.logger.log(
-        `Email changed for user ${externalId}. Old email: ${user.email}, new email: ${email}.`
+        `Email changed for user ${userData.externalId}. Old email: ${user.email}, new email: ${userData.email}.`
       )
-
-      user = await this.prisma.user.update({
-        where: { externalId },
-        data: userData,
-      })
-      return this.postprocessUser(externalId, user)
     }
 
-    // user not found, create new one
-    user = await this.prisma.user.create({
+    user = await this.prisma.user.update({
+      where: userWhere,
       data: userData,
     })
-    await this.changeUserGdprData(user.id, [
-      {
-        type: GDPRTypeEnum.MARKETING,
-        category: GDPRCategoryEnum.ESBS,
-        subType: GDPRSubTypeEnum.subscribe,
-      },
-    ])
-
-    return this.postprocessUser(externalId, user)
+    return this.postprocessUser(userData.externalId, user)
   }
 
-  async postprocessUser(externalId: string, user: User) {
+  async postprocessUser(externalId: string, user: User, changeGdprData: boolean = false) {
+    if (changeGdprData) {
+      await this.changeUserGdprData(user.id, [
+        {
+          type: GDPRTypeEnum.MARKETING,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
+        },
+      ])
+    }
+
     await this.bloomreachService.trackCustomer(externalId)
     return prismaExclude(user, ['ifo'])
   }
@@ -103,58 +109,67 @@ export class DatabaseSubserviceUser {
   async getOrCreateLegalPerson(
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataSimpleDto> {
-    const { email, idUser: externalId, UserCreateDate: registeredAt } = cognitoUserData
-    const legalPersonData = { externalId, email, registeredAt }
+    const legalPersonData = {
+      externalId: cognitoUserData.idUser,
+      email: cognitoUserData.email,
+      registeredAt: cognitoUserData.UserCreateDate,
+    }
+
+    let legalPersonWhere: Prisma.LegalPersonWhereUniqueInput = { email: legalPersonData.email }
 
     let legalPerson = await this.prisma.legalPerson.findUnique({
-      where: { email },
+      where: legalPersonWhere,
     })
+    if (!legalPerson) {
+      legalPersonWhere = { externalId: legalPersonData.externalId }
+      legalPerson = await this.prisma.legalPerson.findUnique({
+        where: legalPersonWhere,
+      })
+    }
+
+    if (!legalPerson) {
+      // legal person not found, create new one
+      legalPerson = await this.prisma.legalPerson.create({
+        data: legalPersonData,
+      })
+
+      return this.postprocessLegalPerson(legalPersonData.externalId, legalPerson, true)
+    }
+
     // TODO: we are missing attribute for isDeceased,
     // if we are implemeting it, let's add admin call,
     // same as in getOrCreateUser
 
-    if (legalPerson) {
-      // legal person found by email, update data
-      legalPerson = await this.prisma.legalPerson.update({
-        where: { email },
-        data: legalPersonData,
-      })
-      return this.postprocessLegalPerson(externalId, legalPerson)
-    }
+    // user found, update data
 
-    legalPerson = await this.prisma.legalPerson.findUnique({
-      where: { externalId },
-    })
-
-    if (legalPerson) {
-      // legal person found by externalId, email likely changed, update data
+    if (legalPerson.email !== legalPersonData.email) {
       this.logger.log(
-        `Email changed for legal person ${externalId}. Old email: ${legalPerson.email}, new email: ${email}.`
+        `Email changed for legal person ${legalPersonData.externalId}. Old email: ${legalPerson.email}, new email: ${legalPersonData.email}.`
       )
-
-      legalPerson = await this.prisma.legalPerson.update({
-        where: { externalId },
-        data: legalPersonData,
-      })
-      return this.postprocessLegalPerson(externalId, legalPerson)
     }
 
-    // legal person not found, create new one
-    legalPerson = await this.prisma.legalPerson.create({
+    legalPerson = await this.prisma.legalPerson.update({
+      where: legalPersonWhere,
       data: legalPersonData,
     })
-    await this.changeLegalPersonGdprData(legalPerson.id, [
-      {
-        type: GDPRTypeEnum.MARKETING,
-        category: GDPRCategoryEnum.ESBS,
-        subType: GDPRSubTypeEnum.subscribe,
-      },
-    ])
-
-    return this.postprocessLegalPerson(externalId, legalPerson)
+    return this.postprocessLegalPerson(legalPersonData.externalId, legalPerson)
   }
 
-  async postprocessLegalPerson(externalId: string, legalPerson: LegalPerson) {
+  async postprocessLegalPerson(
+    externalId: string,
+    legalPerson: LegalPerson,
+    changeGdprData: boolean = false
+  ) {
+    if (changeGdprData) {
+      await this.changeLegalPersonGdprData(legalPerson.id, [
+        {
+          type: GDPRTypeEnum.MARKETING,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
+        },
+      ])
+    }
+
     await this.bloomreachService.trackCustomer(externalId)
     return legalPerson
   }

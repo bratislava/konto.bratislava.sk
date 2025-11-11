@@ -1,14 +1,10 @@
 FROM node:22-slim AS base
 
-# Install dependencies needed for "pdf-to-img" which uses "node-canvas"
-# https://github.com/Automattic/node-canvas/wiki/Installation%3A-Ubuntu-and-other-Debian-based-systems
+# Install build tools and Python needed for native npm dependencies (e.g., deasync)
+# Note: pdf-to-img v5.0.0+ no longer uses node-canvas, but we keep build tools for other deps
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libcairo2-dev \
-    libpango1.0-dev \
-    libjpeg-dev \
-    libgif-dev \
-    librsvg2-dev \
+    python3 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -44,15 +44,13 @@ export class DatabaseSubserviceUser {
       registeredAt: cognitoUserData.UserCreateDate,
     }
 
-    let userWhere: Prisma.UserWhereUniqueInput = { email: userData.email }
-
     let user = await this.prisma.user.findUnique({
-      where: userWhere,
+      where: { email: userData.email },
     })
-    if (!user) {
-      userWhere = { externalId: userData.externalId }
+    const foundByEmail = !!user
+    if (!foundByEmail) {
       user = await this.prisma.user.findUnique({
-        where: userWhere,
+        where: { externalId: userData.externalId },
       })
     }
 
@@ -78,14 +76,14 @@ export class DatabaseSubserviceUser {
 
     // user found, update data
 
-    if (user.email !== userData.email) {
+    if (!foundByEmail) {
       this.logger.log(
         `Email changed for user ${userData.externalId}. Old email: ${user.email}, new email: ${userData.email}.`
       )
     }
 
     user = await this.prisma.user.update({
-      where: userWhere,
+      where: foundByEmail ? { email: userData.email } : { externalId: userData.externalId },
       data: userData,
     })
     return this.postprocessUser(userData.externalId, user)
@@ -115,15 +113,13 @@ export class DatabaseSubserviceUser {
       registeredAt: cognitoUserData.UserCreateDate,
     }
 
-    let legalPersonWhere: Prisma.LegalPersonWhereUniqueInput = { email: legalPersonData.email }
-
     let legalPerson = await this.prisma.legalPerson.findUnique({
-      where: legalPersonWhere,
+      where: { email: legalPersonData.email },
     })
-    if (!legalPerson) {
-      legalPersonWhere = { externalId: legalPersonData.externalId }
+    const foundByEmail = !!legalPerson
+    if (!foundByEmail) {
       legalPerson = await this.prisma.legalPerson.findUnique({
-        where: legalPersonWhere,
+        where: { externalId: legalPersonData.externalId },
       })
     }
 
@@ -142,14 +138,16 @@ export class DatabaseSubserviceUser {
 
     // user found, update data
 
-    if (legalPerson.email !== legalPersonData.email) {
+    if (!foundByEmail) {
       this.logger.log(
         `Email changed for legal person ${legalPersonData.externalId}. Old email: ${legalPerson.email}, new email: ${legalPersonData.email}.`
       )
     }
 
     legalPerson = await this.prisma.legalPerson.update({
-      where: legalPersonWhere,
+      where: foundByEmail
+        ? { email: legalPersonData.email }
+        : { externalId: legalPersonData.externalId },
       data: legalPersonData,
     })
     return this.postprocessLegalPerson(legalPersonData.externalId, legalPerson)

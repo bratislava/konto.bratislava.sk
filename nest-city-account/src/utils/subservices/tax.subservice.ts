@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import {
   RequestUpdateNorisDeliveryMethodsDto,
+  UpdateDeliveryMethodsInNorisResponseDto,
 } from 'openapi-clients/tax'
 
 import ClientsService from '../../clients/clients.service'
@@ -48,7 +49,7 @@ export class TaxSubservice {
 
   async updateDeliveryMethodsInNoris(
     data: RequestUpdateNorisDeliveryMethodsDto
-  ): AxiosPromise<void> {
+  ): AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto> {
     return this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
       headers: {
         apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),

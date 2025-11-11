@@ -2,34 +2,45 @@ import { Injectable } from '@nestjs/common'
 import * as mssql from 'mssql'
 
 import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto'
+import { UpdateDeliveryMethodsInNorisResponseDto } from '../../admin/dtos/responses.dto'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import {
+  NorisDeliveryMethodsUpdateResultSchema,
+  NorisOrganizationResultSchema,
+} from '../types/noris.schema'
+import { NorisDeliveryMethodsUpdateResult } from '../types/noris.types'
 import { mapDeliveryMethodToNoris } from '../utils/mapping.helper'
-import { setDeliveryMethodsForUser } from '../utils/noris.queries'
+import {
+  getBirthNumbersForSubjects,
+  setDeliveryMethodsForUser,
+} from '../utils/noris.queries'
 import {
   DeliveryMethod,
   IsInCityAccount,
   UpdateNorisDeliveryMethods,
 } from '../utils/noris.types'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
+import { NorisValidatorSubservice } from './noris-validator.subservice'
 
 @Injectable()
 export class NorisDeliveryMethodSubservice {
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly connectionService: NorisConnectionSubservice,
+    private readonly norisValidatorSubservice: NorisValidatorSubservice,
   ) {}
 
   private async updateDeliveryMethodsInNoris(
     data: UpdateNorisDeliveryMethods[],
-  ): Promise<void> {
-    await this.connectionService.withConnection(
+  ): Promise<string[]> {
+    const updatedSubjects = await this.connectionService.withConnection(
       async (connection) => {
         const updatePromises = data.map((dataItem) =>
           this.executeDeliveryMethodUpdate(connection, dataItem),
         )
-        await Promise.all(updatePromises)
+        return Promise.all(updatePromises)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -41,12 +52,16 @@ export class NorisDeliveryMethodSubservice {
         )
       },
     )
+
+    return this.getBirthNumbersWithUpdatedDeliveryMethods(
+      updatedSubjects.flat(),
+    )
   }
 
   private async executeDeliveryMethodUpdate(
     connection: mssql.ConnectionPool,
     dataItem: UpdateNorisDeliveryMethods,
-  ): Promise<void> {
+  ): Promise<NorisDeliveryMethodsUpdateResult[]> {
     const request = new mssql.Request(connection)
 
     // Set parameters for the query
@@ -73,8 +88,58 @@ export class NorisDeliveryMethodSubservice {
       birthNumberPlaceholders,
     )
 
-    // Execute the query
-    await request.query(queryWithPlaceholders)
+    const result = await request.query(queryWithPlaceholders)
+    return this.norisValidatorSubservice.validateNorisData(
+      NorisDeliveryMethodsUpdateResultSchema,
+      result.recordset,
+    )
+  }
+
+  private async getBirthNumbersWithUpdatedDeliveryMethods(
+    data: NorisDeliveryMethodsUpdateResult[],
+  ): Promise<string[]> {
+    const updatedSubjects = data.map((item) => item.cislo_subjektu)
+
+    if (updatedSubjects.length === 0) {
+      return []
+    }
+
+    return this.connectionService.withConnection(
+      async (connection) => {
+        const request = new mssql.Request(connection)
+
+        // Set parameters for the query
+        const subjectPlaceholders = updatedSubjects
+          .map((_, index) => `@subject${index}`)
+          .join(',')
+        updatedSubjects.forEach((subject, index) => {
+          request.input(`subject${index}`, subject)
+        })
+        const queryWithPlaceholders = getBirthNumbersForSubjects.replaceAll(
+          '@subjects',
+          subjectPlaceholders,
+        )
+
+        // Execute the query
+        const result = await request.query(queryWithPlaceholders)
+        const validatedResult = this.norisValidatorSubservice.validateNorisData(
+          NorisOrganizationResultSchema,
+          result.recordset,
+        )
+        return validatedResult.map((record: { ico: string }) =>
+          record.ico.trim(),
+        ) // Birth numbers are stored in `ico` column in the respective table
+      },
+      (error) => {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get birth numbers for updated subjects',
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined,
+        )
+      },
+    )
   }
 
   async updateDeliveryMethods({ data }: RequestUpdateNorisDeliveryMethodsDto) {
@@ -139,9 +204,15 @@ export class NorisDeliveryMethodSubservice {
       })
     })
 
-    if (updates.length > 0) {
-      await this.updateDeliveryMethodsInNoris(updates)
+    const result: UpdateDeliveryMethodsInNorisResponseDto = {
+      birthNumbers: [],
     }
+
+    if (updates.length > 0) {
+      result.birthNumbers = await this.updateDeliveryMethodsInNoris(updates)
+    }
+
+    return result
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

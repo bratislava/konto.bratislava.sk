@@ -6,7 +6,6 @@ import dayjs from 'dayjs'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
-import { NorisPaymentsDto } from '../noris/noris.dto'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -134,7 +133,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData: Partial<NorisPaymentsDto>[] =
+      const norisPaymentData =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(

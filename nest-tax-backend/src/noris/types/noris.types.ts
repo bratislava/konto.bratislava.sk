@@ -3,6 +3,7 @@ import { z } from 'zod'
 import {
   BaseNorisCommunalWasteTaxSchema,
   NorisCommunalWasteTaxGroupedSchema,
+  NorisDeliveryMethodsUpdateResultSchema,
   NorisPaymentSchema,
   NorisRawCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
@@ -31,3 +32,7 @@ export type NorisPayment = z.infer<typeof NorisPaymentSchema>
 export type NorisPaymentWithVariableSymbol = NorisPayment & {
   variabilny_symbol: string
 }
+
+export type NorisDeliveryMethodsUpdateResult = z.infer<
+  typeof NorisDeliveryMethodsUpdateResultSchema
+>

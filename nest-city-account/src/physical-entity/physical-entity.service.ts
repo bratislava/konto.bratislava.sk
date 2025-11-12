@@ -127,6 +127,9 @@ export class PhysicalEntityService {
         id: item.physicalEntityId ?? undefined,
         uri: item.uri,
         activeEdesk:
+          // TODO: add zod validation or validation of the data directly in database
+          // as is in nest-forms-backend with prisma-json-types-generator
+          // https://github.com/bratislava/private-konto.bratislava.sk/issues/1109
           (item.data as ApiIamIdentitiesIdGet200Response)?.upvs?.edesk_status === 'deliverable',
       }
     })

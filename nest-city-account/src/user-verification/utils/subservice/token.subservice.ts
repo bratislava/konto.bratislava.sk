@@ -1,19 +1,19 @@
 import jwt from 'jsonwebtoken'
 import { v1 as uuidv1 } from 'uuid'
-import { LineLoggerSubservice } from './subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
 
 /**
- * Inspired by nest-forms-backend -> tokens.nases.service
+ * Inspired by nest-forms-backend -> token.subservice.service
  */
 
 @Injectable()
-export default class NasesUtilsService {
+export default class TokenSubservice {
   private readonly logger: LineLoggerSubservice
 
   constructor(private configService: ConfigService) {
-    this.logger = new LineLoggerSubservice('NasesUtilsService')
+    this.logger = new LineLoggerSubservice('TokenSubservice')
   }
 
   createUserJwtToken(oboToken: string): string {

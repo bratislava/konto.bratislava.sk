@@ -15,7 +15,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { VerificationController } from './verification.controller'
 import { VerificationService } from './verification.service'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
-import NasesUtilsService from 'src/utils/token.nases.service'
+import TokenSubservice from 'src/user-verification/utils/subservice/token.subservice'
 
 @Module({
   imports: [
@@ -47,7 +47,7 @@ import NasesUtilsService from 'src/utils/token.nases.service'
     MailgunSubservice,
     ThrowerErrorGuard,
     ErrorMessengerGuard,
-    NasesUtilsService,
+    TokenSubservice,
   ],
   exports: [VerificationService],
   controllers: [VerificationController],

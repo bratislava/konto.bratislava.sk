@@ -1,4 +1,4 @@
-import { cityAccountClient } from '@clients/city-account'
+import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
@@ -59,6 +59,10 @@ const LoginPage = () => {
         // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
         // there might be some cases where user is not there yet.
         await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        await cityAccountClient.userControllerRegisterLoginClient(
+          { loginClient: LoginClientEnum.CityAccount },
+          { authStrategy: 'authOnly' },
+        )
         await redirect()
         return
       }

@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { cityAccountClient } from '@clients/city-account'
+import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
@@ -117,6 +117,11 @@ const RegisterPage = () => {
         await prepareFormMigration()
         // This endpoint must be called to register user also to the City Account BE
         await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        await cityAccountClient.userControllerRegisterLoginClient(
+          { loginClient: LoginClientEnum.CityAccount },
+          { authStrategy: 'authOnly' },
+        )
+
         setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
       } else {
         throw new Error(

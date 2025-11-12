@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma, TaxType } from '@prisma/client'
-import { Request } from 'mssql'
+import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
@@ -13,14 +13,18 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
+import { CustomErrorNorisTypesEnum } from '../noris.errors'
+import {
+  BaseNorisCommunalWasteTaxSchema,
+  NorisRawCommunalWasteTaxSchema,
+  NorisRealEstateTaxSchema,
+} from '../types/noris.schema'
 import {
   BaseNorisCommunalWasteTaxDto,
-  NorisCommunalWasteTaxGroupedDto,
-  NorisRawCommunalWasteTaxDto,
-  NorisTaxPayersDto,
-} from '../noris.dto'
-import { CustomErrorNorisTypesEnum } from '../noris.errors'
-import { baseNorisCommunalWasteTaxSchema } from '../noris.schema'
+  NorisCommunalWasteTaxGrouped,
+  NorisRawCommunalWasteTax,
+  NorisRealEstateTax,
+} from '../types/noris.types'
 import {
   convertCurrencyToInt,
   mapNorisToTaxAdministratorData,
@@ -35,6 +39,7 @@ import {
 } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisPaymentSubservice } from './noris-payment.subservice'
+import { NorisValidatorSubservice } from './noris-validator.subservice'
 
 @Injectable()
 export class NorisTaxSubservice {
@@ -52,21 +57,22 @@ export class NorisTaxSubservice {
     private readonly prismaService: PrismaService,
     private readonly bloomreachService: BloomreachService,
     private readonly qrCodeSubservice: QrCodeSubservice,
+    private readonly norisValidatorSubservice: NorisValidatorSubservice,
   ) {}
 
   private async getTaxDataByYearAndBirthNumber(
     data: RequestPostNorisLoadDataDto,
-  ): Promise<NorisTaxPayersDto[]> {
+  ): Promise<NorisRealEstateTax[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('year', data.year)
+        request.input('year', mssql.Int, data.year)
         const birthNumbersPlaceholders = data.birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
         data.birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
 
         return request.query(
@@ -86,13 +92,16 @@ export class NorisTaxSubservice {
         )
       },
     )
-    return norisData.recordset
+    return this.norisValidatorSubservice.validateNorisData(
+      NorisRealEstateTaxSchema,
+      norisData.recordset,
+    )
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     data: RequestPostNorisLoadDataDto,
   ) {
-    let norisData: NorisTaxPayersDto[]
+    let norisData: NorisRealEstateTax[]
     try {
       norisData = await this.getTaxDataByYearAndBirthNumber(data)
     } catch (error) {
@@ -185,7 +194,7 @@ export class NorisTaxSubservice {
   }
 
   async processNorisTaxData(
-    norisData: NorisTaxPayersDto[],
+    norisData: NorisRealEstateTax[],
     year: number,
   ): Promise<string[]> {
     const birthNumbersResult: Set<string> = new Set()
@@ -243,7 +252,7 @@ export class NorisTaxSubservice {
 
   private readonly processTaxRecordFromNoris = async (
     birthNumbersResult: Set<string>,
-    norisItem: NorisTaxPayersDto,
+    norisItem: NorisRealEstateTax,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
     year: number,
   ) => {
@@ -312,19 +321,21 @@ export class NorisTaxSubservice {
   }
 
   private async insertTaxPayerDataToDatabase(
-    dataFromNoris: NorisTaxPayersDto,
+    dataFromNoris: NorisRealEstateTax,
     year: number,
     transaction: Prisma.TransactionClient,
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
   ) {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
-    const taxAdministrator = await transaction.taxAdministrator.upsert({
-      where: {
-        id: dataFromNoris.vyb_id,
-      },
-      create: taxAdministratorData,
-      update: taxAdministratorData,
-    })
+    const taxAdministrator = taxAdministratorData
+      ? await transaction.taxAdministrator.upsert({
+          where: {
+            id: taxAdministratorData.id,
+          },
+          create: taxAdministratorData,
+          update: taxAdministratorData,
+        })
+      : undefined
 
     const taxPayerData = mapNorisToTaxPayerData(dataFromNoris, taxAdministrator)
     const taxPayer = await transaction.taxPayer.upsert({
@@ -335,28 +346,9 @@ export class NorisTaxSubservice {
       update: taxPayerData,
     })
 
-    const [qrCodeEmail, qrCodeWeb] = await Promise.all([
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024100000',
-      }),
-      this.qrCodeSubservice.createQrCode({
-        amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024200000',
-      }),
-    ])
-
     // deliveryMethod is missing here, since we do not want to update
     // historical taxes with the current delivery method in Noris
-    const taxData = mapNorisToTaxData(
-      dataFromNoris,
-      year,
-      taxPayer.id,
-      qrCodeEmail,
-      qrCodeWeb,
-    )
+    const taxData = mapNorisToTaxData(dataFromNoris, year, taxPayer.id)
     const tax = await transaction.tax.upsert({
       where: {
         taxPayerId_year: {
@@ -398,18 +390,18 @@ export class NorisTaxSubservice {
    */
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
     data: RequestPostNorisLoadDataDto,
-  ): Promise<NorisRawCommunalWasteTaxDto[]> {
+  ): Promise<NorisRawCommunalWasteTax[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
         const birthNumbersPlaceholders = data.birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
         data.birthNumbers.forEach((birthNumber, index) => {
-          request.input(`birth_number${index}`, birthNumber)
+          request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
-        request.input('year', data.year)
+        request.input('year', mssql.Int, data.year)
 
         const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
           '@birth_numbers',
@@ -428,13 +420,16 @@ export class NorisTaxSubservice {
         )
       },
     )
-    return norisData.recordset
+    return this.norisValidatorSubservice.validateNorisData(
+      NorisRawCommunalWasteTaxSchema,
+      norisData.recordset,
+    )
   }
 
   processWasteTaxRecords(
-    records: NorisRawCommunalWasteTaxDto[],
-  ): NorisCommunalWasteTaxGroupedDto[] {
-    const grouped: Record<string, NorisRawCommunalWasteTaxDto[]> = {}
+    records: NorisRawCommunalWasteTax[],
+  ): NorisCommunalWasteTaxGrouped[] {
+    const grouped: Record<string, NorisRawCommunalWasteTax[]> = {}
 
     records.forEach((rec) => {
       if (!grouped[rec.variabilny_symbol]) {
@@ -443,7 +438,7 @@ export class NorisTaxSubservice {
       grouped[rec.variabilny_symbol].push(rec)
     })
 
-    const result: NorisCommunalWasteTaxGroupedDto[] = []
+    const result: NorisCommunalWasteTaxGrouped[] = []
 
     Object.values(grouped).forEach((group) => {
       // Take the first record as "base" since all other fields are the same
@@ -466,14 +461,14 @@ export class NorisTaxSubservice {
 
       // Get all keys from BaseNorisCommunalWasteTaxDto
       const baseKeys = Object.keys(
-        baseNorisCommunalWasteTaxSchema.shape,
+        BaseNorisCommunalWasteTaxSchema.shape,
       ) as (keyof BaseNorisCommunalWasteTaxDto)[]
 
       const baseData = Object.fromEntries(
         baseKeys.map((key) => [key, base[key]]),
       ) as BaseNorisCommunalWasteTaxDto
 
-      const groupedData: NorisCommunalWasteTaxGroupedDto = {
+      const groupedData: NorisCommunalWasteTaxGrouped = {
         ...baseData,
         containers,
       }

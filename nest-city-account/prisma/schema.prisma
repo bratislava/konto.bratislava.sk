@@ -75,6 +75,8 @@ model User {
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery
   taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
+  // This is used to store the last time we tried to update the delivery methods in Noris for this user.
+  lastTaxDeliveryMethodsUpdateTry  DateTime                       @default(now())
   cognitoTier                          CognitoUserAttributesTierEnum?
   userIdCardVerify                     UserIdCardVerify[]
   isDeceased                           Boolean                        @default(false)
@@ -185,4 +187,29 @@ model Config {
   updatedAt DateTime @updatedAt
   key       String   @unique
   value     Json
+}
+
+model OAuth2Data {
+  id                         String   @id @default(uuid()) @db.Uuid
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  // Authorization request parameters
+  responseType               String   // 'code' for Authorization Code flow
+  clientId                   String
+  redirectUri                String
+  scope                      String?  // Space-delimited list of scopes
+  state                      String?  // CSRF protection token
+  codeChallenge              String?  // PKCE code challenge
+  codeChallengeMethod        String?  // PKCE code challenge method: 'S256' or 'plain'
+
+  // Grant generated during authorization
+  authorizationCode          String?   @unique
+  authorizationCodeCreatedAt DateTime?
+
+  // Encrypted (and base64-encoded) token values
+  accessTokenEnc             String?
+  accessTokenExpiresAt       DateTime?
+  idTokenEnc                 String?
+  refreshTokenEnc            String?
 }

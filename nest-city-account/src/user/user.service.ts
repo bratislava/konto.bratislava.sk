@@ -74,7 +74,8 @@ export class UserService {
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND
+        `User not found for Cognito ID: ${cognitoUserData.idUser}`,
+        `Failed to register login client '${loginClient}' for user with Cognito ID: ${cognitoUserData.idUser}. User does not exist in database.`
       )
     }
     await this.databaseSubservice.registerUserLoginClient(loginClient, user.id)
@@ -90,7 +91,8 @@ export class UserService {
     if (!legalPerson) {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND
+        `Legal person not found for Cognito ID: ${cognitoUserData.idUser}`,
+        `Failed to register login client '${loginClient}' for legal person with Cognito ID: ${cognitoUserData.idUser}. Legal person does not exist in database.`
       )
     }
     await this.databaseSubservice.registerLegalPersonLoginClient(loginClient, legalPerson.id)

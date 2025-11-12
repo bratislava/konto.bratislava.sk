@@ -28,6 +28,7 @@ import {
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
+import { RegisterLoginClientRequestDto } from './dtos/user.requests.dto'
 import { UserService } from './user.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -89,6 +90,49 @@ export class UserController {
     ) {
       const result = await this.userService.getOrCreateLegalPersonData(user)
       return result
+    }
+
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Register login client for the authenticated user',
+    description:
+      'Registers a login client for the currently authenticated user. This tracks which client the user logged in through.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Login client registered successfully',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @UseGuards(CognitoGuard)
+  @Post('register-login-client')
+  async registerLoginClient(
+    @User() user: CognitoGetUserData,
+    @Body() body: RegisterLoginClientRequestDto
+  ): Promise<void> {
+    if (
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
+    ) {
+      await this.userService.registerUserLoginClient(user, body.loginClient)
+      return
+    }
+
+    if (
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      await this.userService.registerLegalPersonLoginClient(user, body.loginClient)
+      return
     }
 
     throw this.throwerErrorGuard.UnprocessableEntityException(

@@ -53,6 +53,12 @@ enum GDPRCategoryEnum {
   LIBRARY
 }
 
+enum LoginClientEnum {
+  DPB
+  PAAS_MPA
+  CITY_ACCOUNT
+}
+
 model User {
   id                                   String                         @id @default(uuid()) @db.Uuid
   createdAt                            DateTime                       @default(now())
@@ -79,6 +85,7 @@ model User {
   lastTaxDeliveryMethodsUpdateTry  DateTime                       @default(now())
   cognitoTier                          CognitoUserAttributesTierEnum?
   userIdCardVerify                     UserIdCardVerify[]
+  userLoginClients                     UserLoginClient[]
   isDeceased                           Boolean                        @default(false)
   markedDeceasedAt                     DateTime?
 }
@@ -155,6 +162,7 @@ model LegalPerson {
   legalPersonGdprData                LegalPersonGdprData[]
   cognitoTier                        CognitoUserAttributesTierEnum?
   legalPersonIcoIdCardVerify         LegalPersonIcoIdCardVerify[]
+  legalPersonLoginClients            LegalPersonLoginClient[]
 
   @@unique([ico, birthNumber])
 }
@@ -181,6 +189,30 @@ model LegalPersonGdprData {
   legalPerson   LegalPerson      @relation(fields: [legalPersonId], references: [id])
 }
 
+model UserLoginClient {
+  id          String          @id @default(uuid()) @db.Uuid
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  userId      String          @db.Uuid
+  loginClient LoginClientEnum
+  user        User            @relation(fields: [userId], references: [id])
+
+  @@unique([userId, loginClient])
+  @@index([userId])
+}
+
+
+model LegalPersonLoginClient {
+  id            String          @id @default(uuid()) @db.Uuid
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  legalPersonId String          @db.Uuid
+  loginClient   LoginClientEnum
+  legalPerson   LegalPerson     @relation(fields: [legalPersonId], references: [id])
+
+  @@unique([legalPersonId, loginClient])
+  @@index([legalPersonId])
+}
 model Config {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())

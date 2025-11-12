@@ -439,6 +439,22 @@ export const RefreshTokenRequestDtoGrantTypeEnum = {
 export type RefreshTokenRequestDtoGrantTypeEnum =
   (typeof RefreshTokenRequestDtoGrantTypeEnum)[keyof typeof RefreshTokenRequestDtoGrantTypeEnum]
 
+export interface RegisterLoginClientRequestDto {
+  /**
+   * Client that the user logged in through
+   */
+  loginClient: RegisterLoginClientRequestDtoLoginClientEnum
+}
+
+export const RegisterLoginClientRequestDtoLoginClientEnum = {
+  Dpb: 'DPB',
+  PaasMpa: 'PAAS_MPA',
+  CityAccount: 'CITY_ACCOUNT',
+} as const
+
+export type RegisterLoginClientRequestDtoLoginClientEnum =
+  (typeof RegisterLoginClientRequestDtoLoginClientEnum)[keyof typeof RegisterLoginClientRequestDtoLoginClientEnum]
+
 export interface RequestBatchNewUserBirthNumbers {
   /**
    * Date to query.
@@ -4170,6 +4186,59 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
+     * Registers a login client for the currently authenticated user. This tracks which client the user logged in through.
+     * @summary Register login client for the authenticated user
+     * @param {RegisterLoginClientRequestDto} registerLoginClientRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerRegisterLoginClient: async (
+      registerLoginClientRequestDto: RegisterLoginClientRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'registerLoginClientRequestDto' is not null or undefined
+      assertParamExists(
+        'userControllerRegisterLoginClient',
+        'registerLoginClientRequestDto',
+        registerLoginClientRequestDto,
+      )
+      const localVarPath = `/user/register-login-client`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        registerLoginClientRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4544,6 +4613,34 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Registers a login client for the currently authenticated user. This tracks which client the user logged in through.
+     * @summary Register login client for the authenticated user
+     * @param {RegisterLoginClientRequestDto} registerLoginClientRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userControllerRegisterLoginClient(
+      registerLoginClientRequestDto: RegisterLoginClientRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerRegisterLoginClient(
+        registerLoginClientRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerRegisterLoginClient']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4767,6 +4864,21 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Registers a login client for the currently authenticated user. This tracks which client the user logged in through.
+     * @summary Register login client for the authenticated user
+     * @param {RegisterLoginClientRequestDto} registerLoginClientRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerRegisterLoginClient(
+      registerLoginClientRequestDto: RegisterLoginClientRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .userControllerRegisterLoginClient(registerLoginClientRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4891,6 +5003,22 @@ export class UsersManipulationApi extends BaseAPI {
   public userControllerGetOrCreateUser(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerGetOrCreateUser(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Registers a login client for the currently authenticated user. This tracks which client the user logged in through.
+   * @summary Register login client for the authenticated user
+   * @param {RegisterLoginClientRequestDto} registerLoginClientRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public userControllerRegisterLoginClient(
+    registerLoginClientRequestDto: RegisterLoginClientRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return UsersManipulationApiFp(this.configuration)
+      .userControllerRegisterLoginClient(registerLoginClientRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

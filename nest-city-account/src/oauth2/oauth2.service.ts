@@ -16,6 +16,8 @@ import * as jwt from 'jsonwebtoken'
 import { createHash, randomBytes } from 'node:crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
+import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
+import { ClientInfoResponseDto } from './dtos/responses.oauth2.dto'
 
 @Injectable()
 export class OAuth2Service {
@@ -26,7 +28,8 @@ export class OAuth2Service {
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly validationSubservice: OAuth2ValidationSubservice,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {}
 
   /**
@@ -378,7 +381,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: redirect_uri mismatch',
         undefined,
-        'Redirect URI mismatch', {
+        'Redirect URI mismatch',
+        {
           authRequestId: oauth2Data.id,
           clientId: oauth2Data.clientId,
           storedRedirectUri: oauth2Data.redirectUri,
@@ -404,7 +408,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: tokens not available for this authorization code',
         undefined,
-        'Tokens not available for authorization code', {
+        'Tokens not available for authorization code',
+        {
           authRequestId: oauth2Data.id,
           clientId: oauth2Data.clientId,
           hasAccessToken: !!oauth2Data.accessTokenEnc,
@@ -459,10 +464,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: invalid code_challenge_method',
         undefined,
-        'Invalid code_challenge_method', {
-          codeChallengeMethod,
-          validMethods: ['S256', 'plain'],
-        }
+        'Invalid code_challenge_method',
+        { codeChallengeMethod, validMethods: ['S256', 'plain'] }
       )
     }
 
@@ -471,7 +474,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: invalid code_verifier',
         undefined,
-        'PKCE code_verifier validation failed', {
+        'PKCE code_verifier validation failed',
+        {
           codeChallengeMethod,
           hasCodeVerifier: !!codeVerifier,
           hasCodeChallenge: !!codeChallenge,
@@ -535,10 +539,8 @@ export class OAuth2Service {
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: unable to refresh access token',
         undefined,
-        'No access token returned from Cognito refresh', {
-          clientId,
-          hasRefreshToken: !!refreshTokenPlain,
-        }
+        'No access token returned from Cognito refresh',
+        { clientId, hasRefreshToken: !!refreshTokenPlain }
       )
     }
 
@@ -573,5 +575,27 @@ export class OAuth2Service {
     }
 
     return response
+  }
+
+  /**
+   * Get client information (name and title) by client ID
+   *
+   * @param clientId - The client identifier
+   * @returns Client information with name and title
+   * @throws OAuth2AuthorizationException if client is not found
+   */
+  getClientInfo(clientId: string): ClientInfoResponseDto {
+    const client = this.oAuth2ClientSubservice.findClientById(clientId)
+    if (!client) {
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        `Client info could not be retrieved for client_id: ${clientId}`
+      )
+    }
+
+    return {
+      name: client.name,
+      title: client.title,
+    }
   }
 }

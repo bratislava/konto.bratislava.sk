@@ -3,7 +3,7 @@ resources:
   - secrets/database.secret.yml
   - ./secrets/cognito.secret.yml
   - ./secrets/oauth2-dpb.secret.yml
-  - ./secrets/oauth2-mpa.secret.yml
+  - ./secrets/oauth2-paas-mpa.secret.yml
 
 generatorOptions:
   disableNameSuffixHash: true

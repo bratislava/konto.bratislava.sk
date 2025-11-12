@@ -27,7 +27,10 @@ import {
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
+import {
+  CreateBirthNumbersResponseDto,
+  UpdateDeliveryMethodsInNorisResponseDto,
+} from './dtos/responses.dto'
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -119,12 +122,13 @@ export class AdminController {
   @ApiResponse({
     status: 200,
     description: 'Records successfully updated in Noris',
+    type: UpdateDeliveryMethodsInNorisResponseDto,
   })
   @UseGuards(AdminGuard)
   @Post('update-delivery-methods-in-noris')
   async updateDeliveryMethodsInNoris(
     @Body() data: RequestUpdateNorisDeliveryMethodsDto,
-  ): Promise<void> {
+  ): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
     return this.adminService.updateDeliveryMethodsInNoris(data)
   }
 

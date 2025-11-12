@@ -20,6 +20,7 @@ import {
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { GDPRSubTypeEnum } from '@prisma/client'
 import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
+import { LoginClientEnum } from '@prisma/client'
 
 @Injectable()
 export class UserService {
@@ -63,6 +64,36 @@ export class UserService {
     const user = await this.databaseSubservice.getOrCreateLegalPerson(cognitoUserData)
     const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
+  }
+
+  async registerUserLoginClient(
+    cognitoUserData: CognitoGetUserData,
+    loginClient: LoginClientEnum
+  ): Promise<void> {
+    const user = await this.databaseSubservice.getUserByExternalId(cognitoUserData.idUser)
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
+    }
+    await this.databaseSubservice.registerUserLoginClient(loginClient, user.id)
+  }
+
+  async registerLegalPersonLoginClient(
+    cognitoUserData: CognitoGetUserData,
+    loginClient: LoginClientEnum
+  ): Promise<void> {
+    const legalPerson = await this.databaseSubservice.getLegalPersonByExternalId(
+      cognitoUserData.idUser
+    )
+    if (!legalPerson) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
+    }
+    await this.databaseSubservice.registerLegalPersonLoginClient(loginClient, legalPerson.id)
   }
 
   async removeBirthNumber(id: string): Promise<ResponseUserDataDto> {

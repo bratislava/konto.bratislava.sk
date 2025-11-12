@@ -14,7 +14,14 @@ import {
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
-import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, LegalPerson, User } from '@prisma/client'
+import {
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+  LegalPerson,
+  LoginClientEnum,
+  User,
+} from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
@@ -172,6 +179,38 @@ export class DatabaseSubserviceUser {
     return legalPerson
   }
 
+  async registerUserLoginClient(loginClient: LoginClientEnum, userId: string) {
+    await this.prisma.userLoginClient.upsert({
+      where: {
+        userId_loginClient: {
+          userId,
+          loginClient,
+        },
+      },
+      update: {}, // No update needed, just ensure it exists
+      create: {
+        userId,
+        loginClient,
+      },
+    })
+  }
+
+  async registerLegalPersonLoginClient(loginClient: LoginClientEnum, legalPersonId: string) {
+    await this.prisma.legalPersonLoginClient.upsert({
+      where: {
+        legalPersonId_loginClient: {
+          legalPersonId,
+          loginClient,
+        },
+      },
+      update: {}, // No update needed, just ensure it exists
+      create: {
+        legalPersonId,
+        loginClient,
+      },
+    })
+  }
+
   async getUserById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: {
@@ -191,6 +230,13 @@ export class DatabaseSubserviceUser {
 
   async getLegalPersonById(id: string) {
     const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id } })
+    return legalPerson
+  }
+
+  async getLegalPersonByExternalId(externalId: string) {
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: { externalId },
+    })
     return legalPerson
   }
 

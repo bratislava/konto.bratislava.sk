@@ -430,16 +430,39 @@ export class TasksService {
       `Time window: ${isWithinWindow ? 'OPEN' : 'CLOSED'}, Today's tax count: ${todayTaxCount}/${dailyLimit}, Mode: ${shouldImport ? 'IMPORT' : 'PREPARE'}`,
     )
 
-    const birthNumbers =
-      await this.taxImportHelperSubservice.getPrioritizedBirthNumbers(year)
+    const { birthNumbers, newlyCreated } =
+      await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
+        year,
+      )
 
     if (birthNumbers.length === 0) {
       return
     }
 
-    await (shouldImport
-      ? this.taxImportHelperSubservice.importTaxes(birthNumbers, year)
-      : this.taxImportHelperSubservice.prepareTaxes(birthNumbers, year))
+    // Import newly created users regardless of window or limit
+    if (newlyCreated.length > 0) {
+      this.logger.log(
+        `Found ${newlyCreated.length} newly created users, importing immediately`,
+      )
+      await this.taxImportHelperSubservice.importTaxes(newlyCreated, year)
+    }
+
+    // Process remaining users based on window and limit
+    const remainingBirthNumbers = birthNumbers.filter(
+      (bn) => !newlyCreated.includes(bn),
+    )
+
+    if (remainingBirthNumbers.length > 0) {
+      await (shouldImport
+        ? this.taxImportHelperSubservice.importTaxes(
+            remainingBirthNumbers,
+            year,
+          )
+        : this.taxImportHelperSubservice.prepareTaxes(
+            remainingBirthNumbers,
+            year,
+          ))
+    }
   }
 
   private async retryWithDelay<T>(

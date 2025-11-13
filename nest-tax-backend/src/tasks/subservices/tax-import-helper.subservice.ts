@@ -121,13 +121,16 @@ export default class TaxImportHelperSubservice {
   }
 
   /**
-   * Get prioritized birth numbers for tax import
+   * Get prioritized birth numbers for tax import with metadata
    */
-  async getPrioritizedBirthNumbers(year: number): Promise<string[]> {
+  async getPrioritizedBirthNumbersWithMetadata(year: number): Promise<{
+    birthNumbers: string[]
+    newlyCreated: string[]
+  }> {
     const prioritized = await this.prismaService.$queryRaw<
-      { birthNumber: string }[]
+      { birthNumber: string; isNewlyCreated: boolean }[]
     >`
-      SELECT tp."birthNumber"
+      SELECT tp."birthNumber", (tp."createdAt" = tp."updatedAt") as "isNewlyCreated"
       FROM "TaxPayer" tp
       WHERE NOT EXISTS (
         SELECT 1
@@ -138,7 +141,12 @@ export default class TaxImportHelperSubservice {
       LIMIT ${this.UPLOAD_BIRTHNUMBERS_BATCH}
     `
 
-    return prioritized.map((p) => p.birthNumber)
+    const birthNumbers = prioritized.map((p) => p.birthNumber)
+    const newlyCreated = prioritized
+      .filter((p) => p.isNewlyCreated)
+      .map((p) => p.birthNumber)
+
+    return { birthNumbers, newlyCreated }
   }
 
   /**

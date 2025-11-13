@@ -2,7 +2,7 @@ import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
+import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/metadataStorage'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { useFormContext } from './useFormContext'

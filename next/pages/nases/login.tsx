@@ -5,8 +5,12 @@ import { useEffectOnce } from 'usehooks-ts'
 
 import { STEP_QUERY_PARAM_KEY } from '../../components/forms/useFormCurrentStepIndex'
 import { ROUTES } from '../../frontend/api/constants'
-import { FORM_SEND_EID_TOKEN_QUERY_KEY, popSendEidMetadata } from '../../frontend/utils/formSend'
 import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '../../frontend/utils/formState'
+import {
+  FORM_SEND_EID_TOKEN_QUERY_KEY,
+  popSendEidMetadata,
+  popSendEidMetadataVerify,
+} from '../../frontend/utils/metadataStorage'
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return { props: {} }
@@ -24,27 +28,45 @@ const NasesLoginPage = () => {
     }
     effectOnceRan.current = true
     const metadata = popSendEidMetadata()
-    if (!metadata) {
+    const metadataVerify = popSendEidMetadataVerify()
+    if (!metadata && !metadataVerify) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       router.push(ROUTES.HOME)
       return
     }
 
     const { token } = router.query
-    const query = {
-      [STEP_QUERY_PARAM_KEY]: STEP_QUERY_PARAM_VALUE_SUMMARY,
-      ...(typeof token === 'string' ? { [FORM_SEND_EID_TOKEN_QUERY_KEY]: token } : {}),
+
+    if (metadataVerify) {
+      const query = {
+        ...(typeof token === 'string' ? { [FORM_SEND_EID_TOKEN_QUERY_KEY]: token } : {}),
+      }
+
+      router.push(
+        {
+          pathname: ROUTES.IDENTITY_VERIFICATION,
+          query,
+        },
+        ROUTES.IDENTITY_VERIFICATION,
+      )
     }
 
-    const url = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(metadata.formSlug, metadata.formId)
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    router.push(
-      {
-        pathname: url,
-        query,
-      },
-      url,
-    )
+    if (metadata) {
+      const query = {
+        [STEP_QUERY_PARAM_KEY]: STEP_QUERY_PARAM_VALUE_SUMMARY,
+        ...(typeof token === 'string' ? { [FORM_SEND_EID_TOKEN_QUERY_KEY]: token } : {}),
+      }
+
+      const url = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(metadata.formSlug, metadata.formId)
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      router.push(
+        {
+          pathname: url,
+          query,
+        },
+        url,
+      )
+    }
   })
 
   return null

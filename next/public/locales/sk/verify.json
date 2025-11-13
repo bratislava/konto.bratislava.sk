@@ -1,0 +1,12 @@
+{
+  "identity_verification_subtitle_legal_entity": "Bez overenia nebudete schopný/á využívať služby Bratislavského konta v plnej miere (napr. odoslať vybrané elektronické žiadosti online). Overenie je jednorazové.",
+  "modals_close_button_title": "Zavrieť",
+  "verify_confirmation_eid_legal_modal.title": "Overiť cez slovensko.sk",
+  "verify_confirmation_eid_legal_modal.content": "Po kliknutí na Overiť cez eID budete presmerovaní na stránku slovensko.sk. Na overovanie identity s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí členovi/členke štatutárneho orgánu firmy, ktorej patrí toto Bratislavské konto.",
+  "verify_confirmation_eid_legal_modal.button_title": "Overiť cez eID",
+  "verify_confirmation_eid_legal_modal.button_title_loading": "Prebieha presmerovanie",
+  "eid_verifying_modal.title": "Identita sa overuje",
+  "eid_verifying_modal.content": "Počkajte na dokončenie overovania cez slovensko.sk.",
+  "eid_verifying_error_modal.title": "Identita sa nepodarila overiť",
+  "eid_verifying_error_modal.content": "Zopakujte overenie identity alebo kontaktujte podporu"
+}

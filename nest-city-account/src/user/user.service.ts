@@ -280,6 +280,12 @@ export class UserService {
     }
   }
 
+  /**
+   * Gets or creates user/legal person from Cognito user data as raw database entity
+   *
+   * @param cognitoUserData Cognito user data
+   * @returns raw database entity without additional computed fields
+   */
   async getOrCreateUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {

@@ -15,7 +15,7 @@ import { ROUTES } from '../frontend/api/constants'
 import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import {
-  clearLocalStorage,
+  clearOAuthSessionStorage,
   removeAllCookiesAndClearLocalStorage,
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
@@ -79,7 +79,7 @@ const LoginPage = () => {
           )
 
           logger.info(`[AUTH] Clearing locale storage`)
-          clearLocalStorage()
+          clearOAuthSessionStorage()
 
           logger.info(
             `[AUTH] Calling Continue endpoint with payload=${payload}, clientId=${clientId}, redirectUri=${redirectUri}, state=${state}`,

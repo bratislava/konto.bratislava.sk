@@ -37,10 +37,10 @@ export const removeAmplifyGuestIdentityIdCookies = () => {
 }
 
 /**
- * Clear temporarily stored tokens in locale storage when using OAuth sign up or sign in
+ * Clear temporarily stored tokens in session storage when using OAuth sign up or sign in
  */
-export const clearLocalStorage = () => {
-  localStorage.clear()
+export const clearOAuthSessionStorage = () => {
+  sessionStorage.clear()
 }
 
 export const useSignOut = () => {

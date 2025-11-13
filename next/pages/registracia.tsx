@@ -20,7 +20,7 @@ import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { clearLocalStorage } from '../frontend/utils/amplifyClient'
+import { clearOAuthSessionStorage } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import {
@@ -304,7 +304,7 @@ const RegisterPage = () => {
         // TODO OAuth: handle errors
         onConfirm: async () => {
           await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
-          clearLocalStorage()
+          clearOAuthSessionStorage()
           // TODO OAuth: check if payload exists, handle errors
           await router.push(getContinueUrl({ payload, clientId, redirectUri, state }))
         },

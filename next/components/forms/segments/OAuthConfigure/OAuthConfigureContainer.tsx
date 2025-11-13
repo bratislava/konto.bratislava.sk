@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { useOAuthParams } from '../../../../frontend/hooks/useOAuthParams'
-import { clearLocalStorage } from '../../../../frontend/utils/amplifyClient'
+import { clearOAuthSessionStorage } from '../../../../frontend/utils/amplifyClient'
 import { isProductionDeployment } from '../../../../frontend/utils/general'
 import { AccountContainer } from '../AccountContainer/AccountContainer'
 
@@ -22,7 +22,7 @@ const OAuthConfigureContainer = () => {
     const userPoolClientId = amplifyConfigure()
     setCurrentClientId(userPoolClientId || null)
 
-    clearLocalStorage()
+    clearOAuthSessionStorage()
   }, [amplifyConfigure])
 
   return isProductionDeployment() ? null : (

@@ -1,6 +1,6 @@
 import { Amplify } from 'aws-amplify'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
-import { CookieStorage, defaultStorage } from 'aws-amplify/utils'
+import { CookieStorage, sessionStorage } from 'aws-amplify/utils'
 import { useQueryState } from 'nuqs'
 import { useCallback } from 'react'
 
@@ -23,7 +23,7 @@ export const useOAuthParams = () => {
   const amplifyConfigure = useCallback(() => {
     if (isOAuthLogin) {
       Amplify.configure(createAmplifyConfig({ clientId }), amplifyLibraryOptions)
-      cognitoUserPoolsTokenProvider.setKeyValueStorage(defaultStorage) // Local storage
+      cognitoUserPoolsTokenProvider.setKeyValueStorage(sessionStorage) // Session storage - for oauth flow
     } else {
       Amplify.configure(amplifyConfig, amplifyLibraryOptions)
       // Setting cookie storage based on default setting, see https://github.com/aws-amplify/amplify-js/blob/%40aws-amplify/adapter-nextjs%401.6.8/packages/aws-amplify/src/initSingleton.ts#L41

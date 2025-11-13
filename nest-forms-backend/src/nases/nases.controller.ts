@@ -199,7 +199,7 @@ export default class NasesController {
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
-    if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
+    if ((await this.nasesService.getUpvsIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,

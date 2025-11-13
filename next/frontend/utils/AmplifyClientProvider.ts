@@ -13,6 +13,7 @@ Amplify.configure(amplifyConfig, amplifyLibraryOptions)
 export const useAmplifyConfigureByClientId = () => {
   const { clientId } = useOAuthParams()
 
+  // TODO OAuth: Discuss what should be checked here
   const isOAuthLogin = !!clientId
 
   const amplifyConfigureByClientId = useCallback(() => {

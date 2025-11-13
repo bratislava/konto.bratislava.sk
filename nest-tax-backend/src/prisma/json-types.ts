@@ -1,5 +1,4 @@
-import { z } from 'zod/index'
-import { TaxDetailTypeEnum } from '../tax/dtos/response.tax.dto'
+import { z } from 'zod'
 
 export enum RealEstateTaxPropertyType {
   APARTMENT = 'APARTMENT',
@@ -25,6 +24,9 @@ export enum RealEstateTaxAreaType {
 }
 
 export const RealEstateTaxDetailSchema = z.object({
+  taxLand: z.number().int(),
+  taxConstructions: z.number().int(),
+  taxFlat: z.number().int(),
   propertyDetails: z.array(
     z.object({
       type: z.enum(RealEstateTaxPropertyType),

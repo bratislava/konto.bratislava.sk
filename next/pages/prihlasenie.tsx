@@ -19,6 +19,7 @@ import {
   removeAllCookiesAndClearLocalStorage,
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
+import { useAmplifyConfigureByClientId } from '../frontend/utils/AmplifyClientProvider'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { getContinueUrl, handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
@@ -44,7 +45,8 @@ const LoginPage = () => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, amplifyConfigure, payload, clientId, redirectUri, state } = useOAuthParams()
+  const { payload, clientId, redirectUri, state } = useOAuthParams()
+  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyConfigureByClientId()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
@@ -59,7 +61,7 @@ const LoginPage = () => {
   const onLogin = async (email: string, password: string) => {
     logger.info(`[AUTH] Attempting to sign in for email ${email}`)
     // Make sure we call amplify with correct clientId
-    amplifyConfigure()
+    amplifyConfigureByClientId()
 
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })

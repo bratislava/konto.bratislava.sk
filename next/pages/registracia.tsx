@@ -21,6 +21,7 @@ import { ROUTES } from '../frontend/api/constants'
 import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { clearOAuthSessionStorage } from '../frontend/utils/amplifyClient'
+import { useAmplifyConfigureByClientId } from '../frontend/utils/AmplifyClientProvider'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import {
@@ -89,7 +90,8 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, amplifyConfigure, payload, clientId, redirectUri, state } = useOAuthParams()
+  const { payload, clientId, redirectUri, state } = useOAuthParams()
+  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyConfigureByClientId()
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -157,7 +159,7 @@ const RegisterPage = () => {
     try {
       logger.info(`[AUTH] Attempting to sign up for email ${email}`)
       // Make sure we call amplify with correct clientId
-      amplifyConfigure()
+      amplifyConfigureByClientId()
 
       handleErrorChange(null)
       setLastEmail(email)

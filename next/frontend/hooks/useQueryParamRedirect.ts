@@ -20,12 +20,12 @@ export const useQueryParamRedirect = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  const { clientId, payload, redirectUri, state } = useOAuthParams()
+
   const safeRedirect = useMemo(() => {
     const param = searchParams.get(redirectQueryParam)
     return getSafeRedirect(param)
   }, [searchParams])
-
-  const { clientId, payload, redirectUri, state } = useOAuthParams()
 
   /**
    * If redirect param exists in the current URL the function appends it to the next route. Should be only used for

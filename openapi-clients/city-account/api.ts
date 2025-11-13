@@ -4148,8 +4148,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-     * @summary Get or create user with his data
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4489,8 +4489,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through.
-     * @summary Upsert user and record login client
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4584,8 +4584,8 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-     * @summary Get or create user with his data
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4795,8 +4795,8 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through.
-     * @summary Upsert user and record login client
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4857,8 +4857,8 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-     * @summary Get or create user with his data
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4963,8 +4963,8 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through.
-     * @summary Upsert user and record login client
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5001,8 +5001,8 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-   * @summary Get or create user with his data
+   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+   * @summary Get or create user with their data (use when already logged in, not duing login/registration)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
@@ -5108,8 +5108,8 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through.
-   * @summary Upsert user and record login client
+   * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+   * @summary Upsert user and record login client (use during login/registration)
    * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

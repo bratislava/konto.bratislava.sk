@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxDetailareaType, TaxType } from '@prisma/client'
+import { TaxType } from '@prisma/client'
+
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -14,6 +15,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator'
+import { RealEstateTaxAreaType } from '../../prisma/json-types'
 
 export enum TaxDetailTypeEnum {
   APARTMENT = 'APARTMENT',
@@ -173,12 +175,12 @@ export class ResponseGetTaxesListDto {
 export class ResponseApartmentTaxDetailDto {
   @ApiProperty({
     description: 'Type of apartment',
-    default: TaxDetailareaType.byt,
-    enumName: 'TaxDetailareaType',
-    enum: TaxDetailareaType,
+    default: RealEstateTaxAreaType.byt,
+    enumName: 'RealEstateTaxAreaType',
+    enum: RealEstateTaxAreaType,
   })
-  @IsEnum(TaxDetailareaType)
-  type: TaxDetailareaType
+  @IsEnum(RealEstateTaxAreaType)
+  type: RealEstateTaxAreaType
 
   @ApiProperty({
     description: 'Base of tax in m^2',
@@ -200,12 +202,12 @@ export class ResponseApartmentTaxDetailDto {
 export class ResponseGroundTaxDetailDto {
   @ApiProperty({
     description: 'Type of area',
-    default: TaxDetailareaType.byt,
-    enumName: 'TaxDetailareaType',
-    enum: TaxDetailareaType,
+    default: RealEstateTaxAreaType.byt,
+    enumName: 'RealEstateTaxAreaType',
+    enum: RealEstateTaxAreaType,
   })
-  @IsEnum(TaxDetailareaType)
-  type: TaxDetailareaType
+  @IsEnum(RealEstateTaxAreaType)
+  type: RealEstateTaxAreaType
 
   @ApiPropertyOptional({
     description: 'Area of taxed ground in m^2',
@@ -236,12 +238,12 @@ export class ResponseGroundTaxDetailDto {
 export class ResponseConstructionTaxDetailDto {
   @ApiProperty({
     description: 'Type of construction',
-    default: TaxDetailareaType.RESIDENTIAL,
-    enumName: 'TaxDetailareaType',
-    enum: TaxDetailareaType,
+    default: RealEstateTaxAreaType.RESIDENTIAL,
+    enumName: 'RealEstateTaxAreaType',
+    enum: RealEstateTaxAreaType,
   })
-  @IsEnum(TaxDetailareaType)
-  type: TaxDetailareaType
+  @IsEnum(RealEstateTaxAreaType)
+  type: RealEstateTaxAreaType
 
   @ApiProperty({
     description: 'Base of tax in m^2',
@@ -600,7 +602,7 @@ export class ResponseRealEstateTaxDetailItemizedDto {
     description: 'Apartment tax itemized',
     type: ResponseApartmentTaxDetailDto,
     isArray: true,
-    example: [{ type: TaxDetailareaType.byt, base: 100, amount: 100 }],
+    example: [{ type: RealEstateTaxAreaType.byt, base: 100, amount: 100 }],
   })
   @IsArray()
   @ValidateNested({ each: true })
@@ -612,7 +614,7 @@ export class ResponseRealEstateTaxDetailItemizedDto {
     type: ResponseGroundTaxDetailDto,
     example: [
       {
-        type: TaxDetailareaType.A,
+        type: RealEstateTaxAreaType.A,
         area: '100m2',
         base: 100,
         amount: 100,
@@ -629,7 +631,7 @@ export class ResponseRealEstateTaxDetailItemizedDto {
     description: 'Construction tax itemized',
     type: ResponseConstructionTaxDetailDto,
     isArray: true,
-    example: [{ type: TaxDetailareaType.RESIDENTIAL, base: 100, amount: 100 }],
+    example: [{ type: RealEstateTaxAreaType.RESIDENTIAL, base: 100, amount: 100 }],
   })
   @IsArray()
   @ValidateNested({ each: true })

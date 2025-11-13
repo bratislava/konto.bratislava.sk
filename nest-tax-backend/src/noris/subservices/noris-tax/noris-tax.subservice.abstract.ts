@@ -13,6 +13,7 @@ import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { NorisRealEstateTax } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
+  mapNorisToDatabaseBaseTax,
   mapNorisToTaxAdministratorData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
@@ -102,11 +103,13 @@ export abstract class AbstractNorisTaxSubservice {
 
     // deliveryMethod is missing here, since we do not want to update
     // historical taxes with the current delivery method in Noris
-    const taxData = taxDefinition.mapNorisToTaxData(
+    const taxDataBase = mapNorisToDatabaseBaseTax(
       dataFromNoris,
       year,
       taxPayer.id,
     )
+
+    const taxDetails = taxDefinition.mapNorisToTaxDetailData(dataFromNoris)
 
     const whereUnique: Prisma.TaxWhereUniqueInput = {
       ...(taxDefinition.isUnique
@@ -124,9 +127,10 @@ export abstract class AbstractNorisTaxSubservice {
     }
     const tax = await transaction.tax.upsert({
       where: whereUnique,
-      update: taxData,
+      update: taxDataBase,
       create: {
-        ...taxData,
+        ...taxDataBase,
+        taxDetails,
         type: taxDefinition.type,
         deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
       },
@@ -140,14 +144,6 @@ export abstract class AbstractNorisTaxSubservice {
       data: taxInstallments,
     })
 
-    const taxDetailData = taxDefinition.mapNorisToTaxDetailData(
-      dataFromNoris,
-      tax.id,
-    )
-
-    await transaction.taxDetail.createMany({
-      data: taxDetailData,
-    })
     return tax
   }
 

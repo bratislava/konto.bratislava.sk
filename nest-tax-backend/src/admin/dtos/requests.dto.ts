@@ -1,11 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsDateString,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
@@ -20,13 +22,26 @@ export class RequestPostNorisLoadDataDto {
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'Birth numbers in format with slash',
     default: ['000000/0000'],
   })
+  @IsString({ each: true })
+  @IsArray()
+  @IsNotEmpty({ each: true })
   birthNumbers: string[]
+
+  @ApiPropertyOptional({
+    description:
+      'If true, only prepare data (validate and mark as ready) without creating taxes',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  prepareOnly?: boolean
 }
 
 export class RequestPostNorisPaymentDataLoadDto {

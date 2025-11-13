@@ -63,8 +63,9 @@ export class NorisService {
   async processNorisTaxData(
     norisData: NorisRealEstateTax[],
     year: number,
+    prepareOnly: boolean = false,
   ): Promise<string[]> {
-    return this.taxSubservice.processNorisTaxData(norisData, year)
+    return this.taxSubservice.processNorisTaxData(norisData, year, prepareOnly)
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(

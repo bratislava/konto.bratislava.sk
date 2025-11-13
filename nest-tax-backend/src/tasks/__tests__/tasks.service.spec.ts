@@ -16,6 +16,7 @@ import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subse
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import TasksConfigSubservice from '../subservices/config.subservice'
+import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
 import { TasksService } from '../tasks.service'
 
 describe('TasksService', () => {
@@ -48,6 +49,10 @@ describe('TasksService', () => {
         {
           provide: BloomreachService,
           useValue: createMock<BloomreachService>(),
+        },
+        {
+          provide: TaxImportHelperSubservice,
+          useValue: createMock<TaxImportHelperSubservice>(),
         },
       ],
     }).compile()

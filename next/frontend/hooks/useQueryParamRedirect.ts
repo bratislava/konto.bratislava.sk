@@ -47,9 +47,7 @@ export const useQueryParamRedirect = () => {
    */
   const getRedirectQueryParams = useCallback(() => {
     if (!isHomeRedirect(safeRedirect)) {
-      return {
-        [redirectQueryParam]: safeRedirect.url,
-      }
+      return { [redirectQueryParam]: safeRedirect.url }
     }
 
     return {

@@ -33,7 +33,6 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignOut: true, redirectQueryParam: true },
 )
 
-// TODO OAuth
 const ForgottenPasswordPage = () => {
   const [lastEmail, setLastEmail] = useState('')
   const [forgotPasswordError, setForgotPasswordError] = useState<Error | null>(null)

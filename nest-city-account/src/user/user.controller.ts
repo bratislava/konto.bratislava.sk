@@ -28,7 +28,7 @@ import {
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
-import { RecordLoginClientRequestDto } from './dtos/user.requests.dto'
+import { UpsertUserRecordClientRequestDto } from './dtos/user.requests.dto'
 import { UserService } from './user.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -81,13 +81,19 @@ export class UserController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Record login client for the authenticated user',
+    summary: 'Upsert user and record login client',
     description:
-      'Records a login client for the currently authenticated user. This tracks which client the user logged in through.',
+      'Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Login client recorded successfully',
+    description: 'User/legal person data with login client recorded successfully',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataDto) },
+      ],
+    },
   })
   @ApiResponse({
     status: 500,
@@ -95,12 +101,14 @@ export class UserController {
     type: ResponseInternalServerErrorDto,
   })
   @UseGuards(CognitoGuard)
-  @Post('record-login-client')
-  async recordLoginClient(
+  @Post('upsert-user-record-client')
+  async upsertUserAndRecordClient(
     @User() user: CognitoGetUserData,
-    @Body() body: RecordLoginClientRequestDto
-  ): Promise<void> {
+    @Body() body: UpsertUserRecordClientRequestDto
+  ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
+    const userData = await this.userService.getOrCreateUserOrLegalPerson(user)
     await this.userService.recordLoginClient(user, body.loginClient)
+    return userData
   }
 
   @HttpCode(200)

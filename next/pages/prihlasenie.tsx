@@ -58,8 +58,7 @@ const LoginPage = () => {
         await prepareFormMigration()
         // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
         // there might be some cases where user is not there yet.
-        await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
-        await cityAccountClient.userControllerRegisterLoginClient(
+        await cityAccountClient.userControllerUpsertUserAndRecordClient(
           { loginClient: LoginClientEnum.CityAccount },
           { authStrategy: 'authOnly' },
         )

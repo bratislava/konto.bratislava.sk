@@ -9,4 +9,4 @@ export const cityAccountClient = createCityAccountClient({
 }) as ClientWithCustomConfig<CityAccountClient>
 
 // Alias for better readability
-export { RegisterLoginClientRequestDtoLoginClientEnum as LoginClientEnum } from 'openapi-clients/city-account'
+export { UpsertUserRecordClientRequestDtoLoginClientEnum as LoginClientEnum } from 'openapi-clients/city-account'

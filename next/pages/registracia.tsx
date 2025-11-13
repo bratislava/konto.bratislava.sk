@@ -116,8 +116,7 @@ const RegisterPage = () => {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
         await prepareFormMigration()
         // This endpoint must be called to register user also to the City Account BE
-        await cityAccountClient.userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
-        await cityAccountClient.userControllerRegisterLoginClient(
+        await cityAccountClient.userControllerUpsertUserAndRecordClient(
           { loginClient: LoginClientEnum.CityAccount },
           { authStrategy: 'authOnly' },
         )

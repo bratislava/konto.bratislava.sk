@@ -12,7 +12,7 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxPayerReducedDto,
-  ResponseTaxSummaryDetailDto,
+  ResponseRealEstateTaxSummaryDetailDto,
 } from '../../dtos/response.tax.dto'
 import { getTaxStatus } from '../../utils/helpers/tax.helper'
 import { getRealEstateTaxDetailPure } from '../../utils/unified-tax.util'
@@ -20,6 +20,7 @@ import {
   AbstractTaxSubservice,
   specificSymbol,
 } from './tax.subservice.abstract'
+import { RealEstateTaxDetail } from '../../../prisma/json-types'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -39,7 +40,7 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
     birthNumber: string,
     year: number,
     order: number,
-  ): Promise<ResponseTaxSummaryDetailDto> {
+  ): Promise<ResponseRealEstateTaxSummaryDetailDto> {
     const today = dayjs().tz('Europe/Bratislava')
 
     const tax = await this.fetchTaxData(
@@ -67,7 +68,7 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
       variableSymbol: tax.variableSymbol,
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
-      taxDetails: tax.taxDetails,
+      taxDetails: tax.taxDetails as RealEstateTaxDetail, // FIXME this is a temporary fix
       taxConstructions: tax.taxConstructions ?? 0,
       taxFlat: tax.taxFlat ?? 0,
       taxLand: tax.taxLand ?? 0,

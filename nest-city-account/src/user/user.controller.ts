@@ -76,26 +76,7 @@ export class UserController {
   async getOrCreateUser(
     @User() user: CognitoGetUserData
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      const result = await this.userService.getOrCreateUserData(user)
-      return result
-    }
-
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const result = await this.userService.getOrCreateLegalPersonData(user)
-      return result
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
+    return this.userService.getOrCreateUserOrLegalPerson(user)
   }
 
   @HttpCode(200)
@@ -119,26 +100,7 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() body: RegisterLoginClientRequestDto
   ): Promise<void> {
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      await this.userService.registerUserLoginClient(user, body.loginClient)
-      return
-    }
-
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      await this.userService.registerLegalPersonLoginClient(user, body.loginClient)
-      return
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
+    await this.userService.registerLoginClient(user, body.loginClient)
   }
 
   @HttpCode(200)

@@ -19,7 +19,11 @@ import {
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { GDPRSubTypeEnum } from '@prisma/client'
-import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
 import { LoginClientEnum } from '@prisma/client'
 
 @Injectable()
@@ -281,10 +285,8 @@ export class UserService {
     }
   }
 
-  async getOrCreateUserOrLegalPerson(
-    accountType: CognitoUserAccountTypesEnum,
-    cognitoUserData: CognitoGetUserData
-  ) {
+  async getOrCreateUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
       const result = await this.databaseSubservice.getOrCreateUser(cognitoUserData, true)
       return result
@@ -296,5 +298,52 @@ export class UserService {
       const result = await this.databaseSubservice.getOrCreateLegalPerson(cognitoUserData)
       return result
     }
+  }
+
+  async getOrCreateUserOrLegalPerson(
+    cognitoUserData: CognitoGetUserData
+  ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      return this.getOrCreateUserData(cognitoUserData)
+    }
+
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      return this.getOrCreateLegalPersonData(cognitoUserData)
+    }
+
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
+  }
+
+  async registerLoginClient(
+    cognitoUserData: CognitoGetUserData,
+    loginClient: LoginClientEnum
+  ): Promise<void> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      await this.registerUserLoginClient(cognitoUserData, loginClient)
+      return
+    }
+
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      await this.registerLegalPersonLoginClient(cognitoUserData, loginClient)
+      return
+    }
+
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
   }
 }

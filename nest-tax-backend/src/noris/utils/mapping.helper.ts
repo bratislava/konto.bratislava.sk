@@ -1,12 +1,13 @@
-import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
+import { TaxAdministrator } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisRealEstateTax } from '../types/noris.types'
+import { NorisBaseTax, NorisRealEstateTax } from '../types/noris.types'
+import { DeliveryMethod, DeliveryMethodNoris } from './noris.types'
 import {
-  AreaTypesEnum,
-  DeliveryMethod,
-  DeliveryMethodNoris,
-} from './noris.types'
+  RealEstateTaxAreaType,
+  RealEstateTaxDetail,
+  RealEstateTaxPropertyType,
+} from '../../prisma/json-types'
 
 export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue
@@ -14,7 +15,7 @@ export const convertCurrencyToInt = (value: string): number => {
 
 // Helper mapping functions to improve maintainability
 export const mapNorisToTaxPayerData = (
-  data: NorisRealEstateTax,
+  data: NorisBaseTax,
   taxAdministrator?: TaxAdministrator,
 ) => {
   return {
@@ -40,7 +41,7 @@ type NorisTaxAdministratorData = {
 }
 
 export const mapNorisToTaxAdministratorData = (
-  data: NorisRealEstateTax,
+  data: NorisBaseTax,
 ): NorisTaxAdministratorData | undefined => {
   return data.vyb_id && data.vyb_telefon_prace && data.vyb_email
     ? {
@@ -53,7 +54,7 @@ export const mapNorisToTaxAdministratorData = (
     : undefined
 }
 
-export type RealEstateTaxData = {
+export type DatabaseBaseTaxData = {
   amount: number
   year: number
   taxPayerId: number
@@ -61,29 +62,6 @@ export type RealEstateTaxData = {
   dateCreateTax: string | null
   dateTaxRuling: Date | null
   taxId: string | null
-  taxLand: number
-  taxConstructions: number
-  taxFlat: number
-}
-
-
-export const mapNorisToRealEstateTaxData = (
-  data: NorisRealEstateTax,
-  year: number,
-  taxPayerId: number,
-): RealEstateTaxData => {
-  return {
-    amount: convertCurrencyToInt(data.dan_spolu),
-    year,
-    taxPayerId,
-    variableSymbol: data.variabilny_symbol,
-    dateCreateTax: data.akt_datum,
-    dateTaxRuling: data.datum_platnosti,
-    taxId: data.cislo_konania,
-    taxLand: convertCurrencyToInt(data.dan_pozemky),
-    taxConstructions: convertCurrencyToInt(data.dan_stavby_SPOLU),
-    taxFlat: convertCurrencyToInt(data.dan_byty),
-  }
 }
 
 type TaxInstallment = {
@@ -94,7 +72,7 @@ type TaxInstallment = {
 }
 
 export const mapNorisToTaxInstallmentsData = (
-  data: NorisRealEstateTax,
+  data: NorisBaseTax,
   taxId: number,
 ): TaxInstallment[] => {
   if (data.SPL4_2 === '') {
@@ -148,45 +126,84 @@ export const mapDeliveryMethodToNoris = (
   return norisMethod
 }
 
+export const mapNorisToDatabaseBaseTax = (
+  data: NorisBaseTax,
+  year: number,
+  taxPayerId: number,
+): DatabaseBaseTaxData => {
+  return {
+    amount: convertCurrencyToInt(data.dan_spolu),
+    year,
+    taxPayerId,
+    variableSymbol: data.variabilny_symbol,
+    dateCreateTax: data.akt_datum,
+    dateTaxRuling: data.datum_platnosti,
+    taxId: data.cislo_konania,
+  }
+}
 
-export const mapNorisToRealEstateTaxDetailData = (
+export const mapNorisToRealEstateDatabaseDetail = (
   data: NorisRealEstateTax,
-  taxId: number,
-): RealEstateTaxDetail[] => {
+): RealEstateTaxDetail => {
   const config: Record<
     string,
     {
-      areaType: AreaTypesEnum
+      areaType: RealEstateTaxPropertyType
       base: string
       amount: string
       area: string | false
-      types: TaxDetailareaType[]
+      types: RealEstateTaxAreaType[]
     }
   > = {
     pozemky: {
-      areaType: AreaTypesEnum.GROUND,
+      areaType: RealEstateTaxPropertyType.GROUND,
       base: 'ZAKLAD',
       amount: 'DAN',
       area: 'VYMERA',
-      types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      types: [
+        RealEstateTaxAreaType.A,
+        RealEstateTaxAreaType.B,
+        RealEstateTaxAreaType.C,
+        RealEstateTaxAreaType.D,
+        RealEstateTaxAreaType.E,
+        RealEstateTaxAreaType.F,
+        RealEstateTaxAreaType.G,
+        RealEstateTaxAreaType.H,
+      ],
     },
     stavba: {
-      areaType: AreaTypesEnum.CONSTRUCTION,
+      areaType: RealEstateTaxPropertyType.CONSTRUCTION,
       base: 'ZAKLAD',
       amount: 'DAN',
       area: false,
-      types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'jH', 'jI', 'H'],
+      types: [
+        RealEstateTaxAreaType.A,
+        RealEstateTaxAreaType.B,
+        RealEstateTaxAreaType.C,
+        RealEstateTaxAreaType.D,
+        RealEstateTaxAreaType.E,
+        RealEstateTaxAreaType.F,
+        RealEstateTaxAreaType.G,
+        RealEstateTaxAreaType.jH,
+        RealEstateTaxAreaType.jI,
+        RealEstateTaxAreaType.H,
+      ],
     },
     byt: {
-      areaType: AreaTypesEnum.APARTMENT,
+      areaType: RealEstateTaxPropertyType.APARTMENT,
       base: 'zaklad_dane',
       amount: 'dan_byty',
       area: false,
-      types: ['byt', 'nebyt'],
+      types: [RealEstateTaxAreaType.byt, RealEstateTaxAreaType.nebyt],
     },
   }
 
-  const response: RealEstateTaxDetail[] = []
+  const details: RealEstateTaxDetail = {
+    taxLand: convertCurrencyToInt(data.dan_pozemky),
+    taxConstructions: convertCurrencyToInt(data.dan_stavby_SPOLU),
+    taxFlat: convertCurrencyToInt(data.dan_byty),
+    propertyDetails: [],
+  }
 
   Object.entries(config).forEach(([keyTaxConfig, valueTaxConfig]) => {
     valueTaxConfig.types.forEach((taxType) => {
@@ -197,8 +214,7 @@ export const mapNorisToRealEstateTaxDetailData = (
       const amountKey =
         `${prefix}_${valueTaxConfig.amount}_${taxType}` as keyof NorisRealEstateTax
 
-      const taxDetailItem: RealEstateTaxDetail = {
-        taxId,
+      const taxDetailItem = {
         areaType: taxType,
         type: valueTaxConfig.areaType,
         base: currency((data[baseKey] as string).replace(',', '.')).intValue,
@@ -208,12 +224,12 @@ export const mapNorisToRealEstateTaxDetailData = (
           ? (data[
               `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisRealEstateTax
             ] as string)
-          : null,
+          : undefined,
       }
 
-      response.push(taxDetailItem)
+      details.propertyDetails.push(taxDetailItem)
     })
   })
 
-  return response
+  return details
 }

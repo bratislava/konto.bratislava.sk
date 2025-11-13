@@ -195,6 +195,7 @@ model UserLoginClient {
   updatedAt   DateTime        @updatedAt
   userId      String          @db.Uuid
   loginClient LoginClientEnum
+  loginCount  Int             @default(0)
   user        User            @relation(fields: [userId], references: [id])
 
   @@unique([userId, loginClient])
@@ -208,6 +209,7 @@ model LegalPersonLoginClient {
   updatedAt     DateTime        @updatedAt
   legalPersonId String          @db.Uuid
   loginClient   LoginClientEnum
+  loginCount    Int             @default(0)
   legalPerson   LegalPerson     @relation(fields: [legalPersonId], references: [id])
 
   @@unique([legalPersonId, loginClient])

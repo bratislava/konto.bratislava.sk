@@ -187,10 +187,15 @@ export class DatabaseSubserviceUser {
           loginClient,
         },
       },
-      update: {}, // No update needed, just ensure it exists
+      update: {
+        loginCount: {
+          increment: 1,
+        },
+      },
       create: {
         userId,
         loginClient,
+        loginCount: 1,
       },
     })
   }
@@ -203,10 +208,15 @@ export class DatabaseSubserviceUser {
           loginClient,
         },
       },
-      update: {}, // No update needed, just ensure it exists
+      update: {
+        loginCount: {
+          increment: 1,
+        },
+      },
       create: {
         legalPersonId,
         loginClient,
+        loginCount: 1,
       },
     })
   }

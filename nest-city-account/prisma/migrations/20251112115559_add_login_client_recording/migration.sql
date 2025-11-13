@@ -10,6 +10,7 @@ CREATE TABLE "UserLoginClient" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" UUID NOT NULL,
     "loginClient" "LoginClientEnum" NOT NULL,
+    "loginCount" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "UserLoginClient_pkey" PRIMARY KEY ("id")
 );
@@ -21,6 +22,7 @@ CREATE TABLE "LegalPersonLoginClient" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "legalPersonId" UUID NOT NULL,
     "loginClient" "LoginClientEnum" NOT NULL,
+    "loginCount" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "LegalPersonLoginClient_pkey" PRIMARY KEY ("id")
 );
@@ -44,24 +46,26 @@ ALTER TABLE "UserLoginClient" ADD CONSTRAINT "UserLoginClient_userId_fkey" FOREI
 ALTER TABLE "LegalPersonLoginClient" ADD CONSTRAINT "LegalPersonLoginClient_legalPersonId_fkey" FOREIGN KEY ("legalPersonId") REFERENCES "LegalPerson"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- Insert CITY_ACCOUNT entries for all existing users
-INSERT INTO "UserLoginClient" ("id", "createdAt", "updatedAt", "userId", "loginClient")
+INSERT INTO "UserLoginClient" ("id", "createdAt", "updatedAt", "userId", "loginClient", "loginCount")
 SELECT 
     gen_random_uuid(),
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP,
     "id",
-    'CITY_ACCOUNT'::"LoginClientEnum"
+    'CITY_ACCOUNT'::"LoginClientEnum",
+    0
 FROM "User"
 ON CONFLICT ("userId", "loginClient") DO NOTHING;
 
 -- Insert CITY_ACCOUNT entries for all existing legal persons
-INSERT INTO "LegalPersonLoginClient" ("id", "createdAt", "updatedAt", "legalPersonId", "loginClient")
+INSERT INTO "LegalPersonLoginClient" ("id", "createdAt", "updatedAt", "legalPersonId", "loginClient", "loginCount")
 SELECT 
     gen_random_uuid(),
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP,
     "id",
-    'CITY_ACCOUNT'::"LoginClientEnum"
+    'CITY_ACCOUNT'::"LoginClientEnum",
+    0
 FROM "LegalPerson"
 ON CONFLICT ("legalPersonId", "loginClient") DO NOTHING;
 

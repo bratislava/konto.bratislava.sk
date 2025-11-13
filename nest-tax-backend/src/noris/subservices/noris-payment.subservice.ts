@@ -20,10 +20,9 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
-import { NorisPaymentSchema } from '../types/noris.schema'
 import {
-  NorisPayment,
   NorisPaymentWithVariableSymbol,
+  NorisTaxPayment,
 } from '../types/noris.types'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
@@ -33,6 +32,7 @@ import {
 } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisValidatorSubservice } from './noris-validator.subservice'
+import { NorisTaxPaymentSchema } from '../types/noris.schema'
 
 @Injectable()
 export class NorisPaymentSubservice {
@@ -53,7 +53,7 @@ export class NorisPaymentSubservice {
 
   async getPaymentDataFromNoris(
     data: RequestPostNorisPaymentDataLoadDto,
-  ): Promise<NorisPayment[]> {
+  ): Promise<NorisTaxPayment[]> {
     const { fromDate, toDate, overPayments, year } = data
 
     const norisData = await this.connectionService.withConnection(
@@ -78,14 +78,14 @@ export class NorisPaymentSubservice {
       },
     )
     return this.norisValidatorSubservice.validateNorisData(
-      NorisPaymentSchema,
+      NorisTaxPaymentSchema,
       norisData.recordset,
     )
   }
 
   async getPaymentDataFromNorisByVariableSymbols(
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
-  ): Promise<NorisPayment[]> {
+  ): Promise<NorisTaxPayment[]> {
     const filteredVariableSymbols = data.variableSymbols.filter(
       (variableSymbol) => {
         if (/^\d+$/.test(variableSymbol)) {
@@ -147,7 +147,7 @@ export class NorisPaymentSubservice {
       },
     )
     return this.norisValidatorSubservice.validateNorisData(
-      NorisPaymentSchema,
+      NorisTaxPaymentSchema,
       norisData.recordset,
     )
   }
@@ -180,7 +180,7 @@ export class NorisPaymentSubservice {
 
     const validatedOverpaymentsData =
       this.norisValidatorSubservice.validateNorisData(
-        NorisPaymentSchema,
+        NorisTaxPaymentSchema,
         overpaymentsData.recordset,
       )
     return this.updatePaymentsFromNorisWithData(
@@ -189,7 +189,7 @@ export class NorisPaymentSubservice {
     )
   }
 
-  private async createTaxMapByVariableSymbol(norisPaymentData: NorisPayment[]) {
+  private async createTaxMapByVariableSymbol(norisPaymentData: NorisTaxPayment[]) {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {
@@ -206,7 +206,7 @@ export class NorisPaymentSubservice {
   }
 
   async updatePaymentsFromNorisWithData(
-    norisPaymentData: NorisPayment[],
+    norisPaymentData: NorisTaxPayment[],
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
@@ -249,7 +249,7 @@ export class NorisPaymentSubservice {
   }
 
   private hasVariableSymbol(
-    payment: NorisPayment,
+    payment: NorisTaxPayment,
   ): payment is NorisPaymentWithVariableSymbol {
     return (
       payment.variabilny_symbol !== null && payment.variabilny_symbol !== ''
@@ -257,7 +257,7 @@ export class NorisPaymentSubservice {
   }
 
   private async processNorisPaymentData(
-    norisPaymentData: NorisPayment[],
+    norisPaymentData: NorisTaxPayment[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
     bloomreachSettings?: {

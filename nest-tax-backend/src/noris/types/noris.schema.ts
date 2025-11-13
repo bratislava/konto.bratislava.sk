@@ -42,7 +42,7 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
 })
 
 export const NorisTaxPaymentSchema = z.object({
-  variabilny_symbol: z.string().nullable(),
+  variabilny_symbol: z.string(),
   uhrazeno: z.coerce.number(),
   specificky_symbol: z.string().nullable(),
 })

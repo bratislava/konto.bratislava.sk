@@ -27,7 +27,8 @@ import {
 } from '../utils/guards/dtos/error.dto'
 import {
   ResponseGetTaxesListDto,
-  ResponseTaxSummaryDetailDto,
+  ResponseRealEstateTaxSummaryDetailDto,
+  ResponseCommunalWasteTaxSummaryDetailDto
 } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
@@ -44,7 +45,7 @@ export class TaxControllerV2 {
   @ApiResponse({
     status: 200,
     description: 'Load tax detail about user.',
-    type: ResponseTaxSummaryDetailDto,
+    type: ResponseRealEstateTaxSummaryDetailDto || ResponseCommunalWasteTaxSummaryDetailDto,
   })
   @ApiResponse({
     status: 422,

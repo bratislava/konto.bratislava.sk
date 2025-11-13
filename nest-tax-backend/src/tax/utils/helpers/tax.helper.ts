@@ -1,7 +1,8 @@
-import { TaxDetail, TaxDetailType } from '@prisma/client'
+import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
 import dayjs, { Dayjs } from 'dayjs'
 
 import { TaxPaidStatusEnum, TaxStatusEnum } from '../../dtos/response.tax.dto'
+import { RealEstateTaxDetail } from '../../../prisma/json-types'
 
 export const getTaxStatus = (
   desiredPayment: number,
@@ -52,10 +53,10 @@ export const checkTaxDateInclusion = (
 }
 
 export const generateItemizedRealEstateTaxDetail = (
-  taxDetails: TaxDetail[],
+  taxDetails: RealEstateTaxDetail,
 ) => {
-  const apartmentTaxDetail = taxDetails
-    .filter((detail) => detail.type === TaxDetailType.APARTMENT)
+  const apartmentTaxDetail = taxDetails.propertyDetails
+    .filter((detail) => detail.type === RealEstateTaxPropertyType.APARTMENT)
     .map((detail) => {
       return {
         type: detail.areaType,
@@ -63,8 +64,8 @@ export const generateItemizedRealEstateTaxDetail = (
         amount: detail.amount,
       }
     })
-  const groundTaxDetail = taxDetails
-    .filter((detail) => detail.type === TaxDetailType.GROUND)
+  const groundTaxDetail = taxDetails.propertyDetails
+    .filter((detail) => detail.type === RealEstateTaxPropertyType.GROUND)
     .map((detail) => {
       return {
         type: detail.areaType,
@@ -73,8 +74,8 @@ export const generateItemizedRealEstateTaxDetail = (
         amount: detail.amount,
       }
     })
-  const constructionTaxDetail = taxDetails
-    .filter((detail) => detail.type === TaxDetailType.CONSTRUCTION)
+  const constructionTaxDetail = taxDetails.propertyDetails
+    .filter((detail) => detail.type === RealEstateTaxPropertyType.CONSTRUCTION)
     .map((detail) => {
       return {
         type: detail.areaType,

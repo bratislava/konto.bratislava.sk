@@ -20,7 +20,7 @@ import {
   ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxDetailItemizedDto,
+  ResponseRealEstateTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
 import { generateItemizedRealEstateTaxDetail } from './helpers/tax.helper'
 import {
@@ -595,7 +595,7 @@ export const getRealEstateTaxDetailPure = (
     specificSymbol,
   })
 
-  const itemizedDetail: ResponseTaxDetailItemizedDto = {
+  const itemizedDetail: ResponseRealEstateTaxDetailItemizedDto = {
     apartmentTotalAmount: taxFlat,
     groundTotalAmount: taxLand,
     constructionTotalAmount: taxConstructions,
@@ -688,7 +688,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     variableSymbol,
     dateOfValidity,
     installments,
-    taxDetails: [], // Not needed for payment generation
+    taxDetails: {taxFlat: 0, taxLand: 0, taxConstructions: 0, propertyDetails: []}, // Not needed for payment generation
     taxConstructions: 0, // Not needed for payment generation
     taxFlat: 0, // Not needed for payment generation
     taxLand: 0, // Not needed for payment generation

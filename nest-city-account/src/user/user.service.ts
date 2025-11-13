@@ -70,33 +70,28 @@ export class UserService {
     return { ...user, gdprData: getGdprData }
   }
 
-  async recordUserLoginClient(
-    cognitoUserData: CognitoGetUserData,
-    loginClient: LoginClientEnum
-  ): Promise<void> {
-    const user = await this.databaseSubservice.getUserByExternalId(cognitoUserData.idUser)
+  async recordUserLoginClient(externalId: string, loginClient: LoginClientEnum): Promise<void> {
+    const user = await this.databaseSubservice.getUserByExternalId(externalId)
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
-        `User not found for Cognito ID: ${cognitoUserData.idUser}`,
-        `Failed to record login client '${loginClient}' for user with Cognito ID: ${cognitoUserData.idUser}. User does not exist in database.`
+        `User not found for Cognito ID: ${externalId}`,
+        `Failed to record login client '${loginClient}' for user with Cognito ID: ${externalId}. User does not exist in database.`
       )
     }
     await this.databaseSubservice.recordUserLoginClient(loginClient, user.id)
   }
 
   async recordLegalPersonLoginClient(
-    cognitoUserData: CognitoGetUserData,
+    externalId: string,
     loginClient: LoginClientEnum
   ): Promise<void> {
-    const legalPerson = await this.databaseSubservice.getLegalPersonByExternalId(
-      cognitoUserData.idUser
-    )
+    const legalPerson = await this.databaseSubservice.getLegalPersonByExternalId(externalId)
     if (!legalPerson) {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
-        `Legal person not found for Cognito ID: ${cognitoUserData.idUser}`,
-        `Failed to record login client '${loginClient}' for legal person with Cognito ID: ${cognitoUserData.idUser}. Legal person does not exist in database.`
+        `Legal person not found for Cognito ID: ${externalId}`,
+        `Failed to record login client '${loginClient}' for legal person with Cognito ID: ${externalId}. Legal person does not exist in database.`
       )
     }
     await this.databaseSubservice.recordLegalPersonLoginClient(loginClient, legalPerson.id)
@@ -327,9 +322,10 @@ export class UserService {
     loginClient: LoginClientEnum
   ): Promise<void> {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    const externalId = cognitoUserData.idUser
 
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      await this.recordUserLoginClient(cognitoUserData, loginClient)
+      await this.recordUserLoginClient(externalId, loginClient)
       return
     }
 
@@ -337,7 +333,7 @@ export class UserService {
       accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
       accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      await this.recordLegalPersonLoginClient(cognitoUserData, loginClient)
+      await this.recordLegalPersonLoginClient(externalId, loginClient)
       return
     }
 

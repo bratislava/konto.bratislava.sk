@@ -22,7 +22,7 @@ export const expectPdfToMatchSnapshot = async (input: PdfInput) => {
     expect(page).toMatchImageSnapshot({
       customDiffConfig: {
         threshold: 0.05,
-      }
+      },
     })
   }
 }

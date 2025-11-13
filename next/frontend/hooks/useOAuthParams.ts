@@ -26,7 +26,8 @@ export const useOAuthParams = () => {
       cognitoUserPoolsTokenProvider.setKeyValueStorage(defaultStorage) // Local storage
     } else {
       Amplify.configure(amplifyConfig, amplifyLibraryOptions)
-      cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage()) // Cookies - default for our case
+      // Setting cookie storage based on default setting, see https://github.com/aws-amplify/amplify-js/blob/%40aws-amplify/adapter-nextjs%401.6.8/packages/aws-amplify/src/initSingleton.ts#L41
+      cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage({ sameSite: 'lax' })) // Cookies - default for SSR
     }
 
     const currentConfig = Amplify.getConfig()

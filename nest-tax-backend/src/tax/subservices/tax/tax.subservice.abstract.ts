@@ -7,7 +7,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../../dtos/error.dto'
-import { ResponseTaxSummaryDetailDto } from '../../dtos/response.tax.dto'
+import { ResponseRealEstateTaxSummaryDetailDto, ResponseCommunalWasteTaxSummaryDetailDto } from '../../dtos/response.tax.dto'
 
 export const specificSymbol = '2025200000'
 
@@ -30,7 +30,7 @@ export abstract class AbstractTaxSubservice {
     birthNumber: string,
     year: number,
     order: number,
-  ): Promise<ResponseTaxSummaryDetailDto>
+  ): Promise<ResponseRealEstateTaxSummaryDetailDto | ResponseCommunalWasteTaxSummaryDetailDto>
 
   /**
    * Fetches the tax data from database for a given tax payer, year, type and order.

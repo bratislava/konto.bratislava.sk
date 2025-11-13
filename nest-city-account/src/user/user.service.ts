@@ -70,7 +70,7 @@ export class UserService {
     return { ...user, gdprData: getGdprData }
   }
 
-  async registerUserLoginClient(
+  async recordUserLoginClient(
     cognitoUserData: CognitoGetUserData,
     loginClient: LoginClientEnum
   ): Promise<void> {
@@ -79,13 +79,13 @@ export class UserService {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
         `User not found for Cognito ID: ${cognitoUserData.idUser}`,
-        `Failed to register login client '${loginClient}' for user with Cognito ID: ${cognitoUserData.idUser}. User does not exist in database.`
+        `Failed to record login client '${loginClient}' for user with Cognito ID: ${cognitoUserData.idUser}. User does not exist in database.`
       )
     }
-    await this.databaseSubservice.registerUserLoginClient(loginClient, user.id)
+    await this.databaseSubservice.recordUserLoginClient(loginClient, user.id)
   }
 
-  async registerLegalPersonLoginClient(
+  async recordLegalPersonLoginClient(
     cognitoUserData: CognitoGetUserData,
     loginClient: LoginClientEnum
   ): Promise<void> {
@@ -96,10 +96,10 @@ export class UserService {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
         `Legal person not found for Cognito ID: ${cognitoUserData.idUser}`,
-        `Failed to register login client '${loginClient}' for legal person with Cognito ID: ${cognitoUserData.idUser}. Legal person does not exist in database.`
+        `Failed to record login client '${loginClient}' for legal person with Cognito ID: ${cognitoUserData.idUser}. Legal person does not exist in database.`
       )
     }
-    await this.databaseSubservice.registerLegalPersonLoginClient(loginClient, legalPerson.id)
+    await this.databaseSubservice.recordLegalPersonLoginClient(loginClient, legalPerson.id)
   }
 
   async removeBirthNumber(id: string): Promise<ResponseUserDataDto> {
@@ -322,14 +322,14 @@ export class UserService {
     )
   }
 
-  async registerLoginClient(
+  async recordLoginClient(
     cognitoUserData: CognitoGetUserData,
     loginClient: LoginClientEnum
   ): Promise<void> {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
 
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      await this.registerUserLoginClient(cognitoUserData, loginClient)
+      await this.recordUserLoginClient(cognitoUserData, loginClient)
       return
     }
 
@@ -337,7 +337,7 @@ export class UserService {
       accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
       accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      await this.registerLegalPersonLoginClient(cognitoUserData, loginClient)
+      await this.recordLegalPersonLoginClient(cognitoUserData, loginClient)
       return
     }
 

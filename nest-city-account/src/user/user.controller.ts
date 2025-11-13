@@ -28,7 +28,7 @@ import {
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
-import { RegisterLoginClientRequestDto } from './dtos/user.requests.dto'
+import { RecordLoginClientRequestDto } from './dtos/user.requests.dto'
 import { UserService } from './user.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -81,13 +81,13 @@ export class UserController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Register login client for the authenticated user',
+    summary: 'Record login client for the authenticated user',
     description:
-      'Registers a login client for the currently authenticated user. This tracks which client the user logged in through.',
+      'Records a login client for the currently authenticated user. This tracks which client the user logged in through.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Login client registered successfully',
+    description: 'Login client recorded successfully',
   })
   @ApiResponse({
     status: 500,
@@ -95,12 +95,12 @@ export class UserController {
     type: ResponseInternalServerErrorDto,
   })
   @UseGuards(CognitoGuard)
-  @Post('register-login-client')
-  async registerLoginClient(
+  @Post('record-login-client')
+  async recordLoginClient(
     @User() user: CognitoGetUserData,
-    @Body() body: RegisterLoginClientRequestDto
+    @Body() body: RecordLoginClientRequestDto
   ): Promise<void> {
-    await this.userService.registerLoginClient(user, body.loginClient)
+    await this.userService.recordLoginClient(user, body.loginClient)
   }
 
   @HttpCode(200)

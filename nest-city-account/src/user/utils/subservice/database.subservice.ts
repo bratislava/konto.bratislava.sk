@@ -179,7 +179,7 @@ export class DatabaseSubserviceUser {
     return legalPerson
   }
 
-  async registerUserLoginClient(loginClient: LoginClientEnum, userId: string) {
+  async recordUserLoginClient(loginClient: LoginClientEnum, userId: string) {
     await this.prisma.userLoginClient.upsert({
       where: {
         userId_loginClient: {
@@ -195,7 +195,7 @@ export class DatabaseSubserviceUser {
     })
   }
 
-  async registerLegalPersonLoginClient(loginClient: LoginClientEnum, legalPersonId: string) {
+  async recordLegalPersonLoginClient(loginClient: LoginClientEnum, legalPersonId: string) {
     await this.prisma.legalPersonLoginClient.upsert({
       where: {
         legalPersonId_loginClient: {

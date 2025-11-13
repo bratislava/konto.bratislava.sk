@@ -1,12 +1,13 @@
-import { PaymentStatus, TaxDetail } from '@prisma/client'
+import { PaymentStatus } from '@prisma/client'
 
 import { QrCodeGeneratorDto } from '../../utils/subservices/dtos/qrcode.dto'
 import {
   ResponseActiveInstallmentDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxDetailItemizedDto,
+  ResponseRealEstateTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
+import { RealEstateTaxDetail } from '../../prisma/json-types'
 
 export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
   [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
@@ -21,7 +22,7 @@ export type GetTaxDetailPureOptions = {
   variableSymbol: string
   dateOfValidity: Date | null // dátum právoplatnosti
   installments: { order: number; amount: number }[]
-  taxDetails: TaxDetail[]
+  taxDetails: RealEstateTaxDetail
   taxConstructions: number
   taxFlat: number
   taxLand: number
@@ -43,5 +44,5 @@ export type GetTaxDetailPureResponse = {
   > & {
     activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
   }
-  itemizedDetail: ResponseTaxDetailItemizedDto
+  itemizedDetail: ResponseRealEstateTaxDetailItemizedDto
 }

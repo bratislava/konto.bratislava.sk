@@ -39,6 +39,16 @@ export interface ChangeEmailRequestDto {
    */
   newEmail: string
 }
+export interface ClientInfoResponseDto {
+  /**
+   * Human-readable name for the client (prefix from OAUTH2_CLIENT_LIST)
+   */
+  name: string
+  /**
+   * Human-readable title for the client (for frontend display)
+   */
+  title?: string
+}
 export interface CognitoGetUserData {
   /**
    * Id from cognito
@@ -55,11 +65,19 @@ export interface CognitoGetUserData {
   /**
    * Which type of verified tier it is?
    */
-  'custom:tier'?: object
+  'custom:tier'?: CognitoGetUserDataCustomTierEnum
   /**
    * Which type of account it is?
    */
   'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
+  /**
+   * client_id of the oAuth origin
+   */
+  'custom:origin_client_id'?: string
+  /**
+   * Name of the oAuth origin corresponding to the custom:origin_client_id
+   */
+  'custom:origin_client_name'?: string
   /**
    * First name
    */
@@ -94,6 +112,16 @@ export interface CognitoGetUserData {
   UserStatus?: CognitoGetUserDataUserStatusEnum
 }
 
+export const CognitoGetUserDataCustomTierEnum = {
+  New: 'NEW',
+  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
+  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
+  IdentityCard: 'IDENTITY_CARD',
+  Eid: 'EID',
+} as const
+
+export type CognitoGetUserDataCustomTierEnum =
+  (typeof CognitoGetUserDataCustomTierEnum)[keyof typeof CognitoGetUserDataCustomTierEnum]
 export const CognitoGetUserDataCustomAccountTypeEnum = {
   Fo: 'fo',
   Po: 'po',
@@ -998,6 +1026,22 @@ export const TokenResponseDtoTokenTypeEnum = {
 
 export type TokenResponseDtoTokenTypeEnum =
   (typeof TokenResponseDtoTokenTypeEnum)[keyof typeof TokenResponseDtoTokenTypeEnum]
+
+export interface UpsertUserRecordClientRequestDto {
+  /**
+   * Client that the user logged in through
+   */
+  loginClient: UpsertUserRecordClientRequestDtoLoginClientEnum
+}
+
+export const UpsertUserRecordClientRequestDtoLoginClientEnum = {
+  Dpb: 'DPB',
+  PaasMpa: 'PAAS_MPA',
+  CityAccount: 'CITY_ACCOUNT',
+} as const
+
+export type UpsertUserRecordClientRequestDtoLoginClientEnum =
+  (typeof UpsertUserRecordClientRequestDtoLoginClientEnum)[keyof typeof UpsertUserRecordClientRequestDtoLoginClientEnum]
 
 /**
  * @type UserControllerChangeEmail200Response
@@ -2949,6 +2993,66 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       }
     },
     /**
+     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * @summary OAuth2 Client Info Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerInfo: async (
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'payload' is not null or undefined
+      assertParamExists('oAuth2ControllerInfo', 'payload', payload)
+      const localVarPath = `/oauth2/info`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (payload !== undefined) {
+        localVarQueryParameter['payload'] = payload
+      }
+
+      if (clientId !== undefined) {
+        localVarQueryParameter['client_id'] = clientId
+      }
+
+      if (redirectUri !== undefined) {
+        localVarQueryParameter['redirect_uri'] = redirectUri
+      }
+
+      if (state !== undefined) {
+        localVarQueryParameter['state'] = state
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Store tokens after user authentication. Called by frontend with tokens and authorization request ID.
      * @summary OAuth2 Store Tokens Endpoint
      * @param {StoreTokensRequestDto} storeTokensRequestDto
@@ -3138,6 +3242,41 @@ export const OAuth2ApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * @summary OAuth2 Client Info Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async oAuth2ControllerInfo(
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientInfoResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerInfo(
+        payload,
+        clientId,
+        redirectUri,
+        state,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OAuth2Api.oAuth2ControllerInfo']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Store tokens after user authentication. Called by frontend with tokens and authorization request ID.
      * @summary OAuth2 Store Tokens Endpoint
      * @param {StoreTokensRequestDto} storeTokensRequestDto
@@ -3261,6 +3400,27 @@ export const OAuth2ApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * @summary OAuth2 Client Info Endpoint
+     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    oAuth2ControllerInfo(
+      payload: string,
+      clientId?: string,
+      redirectUri?: string,
+      state?: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ClientInfoResponseDto> {
+      return localVarFp
+        .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Store tokens after user authentication. Called by frontend with tokens and authorization request ID.
      * @summary OAuth2 Store Tokens Endpoint
      * @param {StoreTokensRequestDto} storeTokensRequestDto
@@ -3353,6 +3513,28 @@ export class OAuth2Api extends BaseAPI {
   ) {
     return OAuth2ApiFp(this.configuration)
       .oAuth2ControllerContinueComplete(payload, clientId, redirectUri, state, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get client information (name and title) by client_id from authorization request for frontend display.
+   * @summary OAuth2 Client Info Endpoint
+   * @param {string} payload UUID of the authorization request stored in the database
+   * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
+   * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
+   * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public oAuth2ControllerInfo(
+    payload: string,
+    clientId?: string,
+    redirectUri?: string,
+    state?: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OAuth2ApiFp(this.configuration)
+      .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -3851,8 +4033,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-     * @summary Get or create user with his data
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4191,6 +4373,59 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
         options: localVarRequestOptions,
       }
     },
+    /**
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * @summary Upsert user and record login client (use during login/registration)
+     * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpsertUserAndRecordClient: async (
+      upsertUserRecordClientRequestDto: UpsertUserRecordClientRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'upsertUserRecordClientRequestDto' is not null or undefined
+      assertParamExists(
+        'userControllerUpsertUserAndRecordClient',
+        'upsertUserRecordClientRequestDto',
+        upsertUserRecordClientRequestDto,
+      )
+      const localVarPath = `/user/upsert-user-record-client`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        upsertUserRecordClientRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -4234,8 +4469,8 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-     * @summary Get or create user with his data
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4444,6 +4679,40 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * @summary Upsert user and record login client (use during login/registration)
+     * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userControllerUpsertUserAndRecordClient(
+      upsertUserRecordClientRequestDto: UpsertUserRecordClientRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<UserControllerGetOrCreateUser200Response>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.userControllerUpsertUserAndRecordClient(
+          upsertUserRecordClientRequestDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerUpsertUserAndRecordClient']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -4473,8 +4742,8 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-     * @summary Get or create user with his data
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4578,6 +4847,21 @@ export const UsersManipulationApiFactory = function (
         .userControllerUpdateOrCreateBloomreachCustomer(options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * @summary Upsert user and record login client (use during login/registration)
+     * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpsertUserAndRecordClient(
+      upsertUserRecordClientRequestDto: UpsertUserRecordClientRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UserControllerGetOrCreateUser200Response> {
+      return localVarFp
+        .userControllerUpsertUserAndRecordClient(upsertUserRecordClientRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -4602,8 +4886,8 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.
-   * @summary Get or create user with his data
+   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+   * @summary Get or create user with their data (use when already logged in, not duing login/registration)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
@@ -4705,6 +4989,22 @@ export class UsersManipulationApi extends BaseAPI {
   public userControllerUpdateOrCreateBloomreachCustomer(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerUpdateOrCreateBloomreachCustomer(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+   * @summary Upsert user and record login client (use during login/registration)
+   * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public userControllerUpsertUserAndRecordClient(
+    upsertUserRecordClientRequestDto: UpsertUserRecordClientRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return UsersManipulationApiFp(this.configuration)
+      .userControllerUpsertUserAndRecordClient(upsertUserRecordClientRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

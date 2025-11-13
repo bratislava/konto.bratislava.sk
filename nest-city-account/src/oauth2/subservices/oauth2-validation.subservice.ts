@@ -48,7 +48,7 @@ export class OAuth2ValidationSubservice {
     const { codeChallenge, codeChallengeMethod } = this.validatePkceParameters(
       params.codeChallenge,
       params.codeChallengeMethod,
-      client.clientId
+      client.id
     )
     this.validateResponseType(params.responseType, client, codeChallenge, codeChallengeMethod)
   }
@@ -86,7 +86,7 @@ export class OAuth2ValidationSubservice {
         undefined,
         'Missing or invalid redirect_uri in authorization request',
         {
-          clientId: client.clientId,
+          clientId: client.id,
           hasRedirectUri: !!redirectUri,
           redirectUriType: typeof redirectUri,
         }
@@ -99,7 +99,7 @@ export class OAuth2ValidationSubservice {
         `Invalid request: provided redirect URI is not allowed for this client`,
         undefined,
         'Redirect URI not allowed for client',
-        { clientId: client.clientId, redirectUri: redirectUri }
+        { clientId: client.id, redirectUri: redirectUri }
       )
     }
 
@@ -116,7 +116,7 @@ export class OAuth2ValidationSubservice {
         `Invalid scope: requested scope is invalid, unknown, or malformed`,
         undefined,
         'Invalid scope requested',
-        { clientId: client.clientId, requestedScope: scope }
+        { clientId: client.id, requestedScope: scope }
       )
     }
     return scope
@@ -166,7 +166,7 @@ export class OAuth2ValidationSubservice {
         undefined,
         'Missing or invalid response_type in authorization request',
         {
-          clientId: client.clientId,
+          clientId: client.id,
           hasResponseType: !!responseType,
           responseTypeValue: responseType,
         }
@@ -179,7 +179,7 @@ export class OAuth2ValidationSubservice {
         `Unsupported response_type: ${responseType} - must be "code" or "token"`,
         undefined,
         'Unsupported response_type',
-        { clientId: client.clientId, responseType: responseType }
+        { clientId: client.id, responseType: responseType }
       )
     }
 
@@ -191,7 +191,7 @@ export class OAuth2ValidationSubservice {
           undefined,
           'PKCE required but not provided',
           {
-            clientId: client.clientId,
+            clientId: client.id,
             hasCodeChallenge: !!codeChallenge,
             hasCodeChallengeMethod: !!codeChallengeMethod,
           }
@@ -342,7 +342,7 @@ export class OAuth2ValidationSubservice {
     }
 
     // Only validate client_secret if client has one configured
-    if (client.clientSecret) {
+    if (client.secret) {
       if (!clientSecret) {
         throw this.oAuth2ErrorThrower.tokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
@@ -352,7 +352,7 @@ export class OAuth2ValidationSubservice {
           { clientId: clientId, grantType }
         )
       }
-      if (!this.isValidSecret(client.clientSecret, clientSecret)) {
+      if (!this.isValidSecret(client.secret, clientSecret)) {
         throw this.oAuth2ErrorThrower.tokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
           'Invalid client: invalid client_secret',

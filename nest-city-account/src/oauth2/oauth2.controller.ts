@@ -28,6 +28,7 @@ import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   AuthorizationRequestDto,
+  ClientInfoRequestDto,
   ContinueRequestDto,
   RefreshTokenRequestDto,
   StoreTokensRequestDto,
@@ -39,7 +40,7 @@ import {
   AuthorizationPayloadGuard,
   RequestWithAuthorizationPayload,
 } from './guards/authorization-payload.guard'
-import { TokenResponseDto } from './dtos/responses.oauth2.dto'
+import { ClientInfoResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
 import { HttpsGuard } from '../utils/guards/https.guard'
@@ -223,5 +224,37 @@ export class OAuth2Controller {
     }
 
     return this.oauth2Service.token(body)
+  }
+
+  @Get('info')
+  @UseGuards(AuthorizationPayloadGuard)
+  @ApiOperation({
+    summary: 'OAuth2 Client Info Endpoint',
+    description:
+      'Get client information (name and title) by client_id from authorization request for frontend display.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Client information retrieved successfully',
+    type: ClientInfoResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request or client not found',
+    type: OAuth2AuthorizationErrorDto,
+  })
+  async info(
+    @Query() query: ClientInfoRequestDto,
+    @Req() req: Request
+  ): Promise<ClientInfoResponseDto> {
+    const request = req as RequestWithAuthorizationPayload
+    const authorizationRequest = request.authorizationPayload!
+
+    this.logger.debug('Info request received', {
+      client_id: authorizationRequest.client_id,
+      payload: query.payload,
+    })
+
+    return this.oauth2Service.getClientInfo(authorizationRequest.client_id)
   }
 }

@@ -62,3 +62,21 @@ export class TokenResponseDto {
   })
   scope?: string
 }
+
+/**
+ * Response DTO for OAuth2 Info Endpoint
+ * Returns client name and title for frontend display
+ */
+export class ClientInfoResponseDto {
+  @ApiProperty({
+    description: 'Human-readable name for the client (prefix from OAUTH2_CLIENT_LIST)',
+    example: 'DPB',
+  })
+  name!: string
+
+  @ApiPropertyOptional({
+    description: 'Human-readable title for the client (for frontend display)',
+    example: 'DPB Application',
+  })
+  title?: string
+}

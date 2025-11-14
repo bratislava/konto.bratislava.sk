@@ -69,9 +69,6 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
       taxDetails: tax.taxDetails as RealEstateTaxDetail, // FIXME this is a temporary fix
-      taxConstructions: tax.taxConstructions ?? 0,
-      taxFlat: tax.taxFlat ?? 0,
-      taxLand: tax.taxLand ?? 0,
       specificSymbol,
       taxPayments: tax.taxPayments,
     })

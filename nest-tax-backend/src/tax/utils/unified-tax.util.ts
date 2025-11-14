@@ -1,10 +1,13 @@
-import { PaymentStatus } from '@prisma/client'
+import { PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-import { TaxDefinition } from '../../tax-definitions/taxDefinitionsTypes'
+import {
+  TaxDefinition,
+  TaxTypeToResponseDetailItemizedDto,
+} from '../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -28,6 +31,8 @@ import {
   GetTaxDetailPureResponse,
   ReplaceQrCodeWithGeneratorDto,
 } from './types'
+import { taxDefinitions } from '../../tax-definitions/taxDefinitions'
+import { getTaxDefinitionForType } from '../../tax-definitions/getTaxDefinitionByType'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -544,10 +549,11 @@ const calculateOneTimePaymentDetails = (options: {
   }
 }
 
-export const getRealEstateTaxDetailPure = (
-  options: GetTaxDetailPureOptions,
-): GetTaxDetailPureResponse => {
+export const getRealEstateTaxDetailPure = <TTaxType extends TaxType>(
+  options: GetTaxDetailPureOptions<TTaxType>,
+): GetTaxDetailPureResponse<TTaxType> => {
   const {
+    type,
     taxYear,
     today,
     overallAmount,
@@ -556,9 +562,6 @@ export const getRealEstateTaxDetailPure = (
     dateOfValidity,
     installments,
     taxDetails,
-    taxConstructions,
-    taxFlat,
-    taxLand,
     specificSymbol,
     taxPayments,
   } = options
@@ -595,12 +598,10 @@ export const getRealEstateTaxDetailPure = (
     specificSymbol,
   })
 
-  const itemizedDetail: ResponseRealEstateTaxDetailItemizedDto = {
-    apartmentTotalAmount: taxFlat,
-    groundTotalAmount: taxLand,
-    constructionTotalAmount: taxConstructions,
-    ...generateItemizedRealEstateTaxDetail(taxDetails),
-  }
+  const taxDefinition = getTaxDefinitionForType( options.type )
+
+  const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
+    taxDefinition.generateItemizedRealEstateTaxDetail(taxDetails)
 
   return {
     overallPaid,

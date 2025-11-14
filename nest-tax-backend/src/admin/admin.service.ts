@@ -21,8 +21,15 @@ import {
   CreateBirthNumbersResponseDto,
   UpdateDeliveryMethodsInNorisResponseDto,
 } from './dtos/responses.dto'
-import { createTestingTaxMock } from './utils/testing-tax-mock'
-import { NorisTaxPayment } from '../noris/types/noris.types'
+import {
+  createTestingCommunalWasteTaxMock,
+  createTestingRealEstateTaxMock,
+} from './utils/testing-tax-mock'
+import {
+  NorisCommunalWasteTax,
+  NorisRealEstateTax,
+  NorisTaxPayment,
+} from '../noris/types/noris.types'
 
 @Injectable()
 export class AdminService {
@@ -102,10 +109,10 @@ export class AdminService {
    * Creates a testing tax record with specified details for development and testing purposes.
    * WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.
    */
-  async createTestingTax({
-    year,
-    norisData,
-  }: RequestAdminCreateTestingTaxDto): Promise<void> {
+  async createTestingTax(
+    { year, norisData }: RequestAdminCreateTestingTaxDto,
+    taxType: TaxType,
+  ): Promise<void> {
     const taxAdministrator =
       await this.prismaService.taxAdministrator.findFirst({})
     if (!taxAdministrator) {
@@ -116,11 +123,28 @@ export class AdminService {
     }
 
     // Generate the mock tax record
-    const mockTaxRecord = createTestingTaxMock(
-      norisData,
-      taxAdministrator,
-      year,
-    )
+    let mockTaxRecord: NorisCommunalWasteTax | NorisRealEstateTax
+    switch (taxType) {
+      case 'DZN':
+        mockTaxRecord = createTestingRealEstateTaxMock(
+          norisData,
+          taxAdministrator,
+          year,
+        )
+        break
+      case 'KO':
+        mockTaxRecord = createTestingCommunalWasteTaxMock(
+          norisData,
+          taxAdministrator,
+          year,
+        )
+        break
+      default:
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          'TaxType not supported',
+        )
+    }
 
     const taxesByVariabileSymbolExist = await this.prismaService.tax.findFirst({
       where: {
@@ -137,7 +161,7 @@ export class AdminService {
 
     // Process the mock data to create the testing tax
     await this.norisService.processNorisTaxData(
-      TaxType.DZN,
+      taxType,
       [mockTaxRecord],
       year,
     )

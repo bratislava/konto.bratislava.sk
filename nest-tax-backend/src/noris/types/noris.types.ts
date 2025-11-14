@@ -34,6 +34,9 @@ export type NorisPaymentWithVariableSymbol = NorisTaxPayment & {
   variabilny_symbol: string
 }
 
+// TODO delete. Just for demonstration purposes
+export type NorisTaxAny = NorisRealEstateTax | NorisCommunalWasteTax
+
 export type NorisDeliveryMethodsUpdateResult = z.infer<
   typeof NorisDeliveryMethodsUpdateResultSchema
 >

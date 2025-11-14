@@ -266,6 +266,76 @@ export interface ResponseApartmentTaxDetailDto {
   amount: number
 }
 
+export interface ResponseCommunalWasteTaxAddressDto {
+  street: string
+  orientationNumber: string
+}
+export interface ResponseCommunalWasteTaxDetailItemizedDto {
+  addressDetail: Array<ResponseComunalWasteTaxAddressDetailItemizedDto>
+}
+export interface ResponseCommunalWasteTaxItemizedAddressDto {
+  containerVolume: number
+  containerCount: string
+  numberOfDisposals: number
+  sadzba: number
+  poplatok: number
+}
+export interface ResponseCommunalWasteTaxSummaryDetailDto {
+  /**
+   * Payment status
+   */
+  paidStatus: TaxPaidStatusEnum
+  /**
+   * Year of tax
+   */
+  year: number
+  /**
+   * Order of tax
+   */
+  order: number
+  /**
+   * Total amount paid
+   */
+  overallPaid: number
+  /**
+   * Total remaining balance
+   */
+  overallBalance: number
+  /**
+   * Total tax amount
+   */
+  overallAmount: number
+  /**
+   * One-time payment details
+   */
+  oneTimePayment: ResponseOneTimePaymentDetailsDto
+  /**
+   * Installment payment details
+   */
+  installmentPayment: ResponseInstallmentPaymentDetailDto
+  /**
+   * Assigned tax administrator
+   */
+  taxAdministrator: ResponseTaxAdministratorDto | null
+  /**
+   * Tax payer data
+   */
+  taxPayer: ResponseTaxPayerReducedDto
+  /**
+   * Type of tax.
+   */
+  type: string
+  /**
+   * Itemized details
+   */
+  itemizedDetail: ResponseCommunalWasteTaxDetailItemizedDto
+}
+
+export interface ResponseComunalWasteTaxAddressDetailItemizedDto {
+  address: ResponseCommunalWasteTaxAddressDto
+  totalAmount: number
+  itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto
+}
 export interface ResponseConstructionTaxDetailDto {
   /**
    * Type of construction
@@ -523,10 +593,6 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
    */
   order: number
   /**
-   * Type of tax
-   */
-  type: TaxType
-  /**
    * Total amount paid
    */
   overallPaid: number
@@ -554,6 +620,10 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
    * Tax payer data
    */
   taxPayer: ResponseTaxPayerReducedDto
+  /**
+   * Type of tax.
+   */
+  type: string
   /**
    * Itemized details
    */
@@ -608,6 +678,13 @@ export const TaxAvailabilityStatus = {
 
 export type TaxAvailabilityStatus =
   (typeof TaxAvailabilityStatus)[keyof typeof TaxAvailabilityStatus]
+
+/**
+ * @type TaxControllerV2GetTaxDetailByYearV2200Response
+ */
+export type TaxControllerV2GetTaxDetailByYearV2200Response =
+  | ({ type: 'COMMUNAL_WASTE' } & ResponseCommunalWasteTaxSummaryDetailDto)
+  | ({ type: 'REAL_ESTATE' } & ResponseRealEstateTaxSummaryDetailDto)
 
 /**
  * Payment status
@@ -2472,7 +2549,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<ResponseRealEstateTaxSummaryDetailDto>
+      ) => AxiosPromise<TaxControllerV2GetTaxDetailByYearV2200Response>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerV2GetTaxDetailByYearV2(
         year,
@@ -2549,7 +2626,7 @@ export const TaxApiFactory = function (
       order: number,
       type: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseRealEstateTaxSummaryDetailDto> {
+    ): AxiosPromise<TaxControllerV2GetTaxDetailByYearV2200Response> {
       return localVarFp
         .taxControllerV2GetTaxDetailByYearV2(year, order, type, options)
         .then((request) => request(axios, basePath))

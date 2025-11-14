@@ -228,11 +228,6 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
                   taxId: taxExists.id,
                 },
               })
-              await tx.taxDetail.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
 
               const userFromCityAccount =
                 userDataFromCityAccount[norisItem.ICO_RC] || null

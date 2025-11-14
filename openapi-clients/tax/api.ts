@@ -64,6 +64,30 @@ export const InstallmentPaidStatusEnum = {
 export type InstallmentPaidStatusEnum =
   (typeof InstallmentPaidStatusEnum)[keyof typeof InstallmentPaidStatusEnum]
 
+/**
+ * Type of apartment
+ */
+
+export const RealEstateTaxAreaType = {
+  Nonresidential: 'NONRESIDENTIAL',
+  Residential: 'RESIDENTIAL',
+  A: 'A',
+  B: 'B',
+  C: 'C',
+  D: 'D',
+  E: 'E',
+  F: 'F',
+  G: 'G',
+  H: 'H',
+  JH: 'jH',
+  JI: 'jI',
+  Byt: 'byt',
+  Nebyt: 'nebyt',
+} as const
+
+export type RealEstateTaxAreaType =
+  (typeof RealEstateTaxAreaType)[keyof typeof RealEstateTaxAreaType]
+
 export interface RequestAdminCreateTestingTaxDto {
   /**
    * Year of tax
@@ -231,7 +255,7 @@ export interface ResponseApartmentTaxDetailDto {
   /**
    * Type of apartment
    */
-  type: TaxDetailareaType
+  type: RealEstateTaxAreaType
   /**
    * Base of tax in m^2
    */
@@ -246,7 +270,7 @@ export interface ResponseConstructionTaxDetailDto {
   /**
    * Type of construction
    */
-  type: TaxDetailareaType
+  type: RealEstateTaxAreaType
   /**
    * Base of tax in m^2
    */
@@ -334,7 +358,7 @@ export interface ResponseGroundTaxDetailDto {
   /**
    * Type of area
    */
-  type: TaxDetailareaType
+  type: RealEstateTaxAreaType
   /**
    * Area of taxed ground in m^2
    */
@@ -386,7 +410,7 @@ export interface ResponseInstallmentPaymentDetailDto {
    */
   dueDateLastPayment?: string
   /**
-   * List of exactly 3 installments or none at all
+   * List of 3 or 4 installments depending on tax type (4 for PKO, 3 for others), or none at all
    */
   installments?: Array<ResponseInstallmentItemDto>
   /**
@@ -459,21 +483,7 @@ export const ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum = {
 export type ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum =
   (typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum]
 
-export interface ResponseTaxAdministratorDto {
-  /**
-   * Name of the tax administrator
-   */
-  name: string
-  /**
-   * Phone number of the tax administrator
-   */
-  phoneNumber: string
-  /**
-   * Email address of the tax administrator
-   */
-  email: string
-}
-export interface ResponseTaxDetailItemizedDto {
+export interface ResponseRealEstateTaxDetailItemizedDto {
   /**
    * Total amount of tax for apartment
    */
@@ -499,29 +509,7 @@ export interface ResponseTaxDetailItemizedDto {
    */
   constructionTaxDetail: Array<ResponseConstructionTaxDetailDto>
 }
-export interface ResponseTaxPayerReducedDto {
-  /**
-   * Name of taxpayer
-   */
-  name: string | null
-  /**
-   * Street of permanent residence with number
-   */
-  permanentResidenceStreet: string | null
-  /**
-   * Zip of permanent residence with number
-   */
-  permanentResidenceZip: string | null
-  /**
-   * City of permanent residence with number
-   */
-  permanentResidenceCity: string | null
-  /**
-   * Id of tax payer from Noris
-   */
-  externalId: string | null
-}
-export interface ResponseTaxSummaryDetailDto {
+export interface ResponseRealEstateTaxSummaryDetailDto {
   /**
    * Payment status
    */
@@ -551,10 +539,6 @@ export interface ResponseTaxSummaryDetailDto {
    */
   overallAmount: number
   /**
-   * Itemized details
-   */
-  itemizedDetail: ResponseTaxDetailItemizedDto
-  /**
    * One-time payment details
    */
   oneTimePayment: ResponseOneTimePaymentDetailsDto
@@ -570,8 +554,48 @@ export interface ResponseTaxSummaryDetailDto {
    * Tax payer data
    */
   taxPayer: ResponseTaxPayerReducedDto
+  /**
+   * Itemized details
+   */
+  itemizedDetail: ResponseRealEstateTaxDetailItemizedDto
 }
 
+export interface ResponseTaxAdministratorDto {
+  /**
+   * Name of the tax administrator
+   */
+  name: string
+  /**
+   * Phone number of the tax administrator
+   */
+  phoneNumber: string
+  /**
+   * Email address of the tax administrator
+   */
+  email: string
+}
+export interface ResponseTaxPayerReducedDto {
+  /**
+   * Name of taxpayer
+   */
+  name: string | null
+  /**
+   * Street of permanent residence with number
+   */
+  permanentResidenceStreet: string | null
+  /**
+   * Zip of permanent residence with number
+   */
+  permanentResidenceZip: string | null
+  /**
+   * City of permanent residence with number
+   */
+  permanentResidenceCity: string | null
+  /**
+   * Id of tax payer from Noris
+   */
+  externalId: string | null
+}
 /**
  * Tax availability status
  */
@@ -584,29 +608,6 @@ export const TaxAvailabilityStatus = {
 
 export type TaxAvailabilityStatus =
   (typeof TaxAvailabilityStatus)[keyof typeof TaxAvailabilityStatus]
-
-/**
- * Type of apartment
- */
-
-export const TaxDetailareaType = {
-  Nonresidential: 'NONRESIDENTIAL',
-  Residential: 'RESIDENTIAL',
-  A: 'A',
-  B: 'B',
-  C: 'C',
-  D: 'D',
-  E: 'E',
-  F: 'F',
-  G: 'G',
-  H: 'H',
-  JH: 'jH',
-  JI: 'jI',
-  Byt: 'byt',
-  Nebyt: 'nebyt',
-} as const
-
-export type TaxDetailareaType = (typeof TaxDetailareaType)[keyof typeof TaxDetailareaType]
 
 /**
  * Payment status
@@ -635,13 +636,6 @@ export const TaxStatusEnum = {
 
 export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]
 
-export interface UpdateDeliveryMethodsInNorisResponseDto {
-  /**
-   * An array of birth numbers which were added to TaxPayers in this batch.
-   */
-  birthNumbers: Array<string>
-}
-
 /**
  * Type of tax
  */
@@ -652,6 +646,13 @@ export const TaxType = {
 } as const
 
 export type TaxType = (typeof TaxType)[keyof typeof TaxType]
+
+export interface UpdateDeliveryMethodsInNorisResponseDto {
+  /**
+   * An array of birth numbers which were added to TaxPayers in this batch.
+   */
+  birthNumbers: Array<string>
+}
 
 /**
  * AdminApi - axios parameter creator
@@ -2468,7 +2469,10 @@ export const TaxApiFp = function (configuration?: Configuration) {
       type: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseTaxSummaryDetailDto>
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ResponseRealEstateTaxSummaryDetailDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerV2GetTaxDetailByYearV2(
         year,
@@ -2545,7 +2549,7 @@ export const TaxApiFactory = function (
       order: number,
       type: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseTaxSummaryDetailDto> {
+    ): AxiosPromise<ResponseRealEstateTaxSummaryDetailDto> {
       return localVarFp
         .taxControllerV2GetTaxDetailByYearV2(year, order, type, options)
         .then((request) => request(axios, basePath))

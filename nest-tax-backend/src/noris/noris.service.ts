@@ -12,7 +12,11 @@ import { ResponseCreatedAlreadyCreatedDto } from './dtos/response.dto'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
-import { NorisPayment, NorisRealEstateTax } from './types/noris.types'
+import {
+  NorisTaxPayment,
+  NorisRealEstateTax,
+  NorisTaxAny,
+} from './types/noris.types'
 
 @Injectable()
 export class NorisService {
@@ -57,7 +61,7 @@ export class NorisService {
   }
 
   async updatePaymentsFromNorisWithData(
-    norisPaymentData: NorisPayment[],
+    norisPaymentData: NorisTaxPayment[],
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     return this.paymentSubservice.updatePaymentsFromNorisWithData(
       norisPaymentData,
@@ -66,7 +70,7 @@ export class NorisService {
 
   async processNorisTaxData(
     taxType: TaxType,
-    norisData: NorisRealEstateTax[],
+    norisData: NorisTaxAny[],
     year: number,
   ): Promise<string[]> {
     return this.taxSubservice.processNorisTaxData(taxType, norisData, year)

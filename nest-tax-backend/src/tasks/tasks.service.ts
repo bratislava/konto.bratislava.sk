@@ -13,7 +13,6 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
-import { NorisPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -32,6 +31,7 @@ import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
@@ -139,7 +139,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData: NorisPayment[] =
+      const norisPaymentData: NorisTaxPayment[] =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(

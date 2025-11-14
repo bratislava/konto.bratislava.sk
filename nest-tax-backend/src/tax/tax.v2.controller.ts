@@ -27,7 +27,8 @@ import {
 } from '../utils/guards/dtos/error.dto'
 import {
   ResponseGetTaxesListDto,
-  ResponseTaxSummaryDetailDto,
+  ResponseRealEstateTaxSummaryDetailDto,
+  ResponseCommunalWasteTaxSummaryDetailDto
 } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
@@ -44,7 +45,7 @@ export class TaxControllerV2 {
   @ApiResponse({
     status: 200,
     description: 'Load tax detail about user.',
-    type: ResponseTaxSummaryDetailDto,
+    type: ResponseRealEstateTaxSummaryDetailDto || ResponseCommunalWasteTaxSummaryDetailDto,
   })
   @ApiResponse({
     status: 422,
@@ -97,6 +98,7 @@ export class TaxControllerV2 {
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseGetTaxesListDto> {
     // TODO - pagination - but it will be issue after in year 2040 :D
+
     const response = await this.taxService.getListOfTaxesByBirthnumberAndType(
       baUser.birthNumber,
       type,

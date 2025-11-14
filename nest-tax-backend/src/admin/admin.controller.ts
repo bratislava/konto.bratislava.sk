@@ -4,6 +4,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -31,6 +32,7 @@ import {
   CreateBirthNumbersResponseDto,
   UpdateDeliveryMethodsInNorisResponseDto,
 } from './dtos/responses.dto'
+import { TaxType } from '@prisma/client'
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -169,8 +171,9 @@ export class AdminController {
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
+    @Query('taxType') taxType: TaxType,
   ): Promise<void> {
-    await this.adminService.createTestingTax(request)
+    await this.adminService.createTestingTax(request, taxType)
   }
 
   @HttpCode(200)

@@ -1,10 +1,9 @@
 import { TaxType } from '@prisma/client'
 
-import {
-  mapNorisToRealEstateDatabaseDetail,
-} from '../noris/utils/mapping.helper'
+import { mapNorisToRealEstateDatabaseDetail } from '../noris/utils/mapping.helper'
 import { getRealEstateTaxDetailPure } from '../tax/utils/unified-tax.util'
 import { TaxDefinitionsMap } from './taxDefinitionsTypes'
+import { generateItemizedRealEstateTaxDetail } from '../tax/utils/helpers/tax.helper'
 
 export const taxDefinitions: TaxDefinitionsMap = {
   [TaxType.DZN]: {
@@ -14,6 +13,7 @@ export const taxDefinitions: TaxDefinitionsMap = {
     paymentCalendarThreshold: 6600,
     mapNorisToTaxDetailData: mapNorisToRealEstateDatabaseDetail,
     getTaxDetailPure: getRealEstateTaxDetailPure,
+    generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
   },
   [TaxType.KO]: {
     type: TaxType.KO,
@@ -24,6 +24,9 @@ export const taxDefinitions: TaxDefinitionsMap = {
       throw new Error('Not implemented')
     },
     getTaxDetailPure: () => {
+      throw new Error('Not implemented')
+    },
+    generateItemizedTaxDetail: () => {
       throw new Error('Not implemented')
     },
   },

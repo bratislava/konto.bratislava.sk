@@ -1,6 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { TaxType } from '@prisma/client'
-
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -15,6 +14,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator'
+
 import { RealEstateTaxAreaType } from '../../prisma/json-types'
 
 export enum TaxDetailTypeEnum {
@@ -405,7 +405,8 @@ export class ResponseInstallmentPaymentDetailDto {
   dueDateLastPayment?: Date
 
   @ApiPropertyOptional({
-    description: 'List of 3 or 4 installments depending on tax type (4 for PKO, 3 for others), or none at all',
+    description:
+      'List of 3 or 4 installments depending on tax type (4 for PKO, 3 for others), or none at all',
     type: ResponseInstallmentItemDto,
     isArray: true,
     example: [
@@ -622,7 +623,9 @@ export class ResponseRealEstateTaxDetailItemizedDto {
     description: 'Construction tax itemized',
     type: ResponseConstructionTaxDetailDto,
     isArray: true,
-    example: [{ type: RealEstateTaxAreaType.RESIDENTIAL, base: 100, amount: 100 }],
+    example: [
+      { type: RealEstateTaxAreaType.RESIDENTIAL, base: 100, amount: 100 },
+    ],
   })
   @IsArray()
   @ValidateNested({ each: true })
@@ -634,8 +637,9 @@ export class ResponseRealEstateTaxSummaryDetailDto extends ResponseTaxSummaryDet
   @ApiProperty({
     description: 'Type of tax.',
     example: 'REAL_ESTATE',
-
+    enum: ['REAL_ESTATE'],
   })
+  @IsEnum(['REAL_ESTATE'])
   type: 'REAL_ESTATE'
 
   @ApiProperty({
@@ -648,25 +652,32 @@ export class ResponseRealEstateTaxSummaryDetailDto extends ResponseTaxSummaryDet
   itemizedDetail: ResponseRealEstateTaxDetailItemizedDto
 }
 
-export class ResponseCommunalWasteTaxAddressDto{
+export class ResponseCommunalWasteTaxAddressDto {
   street: string
-  orientationNumber:string
+
+  orientationNumber: string
 }
-export class ResponseCommunalWasteTaxItemizedAddressDto{
+export class ResponseCommunalWasteTaxItemizedAddressDto {
   containerVolume: number
+
   containerCount: string
+
   numberOfDisposals: number
+
   sadzba: number // TODO translate
+
   poplatok: number // TODO translate
 }
 
 export class ResponseCommunalWasteTaxAddressDetailItemizedDto {
   address: ResponseCommunalWasteTaxAddressDto
+
   totalAmount: number
+
   itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto
 }
 
-export class ResponseCommunalWasteTaxDetailItemizedDto{
+export class ResponseCommunalWasteTaxDetailItemizedDto {
   addressDetail: ResponseCommunalWasteTaxAddressDetailItemizedDto[]
 }
 
@@ -674,8 +685,9 @@ export class ResponseCommunalWasteTaxSummaryDetailDto extends ResponseTaxSummary
   @ApiProperty({
     description: 'Type of tax.',
     example: 'COMMUNAL_WASTE',
-
+    enum: ['COMMUNAL_WASTE'],
   })
+  @IsEnum(['COMMUNAL_WASTE'])
   type: 'COMMUNAL_WASTE'
 
   @ApiProperty({

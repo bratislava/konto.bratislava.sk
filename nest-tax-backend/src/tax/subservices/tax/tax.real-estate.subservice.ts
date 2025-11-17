@@ -4,35 +4,41 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { RealEstateTaxDetail } from '../../../prisma/json-types'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import { TaxDefinitionsService } from '../../../tax-definitions/taxDefinitions'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxPayerReducedDto,
   ResponseRealEstateTaxSummaryDetailDto,
+  ResponseTaxPayerReducedDto,
 } from '../../dtos/response.tax.dto'
 import { getTaxStatus } from '../../utils/helpers/tax.helper'
-import { getRealEstateTaxDetailPure } from '../../utils/unified-tax.util'
+import { UnifiedTaxUtilSubservice } from '../../utils/unified-tax.util.subservice'
 import {
   AbstractTaxSubservice,
   specificSymbol,
 } from './tax.subservice.abstract'
-import { RealEstateTaxDetail } from '../../../prisma/json-types'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 @Injectable()
-export class TaxRealEstateSubservice extends AbstractTaxSubservice {
+export class TaxRealEstateSubservice extends AbstractTaxSubservice<
+  typeof TaxType.DZN
+> {
   constructor(
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     private readonly qrCodeSubservice: QrCodeSubservice,
+    private readonly taxDefinitionsService: TaxDefinitionsService,
+    private readonly unifiedTaxUtilSubservice: UnifiedTaxUtilSubservice,
   ) {
-    const taxDefinition = getTaxDefinitionByType(TaxType.DZN)
+    const taxDefinition = taxDefinitionsService.getTaxDefinitionByType(
+      TaxType.DZN,
+    )
     super(prismaService, throwerErrorGuard, taxDefinition)
   }
 
@@ -60,21 +66,20 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
       order,
     )
 
-    const detailWithoutQrCode = getRealEstateTaxDetailPure({
-      taxYear: +year,
-      today: today.toDate(),
-      overallAmount: tax.amount,
-      paymentCalendarThreshold: this.taxDefinition.paymentCalendarThreshold,
-      variableSymbol: tax.variableSymbol,
-      dateOfValidity: tax.dateTaxRuling,
-      installments: tax.taxInstallments,
-      taxDetails: tax.taxDetails as RealEstateTaxDetail, // FIXME this is a temporary fix
-      taxConstructions: tax.taxConstructions ?? 0,
-      taxFlat: tax.taxFlat ?? 0,
-      taxLand: tax.taxLand ?? 0,
-      specificSymbol,
-      taxPayments: tax.taxPayments,
-    })
+    const detailWithoutQrCode =
+      this.unifiedTaxUtilSubservice.getRealEstateTaxDetailPure({
+        type: TaxType.DZN,
+        taxYear: +year,
+        today: today.toDate(),
+        overallAmount: tax.amount,
+        paymentCalendarThreshold: this.taxDefinition.paymentCalendarThreshold,
+        variableSymbol: tax.variableSymbol,
+        dateOfValidity: tax.dateTaxRuling,
+        installments: tax.taxInstallments,
+        taxDetails: tax.taxDetails as RealEstateTaxDetail,
+        specificSymbol,
+        taxPayments: tax.taxPayments,
+      })
 
     let oneTimePaymentQrCode: string | undefined
     if (detailWithoutQrCode.oneTimePayment.qrCode) {
@@ -122,7 +127,7 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
       ...detailWithoutQrCode,
       year,
       order,
-      type: TaxType.DZN,
+      type: 'REAL_ESTATE',
       paidStatus,
       oneTimePayment,
       installmentPayment,

@@ -7,15 +7,20 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../../dtos/error.dto'
-import { ResponseRealEstateTaxSummaryDetailDto, ResponseCommunalWasteTaxSummaryDetailDto } from '../../dtos/response.tax.dto'
+import {
+  ResponseCommunalWasteTaxSummaryDetailDto,
+  ResponseRealEstateTaxSummaryDetailDto,
+} from '../../dtos/response.tax.dto'
 
 export const specificSymbol = '2025200000'
 
-export abstract class AbstractTaxSubservice {
+export abstract class AbstractTaxSubservice<
+  TTaxType extends TaxType = TaxType,
+> {
   constructor(
     protected readonly prisma: PrismaService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
-    protected readonly taxDefinition: TaxDefinition,
+    protected readonly taxDefinition: TaxDefinition<TTaxType>,
   ) {}
 
   /**
@@ -30,7 +35,10 @@ export abstract class AbstractTaxSubservice {
     birthNumber: string,
     year: number,
     order: number,
-  ): Promise<ResponseRealEstateTaxSummaryDetailDto | ResponseCommunalWasteTaxSummaryDetailDto>
+  ): Promise<
+    | ResponseRealEstateTaxSummaryDetailDto
+    | ResponseCommunalWasteTaxSummaryDetailDto
+  >
 
   /**
    * Fetches the tax data from database for a given tax payer, year, type and order.

@@ -28,9 +28,9 @@ import {
   ResponseInternalServerErrorDto,
 } from '../utils/guards/dtos/error.dto'
 import {
+  ResponseCommunalWasteTaxSummaryDetailDto,
   ResponseGetTaxesListDto,
   ResponseRealEstateTaxSummaryDetailDto,
-  ResponseCommunalWasteTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
@@ -118,6 +118,7 @@ export class TaxControllerV2 {
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseGetTaxesListDto> {
     // TODO - pagination - but it will be issue after in year 2040 :D
+
     const response = await this.taxService.getListOfTaxesByBirthnumberAndType(
       baUser.birthNumber,
       type,

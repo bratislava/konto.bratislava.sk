@@ -1,8 +1,15 @@
-import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
 import dayjs, { Dayjs } from 'dayjs'
 
-import { TaxPaidStatusEnum, TaxStatusEnum } from '../../dtos/response.tax.dto'
-import { RealEstateTaxDetail } from '../../../prisma/json-types'
+import {
+  RealEstateTaxDetail,
+  RealEstateTaxPropertyType,
+} from '../../../prisma/json-types'
+import {
+  ResponseCommunalWasteTaxDetailItemizedDto,
+  ResponseRealEstateTaxDetailItemizedDto,
+  TaxPaidStatusEnum,
+  TaxStatusEnum,
+} from '../../dtos/response.tax.dto'
 
 export const getTaxStatus = (
   desiredPayment: number,
@@ -54,7 +61,7 @@ export const checkTaxDateInclusion = (
 
 export const generateItemizedRealEstateTaxDetail = (
   taxDetails: RealEstateTaxDetail,
-) => {
+): ResponseRealEstateTaxDetailItemizedDto => {
   const apartmentTaxDetail = taxDetails.propertyDetails
     .filter((detail) => detail.type === RealEstateTaxPropertyType.APARTMENT)
     .map((detail) => {
@@ -84,8 +91,16 @@ export const generateItemizedRealEstateTaxDetail = (
       }
     })
   return {
+    apartmentTotalAmount: taxDetails.taxFlat,
+    constructionTotalAmount: taxDetails.taxConstructions,
+    groundTotalAmount: taxDetails.taxLand,
     apartmentTaxDetail,
     groundTaxDetail,
     constructionTaxDetail,
   }
 }
+
+export const generateItemizedCommunalWasteTaxDetail =
+  (): ResponseCommunalWasteTaxDetailItemizedDto => {
+    throw new Error('Not implemented: generateItemizedRealEstateTaxDetail')
+  }

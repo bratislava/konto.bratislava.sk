@@ -1,16 +1,18 @@
-import { Prisma } from '@prisma/client'
+import { Prisma, TaxType } from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { TaxDefinition } from '../../../tax-definitions/taxDefinitionsTypes'
+import {
+  TaxDefinition,
+  TaxTypeToNorisData,
+} from '../../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
-import { NorisRealEstateTax } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
   mapNorisToDatabaseBaseTax,
@@ -19,7 +21,9 @@ import {
   mapNorisToTaxPayerData,
 } from '../../utils/mapping.helper'
 
-export abstract class AbstractNorisTaxSubservice {
+export abstract class AbstractNorisTaxSubservice<
+  TTaxType extends TaxType = TaxType,
+> {
   constructor(
     protected readonly qrCodeSubservice: QrCodeSubservice,
     protected readonly prismaService: PrismaService,
@@ -48,7 +52,7 @@ export abstract class AbstractNorisTaxSubservice {
    * @returns Birth numbers of the tax payers that were processed
    */
   abstract processNorisTaxData(
-    norisData: NorisRealEstateTax[],
+    norisData: TaxTypeToNorisData[TTaxType][],
     year: number,
   ): Promise<string[]>
 
@@ -75,8 +79,8 @@ export abstract class AbstractNorisTaxSubservice {
    * @returns The tax data that was inserted into the database, along with info about the tax payer.
    */
   protected async insertTaxDataToDatabase(
-    taxDefinition: TaxDefinition,
-    dataFromNoris: NorisRealEstateTax,
+    taxDefinition: TaxDefinition<TTaxType>,
+    dataFromNoris: TaxTypeToNorisData[TTaxType],
     year: number,
     transaction: Prisma.TransactionClient,
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
@@ -148,9 +152,9 @@ export abstract class AbstractNorisTaxSubservice {
   }
 
   protected readonly processTaxRecordFromNoris = async (
-    taxDefinition: TaxDefinition,
+    taxDefinition: TaxDefinition<TTaxType>,
     birthNumbersResult: Set<string>,
-    norisItem: NorisRealEstateTax,
+    norisItem: TaxTypeToNorisData[TTaxType],
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
     year: number,
   ) => {

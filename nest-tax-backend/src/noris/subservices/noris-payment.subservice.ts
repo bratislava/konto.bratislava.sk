@@ -20,6 +20,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
+import { NorisTaxPaymentSchema } from '../types/noris.schema'
 import {
   NorisPaymentWithVariableSymbol,
   NorisTaxPayment,
@@ -32,7 +33,6 @@ import {
 } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisValidatorSubservice } from './noris-validator.subservice'
-import { NorisTaxPaymentSchema } from '../types/noris.schema'
 
 @Injectable()
 export class NorisPaymentSubservice {
@@ -189,7 +189,9 @@ export class NorisPaymentSubservice {
     )
   }
 
-  private async createTaxMapByVariableSymbol(norisPaymentData: NorisTaxPayment[]) {
+  private async createTaxMapByVariableSymbol(
+    norisPaymentData: NorisTaxPayment[],
+  ) {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {

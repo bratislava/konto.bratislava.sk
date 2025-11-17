@@ -1,5 +1,6 @@
 import { TaxAdministrator } from '@prisma/client'
 
+import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
 import { NorisRealEstateTax } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
@@ -14,9 +15,6 @@ import {
   DeliveryMethod,
   DeliveryMethodNoris,
 } from '../noris.types'
-import {
-  RealEstateTaxPropertyType,
-} from '../../../prisma/json-types'
 
 describe('convertCurrencyToInt', () => {
   it('should convert string currency with comma to integer', () => {
@@ -426,7 +424,9 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     )
 
     // Check if we have entries for all configured types that have data
-    const types = result.propertyDetails.map((entry) => `${entry.type}-${entry.areaType}`)
+    const types = result.propertyDetails.map(
+      (entry) => `${entry.type}-${entry.areaType}`,
+    )
 
     // Apartment types
     expect(types).toContain(`${AreaTypesEnum.APARTMENT}-byt`)

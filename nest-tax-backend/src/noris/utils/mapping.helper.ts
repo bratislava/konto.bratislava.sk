@@ -1,13 +1,13 @@
-import { TaxAdministrator } from '@prisma/client'
+import { TaxAdministrator, TaxType } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisBaseTax, NorisRealEstateTax } from '../types/noris.types'
-import { DeliveryMethod, DeliveryMethodNoris } from './noris.types'
 import {
   RealEstateTaxAreaType,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
 } from '../../prisma/json-types'
+import { NorisBaseTax, NorisRealEstateTax } from '../types/noris.types'
+import { DeliveryMethod, DeliveryMethodNoris } from './noris.types'
 
 export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue
@@ -199,6 +199,7 @@ export const mapNorisToRealEstateDatabaseDetail = (
   }
 
   const details: RealEstateTaxDetail = {
+    type: TaxType.KO,
     taxLand: convertCurrencyToInt(data.dan_pozemky),
     taxConstructions: convertCurrencyToInt(data.dan_stavby_SPOLU),
     taxFlat: convertCurrencyToInt(data.dan_byty),

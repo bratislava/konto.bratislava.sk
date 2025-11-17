@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 
@@ -27,12 +28,12 @@ import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
-export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice {
+export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<'KO'> {
   constructor(
-    private readonly connectionService: NorisConnectionSubservice,
-    private readonly cityAccountSubservice: CityAccountSubservice,
-    private readonly paymentSubservice: NorisPaymentSubservice,
-    private readonly norisValidatorSubservice: NorisValidatorSubservice,
+    protected readonly connectionService: NorisConnectionSubservice,
+    protected readonly cityAccountSubservice: CityAccountSubservice,
+    protected readonly paymentSubservice: NorisPaymentSubservice,
+    protected readonly norisValidatorSubservice: NorisValidatorSubservice,
 
     qrCodeSubservice: QrCodeSubservice,
     throwerErrorGuard: ThrowerErrorGuard,
@@ -55,7 +56,9 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice 
     throw new Error('Not implemented')
   }
 
-  processNorisTaxData(): Promise<string[]> {
+  processNorisTaxData() // data: TaxTypeToNorisData['KO'][],
+  // year: number,
+  : Promise<string[]> {
     throw new Error('Not implemented')
   }
 
@@ -150,6 +153,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice 
       ) as NorisBaseTax
 
       const groupedData: NorisCommunalWasteTaxGrouped = {
+        type: TaxType.KO,
         ...baseData,
         containers,
       }

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CommunalWasteTaxDetailSchema } from '../../prisma/json-types'
 
 // COMMON SCHEMAS

@@ -9,9 +9,11 @@ import {
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOperation,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import { TaxType } from '@prisma/client'
@@ -28,7 +30,7 @@ import {
 import {
   ResponseGetTaxesListDto,
   ResponseRealEstateTaxSummaryDetailDto,
-  ResponseCommunalWasteTaxSummaryDetailDto
+  ResponseCommunalWasteTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
@@ -42,10 +44,28 @@ export class TaxControllerV2 {
   @ApiOperation({
     summary: 'Get tax detail by year and type.',
   })
+  @ApiExtraModels(
+    ResponseRealEstateTaxSummaryDetailDto,
+    ResponseCommunalWasteTaxSummaryDetailDto,
+  )
   @ApiResponse({
     status: 200,
     description: 'Load tax detail about user.',
-    type: ResponseRealEstateTaxSummaryDetailDto || ResponseCommunalWasteTaxSummaryDetailDto,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseRealEstateTaxSummaryDetailDto) },
+        { $ref: getSchemaPath(ResponseCommunalWasteTaxSummaryDetailDto) },
+      ],
+      discriminator: {
+        propertyName: 'type',
+        mapping: {
+          REAL_ESTATE: getSchemaPath(ResponseRealEstateTaxSummaryDetailDto),
+          COMMUNAL_WASTE: getSchemaPath(
+            ResponseCommunalWasteTaxSummaryDetailDto,
+          ),
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 422,

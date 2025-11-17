@@ -511,15 +511,6 @@ export class ResponseTaxSummaryDetailBaseDto {
   @IsPositive()
   order: number
 
-  @ApiProperty({
-    description: 'Type of tax',
-    example: TaxType.DZN,
-    enumName: 'TaxType',
-    enum: TaxType,
-  })
-  @IsEnum(TaxType)
-  type: TaxType
-
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()
   @IsPositive()
@@ -641,6 +632,13 @@ export class ResponseRealEstateTaxDetailItemizedDto {
 
 export class ResponseRealEstateTaxSummaryDetailDto extends ResponseTaxSummaryDetailBaseDto {
   @ApiProperty({
+    description: 'Type of tax.',
+    example: 'REAL_ESTATE',
+
+  })
+  type: 'REAL_ESTATE'
+
+  @ApiProperty({
     description: 'Itemized details',
     type: ResponseRealEstateTaxDetailItemizedDto,
   })
@@ -673,6 +671,13 @@ export class ResponseCommunalWasteTaxDetailItemizedDto{
 }
 
 export class ResponseCommunalWasteTaxSummaryDetailDto extends ResponseTaxSummaryDetailBaseDto {
+  @ApiProperty({
+    description: 'Type of tax.',
+    example: 'COMMUNAL_WASTE',
+
+  })
+  type: 'COMMUNAL_WASTE'
+
   @ApiProperty({
     description: 'Itemized details',
     type: ResponseCommunalWasteTaxDetailItemizedDto,

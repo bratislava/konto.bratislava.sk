@@ -660,14 +660,14 @@ export class ResponseCommunalWasteTaxItemizedAddressDto{
   poplatok: number // TODO translate
 }
 
-export class ResponseComunalWasteTaxAddressDetailItemizedDto {
+export class ResponseCommunalWasteTaxAddressDetailItemizedDto {
   address: ResponseCommunalWasteTaxAddressDto
   totalAmount: number
   itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto
 }
 
 export class ResponseCommunalWasteTaxDetailItemizedDto{
-  addressDetail: ResponseComunalWasteTaxAddressDetailItemizedDto[]
+  addressDetail: ResponseCommunalWasteTaxAddressDetailItemizedDto[]
 }
 
 export class ResponseCommunalWasteTaxSummaryDetailDto extends ResponseTaxSummaryDetailBaseDto {

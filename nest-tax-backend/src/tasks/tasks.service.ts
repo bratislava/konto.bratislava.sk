@@ -13,12 +13,13 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
-import { stateHolidays } from '../tax/utils/unified-tax.util'
+import { stateHolidays } from '../tax/utils/unified-tax.util.subservice'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
@@ -31,7 +32,6 @@ import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
-import { NorisTaxPayment } from '../noris/types/noris.types'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100

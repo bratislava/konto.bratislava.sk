@@ -10,6 +10,7 @@ import { PaymentModule } from './payment/payment.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
 import { TaxModule } from './tax/tax.module'
+import { TaxDefinitionsModule } from './tax-definitions/taxDefinitions.module'
 import AppLoggerMiddleware from './utils/middlewares/logger'
 
 @Module({
@@ -32,6 +33,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger'
     TasksModule,
     ScheduleModule.forRoot(),
     CardPaymentReportingModule,
+    TaxDefinitionsModule,
   ],
   controllers: [AppController],
   providers: [],

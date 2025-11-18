@@ -7,7 +7,6 @@ import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'ope
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
 import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'

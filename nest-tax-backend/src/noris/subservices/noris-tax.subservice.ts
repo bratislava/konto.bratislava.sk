@@ -4,7 +4,7 @@ import { TaxType } from '@prisma/client'
 import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { NorisCommunalWasteTax, NorisRealEstateTax } from '../types/noris.types'
+import { NorisRealEstateTax } from '../types/noris.types'
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 
@@ -53,10 +53,11 @@ export class NorisTaxSubservice {
     }
 
     if (taxType === TaxType.KO) {
-      return this.subservices[TaxType.KO].processNorisTaxData(
+      return this.subservices[TaxType.KO]
+        .processNorisTaxData
         // norisData as NorisCommunalWasteTax[],
         // year,
-      )
+        ()
     }
 
     // Fallback for exhaustiveness

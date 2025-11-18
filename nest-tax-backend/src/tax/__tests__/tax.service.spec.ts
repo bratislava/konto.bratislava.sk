@@ -21,7 +21,6 @@ import {
 } from '../dtos/response.tax.dto'
 import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
 import { TaxService } from '../tax.service'
-import { UnifiedTaxUtilSubservice } from '../utils/unified-tax.util.subservice'
 
 jest.mock('../utils/helpers/tax.helper', () => {
   const actual = jest.requireActual('../utils/helpers/tax.helper')

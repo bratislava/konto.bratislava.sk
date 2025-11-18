@@ -108,11 +108,6 @@ export type TaxDefinition<TTaxType extends TaxType> = {
     data: TaxTypeToNorisData[TTaxType],
   ) => TaxTypeToTaxDetail[TTaxType]
 
-  /** Returns tax detail in a pure format (used to calculate installments payments). */
-  getTaxDetailPure: (
-    options: GetTaxDetailPureOptions<TTaxType>,
-  ) => GetTaxDetailPureResponse<TTaxType>
-
   generateItemizedTaxDetail: (
     options: TaxTypeToTaxDetail[TTaxType],
   ) => TaxTypeToResponseDetailItemizedDto[TTaxType]

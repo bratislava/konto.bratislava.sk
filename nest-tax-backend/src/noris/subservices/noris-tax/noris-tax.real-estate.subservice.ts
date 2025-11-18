@@ -6,7 +6,7 @@ import pLimit from 'p-limit'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { TaxDefinitionsService } from '../../../tax-definitions/taxDefinitions'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionsByType'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
@@ -32,7 +32,6 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<'DZ
     protected readonly cityAccountSubservice: CityAccountSubservice,
     protected readonly paymentSubservice: NorisPaymentSubservice,
     protected readonly norisValidatorSubservice: NorisValidatorSubservice,
-    protected readonly taxDefinitionsService: TaxDefinitionsService,
 
     throwerErrorGuard: ThrowerErrorGuard,
     bloomreachService: BloomreachService,
@@ -119,8 +118,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<'DZ
         norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
-    const taxDefinitionRealEstate =
-      this.taxDefinitionsService.getTaxDefinitionByType(TaxType.DZN)
+    const taxDefinitionRealEstate = getTaxDefinitionByType(TaxType.DZN)
 
     const taxesExist = await this.prismaService.tax.findMany({
       select: {
@@ -186,8 +184,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<'DZ
     }
     let count = 0
 
-    const taxDefinitionRealEstate =
-      this.taxDefinitionsService.getTaxDefinitionByType(TaxType.DZN)
+    const taxDefinitionRealEstate = getTaxDefinitionByType(TaxType.DZN)
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(

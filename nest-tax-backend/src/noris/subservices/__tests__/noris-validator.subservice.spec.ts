@@ -4,9 +4,9 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
-  NorisTaxPaymentSchema,
   NorisRawCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
+  NorisTaxPaymentSchema,
 } from '../../types/noris.schema'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import {

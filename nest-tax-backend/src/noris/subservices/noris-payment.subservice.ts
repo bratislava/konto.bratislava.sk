@@ -21,9 +21,7 @@ import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subse
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
 import { NorisTaxPaymentSchema } from '../types/noris.schema'
-import {
-  NorisTaxPayment,
-} from '../types/noris.types'
+import { NorisTaxPayment } from '../types/noris.types'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
   queryOverpaymentsFromNorisByDateRange,

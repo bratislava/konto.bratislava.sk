@@ -13,10 +13,10 @@ import {
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
+import { NorisTaxPayment } from '../../types/noris.types'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
-import { NorisTaxPayment } from '../../types/noris.types'
 
 const mockRequest = {
   query: jest.fn(),

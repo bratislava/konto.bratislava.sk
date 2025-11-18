@@ -4,7 +4,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionsByType'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,

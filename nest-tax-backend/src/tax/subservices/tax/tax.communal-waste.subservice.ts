@@ -5,7 +5,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionsByType'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { ResponseRealEstateTaxSummaryDetailDto } from '../../dtos/response.tax.dto'

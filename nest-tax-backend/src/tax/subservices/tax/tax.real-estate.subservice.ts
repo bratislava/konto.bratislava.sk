@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 
 import { RealEstateTaxDetail } from '../../../prisma/json-types'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionsByType'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {

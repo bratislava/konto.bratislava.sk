@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 
 import { RealEstateTaxDetail } from '../../../prisma/json-types'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { TaxDefinitionsService } from '../../../tax-definitions/taxDefinitions'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionsByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
@@ -16,7 +16,7 @@ import {
   ResponseTaxPayerReducedDto,
 } from '../../dtos/response.tax.dto'
 import { getTaxStatus } from '../../utils/helpers/tax.helper'
-import { UnifiedTaxUtilSubservice } from '../../utils/unified-tax.util.subservice'
+import { getTaxDetailPure } from '../../utils/unified-tax.util.subservice'
 import {
   AbstractTaxSubservice,
   specificSymbol,
@@ -33,12 +33,8 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice<
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     private readonly qrCodeSubservice: QrCodeSubservice,
-    private readonly taxDefinitionsService: TaxDefinitionsService,
-    private readonly unifiedTaxUtilSubservice: UnifiedTaxUtilSubservice,
   ) {
-    const taxDefinition = taxDefinitionsService.getTaxDefinitionByType(
-      TaxType.DZN,
-    )
+    const taxDefinition = getTaxDefinitionByType(TaxType.DZN)
     super(prismaService, throwerErrorGuard, taxDefinition)
   }
 
@@ -66,20 +62,19 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice<
       order,
     )
 
-    const detailWithoutQrCode =
-      this.unifiedTaxUtilSubservice.getRealEstateTaxDetailPure({
-        type: TaxType.DZN,
-        taxYear: +year,
-        today: today.toDate(),
-        overallAmount: tax.amount,
-        paymentCalendarThreshold: this.taxDefinition.paymentCalendarThreshold,
-        variableSymbol: tax.variableSymbol,
-        dateOfValidity: tax.dateTaxRuling,
-        installments: tax.taxInstallments,
-        taxDetails: tax.taxDetails as RealEstateTaxDetail,
-        specificSymbol,
-        taxPayments: tax.taxPayments,
-      })
+    const detailWithoutQrCode = getTaxDetailPure({
+      type: TaxType.DZN,
+      taxYear: +year,
+      today: today.toDate(),
+      overallAmount: tax.amount,
+      paymentCalendarThreshold: this.taxDefinition.paymentCalendarThreshold,
+      variableSymbol: tax.variableSymbol,
+      dateOfValidity: tax.dateTaxRuling,
+      installments: tax.taxInstallments,
+      taxDetails: tax.taxDetails as RealEstateTaxDetail,
+      specificSymbol,
+      taxPayments: tax.taxPayments,
+    })
 
     let oneTimePaymentQrCode: string | undefined
     if (detailWithoutQrCode.oneTimePayment.qrCode) {

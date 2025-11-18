@@ -5,7 +5,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../../../prisma/prisma.service'
-import { TaxDefinitionsService } from '../../../tax-definitions/taxDefinitions'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionsByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { ResponseRealEstateTaxSummaryDetailDto } from '../../dtos/response.tax.dto'
@@ -22,11 +22,8 @@ export class TaxCommunalWasteSubservice extends AbstractTaxSubservice<
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     private readonly qrCodeSubservice: QrCodeSubservice,
-    private readonly taxDefinitionsService: TaxDefinitionsService,
   ) {
-    const taxDefinition = taxDefinitionsService.getTaxDefinitionByType(
-      TaxType.KO,
-    )
+    const taxDefinition = getTaxDefinitionByType(TaxType.KO)
     super(prismaService, throwerErrorGuard, taxDefinition)
   }
 

@@ -26,7 +26,10 @@ import {
   checkTaxDateInclusion,
   getExistingTaxStatus,
 } from './utils/helpers/tax.helper'
-import { UnifiedTaxUtilSubservice } from './utils/unified-tax.util.subservice'
+import {
+  getTaxDetailPureForInstallmentGenerator,
+  getTaxDetailPureForOneTimeGenerator,
+} from './utils/unified-tax.util.subservice'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -43,7 +46,6 @@ export class TaxService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxRealEstateSubservice: TaxRealEstateSubservice,
     private readonly taxCommunalWasteSubservice: TaxCommunalWasteSubservice,
-    private readonly unifiedTaxUtilSubservice: UnifiedTaxUtilSubservice,
   ) {}
 
   private getImplementationByType(taxType: TaxType) {
@@ -207,7 +209,7 @@ export class TaxService {
       order,
     )
 
-    return this.unifiedTaxUtilSubservice.getTaxDetailPureForOneTimeGenerator({
+    return getTaxDetailPureForOneTimeGenerator({
       taxId: tax.id,
       overallAmount: tax.amount,
       taxPayments: tax.taxPayments,
@@ -230,19 +232,17 @@ export class TaxService {
       order,
     )
 
-    return this.unifiedTaxUtilSubservice.getTaxDetailPureForInstallmentGenerator(
-      {
-        taxType,
-        taxId: tax.id,
-        taxYear: year,
-        today,
-        overallAmount: tax.amount,
-        variableSymbol: tax.variableSymbol,
-        dateOfValidity: tax.dateTaxRuling,
-        installments: tax.taxInstallments,
-        specificSymbol,
-        taxPayments: tax.taxPayments,
-      },
-    )
+    return getTaxDetailPureForInstallmentGenerator({
+      taxType,
+      taxId: tax.id,
+      taxYear: year,
+      today,
+      overallAmount: tax.amount,
+      variableSymbol: tax.variableSymbol,
+      dateOfValidity: tax.dateTaxRuling,
+      installments: tax.taxInstallments,
+      specificSymbol,
+      taxPayments: tax.taxPayments,
+    })
   }
 }

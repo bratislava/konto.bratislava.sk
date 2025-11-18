@@ -1,12 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-// eslint-disable-next-line import/no-cycle
-import { TaxDefinitionsService } from '../../tax-definitions/taxDefinitions'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionsByType'
 import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
@@ -545,224 +543,215 @@ const calculateOneTimePaymentDetails = (options: {
   }
 }
 
-@Injectable()
-export class UnifiedTaxUtilSubservice {
-  constructor(
-    @Inject(forwardRef(() => TaxDefinitionsService))
-    private readonly taxDefinitions: TaxDefinitionsService,
-  ) {}
+export const getTaxDetailPure = <TTaxType extends TaxType>(
+  options: GetTaxDetailPureOptions<TTaxType>,
+): GetTaxDetailPureResponse<TTaxType> => {
+  const {
+    type,
+    taxYear,
+    today,
+    overallAmount,
+    paymentCalendarThreshold,
+    variableSymbol,
+    dateOfValidity,
+    installments,
+    taxDetails,
+    specificSymbol,
+    taxPayments,
+  } = options
 
-  getRealEstateTaxDetailPure<TTaxType extends TaxType>(
-    options: GetTaxDetailPureOptions<TTaxType>,
-  ): GetTaxDetailPureResponse<TTaxType> {
-    const {
-      type,
-      taxYear,
-      today,
-      overallAmount,
-      paymentCalendarThreshold,
-      variableSymbol,
-      dateOfValidity,
-      installments,
-      taxDetails,
-      specificSymbol,
-      taxPayments,
-    } = options
-
-    let overallPaid = 0
-    taxPayments.forEach((payment) => {
-      if (payment.status === PaymentStatus.SUCCESS) {
-        overallPaid += payment.amount
-      }
-    })
-
-    const overallBalance = Math.max(overallAmount - overallPaid, 0)
-
-    const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
-    const dueDate = calculateDueDate(dateOfValidityDayjs)
-
-    const oneTimePayment = calculateOneTimePaymentDetails({
-      overallPaid,
-      overallBalance,
-      dueDate: dueDate?.toDate(),
-      variableSymbol,
-      specificSymbol,
-    })
-
-    const installmentPayment = calculateInstallmentPaymentDetails({
-      overallAmount,
-      overallPaid,
-      today,
-      taxYear,
-      paymentCalendarThreshold,
-      dueDate,
-      installments,
-      variableSymbol,
-      specificSymbol,
-    })
-
-    const taxDefinition = this.taxDefinitions.getTaxDefinitionByType(type)
-
-    const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
-      taxDefinition.generateItemizedTaxDetail(taxDetails)
-
-    return {
-      overallPaid,
-      overallBalance,
-      overallAmount,
-      oneTimePayment,
-      installmentPayment,
-      itemizedDetail,
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
     }
+  })
+
+  const overallBalance = Math.max(overallAmount - overallPaid, 0)
+
+  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  const dueDate = calculateDueDate(dateOfValidityDayjs)
+
+  const oneTimePayment = calculateOneTimePaymentDetails({
+    overallPaid,
+    overallBalance,
+    dueDate: dueDate?.toDate(),
+    variableSymbol,
+    specificSymbol,
+  })
+
+  const installmentPayment = calculateInstallmentPaymentDetails({
+    overallAmount,
+    overallPaid,
+    today,
+    taxYear,
+    paymentCalendarThreshold,
+    dueDate,
+    installments,
+    variableSymbol,
+    specificSymbol,
+  })
+
+  const taxDefinition = getTaxDefinitionByType(type)
+
+  const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
+    taxDefinition.generateItemizedTaxDetail(taxDetails)
+
+  return {
+    overallPaid,
+    overallBalance,
+    overallAmount,
+    oneTimePayment,
+    installmentPayment,
+    itemizedDetail,
   }
+}
 
-  getTaxDetailPureForOneTimeGenerator(options: {
-    taxId: number
-    overallAmount: number
-    taxPayments: {
-      amount: number
-      status: PaymentStatus
-    }[]
-  }): PaymentGateURLGeneratorDto {
-    const { taxId, overallAmount, taxPayments } = options
+export const getTaxDetailPureForOneTimeGenerator = (options: {
+  taxId: number
+  overallAmount: number
+  taxPayments: {
+    amount: number
+    status: PaymentStatus
+  }[]
+}): PaymentGateURLGeneratorDto => {
+  const { taxId, overallAmount, taxPayments } = options
 
-    let overallPaid = 0
-    taxPayments.forEach((payment) => {
-      if (payment.status === PaymentStatus.SUCCESS) {
-        overallPaid += payment.amount
-      }
-    })
-
-    const overallBalance = Math.max(overallAmount - overallPaid, 0)
-
-    if (overallBalance <= 0) {
-      throw new ThrowerErrorGuard().UnprocessableEntityException(
-        CustomErrorTaxTypesEnum.ALREADY_PAID,
-        CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      )
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
     }
+  })
 
-    const description =
-      overallPaid === 0
-        ? `Platba za dane pre BA s id dane ${taxId}`
-        : `Platba zostatku za dane pre BA s id dane ${taxId}`
+  const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
-    return {
-      amount: overallBalance,
-      taxId,
-      description,
-    }
-  }
-
-  getTaxDetailPureForInstallmentGenerator(options: {
-    taxType: TaxType
-    taxId: number
-    taxYear: number
-    today: Date
-    overallAmount: number
-    variableSymbol: string
-    dateOfValidity: Date | null
-    installments: { order: number; amount: number }[]
-    specificSymbol: string
-    taxPayments: {
-      amount: number
-      status: PaymentStatus
-    }[]
-  }): PaymentGateURLGeneratorDto {
-    const {
-      taxType,
-      taxId,
-      taxYear,
-      today,
-      overallAmount,
-      variableSymbol,
-      dateOfValidity,
-      installments,
-      specificSymbol,
-      taxPayments,
-    } = options
-    const { paymentCalendarThreshold } =
-      this.taxDefinitions.getTaxDefinitionByType(taxType)
-
-    let overallPaid = 0
-    taxPayments.forEach((payment) => {
-      if (payment.status === PaymentStatus.SUCCESS) {
-        overallPaid += payment.amount
-      }
-    })
-
-    const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
-    const dueDate = calculateDueDate(dateOfValidityDayjs)
-
-    const installmentPayment = calculateInstallmentPaymentDetails({
-      overallAmount,
-      overallPaid,
-      today,
-      taxYear,
-      paymentCalendarThreshold,
-      dueDate,
-      installments,
-      variableSymbol,
-      specificSymbol,
-    })
-
-    // Check if installment payment is possible
-    if (
-      !installmentPayment.isPossible ||
-      !installmentPayment.activeInstallment ||
-      !installmentPayment.installments
-    ) {
-      switch (installmentPayment.reasonNotPossible) {
-        case InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID:
-          throw new ThrowerErrorGuard().UnprocessableEntityException(
-            CustomErrorTaxTypesEnum.ALREADY_PAID,
-            CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-          )
-
-        case InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE:
-          throw new ThrowerErrorGuard().UnprocessableEntityException(
-            CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
-            CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
-          )
-
-        case InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD:
-          throw new ThrowerErrorGuard().UnprocessableEntityException(
-            CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
-            CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
-          )
-
-        default:
-          throw new ThrowerErrorGuard().UnprocessableEntityException(
-            CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
-            CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
-          )
-      }
-    }
-
-    // Find the active installment details
-    const activeInstallmentInfo = installmentPayment.installments.find(
-      (installment) =>
-        installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
-        installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
+  if (overallBalance <= 0) {
+    throw new ThrowerErrorGuard().UnprocessableEntityException(
+      CustomErrorTaxTypesEnum.ALREADY_PAID,
+      CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
     )
+  }
 
-    if (!activeInstallmentInfo) {
-      throw new ThrowerErrorGuard().InternalServerErrorException(
-        CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
-        CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
-      )
-    }
-    // Create description based on the installment status
-    // data that goes to payment gateway should not contain diacritics
-    const description =
-      activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
-        ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
-        : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+  const description =
+    overallPaid === 0
+      ? `Platba za dane pre BA s id dane ${taxId}`
+      : `Platba zostatku za dane pre BA s id dane ${taxId}`
 
-    return {
-      amount: activeInstallmentInfo.remainingAmount,
-      taxId,
-      description,
+  return {
+    amount: overallBalance,
+    taxId,
+    description,
+  }
+}
+
+export const getTaxDetailPureForInstallmentGenerator = (options: {
+  taxType: TaxType
+  taxId: number
+  taxYear: number
+  today: Date
+  overallAmount: number
+  variableSymbol: string
+  dateOfValidity: Date | null
+  installments: { order: number; amount: number }[]
+  specificSymbol: string
+  taxPayments: {
+    amount: number
+    status: PaymentStatus
+  }[]
+}): PaymentGateURLGeneratorDto => {
+  const {
+    taxType,
+    taxId,
+    taxYear,
+    today,
+    overallAmount,
+    variableSymbol,
+    dateOfValidity,
+    installments,
+    specificSymbol,
+    taxPayments,
+  } = options
+  const { paymentCalendarThreshold } = getTaxDefinitionByType(taxType)
+
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
     }
+  })
+
+  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  const dueDate = calculateDueDate(dateOfValidityDayjs)
+
+  const installmentPayment = calculateInstallmentPaymentDetails({
+    overallAmount,
+    overallPaid,
+    today,
+    taxYear,
+    paymentCalendarThreshold,
+    dueDate,
+    installments,
+    variableSymbol,
+    specificSymbol,
+  })
+
+  // Check if installment payment is possible
+  if (
+    !installmentPayment.isPossible ||
+    !installmentPayment.activeInstallment ||
+    !installmentPayment.installments
+  ) {
+    switch (installmentPayment.reasonNotPossible) {
+      case InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.ALREADY_PAID,
+          CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+        )
+
+      case InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
+          CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
+        )
+
+      case InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
+          CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+        )
+
+      default:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+          CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+        )
+    }
+  }
+
+  // Find the active installment details
+  const activeInstallmentInfo = installmentPayment.installments.find(
+    (installment) =>
+      installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
+      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
+  )
+
+  if (!activeInstallmentInfo) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    )
+  }
+  // Create description based on the installment status
+  // data that goes to payment gateway should not contain diacritics
+  const description =
+    activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
+      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+      : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+
+  return {
+    amount: activeInstallmentInfo.remainingAmount,
+    taxId,
+    description,
   }
 }

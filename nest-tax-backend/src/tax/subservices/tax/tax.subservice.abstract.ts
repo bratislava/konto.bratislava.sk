@@ -17,7 +17,7 @@ export const specificSymbol = '2025200000'
 export abstract class AbstractTaxSubservice<
   TTaxType extends TaxType = TaxType,
 > {
-  constructor(
+  protected constructor(
     protected readonly prisma: PrismaService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
     protected readonly taxDefinition: TaxDefinition<TTaxType>,

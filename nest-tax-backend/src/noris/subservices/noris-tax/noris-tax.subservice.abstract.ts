@@ -24,7 +24,7 @@ import {
 export abstract class AbstractNorisTaxSubservice<
   TTaxType extends TaxType = TaxType,
 > {
-  constructor(
+  protected constructor(
     protected readonly qrCodeSubservice: QrCodeSubservice,
     protected readonly prismaService: PrismaService,
     protected readonly bloomreachService: BloomreachService,

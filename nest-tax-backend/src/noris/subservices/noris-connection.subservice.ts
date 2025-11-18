@@ -81,6 +81,7 @@ export class NorisConnectionSubservice {
    * Creates a connection, executes the function, and ensures proper cleanup.
    *
    * @param operation - Function to execute within the connection context
+   * @param errorHandler - Error handler for any errors that occur during the operation
    * @param useOptimized - Whether to use optimized connection settings
    * @returns Result of the operation
    */

@@ -25,7 +25,7 @@ export enum RealEstateTaxAreaType {
 }
 
 export const RealEstateTaxDetailSchema = z.object({
-  type: TaxType.DZN,
+  type: z.literal(TaxType.DZN),
   taxLand: z.number().int(),
   taxConstructions: z.number().int(),
   taxFlat: z.number().int(),
@@ -41,7 +41,7 @@ export const RealEstateTaxDetailSchema = z.object({
 })
 
 export const CommunalWasteTaxDetailSchema = z.object({
-  type: TaxType.KO,
+  type: z.literal(TaxType.KO),
   containers: z.array(
     z.object({
       address: z.object({

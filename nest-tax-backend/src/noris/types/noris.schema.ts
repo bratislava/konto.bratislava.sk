@@ -64,7 +64,15 @@ export const NorisRawCommunalWasteTaxSchema = NorisBaseTaxSchema.extend({
   orientacne_cislo: z.string().nullable(),
 })
 
-// TODO this schema is mixing both raw noris data and parsed data. We should probably split them.
+/**
+ * NorisCommunalWasteTaxGroupedSchema is an extended schema based on
+ * NorisBaseTaxSchema and incorporates the structure defined in
+ * CommunalWasteTaxDetailSchema.
+ *
+ * This does not represent raw Noris data, but rather a structured
+ * representation where all container details are grouped together by
+ * variable symbol
+ */
 export const NorisCommunalWasteTaxGroupedSchema = NorisBaseTaxSchema.extend(
   CommunalWasteTaxDetailSchema.shape,
 )

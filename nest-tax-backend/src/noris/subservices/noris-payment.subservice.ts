@@ -22,7 +22,6 @@ import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
 import { NorisTaxPaymentSchema } from '../types/noris.schema'
 import {
-  NorisPaymentWithVariableSymbol,
   NorisTaxPayment,
 } from '../types/noris.types'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
@@ -250,14 +249,6 @@ export class NorisPaymentSubservice {
     }
   }
 
-  private hasVariableSymbol(
-    payment: NorisTaxPayment,
-  ): payment is NorisPaymentWithVariableSymbol {
-    return (
-      payment.variabilny_symbol !== null && payment.variabilny_symbol !== ''
-    )
-  }
-
   private async processNorisPaymentData(
     norisPaymentData: NorisTaxPayment[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
@@ -266,12 +257,8 @@ export class NorisPaymentSubservice {
       suppressEmail?: boolean
     },
   ) {
-    const validPayments = norisPaymentData.filter((payment) =>
-      this.hasVariableSymbol(payment),
-    )
-
-    // Step 2: Process each payment separately with concurrency limit
-    const paymentProcesses = validPayments.map((norisPayment) =>
+    // Step 1: Process each payment separately with a concurrency limit
+    const paymentProcesses = norisPaymentData.map((norisPayment) =>
       this.concurrencyLimit(async () =>
         this.processIndividualPayment(
           norisPayment,
@@ -282,12 +269,12 @@ export class NorisPaymentSubservice {
       ),
     )
 
-    // Step 3: Execute all payment processes with limited concurrency
+    // Step 2: Execute all payment processes with limited concurrency
     return Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(
-    norisPayment: NorisPaymentWithVariableSymbol,
+    norisPayment: NorisTaxPayment,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
     bloomreachSettings?: {

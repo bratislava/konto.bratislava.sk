@@ -6,7 +6,6 @@ import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -19,11 +18,6 @@ import {
   OneTimePaymentReasonNotPossibleEnum,
   OneTimePaymentTypeEnum,
 } from '../../dtos/response.tax.dto'
-import {
-  getRealEstateTaxDetailPure,
-  getTaxDetailPureForInstallmentGenerator,
-  getTaxDetailPureForOneTimeGenerator,
-} from '../unified-tax.util'
 
 const defaultInput = {
   type: TaxType.DZN,

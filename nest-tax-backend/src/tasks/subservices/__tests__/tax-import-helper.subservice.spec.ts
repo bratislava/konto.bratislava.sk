@@ -435,7 +435,7 @@ describe('TaxImportHelperSubservice', () => {
 
       const updateManySpy = jest
         .spyOn(prismaService.taxPayer, 'updateMany')
-        .mockResolvedValue({ count: 2 })
+        .mockResolvedValue({ count: 1 })
 
       await service.importTaxes(birthNumbers, year)
 
@@ -447,9 +447,10 @@ describe('TaxImportHelperSubservice', () => {
         prepareOnly: false,
       })
       expect(clearReadyToImportSpy).toHaveBeenCalledWith(['123456/7890'])
+      // Only successfully processed birth numbers should have updatedAt updated
       expect(updateManySpy).toHaveBeenCalledWith({
         where: {
-          birthNumber: { in: birthNumbers },
+          birthNumber: { in: ['123456/7890'] },
         },
         data: {
           updatedAt: expect.any(Date),

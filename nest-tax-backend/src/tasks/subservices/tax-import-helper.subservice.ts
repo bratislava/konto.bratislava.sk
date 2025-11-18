@@ -167,10 +167,11 @@ export default class TaxImportHelperSubservice {
     // Clear readyToImport flag for successfully imported birth numbers
     await this.clearReadyToImport(result.birthNumbers)
 
-    // Move all requested TaxPayers to the end of the queue
+    // Move only successfully processed TaxPayers to the end of the queue
+    // Unprocessed ones will keep their position for the next batch
     await this.prismaService.taxPayer.updateMany({
       where: {
-        birthNumber: { in: birthNumbers },
+        birthNumber: { in: result.birthNumbers },
       },
       data: {
         updatedAt: new Date(),

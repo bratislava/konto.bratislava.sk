@@ -11,8 +11,8 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
+import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 import {
   BaseNorisCommunalWasteTaxSchema,
@@ -56,8 +56,8 @@ export class NorisTaxSubservice {
     private readonly paymentSubservice: NorisPaymentSubservice,
     private readonly prismaService: PrismaService,
     private readonly bloomreachService: BloomreachService,
-    private readonly qrCodeSubservice: QrCodeSubservice,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
+    private readonly databaseSubservice: DatabaseSubservice,
   ) {}
 
   private async getTaxDataByYearAndBirthNumber(
@@ -193,6 +193,27 @@ export class NorisTaxSubservice {
     return { updated: count }
   }
 
+  private async getBatchSizeLimit(): Promise<number | undefined> {
+    try {
+      const config = await this.databaseSubservice.getConfigByKeys([
+        'TAX_IMPORT_BATCH_SIZE',
+      ])
+      const batchSizeLimit = parseInt(config.TAX_IMPORT_BATCH_SIZE, 10)
+      if (Number.isNaN(batchSizeLimit) || batchSizeLimit <= 0) {
+        this.logger.log(
+          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax records`,
+        )
+        return undefined
+      }
+      return batchSizeLimit
+    } catch (error) {
+      this.logger.log(
+        'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax records',
+      )
+      return undefined
+    }
+  }
+
   async processNorisTaxData(
     norisData: NorisRealEstateTax[],
     year: number,
@@ -238,13 +259,26 @@ export class NorisTaxSubservice {
     }
 
     // Normal mode: process and create taxes
+    const batchSizeLimit = await this.getBatchSizeLimit()
+
+    // Limit the number of records to process in this batch
+    const recordsToProcess = batchSizeLimit
+      ? norisDataNotInDatabase.slice(0, batchSizeLimit)
+      : norisDataNotInDatabase
+
+    if (batchSizeLimit && norisDataNotInDatabase.length > batchSizeLimit) {
+      this.logger.log(
+        `Limiting batch processing to ${batchSizeLimit} records out of ${norisDataNotInDatabase.length} available`,
+      )
+    }
+
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
-        norisData.map((norisRecord) => norisRecord.ICO_RC),
+        recordsToProcess.map((norisRecord) => norisRecord.ICO_RC),
       )
 
     await Promise.all(
-      norisDataNotInDatabase.map(async (norisItem) =>
+      recordsToProcess.map(async (norisItem) =>
         this.concurrencyLimit(async () => {
           await this.processTaxRecordFromNoris(
             birthNumbersResult,
@@ -256,8 +290,10 @@ export class NorisTaxSubservice {
       ),
     )
 
-    // Add the payments for these added taxes to database
-    await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
+    // Add the payments only for processed taxes
+    await this.paymentSubservice.updatePaymentsFromNorisWithData(
+      recordsToProcess,
+    )
 
     return [...birthNumbersResult]
   }

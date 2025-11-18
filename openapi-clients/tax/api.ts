@@ -266,12 +266,17 @@ export interface ResponseApartmentTaxDetailDto {
   amount: number
 }
 
+export interface ResponseCommunalWasteTaxAddressDetailItemizedDto {
+  address: ResponseCommunalWasteTaxAddressDto
+  totalAmount: number
+  itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto
+}
 export interface ResponseCommunalWasteTaxAddressDto {
   street: string
   orientationNumber: string
 }
 export interface ResponseCommunalWasteTaxDetailItemizedDto {
-  addressDetail: Array<ResponseComunalWasteTaxAddressDetailItemizedDto>
+  addressDetail: Array<ResponseCommunalWasteTaxAddressDetailItemizedDto>
 }
 export interface ResponseCommunalWasteTaxItemizedAddressDto {
   containerVolume: number
@@ -324,18 +329,20 @@ export interface ResponseCommunalWasteTaxSummaryDetailDto {
   /**
    * Type of tax.
    */
-  type: string
+  type: ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum
   /**
    * Itemized details
    */
   itemizedDetail: ResponseCommunalWasteTaxDetailItemizedDto
 }
 
-export interface ResponseComunalWasteTaxAddressDetailItemizedDto {
-  address: ResponseCommunalWasteTaxAddressDto
-  totalAmount: number
-  itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto
-}
+export const ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum = {
+  CommunalWaste: 'COMMUNAL_WASTE',
+} as const
+
+export type ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum =
+  (typeof ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum)[keyof typeof ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum]
+
 export interface ResponseConstructionTaxDetailDto {
   /**
    * Type of construction
@@ -623,12 +630,19 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
   /**
    * Type of tax.
    */
-  type: string
+  type: ResponseRealEstateTaxSummaryDetailDtoTypeEnum
   /**
    * Itemized details
    */
   itemizedDetail: ResponseRealEstateTaxDetailItemizedDto
 }
+
+export const ResponseRealEstateTaxSummaryDetailDtoTypeEnum = {
+  RealEstate: 'REAL_ESTATE',
+} as const
+
+export type ResponseRealEstateTaxSummaryDetailDtoTypeEnum =
+  (typeof ResponseRealEstateTaxSummaryDetailDtoTypeEnum)[keyof typeof ResponseRealEstateTaxSummaryDetailDtoTypeEnum]
 
 export interface ResponseTaxAdministratorDto {
   /**
@@ -739,14 +753,18 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
+     * @param {string} taxType
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerCreateTestingTax: async (
+      taxType: string,
       requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'taxType' is not null or undefined
+      assertParamExists('adminControllerCreateTestingTax', 'taxType', taxType)
       // verify required parameter 'requestAdminCreateTestingTaxDto' is not null or undefined
       assertParamExists(
         'adminControllerCreateTestingTax',
@@ -767,6 +785,10 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
 
       // authentication apiKey required
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      if (taxType !== undefined) {
+        localVarQueryParameter['taxType'] = taxType
+      }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
@@ -1152,15 +1174,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
+     * @param {string} taxType
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async adminControllerCreateTestingTax(
+      taxType: string,
       requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerCreateTestingTax(
+        taxType,
         requestAdminCreateTestingTaxDto,
         options,
       )
@@ -1402,16 +1427,18 @@ export const AdminApiFactory = function (
     /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
+     * @param {string} taxType
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerCreateTestingTax(
+      taxType: string,
       requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminControllerCreateTestingTax(requestAdminCreateTestingTaxDto, options)
+        .adminControllerCreateTestingTax(taxType, requestAdminCreateTestingTaxDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1529,16 +1556,18 @@ export class AdminApi extends BaseAPI {
   /**
    * Creates a testing tax record with specified details for development and testing purposes
    * @summary Create a testing tax record
+   * @param {string} taxType
    * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public adminControllerCreateTestingTax(
+    taxType: string,
     requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
     options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminControllerCreateTestingTax(requestAdminCreateTestingTaxDto, options)
+      .adminControllerCreateTestingTax(taxType, requestAdminCreateTestingTaxDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

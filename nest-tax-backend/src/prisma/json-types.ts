@@ -1,5 +1,5 @@
-import { z } from 'zod/index'
-import { TaxDetailTypeEnum } from '../tax/dtos/response.tax.dto'
+import { TaxType } from '@prisma/client'
+import { z } from 'zod'
 
 export enum RealEstateTaxPropertyType {
   APARTMENT = 'APARTMENT',
@@ -25,6 +25,10 @@ export enum RealEstateTaxAreaType {
 }
 
 export const RealEstateTaxDetailSchema = z.object({
+  type: TaxType.DZN,
+  taxLand: z.number().int(),
+  taxConstructions: z.number().int(),
+  taxFlat: z.number().int(),
   propertyDetails: z.array(
     z.object({
       type: z.enum(RealEstateTaxPropertyType),
@@ -37,6 +41,7 @@ export const RealEstateTaxDetailSchema = z.object({
 })
 
 export const CommunalWasteTaxDetailSchema = z.object({
+  type: TaxType.KO,
   containers: z.array(
     z.object({
       address: z.object({

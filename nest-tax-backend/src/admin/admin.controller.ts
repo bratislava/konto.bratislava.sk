@@ -4,6 +4,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -14,6 +15,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
+import { TaxType } from '@prisma/client'
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
@@ -27,7 +29,10 @@ import {
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
+import {
+  CreateBirthNumbersResponseDto,
+  UpdateDeliveryMethodsInNorisResponseDto,
+} from './dtos/responses.dto'
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -121,12 +126,13 @@ export class AdminController {
   @ApiResponse({
     status: 200,
     description: 'Records successfully updated in Noris',
+    type: UpdateDeliveryMethodsInNorisResponseDto,
   })
   @UseGuards(AdminGuard)
   @Post('update-delivery-methods-in-noris')
   async updateDeliveryMethodsInNoris(
     @Body() data: RequestUpdateNorisDeliveryMethodsDto,
-  ): Promise<void> {
+  ): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
     return this.adminService.updateDeliveryMethodsInNoris(data)
   }
 
@@ -165,8 +171,9 @@ export class AdminController {
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
+    @Query('taxType') taxType: TaxType,
   ): Promise<void> {
-    await this.adminService.createTestingTax(request)
+    await this.adminService.createTestingTax(request, taxType)
   }
 
   @HttpCode(200)

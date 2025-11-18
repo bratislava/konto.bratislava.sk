@@ -6,7 +6,7 @@ import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subser
  * These correspond to the prefixes used in OAUTH2_CLIENT_LIST environment variable
  */
 export enum OAuth2ClientName {
-  MPA = 'MPA',
+  PAAS_MPA = 'PAAS_MPA',
   DPB = 'DPB',
 }
 
@@ -18,37 +18,38 @@ export enum OAuth2ClientName {
  * @example Example environment variables:
  * ```bash
  * # List of client prefixes
- * OAUTH2_CLIENT_LIST=MPA,DPB
+ * OAUTH2_CLIENT_LIST=DPB,PAAS_MPA
  *
- * # For MPA client:
- * OAUTH2_MPA_CLIENT_ID=my-client-id
- * OAUTH2_MPA_CLIENT_SECRET=my-secret-key
- * OAUTH2_MPA_ALLOWED_URIS=http://localhost:3000/callback,https://mpa.example.com/callback
- * OAUTH2_MPA_ALLOWED_SCOPES=openid,profile,email
- * OAUTH2_MPA_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
- * OAUTH2_MPA_REQUIRES_PKCE=true
+ * # For PAAS_MPA client:
+ * OAUTH2_PAAS_MPA_CLIENT_ID=my-client-id
+ * OAUTH2_PAAS_MPA_CLIENT_SECRET=my-secret-key
+ * OAUTH2_PAAS_MPA_ALLOWED_URIS=http://localhost:3000/callback,https://paas-mpa.example.com/callback
+ * OAUTH2_PAAS_MPA_ALLOWED_SCOPES=openid,profile,email
+ * OAUTH2_PAAS_MPA_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
+ * OAUTH2_PAAS_MPA_REQUIRES_PKCE=true
  *
  * # For DPB client:
  * OAUTH2_DPB_CLIENT_ID=dpb-client-id
  * OAUTH2_DPB_CLIENT_SECRET=dpb-secret-key
  * OAUTH2_DPB_ALLOWED_URIS=https://dpb.example.com/callback
+ * OAUTH2_DPB_TITLE=DPB Application
  * ```
  *
  * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID
  * @optional - OAUTH2_{PREFIX}_CLIENT_SECRET
  * @required - OAUTH2_{PREFIX}_ALLOWED_URIS (at least one redirect URI required)
- * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE
+ * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE, TITLE
  */
 
 export class OAuth2Client {
   /** Unique client identifier */
-  readonly clientId: string
+  readonly id: string
 
   /** Client secret (optional - if not provided, secret validation is skipped) */
-  readonly clientSecret?: string
+  readonly secret?: string
 
   /** Human-readable name for the client (always the prefix from OAUTH2_CLIENT_LIST) */
-  readonly clientName: string
+  readonly name: string
 
   /** List of allowed redirect URIs for this client */
   readonly allowedRedirectUris: string[]
@@ -62,22 +63,27 @@ export class OAuth2Client {
   /** Whether this client requires PKCE */
   readonly requiresPkce: boolean
 
+  /** Human-readable title for the client (for frontend display) */
+  readonly title?: string
+
   constructor(config: {
-    clientId: string
-    clientSecret?: string
-    clientName: string
+    id: string
+    secret?: string
+    name: string
     allowedRedirectUris: string[]
     allowedScopes?: string[]
     allowedGrantTypes?: string[]
     requiresPkce: boolean
+    title?: string
   }) {
-    this.clientId = config.clientId
-    this.clientSecret = config.clientSecret
-    this.clientName = config.clientName
+    this.id = config.id
+    this.secret = config.secret
+    this.name = config.name
     this.allowedRedirectUris = config.allowedRedirectUris
     this.allowedScopes = config.allowedScopes
     this.allowedGrantTypes = config.allowedGrantTypes
     this.requiresPkce = config.requiresPkce
+    this.title = config.title
   }
 
   /**
@@ -208,14 +214,18 @@ export class OAuth2ClientSubservice {
       // Default to true if not specified
       const requiresPkce = process.env[`OAUTH2_${name}_REQUIRES_PKCE`] !== 'false'
 
+      // Optional title for frontend display
+      const title = process.env[`OAUTH2_${name}_TITLE`]
+
       const client = new OAuth2Client({
-        clientId,
-        clientName: name,
+        id: clientId,
+        secret: clientSecret,
+        name,
         allowedRedirectUris,
+        allowedScopes,
+        allowedGrantTypes,
         requiresPkce,
-        ...(clientSecret && { clientSecret }), // Only include if provided
-        ...(allowedScopes && allowedScopes.length > 0 && { allowedScopes }), // Only include if non-empty
-        ...(allowedGrantTypes && allowedGrantTypes.length > 0 && { allowedGrantTypes }), // Only include if non-empty
+        title,
       })
 
       clients.push(client)
@@ -242,7 +252,7 @@ export class OAuth2ClientSubservice {
    */
   findClientById(clientId: string): OAuth2Client | undefined {
     const clients = this.getClients()
-    return clients.find((client) => client.clientId === clientId)
+    return clients.find((client) => client.id === clientId)
   }
 
   /**
@@ -253,6 +263,6 @@ export class OAuth2ClientSubservice {
    */
   findClientByName(clientName: string): OAuth2Client | undefined {
     const clients = this.getClients()
-    return clients.find((client) => client.clientName === clientName)
+    return clients.find((client) => client.name === clientName)
   }
 }

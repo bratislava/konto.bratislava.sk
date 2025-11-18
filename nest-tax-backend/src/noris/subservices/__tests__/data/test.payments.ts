@@ -6,12 +6,6 @@ export const testPaymentValid: NorisTaxPayment = {
   specificky_symbol: '9876543210',
 }
 
-export const testPaymentNoVariableSymbol: NorisTaxPayment = {
-  variabilny_symbol: null,
-  uhrazeno: 2000,
-  specificky_symbol: '9876543211',
-}
-
 export const testPaymentStringUhrazeno = {
   variabilny_symbol: '1234567892',
   uhrazeno: '1000',

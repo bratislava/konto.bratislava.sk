@@ -1,11 +1,12 @@
 import { z } from 'zod'
 
 import {
+  NorisBaseTaxSchema,
   NorisCommunalWasteTaxGroupedSchema,
-  NorisTaxPaymentSchema,
+  NorisDeliveryMethodsUpdateResultSchema,
   NorisRawCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
-  NorisBaseTaxSchema,
+  NorisTaxPaymentSchema,
 } from './noris.schema'
 
 // Type inference from schemas
@@ -32,3 +33,10 @@ export type NorisTaxPayment = z.infer<typeof NorisTaxPaymentSchema>
 export type NorisPaymentWithVariableSymbol = NorisTaxPayment & {
   variabilny_symbol: string
 }
+
+// TODO delete. Just for demonstration purposes
+export type NorisTaxAny = NorisRealEstateTax | NorisCommunalWasteTax
+
+export type NorisDeliveryMethodsUpdateResult = z.infer<
+  typeof NorisDeliveryMethodsUpdateResultSchema
+>

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CommunalWasteTaxDetailSchema } from '../../prisma/json-types'
 
 // COMMON SCHEMAS
@@ -42,7 +43,7 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
 })
 
 export const NorisTaxPaymentSchema = z.object({
-  variabilny_symbol: z.string().nullable(),
+  variabilny_symbol: z.string(),
   uhrazeno: z.coerce.number(),
   specificky_symbol: z.string().nullable(),
 })
@@ -127,3 +128,11 @@ export const NorisRawRealEstateTaxDetailSchema = z.object({
 export const NorisRealEstateTaxSchema = NorisBaseTaxSchema.extend(
   NorisRawRealEstateTaxDetailSchema.shape,
 )
+
+export const NorisDeliveryMethodsUpdateResultSchema = z.object({
+  cislo_subjektu: z.number(),
+})
+
+export const NorisOrganizationResultSchema = z.object({
+  ico: z.string().trim(),
+})

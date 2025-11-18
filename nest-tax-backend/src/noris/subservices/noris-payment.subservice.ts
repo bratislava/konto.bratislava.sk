@@ -22,8 +22,8 @@ import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
 import { NorisTaxPaymentSchema } from '../types/noris.schema'
 import {
-  NorisTaxPayment,
   NorisPaymentWithVariableSymbol,
+  NorisTaxPayment,
 } from '../types/noris.types'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
@@ -189,7 +189,9 @@ export class NorisPaymentSubservice {
     )
   }
 
-  private async createTaxMapByVariableSymbol(norisPaymentData: NorisTaxPayment[]) {
+  private async createTaxMapByVariableSymbol(
+    norisPaymentData: NorisTaxPayment[],
+  ) {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {

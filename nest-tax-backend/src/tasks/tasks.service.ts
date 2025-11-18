@@ -19,7 +19,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
-import { stateHolidays } from '../tax/utils/unified-tax.util'
+import { stateHolidays } from '../tax/utils/unified-tax.util.subservice'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,

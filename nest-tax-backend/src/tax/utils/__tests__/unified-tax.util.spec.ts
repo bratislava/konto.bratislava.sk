@@ -1,13 +1,11 @@
 /* eslint-disable no-param-reassign */
 
-import {
-  PaymentStatus,
-  TaxDetailareaType,
-  TaxDetailType,
-  TaxType,
-} from '@prisma/client'
+import { PaymentStatus, TaxType } from '@prisma/client'
 
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import {
+  RealEstateTaxAreaType,
+  RealEstateTaxPropertyType,
+} from '../../../prisma/json-types'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -20,13 +18,9 @@ import {
   OneTimePaymentReasonNotPossibleEnum,
   OneTimePaymentTypeEnum,
 } from '../../dtos/response.tax.dto'
-import {
-  getRealEstateTaxDetailPure,
-  getTaxDetailPureForInstallmentGenerator,
-  getTaxDetailPureForOneTimeGenerator,
-} from '../unified-tax.util'
 
 const defaultInput = {
+  type: TaxType.DZN,
   taxYear: 2025,
   today: new Date('2025-01-01'),
   overallAmount: 6600,
@@ -44,8 +38,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.APARTMENT,
-      areaType: TaxDetailareaType.byt,
+      type: RealEstateTaxPropertyType.APARTMENT,
+      areaType: RealEstateTaxAreaType.byt,
       area: null,
       base: 123,
       amount: 123,
@@ -55,8 +49,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.APARTMENT,
-      areaType: TaxDetailareaType.byt,
+      type: RealEstateTaxPropertyType.APARTMENT,
+      areaType: RealEstateTaxAreaType.byt,
       area: null,
       base: 123,
       amount: 123,
@@ -66,8 +60,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.APARTMENT,
-      areaType: TaxDetailareaType.nebyt,
+      type: RealEstateTaxPropertyType.APARTMENT,
+      areaType: RealEstateTaxAreaType.nebyt,
       area: null,
       base: 123,
       amount: 123,
@@ -77,8 +71,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.CONSTRUCTION,
-      areaType: TaxDetailareaType.RESIDENTIAL,
+      type: RealEstateTaxPropertyType.CONSTRUCTION,
+      areaType: RealEstateTaxAreaType.RESIDENTIAL,
       area: null,
       base: 123,
       amount: 123,
@@ -88,8 +82,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.CONSTRUCTION,
-      areaType: TaxDetailareaType.RESIDENTIAL,
+      type: RealEstateTaxPropertyType.CONSTRUCTION,
+      areaType: RealEstateTaxAreaType.RESIDENTIAL,
       area: null,
       base: 123,
       amount: 123,
@@ -99,8 +93,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.CONSTRUCTION,
-      areaType: TaxDetailareaType.NONRESIDENTIAL,
+      type: RealEstateTaxPropertyType.CONSTRUCTION,
+      areaType: RealEstateTaxAreaType.NONRESIDENTIAL,
       area: null,
       base: 123,
       amount: 123,
@@ -110,8 +104,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.GROUND,
-      areaType: TaxDetailareaType.A,
+      type: RealEstateTaxPropertyType.GROUND,
+      areaType: RealEstateTaxAreaType.A,
       area: '123',
       base: 123,
       amount: 123,
@@ -121,8 +115,8 @@ const defaultInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
       taxId: 1234,
-      type: TaxDetailType.GROUND,
-      areaType: TaxDetailareaType.A,
+      type: RealEstateTaxPropertyType.GROUND,
+      areaType: RealEstateTaxAreaType.A,
       area: '123',
       base: 123,
       amount: 123,
@@ -195,30 +189,30 @@ const defaultOutput: ReturnType<typeof getRealEstateTaxDetailPure> = {
     constructionTotalAmount: 369,
     apartmentTaxDetail: [
       {
-        type: TaxDetailareaType.byt,
+        type: RealEstateTaxAreaType.byt,
         base: 123,
         amount: 123,
       },
       {
-        type: TaxDetailareaType.byt,
+        type: RealEstateTaxAreaType.byt,
         base: 123,
         amount: 123,
       },
       {
-        type: TaxDetailareaType.nebyt,
+        type: RealEstateTaxAreaType.nebyt,
         base: 123,
         amount: 123,
       },
     ],
     groundTaxDetail: [
       {
-        type: TaxDetailareaType.A,
+        type: RealEstateTaxAreaType.A,
         area: '123',
         base: 123,
         amount: 123,
       },
       {
-        type: TaxDetailareaType.A,
+        type: RealEstateTaxAreaType.A,
         area: '123',
         base: 123,
         amount: 123,
@@ -226,17 +220,17 @@ const defaultOutput: ReturnType<typeof getRealEstateTaxDetailPure> = {
     ],
     constructionTaxDetail: [
       {
-        type: TaxDetailareaType.RESIDENTIAL,
+        type: RealEstateTaxAreaType.RESIDENTIAL,
         base: 123,
         amount: 123,
       },
       {
-        type: TaxDetailareaType.RESIDENTIAL,
+        type: RealEstateTaxAreaType.RESIDENTIAL,
         base: 123,
         amount: 123,
       },
       {
-        type: TaxDetailareaType.NONRESIDENTIAL,
+        type: RealEstateTaxAreaType.NONRESIDENTIAL,
         base: 123,
         amount: 123,
       },

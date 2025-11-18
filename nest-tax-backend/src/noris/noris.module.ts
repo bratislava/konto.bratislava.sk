@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import ClientsModule from '../clients/clients.module'
 import { PrismaModule } from '../prisma/prisma.module'
+import { TaxDefinitionsModule } from '../tax-definitions/taxDefinitions.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
@@ -16,7 +17,12 @@ import { NorisTaxRealEstateSubservice } from './subservices/noris-tax/noris-tax.
 import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
 
 @Module({
-  imports: [PrismaModule, BloomreachModule, ClientsModule],
+  imports: [
+    PrismaModule,
+    BloomreachModule,
+    ClientsModule,
+    TaxDefinitionsModule,
+  ],
   providers: [
     NorisService,
     NorisConnectionSubservice,

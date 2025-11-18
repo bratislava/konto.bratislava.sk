@@ -7,7 +7,6 @@ import prismaMock from '../../../test/singleton'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import {
@@ -15,14 +14,13 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
 import {
-  ResponseTaxSummaryDetailDto,
+  ResponseRealEstateTaxSummaryDetailDto,
   TaxAvailabilityStatus,
   TaxPaidStatusEnum,
   TaxStatusEnum,
 } from '../dtos/response.tax.dto'
 import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
 import { TaxService } from '../tax.service'
-import * as unifiedTaxUtil from '../utils/unified-tax.util'
 
 jest.mock('../utils/helpers/tax.helper', () => {
   const actual = jest.requireActual('../utils/helpers/tax.helper')
@@ -984,7 +982,7 @@ describe('TaxService', () => {
         installmentPayment: {} as any,
         taxAdministrator: null,
         taxPayer: {} as any,
-      } as ResponseTaxSummaryDetailDto
+      } as ResponseRealEstateTaxSummaryDetailDto
 
       const mockImplementation = {
         getTaxDetail: jest.fn().mockResolvedValue(mockTaxDetail),

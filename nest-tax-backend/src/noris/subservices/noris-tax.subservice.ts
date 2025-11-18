@@ -232,32 +232,32 @@ export class NorisTaxSubservice {
     if (prepareOnly) {
       // In prepare mode, only return birth numbers not in database
       // No need to check for userFromCityAccount - that will be validated during actual import
-      norisDataNotInDatabase.forEach((norisItem) => {
-        birthNumbersResult.add(norisItem.ICO_RC)
+      return norisDataNotInDatabase.map((norisItem) => {
+        return norisItem.ICO_RC
       })
-    } else {
-      // Normal mode: process and create taxes
-      const userDataFromCityAccount =
-        await this.cityAccountSubservice.getUserDataAdminBatch(
-          norisData.map((norisRecord) => norisRecord.ICO_RC),
-        )
+    }
 
-      await Promise.all(
-        norisDataNotInDatabase.map(async (norisItem) =>
-          this.concurrencyLimit(async () => {
-            await this.processTaxRecordFromNoris(
-              birthNumbersResult,
-              norisItem,
-              userDataFromCityAccount,
-              year,
-            )
-          }),
-        ),
+    // Normal mode: process and create taxes
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
-      // Add the payments for these added taxes to database
-      await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
-    }
+    await Promise.all(
+      norisDataNotInDatabase.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          await this.processTaxRecordFromNoris(
+            birthNumbersResult,
+            norisItem,
+            userDataFromCityAccount,
+            year,
+          )
+        }),
+      ),
+    )
+
+    // Add the payments for these added taxes to database
+    await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
 
     return [...birthNumbersResult]
   }

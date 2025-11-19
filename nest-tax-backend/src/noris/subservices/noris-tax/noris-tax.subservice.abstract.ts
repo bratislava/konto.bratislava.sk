@@ -131,7 +131,7 @@ export abstract class AbstractNorisTaxSubservice<
     }
     const tax = await transaction.tax.upsert({
       where: whereUnique,
-      update: taxDataBase,
+      update: {...taxDataBase, taxDetails},
       create: {
         ...taxDataBase,
         taxDetails,

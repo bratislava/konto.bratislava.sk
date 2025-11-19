@@ -4,7 +4,7 @@ import {
   NorisBaseTaxSchema,
   NorisCommunalWasteTaxGroupedSchema,
   NorisDeliveryMethodsUpdateResultSchema,
-  NorisRawCommunalWasteTaxSchema,
+  NorisCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
   NorisTaxPaymentSchema,
 } from './noris.schema'
@@ -20,7 +20,7 @@ export type NorisBaseTax = z.infer<typeof NorisBaseTaxSchema>
  * where containers are nested within a single tax payer record.
  */
 export type NorisCommunalWasteTax = z.infer<
-  typeof NorisRawCommunalWasteTaxSchema
+  typeof NorisCommunalWasteTaxSchema
 >
 
 export type NorisCommunalWasteTaxGrouped = z.infer<

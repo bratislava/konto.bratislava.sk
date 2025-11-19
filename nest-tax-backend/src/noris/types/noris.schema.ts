@@ -53,7 +53,7 @@ export const NorisBaseTaxSchema = NorisBaseTaxWithoutPaymentSchema.extend(
 )
 
 // COMMUNAL WASTE SCHEMAS
-export const NorisRawCommunalWasteTaxSchema = NorisBaseTaxSchema.extend({
+export const NorisCommunalWasteTaxSchema = NorisBaseTaxSchema.extend({
   objem_nadoby: z.number(),
   pocet_nadob: z.number(),
   pocet_odvozov: z.number(),

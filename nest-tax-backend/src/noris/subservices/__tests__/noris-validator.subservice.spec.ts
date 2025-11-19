@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
-  NorisRawCommunalWasteTaxSchema,
+  NorisCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
   NorisTaxPaymentSchema,
 } from '../../types/noris.schema'
@@ -175,14 +175,14 @@ describe('NorisValidatorSubservice', () => {
       describe('valid', () => {
         it('should validate valid communal waste taxes', () => {
           validNorisCommunalWasteTaxes.forEach((tax) => {
-            service.validateNorisData(NorisRawCommunalWasteTaxSchema, tax)
+            service.validateNorisData(NorisCommunalWasteTaxSchema, tax)
             expect(true).toBe(true)
           })
         })
 
         it('should parse uhrazeno as number', () => {
           const result = service.validateNorisData(
-            NorisRawCommunalWasteTaxSchema,
+            NorisCommunalWasteTaxSchema,
             {
               ...testCommunalWasteTax1,
               uhrazeno: '448.66',
@@ -199,11 +199,11 @@ describe('NorisValidatorSubservice', () => {
         it('should throw error for invalid tax', () => {
           invalidNorisCommunalWasteTaxes.forEach((tax) => {
             expect(() => {
-              service.validateNorisData(NorisRawCommunalWasteTaxSchema, tax)
+              service.validateNorisData(NorisCommunalWasteTaxSchema, tax)
             }).toThrow(HttpException)
 
             try {
-              service.validateNorisData(NorisRawCommunalWasteTaxSchema, tax)
+              service.validateNorisData(NorisCommunalWasteTaxSchema, tax)
             } catch (error) {
               const response = (error as HttpException).getResponse() as Record<
                 symbol | string,
@@ -217,14 +217,14 @@ describe('NorisValidatorSubservice', () => {
         it('should throw error containing the field name that is invalid', () => {
           expect(() => {
             service.validateNorisData(
-              NorisRawCommunalWasteTaxSchema,
+              NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax1,
             )
           }).toThrow(HttpException)
 
           try {
             service.validateNorisData(
-              NorisRawCommunalWasteTaxSchema,
+              NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax1,
             )
           } catch (error) {
@@ -307,7 +307,7 @@ describe('NorisValidatorSubservice', () => {
         .spyOn(service['logger'], 'error')
         .mockImplementation(() => {})
       const result = service.validateNorisData(
-        NorisRawCommunalWasteTaxSchema,
+        NorisCommunalWasteTaxSchema,
         allNorisCommunalWasteTaxes,
       )
       expect(result).toHaveLength(6)

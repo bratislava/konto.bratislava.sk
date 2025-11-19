@@ -14,7 +14,7 @@ import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.sub
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
   NorisBaseTaxSchema,
-  NorisRawCommunalWasteTaxSchema,
+  NorisCommunalWasteTaxSchema,
 } from '../../types/noris.schema'
 import {
   NorisBaseTax,
@@ -112,7 +112,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       },
     )
     return this.norisValidatorSubservice.validateNorisData(
-      NorisRawCommunalWasteTaxSchema,
+      NorisCommunalWasteTaxSchema,
       norisData.recordset,
     )
   }

@@ -20,6 +20,10 @@ import { NorisConnectionSubservice } from '../../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../../noris-payment.subservice'
 import { NorisValidatorSubservice } from '../../noris-validator.subservice'
 import { NorisTaxRealEstateSubservice } from '../noris-tax.real-estate.subservice'
+import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
+import { TaxDefinition } from '../../../../tax-definitions/taxDefinitionsTypes'
+import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpers/tax.helper'
+import { createTestingRealEstateTaxMock } from '../../../../admin/utils/testing-tax-mock'
 
 jest.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
@@ -143,15 +147,6 @@ describe('NorisTaxRealEstateSubservice', () => {
   const mockTaxDefinition = {
     type: TaxType.DZN,
     isUnique: true,
-    mapNorisToTaxData: jest.fn().mockReturnValue({
-      year: 2023,
-      amount: 100_000,
-      variableSymbol: 'VS123',
-      dateTaxRuling: new Date('2023-01-01'),
-      taxConstructions: 20_000,
-      taxFlat: 50_000,
-      taxLand: 30_000,
-    }),
     mapNorisToTaxDetailData: jest.fn().mockReturnValue([
       {
         type: AreaTypesEnum.APARTMENT,
@@ -761,21 +756,13 @@ describe('NorisTaxRealEstateSubservice', () => {
 
   describe('AbstractNorisTaxSubservice', () => {
     describe('insertTaxDataToDatabase', () => {
-      const mockTaxDefinitionForInsert = {
+      const mockTaxDefinitionForInsert: TaxDefinition<typeof TaxType.DZN> = {
         type: TaxType.DZN,
         isUnique: true,
         paymentCalendarThreshold: 0,
-        getTaxDetailPure: jest.fn(),
-        pdfOptions: { generate: false } as const,
-        mapNorisToTaxData: jest.fn().mockReturnValue({
-          year: 2023,
-          amount: 100_000,
-          variableSymbol: 'VS123',
-          dateTaxRuling: new Date('2023-01-01'),
-          taxConstructions: 20_000,
-          taxFlat: 50_000,
-          taxLand: 30_000,
-        }),
+        numberOfInstallments: 3,
+        generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
+        createTestingTaxMock: createTestingRealEstateTaxMock,
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([
           {
             type: AreaTypesEnum.GROUND,
@@ -820,7 +807,6 @@ describe('NorisTaxRealEstateSubservice', () => {
           taxPayer: { id: 1 },
         } as TaxWithTaxPayer)
         prismaMock.taxInstallment.createMany.mockResolvedValue({ count: 0 })
-        prismaMock.taxDetail.createMany.mockResolvedValue({ count: 0 })
       })
 
       it('should insert tax data to database successfully with unique tax', async () => {
@@ -838,11 +824,8 @@ describe('NorisTaxRealEstateSubservice', () => {
           taxPayer: { id: 1 },
         })
         expect(
-          mockTaxDefinitionForInsert.mapNorisToTaxData,
-        ).toHaveBeenCalledWith(mockNorisData[0], 2023, 1)
-        expect(
           mockTaxDefinitionForInsert.mapNorisToTaxDetailData,
-        ).toHaveBeenCalledWith(mockNorisData[0], 1)
+        ).toHaveBeenCalledWith(mockNorisData[0])
       })
 
       it('should insert tax data to database successfully with non-unique tax', async () => {
@@ -884,21 +867,13 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
 
     describe('processTaxRecordFromNoris', () => {
-      const mockTaxDefinitionForProcess = {
+      const mockTaxDefinitionForProcess: TaxDefinition<typeof TaxType.DZN> = {
         type: TaxType.DZN,
         isUnique: true,
         paymentCalendarThreshold: 0,
-        getTaxDetailPure: jest.fn(),
-        pdfOptions: { generate: false } as const,
-        mapNorisToTaxData: jest.fn().mockReturnValue({
-          year: 2023,
-          amount: 100_000,
-          variableSymbol: 'VS123',
-          dateTaxRuling: new Date('2023-01-01'),
-          taxConstructions: 20_000,
-          taxFlat: 50_000,
-          taxLand: 30_000,
-        }),
+        numberOfInstallments:3,
+         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
+        createTestingTaxMock: createTestingRealEstateTaxMock,
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([
           {
             type: AreaTypesEnum.GROUND,

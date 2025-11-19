@@ -237,8 +237,6 @@ describe('mapDeliveryMethodToNoris', () => {
 })
 
 describe('mapNorisToRealEstateTaxDetailData', () => {
-  const mockTaxId = 123
-
   const mockNorisTaxPayersData: Partial<NorisRealEstateTax> = {
     // Apartment (byt) related fields
     det_zaklad_dane_byt: '100,50',

@@ -6,6 +6,11 @@ import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import {
+  GetTaxDetailPureOptions,
+  GetTaxDetailPureResponse,
+} from '../../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -23,11 +28,6 @@ import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from '../unified-tax.util'
-import {
-  GetTaxDetailPureOptions,
-  GetTaxDetailPureResponse,
-} from '../../../tax-definitions/taxDefinitionsTypes'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 
 // Add this mock at the top after imports
 jest.mock('../../../tax-definitions/getTaxDefinitionByType')
@@ -248,11 +248,13 @@ function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
 describe('UnifiedTaxUtil', () => {
   beforeEach(() => {
     // Get the actual implementation
-    const actualModule = jest.requireActual('../../../tax-definitions/getTaxDefinitionByType')
+    const actualModule = jest.requireActual(
+      '../../../tax-definitions/getTaxDefinitionByType',
+    )
 
-      // Reset and setup default mock to use actual implementation
+    // Reset and setup default mock to use actual implementation
     ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
-      actualModule.getTaxDefinitionByType
+      actualModule.getTaxDefinitionByType,
     )
   })
 
@@ -768,11 +770,13 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
   beforeEach(() => {
     // Get the actual implementation
-    const actualModule = jest.requireActual('../../../tax-definitions/getTaxDefinitionByType')
+    const actualModule = jest.requireActual(
+      '../../../tax-definitions/getTaxDefinitionByType',
+    )
 
-      // Reset and setup default mock to use actual implementation
+    // Reset and setup default mock to use actual implementation
     ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
-      actualModule.getTaxDefinitionByType
+      actualModule.getTaxDefinitionByType,
     )
   })
 
@@ -781,7 +785,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
   })
 
   it('should generate payment for the first installment', () => {
-    const output = getTaxDetailPureForInstallmentGenerator(baseOptionsRealEstate)
+    const output = getTaxDetailPureForInstallmentGenerator(
+      baseOptionsRealEstate,
+    )
 
     expect(output).toEqual({
       amount: 2200,
@@ -850,7 +856,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
   it('should work when threshold is 0', () => {
     // Get the actual implementation and override just paymentCalendarThreshold
-    const actualModule = jest.requireActual('../../../tax-definitions/getTaxDefinitionByType')
+    const actualModule = jest.requireActual(
+      '../../../tax-definitions/getTaxDefinitionByType',
+    )
     const actualDefinition = actualModule.getTaxDefinitionByType(TaxType.DZN)
 
     ;(getTaxDefinitionByType as jest.Mock).mockReturnValue({

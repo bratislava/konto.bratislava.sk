@@ -6,8 +6,12 @@ import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
 import prismaMock from '../../../../../test/singleton'
+import { createTestingRealEstateTaxMock } from '../../../../admin/utils/testing-tax-mock'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
+import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpers/tax.helper'
+import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
+import { TaxDefinition } from '../../../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
@@ -20,10 +24,6 @@ import { NorisConnectionSubservice } from '../../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../../noris-payment.subservice'
 import { NorisValidatorSubservice } from '../../noris-validator.subservice'
 import { NorisTaxRealEstateSubservice } from '../noris-tax.real-estate.subservice'
-import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
-import { TaxDefinition } from '../../../../tax-definitions/taxDefinitionsTypes'
-import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpers/tax.helper'
-import { createTestingRealEstateTaxMock } from '../../../../admin/utils/testing-tax-mock'
 
 jest.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
@@ -871,8 +871,8 @@ describe('NorisTaxRealEstateSubservice', () => {
         type: TaxType.DZN,
         isUnique: true,
         paymentCalendarThreshold: 0,
-        numberOfInstallments:3,
-         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
+        numberOfInstallments: 3,
+        generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([
           {

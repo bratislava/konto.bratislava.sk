@@ -20,11 +20,10 @@ import {
   TaxPaidStatusEnum,
   TaxStatusEnum,
 } from '../dtos/response.tax.dto'
+import { TaxCommunalWasteSubservice } from '../subservices/tax/tax.communal-waste.subservice'
 import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
 import { TaxService } from '../tax.service'
 import * as unifiedTaxUtil from '../utils/unified-tax.util'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
-import { TaxCommunalWasteSubservice } from '../subservices/tax/tax.communal-waste.subservice'
 
 jest.mock('../utils/helpers/tax.helper', () => {
   const actual = jest.requireActual('../utils/helpers/tax.helper')
@@ -1113,8 +1112,6 @@ describe('TaxService', () => {
       ],
       taxPayments: [{ amount: 200, status: PaymentStatus.SUCCESS }],
     }
-
-    const expectedTaxDefinition = getTaxDefinitionByType(TaxType.DZN)
 
     const mockPaymentGeneratorDto = {
       taxId: 1,

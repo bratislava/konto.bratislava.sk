@@ -424,15 +424,16 @@ export class TasksService {
       this.taxImportHelperSubservice.getDailyTaxLimit(),
     ])
     const isLimitReached = todayTaxCount >= dailyLimit
-    const shouldImport = isWithinWindow && !isLimitReached
+    const importPhase = isWithinWindow && !isLimitReached
 
     this.logger.log(
-      `Time window: ${isWithinWindow ? 'OPEN' : 'CLOSED'}, Today's tax count: ${todayTaxCount}/${dailyLimit}, Mode: ${shouldImport ? 'IMPORT' : 'PREPARE'}`,
+      `Time window: ${isWithinWindow ? 'OPEN' : 'CLOSED'}, Today's tax count: ${todayTaxCount}/${dailyLimit}, Phase: ${importPhase ? 'IMPORT' : 'PREPARE'}`,
     )
 
     const { birthNumbers, newlyCreated } =
       await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
         year,
+        importPhase,
       )
 
     if (birthNumbers.length === 0) {
@@ -453,7 +454,7 @@ export class TasksService {
     )
 
     if (remainingBirthNumbers.length > 0) {
-      await (shouldImport
+      await (importPhase
         ? this.taxImportHelperSubservice.importTaxes(
             remainingBirthNumbers,
             year,

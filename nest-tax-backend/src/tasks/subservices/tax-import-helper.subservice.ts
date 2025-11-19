@@ -122,8 +122,13 @@ export default class TaxImportHelperSubservice {
 
   /**
    * Get prioritized birth numbers for tax import with metadata
+   * @param year - The tax year
+   * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by updatedAt
    */
-  async getPrioritizedBirthNumbersWithMetadata(year: number): Promise<{
+  async getPrioritizedBirthNumbersWithMetadata(
+    year: number,
+    isImportPhase: boolean = true,
+  ): Promise<{
     birthNumbers: string[]
     newlyCreated: string[]
   }> {
@@ -137,7 +142,10 @@ export default class TaxImportHelperSubservice {
         FROM "Tax" t
         WHERE t."taxPayerId" = tp."id" AND t."year" = ${year}
       )
-      ORDER BY (tp."createdAt" = tp."updatedAt") DESC, tp."readyToImport" DESC, tp."updatedAt" ASC
+      ORDER BY 
+        (tp."createdAt" = tp."updatedAt") DESC,
+        CASE WHEN ${isImportPhase} THEN tp."readyToImport"::int ELSE 0 END DESC,
+        tp."updatedAt" ASC
       LIMIT ${this.UPLOAD_BIRTHNUMBERS_BATCH}
     `
 
@@ -209,6 +217,19 @@ export default class TaxImportHelperSubservice {
 
     // Mark validated birth numbers as ready to import
     await this.markAsReadyToImport(result.birthNumbers)
+
+    // Move birth numbers marked as ready to import to the end of the queue,
+    // since they will be imported in the next batch
+    if (result.birthNumbers.length > 0) {
+      await this.prismaService.taxPayer.updateMany({
+        where: {
+          birthNumber: { in: result.birthNumbers },
+        },
+        data: {
+          updatedAt: new Date(),
+        },
+      })
+    }
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are prepared and ready to import.`,

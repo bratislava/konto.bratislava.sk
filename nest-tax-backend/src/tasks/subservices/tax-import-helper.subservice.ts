@@ -161,7 +161,9 @@ export default class TaxImportHelperSubservice {
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
         year,
         birthNumbers,
-        prepareOnly: false,
+        options: {
+          prepareOnly: false,
+        },
       })
 
     // Clear readyToImport flag for successfully imported birth numbers
@@ -195,7 +197,9 @@ export default class TaxImportHelperSubservice {
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
         year,
         birthNumbers,
-        prepareOnly: true,
+        options: {
+          prepareOnly: true,
+        },
       })
 
     // Mark validated birth numbers as ready to import

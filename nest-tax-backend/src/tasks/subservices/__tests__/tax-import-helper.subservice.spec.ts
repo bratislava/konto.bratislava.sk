@@ -444,7 +444,9 @@ describe('TaxImportHelperSubservice', () => {
       ).toHaveBeenCalledWith({
         year,
         birthNumbers,
-        prepareOnly: false,
+        options: {
+          prepareOnly: false,
+        },
       })
       expect(clearReadyToImportSpy).toHaveBeenCalledWith(['123456/7890'])
       // Only successfully processed birth numbers should have updatedAt updated
@@ -527,7 +529,9 @@ describe('TaxImportHelperSubservice', () => {
       ).toHaveBeenCalledWith({
         year,
         birthNumbers,
-        prepareOnly: true,
+        options: {
+          prepareOnly: true,
+        },
       })
       expect(markAsReadySpy).toHaveBeenCalledWith(['123456/7890'])
     })

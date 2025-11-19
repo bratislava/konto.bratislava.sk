@@ -4,7 +4,10 @@ import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
-import { RequestPostNorisLoadDataDto } from '../../admin/dtos/requests.dto'
+import {
+  RequestPostNorisLoadDataDto,
+  RequestPostNorisLoadDataOptionsDto,
+} from '../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -217,12 +220,13 @@ export class NorisTaxSubservice {
   async processNorisTaxData(
     norisData: NorisRealEstateTax[],
     year: number,
-    prepareOnly: boolean = false,
+    options: RequestPostNorisLoadDataOptionsDto = {},
   ): Promise<string[]> {
     const birthNumbersResult: Set<string> = new Set()
+    const { prepareOnly = false, ignoreBatchLimit = false } = options
 
     this.logger.log(
-      `Data loaded from noris - count ${norisData.length}, prepareOnly: ${prepareOnly}`,
+      `Data loaded from noris - count ${norisData.length}, prepareOnly: ${prepareOnly}, ignoreBatchLimit: ${ignoreBatchLimit}`,
     )
 
     const taxesExist = await this.prismaService.tax.findMany({
@@ -259,7 +263,9 @@ export class NorisTaxSubservice {
     }
 
     // Normal mode: process and create taxes
-    const batchSizeLimit = await this.getBatchSizeLimit()
+    const batchSizeLimit = ignoreBatchLimit
+      ? undefined
+      : await this.getBatchSizeLimit()
 
     // Limit the number of records to process in this batch
     const recordsToProcess = batchSizeLimit
@@ -363,7 +369,7 @@ export class NorisTaxSubservice {
     const birthNumbersResult: string[] = await this.processNorisTaxData(
       norisData,
       data.year,
-      data.prepareOnly ?? false,
+      data.options,
     )
 
     return { birthNumbers: birthNumbersResult }

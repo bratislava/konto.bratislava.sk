@@ -256,8 +256,6 @@ export class NorisTaxSubservice {
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
     year: number,
   ) => {
-    birthNumbersResult.add(norisItem.ICO_RC)
-
     try {
       await this.prismaService.$transaction(async (tx) => {
         const userFromCityAccount =
@@ -266,6 +264,8 @@ export class NorisTaxSubservice {
         if (!userFromCityAccount) {
           return
         }
+
+        birthNumbersResult.add(norisItem.ICO_RC)
 
         const userData = await this.insertTaxPayerDataToDatabase(
           norisItem,

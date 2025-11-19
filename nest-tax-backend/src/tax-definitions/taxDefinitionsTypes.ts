@@ -40,11 +40,6 @@ export type TaxTypeToResponseDetailItemizedDto = {
   [TaxType.KO]: ResponseCommunalWasteTaxDetailItemizedDto
 }
 
-export type TaxTypeToResponseRealEstateTaxDetailDto = {
-  [TaxType.DZN]: ResponseRealEstateTaxSummaryDetailDto
-  [TaxType.KO]: ResponseCommunalWasteTaxSummaryDetailDto
-}
-
 export type GetTaxDetailPureOptions<TTaxType extends TaxType> = {
   type: TTaxType
   taxYear: number // daňový rok

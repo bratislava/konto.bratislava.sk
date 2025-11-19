@@ -29,7 +29,7 @@ import {
 import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
-} from './utils/unified-tax.util.subservice'
+} from './utils/unified-tax.util'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

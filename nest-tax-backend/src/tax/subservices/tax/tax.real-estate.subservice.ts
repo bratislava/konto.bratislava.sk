@@ -16,7 +16,7 @@ import {
   ResponseTaxPayerReducedDto,
 } from '../../dtos/response.tax.dto'
 import { getTaxStatus } from '../../utils/helpers/tax.helper'
-import { getTaxDetailPure } from '../../utils/unified-tax.util.subservice'
+import { getTaxDetailPure } from '../../utils/unified-tax.util'
 import {
   AbstractTaxSubservice,
   specificSymbol,

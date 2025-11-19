@@ -6,7 +6,7 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
-  IsEnum,
+  IsEnum, IsInt,
   IsNumber,
   IsObject,
   IsOptional,
@@ -653,31 +653,115 @@ export class ResponseRealEstateTaxSummaryDetailDto extends ResponseTaxSummaryDet
 }
 
 export class ResponseCommunalWasteTaxAddressDto {
+  @ApiProperty({
+    description: 'Street name',
+    example: 'Uršulínska',
+  })
+  @IsString()
   street: string
 
+  @ApiProperty({
+    description: 'Orientation number',
+    example: '123',
+  })
+  @IsString()
   orientationNumber: string
 }
+
 export class ResponseCommunalWasteTaxItemizedAddressDto {
+  @ApiProperty({
+    description: 'Container volume in liters',
+    example: 120,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
   containerVolume: number
 
-  containerCount: string
+  @ApiProperty({
+    description: 'Number of containers',
+    example: 2,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  containerCount: number
 
+  @ApiProperty({
+    description: 'Number of waste disposals',
+    example: 52,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
   numberOfDisposals: number
 
-  sadzba: number // TODO translate
+  @ApiProperty({
+    description: 'Unit tax rate (sadzba)',
+    example: 50,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  unitRate: number
 
-  poplatok: number // TODO translate
+  @ApiProperty({
+    description: 'Fee amount (poplatok)',
+    example: 5200,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  fee: number
 }
 
 export class ResponseCommunalWasteTaxAddressDetailItemizedDto {
+  @ApiProperty({
+    description: 'Address information',
+    type: ResponseCommunalWasteTaxAddressDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseCommunalWasteTaxAddressDto)
   address: ResponseCommunalWasteTaxAddressDto
 
+  @ApiProperty({
+    description: 'Total tax amount for this address',
+    example: 104.0,
+  })
+  @IsNumber()
+  @IsPositive()
   totalAmount: number
 
-  itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto
+  @ApiProperty({
+    description: 'Itemized container details',
+    type: ResponseCommunalWasteTaxItemizedAddressDto,
+    isArray: true,
+    example: [
+      {
+        containerVolume: 120,
+        containerCount: 2,
+        numberOfDisposals: 52,
+        sadzba: 0.5,
+        poplatok: 52.0,
+      },
+    ],
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseCommunalWasteTaxItemizedAddressDto)
+  itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto[]
 }
 
 export class ResponseCommunalWasteTaxDetailItemizedDto {
+  @ApiProperty({
+    description: 'Itemized details by address',
+    type: ResponseCommunalWasteTaxAddressDetailItemizedDto,
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseCommunalWasteTaxAddressDetailItemizedDto)
   addressDetail: ResponseCommunalWasteTaxAddressDetailItemizedDto[]
 }
 

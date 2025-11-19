@@ -945,3 +945,5 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
     )
   })
 })
+
+/* eslint-enable no-param-reassign */

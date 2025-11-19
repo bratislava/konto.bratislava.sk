@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
@@ -1070,3 +1071,5 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
   })
 })
+
+/* eslint-enable no-secrets/no-secrets */

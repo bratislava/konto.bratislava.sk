@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { TaxAdministrator } from '@prisma/client'
 
 import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
@@ -446,3 +447,5 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     expect(types).toContain(`${AreaTypesEnum.CONSTRUCTION}-jH`)
   })
 })
+
+/* eslint-enable no-secrets/no-secrets */

@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 describe('Minimal test suite', () => {
   test('should pass', () => {
     expect(true).toBe(true)
@@ -704,3 +705,5 @@ describe('AdminService', () => {
   })
 })
 */
+
+/* eslint-enable no-secrets/no-secrets */

@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { todo } from 'node:test'
 
 import { createMock } from '@golevelup/ts-jest'

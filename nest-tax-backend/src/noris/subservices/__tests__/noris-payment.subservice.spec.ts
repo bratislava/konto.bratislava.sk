@@ -1056,3 +1056,5 @@ describe('NorisPaymentSubservice', () => {
     })
   })
 })
+
+/* eslint-enable no-secrets/no-secrets */

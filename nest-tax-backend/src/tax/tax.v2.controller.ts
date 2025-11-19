@@ -9,9 +9,11 @@ import {
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOperation,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import { TaxType } from '@prisma/client'
@@ -26,8 +28,9 @@ import {
   ResponseInternalServerErrorDto,
 } from '../utils/guards/dtos/error.dto'
 import {
+  ResponseCommunalWasteTaxSummaryDetailDto,
   ResponseGetTaxesListDto,
-  ResponseTaxSummaryDetailDto,
+  ResponseRealEstateTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
@@ -41,10 +44,28 @@ export class TaxControllerV2 {
   @ApiOperation({
     summary: 'Get tax detail by year and type.',
   })
+  @ApiExtraModels(
+    ResponseRealEstateTaxSummaryDetailDto,
+    ResponseCommunalWasteTaxSummaryDetailDto,
+  )
   @ApiResponse({
     status: 200,
     description: 'Load tax detail about user.',
-    type: ResponseTaxSummaryDetailDto,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseRealEstateTaxSummaryDetailDto) },
+        { $ref: getSchemaPath(ResponseCommunalWasteTaxSummaryDetailDto) },
+      ],
+      discriminator: {
+        propertyName: 'type',
+        mapping: {
+          REAL_ESTATE: getSchemaPath(ResponseRealEstateTaxSummaryDetailDto),
+          COMMUNAL_WASTE: getSchemaPath(
+            ResponseCommunalWasteTaxSummaryDetailDto,
+          ),
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 422,
@@ -97,6 +118,7 @@ export class TaxControllerV2 {
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ): Promise<ResponseGetTaxesListDto> {
     // TODO - pagination - but it will be issue after in year 2040 :D
+
     const response = await this.taxService.getListOfTaxesByBirthnumberAndType(
       baUser.birthNumber,
       type,

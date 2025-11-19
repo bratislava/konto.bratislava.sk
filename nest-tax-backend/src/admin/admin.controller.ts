@@ -4,6 +4,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -14,6 +15,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
+import { TaxType } from '@prisma/client'
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
@@ -169,8 +171,9 @@ export class AdminController {
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
+    @Query('taxType') taxType: TaxType,
   ): Promise<void> {
-    await this.adminService.createTestingTax(request)
+    await this.adminService.createTestingTax(request, taxType)
   }
 
   @HttpCode(200)

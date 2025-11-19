@@ -58,6 +58,7 @@ describe('GpWebpaySubservice', () => {
 
       const result = (service as any).getDataToSign(mockData)
       expect(result).toBe(
+        // eslint-disable-next-line no-secrets/no-secrets
         '123|CREATE|456|100|EUR|1|http://example.com|Test order|test@example.com|CARD',
       )
     })
@@ -74,6 +75,7 @@ describe('GpWebpaySubservice', () => {
       }
 
       const result = (service as any).getDataToSign(mockData)
+      // eslint-disable-next-line no-secrets/no-secrets
       expect(result).toBe('123|CREATE|456|100|EUR|1|http://example.com')
     })
   })

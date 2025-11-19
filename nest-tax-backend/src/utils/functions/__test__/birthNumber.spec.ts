@@ -1,5 +1,6 @@
 import { addSlashToBirthNumber } from '../birthNumber'
 
+// eslint-disable-next-line no-secrets/no-secrets
 describe('addSlashToBirthNumber', () => {
   it('should add slash to birth number', () => {
     expect(addSlashToBirthNumber('1234567890')).toBe('123456/7890')

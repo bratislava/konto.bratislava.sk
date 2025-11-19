@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 
@@ -12,13 +13,13 @@ import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.su
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
-  BaseNorisCommunalWasteTaxSchema,
-  NorisRawCommunalWasteTaxSchema,
+  NorisBaseTaxSchema,
+  NorisCommunalWasteTaxSchema,
 } from '../../types/noris.schema'
 import {
-  BaseNorisCommunalWasteTaxDto,
+  NorisBaseTax,
+  NorisCommunalWasteTax,
   NorisCommunalWasteTaxGrouped,
-  NorisRawCommunalWasteTax,
 } from '../../types/noris.types'
 import { getCommunalWasteTaxesFromNoris } from '../../utils/noris.queries'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
@@ -27,7 +28,9 @@ import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
-export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice {
+export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
+  typeof TaxType.KO
+> {
   constructor(
     private readonly connectionService: NorisConnectionSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
@@ -55,7 +58,9 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice 
     throw new Error('Not implemented')
   }
 
-  processNorisTaxData(): Promise<string[]> {
+  processNorisTaxData() // data: TaxTypeToNorisData['KO'][],
+  // year: number,
+  : Promise<string[]> {
     throw new Error('Not implemented')
   }
 
@@ -78,7 +83,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice 
    */
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
     data: RequestPostNorisLoadDataDto,
-  ): Promise<NorisRawCommunalWasteTax[]> {
+  ): Promise<NorisCommunalWasteTax[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
         const request = new mssql.Request(connection)
@@ -109,13 +114,13 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice 
       },
     )
     return this.norisValidatorSubservice.validateNorisData(
-      NorisRawCommunalWasteTaxSchema,
+      NorisCommunalWasteTaxSchema,
       norisData.recordset,
     )
   }
 
   processWasteTaxRecords(
-    records: NorisRawCommunalWasteTax[],
+    records: NorisCommunalWasteTax[],
   ): NorisCommunalWasteTaxGrouped[] {
     const grouped = groupBy(records, 'variabilny_symbol')
 
@@ -142,14 +147,15 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice 
 
       // Get all keys from BaseNorisCommunalWasteTaxDto
       const baseKeys = Object.keys(
-        BaseNorisCommunalWasteTaxSchema.shape,
-      ) as (keyof BaseNorisCommunalWasteTaxDto)[]
+        NorisBaseTaxSchema.shape,
+      ) as (keyof NorisBaseTax)[]
 
       const baseData = Object.fromEntries(
         baseKeys.map((key) => [key, base[key]]),
-      ) as BaseNorisCommunalWasteTaxDto
+      ) as NorisBaseTax
 
       const groupedData: NorisCommunalWasteTaxGrouped = {
+        type: TaxType.KO,
         ...baseData,
         containers,
       }

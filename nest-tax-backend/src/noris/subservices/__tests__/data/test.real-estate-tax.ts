@@ -2,7 +2,6 @@ import { NorisRealEstateTax } from '../../../types/noris.types'
 
 export const testRealEstateTax1: NorisRealEstateTax = {
   adresa_tp_sidlo: 'Hlavná ulica, Testovacia Obec, 12345',
-  sposob_dorucenia: 'E',
   cislo_poradace: 12_561,
   cislo_subjektu: 139_431_111,
   cislo_konania: '1/25/019623-36/21/925188',
@@ -98,7 +97,6 @@ export const testRealEstateTax1: NorisRealEstateTax = {
 
 export const testRealEstateTax2: NorisRealEstateTax = {
   adresa_tp_sidlo: null,
-  sposob_dorucenia: null,
   cislo_poradace: 98_765,
   cislo_subjektu: 234_567_890,
   cislo_konania: null,
@@ -191,7 +189,6 @@ export const testRealEstateTax2: NorisRealEstateTax = {
 
 export const testRealEstateTax3 = {
   adresa_tp_sidlo: 'Druhá ulica, Mesto Test, 54321',
-  sposob_dorucenia: 'P',
   cislo_poradace: 54_321,
   cislo_subjektu: 345_678_901,
   cislo_konania: '2/26/028734-45/22/836299',

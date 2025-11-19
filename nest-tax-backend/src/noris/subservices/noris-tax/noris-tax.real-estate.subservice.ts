@@ -22,7 +22,9 @@ import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
-export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
+export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
+  typeof TaxType.DZN
+> {
   private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
 
   private readonly concurrencyLimit = pLimit(this.concurrency)
@@ -224,11 +226,6 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice {
           try {
             await this.prismaService.$transaction(async (tx) => {
               await tx.taxInstallment.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
-              await tx.taxDetail.deleteMany({
                 where: {
                   taxId: taxExists.id,
                 },

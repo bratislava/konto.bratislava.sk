@@ -199,7 +199,7 @@ export const mapNorisToRealEstateDatabaseDetail = (
   }
 
   const details: RealEstateTaxDetail = {
-    type: TaxType.KO,
+    type: TaxType.DZN,
     taxLand: convertCurrencyToInt(data.dan_pozemky),
     taxConstructions: convertCurrencyToInt(data.dan_stavby_SPOLU),
     taxFlat: convertCurrencyToInt(data.dan_byty),

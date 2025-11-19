@@ -292,12 +292,15 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     det_stavba_DAN_jI: '140,75',
     det_stavba_ZAKLAD_H: '1500,75',
     det_stavba_DAN_H: '150,75',
+
+    dan_pozemky: '66,68',
+    dan_byty: '421,43',
+    dan_stavby: '0,01',
   }
 
   it('should process apartment (byt) tax details correctly', () => {
     const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
     const apartmentEntries = result.propertyDetails.filter(
@@ -323,12 +326,15 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
       amount: 2075,
       area: null,
     })
+
+    expect(result.taxFlat).toEqual(42143)
+    expect(result.taxLand).toEqual(6668)
+    expect(result.taxConstructions).toEqual(1)
   })
 
   it('should process ground (pozemky) tax details correctly', () => {
     const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
     const groundEntries = result.propertyDetails.filter(
@@ -367,7 +373,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
   it('should process construction (stavba) tax details correctly', () => {
     const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
     const constructionEntries = result.propertyDetails.filter(
@@ -412,7 +417,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
 
     const result = mapNorisToRealEstateDatabaseDetail(
       invalidData as NorisRealEstateTax,
-      mockTaxId,
     )
     expect(() => result).not.toThrow()
   })
@@ -420,7 +424,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
   it('should process all configured types for each category', () => {
     const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
     // Check if we have entries for all configured types that have data

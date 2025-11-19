@@ -169,16 +169,21 @@ export default class TaxImportHelperSubservice {
     // Clear readyToImport flag for successfully imported birth numbers
     await this.clearReadyToImport(result.birthNumbers)
 
-    // Move only successfully processed TaxPayers to the end of the queue
-    // Unprocessed ones will keep their position for the next batch
-    await this.prismaService.taxPayer.updateMany({
-      where: {
-        birthNumber: { in: result.birthNumbers },
-      },
-      data: {
-        updatedAt: new Date(),
-      },
-    })
+    // Move only birth numbers not found in Noris to the end of the queue
+    const foundInNoris = result.foundInNoris || []
+    const notFoundInNoris = birthNumbers.filter(
+      (bn) => !foundInNoris.includes(bn),
+    )
+    if (notFoundInNoris.length > 0) {
+      await this.prismaService.taxPayer.updateMany({
+        where: {
+          birthNumber: { in: notFoundInNoris },
+        },
+        data: {
+          updatedAt: new Date(),
+        },
+      })
+    }
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,

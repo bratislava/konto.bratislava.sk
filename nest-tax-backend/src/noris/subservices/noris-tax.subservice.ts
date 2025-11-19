@@ -221,7 +221,7 @@ export class NorisTaxSubservice {
     norisData: NorisRealEstateTax[],
     year: number,
     options: RequestPostNorisLoadDataOptionsDto = {},
-  ): Promise<string[]> {
+  ): Promise<CreateBirthNumbersResponseDto> {
     const birthNumbersResult: Set<string> = new Set()
     const { prepareOnly = false, ignoreBatchLimit = false } = options
 
@@ -257,9 +257,11 @@ export class NorisTaxSubservice {
     if (prepareOnly) {
       // In prepare mode, only return birth numbers not in database
       // No need to check for userFromCityAccount - that will be validated during actual import
-      return norisDataNotInDatabase.map((norisItem) => {
-        return norisItem.ICO_RC
-      })
+      return {
+        birthNumbers: norisDataNotInDatabase.map((norisItem) => {
+          return norisItem.ICO_RC
+        }),
+      }
     }
 
     // Normal mode: process and create taxes
@@ -301,7 +303,7 @@ export class NorisTaxSubservice {
       recordsToProcess,
     )
 
-    return [...birthNumbersResult]
+    return { birthNumbers: [...birthNumbersResult] }
   }
 
   private readonly processTaxRecordFromNoris = async (
@@ -366,13 +368,17 @@ export class NorisTaxSubservice {
     this.logger.log('Start Loading data from noris')
     const norisData = await this.getTaxDataByYearAndBirthNumber(data)
 
-    const birthNumbersResult: string[] = await this.processNorisTaxData(
+    const birthNumbersResult = await this.processNorisTaxData(
       norisData,
       data.year,
       data.options,
     )
 
-    return { birthNumbers: birthNumbersResult }
+    // Include birth numbers found in Noris (regardless of whether they were processed)
+    return {
+      ...birthNumbersResult,
+      foundInNoris: norisData.map((item) => item.ICO_RC),
+    }
   }
 
   private async insertTaxPayerDataToDatabase(

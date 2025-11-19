@@ -65,7 +65,7 @@ export class NorisService {
     norisData: NorisRealEstateTax[],
     year: number,
     options: RequestPostNorisLoadDataOptionsDto = {},
-  ): Promise<string[]> {
+  ) {
     return this.taxSubservice.processNorisTaxData(norisData, year, options)
   }
 

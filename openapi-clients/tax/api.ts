@@ -38,6 +38,10 @@ export interface CreateBirthNumbersResponseDto {
    * An array of birth numbers which were added to TaxPayers in this batch.
    */
   birthNumbers: Array<string>
+  /**
+   * An array of birth numbers which were found in Noris (regardless of whether they were processed).
+   */
+  foundInNoris?: Array<string>
 }
 export interface DateRangeDto {
   /**
@@ -624,6 +628,10 @@ export interface UpdateDeliveryMethodsInNorisResponseDto {
    * An array of birth numbers which were added to TaxPayers in this batch.
    */
   birthNumbers: Array<string>
+  /**
+   * An array of birth numbers which were found in Noris (regardless of whether they were processed).
+   */
+  foundInNoris?: Array<string>
 }
 
 /**

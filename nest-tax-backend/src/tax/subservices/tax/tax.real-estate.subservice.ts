@@ -4,7 +4,6 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
-import { RealEstateTaxDetail } from '../../../prisma/json-types'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
@@ -21,6 +20,7 @@ import {
   AbstractTaxSubservice,
   specificSymbol,
 } from './tax.subservice.abstract'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -62,6 +62,13 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice<
       order,
     )
 
+    if (tax.taxDetails.type !== TaxType.DZN) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Tax details type is not DZN: ${tax.taxDetails.type}`,
+      )
+    }
+
     const detailWithoutQrCode = getTaxDetailPure({
       type: TaxType.DZN,
       taxYear: +year,
@@ -71,7 +78,7 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice<
       variableSymbol: tax.variableSymbol,
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
-      taxDetails: tax.taxDetails as RealEstateTaxDetail,
+      taxDetails: tax.taxDetails,
       specificSymbol,
       taxPayments: tax.taxPayments,
     })

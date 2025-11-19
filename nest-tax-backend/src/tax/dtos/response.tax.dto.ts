@@ -783,3 +783,5 @@ export class ResponseCommunalWasteTaxSummaryDetailDto extends ResponseTaxSummary
   @Type(() => ResponseCommunalWasteTaxDetailItemizedDto)
   itemizedDetail: ResponseCommunalWasteTaxDetailItemizedDto
 }
+
+export type ResponseAnyTaxSummaryDetailDto = ResponseRealEstateTaxSummaryDetailDto | ResponseCommunalWasteTaxSummaryDetailDto

@@ -8,6 +8,7 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from '../../dtos/error.dto'
 import {
+  ResponseAnyTaxSummaryDetailDto,
   ResponseCommunalWasteTaxSummaryDetailDto,
   ResponseRealEstateTaxSummaryDetailDto,
 } from '../../dtos/response.tax.dto'
@@ -36,8 +37,7 @@ export abstract class AbstractTaxSubservice<
     year: number,
     order: number,
   ): Promise<
-    | ResponseRealEstateTaxSummaryDetailDto
-    | ResponseCommunalWasteTaxSummaryDetailDto
+    ResponseAnyTaxSummaryDetailDto
   >
 
   /**

@@ -12,6 +12,7 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
+  ResponseAnyTaxSummaryDetailDto,
   ResponseCommunalWasteTaxSummaryDetailDto,
   ResponseGetTaxesListBodyDto,
   ResponseGetTaxesListDto,
@@ -185,8 +186,7 @@ export class TaxService {
     type: TaxType,
     order: number,
   ): Promise<
-    | ResponseRealEstateTaxSummaryDetailDto
-    | ResponseCommunalWasteTaxSummaryDetailDto
+    ResponseAnyTaxSummaryDetailDto
   > {
     return this.getImplementationByType(type).getTaxDetail(
       birthNumber,

@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Tax } from '@prisma/client'

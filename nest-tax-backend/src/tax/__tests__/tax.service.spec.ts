@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'

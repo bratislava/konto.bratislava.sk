@@ -13,10 +13,8 @@ import {
 } from './dtos/error.dto'
 import {
   ResponseAnyTaxSummaryDetailDto,
-  ResponseCommunalWasteTaxSummaryDetailDto,
   ResponseGetTaxesListBodyDto,
   ResponseGetTaxesListDto,
-  ResponseRealEstateTaxSummaryDetailDto,
   TaxAvailabilityStatus,
   TaxStatusEnum,
 } from './dtos/response.tax.dto'

@@ -7,11 +7,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../../dtos/error.dto'
-import {
-  ResponseAnyTaxSummaryDetailDto,
-  ResponseCommunalWasteTaxSummaryDetailDto,
-  ResponseRealEstateTaxSummaryDetailDto,
-} from '../../dtos/response.tax.dto'
+import { ResponseAnyTaxSummaryDetailDto } from '../../dtos/response.tax.dto'
 
 export const specificSymbol = '2025200000'
 

@@ -11,14 +11,13 @@ import {
 import {
   ResponseActiveInstallmentDto,
   ResponseCommunalWasteTaxDetailItemizedDto,
-  ResponseCommunalWasteTaxSummaryDetailDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseRealEstateTaxDetailItemizedDto,
-  ResponseRealEstateTaxSummaryDetailDto,
 } from '../tax/dtos/response.tax.dto'
 import { QrCodeGeneratorDto } from '../utils/subservices/dtos/qrcode.dto'
 import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
+import { AbstractNorisTaxSubservice } from '../noris/subservices/noris-tax/noris-tax.subservice.abstract'
 
 export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
   [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
@@ -69,22 +68,6 @@ export type GetTaxDetailPureResponse<TTaxType extends TaxType> = {
     activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
   }
   itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType]
-}
-
-// Forward declaration for circular dependency
-export interface AbstractNorisTaxSubservice<TTaxType extends TaxType> {
-  processNorisTaxData(
-    norisData: TaxTypeToNorisData[TTaxType][],
-    year: number,
-  ): Promise<string[]>
-  getAndProcessNorisTaxDataByBirthNumberAndYear(
-    year: number,
-    birthNumbers: string[],
-  ): Promise<any>
-  getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    year: number,
-    birthNumbers: string[],
-  ): Promise<{ updated: number }>
 }
 
 export type TaxDefinition<TTaxType extends TaxType> = {

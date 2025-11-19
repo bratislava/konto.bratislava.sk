@@ -327,9 +327,9 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
       area: null,
     })
 
-    expect(result.taxFlat).toEqual(42143)
-    expect(result.taxLand).toEqual(6668)
-    expect(result.taxConstructions).toEqual(1)
+    expect(result.taxFlat).toBe(42_143)
+    expect(result.taxLand).toBe(6668)
+    expect(result.taxConstructions).toBe(1)
   })
 
   it('should process ground (pozemky) tax details correctly', () => {

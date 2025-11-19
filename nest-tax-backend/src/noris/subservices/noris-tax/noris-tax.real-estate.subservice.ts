@@ -22,7 +22,9 @@ import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
-export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<typeof TaxType.DZN> {
+export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
+  typeof TaxType.DZN
+> {
   private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
 
   private readonly concurrencyLimit = pLimit(this.concurrency)

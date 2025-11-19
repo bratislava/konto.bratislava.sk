@@ -21,9 +21,7 @@ import {
   mapNorisToTaxPayerData,
 } from '../../utils/mapping.helper'
 
-export abstract class AbstractNorisTaxSubservice<
-  TTaxType extends TaxType,
-> {
+export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   protected constructor(
     protected readonly qrCodeSubservice: QrCodeSubservice,
     protected readonly prismaService: PrismaService,
@@ -131,7 +129,7 @@ export abstract class AbstractNorisTaxSubservice<
     }
     const tax = await transaction.tax.upsert({
       where: whereUnique,
-      update: {...taxDataBase, taxDetails},
+      update: { ...taxDataBase, taxDetails },
       create: {
         ...taxDataBase,
         taxDetails,

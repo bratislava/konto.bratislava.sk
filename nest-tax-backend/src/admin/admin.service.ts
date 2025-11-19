@@ -4,10 +4,9 @@ import { TaxType } from '@prisma/client'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { NorisService } from '../noris/noris.service'
-import {
-  NorisTaxPayment,
-} from '../noris/types/noris.types'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -24,7 +23,6 @@ import {
   CreateBirthNumbersResponseDto,
   UpdateDeliveryMethodsInNorisResponseDto,
 } from './dtos/responses.dto'
-import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 
 @Injectable()
 export class AdminService {

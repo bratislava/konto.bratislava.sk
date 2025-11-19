@@ -15,9 +15,7 @@ import {
 
 export const specificSymbol = '2025200000'
 
-export abstract class AbstractTaxSubservice<
-  TTaxType extends TaxType,
-> {
+export abstract class AbstractTaxSubservice<TTaxType extends TaxType> {
   protected constructor(
     protected readonly prisma: PrismaService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -36,9 +34,7 @@ export abstract class AbstractTaxSubservice<
     birthNumber: string,
     year: number,
     order: number,
-  ): Promise<
-    ResponseAnyTaxSummaryDetailDto
-  >
+  ): Promise<ResponseAnyTaxSummaryDetailDto>
 
   /**
    * Fetches the tax data from database for a given tax payer, year, type and order.

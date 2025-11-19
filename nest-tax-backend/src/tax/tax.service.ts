@@ -185,9 +185,7 @@ export class TaxService {
     year: number,
     type: TaxType,
     order: number,
-  ): Promise<
-    ResponseAnyTaxSummaryDetailDto
-  > {
+  ): Promise<ResponseAnyTaxSummaryDetailDto> {
     return this.getImplementationByType(type).getTaxDetail(
       birthNumber,
       year,

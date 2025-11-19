@@ -3,8 +3,8 @@ import { z } from 'zod'
 import {
   NorisBaseTaxSchema,
   NorisCommunalWasteTaxGroupedSchema,
-  NorisDeliveryMethodsUpdateResultSchema,
   NorisCommunalWasteTaxSchema,
+  NorisDeliveryMethodsUpdateResultSchema,
   NorisRealEstateTaxSchema,
   NorisTaxPaymentSchema,
 } from './noris.schema'
@@ -19,9 +19,7 @@ export type NorisBaseTax = z.infer<typeof NorisBaseTaxSchema>
  * These records need to be grouped and transformed into NorisCommunalWasteTaxGroupedDto,
  * where containers are nested within a single tax payer record.
  */
-export type NorisCommunalWasteTax = z.infer<
-  typeof NorisCommunalWasteTaxSchema
->
+export type NorisCommunalWasteTax = z.infer<typeof NorisCommunalWasteTaxSchema>
 
 export type NorisCommunalWasteTaxGrouped = z.infer<
   typeof NorisCommunalWasteTaxGroupedSchema

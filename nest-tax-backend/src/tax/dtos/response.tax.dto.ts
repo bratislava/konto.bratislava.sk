@@ -6,7 +6,8 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
-  IsEnum, IsInt,
+  IsEnum,
+  IsInt,
   IsNumber,
   IsObject,
   IsOptional,
@@ -727,7 +728,7 @@ export class ResponseCommunalWasteTaxAddressDetailItemizedDto {
 
   @ApiProperty({
     description: 'Total tax amount for this address',
-    example: 104.0,
+    example: 104,
   })
   @IsNumber()
   @IsPositive()
@@ -743,7 +744,7 @@ export class ResponseCommunalWasteTaxAddressDetailItemizedDto {
         containerCount: 2,
         numberOfDisposals: 52,
         sadzba: 0.5,
-        poplatok: 52.0,
+        poplatok: 52,
       },
     ],
   })
@@ -784,4 +785,6 @@ export class ResponseCommunalWasteTaxSummaryDetailDto extends ResponseTaxSummary
   itemizedDetail: ResponseCommunalWasteTaxDetailItemizedDto
 }
 
-export type ResponseAnyTaxSummaryDetailDto = ResponseRealEstateTaxSummaryDetailDto | ResponseCommunalWasteTaxSummaryDetailDto
+export type ResponseAnyTaxSummaryDetailDto =
+  | ResponseRealEstateTaxSummaryDetailDto
+  | ResponseCommunalWasteTaxSummaryDetailDto

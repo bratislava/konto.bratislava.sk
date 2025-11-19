@@ -28,7 +28,9 @@ import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 
 @Injectable()
-export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<typeof TaxType.KO> {
+export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
+  typeof TaxType.KO
+> {
   constructor(
     private readonly connectionService: NorisConnectionSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,

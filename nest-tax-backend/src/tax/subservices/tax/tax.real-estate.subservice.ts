@@ -6,6 +6,7 @@ import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
@@ -20,7 +21,6 @@ import {
   AbstractTaxSubservice,
   specificSymbol,
 } from './tax.subservice.abstract'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

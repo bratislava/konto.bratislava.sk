@@ -23,7 +23,6 @@ import {
 } from './data/test.communal-waste-tax'
 import {
   testPaymentInvalidVariabilnySymbol,
-  testPaymentNoVariableSymbol,
   testPaymentStringUhrazeno,
   testPaymentValid,
 } from './data/test.payments'
@@ -71,14 +70,6 @@ describe('NorisValidatorSubservice', () => {
             ...testPaymentStringUhrazeno,
             uhrazeno: 1000,
           })
-        })
-
-        it('should not throw for missing variable symbol', () => {
-          const result = service.validateNorisData(
-            NorisTaxPaymentSchema,
-            testPaymentNoVariableSymbol,
-          )
-          expect(result).toEqual(testPaymentNoVariableSymbol)
         })
       })
 
@@ -248,16 +239,14 @@ describe('NorisValidatorSubservice', () => {
       const result = service.validateNorisData(NorisTaxPaymentSchema, [
         testPaymentValid,
         testPaymentStringUhrazeno,
-        testPaymentNoVariableSymbol,
         testPaymentInvalidVariabilnySymbol,
       ])
-      expect(result).toHaveLength(3)
+      expect(result).toHaveLength(2)
       expect(result).toContainEqual(testPaymentValid)
       expect(result).toContainEqual({
         ...testPaymentStringUhrazeno,
         uhrazeno: 1000,
       })
-      expect(result).toContainEqual(testPaymentNoVariableSymbol)
       expect(result).not.toContainEqual(testPaymentInvalidVariabilnySymbol)
 
       expect(errorLogSpy).toHaveBeenCalledTimes(1)

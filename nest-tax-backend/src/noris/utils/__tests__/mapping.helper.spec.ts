@@ -295,8 +295,8 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     det_stavba_DAN_H: '150,75',
 
     dan_pozemky: '66,68',
-    dan_byty: '421,43',
-    dan_stavby: '0,01',
+    dan_stavby_SPOLU: '421,43',
+    dan_byty: '0,01',
   }
 
   it('should process apartment (byt) tax details correctly', () => {
@@ -311,26 +311,24 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     expect(apartmentEntries).toHaveLength(2) // byt and nebyt
 
     expect(apartmentEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'byt',
       type: AreaTypesEnum.APARTMENT,
       base: 10_050,
       amount: 1050,
-      area: null,
+      area: undefined,
     })
 
     expect(apartmentEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'nebyt',
       type: AreaTypesEnum.APARTMENT,
       base: 20_075,
       amount: 2075,
-      area: null,
+      area: undefined,
     })
 
-    expect(result.taxFlat).toBe(42_143)
+    expect(result.taxFlat).toBe(1)
     expect(result.taxLand).toBe(6668)
-    expect(result.taxConstructions).toBe(1)
+    expect(result.taxConstructions).toBe(42_143)
   })
 
   it('should process ground (pozemky) tax details correctly', () => {
@@ -344,7 +342,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
 
     // Should have entries for all configured ground types that have data
     expect(groundEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'A',
       type: AreaTypesEnum.GROUND,
       base: 30_025,
@@ -353,7 +350,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     })
 
     expect(groundEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'B',
       type: AreaTypesEnum.GROUND,
       base: 40_075,
@@ -362,7 +358,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     })
 
     expect(groundEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'C',
       type: AreaTypesEnum.GROUND,
       base: 50_025,
@@ -381,31 +376,28 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     )
 
     expect(constructionEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'A',
       type: AreaTypesEnum.CONSTRUCTION,
       base: 60_025,
       amount: 6025,
-      area: null,
+      area: undefined,
     })
 
     expect(constructionEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'B',
       type: AreaTypesEnum.CONSTRUCTION,
       base: 70_075,
       amount: 7075,
-      area: null,
+      area: undefined,
     })
 
     // Test for special case with 'j' prefix
     expect(constructionEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'jH',
       type: AreaTypesEnum.CONSTRUCTION,
       base: 130_075,
       amount: 13_075,
-      area: null,
+      area: undefined,
     })
   })
 

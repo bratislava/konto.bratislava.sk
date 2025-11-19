@@ -5,8 +5,6 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { NorisService } from '../noris/noris.service'
 import {
-  NorisCommunalWasteTax,
-  NorisRealEstateTax,
   NorisTaxPayment,
 } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'

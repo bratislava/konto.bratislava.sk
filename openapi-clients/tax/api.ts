@@ -267,23 +267,56 @@ export interface ResponseApartmentTaxDetailDto {
 }
 
 export interface ResponseCommunalWasteTaxAddressDetailItemizedDto {
+  /**
+   * Address information
+   */
   address: ResponseCommunalWasteTaxAddressDto
+  /**
+   * Total tax amount for this address
+   */
   totalAmount: number
-  itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto
+  /**
+   * Itemized container details
+   */
+  itemizedContainers: Array<ResponseCommunalWasteTaxItemizedAddressDto>
 }
 export interface ResponseCommunalWasteTaxAddressDto {
+  /**
+   * Street name
+   */
   street: string
+  /**
+   * Orientation number
+   */
   orientationNumber: string
 }
 export interface ResponseCommunalWasteTaxDetailItemizedDto {
+  /**
+   * Itemized details by address
+   */
   addressDetail: Array<ResponseCommunalWasteTaxAddressDetailItemizedDto>
 }
 export interface ResponseCommunalWasteTaxItemizedAddressDto {
+  /**
+   * Container volume in liters
+   */
   containerVolume: number
-  containerCount: string
+  /**
+   * Number of containers
+   */
+  containerCount: number
+  /**
+   * Number of waste disposals
+   */
   numberOfDisposals: number
-  sadzba: number
-  poplatok: number
+  /**
+   * Unit tax rate (sadzba)
+   */
+  unitRate: number
+  /**
+   * Fee amount (poplatok)
+   */
+  fee: number
 }
 export interface ResponseCommunalWasteTaxSummaryDetailDto {
   /**

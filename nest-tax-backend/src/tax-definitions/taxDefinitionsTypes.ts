@@ -1,7 +1,6 @@
 import { PaymentStatus, TaxAdministrator, TaxType } from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
-import { AbstractNorisTaxSubservice } from '../noris/subservices/noris-tax/noris-tax.subservice.abstract'
 import {
   NorisCommunalWasteTax,
   NorisRealEstateTax,
@@ -90,9 +89,6 @@ export type TaxDefinition<TTaxType extends TaxType> = {
   generateItemizedTaxDetail: (
     options: TaxTypeToTaxDetail[TTaxType],
   ) => TaxTypeToResponseDetailItemizedDto[TTaxType]
-
-  /** Noris tax subservice instance for this tax type */
-  norisSubservice?: AbstractNorisTaxSubservice<TTaxType>
 
   createTestingTaxMock: (
     norisData: RequestAdminCreateTestingTaxNorisData,

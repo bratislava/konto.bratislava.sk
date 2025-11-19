@@ -22,6 +22,9 @@ import {
 } from '../dtos/response.tax.dto'
 import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
 import { TaxService } from '../tax.service'
+import * as unifiedTaxUtil from '../utils/unified-tax.util'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
+import { TaxCommunalWasteSubservice } from '../subservices/tax/tax.communal-waste.subservice'
 
 jest.mock('../utils/helpers/tax.helper', () => {
   const actual = jest.requireActual('../utils/helpers/tax.helper')
@@ -88,6 +91,7 @@ describe('TaxService', () => {
         { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
         TaxRealEstateSubservice,
+        TaxCommunalWasteSubservice,
       ],
     }).compile()
 
@@ -1078,7 +1082,7 @@ describe('TaxService', () => {
 
     it('should throw error for unsupported tax type', async () => {
       const thrownError = new HttpException(
-        'Implementation for tax type KO not found',
+        'Implementation for tax type INVALID_TAX_TYPE not found',
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
       jest
@@ -1089,7 +1093,7 @@ describe('TaxService', () => {
         service.getOneTimePaymentGenerator(
           mockTaxPayerWhereUniqueInput,
           2023,
-          TaxType.KO,
+          'INVALID_TAX_TYPE' as TaxType,
           1,
         ),
       ).rejects.toThrow(thrownError)
@@ -1158,8 +1162,8 @@ describe('TaxService', () => {
       expect(
         unifiedTaxUtil.getTaxDetailPureForInstallmentGenerator,
       ).toHaveBeenCalledWith({
+        taxType: TaxType.DZN,
         taxId: 1,
-        taxDefinition: expectedTaxDefinition,
         taxYear: 2023,
         today: expect.any(Date),
         overallAmount: 1000,
@@ -1174,7 +1178,7 @@ describe('TaxService', () => {
 
     it('should throw error for unsupported tax type', async () => {
       const thrownError = new HttpException(
-        'Implementation for tax type KO not found',
+        'Implementation for tax type INVALID_TAX_TYPE not found',
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
       jest
@@ -1185,7 +1189,7 @@ describe('TaxService', () => {
         service.getInstallmentPaymentGenerator(
           mockTaxPayerWhereUniqueInput,
           2023,
-          TaxType.KO,
+          'INVALID_TAX_TYPE' as TaxType,
           1,
         ),
       ).rejects.toThrow(thrownError)

@@ -280,8 +280,6 @@
     "verifying_identity_content": "## Overujeme vašu identitu\n\nPráve overujeme vašu identitu. Môže to chvíľu trvať. Ak neoveríme identitu do 24 hodín, prosím kontaktujte nás na info@bratislava.sk",
     "set_delivery_method_content": "## Zobrazenie daní a poplatkov\n\nPre zobrazenie daní a poplatkov je potrebné overiť vašu identitu a nastaviť preferovaný spôsob doručenia. V prípade, že máte aktívnu elektronickú schránku na doručovanie - slovensko.sk nastavenie spôsobu doručenia nebude potrebné.\n\nPrejdite rýchlym procesom overovania a dostanete prehľad daní a poplatkov.",
     "verify_and_set": "Overiť a nastaviť",
-    "delivery_method": "Spôsob doručenia",
-    "tax_administrator": "Správca dane",
     "your_tax_administrator": "Váš správca dane",
     "tax_paid": "Daň z nehnuteľností je uhradená. Ďakujeme",
     "tax_payment_year_over": "Nakoľko je po termíne možnosti poslednej úhrady splátkou, daň je možné uhradiť len plnou úhradou.",
@@ -358,7 +356,7 @@
     "edesk": "Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte",
     "change_button": "Zmeniť"
   },
-  "communication_channel_info_title": "Spôsob doručovania na rok {{year}}",
+  "communication_channel_info_title": "Spôsob informovania na rok {{year}}",
   "communication_channel_info_change_link_text": "Spôsob doručenia zmeníte na stránke <a href={{url}}>Dane a poplatky</a>. <br /> Zaplatiť daň môžete cez túto stránku.",
   "working_hours": "Stránkové hodiny",
   "to_pay": "Prejsť na platbu",
@@ -392,7 +390,6 @@
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
   "thank_you": {
     "footer_text": "© {{currentYear}} Hlavné mesto Bratislava",
-    "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
     "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
     "button_privacy_text": "Ochrana osobných údajov",
@@ -455,9 +452,6 @@
     "title": "Vitajte v Bratislavskom konte",
     "content": "Vytvorte si svoj účet a majte rôzne služby mesta na jednom mieste, zaplaťte daň z nehnuteľností online alebo si kúpte lístok na kúpalisko bez čakania v rade.",
     "button_text": "Viac informácií"
-  },
-  "tax_footer": {
-    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href={{url}}>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
   },
   "payment_schedule": {
     "title": "Splátkový kalendár",

@@ -28,7 +28,16 @@ const PaymentMethodItem = ({
         <span className="text-p1-semibold">
           <FormatCurrencyFromCents value={amount} />
         </span>
-        <ButtonNew variant={buttonVariant} href={buttonHref} fullWidthMobile hasLinkIcon>
+        <ButtonNew
+          variant={buttonVariant}
+          href={buttonHref}
+          fullWidthMobile
+          hasLinkIcon
+          // fixed width is wanted, however size doesn't match figma,
+          // ButtonNew has to be implemented as part of design system then we can adjust size,
+          // othervise text will be split into two lines
+          className="lg:w-53"
+        >
           {buttonText}
         </ButtonNew>
       </div>

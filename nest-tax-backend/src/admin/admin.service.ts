@@ -26,10 +26,7 @@ import {
   CreateBirthNumbersResponseDto,
   UpdateDeliveryMethodsInNorisResponseDto,
 } from './dtos/responses.dto'
-import {
-  createTestingCommunalWasteTaxMock,
-  createTestingRealEstateTaxMock,
-} from './utils/testing-tax-mock'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 
 @Injectable()
 export class AdminService {
@@ -122,39 +119,21 @@ export class AdminService {
       )
     }
 
-    // Generate the mock tax record
-    let mockTaxRecord: NorisCommunalWasteTax | NorisRealEstateTax
-    switch (taxType) {
-      case 'DZN':
-        mockTaxRecord = createTestingRealEstateTaxMock(
-          norisData,
-          taxAdministrator,
-          year,
-        )
-        break
+    // Get tax definition for the tax type
+    const taxDefinition = getTaxDefinitionByType(taxType)
+    const mockTaxRecord = taxDefinition.createTestingTaxMock(
+      norisData,
+      taxAdministrator,
+      year,
+    )
 
-      case 'KO':
-        mockTaxRecord = createTestingCommunalWasteTaxMock(
-          norisData,
-          taxAdministrator,
-          year,
-        )
-        break
-
-      default:
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          'TaxType not supported',
-        )
-    }
-
-    const taxesByVariabileSymbolExist = await this.prismaService.tax.findFirst({
+    const taxesByVariableSymbolExist = await this.prismaService.tax.findFirst({
       where: {
         variableSymbol: mockTaxRecord.variabilny_symbol,
       },
     })
 
-    if (taxesByVariabileSymbolExist) {
+    if (taxesByVariableSymbolExist) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Tax with this variable symbol already exists',

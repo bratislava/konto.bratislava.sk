@@ -70,7 +70,7 @@ export class NorisService {
 
   async processNorisTaxData(
     taxType: TaxType,
-    norisData: NorisCommunalWasteTax[] | NorisRealEstateTax[],
+    norisData: (NorisCommunalWasteTax | NorisRealEstateTax)[],
     year: number,
   ): Promise<string[]> {
     return this.taxSubservice.processNorisTaxData(taxType, norisData, year)

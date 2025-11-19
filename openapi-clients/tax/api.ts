@@ -133,6 +133,20 @@ export interface RequestPostNorisLoadDataDto {
    * Birth numbers in format with slash
    */
   birthNumbers: Array<string>
+  /**
+   * Options for the tax import
+   */
+  options?: RequestPostNorisLoadDataOptionsDto
+}
+export interface RequestPostNorisLoadDataOptionsDto {
+  /**
+   * If true, only prepare data (validate and mark as ready) without creating taxes
+   */
+  prepareOnly?: boolean
+  /**
+   * If true, ignore the batch limit for the number of taxes to process
+   */
+  ignoreBatchLimit?: boolean
 }
 export interface RequestPostNorisPaymentDataLoadDto {
   /**

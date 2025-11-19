@@ -22,7 +22,7 @@ import {
 } from '../../utils/mapping.helper'
 
 export abstract class AbstractNorisTaxSubservice<
-  TTaxType extends TaxType = TaxType,
+  TTaxType extends TaxType,
 > {
   protected constructor(
     protected readonly qrCodeSubservice: QrCodeSubservice,

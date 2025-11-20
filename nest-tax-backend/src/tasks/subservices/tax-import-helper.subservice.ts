@@ -27,9 +27,6 @@ export default class TaxImportHelperSubservice {
     this.logger = new LineLoggerSubservice(TaxImportHelperSubservice.name)
   }
 
-  /**
-   * Get import window config values
-   */
   private async getImportWindowConfig(): Promise<{
     startHour: number
     endHour: number
@@ -44,9 +41,6 @@ export default class TaxImportHelperSubservice {
     }
   }
 
-  /**
-   * Check if current time is within the import window (7:00-20:00)
-   */
   async isWithinImportWindow(): Promise<boolean> {
     const now = dayjs().tz(this.BRATISLAVA_TIMEZONE)
     const hour = now.hour()
@@ -54,9 +48,6 @@ export default class TaxImportHelperSubservice {
     return hour >= startHour && hour < endHour
   }
 
-  /**
-   * Get count of taxes created today (based on createdAt)
-   */
   async getTodayTaxCount(): Promise<number> {
     const todayStart = dayjs()
       .tz(this.BRATISLAVA_TIMEZONE)
@@ -74,9 +65,6 @@ export default class TaxImportHelperSubservice {
     })
   }
 
-  /**
-   * Clear readyToImport flag after successful import
-   */
   async clearReadyToImport(birthNumbers: string[]): Promise<void> {
     if (birthNumbers.length === 0) {
       return
@@ -92,9 +80,6 @@ export default class TaxImportHelperSubservice {
     })
   }
 
-  /**
-   * Get the daily tax limit from config
-   */
   async getDailyTaxLimit(): Promise<number> {
     const config = await this.databaseSubservice.getConfigByKeys([
       'TAX_IMPORT_DAILY_LIMIT',
@@ -139,9 +124,6 @@ export default class TaxImportHelperSubservice {
     return { birthNumbers, newlyCreated }
   }
 
-  /**
-   * Import taxes for the given birth numbers
-   */
   async importTaxes(birthNumbers: string[], year: number): Promise<void> {
     if (birthNumbers.length === 0) {
       return
@@ -180,9 +162,6 @@ export default class TaxImportHelperSubservice {
     )
   }
 
-  /**
-   * Prepare taxes for the given birth numbers (validate but don't create)
-   */
   async prepareTaxes(birthNumbers: string[], year: number): Promise<void> {
     if (birthNumbers.length === 0) {
       return

@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
 
 /**
- * Inspired by nest-forms-backend -> token.subservice.service
+ * Inspired by nest-forms-backend -> tokens.nases.service
  */
 
 @Injectable()

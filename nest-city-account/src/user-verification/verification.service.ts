@@ -316,6 +316,29 @@ export class VerificationService {
     const payload = JSON.parse(payloadBuffer.toString())
     const type = payload.sub.split(':')[0]
 
+    if (
+      type === 'rc' &&
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !== CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.VERIFY_EID_ERROR,
+        VerificationErrorsResponseEnum.IFO_NOT_PROVIDED,
+        'Ifo for verification was not provided'
+      )
+    }
+    if (
+      type === 'ico' &&
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !== CognitoUserAccountTypesEnum.LEGAL_ENTITY &&
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !==
+        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.VERIFY_EID_ERROR,
+        VerificationErrorsResponseEnum.ICO_NOT_PROVIDED,
+        'Ico for verification was not provided'
+      )
+    }
+
     if (type === 'rc') {
       let birthNumber: string = payload.sub.split('_')[0].split('/').at(-1)
       birthNumber = birthNumber.replaceAll('/', '')

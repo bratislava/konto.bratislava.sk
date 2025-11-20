@@ -19,12 +19,13 @@ const PaymentMethodItem = ({
   buttonHref,
 }: PaymentMethodItemProps) => {
   return (
-    <div className="flex w-full flex-col justify-between border-gray-200 nth-2:border-t-2 nth-2:pt-4 lg:flex-row">
-      <div className="flex flex-col items-start gap-3 px-4 pt-4 lg:px-0 lg:pt-0 lg:pb-3">
+    // components in figma is not grouped properly, so gaps are all over the place to match figma design
+    <div className="flex w-full flex-col justify-between gap-4 border-gray-200 p-4 nth-2:border-t-2 lg:flex-row lg:gap-0 lg:p-6">
+      <div className="flex flex-col items-start gap-3">
         <div className="text-p2">{title}</div>
         <div className="text-p2-semibold text-category-600">{subtitle}</div>
       </div>
-      <div className="flex flex-col items-start gap-4 px-4 pb-4 lg:flex-row lg:items-center lg:gap-8 lg:px-0 lg:pb-0">
+      <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:gap-8">
         <span className="text-p1-semibold">
           <FormatCurrencyFromCents value={amount} />
         </span>

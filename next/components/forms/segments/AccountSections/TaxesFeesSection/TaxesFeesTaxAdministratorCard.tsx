@@ -65,7 +65,7 @@ const TaxesFeesTaxAdministratorCard = ({
           <span className="flex items-center gap-x-2">
             <ClockIcon className="size-5" />
             <MLinkNew
-              href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky"
+              href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti"
               variant="underlined-medium"
             >
               {t('working_hours')}

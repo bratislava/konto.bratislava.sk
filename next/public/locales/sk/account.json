@@ -469,6 +469,7 @@
     "title_payment_rest": "Úhrada zvyšnej sumy",
     "title_payment_installments": "Úhrada splátkou",
     "installments": {
+      "not_available": "Prvá splátka do 15 dní odo dňa právoplatnosti rozhodnutia",
       "0": "Prvá splátka do {{date}}",
       "1": "Druhá splátka do {{date}}",
       "2": "Tretia splátka do {{date}}",
@@ -487,6 +488,7 @@
     "tax_payment_methods": "Spôsob úhrady",
     "tax_payment_rest": "<strong>Úhrada celej zvyšnej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_rest_subtitle": "Úhrada do {{date}}",
+    "tax_payment_rest_subtitle_not_available": "Úhrada do 15 dní odo dňa právoplatnosti rozhodnutia",
     "tax_payment_under_threshold_alert": "Nakoľko je vaša daň nižšia ako 66€ nie je možné ju hradiť v splátkach.",
     "tax_payment_installment": "<strong>Úhrada splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_installment_subtitle": "Úhrada nasledujúcej splátky do {{date}}",

@@ -38,6 +38,10 @@ export interface CreateBirthNumbersResponseDto {
    * An array of birth numbers which were added to TaxPayers in this batch.
    */
   birthNumbers: Array<string>
+  /**
+   * An array of birth numbers which were found in Noris (regardless of whether they were processed).
+   */
+  foundInNoris?: Array<string>
 }
 export interface DateRangeDto {
   /**
@@ -133,6 +137,20 @@ export interface RequestPostNorisLoadDataDto {
    * Birth numbers in format with slash
    */
   birthNumbers: Array<string>
+  /**
+   * Options for the tax import
+   */
+  options?: RequestPostNorisLoadDataOptionsDto
+}
+export interface RequestPostNorisLoadDataOptionsDto {
+  /**
+   * If true, only prepare data (validate and mark as ready) without creating taxes
+   */
+  prepareOnly?: boolean
+  /**
+   * If true, ignore the batch limit for the number of taxes to process
+   */
+  ignoreBatchLimit?: boolean
 }
 export interface RequestPostNorisPaymentDataLoadDto {
   /**
@@ -610,6 +628,10 @@ export interface UpdateDeliveryMethodsInNorisResponseDto {
    * An array of birth numbers which were added to TaxPayers in this batch.
    */
   birthNumbers: Array<string>
+  /**
+   * An array of birth numbers which were found in Noris (regardless of whether they were processed).
+   */
+  foundInNoris?: Array<string>
 }
 
 /**

@@ -202,7 +202,7 @@ export class NorisTaxSubservice {
         'TAX_IMPORT_BATCH_SIZE',
       ])
       const batchSizeLimit = parseInt(config.TAX_IMPORT_BATCH_SIZE, 10)
-      if (Number.isNaN(batchSizeLimit) || batchSizeLimit <= 0) {
+      if (Number.isNaN(batchSizeLimit) || batchSizeLimit < 0) {
         this.logger.log(
           `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax records`,
         )
@@ -275,11 +275,15 @@ export class NorisTaxSubservice {
       : await this.getBatchSizeLimit()
 
     // Limit the number of records to process in this batch
-    const recordsToProcess = batchSizeLimit
-      ? norisDataNotInDatabase.slice(0, batchSizeLimit)
-      : norisDataNotInDatabase
+    const recordsToProcess =
+      batchSizeLimit === undefined
+        ? norisDataNotInDatabase
+        : norisDataNotInDatabase.slice(0, batchSizeLimit)
 
-    if (batchSizeLimit && norisDataNotInDatabase.length > batchSizeLimit) {
+    if (
+      batchSizeLimit !== undefined &&
+      norisDataNotInDatabase.length > batchSizeLimit
+    ) {
       this.logger.log(
         `Limiting batch processing to ${batchSizeLimit} records out of ${norisDataNotInDatabase.length} available`,
       )

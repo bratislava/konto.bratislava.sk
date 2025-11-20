@@ -255,13 +255,18 @@ export class NorisTaxSubservice {
     )
 
     if (prepareOnly) {
-      // In prepare mode, only return birth numbers not in database
+      // In prepare mode, mark birth numbers as ready to import, and return them
       // No need to check for userFromCityAccount - that will be validated during actual import
-      return {
-        birthNumbers: norisDataNotInDatabase.map((norisItem) => {
-          return norisItem.ICO_RC
-        }),
-      }
+      const birthNumbers = norisDataNotInDatabase.map(
+        (norisItem) => norisItem.ICO_RC,
+      )
+      await this.prismaService.taxPayer.updateMany({
+        where: {
+          birthNumber: { in: birthNumbers },
+        },
+        data: { readyToImport: true },
+      })
+      return { birthNumbers }
     }
 
     // Normal mode: process and create taxes

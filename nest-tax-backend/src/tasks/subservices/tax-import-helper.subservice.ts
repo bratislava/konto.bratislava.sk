@@ -75,24 +75,6 @@ export default class TaxImportHelperSubservice {
   }
 
   /**
-   * Mark birth numbers as ready to import
-   */
-  async markAsReadyToImport(birthNumbers: string[]): Promise<void> {
-    if (birthNumbers.length === 0) {
-      return
-    }
-
-    await this.prismaService.taxPayer.updateMany({
-      where: {
-        birthNumber: { in: birthNumbers },
-      },
-      data: {
-        readyToImport: true,
-      },
-    })
-  }
-
-  /**
    * Clear readyToImport flag after successful import
    */
   async clearReadyToImport(birthNumbers: string[]): Promise<void> {
@@ -215,15 +197,11 @@ export default class TaxImportHelperSubservice {
         },
       })
 
-    // Mark validated birth numbers as ready to import
-    await this.markAsReadyToImport(result.birthNumbers)
-
-    // Move birth numbers marked as ready to import to the end of the queue,
-    // since they will be imported in the next batch
-    if (result.birthNumbers.length > 0) {
+    // Move birth numbers to the end of the queue
+    if (birthNumbers.length > 0) {
       await this.prismaService.taxPayer.updateMany({
         where: {
-          birthNumber: { in: result.birthNumbers },
+          birthNumber: { in: birthNumbers },
         },
         data: {
           updatedAt: new Date(),

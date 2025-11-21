@@ -10,6 +10,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { NorisDeliveryMethodsUpdateResultDto } from '../noris.dto'
 import { NorisService } from '../noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../utils/noris.types'
 
@@ -66,8 +67,11 @@ describe('NorisService', () => {
       const requestSpy = jest.spyOn(mssql, 'Request')
       const querySpy = jest.spyOn(mockRequest, 'query')
       const closeSpy = jest.spyOn(mockConnection, 'close')
+      jest
+        .spyOn(service as any, 'getBirthNumbersWithUpdatedDeliveryMethods')
+        .mockResolvedValue(['003322/4455', '003322/4456'])
 
-      await service.updateDeliveryMethods([
+      const result = await service.updateDeliveryMethods([
         {
           birthNumbers: ['003322/4455', '003322/4456'],
           inCityAccount: IsInCityAccount.YES,
@@ -88,6 +92,8 @@ describe('NorisService', () => {
         },
       ])
 
+      expect(result).toEqual(['003322/4455', '003322/4456'])
+
       expect(requestSpy).toHaveBeenCalledTimes(3)
       expect(querySpy).toHaveBeenCalledTimes(3)
       expect(closeSpy).toHaveBeenCalledTimes(1)
@@ -98,6 +104,10 @@ describe('NorisService', () => {
       const querySpy = jest.spyOn(mockRequest, 'query')
       const closeSpy = jest.spyOn(mockConnection, 'close')
       const inputQuerySpy = jest.spyOn(mockRequest, 'input')
+
+      jest
+        .spyOn(service as any, 'getBirthNumbersWithUpdatedDeliveryMethods')
+        .mockResolvedValue(['003322/4455', '003322/4456'])
 
       await service.updateDeliveryMethods([
         {
@@ -165,6 +175,34 @@ describe('NorisService', () => {
 
       expect(querySpy).not.toHaveBeenCalled()
       expect(closeSpy).toHaveBeenCalled()
+    })
+
+    it('should return updated birthNumbers', async () => {
+      jest
+        .spyOn(service as any, 'getBirthNumbersWithUpdatedDeliveryMethods')
+        .mockResolvedValue(['003322/4455', '003322/4456'])
+      const result = await service.updateDeliveryMethods([
+        {
+          birthNumbers: ['003322/4455', '003322/4456'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.POSTAL,
+          date: null,
+        },
+        {
+          birthNumbers: ['003322/5544', '003322/1122'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+        {
+          birthNumbers: ['003322/0000', '003322/442'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: '2024-01-01',
+        },
+      ])
+
+      expect(result).toEqual(['003322/4455', '003322/4456'])
     })
   })
 

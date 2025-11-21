@@ -19,12 +19,12 @@ import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
+import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import {
   FORM_SEND_EID_TOKEN_QUERY_KEY,
   popSendEidMetadata,
   setSendEidMetadata,
-} from '../../frontend/utils/formSend'
-import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
+} from '../../frontend/utils/metadataStorage'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormSummary } from './steps/Summary/useFormSummary'

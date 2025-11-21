@@ -46,7 +46,7 @@ const TaxFeeSection = () => {
         <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-10 lg:py-10">
           {(taxData.paidStatus === TaxStatusEnum.Paid ||
             taxData.paidStatus === TaxStatusEnum.OverPaid) && (
-            <div className="w-full">
+            <div className="w-full px-4 lg:px-0">
               <Alert type="success" fullWidth message={t('account_section_payment.tax_paid')} />
             </div>
           )}

@@ -105,10 +105,12 @@ const TaxesFeesSection = () => {
         {isInQueue && <TaxesFeesUserVerificationInProcess />}
         {isIdentityVerified && !showDeliveryMethodNotSetBanner && (
           <>
-            <TaxesFeesAdministratorCardWrapper
-              beTaxAdministrator={taxesData?.taxAdministrator ?? null}
-              strapiTaxAdministrator={strapiTaxAdministrator}
-            />
+            {(taxesData?.taxAdministrator || strapiTaxAdministrator) && (
+              <TaxesFeesAdministratorCardWrapper
+                beTaxAdministrator={taxesData?.taxAdministrator ?? null}
+                strapiTaxAdministrator={strapiTaxAdministrator}
+              />
+            )}
             <div className="flex flex-col gap-4">
               <h2 className="text-h5-semibold">
                 {t('account_section_payment.tax_overview_title')}

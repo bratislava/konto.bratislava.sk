@@ -17,7 +17,7 @@ const TaxFeePaymentMethodSection = () => {
       <div className="flex w-full border-t-2 border-gray-200 lg:hidden lg:border-t-0" />
       <div className="flex w-full flex-col gap-4 pt-4 lg:pt-0">
         <div className="text-h3">{t('tax_detail_section.tax_payment_methods')}</div>
-        <div className="flex w-full flex-col rounded-lg border-2 border-gray-200 lg:p-6">
+        <div className="flex w-full flex-col rounded-lg border-2 border-gray-200">
           <PaymentMethodItem
             title={
               <Trans
@@ -26,9 +26,15 @@ const TaxFeePaymentMethodSection = () => {
                 components={{ strong: <strong className="font-semibold" /> }}
               />
             }
-            subtitle={t('tax_detail_section.tax_payment_rest_subtitle', {
-              date: formatDate(taxData.oneTimePayment.dueDate || ''),
-            })}
+            subtitle={
+              // only first installment is calculated, others are hardcoded so they will always be available for DzN,
+              // how date calculation works for PKO is not yet determined same in PaymentSchedule
+              taxData.oneTimePayment.dueDate
+                ? t('tax_detail_section.tax_payment_rest_subtitle', {
+                    date: formatDate(taxData.oneTimePayment.dueDate || ''),
+                  })
+                : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
+            }
             amount={taxData.overallBalance}
             buttonText={t('pay_all')}
             buttonVariant="black-solid"
@@ -56,22 +62,25 @@ const TaxFeePaymentMethodSection = () => {
           {!taxData.installmentPayment?.isPossible &&
             taxData.installmentPayment?.reasonNotPossible ===
               ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold && (
-              <Alert
-                type="warning"
-                fullWidth
-                message={t('tax_detail_section.tax_payment_under_threshold_alert')}
-              />
+              <div className="p-4 lg:p-6 lg:pt-0">
+                <Alert
+                  type="warning"
+                  fullWidth
+                  message={t('tax_detail_section.tax_payment_under_threshold_alert')}
+                />
+              </div>
             )}
           {!taxData.installmentPayment?.isPossible &&
             taxData.installmentPayment?.reasonNotPossible ===
               ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.AfterDueDate && (
-              <Alert
-                type="warning"
-                fullWidth
-                message={t('account_section_payment.tax_payment_year_over')}
-              />
+              <div className="p-4 lg:p-6 lg:pt-0">
+                <Alert
+                  type="warning"
+                  fullWidth
+                  message={t('account_section_payment.tax_payment_year_over')}
+                />
+              </div>
             )}
-          {/* {renderInstallmentPayment()} */}
         </div>
       </div>
     </div>

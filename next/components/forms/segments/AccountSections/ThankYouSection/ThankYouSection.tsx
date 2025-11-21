@@ -1,7 +1,4 @@
-import BratislavaIcon from '@assets/images/bratislava-footer.svg'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
-import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
@@ -38,8 +35,7 @@ const statusToTranslationPath = {
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
-  const { paymentSuccessFeedbackLink, paymentSuccessPrivacyPolicyLink, paymentSuccessFaqLink } =
-    useStrapiTax()
+  const { paymentSuccessFeedbackLink } = useStrapiTax()
 
   const status = useMemo(
     () =>
@@ -78,43 +74,6 @@ const ThankYouSection = () => {
             secondButtonTitle={t('thank_you.button_cancel_text')}
           />
         )}
-        <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
-          <span className="flex text-p2">
-            <AccountMarkdown
-              variant="sm"
-              content={`<span className='text-p2'>${t(
-                'thank_you.subtitle_mail_platbadane',
-              )}</span>.`}
-            />
-          </span>
-          {paymentSuccessFaqLink || paymentSuccessPrivacyPolicyLink ? (
-            <div className="mt-4 flex flex-col gap-3 md:mt-6">
-              {paymentSuccessFaqLink ? (
-                <Button
-                  label={t('thank_you.button_faq_text')}
-                  href={paymentSuccessFaqLink}
-                  variant="link-black"
-                  size="sm"
-                />
-              ) : null}
-              {paymentSuccessPrivacyPolicyLink ? (
-                <Button
-                  label={t('thank_you.button_privacy_text')}
-                  href="https://bratislava.sk/ochrana-osobnych-udajov"
-                  variant="link-black"
-                  size="sm"
-                />
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex">
-        <BratislavaIcon />
-        <p className="text-p2">
-          {t('thank_you.footer_text', { currentYear: new Date().getFullYear() })}
-        </p>
       </div>
     </div>
   )

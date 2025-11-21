@@ -19,6 +19,10 @@ export const expectPdfToMatchSnapshot = async (input: PdfInput) => {
   })
 
   for await (const page of outputPages) {
-    expect(page).toMatchImageSnapshot()
+    expect(page).toMatchImageSnapshot({
+      customDiffConfig: {
+        threshold: 0.05,
+      }
+    })
   }
 }

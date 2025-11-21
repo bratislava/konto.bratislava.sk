@@ -21,7 +21,7 @@ export class NasesService {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
 
-  async getNasesIdentity(token: string): Promise<UpvsNaturalPerson | null> {
+  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | null> {
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
@@ -64,7 +64,7 @@ export class NasesService {
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesSearchPost(
         {
-          uris: uris,
+          uris,
         },
         {
           headers: { Authorization: `Bearer ${jwt}`, 'Content-Type': 'application/json' },

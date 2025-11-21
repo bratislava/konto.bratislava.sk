@@ -80,7 +80,7 @@ export default class NasesService {
       'true'
   }
 
-  async getNasesIdentity(token: string): Promise<UpvsNaturalPerson | null> {
+  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | null> {
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },

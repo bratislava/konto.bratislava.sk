@@ -25,7 +25,7 @@ enum GinContactDatabase {
   CITY_ACCOUNT = '5',
 }
 
-enum GinContactType {
+export enum GinContactType {
   PHYSICAL_ENTITY = 'fyz-osoba',
   LEGAL_ENTITY = 'pravnicka-osoba',
   SELF_EMPLOYED_ENTITY = 'fyz-osoba-osvc', // SZCO
@@ -369,5 +369,77 @@ export default class GinisAPIService {
       (await this.findUpdateContact(params)) ??
       (await this.createContact(params))
     )
+  }
+
+  async createDocument(
+    externalDocumentId: string,
+    type: string,
+    sentAtDate: Date,
+    senderId: string,
+    subject: string,
+  ) {
+    const sentAtIso = sentAtDate.toISOString().split('T')[0]
+    const data = await this.ginis.ssl.zalozPisemnost(
+      {
+        'Id-dokumentu': {
+          value: externalDocumentId,
+          attributes: ['externi="true"'],
+        },
+        Vec: subject,
+        'Id-typu-dokumentu': type,
+        'Priznak-fyz-existence': 'neexistuje',
+      },
+      {
+        Stat: 'SVK',
+        'Datum-odeslani': sentAtIso,
+        'Datum-ze-dne': sentAtIso,
+        'Zpusob-doruceni': 'neurceno',
+        'Druh-zasilky': 'neurceno',
+        'Druh-zachazeni': 'neurceno',
+        'Datum-prijmu-podani': `${sentAtIso}T00:00:00`,
+        'Id-odesilatele': senderId,
+        // 'Poznamka-k-doruceni': subject,
+      },
+      {
+        Pristup: 'ke zverejneni',
+        'Vec-podrobne': subject,
+        // Poznamka: subject,
+        'Datum-podani': `${sentAtIso}T00:00:00`,
+      },
+    )
+    return data['Zaloz-pisemnost']['Id-dokumentu']
+  }
+
+  async assignReferenceNumber(documentId: string) {
+    await this.ginis.ssl.zalozCj({
+      'Id-init-dokumentu': documentId,
+      'Denik-cj': 'MAG',
+    })
+  }
+
+  async createFormIdProperty(documentId: string) {
+    const data = await this.ginis.ssl.zalozitVlastnostDokumentu({
+      'Id-dokumentu': documentId,
+      'Typ-objektu': 'vlastnost',
+      'Kod-objektu': this.baConfigService.ginisApi.formIdPropertyId,
+    })
+
+    return data['Zalozit-vlastnost-dokumentu']['Poradove-cislo']
+  }
+
+  async setFormIdProperty(
+    documentId: string,
+    propertyOrder: string,
+    formId: string,
+  ) {
+    const { formIdPropertyId } = this.baConfigService.ginisApi
+    await this.ginis.ssl.nastavitVlastnostDokumentu({
+      'Id-dokumentu': documentId,
+      'Kod-profilu': formIdPropertyId,
+      'Kod-struktury': formIdPropertyId,
+      'Kod-vlastnosti': formIdPropertyId,
+      'Poradove-cislo': propertyOrder,
+      'Hodnota-raw': formId,
+    })
   }
 }

@@ -17,11 +17,12 @@ export const extractFormSubjectPlain = (
 
 export const extractFormSubjectTechnical = (
   formDefinition: FormDefinition,
-  formData: GenericObjectType,
+  formData: GenericObjectType | null,
 ) => {
   const extractTechnicalSubjectFn = formDefinition.subject?.extractTechnical
-  if (!extractTechnicalSubjectFn) {
-    return formDefinition.title
+  const defaultSubject = formDefinition.title
+  if (!extractTechnicalSubjectFn || formData == null) {
+    return defaultSubject
   }
 
   return evaluateFormDataExtractor(extractTechnicalSubjectFn, formData)

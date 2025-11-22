@@ -3,13 +3,19 @@ import { setTimeout } from 'node:timers/promises'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState, GinisState } from '@prisma/client'
+import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
-import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSkGeneric,
+  isSlovenskoSkGenericFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
+import {
+  extractFormSubjectPlain,
+  extractFormSubjectTechnical,
+} from 'forms-shared/form-utils/formDataExtractors'
 
 import BaConfigService from '../config/ba-config.service'
 import {
@@ -28,7 +34,9 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
-import GinisAPIService from './subservices/ginis-api.service'
+import GinisAPIService, {
+  GinContactType,
+} from './subservices/ginis-api.service'
 
 @Injectable()
 export default class GinisService {
@@ -455,5 +463,64 @@ export default class GinisService {
         removeOnFail: true,
       },
     )
+  }
+
+  public async createDocument(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSkGeneric,
+  ) {
+    let senderId = 'anonym' // TODO
+    if (form.externalId) {
+      senderId = await this.ginisApiService.upsertContact({
+        email: form.email ?? undefined,
+        firstName: 'TODO first name', // TODO first name
+        lastName: 'TODO last name', // TODO last name
+        birthNumber: 'TODO birth number', // TODO birth number
+        name: 'TODO name', // TODO name
+        ico: 'TODO ico', // TODO ico
+        uri: 'TODO uri', // TODO uri
+        type: GinContactType.PHYSICAL_ENTITY, // TODO type
+      })
+    }
+
+    const documentId =
+      form.ginisDocumentId ??
+      (await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.createDocument(
+          form.id,
+          formDefinition.ginisDocumentTypeId,
+          form.updatedAt,
+          senderId,
+          extractFormSubjectTechnical(formDefinition, form.formDataJson),
+        ),
+      ))
+
+    // called even if ginisDocumentId is already set to reset the state to REGISTERED
+    await this.updateSuccessfulRegistration(form.id, documentId)
+
+    const detail = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.getDocumentDetail(documentId),
+    )
+    if (!detail['Cj-dokumentu']) {
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.assignReferenceNumber(documentId),
+      )
+    }
+
+    const foundDocumentId = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.findDocumentId(form.id),
+    )
+    if (!foundDocumentId) {
+      const propertyOrder = await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.createFormIdProperty(documentId),
+      )
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.setFormIdProperty(
+          documentId,
+          propertyOrder,
+          form.id,
+        ),
+      )
+    }
   }
 }

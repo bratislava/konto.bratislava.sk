@@ -10,13 +10,20 @@ export interface BrandProps {
   url?: string
 }
 
-const Brand = ({ className, title, url = '#' }: BrandProps) => {
+const Brand = ({ className, title, url }: BrandProps) => {
   return (
     <div className={cn('flex', className)} aria-label="brand">
-      <Button className="flex items-center space-x-3" href={url}>
-        <BALogo className="size-8 lg:h-6" />
-        {title && <div>{title}</div>}
-      </Button>
+      {url ? (
+        <Button className="flex items-center space-x-3" href={url}>
+          <BALogo className="size-8 lg:h-6" />
+          {title && <div>{title}</div>}
+        </Button>
+      ) : (
+        <div className="flex items-center space-x-3">
+          <BALogo className="size-8 lg:h-6" />
+          {title && <div>{title}</div>}
+        </div>
+      )}
     </div>
   )
 }

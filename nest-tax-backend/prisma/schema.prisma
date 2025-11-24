@@ -49,14 +49,11 @@ model Tax {
   taxPayerId                      Int
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
-  order                           Int?  // Will not be null because of set_tax_order() trigger
+  order                           Int? // Will not be null because of set_tax_order() trigger
   variableSymbol                  String
   taxId                           String?
   dateCreateTax                   String?
   dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"
-  taxLand                         Int?
-  taxConstructions                Int?
-  taxFlat                         Int?
   taxPayments                     TaxPayment[]
   taxInstallments                 TaxInstallment[]
   /// [TaxDetailType]

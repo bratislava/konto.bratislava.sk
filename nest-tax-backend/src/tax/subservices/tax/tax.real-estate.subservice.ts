@@ -54,7 +54,6 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice<
             taxAdministrator: true,
           },
         },
-        taxDetails: true,
         taxPayments: true,
       },
       year,

@@ -28,6 +28,8 @@ export type NorisCommunalWasteTaxGrouped = z.infer<
 export type NorisRealEstateTax = z.infer<typeof NorisRealEstateTaxSchema>
 export type NorisTaxPayment = z.infer<typeof NorisTaxPaymentSchema>
 
+export type NorisTax = NorisCommunalWasteTax | NorisRealEstateTax
+
 export type NorisDeliveryMethodsUpdateResult = z.infer<
   typeof NorisDeliveryMethodsUpdateResultSchema
 >

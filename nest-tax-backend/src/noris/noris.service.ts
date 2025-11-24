@@ -13,8 +13,7 @@ import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-meth
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
 import {
-  NorisCommunalWasteTax,
-  NorisRealEstateTax,
+  NorisTax,
   NorisTaxPayment,
 } from './types/noris.types'
 
@@ -70,7 +69,7 @@ export class NorisService {
 
   async processNorisTaxData(
     taxType: TaxType,
-    norisData: (NorisCommunalWasteTax | NorisRealEstateTax)[],
+    norisData: (NorisTax)[],
     year: number,
   ): Promise<string[]> {
     return this.taxSubservice.processNorisTaxData(taxType, norisData, year)

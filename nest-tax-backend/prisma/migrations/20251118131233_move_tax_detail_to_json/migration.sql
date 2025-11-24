@@ -27,6 +27,22 @@ UPDATE "Tax" t
            '[]'::jsonb ) )
  WHERE t."type" = 'DZN';
 
+ALTER TABLE "Tax"
+    ADD CONSTRAINT "tax_dzn_structure"
+        CHECK (
+            ("taxDetails"->>'type' != 'DZN') OR
+            (
+                -- Required top-level fields
+                "taxDetails" ? 'type' AND
+                "taxDetails" ? 'taxLand' AND
+                "taxDetails" ? 'taxConstructions' AND
+                "taxDetails" ? 'taxFlat' AND
+                "taxDetails" ? 'propertyDetails' AND
+                    -- propertyDetails must be an array
+                jsonb_typeof("taxDetails"->'propertyDetails') = 'array'
+                )
+            );
+
 -- Step 3: Make column NOT NULL
 ALTER TABLE "Tax"
     ALTER COLUMN "taxDetails" SET NOT NULL;

@@ -60,9 +60,7 @@ export class TaxControllerV2 {
         propertyName: 'type',
         mapping: {
           DZN: getSchemaPath(ResponseRealEstateTaxSummaryDetailDto),
-          KO: getSchemaPath(
-            ResponseCommunalWasteTaxSummaryDetailDto,
-          ),
+          KO: getSchemaPath(ResponseCommunalWasteTaxSummaryDetailDto),
         },
       },
     },

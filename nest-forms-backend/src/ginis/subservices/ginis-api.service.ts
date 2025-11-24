@@ -185,23 +185,30 @@ export default class GinisAPIService {
   }
 
   private async updateContactInContactDatabase(
-    contactId: string,
+    contact: GinNajdiEsuNajdiEsuItem,
     params: GinContactParams,
     contactDatabase: GinContactDatabase,
-  ) {
-    const updateParams: GinContactParams = { ...params }
+  ): Promise<string> {
+    let updateParams: GinContactParams = { ...params }
 
-    // don't update fundamental information if the contact database is not ours
-    // TODO once we verify name during verification in city account, we can make update in any database
+    // only update missing uri if the contact database is not ours
+    // any other change would create a new contact instead of updating the existing one
     if (contactDatabase !== GinContactDatabase.CITY_ACCOUNT) {
-      updateParams.firstName = undefined
-      updateParams.lastName = undefined
-      updateParams.name = undefined
-      updateParams.type = undefined
+      updateParams = {
+        ...(!contact['Id-dat-schranky'] && { uri: params.uri }),
+      }
     }
 
-    await this.ginis.gin.editEsu({
-      'Id-esu': contactId,
+    // Skip update call if there are no updates to make
+    const hasUpdates = Object.values(updateParams).some(
+      (value) => value !== undefined,
+    )
+    if (!hasUpdates) {
+      return contact['Id-esu']
+    }
+
+    const data = await this.ginis.gin.editEsu({
+      'Id-esu': contact['Id-esu'],
       'Typ-esu': updateParams.type,
       'E-mail': updateParams.email,
       'Id-dat-schranky': updateParams.uri,
@@ -212,6 +219,9 @@ export default class GinisAPIService {
       Ico: updateParams.ico,
       Nazev: this.extractTitleFromGinContactParams(updateParams),
     })
+
+    // changing information might create a new contact, so we need to return the new id
+    return data['Vytvor-esu']['Id-esu']
   }
 
   private async findUpdateContactInContactDatabase(
@@ -219,7 +229,7 @@ export default class GinisAPIService {
     params: GinContactParams,
     extended: boolean = false,
     contactDatabases: GinContactDatabase[] = this.defaultContactDatabaseOrder,
-  ): Promise<GinNajdiEsuNajdiEsuItem | undefined> {
+  ): Promise<string | undefined> {
     // eslint-disable-next-line no-restricted-syntax
     for (const database of contactDatabases) {
       // contact database search must happen one by one, not in parallel, in specified order
@@ -233,12 +243,11 @@ export default class GinisAPIService {
         { 'Rozsah-prehledu': extended ? 'rozsireny' : 'standardni' },
       )
       if (data['Najdi-esu'].length === 1) {
-        this.updateContactInContactDatabase(
-          data['Najdi-esu'][0]['Id-esu'],
+        return this.updateContactInContactDatabase(
+          data['Najdi-esu'][0],
           params,
           database,
         )
-        return data['Najdi-esu'][0]
       }
     }
     return undefined
@@ -250,20 +259,17 @@ export default class GinisAPIService {
     if (!params.uri) {
       return undefined
     }
-    const contact = await this.findUpdateContactInContactDatabase(
-      {
-        'Id-dat-schranky': params.uri,
-      },
+    return this.findUpdateContactInContactDatabase(
+      { 'Id-dat-schranky': params.uri },
       params,
     )
-    return contact?.['Id-esu']
   }
 
   private async findUpdateContactByIdentifier(
     params: GinContactParams,
   ): Promise<string | undefined> {
     if (params.firstName && params.lastName && params.birthNumber) {
-      const contact = await this.findUpdateContactInContactDatabase(
+      const contactId = await this.findUpdateContactInContactDatabase(
         {
           Jmeno: params.firstName,
           Prijmeni: params.lastName,
@@ -271,21 +277,21 @@ export default class GinisAPIService {
         },
         params,
       )
-      if (contact) {
-        return contact['Id-esu']
+      if (contactId) {
+        return contactId
       }
     }
 
     if (params.name && params.ico) {
-      const contact = await this.findUpdateContactInContactDatabase(
+      const contactId = await this.findUpdateContactInContactDatabase(
         {
           'Obchodni-jmeno': params.name,
           Ico: params.ico,
         },
         params,
       )
-      if (contact) {
-        return contact['Id-esu']
+      if (contactId) {
+        return contactId
       }
     }
     return undefined
@@ -295,7 +301,7 @@ export default class GinisAPIService {
     params: GinContactParams,
   ): Promise<string | undefined> {
     if (params.firstName && params.lastName && params.email) {
-      const contact = await this.findUpdateContactInContactDatabase(
+      const contactId = await this.findUpdateContactInContactDatabase(
         {
           Jmeno: params.firstName,
           Prijmeni: params.lastName,
@@ -304,13 +310,13 @@ export default class GinisAPIService {
         },
         params,
       )
-      if (contact) {
-        return contact['Id-esu']
+      if (contactId) {
+        return contactId
       }
     }
 
     if (params.name && params.email) {
-      const contact = await this.findUpdateContactInContactDatabase(
+      const contactId = await this.findUpdateContactInContactDatabase(
         {
           'Obchodni-jmeno': params.name,
           'E-mail': params.email,
@@ -318,8 +324,8 @@ export default class GinisAPIService {
         },
         params,
       )
-      if (contact) {
-        return contact['Id-esu']
+      if (contactId) {
+        return contactId
       }
     }
     return undefined

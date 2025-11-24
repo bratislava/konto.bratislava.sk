@@ -15,6 +15,7 @@ import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamR
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import { isBrowser } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
+import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 export interface VerificationFormData {
   ico?: string
@@ -115,13 +116,14 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
       })}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
-      <p className="text-p2">
-        {t(
+      <AccountMarkdown
+        variant="sm"
+        content={t(
           isLegalEntity
             ? 'identity_verification_subtitle_legal_entity'
             : 'identity_verification_subtitle',
         )}
-      </p>
+      />
       <AccountErrorAlert error={error} />
       {isLegalEntity && (
         <Controller
@@ -203,7 +205,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         className="min-w-full"
         type="submit"
         text={t('identity_verification_submit')}
-        variant="category"
+        variant="black"
         loading={isSubmitting}
       />
       <Button

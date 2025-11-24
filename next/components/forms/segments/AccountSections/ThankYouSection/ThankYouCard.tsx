@@ -1,5 +1,5 @@
 import PaymentDeclined from '@assets/icons/other/payment-declined.svg'
-import { CheckIcon, CrossIcon, RepeatIcon } from '@assets/ui-icons'
+import { CheckIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import cn from 'frontend/cn'
 
@@ -14,6 +14,8 @@ type ThankYouCardBase = {
   content?: string
   feedbackLink?: string
   feedbackTitle?: string
+  firstButtonLink?: string
+  secondButtonLink?: string
 }
 
 const ThankYouCard = ({
@@ -24,6 +26,8 @@ const ThankYouCard = ({
   content,
   feedbackLink,
   feedbackTitle,
+  firstButtonLink,
+  secondButtonLink,
 }: ThankYouCardBase) => {
   return (
     <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-8 md:rounded-2xl md:px-12 md:py-10 lg:max-w-[800px]">
@@ -68,7 +72,7 @@ const ThankYouCard = ({
               )
             ) : null}
             {secondButtonTitle ? (
-              <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
+              <ButtonNew href={secondButtonLink} variant="black-outline" fullWidth>
                 {secondButtonTitle}
               </ButtonNew>
             ) : null}
@@ -76,23 +80,12 @@ const ThankYouCard = ({
         ) : (
           <>
             {firstButtonTitle ? (
-              <ButtonNew
-                // TODO: Right now it is not possible to determine the year that it is being paid for.
-                href={ROUTES.TAXES_AND_FEES_YEAR(new Date().getFullYear())}
-                variant="black-solid"
-                fullWidth
-                startIcon={<RepeatIcon />}
-              >
+              <ButtonNew href={firstButtonLink} variant="black-solid" fullWidth>
                 {firstButtonTitle}
               </ButtonNew>
             ) : null}
             {secondButtonTitle ? (
-              <ButtonNew
-                href={ROUTES.HOME}
-                variant="black-outline"
-                fullWidth
-                startIcon={<CrossIcon className="size-6" />}
-              >
+              <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
                 {secondButtonTitle}
               </ButtonNew>
             ) : null}

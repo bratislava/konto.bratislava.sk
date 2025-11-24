@@ -141,12 +141,8 @@ export function errorToLogfmt(
 }
 
 export function isLogfmt(input: string): boolean {
-  // More defensive: check for basic logfmt structure without complex regex
-  if (!input || input.length > 100_000) return false
-
-  // Simple check: key="value" pairs separated by spaces
-  const parts = input.trim().split(' ')
-  return parts.every((part) => /^\w+="(?:[^\n"\\]|\\["\\n])*"$/.test(part))
+  const regex = /((^| )\w+="([^\n"\\]|\\\\|\\"|\\n)*")+$/
+  return regex.test(input)
 }
 
 export function toLogfmt(input: unknown): string {

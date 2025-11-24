@@ -36,7 +36,6 @@
     "@nestjs/swagger": "^11.2.1",
     "@prisma/client": "6.17.1",
     "@types/express": "^5.0.3",
-    "amqp-connection-manager": "^4.1.11",
     "amqplib": "^0.10.9",
     "axios": "^1.13.2",
     "cf-turnstile": "^1.0.8",

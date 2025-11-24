@@ -13,10 +13,10 @@ import { prefetchUserQuery } from 'frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from 'frontend/utils/amplifyServer'
 import { convertYearToNumber } from 'frontend/utils/general'
 import { slovakServerSideTranslations } from 'frontend/utils/slovakServerSideTranslations'
-import { ResponseTaxSummaryDetailDto, TaxType } from 'openapi-clients/tax'
+import { ResponseRealEstateTaxSummaryDetailDto, TaxType } from 'openapi-clients/tax'
 
 type AccountTaxesFeesPageProps = {
-  taxData: ResponseTaxSummaryDetailDto
+  taxData: ResponseRealEstateTaxSummaryDetailDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   dehydratedState: DehydratedState
 }
@@ -44,6 +44,11 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
         getTaxAdministratorForUser(amplifyContextSpec),
         prefetchUserQuery(queryClient, fetchAuthSession),
       ])
+
+      // TODO This is a temporary "fix" while solution for multiple tax types is not implemented.
+      if (taxData.type !== TaxType.Dzn){
+        throw new Error("TaxType not implemented")
+      }
 
       return {
         props: {

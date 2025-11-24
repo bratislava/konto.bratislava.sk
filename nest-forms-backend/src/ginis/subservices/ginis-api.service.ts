@@ -25,7 +25,7 @@ enum GinContactDatabase {
   CITY_ACCOUNT = '5',
 }
 
-enum GinContactType {
+export enum GinContactType {
   PHYSICAL_ENTITY = 'fyz-osoba',
   LEGAL_ENTITY = 'pravnicka-osoba',
   SELF_EMPLOYED_ENTITY = 'fyz-osoba-osvc', // SZCO

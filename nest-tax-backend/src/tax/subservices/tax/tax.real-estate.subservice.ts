@@ -129,7 +129,7 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice<
       ...detailWithoutQrCode,
       year,
       order,
-      type: 'REAL_ESTATE',
+      type: 'DZN',
       paidStatus,
       oneTimePayment,
       installmentPayment,

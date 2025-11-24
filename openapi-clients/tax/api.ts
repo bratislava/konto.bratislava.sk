@@ -370,7 +370,7 @@ export interface ResponseCommunalWasteTaxSummaryDetailDto {
 }
 
 export const ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum = {
-  CommunalWaste: 'COMMUNAL_WASTE',
+  Ko: 'KO',
 } as const
 
 export type ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum =
@@ -671,7 +671,7 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
 }
 
 export const ResponseRealEstateTaxSummaryDetailDtoTypeEnum = {
-  RealEstate: 'REAL_ESTATE',
+  Dzn: 'DZN',
 } as const
 
 export type ResponseRealEstateTaxSummaryDetailDtoTypeEnum =
@@ -730,8 +730,8 @@ export type TaxAvailabilityStatus =
  * @type TaxControllerV2GetTaxDetailByYearV2200Response
  */
 export type TaxControllerV2GetTaxDetailByYearV2200Response =
-  | ({ type: 'COMMUNAL_WASTE' } & ResponseCommunalWasteTaxSummaryDetailDto)
-  | ({ type: 'REAL_ESTATE' } & ResponseRealEstateTaxSummaryDetailDto)
+  | ({ type: 'DZN' } & ResponseRealEstateTaxSummaryDetailDto)
+  | ({ type: 'KO' } & ResponseCommunalWasteTaxSummaryDetailDto)
 
 /**
  * Payment status

@@ -637,11 +637,11 @@ export class ResponseRealEstateTaxDetailItemizedDto {
 export class ResponseRealEstateTaxSummaryDetailDto extends ResponseTaxSummaryDetailBaseDto {
   @ApiProperty({
     description: 'Type of tax.',
-    example: 'REAL_ESTATE',
-    enum: ['REAL_ESTATE'],
+    example: 'DZN',
+    enum: ['DZN'],
   })
-  @IsEnum(['REAL_ESTATE'])
-  type: 'REAL_ESTATE'
+  @IsEnum(['DZN'])
+  type: 'DZN'
 
   @ApiProperty({
     description: 'Itemized details',
@@ -769,11 +769,11 @@ export class ResponseCommunalWasteTaxDetailItemizedDto {
 export class ResponseCommunalWasteTaxSummaryDetailDto extends ResponseTaxSummaryDetailBaseDto {
   @ApiProperty({
     description: 'Type of tax.',
-    example: 'COMMUNAL_WASTE',
-    enum: ['COMMUNAL_WASTE'],
+    example: 'KO',
+    enum: ['KO'],
   })
-  @IsEnum(['COMMUNAL_WASTE'])
-  type: 'COMMUNAL_WASTE'
+  @IsEnum(['KO'])
+  type: 'KO'
 
   @ApiProperty({
     description: 'Itemized details',

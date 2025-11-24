@@ -59,8 +59,8 @@ export class TaxControllerV2 {
       discriminator: {
         propertyName: 'type',
         mapping: {
-          REAL_ESTATE: getSchemaPath(ResponseRealEstateTaxSummaryDetailDto),
-          COMMUNAL_WASTE: getSchemaPath(
+          DZN: getSchemaPath(ResponseRealEstateTaxSummaryDetailDto),
+          KO: getSchemaPath(
             ResponseCommunalWasteTaxSummaryDetailDto,
           ),
         },

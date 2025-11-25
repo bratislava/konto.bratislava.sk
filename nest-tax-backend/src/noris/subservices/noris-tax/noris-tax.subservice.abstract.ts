@@ -156,8 +156,6 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
     year: number,
   ) => {
-    birthNumbersResult.add(norisItem.ICO_RC)
-
     try {
       await this.prismaService.$transaction(async (tx) => {
         const userFromCityAccount =
@@ -166,6 +164,8 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         if (!userFromCityAccount) {
           return
         }
+
+        birthNumbersResult.add(norisItem.ICO_RC)
 
         const tax = await this.insertTaxDataToDatabase(
           taxDefinition,

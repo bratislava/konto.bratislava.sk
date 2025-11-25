@@ -314,6 +314,10 @@ export interface ResponseCommunalWasteTaxItemizedAddressDto {
    */
   unitRate: number
   /**
+   * Container type (druh_nadoby)
+   */
+  containerType: string
+  /**
    * Fee amount (poplatok)
    */
   fee: number

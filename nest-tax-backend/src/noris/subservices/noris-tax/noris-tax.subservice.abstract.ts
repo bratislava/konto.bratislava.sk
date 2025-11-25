@@ -78,7 +78,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    * @param birthNumbers - Birth numbers of the tax payers to process
    * @returns Birth numbers of the tax payers that were processed
    */
-  protected async getAndProcessNorisTaxDataByBirthNumberAndYear(
+  async getAndProcessNorisTaxDataByBirthNumberAndYear(
     year: number,
     birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto> {

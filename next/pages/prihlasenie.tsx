@@ -72,7 +72,7 @@ const LoginPage = () => {
           await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
 
           logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
-          // TODO OAuth: add client_id and name to userControllerUpsertUserAndRecordClient
+          // TODO OAuth: add client name to userControllerUpsertUserAndRecordClient
           // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
           // there might be some cases where user is not there yet.
           await cityAccountClient.userControllerUpsertUserAndRecordClient(
@@ -80,7 +80,7 @@ const LoginPage = () => {
             { authStrategy: 'authOnly' },
           )
 
-          logger.info(`[AUTH] Clearing locale storage`)
+          logger.info(`[AUTH] Clearing session`)
           clearOAuthSessionStorage()
 
           logger.info(

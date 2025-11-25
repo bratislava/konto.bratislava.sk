@@ -125,15 +125,27 @@ const RegisterPage = () => {
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
-        if (!isOAuthLogin) {
-          await prepareFormMigration()
+        if (isOAuthLogin) {
+          await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
+          clearOAuthSessionStorage()
+
+          // TODO OAuth: add client name to userControllerUpsertUserAndRecordClient
+          // This endpoint must be called to register user also to the City Account BE
+          await cityAccountClient.userControllerUpsertUserAndRecordClient(
+            { loginClient: LoginClientEnum.CityAccount },
+            { authStrategy: 'authOnly' },
+          )
+          setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
+
+          return
         }
+
+        await prepareFormMigration()
         // This endpoint must be called to register user also to the City Account BE
         await cityAccountClient.userControllerUpsertUserAndRecordClient(
           { loginClient: LoginClientEnum.CityAccount },
           { authStrategy: 'authOnly' },
         )
-
         setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
       } else {
         throw new Error(
@@ -302,11 +314,9 @@ const RegisterPage = () => {
 
     if (isOAuthLogin) {
       return {
+        // TODO OAuth: Add client title to continue button
         confirmLabel: t('identity_verification_link'),
-        // TODO OAuth: handle errors
         onConfirm: async () => {
-          await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
-          clearOAuthSessionStorage()
           // TODO OAuth: check if payload exists, handle errors
           await router.push(getContinueUrl({ payload, clientId, redirectUri, state }))
         },

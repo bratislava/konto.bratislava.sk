@@ -1,12 +1,7 @@
 fragment Tax on Tax {
   accountCommunicationConsentText
-  currentYearTaxInPreparationText
-  currentYearTaxInPreparationTitle
   channelChangeEffectiveNextYearText
-  channelChangeEffectiveNextYearTitle
   paymentSuccessFeedbackLink
-  paymentSuccessPrivacyPolicyLink
-  paymentSuccessFaqLink
 }
 
 query Tax {

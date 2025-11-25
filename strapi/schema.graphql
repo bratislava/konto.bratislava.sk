@@ -1008,14 +1008,8 @@ input StringFilterInput {
 type Tax {
   accountCommunicationConsentText: String!
   channelChangeEffectiveNextYearText: String
-  channelChangeEffectiveNextYearTitle: String
   createdAt: DateTime
-  currentYearTaxInPreparationText: String
-  currentYearTaxInPreparationTitle: String
-  displayCurrentYearTaxInPreparation: Boolean!
-  paymentSuccessFaqLink: String
   paymentSuccessFeedbackLink: String
-  paymentSuccessPrivacyPolicyLink: String
   updatedAt: DateTime
 }
 
@@ -1037,29 +1031,17 @@ input TaxFiltersInput {
   accountCommunicationConsentText: StringFilterInput
   and: [TaxFiltersInput]
   channelChangeEffectiveNextYearText: StringFilterInput
-  channelChangeEffectiveNextYearTitle: StringFilterInput
   createdAt: DateTimeFilterInput
-  currentYearTaxInPreparationText: StringFilterInput
-  currentYearTaxInPreparationTitle: StringFilterInput
-  displayCurrentYearTaxInPreparation: BooleanFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
-  paymentSuccessFaqLink: StringFilterInput
   paymentSuccessFeedbackLink: StringFilterInput
-  paymentSuccessPrivacyPolicyLink: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input TaxInput {
   accountCommunicationConsentText: String
   channelChangeEffectiveNextYearText: String
-  channelChangeEffectiveNextYearTitle: String
-  currentYearTaxInPreparationText: String
-  currentYearTaxInPreparationTitle: String
-  displayCurrentYearTaxInPreparation: Boolean
-  paymentSuccessFaqLink: String
   paymentSuccessFeedbackLink: String
-  paymentSuccessPrivacyPolicyLink: String
 }
 
 type TaxRelationResponseCollection {

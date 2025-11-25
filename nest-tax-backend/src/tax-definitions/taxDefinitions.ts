@@ -4,8 +4,14 @@ import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
 } from '../admin/utils/testing-tax-mock'
-import { mapNorisToRealEstateDatabaseDetail } from '../noris/utils/mapping.helper'
-import { generateItemizedRealEstateTaxDetail } from '../tax/utils/helpers/tax.helper'
+import {
+  mapNorisToCommunalWasteDatabaseDetail,
+  mapNorisToRealEstateDatabaseDetail,
+} from '../noris/utils/mapping.helper'
+import {
+  generateItemizedCommunalWasteTaxDetail,
+  generateItemizedRealEstateTaxDetail,
+} from '../tax/utils/helpers/tax.helper'
 import { TaxDefinitionsMap } from './taxDefinitionsTypes'
 
 export const taxDefinitions: TaxDefinitionsMap = {
@@ -23,12 +29,8 @@ export const taxDefinitions: TaxDefinitionsMap = {
     isUnique: false,
     numberOfInstallments: 4,
     paymentCalendarThreshold: 0,
-    mapNorisToTaxDetailData: () => {
-      throw new Error('Not implemented')
-    },
-    generateItemizedTaxDetail: () => {
-      throw new Error('Not implemented')
-    },
+    mapNorisToTaxDetailData: mapNorisToCommunalWasteDatabaseDetail,
+    generateItemizedTaxDetail: generateItemizedCommunalWasteTaxDetail,
     createTestingTaxMock: createTestingCommunalWasteTaxMock,
   },
 }

@@ -2,11 +2,16 @@ import { TaxAdministrator, TaxType } from '@prisma/client'
 import currency from 'currency.js'
 
 import {
+  CommunalWasteTaxDetail,
   RealEstateTaxAreaType,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
 } from '../../prisma/json-types'
-import { NorisBaseTax, NorisRealEstateTax } from '../types/noris.types'
+import {
+  NorisBaseTax,
+  NorisCommunalWasteTaxGrouped,
+  NorisRealEstateTax,
+} from '../types/noris.types'
 import { DeliveryMethod, DeliveryMethodNoris } from './noris.types'
 
 export const convertCurrencyToInt = (value: string): number => {
@@ -139,6 +144,15 @@ export const mapNorisToDatabaseBaseTax = (
     dateCreateTax: data.akt_datum,
     dateTaxRuling: data.datum_platnosti,
     taxId: data.cislo_konania,
+  }
+}
+
+export const mapNorisToCommunalWasteDatabaseDetail = (
+  data: NorisCommunalWasteTaxGrouped,
+): CommunalWasteTaxDetail => {
+  return {
+    type: TaxType.KO,
+    containers: data.containers,
   }
 }
 

@@ -130,20 +130,32 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       // Take the first record as "base" since all other fields are the same
       const base = group[0]
 
-      const containers = group.map((r) => ({
-        address: {
-          street: r.ulica,
-          orientationNumber: r.orientacne_cislo,
-        },
-        details: {
+      // Group by address within this variable symbol group
+      const addressGrouped = groupBy(group, (r) => {
+        return `${r.ulica || ''}_${r.orientacne_cislo || ''}`
+      })
+
+      const containers = Object.values(addressGrouped).map((addressGroup) => {
+        // Take the first record to get the address (all records in this group have the same address)
+        const firstRecord = addressGroup[0]
+
+        const details = addressGroup.map((r) => ({
           objem_nadoby: r.objem_nadoby,
           pocet_nadob: r.pocet_nadob,
           pocet_odvozov: r.pocet_odvozov,
           sadzba: r.sadzba,
           poplatok: r.poplatok,
           druh_nadoby: r.druh_nadoby,
-        },
-      }))
+        }))
+
+        return {
+          address: {
+            street: firstRecord.ulica,
+            orientationNumber: firstRecord.orientacne_cislo,
+          },
+          details,
+        }
+      })
 
       // Get all keys from BaseNorisCommunalWasteTaxDto
       const baseKeys = Object.keys(

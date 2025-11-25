@@ -1,5 +1,6 @@
 import { Prisma, TaxType } from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
+import pLimit from 'p-limit'
 
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
@@ -22,6 +23,10 @@ import {
 } from '../../utils/mapping.helper'
 
 export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
+  protected readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+
+  protected readonly concurrencyLimit = pLimit(this.concurrency)
+
   protected constructor(
     protected readonly qrCodeSubservice: QrCodeSubservice,
     protected readonly prismaService: PrismaService,
@@ -31,16 +36,16 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   ) {}
 
   /**
-   * Gets tax data from Noris and processes it by inserting into the database.
+   * Gets the tax data from Noris for given birth numbers and year.
    *
    * @param year - Year of the taxes
-   * @param birthNumbers - Birth numbers of the tax payers to process
-   * @returns Birth numbers of the tax payers that were processed
+   * @param birthNumbers - Birth numbers of the tax payers to get data for
+   * @returns Tax data from Noris
    */
-  abstract getAndProcessNorisTaxDataByBirthNumberAndYear(
+  protected abstract getTaxDataByYearAndBirthNumber(
     year: number,
     birthNumbers: string[],
-  ): Promise<CreateBirthNumbersResponseDto>
+  ): Promise<TaxTypeToNorisData[TTaxType][]>
 
   /**
    * Processes the tax data from Noris to insert into the database.
@@ -65,6 +70,31 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     year: number,
     birthNumbers: string[],
   ): Promise<{ updated: number }>
+
+  /**
+   * Gets the tax data from Noris and processes it by inserting into the database.
+   *
+   * @param year - Year of the taxes
+   * @param birthNumbers - Birth numbers of the tax payers to process
+   * @returns Birth numbers of the tax payers that were processed
+   */
+  protected async getAndProcessNorisTaxDataByBirthNumberAndYear(
+    year: number,
+    birthNumbers: string[],
+  ): Promise<CreateBirthNumbersResponseDto> {
+    this.logger.log('Start Loading data from noris')
+    const norisData = await this.getTaxDataByYearAndBirthNumber(
+      year,
+      birthNumbers,
+    )
+
+    const birthNumbersResult: string[] = await this.processNorisTaxData(
+      norisData,
+      year,
+    )
+
+    return { birthNumbers: birthNumbersResult }
+  }
 
   /**
    * Inserts the tax data into the database.

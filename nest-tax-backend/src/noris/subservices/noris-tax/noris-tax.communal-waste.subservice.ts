@@ -3,10 +3,9 @@ import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 
-import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
@@ -54,14 +53,70 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     )
   }
 
-  getAndProcessNorisTaxDataByBirthNumberAndYear(): Promise<CreateBirthNumbersResponseDto> {
-    throw new Error('Not implemented')
+  protected async getTaxDataByYearAndBirthNumber(
+    year: number,
+    birthNumbers: string[],
+  ): Promise<NorisCommunalWasteTaxGrouped[]> {
+    const norisData = await this.getCommunalWasteTaxDataByBirthNumberAndYear(
+      year,
+      birthNumbers,
+    )
+    return this.groupCommunalWasteTaxRecords(norisData)
   }
 
-  processNorisTaxData() // data: TaxTypeToNorisData['KO'][],
-  // year: number,
-  : Promise<string[]> {
-    throw new Error('Not implemented')
+  async processNorisTaxData(
+    norisData: NorisCommunalWasteTaxGrouped[],
+    year: number,
+  ): Promise<string[]> {
+    const birthNumbersResult: Set<string> = new Set()
+
+    this.logger.log(`Data loaded from noris - count ${norisData.length}`)
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        norisData.map((norisRecord) => norisRecord.ICO_RC),
+      )
+
+    const taxDefinitionCommunalWaste = getTaxDefinitionByType(TaxType.KO)
+
+    const taxesExist = await this.prismaService.tax.findMany({
+      select: {
+        variableSymbol: true,
+      },
+      where: {
+        year: +year,
+        taxPayer: {
+          birthNumber: {
+            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
+          },
+        },
+        type: TaxType.KO,
+      },
+    })
+    const existingTaxes = new Set(taxesExist.map((tax) => tax.variableSymbol))
+
+    const norisDataNotInDatabase = norisData.filter(
+      (norisItem) => !existingTaxes.has(norisItem.variabilny_symbol),
+    )
+
+    await Promise.all(
+      norisDataNotInDatabase.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          await this.processTaxRecordFromNoris(
+            taxDefinitionCommunalWaste,
+            birthNumbersResult,
+            norisItem,
+            userDataFromCityAccount,
+            year,
+          )
+        }),
+      ),
+    )
+
+    // Add the payments for these added taxes to database
+    await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
+
+    return [...birthNumbersResult]
   }
 
   getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(): Promise<{
@@ -82,19 +137,20 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
    * @returns An array of records for given birth numbers and year.
    */
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    year: number,
+    birthNumbers: string[],
   ): Promise<NorisCommunalWasteTax[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
         const request = new mssql.Request(connection)
 
-        const birthNumbersPlaceholders = data.birthNumbers
+        const birthNumbersPlaceholders = birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
-        data.birthNumbers.forEach((birthNumber, index) => {
+        birthNumbers.forEach((birthNumber, index) => {
           request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
-        request.input('year', mssql.Int, data.year)
+        request.input('year', mssql.Int, year)
 
         const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
           '@birth_numbers',
@@ -119,7 +175,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     )
   }
 
-  processWasteTaxRecords(
+  private groupCommunalWasteTaxRecords(
     records: NorisCommunalWasteTax[],
   ): NorisCommunalWasteTaxGrouped[] {
     const grouped = groupBy(records, 'variabilny_symbol')

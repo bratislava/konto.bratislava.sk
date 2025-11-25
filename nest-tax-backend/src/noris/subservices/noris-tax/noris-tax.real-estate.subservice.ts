@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
-import pLimit from 'p-limit'
 
-import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
@@ -25,10 +23,6 @@ import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
 export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
   typeof TaxType.DZN
 > {
-  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
-
-  private readonly concurrencyLimit = pLimit(this.concurrency)
-
   constructor(
     private readonly connectionService: NorisConnectionSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
@@ -50,7 +44,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     )
   }
 
-  private async getTaxDataByYearAndBirthNumber(
+  protected async getTaxDataByYearAndBirthNumber(
     year: number,
     birthNumbers: string[],
   ): Promise<NorisRealEstateTax[]> {
@@ -87,24 +81,6 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       NorisRealEstateTaxSchema,
       norisData.recordset,
     )
-  }
-
-  async getAndProcessNorisTaxDataByBirthNumberAndYear(
-    year: number,
-    birthNumbers: string[],
-  ): Promise<CreateBirthNumbersResponseDto> {
-    this.logger.log('Start Loading data from noris')
-    const norisData = await this.getTaxDataByYearAndBirthNumber(
-      year,
-      birthNumbers,
-    )
-
-    const birthNumbersResult: string[] = await this.processNorisTaxData(
-      norisData,
-      year,
-    )
-
-    return { birthNumbers: birthNumbersResult }
   }
 
   async processNorisTaxData(

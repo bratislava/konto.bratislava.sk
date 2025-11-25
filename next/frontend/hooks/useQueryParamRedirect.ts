@@ -50,6 +50,7 @@ export const useQueryParamRedirect = () => {
       return { [redirectQueryParam]: safeRedirect.url }
     }
 
+    // TODO OAuth: add isOAuthRedirect condition
     return {
       ...(clientId && { [clientIdQueryParam]: clientId }),
       ...(payload && { [payloadQueryParam]: payload }),

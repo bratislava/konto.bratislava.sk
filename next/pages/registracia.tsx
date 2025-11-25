@@ -84,7 +84,7 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, amplifyConfigureByClientId, getOAuthContinueUrl, handlePostOAuthTokens } =
+  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens } =
     useAmplifyClientOAuthContext()
 
   const { t } = useTranslation('account')
@@ -164,9 +164,6 @@ const RegisterPage = () => {
   ) => {
     try {
       logger.info(`[AUTH] Attempting to sign up for email ${email}`)
-      // Make sure we call amplify with correct clientId
-      amplifyConfigureByClientId()
-
       handleErrorChange(null)
       setLastEmail(email)
       const { nextStep } = await signUp({

@@ -42,7 +42,7 @@ const LoginPage = () => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, amplifyConfigureByClientId, getOAuthContinueUrl, handlePostOAuthTokens } =
+  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens } =
     useAmplifyClientOAuthContext()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
@@ -57,8 +57,6 @@ const LoginPage = () => {
 
   const onLogin = async (email: string, password: string) => {
     logger.info(`[AUTH] Attempting to sign in for email ${email}`)
-    // Make sure we call amplify with correct clientId
-    amplifyConfigureByClientId()
 
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })

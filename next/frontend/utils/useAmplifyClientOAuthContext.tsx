@@ -3,20 +3,10 @@
 import { cityAccountClient } from '@clients/city-account'
 import { Amplify } from 'aws-amplify'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
-import { CookieStorage, sessionStorage } from 'aws-amplify/utils'
-import {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { environment } from '../../environment'
 import { useOAuthParams } from '../hooks/useOAuthParams'
-import { clearOAuthSessionStorage } from './amplifyClient'
-import { amplifyConfig, amplifyLibraryOptions, createAmplifyConfig } from './amplifyConfig'
 import logger from './logger'
 import {
   clientIdQueryParam,
@@ -28,44 +18,10 @@ import {
 const useGetContext = () => {
   const { clientId, payload, redirectUri, state } = useOAuthParams()
 
-  const [currentClientId, setCurrentClientId] = useState<string | null>(null)
-
   // TODO OAuth: Discuss what should be considered as oauth login, now we check only if clientId exists in url params
   const isOAuthLogin = !!clientId
 
-  const amplifyConfigureByClientId = useCallback(() => {
-    if (isOAuthLogin) {
-      Amplify.configure(createAmplifyConfig({ clientId }), amplifyLibraryOptions)
-      cognitoUserPoolsTokenProvider.setKeyValueStorage(sessionStorage) // Session storage - for oauth flow
-    } else {
-      Amplify.configure(amplifyConfig, amplifyLibraryOptions)
-      // Setting cookie storage based on default setting, see https://github.com/aws-amplify/amplify-js/blob/%40aws-amplify/adapter-nextjs%401.6.8/packages/aws-amplify/src/initSingleton.ts#L41
-      cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage({ sameSite: 'lax' })) // Cookies - default for SSR
-    }
-
-    const currentConfig = Amplify.getConfig()
-
-    return currentConfig.Auth?.Cognito.userPoolClientId
-  }, [clientId, isOAuthLogin])
-
-  useEffect(() => {
-    const userPoolClientId = amplifyConfigureByClientId()
-    setCurrentClientId(userPoolClientId || null)
-
-    clearOAuthSessionStorage()
-  }, [amplifyConfigureByClientId])
-
-  // TODO OAuth: client info endpoint
-  // const getClientInfo = useCallback(async () => {
-  //   const { data: clientInfo } = await cityAccountClient.oAuth2ControllerInfo(
-  //     payload ?? '',
-  //     clientId ?? undefined,
-  //     redirectUri ?? undefined,
-  //     state ?? undefined,
-  //   )
-  //
-  //   return clientInfo
-  // }, [clientId, payload, redirectUri, state])
+  const currentClientId = Amplify.getConfig().Auth?.Cognito.userPoolClientId
 
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
@@ -113,7 +69,6 @@ const useGetContext = () => {
           redirect_uri: redirectUri ?? undefined,
           state: state ?? undefined,
         },
-        // TODO OAuth: revisit and check if using { authStrategy: false } is what we wanted
         { authStrategy: false },
       )
     } catch (error) {
@@ -124,7 +79,6 @@ const useGetContext = () => {
   return {
     isOAuthLogin,
     currentClientId,
-    amplifyConfigureByClientId,
     handlePostOAuthTokens,
     getOAuthContinueUrl,
   }

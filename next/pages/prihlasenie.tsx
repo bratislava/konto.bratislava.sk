@@ -20,7 +20,7 @@ import {
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { getContinueUrl, handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
+import { getOAuthContinueUrl, handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
 
@@ -87,7 +87,7 @@ const LoginPage = () => {
             `[AUTH] Calling Continue endpoint with payload=${payload}, clientId=${clientId}, redirectUri=${redirectUri}, state=${state}`,
           )
           // TODO OAuth: check if payload exists, handle errors
-          await router.push(getContinueUrl({ payload, clientId, redirectUri, state }))
+          await router.push(getOAuthContinueUrl({ payload, clientId, redirectUri, state }))
 
           return
         }

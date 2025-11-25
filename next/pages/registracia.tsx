@@ -24,7 +24,7 @@ import { clearOAuthSessionStorage } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import {
-  getContinueUrl,
+  getOAuthContinueUrl,
   handlePostOAuthTokens,
   SafeRedirectType,
 } from '../frontend/utils/queryParamRedirect'
@@ -318,7 +318,7 @@ const RegisterPage = () => {
         confirmLabel: t('identity_verification_link'),
         onConfirm: async () => {
           // TODO OAuth: check if payload exists, handle errors
-          await router.push(getContinueUrl({ payload, clientId, redirectUri, state }))
+          await router.push(getOAuthContinueUrl({ payload, clientId, redirectUri, state }))
         },
       }
     }

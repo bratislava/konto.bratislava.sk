@@ -194,7 +194,7 @@ export const handlePostOAuthTokens = async ({
   }
 }
 
-export const getContinueUrl = ({
+export const getOAuthContinueUrl = ({
   payload,
   clientId,
   redirectUri,

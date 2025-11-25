@@ -18,16 +18,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import OAuthConfigureContainer from '../components/forms/segments/OAuthConfigure/OAuthConfigureContainer'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
-import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { clearOAuthSessionStorage } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
-import {
-  getOAuthContinueUrl,
-  handlePostOAuthTokens,
-  SafeRedirectType,
-} from '../frontend/utils/queryParamRedirect'
+import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
 import { loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
@@ -90,8 +85,8 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { payload, clientId, redirectUri, state } = useOAuthParams()
-  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyClientOAuthContext()
+  const { isOAuthLogin, amplifyConfigureByClientId, getOAuthContinueUrl, handlePostOAuthTokens } =
+    useAmplifyClientOAuthContext()
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -126,7 +121,7 @@ const RegisterPage = () => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
         if (isOAuthLogin) {
-          await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
+          await handlePostOAuthTokens()
           clearOAuthSessionStorage()
 
           // TODO OAuth: add client name to userControllerUpsertUserAndRecordClient
@@ -317,8 +312,8 @@ const RegisterPage = () => {
         // TODO OAuth: Add client title to continue button
         confirmLabel: t('identity_verification_link'),
         onConfirm: async () => {
-          // TODO OAuth: check if payload exists, handle errors
-          await router.push(getOAuthContinueUrl({ payload, clientId, redirectUri, state }))
+          // TODO OAuth: handle errors
+          await router.push(getOAuthContinueUrl())
         },
       }
     }
@@ -341,17 +336,14 @@ const RegisterPage = () => {
       onConfirm: () => redirect(),
     }
   }, [
-    clientId,
+    getOAuthContinueUrl,
     getRouteWithRedirect,
     isOAuthLogin,
-    payload,
     redirect,
-    redirectUri,
     registrationStatus,
     router,
     safeRedirect.type,
     safeRedirect.url,
-    state,
     t,
   ])
 

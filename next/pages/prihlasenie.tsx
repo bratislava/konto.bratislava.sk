@@ -12,7 +12,6 @@ import { useRef, useState } from 'react'
 import OAuthConfigureContainer from '../components/forms/segments/OAuthConfigure/OAuthConfigureContainer'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
-import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import {
   clearOAuthSessionStorage,
@@ -20,7 +19,6 @@ import {
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { getOAuthContinueUrl, handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
 
@@ -45,8 +43,8 @@ const LoginPage = () => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { payload, clientId, redirectUri, state } = useOAuthParams()
-  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyClientOAuthContext()
+  const { isOAuthLogin, amplifyConfigureByClientId, getOAuthContinueUrl, handlePostOAuthTokens } =
+    useAmplifyClientOAuthContext()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
@@ -69,7 +67,7 @@ const LoginPage = () => {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         if (isOAuthLogin) {
           logger.info(`[AUTH] Proceeding to OAuth login (isOAuthLogin=${isOAuthLogin})`)
-          await handlePostOAuthTokens({ payload, clientId, redirectUri, state })
+          await handlePostOAuthTokens()
 
           logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
           // TODO OAuth: add client name to userControllerUpsertUserAndRecordClient
@@ -83,11 +81,9 @@ const LoginPage = () => {
           logger.info(`[AUTH] Clearing session`)
           clearOAuthSessionStorage()
 
-          logger.info(
-            `[AUTH] Calling Continue endpoint with payload=${payload}, clientId=${clientId}, redirectUri=${redirectUri}, state=${state}`,
-          )
-          // TODO OAuth: check if payload exists, handle errors
-          await router.push(getOAuthContinueUrl({ payload, clientId, redirectUri, state }))
+          logger.info(`[AUTH] Calling Continue endpoint`)
+          // TODO OAuth: handle errors
+          await router.push(getOAuthContinueUrl())
 
           return
         }

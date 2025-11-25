@@ -1,6 +1,7 @@
 fragment Tax on Tax {
   accountCommunicationConsentText
   channelChangeEffectiveNextYearText
+  channelChangeEffectiveNextYearTitle
   paymentSuccessFeedbackLink
 }
 

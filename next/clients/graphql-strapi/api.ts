@@ -1292,6 +1292,7 @@ export type Tax = {
   __typename?: 'Tax'
   accountCommunicationConsentText: Scalars['String']['output']
   channelChangeEffectiveNextYearText?: Maybe<Scalars['String']['output']>
+  channelChangeEffectiveNextYearTitle?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   paymentSuccessFeedbackLink?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -1311,6 +1312,7 @@ export type TaxEntityResponse = {
 export type TaxInput = {
   accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
+  channelChangeEffectiveNextYearTitle?: InputMaybe<Scalars['String']['input']>
   paymentSuccessFeedbackLink?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -2181,6 +2183,7 @@ export type TaxFragment = {
   __typename?: 'Tax'
   accountCommunicationConsentText: string
   channelChangeEffectiveNextYearText?: string | null
+  channelChangeEffectiveNextYearTitle?: string | null
   paymentSuccessFeedbackLink?: string | null
 }
 
@@ -2196,6 +2199,7 @@ export type TaxQuery = {
         __typename?: 'Tax'
         accountCommunicationConsentText: string
         channelChangeEffectiveNextYearText?: string | null
+        channelChangeEffectiveNextYearTitle?: string | null
         paymentSuccessFeedbackLink?: string | null
       } | null
     } | null
@@ -2356,6 +2360,7 @@ export const TaxFragmentDoc = gql`
   fragment Tax on Tax {
     accountCommunicationConsentText
     channelChangeEffectiveNextYearText
+    channelChangeEffectiveNextYearTitle
     paymentSuccessFeedbackLink
   }
 `

@@ -16,6 +16,9 @@
       "type": "richtext",
       "required": true
     },
+    "channelChangeEffectiveNextYearTitle": {
+      "type": "string"
+    },
     "channelChangeEffectiveNextYearText": {
       "type": "richtext"
     },

@@ -655,14 +655,7 @@ export interface ApiTaxTax extends Schema.SingleType {
     channelChangeEffectiveNextYearTitle: Attribute.String
     createdAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
-    currentYearTaxInPreparationText: Attribute.RichText
-    currentYearTaxInPreparationTitle: Attribute.String
-    displayCurrentYearTaxInPreparation: Attribute.Boolean &
-      Attribute.Required &
-      Attribute.DefaultTo<false>
-    paymentSuccessFaqLink: Attribute.String
     paymentSuccessFeedbackLink: Attribute.String
-    paymentSuccessPrivacyPolicyLink: Attribute.String
     updatedAt: Attribute.DateTime
     updatedBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
   }

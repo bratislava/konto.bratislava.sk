@@ -31,7 +31,7 @@ export enum GinContactType {
   SELF_EMPLOYED_ENTITY = 'fyz-osoba-osvc', // SZCO
 }
 
-interface GinContactParams {
+export interface GinContactParams {
   email?: string
   firstName?: string
   lastName?: string

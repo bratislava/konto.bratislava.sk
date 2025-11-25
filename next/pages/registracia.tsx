@@ -21,7 +21,6 @@ import { ROUTES } from '../frontend/api/constants'
 import { useOAuthParams } from '../frontend/hooks/useOAuthParams'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { clearOAuthSessionStorage } from '../frontend/utils/amplifyClient'
-import { useAmplifyConfigureByClientId } from '../frontend/utils/AmplifyClientProvider'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import {
@@ -30,6 +29,7 @@ import {
   SafeRedirectType,
 } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
 import { loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
 
 enum RegistrationStatus {
@@ -91,7 +91,7 @@ const RegisterPage = () => {
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
   const { payload, clientId, redirectUri, state } = useOAuthParams()
-  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyConfigureByClientId()
+  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyClientOAuthContext()
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
 import { clearOAuthSessionStorage } from '../../../../frontend/utils/amplifyClient'
-import { useAmplifyConfigureByClientId } from '../../../../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../../../../frontend/utils/general'
+import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
 import { AccountContainer } from '../AccountContainer/AccountContainer'
 
 export const getOAuthClientName = (clientId: string) =>
@@ -12,7 +12,7 @@ export const getOAuthClientName = (clientId: string) =>
   })[clientId] ?? null
 
 const OAuthConfigureContainer = () => {
-  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyConfigureByClientId()
+  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyClientOAuthContext()
 
   const [currentClientId, setCurrentClientId] = useState<string | null>(null)
 

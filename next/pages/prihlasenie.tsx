@@ -19,10 +19,10 @@ import {
   removeAllCookiesAndClearLocalStorage,
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
-import { useAmplifyConfigureByClientId } from '../frontend/utils/AmplifyClientProvider'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { getContinueUrl, handlePostOAuthTokens } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async () => {
@@ -46,7 +46,7 @@ const LoginPage = () => {
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
   const { payload, clientId, redirectUri, state } = useOAuthParams()
-  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyConfigureByClientId()
+  const { isOAuthLogin, amplifyConfigureByClientId } = useAmplifyClientOAuthContext()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 

@@ -3,17 +3,15 @@
 import { Amplify } from 'aws-amplify'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import { CookieStorage, sessionStorage } from 'aws-amplify/utils'
-import { PropsWithChildren, useCallback } from 'react'
+import { createContext, PropsWithChildren, useCallback, useContext } from 'react'
 
 import { useOAuthParams } from '../hooks/useOAuthParams'
 import { amplifyConfig, amplifyLibraryOptions, createAmplifyConfig } from './amplifyConfig'
 
-Amplify.configure(amplifyConfig, amplifyLibraryOptions)
-
-export const useAmplifyConfigureByClientId = () => {
+const useGetContext = () => {
   const { clientId } = useOAuthParams()
 
-  // TODO OAuth: Discuss what should be checked here
+  // TODO OAuth: Discuss what should be considered as oauth login, now we check only if clientId exists in url params
   const isOAuthLogin = !!clientId
 
   const amplifyConfigureByClientId = useCallback(() => {
@@ -37,7 +35,26 @@ export const useAmplifyConfigureByClientId = () => {
   }
 }
 
+export const AmplifyClientOAuthContext = createContext<
+  ReturnType<typeof useGetContext> | undefined
+>(undefined)
+
 // https://docs.amplify.aws/nextjs/build-a-backend/server-side-rendering/#configure-amplify-library-for-client-side-usage
-export default function AmplifyClientProvider({ children }: PropsWithChildren) {
-  return children
+export const AmplifyClientOAuthProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
+
+  return (
+    <AmplifyClientOAuthContext.Provider value={context}>
+      {children}
+    </AmplifyClientOAuthContext.Provider>
+  )
+}
+
+export const useAmplifyClientOAuthContext = () => {
+  const context = useContext(AmplifyClientOAuthContext)
+  if (!context) {
+    throw new Error('useAmplifyClientOauthContext must be used within a AmplifyClientOAuthProvider')
+  }
+
+  return context
 }

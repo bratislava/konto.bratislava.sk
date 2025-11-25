@@ -97,7 +97,8 @@ export const amplifyGetServerSideProps = <
         }
 
         const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
-        // TODO OAuth: Double-check if this condition is enough
+        // TODO OAuth: Double-check if this condition (checking if clientId exists) is enough
+        // TODO OAuth: Since fetchAuthSessionFn runs on server, it returns info about non-oauth sign-in flow, that we can ignore for oauth sign-in flow
         const shouldRedirectNotSignedOut =
           options?.requiresSignOut && isSignedIn && !context.query[clientIdQueryParam]
 

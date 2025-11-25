@@ -7,8 +7,8 @@ import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import cn from '../../../../frontend/cn'
-import { useAmplifyConfigureByClientId } from '../../../../frontend/utils/AmplifyClientProvider'
 import { getLanguageKey } from '../../../../frontend/utils/general'
+import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
 
 interface LoginRegisterNavBarProps {
   className?: string
@@ -41,7 +41,7 @@ export const LoginRegisterNavBar = ({
   const { t } = useTranslation('account')
   const languageKey = getLanguageKey(currentLanguage)
 
-  const { isOAuthLogin } = useAmplifyConfigureByClientId()
+  const { isOAuthLogin } = useAmplifyClientOAuthContext()
 
   const brandLinkHref = isOAuthLogin ? undefined : ROUTES.HOME
 

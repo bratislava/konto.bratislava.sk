@@ -91,7 +91,7 @@ const useGetContext = () => {
     const access_token = accessToken?.toString()
     const id_token = idToken?.toString()
     const refresh_token = refreshToken
-    // TODO OAuth remove tokens from logger
+
     logger.info(`[AUTH] Storing tokens to BE`)
 
     if (!access_token || !refresh_token || !payload) {
@@ -113,7 +113,7 @@ const useGetContext = () => {
           redirect_uri: redirectUri ?? undefined,
           state: state ?? undefined,
         },
-        // TODO OAuth: revisit and check if this is what we wanted
+        // TODO OAuth: revisit and check if using { authStrategy: false } is what we wanted
         { authStrategy: false },
       )
     } catch (error) {

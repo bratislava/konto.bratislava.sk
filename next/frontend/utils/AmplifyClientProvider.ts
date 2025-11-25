@@ -5,6 +5,7 @@ import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import { sessionStorage } from 'aws-amplify/utils'
 import { PropsWithChildren } from 'react'
 
+import { clearOAuthSessionStorage } from './amplifyClient'
 import { amplifyConfig, amplifyLibraryOptions, createAmplifyConfig } from './amplifyConfig'
 import { isBrowser } from './general'
 import { clientIdQueryParam } from './queryParamRedirect'
@@ -19,6 +20,7 @@ if (isBrowser()) {
   if (clientId) {
     Amplify.configure(createAmplifyConfig({ clientId }), amplifyLibraryOptions)
     cognitoUserPoolsTokenProvider.setKeyValueStorage(sessionStorage) // Session storage - for oauth flow
+    clearOAuthSessionStorage()
   }
 }
 

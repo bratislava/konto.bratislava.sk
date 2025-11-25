@@ -60,6 +60,12 @@ module.exports = {
 
     // Turning some lodash rules off
     'lodash/prefer-noop': 'off',
+    "jest/expect-expect": [
+      "warn",
+      {
+        "assertFunctionNames": ["expect", "expectEqualAsJsonStringsWithDates"]
+      }
+    ]
   },
   ignorePatterns: [
     '*.config.*',

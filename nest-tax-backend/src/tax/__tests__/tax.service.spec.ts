@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -7,7 +8,6 @@ import prismaMock from '../../../test/singleton'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import {
@@ -15,11 +15,12 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
 import {
-  ResponseTaxSummaryDetailDto,
+  ResponseRealEstateTaxSummaryDetailDto,
   TaxAvailabilityStatus,
   TaxPaidStatusEnum,
   TaxStatusEnum,
 } from '../dtos/response.tax.dto'
+import { TaxCommunalWasteSubservice } from '../subservices/tax/tax.communal-waste.subservice'
 import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
 import { TaxService } from '../tax.service'
 import * as unifiedTaxUtil from '../utils/unified-tax.util'
@@ -89,6 +90,7 @@ describe('TaxService', () => {
         { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
         TaxRealEstateSubservice,
+        TaxCommunalWasteSubservice,
       ],
     }).compile()
 
@@ -984,7 +986,7 @@ describe('TaxService', () => {
         installmentPayment: {} as any,
         taxAdministrator: null,
         taxPayer: {} as any,
-      } as ResponseTaxSummaryDetailDto
+      } as ResponseRealEstateTaxSummaryDetailDto
 
       const mockImplementation = {
         getTaxDetail: jest.fn().mockResolvedValue(mockTaxDetail),
@@ -1079,7 +1081,7 @@ describe('TaxService', () => {
 
     it('should throw error for unsupported tax type', async () => {
       const thrownError = new HttpException(
-        'Implementation for tax type KO not found',
+        'Implementation for tax type INVALID_TAX_TYPE not found',
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
       jest
@@ -1090,7 +1092,7 @@ describe('TaxService', () => {
         service.getOneTimePaymentGenerator(
           mockTaxPayerWhereUniqueInput,
           2023,
-          TaxType.KO,
+          'INVALID_TAX_TYPE' as TaxType,
           1,
         ),
       ).rejects.toThrow(thrownError)
@@ -1110,8 +1112,6 @@ describe('TaxService', () => {
       ],
       taxPayments: [{ amount: 200, status: PaymentStatus.SUCCESS }],
     }
-
-    const expectedTaxDefinition = getTaxDefinitionByType(TaxType.DZN)
 
     const mockPaymentGeneratorDto = {
       taxId: 1,
@@ -1159,8 +1159,8 @@ describe('TaxService', () => {
       expect(
         unifiedTaxUtil.getTaxDetailPureForInstallmentGenerator,
       ).toHaveBeenCalledWith({
+        taxType: TaxType.DZN,
         taxId: 1,
-        taxDefinition: expectedTaxDefinition,
         taxYear: 2023,
         today: expect.any(Date),
         overallAmount: 1000,
@@ -1175,7 +1175,7 @@ describe('TaxService', () => {
 
     it('should throw error for unsupported tax type', async () => {
       const thrownError = new HttpException(
-        'Implementation for tax type KO not found',
+        'Implementation for tax type INVALID_TAX_TYPE not found',
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
       jest
@@ -1186,7 +1186,7 @@ describe('TaxService', () => {
         service.getInstallmentPaymentGenerator(
           mockTaxPayerWhereUniqueInput,
           2023,
-          TaxType.KO,
+          'INVALID_TAX_TYPE' as TaxType,
           1,
         ),
       ).rejects.toThrow(thrownError)
@@ -1255,3 +1255,5 @@ describe('TaxService', () => {
     })
   })
 })
+
+/* eslint-enable no-secrets/no-secrets */

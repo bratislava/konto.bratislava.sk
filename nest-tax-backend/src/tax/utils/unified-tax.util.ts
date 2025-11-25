@@ -1,10 +1,16 @@
-import { PaymentStatus } from '@prisma/client'
+import { PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-import { TaxDefinition } from '../../tax-definitions/taxDefinitionsTypes'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
+import {
+  GetTaxDetailPureOptions,
+  GetTaxDetailPureResponse,
+  ReplaceQrCodeWithGeneratorDto,
+  TaxTypeToResponseDetailItemizedDto,
+} from '../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto'
 import {
@@ -20,14 +26,7 @@ import {
   ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
-import { generateItemizedRealEstateTaxDetail } from './helpers/tax.helper'
-import {
-  GetTaxDetailPureOptions,
-  GetTaxDetailPureResponse,
-  ReplaceQrCodeWithGeneratorDto,
-} from './types'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -544,10 +543,11 @@ const calculateOneTimePaymentDetails = (options: {
   }
 }
 
-export const getRealEstateTaxDetailPure = (
-  options: GetTaxDetailPureOptions,
-): GetTaxDetailPureResponse => {
+export const getTaxDetailPure = <TTaxType extends TaxType>(
+  options: GetTaxDetailPureOptions<TTaxType>,
+): GetTaxDetailPureResponse<TTaxType> => {
   const {
+    type,
     taxYear,
     today,
     overallAmount,
@@ -556,9 +556,6 @@ export const getRealEstateTaxDetailPure = (
     dateOfValidity,
     installments,
     taxDetails,
-    taxConstructions,
-    taxFlat,
-    taxLand,
     specificSymbol,
     taxPayments,
   } = options
@@ -595,12 +592,10 @@ export const getRealEstateTaxDetailPure = (
     specificSymbol,
   })
 
-  const itemizedDetail: ResponseTaxDetailItemizedDto = {
-    apartmentTotalAmount: taxFlat,
-    groundTotalAmount: taxLand,
-    constructionTotalAmount: taxConstructions,
-    ...generateItemizedRealEstateTaxDetail(taxDetails),
-  }
+  const taxDefinition = getTaxDefinitionByType(type)
+
+  const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
+    taxDefinition.generateItemizedTaxDetail(taxDetails)
 
   return {
     overallPaid,
@@ -614,7 +609,7 @@ export const getRealEstateTaxDetailPure = (
 
 export const getTaxDetailPureForOneTimeGenerator = (options: {
   taxId: number
-  overallAmount: number // suma na zaplatenie
+  overallAmount: number
   taxPayments: {
     amount: number
     status: PaymentStatus
@@ -651,8 +646,8 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
 }
 
 export const getTaxDetailPureForInstallmentGenerator = (options: {
+  taxType: TaxType
   taxId: number
-  taxDefinition: TaxDefinition
   taxYear: number
   today: Date
   overallAmount: number
@@ -666,8 +661,8 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   }[]
 }): PaymentGateURLGeneratorDto => {
   const {
+    taxType,
     taxId,
-    taxDefinition,
     taxYear,
     today,
     overallAmount,
@@ -677,32 +672,37 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     specificSymbol,
     taxPayments,
   } = options
-  const { paymentCalendarThreshold } = taxDefinition
+  const { paymentCalendarThreshold } = getTaxDefinitionByType(taxType)
 
-  // Reuse the existing tax detail calculation
-  const taxDetail = taxDefinition.getTaxDetailPure({
-    taxYear,
-    today,
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
+    }
+  })
+
+  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  const dueDate = calculateDueDate(dateOfValidityDayjs)
+
+  const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,
+    overallPaid,
+    today,
+    taxYear,
     paymentCalendarThreshold,
-    variableSymbol,
-    dateOfValidity,
+    dueDate,
     installments,
-    taxDetails: [], // Not needed for payment generation
-    taxConstructions: 0, // Not needed for payment generation
-    taxFlat: 0, // Not needed for payment generation
-    taxLand: 0, // Not needed for payment generation
+    variableSymbol,
     specificSymbol,
-    taxPayments,
   })
 
   // Check if installment payment is possible
   if (
-    !taxDetail.installmentPayment.isPossible ||
-    !taxDetail.installmentPayment.activeInstallment ||
-    !taxDetail.installmentPayment.installments
+    !installmentPayment.isPossible ||
+    !installmentPayment.activeInstallment ||
+    !installmentPayment.installments
   ) {
-    switch (taxDetail.installmentPayment.reasonNotPossible) {
+    switch (installmentPayment.reasonNotPossible) {
       case InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.ALREADY_PAID,
@@ -730,7 +730,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   }
 
   // Find the active installment details
-  const activeInstallmentInfo = taxDetail.installmentPayment.installments.find(
+  const activeInstallmentInfo = installmentPayment.installments.find(
     (installment) =>
       installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
       installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,

@@ -13,7 +13,7 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
-import { NorisPayment } from '../noris/types/noris.types'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -68,7 +68,7 @@ export class TasksService {
     }[] = []
 
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
-    // this function "updatePaymentsFromNoris" will overwrite the testing taxes payments which is not desired
+    // this function will overwrite the testing taxes payments which is not desired
     if (
       this.configService.getOrThrow<string>(
         'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
@@ -139,7 +139,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData: NorisPayment[] =
+      const norisPaymentData: NorisTaxPayment[] =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(
@@ -412,6 +412,7 @@ export class TasksService {
     } else {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
+        // eslint-disable-next-line no-secrets/no-secrets
         'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
         undefined,
         `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,

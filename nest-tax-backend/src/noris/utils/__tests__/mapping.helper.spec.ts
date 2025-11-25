@@ -1,11 +1,12 @@
+/* eslint-disable no-secrets/no-secrets */
 import { TaxAdministrator } from '@prisma/client'
 
+import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
 import { NorisRealEstateTax } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,
-  mapNorisToRealEstateTaxData,
-  mapNorisToRealEstateTaxDetailData,
+  mapNorisToRealEstateDatabaseDetail,
   mapNorisToTaxAdministratorData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
@@ -131,45 +132,6 @@ describe('mapNorisToTaxAdministratorData', () => {
   })
 })
 
-describe('mapNorisToRealEstateTaxData', () => {
-  const mockNorisData: NorisRealEstateTax = {
-    dan_spolu: '100,50',
-    variabilny_symbol: 'VS123',
-    akt_datum: '2023-01-01',
-    datum_platnosti: new Date('2023-12-31'),
-    cislo_konania: 'CK123',
-    dan_pozemky: '20,00',
-    dan_stavby_SPOLU: '50,25',
-    dan_byty: '30,25',
-  } as NorisRealEstateTax
-
-  it('should map Noris data to Tax data correctly', () => {
-    const result = mapNorisToRealEstateTaxData(mockNorisData, 2023, 1)
-
-    expect(result).toEqual({
-      amount: 10_050,
-      year: 2023,
-      taxPayerId: 1,
-      variableSymbol: 'VS123',
-      dateCreateTax: '2023-01-01',
-      dateTaxRuling: mockNorisData.datum_platnosti,
-      taxId: 'CK123',
-      taxLand: 2000,
-      taxConstructions: 5025,
-      taxFlat: 3025,
-    })
-  })
-
-  it('should convert currency values to integers', () => {
-    const result = mapNorisToRealEstateTaxData(mockNorisData, 2023, 1)
-
-    expect(result.amount).toBe(10_050)
-    expect(result.taxLand).toBe(2000)
-    expect(result.taxConstructions).toBe(5025)
-    expect(result.taxFlat).toBe(3025)
-  })
-})
-
 describe('mapNorisToTaxInstallmentsData', () => {
   const taxId = 1
 
@@ -275,8 +237,6 @@ describe('mapDeliveryMethodToNoris', () => {
 })
 
 describe('mapNorisToRealEstateTaxDetailData', () => {
-  const mockTaxId = 123
-
   const mockNorisTaxPayersData: Partial<NorisRealEstateTax> = {
     // Apartment (byt) related fields
     det_zaklad_dane_byt: '100,50',
@@ -331,52 +291,55 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     det_stavba_DAN_jI: '140,75',
     det_stavba_ZAKLAD_H: '1500,75',
     det_stavba_DAN_H: '150,75',
+
+    dan_pozemky: '66,68',
+    dan_stavby_SPOLU: '421,43',
+    dan_byty: '0,01',
   }
 
   it('should process apartment (byt) tax details correctly', () => {
-    const result = mapNorisToRealEstateTaxDetailData(
+    const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
-    const apartmentEntries = result.filter(
-      (entry) => entry.type === AreaTypesEnum.APARTMENT,
+    const apartmentEntries = result.propertyDetails.filter(
+      (entry) => entry.type === RealEstateTaxPropertyType.APARTMENT,
     )
 
     expect(apartmentEntries).toHaveLength(2) // byt and nebyt
 
     expect(apartmentEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'byt',
       type: AreaTypesEnum.APARTMENT,
       base: 10_050,
       amount: 1050,
-      area: null,
+      area: undefined,
     })
 
     expect(apartmentEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'nebyt',
       type: AreaTypesEnum.APARTMENT,
       base: 20_075,
       amount: 2075,
-      area: null,
+      area: undefined,
     })
+
+    expect(result.taxFlat).toBe(1)
+    expect(result.taxLand).toBe(6668)
+    expect(result.taxConstructions).toBe(42_143)
   })
 
   it('should process ground (pozemky) tax details correctly', () => {
-    const result = mapNorisToRealEstateTaxDetailData(
+    const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
-    const groundEntries = result.filter(
-      (entry) => entry.type === AreaTypesEnum.GROUND,
+    const groundEntries = result.propertyDetails.filter(
+      (entry) => entry.type === RealEstateTaxPropertyType.GROUND,
     )
 
     // Should have entries for all configured ground types that have data
     expect(groundEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'A',
       type: AreaTypesEnum.GROUND,
       base: 30_025,
@@ -385,7 +348,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     })
 
     expect(groundEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'B',
       type: AreaTypesEnum.GROUND,
       base: 40_075,
@@ -394,7 +356,6 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     })
 
     expect(groundEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'C',
       type: AreaTypesEnum.GROUND,
       base: 50_025,
@@ -404,41 +365,37 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
   })
 
   it('should process construction (stavba) tax details correctly', () => {
-    const result = mapNorisToRealEstateTaxDetailData(
+    const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
-    const constructionEntries = result.filter(
-      (entry) => entry.type === AreaTypesEnum.CONSTRUCTION,
+    const constructionEntries = result.propertyDetails.filter(
+      (entry) => entry.type === RealEstateTaxPropertyType.CONSTRUCTION,
     )
 
     expect(constructionEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'A',
       type: AreaTypesEnum.CONSTRUCTION,
       base: 60_025,
       amount: 6025,
-      area: null,
+      area: undefined,
     })
 
     expect(constructionEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'B',
       type: AreaTypesEnum.CONSTRUCTION,
       base: 70_075,
       amount: 7075,
-      area: null,
+      area: undefined,
     })
 
     // Test for special case with 'j' prefix
     expect(constructionEntries).toContainEqual({
-      taxId: mockTaxId,
       areaType: 'jH',
       type: AreaTypesEnum.CONSTRUCTION,
       base: 130_075,
       amount: 13_075,
-      area: null,
+      area: undefined,
     })
   })
 
@@ -449,21 +406,21 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
       det_dan_byty_byt: '10.50', // Using dot instead of comma
     }
 
-    const result = mapNorisToRealEstateTaxDetailData(
+    const result = mapNorisToRealEstateDatabaseDetail(
       invalidData as NorisRealEstateTax,
-      mockTaxId,
     )
     expect(() => result).not.toThrow()
   })
 
   it('should process all configured types for each category', () => {
-    const result = mapNorisToRealEstateTaxDetailData(
+    const result = mapNorisToRealEstateDatabaseDetail(
       mockNorisTaxPayersData as NorisRealEstateTax,
-      mockTaxId,
     )
 
     // Check if we have entries for all configured types that have data
-    const types = result.map((entry) => `${entry.type}-${entry.areaType}`)
+    const types = result.propertyDetails.map(
+      (entry) => `${entry.type}-${entry.areaType}`,
+    )
 
     // Apartment types
     expect(types).toContain(`${AreaTypesEnum.APARTMENT}-byt`)
@@ -480,3 +437,5 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     expect(types).toContain(`${AreaTypesEnum.CONSTRUCTION}-jH`)
   })
 })
+
+/* eslint-enable no-secrets/no-secrets */

@@ -64,6 +64,30 @@ export const InstallmentPaidStatusEnum = {
 export type InstallmentPaidStatusEnum =
   (typeof InstallmentPaidStatusEnum)[keyof typeof InstallmentPaidStatusEnum]
 
+/**
+ * Type of apartment
+ */
+
+export const RealEstateTaxAreaType = {
+  Nonresidential: 'NONRESIDENTIAL',
+  Residential: 'RESIDENTIAL',
+  A: 'A',
+  B: 'B',
+  C: 'C',
+  D: 'D',
+  E: 'E',
+  F: 'F',
+  G: 'G',
+  H: 'H',
+  JH: 'jH',
+  JI: 'jI',
+  Byt: 'byt',
+  Nebyt: 'nebyt',
+} as const
+
+export type RealEstateTaxAreaType =
+  (typeof RealEstateTaxAreaType)[keyof typeof RealEstateTaxAreaType]
+
 export interface RequestAdminCreateTestingTaxDto {
   /**
    * Year of tax
@@ -231,7 +255,7 @@ export interface ResponseApartmentTaxDetailDto {
   /**
    * Type of apartment
    */
-  type: TaxDetailareaType
+  type: RealEstateTaxAreaType
   /**
    * Base of tax in m^2
    */
@@ -242,11 +266,121 @@ export interface ResponseApartmentTaxDetailDto {
   amount: number
 }
 
+export interface ResponseCommunalWasteTaxAddressDetailItemizedDto {
+  /**
+   * Address information
+   */
+  address: ResponseCommunalWasteTaxAddressDto
+  /**
+   * Total tax amount for this address
+   */
+  totalAmount: number
+  /**
+   * Itemized container details
+   */
+  itemizedContainers: Array<ResponseCommunalWasteTaxItemizedAddressDto>
+}
+export interface ResponseCommunalWasteTaxAddressDto {
+  /**
+   * Street name
+   */
+  street: string
+  /**
+   * Orientation number
+   */
+  orientationNumber: string
+}
+export interface ResponseCommunalWasteTaxDetailItemizedDto {
+  /**
+   * Itemized details by address
+   */
+  addressDetail: Array<ResponseCommunalWasteTaxAddressDetailItemizedDto>
+}
+export interface ResponseCommunalWasteTaxItemizedAddressDto {
+  /**
+   * Container volume in liters
+   */
+  containerVolume: number
+  /**
+   * Number of containers
+   */
+  containerCount: number
+  /**
+   * Number of waste disposals
+   */
+  numberOfDisposals: number
+  /**
+   * Unit tax rate (sadzba)
+   */
+  unitRate: number
+  /**
+   * Fee amount (poplatok)
+   */
+  fee: number
+}
+export interface ResponseCommunalWasteTaxSummaryDetailDto {
+  /**
+   * Payment status
+   */
+  paidStatus: TaxPaidStatusEnum
+  /**
+   * Year of tax
+   */
+  year: number
+  /**
+   * Order of tax
+   */
+  order: number
+  /**
+   * Total amount paid
+   */
+  overallPaid: number
+  /**
+   * Total remaining balance
+   */
+  overallBalance: number
+  /**
+   * Total tax amount
+   */
+  overallAmount: number
+  /**
+   * One-time payment details
+   */
+  oneTimePayment: ResponseOneTimePaymentDetailsDto
+  /**
+   * Installment payment details
+   */
+  installmentPayment: ResponseInstallmentPaymentDetailDto
+  /**
+   * Assigned tax administrator
+   */
+  taxAdministrator: ResponseTaxAdministratorDto | null
+  /**
+   * Tax payer data
+   */
+  taxPayer: ResponseTaxPayerReducedDto
+  /**
+   * Type of tax.
+   */
+  type: ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum
+  /**
+   * Itemized details
+   */
+  itemizedDetail: ResponseCommunalWasteTaxDetailItemizedDto
+}
+
+export const ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum = {
+  Ko: 'KO',
+} as const
+
+export type ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum =
+  (typeof ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum)[keyof typeof ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum]
+
 export interface ResponseConstructionTaxDetailDto {
   /**
    * Type of construction
    */
-  type: TaxDetailareaType
+  type: RealEstateTaxAreaType
   /**
    * Base of tax in m^2
    */
@@ -334,7 +468,7 @@ export interface ResponseGroundTaxDetailDto {
   /**
    * Type of area
    */
-  type: TaxDetailareaType
+  type: RealEstateTaxAreaType
   /**
    * Area of taxed ground in m^2
    */
@@ -386,7 +520,7 @@ export interface ResponseInstallmentPaymentDetailDto {
    */
   dueDateLastPayment?: string
   /**
-   * List of exactly 3 installments or none at all
+   * List of 3 or 4 installments depending on tax type (4 for PKO, 3 for others), or none at all
    */
   installments?: Array<ResponseInstallmentItemDto>
   /**
@@ -459,21 +593,7 @@ export const ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum = {
 export type ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum =
   (typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum]
 
-export interface ResponseTaxAdministratorDto {
-  /**
-   * Name of the tax administrator
-   */
-  name: string
-  /**
-   * Phone number of the tax administrator
-   */
-  phoneNumber: string
-  /**
-   * Email address of the tax administrator
-   */
-  email: string
-}
-export interface ResponseTaxDetailItemizedDto {
+export interface ResponseRealEstateTaxDetailItemizedDto {
   /**
    * Total amount of tax for apartment
    */
@@ -499,6 +619,78 @@ export interface ResponseTaxDetailItemizedDto {
    */
   constructionTaxDetail: Array<ResponseConstructionTaxDetailDto>
 }
+export interface ResponseRealEstateTaxSummaryDetailDto {
+  /**
+   * Payment status
+   */
+  paidStatus: TaxPaidStatusEnum
+  /**
+   * Year of tax
+   */
+  year: number
+  /**
+   * Order of tax
+   */
+  order: number
+  /**
+   * Total amount paid
+   */
+  overallPaid: number
+  /**
+   * Total remaining balance
+   */
+  overallBalance: number
+  /**
+   * Total tax amount
+   */
+  overallAmount: number
+  /**
+   * One-time payment details
+   */
+  oneTimePayment: ResponseOneTimePaymentDetailsDto
+  /**
+   * Installment payment details
+   */
+  installmentPayment: ResponseInstallmentPaymentDetailDto
+  /**
+   * Assigned tax administrator
+   */
+  taxAdministrator: ResponseTaxAdministratorDto | null
+  /**
+   * Tax payer data
+   */
+  taxPayer: ResponseTaxPayerReducedDto
+  /**
+   * Type of tax.
+   */
+  type: ResponseRealEstateTaxSummaryDetailDtoTypeEnum
+  /**
+   * Itemized details
+   */
+  itemizedDetail: ResponseRealEstateTaxDetailItemizedDto
+}
+
+export const ResponseRealEstateTaxSummaryDetailDtoTypeEnum = {
+  Dzn: 'DZN',
+} as const
+
+export type ResponseRealEstateTaxSummaryDetailDtoTypeEnum =
+  (typeof ResponseRealEstateTaxSummaryDetailDtoTypeEnum)[keyof typeof ResponseRealEstateTaxSummaryDetailDtoTypeEnum]
+
+export interface ResponseTaxAdministratorDto {
+  /**
+   * Name of the tax administrator
+   */
+  name: string
+  /**
+   * Phone number of the tax administrator
+   */
+  phoneNumber: string
+  /**
+   * Email address of the tax administrator
+   */
+  email: string
+}
 export interface ResponseTaxPayerReducedDto {
   /**
    * Name of taxpayer
@@ -521,57 +713,6 @@ export interface ResponseTaxPayerReducedDto {
    */
   externalId: string | null
 }
-export interface ResponseTaxSummaryDetailDto {
-  /**
-   * Payment status
-   */
-  paidStatus: TaxPaidStatusEnum
-  /**
-   * Year of tax
-   */
-  year: number
-  /**
-   * Order of tax
-   */
-  order: number
-  /**
-   * Type of tax
-   */
-  type: TaxType
-  /**
-   * Total amount paid
-   */
-  overallPaid: number
-  /**
-   * Total remaining balance
-   */
-  overallBalance: number
-  /**
-   * Total tax amount
-   */
-  overallAmount: number
-  /**
-   * Itemized details
-   */
-  itemizedDetail: ResponseTaxDetailItemizedDto
-  /**
-   * One-time payment details
-   */
-  oneTimePayment: ResponseOneTimePaymentDetailsDto
-  /**
-   * Installment payment details
-   */
-  installmentPayment: ResponseInstallmentPaymentDetailDto
-  /**
-   * Assigned tax administrator
-   */
-  taxAdministrator: ResponseTaxAdministratorDto | null
-  /**
-   * Tax payer data
-   */
-  taxPayer: ResponseTaxPayerReducedDto
-}
-
 /**
  * Tax availability status
  */
@@ -586,27 +727,11 @@ export type TaxAvailabilityStatus =
   (typeof TaxAvailabilityStatus)[keyof typeof TaxAvailabilityStatus]
 
 /**
- * Type of apartment
+ * @type TaxControllerV2GetTaxDetailByYearV2200Response
  */
-
-export const TaxDetailareaType = {
-  Nonresidential: 'NONRESIDENTIAL',
-  Residential: 'RESIDENTIAL',
-  A: 'A',
-  B: 'B',
-  C: 'C',
-  D: 'D',
-  E: 'E',
-  F: 'F',
-  G: 'G',
-  H: 'H',
-  JH: 'jH',
-  JI: 'jI',
-  Byt: 'byt',
-  Nebyt: 'nebyt',
-} as const
-
-export type TaxDetailareaType = (typeof TaxDetailareaType)[keyof typeof TaxDetailareaType]
+export type TaxControllerV2GetTaxDetailByYearV2200Response =
+  | ({ type: 'DZN' } & ResponseRealEstateTaxSummaryDetailDto)
+  | ({ type: 'KO' } & ResponseCommunalWasteTaxSummaryDetailDto)
 
 /**
  * Payment status
@@ -635,13 +760,6 @@ export const TaxStatusEnum = {
 
 export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]
 
-export interface UpdateDeliveryMethodsInNorisResponseDto {
-  /**
-   * An array of birth numbers which were added to TaxPayers in this batch.
-   */
-  birthNumbers: Array<string>
-}
-
 /**
  * Type of tax
  */
@@ -653,6 +771,13 @@ export const TaxType = {
 
 export type TaxType = (typeof TaxType)[keyof typeof TaxType]
 
+export interface UpdateDeliveryMethodsInNorisResponseDto {
+  /**
+   * An array of birth numbers which were added to TaxPayers in this batch.
+   */
+  birthNumbers: Array<string>
+}
+
 /**
  * AdminApi - axios parameter creator
  */
@@ -661,14 +786,18 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
+     * @param {string} taxType
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerCreateTestingTax: async (
+      taxType: string,
       requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'taxType' is not null or undefined
+      assertParamExists('adminControllerCreateTestingTax', 'taxType', taxType)
       // verify required parameter 'requestAdminCreateTestingTaxDto' is not null or undefined
       assertParamExists(
         'adminControllerCreateTestingTax',
@@ -689,6 +818,10 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
 
       // authentication apiKey required
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      if (taxType !== undefined) {
+        localVarQueryParameter['taxType'] = taxType
+      }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
@@ -1074,15 +1207,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
+     * @param {string} taxType
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async adminControllerCreateTestingTax(
+      taxType: string,
       requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerCreateTestingTax(
+        taxType,
         requestAdminCreateTestingTaxDto,
         options,
       )
@@ -1324,16 +1460,18 @@ export const AdminApiFactory = function (
     /**
      * Creates a testing tax record with specified details for development and testing purposes
      * @summary Create a testing tax record
+     * @param {string} taxType
      * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminControllerCreateTestingTax(
+      taxType: string,
       requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminControllerCreateTestingTax(requestAdminCreateTestingTaxDto, options)
+        .adminControllerCreateTestingTax(taxType, requestAdminCreateTestingTaxDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1451,16 +1589,18 @@ export class AdminApi extends BaseAPI {
   /**
    * Creates a testing tax record with specified details for development and testing purposes
    * @summary Create a testing tax record
+   * @param {string} taxType
    * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public adminControllerCreateTestingTax(
+    taxType: string,
     requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
     options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminControllerCreateTestingTax(requestAdminCreateTestingTaxDto, options)
+      .adminControllerCreateTestingTax(taxType, requestAdminCreateTestingTaxDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2468,7 +2608,10 @@ export const TaxApiFp = function (configuration?: Configuration) {
       type: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseTaxSummaryDetailDto>
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<TaxControllerV2GetTaxDetailByYearV2200Response>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerV2GetTaxDetailByYearV2(
         year,
@@ -2545,7 +2688,7 @@ export const TaxApiFactory = function (
       order: number,
       type: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseTaxSummaryDetailDto> {
+    ): AxiosPromise<TaxControllerV2GetTaxDetailByYearV2200Response> {
       return localVarFp
         .taxControllerV2GetTaxDetailByYearV2(year, order, type, options)
         .then((request) => request(axios, basePath))

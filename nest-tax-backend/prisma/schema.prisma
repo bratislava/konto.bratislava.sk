@@ -6,6 +6,10 @@ generator client {
   binaryTargets = ["native", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -45,17 +49,15 @@ model Tax {
   taxPayerId                      Int
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
-  order                           Int?  // Will not be null because of set_tax_order() trigger
+  order                           Int? // Will not be null because of set_tax_order() trigger
   variableSymbol                  String
   taxId                           String?
   dateCreateTax                   String?
   dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"
-  taxLand                         Int?
-  taxConstructions                Int?
-  taxFlat                         Int?
   taxPayments                     TaxPayment[]
   taxInstallments                 TaxInstallment[]
-  taxDetails                      TaxDetail[]
+  /// [TaxDetailType]
+  taxDetails                      Json
   lastCheckedPayments             DateTime             @default(now())
   lastCheckedUpdates              DateTime             @default(now())
   deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
@@ -94,19 +96,6 @@ model TaxInstallment {
   text      String?
 }
 
-model TaxDetail {
-  id        Int               @id @default(autoincrement())
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @default(now()) @updatedAt
-  taxId     Int
-  tax       Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
-  type      TaxDetailType
-  areaType  TaxDetailareaType
-  area      String?
-  base      Int
-  amount    Int
-}
-
 model TaxAdministrator {
   id          Int        @id @default(autoincrement())
   createdAt   DateTime   @default(now())
@@ -134,35 +123,12 @@ model Config {
   updatedAt  DateTime @default(now()) @updatedAt
 }
 
-enum TaxDetailType {
-  APARTMENT
-  CONSTRUCTION
-  GROUND
-}
-
 enum TaxPaymentSource {
   CARD
   QRCODE
   BANK_ACCOUNT
   POST
   CASH
-}
-
-enum TaxDetailareaType {
-  NONRESIDENTIAL
-  RESIDENTIAL
-  A
-  B
-  C
-  D
-  E
-  F
-  G
-  H
-  jH
-  jI
-  byt
-  nebyt
 }
 
 enum PaymentStatus {

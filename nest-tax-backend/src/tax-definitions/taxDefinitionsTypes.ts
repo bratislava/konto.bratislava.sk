@@ -1,42 +1,100 @@
-import { TaxType } from '@prisma/client'
+import { PaymentStatus, TaxAdministrator, TaxType } from '@prisma/client'
 
-import { NorisRealEstateTax } from '../noris/types/noris.types'
+import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
 import {
-  RealEstateTaxData,
+  NorisCommunalWasteTax,
+  NorisRealEstateTax,
+} from '../noris/types/noris.types'
+import {
+  CommunalWasteTaxDetail,
   RealEstateTaxDetail,
-} from '../noris/utils/mapping.helper'
+} from '../prisma/json-types'
 import {
-  GetTaxDetailPureOptions,
-  GetTaxDetailPureResponse,
-} from '../tax/utils/types'
+  ResponseActiveInstallmentDto,
+  ResponseCommunalWasteTaxDetailItemizedDto,
+  ResponseInstallmentPaymentDetailDto,
+  ResponseOneTimePaymentDetailsDto,
+  ResponseRealEstateTaxDetailItemizedDto,
+} from '../tax/dtos/response.tax.dto'
+import { QrCodeGeneratorDto } from '../utils/subservices/dtos/qrcode.dto'
 
-export type TaxDefinition = {
+export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
+  [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
+}
+
+// Central type mapping - single source of truth
+export type TaxTypeToNorisData = {
+  [TaxType.DZN]: NorisRealEstateTax
+  [TaxType.KO]: NorisCommunalWasteTax
+}
+
+export type TaxTypeToTaxDetail = {
+  [TaxType.DZN]: RealEstateTaxDetail
+  [TaxType.KO]: CommunalWasteTaxDetail
+}
+
+export type TaxTypeToResponseDetailItemizedDto = {
+  [TaxType.DZN]: ResponseRealEstateTaxDetailItemizedDto
+  [TaxType.KO]: ResponseCommunalWasteTaxDetailItemizedDto
+}
+
+export type GetTaxDetailPureOptions<TTaxType extends TaxType> = {
+  type: TTaxType
+  taxYear: number // daňový rok
+  today: Date // aktuálny dátum
+  overallAmount: number // suma na zaplatenie
+  paymentCalendarThreshold: number // splátková hranica (66 Eur)
+  variableSymbol: string
+  dateOfValidity: Date | null // dátum právoplatnosti
+  installments: { order: number; amount: number }[]
+  taxDetails: TaxTypeToTaxDetail[TTaxType]
+  specificSymbol: string
+  taxPayments: {
+    amount: number
+    status: PaymentStatus
+  }[]
+}
+
+export type GetTaxDetailPureResponse<TTaxType extends TaxType> = {
+  overallPaid: number
+  overallBalance: number
+  overallAmount: number
+  oneTimePayment: ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto>
+  installmentPayment: Omit<
+    ResponseInstallmentPaymentDetailDto,
+    'activeInstallment'
+  > & {
+    activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
+  }
+  itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType]
+}
+
+export type TaxDefinition<TTaxType extends TaxType> = {
   /** Type of tax (DZN, KO, ...) */
-  type: TaxType
+  type: TTaxType
 
   /** Whether this tax type is unique per taxpayer and year */
   isUnique: boolean
 
-  /** Maps Noris tax data into format supported by our database. */
-  mapNorisToTaxData: (
-    data: NorisRealEstateTax,
-    year: number,
-    taxPayerId: number,
-  ) => RealEstateTaxData
+  numberOfInstallments: number
 
   /** Threshold for allowing installment payments (splátková hranica) in eurocents */
   paymentCalendarThreshold: number
 
   /** Maps Noris tax data into detailed tax items. */
   mapNorisToTaxDetailData: (
-    data: NorisRealEstateTax,
-    taxId: number,
-  ) => RealEstateTaxDetail[]
+    data: TaxTypeToNorisData[TTaxType],
+  ) => TaxTypeToTaxDetail[TTaxType]
 
-  /** Returns tax detail in a pure format (used to calculate installments payments). */
-  getTaxDetailPure: (
-    options: GetTaxDetailPureOptions,
-  ) => GetTaxDetailPureResponse
+  generateItemizedTaxDetail: (
+    options: TaxTypeToTaxDetail[TTaxType],
+  ) => TaxTypeToResponseDetailItemizedDto[TTaxType]
+
+  createTestingTaxMock: (
+    norisData: RequestAdminCreateTestingTaxNorisData,
+    taxAdministrator: TaxAdministrator,
+    year: number,
+  ) => TaxTypeToNorisData[TTaxType]
 }
 
-export type TaxDefinitionsMap = Record<TaxType, TaxDefinition>
+export type TaxDefinitionsMap = { [K in TaxType]: TaxDefinition<K> }

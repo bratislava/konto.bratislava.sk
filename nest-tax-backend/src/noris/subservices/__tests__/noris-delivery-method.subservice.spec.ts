@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -796,3 +797,4 @@ describe('NorisDeliveryMethodSubservice', () => {
     })
   })
 })
+/* eslint-enable no-secrets/no-secrets */

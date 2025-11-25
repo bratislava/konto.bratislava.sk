@@ -6,16 +6,17 @@ import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
+  ResponseRealEstateTaxSummaryDetailDto,
   ResponseTaxPayerReducedDto,
-  ResponseTaxSummaryDetailDto,
 } from '../../dtos/response.tax.dto'
 import { getTaxStatus } from '../../utils/helpers/tax.helper'
-import { getRealEstateTaxDetailPure } from '../../utils/unified-tax.util'
+import { getTaxDetailPure } from '../../utils/unified-tax.util'
 import {
   AbstractTaxSubservice,
   specificSymbol,
@@ -25,7 +26,9 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 @Injectable()
-export class TaxRealEstateSubservice extends AbstractTaxSubservice {
+export class TaxRealEstateSubservice extends AbstractTaxSubservice<
+  typeof TaxType.DZN
+> {
   constructor(
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
@@ -39,7 +42,7 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
     birthNumber: string,
     year: number,
     order: number,
-  ): Promise<ResponseTaxSummaryDetailDto> {
+  ): Promise<ResponseRealEstateTaxSummaryDetailDto> {
     const today = dayjs().tz('Europe/Bratislava')
 
     const tax = await this.fetchTaxData(
@@ -51,7 +54,6 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
             taxAdministrator: true,
           },
         },
-        taxDetails: true,
         taxPayments: true,
       },
       year,
@@ -59,7 +61,15 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
       order,
     )
 
-    const detailWithoutQrCode = getRealEstateTaxDetailPure({
+    if (tax.taxDetails.type !== TaxType.DZN) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Tax details type is not DZN: ${tax.taxDetails.type}`,
+      )
+    }
+
+    const detailWithoutQrCode = getTaxDetailPure({
+      type: TaxType.DZN,
       taxYear: +year,
       today: today.toDate(),
       overallAmount: tax.amount,
@@ -68,9 +78,6 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
       taxDetails: tax.taxDetails,
-      taxConstructions: tax.taxConstructions ?? 0,
-      taxFlat: tax.taxFlat ?? 0,
-      taxLand: tax.taxLand ?? 0,
       specificSymbol,
       taxPayments: tax.taxPayments,
     })
@@ -121,7 +128,7 @@ export class TaxRealEstateSubservice extends AbstractTaxSubservice {
       ...detailWithoutQrCode,
       year,
       order,
-      type: TaxType.DZN,
+      type: 'DZN',
       paidStatus,
       oneTimePayment,
       installmentPayment,

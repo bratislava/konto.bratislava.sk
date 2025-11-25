@@ -6,25 +6,21 @@ import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
+  ResponseAnyTaxSummaryDetailDto,
   ResponseGetTaxesListBodyDto,
   ResponseGetTaxesListDto,
-  ResponseTaxSummaryDetailDto,
   TaxAvailabilityStatus,
   TaxStatusEnum,
 } from './dtos/response.tax.dto'
+import { TaxCommunalWasteSubservice } from './subservices/tax/tax.communal-waste.subservice'
 import { TaxRealEstateSubservice } from './subservices/tax/tax.real-estate.subservice'
-import {
-  AbstractTaxSubservice,
-  specificSymbol,
-} from './subservices/tax/tax.subservice.abstract'
+import { specificSymbol } from './subservices/tax/tax.subservice.abstract'
 import {
   checkTaxDateInclusion,
   getExistingTaxStatus,
@@ -47,15 +43,17 @@ export class TaxService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly qrCodeSubservice: QrCodeSubservice,
     private readonly taxRealEstateSubservice: TaxRealEstateSubservice,
+    private readonly taxCommunalWasteSubservice: TaxCommunalWasteSubservice,
   ) {}
 
-  private getImplementationByType(taxType: TaxType): AbstractTaxSubservice {
-    // eslint-disable-next-line sonarjs/no-small-switch
+  private getImplementationByType(taxType: TaxType) {
     switch (taxType) {
       case TaxType.DZN:
         return this.taxRealEstateSubservice
+
+      case TaxType.KO:
+        return this.taxCommunalWasteSubservice
 
       default:
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -126,7 +124,7 @@ export class TaxService {
 
     // TaxPayer is updated only if tax was searched for in Noris
     const taxPayerWasUpdated = taxPayer
-      ? taxPayer.updatedAt.getTime() - taxPayer.createdAt.getTime() > 1000 // 1 second threshold
+      ? taxPayer.updatedAt.getTime() - taxPayer.createdAt.getTime() > 1000 // 1-second threshold
       : false
 
     if (taxes.length === 0) {
@@ -185,7 +183,7 @@ export class TaxService {
     year: number,
     type: TaxType,
     order: number,
-  ): Promise<ResponseTaxSummaryDetailDto> {
+  ): Promise<ResponseAnyTaxSummaryDetailDto> {
     return this.getImplementationByType(type).getTaxDetail(
       birthNumber,
       year,
@@ -217,24 +215,22 @@ export class TaxService {
   async getInstallmentPaymentGenerator(
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
     year: number,
-    type: TaxType,
+    taxType: TaxType,
     order: number,
   ): Promise<PaymentGateURLGeneratorDto> {
     const today = dayjs().tz('Europe/Bratislava').toDate()
 
-    const tax = await this.getImplementationByType(type).fetchTaxData(
+    const tax = await this.getImplementationByType(taxType).fetchTaxData(
       taxPayerWhereUniqueInput,
       { taxInstallments: true, taxPayments: true },
       year,
-      type,
+      taxType,
       order,
     )
 
-    const taxDefinition = getTaxDefinitionByType(type)
-
     return getTaxDetailPureForInstallmentGenerator({
+      taxType,
       taxId: tax.id,
-      taxDefinition,
       taxYear: year,
       today,
       overallAmount: tax.amount,

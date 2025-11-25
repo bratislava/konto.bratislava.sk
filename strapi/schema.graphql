@@ -162,104 +162,6 @@ input ComponentGeneralAlertInput {
   id: ID
 }
 
-type ContentReleasesRelease {
-  actions(filters: ContentReleasesReleaseActionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseActionRelationResponseCollection
-  createdAt: DateTime
-  name: String!
-  releasedAt: DateTime
-  scheduledAt: DateTime
-  timezone: String
-  updatedAt: DateTime
-}
-
-type ContentReleasesReleaseAction {
-  contentType: String!
-  createdAt: DateTime
-  entry: GenericMorph
-  locale: String
-  release: ContentReleasesReleaseEntityResponse
-  type: ENUM_CONTENTRELEASESRELEASEACTION_TYPE!
-  updatedAt: DateTime
-}
-
-type ContentReleasesReleaseActionEntity {
-  attributes: ContentReleasesReleaseAction
-  id: ID
-}
-
-type ContentReleasesReleaseActionEntityResponse {
-  data: ContentReleasesReleaseActionEntity
-}
-
-type ContentReleasesReleaseActionEntityResponseCollection {
-  data: [ContentReleasesReleaseActionEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input ContentReleasesReleaseActionFiltersInput {
-  and: [ContentReleasesReleaseActionFiltersInput]
-  contentType: StringFilterInput
-  createdAt: DateTimeFilterInput
-  id: IDFilterInput
-  locale: StringFilterInput
-  not: ContentReleasesReleaseActionFiltersInput
-  or: [ContentReleasesReleaseActionFiltersInput]
-  release: ContentReleasesReleaseFiltersInput
-  type: StringFilterInput
-  updatedAt: DateTimeFilterInput
-}
-
-input ContentReleasesReleaseActionInput {
-  contentType: String
-  locale: String
-  release: ID
-  type: ENUM_CONTENTRELEASESRELEASEACTION_TYPE
-}
-
-type ContentReleasesReleaseActionRelationResponseCollection {
-  data: [ContentReleasesReleaseActionEntity!]!
-}
-
-type ContentReleasesReleaseEntity {
-  attributes: ContentReleasesRelease
-  id: ID
-}
-
-type ContentReleasesReleaseEntityResponse {
-  data: ContentReleasesReleaseEntity
-}
-
-type ContentReleasesReleaseEntityResponseCollection {
-  data: [ContentReleasesReleaseEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input ContentReleasesReleaseFiltersInput {
-  actions: ContentReleasesReleaseActionFiltersInput
-  and: [ContentReleasesReleaseFiltersInput]
-  createdAt: DateTimeFilterInput
-  id: IDFilterInput
-  name: StringFilterInput
-  not: ContentReleasesReleaseFiltersInput
-  or: [ContentReleasesReleaseFiltersInput]
-  releasedAt: DateTimeFilterInput
-  scheduledAt: DateTimeFilterInput
-  timezone: StringFilterInput
-  updatedAt: DateTimeFilterInput
-}
-
-input ContentReleasesReleaseInput {
-  actions: [ID]
-  name: String
-  releasedAt: DateTime
-  scheduledAt: DateTime
-  timezone: String
-}
-
-type ContentReleasesReleaseRelationResponseCollection {
-  data: [ContentReleasesReleaseEntity!]!
-}
-
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -318,11 +220,6 @@ input DateTimeFilterInput {
   null: Boolean
   or: [DateTime]
   startsWith: DateTime
-}
-
-enum ENUM_CONTENTRELEASESRELEASEACTION_TYPE {
-  publish
-  unpublish
 }
 
 enum ENUM_MUNICIPALSERVICE_COLOR {
@@ -483,7 +380,7 @@ type GeneralRelationResponseCollection {
   data: [GeneralEntity!]!
 }
 
-union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -961,8 +858,6 @@ type MunicipalServicesPageRelationResponseCollection {
 type Mutation {
   """Change user password. Confirm with the current password."""
   changePassword(currentPassword: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
-  createContentReleasesRelease(data: ContentReleasesReleaseInput!): ContentReleasesReleaseEntityResponse
-  createContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!): ContentReleasesReleaseActionEntityResponse
   createForm(data: FormInput!): FormEntityResponse
   createHomepageAnnouncement(data: HomepageAnnouncementInput!): HomepageAnnouncementEntityResponse
   createMunicipalService(data: MunicipalServiceInput!): MunicipalServiceEntityResponse
@@ -976,8 +871,6 @@ type Mutation {
 
   """Create a new user"""
   createUsersPermissionsUser(data: UsersPermissionsUserInput!): UsersPermissionsUserEntityResponse!
-  deleteContentReleasesRelease(id: ID!): ContentReleasesReleaseEntityResponse
-  deleteContentReleasesReleaseAction(id: ID!): ContentReleasesReleaseActionEntityResponse
   deleteForm(id: ID!): FormEntityResponse
   deleteGeneral: GeneralEntityResponse
   deleteHelpPage: HelpPageEntityResponse
@@ -1013,8 +906,6 @@ type Mutation {
   Reset user password. Confirm with a code (resetToken from forgotPassword)
   """
   resetPassword(code: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
-  updateContentReleasesRelease(data: ContentReleasesReleaseInput!, id: ID!): ContentReleasesReleaseEntityResponse
-  updateContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!, id: ID!): ContentReleasesReleaseActionEntityResponse
   updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
   updateForm(data: FormInput!, id: ID!): FormEntityResponse
   updateGeneral(data: GeneralInput!): GeneralEntityResponse
@@ -1057,10 +948,6 @@ enum PublicationState {
 }
 
 type Query {
-  contentReleasesRelease(id: ID): ContentReleasesReleaseEntityResponse
-  contentReleasesReleaseAction(id: ID): ContentReleasesReleaseActionEntityResponse
-  contentReleasesReleaseActions(filters: ContentReleasesReleaseActionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseActionEntityResponseCollection
-  contentReleasesReleases(filters: ContentReleasesReleaseFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseEntityResponseCollection
   form(id: ID): FormEntityResponse
   forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection
   general: GeneralEntityResponse
@@ -1125,7 +1012,7 @@ type Tax {
   createdAt: DateTime
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
-  : Boolean!
+  displayCurrentYearTaxInPreparation: Boolean!
   paymentSuccessFaqLink: String
   paymentSuccessFeedbackLink: String
   paymentSuccessPrivacyPolicyLink: String
@@ -1154,6 +1041,7 @@ input TaxFiltersInput {
   createdAt: DateTimeFilterInput
   currentYearTaxInPreparationText: StringFilterInput
   currentYearTaxInPreparationTitle: StringFilterInput
+  displayCurrentYearTaxInPreparation: BooleanFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
   paymentSuccessFaqLink: StringFilterInput
@@ -1168,6 +1056,7 @@ input TaxInput {
   channelChangeEffectiveNextYearTitle: String
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
+  displayCurrentYearTaxInPreparation: Boolean
   paymentSuccessFaqLink: String
   paymentSuccessFeedbackLink: String
   paymentSuccessPrivacyPolicyLink: String

@@ -1294,6 +1294,7 @@ export type Tax = {
   channelChangeEffectiveNextYearText?: Maybe<Scalars['String']['output']>
   channelChangeEffectiveNextYearTitle?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
+  paymentAlertText?: Maybe<Scalars['String']['output']>
   paymentSuccessFeedbackLink?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
@@ -1313,6 +1314,7 @@ export type TaxInput = {
   accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearTitle?: InputMaybe<Scalars['String']['input']>
+  paymentAlertText?: InputMaybe<Scalars['String']['input']>
   paymentSuccessFeedbackLink?: InputMaybe<Scalars['String']['input']>
 }
 

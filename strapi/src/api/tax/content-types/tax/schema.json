@@ -24,6 +24,9 @@
     },
     "paymentSuccessFeedbackLink": {
       "type": "string"
+    },
+    "paymentAlertText": {
+      "type": "richtext"
     }
   }
 }

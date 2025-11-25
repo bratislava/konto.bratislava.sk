@@ -1010,6 +1010,7 @@ type Tax {
   channelChangeEffectiveNextYearText: String
   channelChangeEffectiveNextYearTitle: String
   createdAt: DateTime
+  paymentAlertText: String
   paymentSuccessFeedbackLink: String
   updatedAt: DateTime
 }
@@ -1036,6 +1037,7 @@ input TaxFiltersInput {
   createdAt: DateTimeFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
+  paymentAlertText: StringFilterInput
   paymentSuccessFeedbackLink: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
@@ -1044,6 +1046,7 @@ input TaxInput {
   accountCommunicationConsentText: String
   channelChangeEffectiveNextYearText: String
   channelChangeEffectiveNextYearTitle: String
+  paymentAlertText: String
   paymentSuccessFeedbackLink: String
 }
 

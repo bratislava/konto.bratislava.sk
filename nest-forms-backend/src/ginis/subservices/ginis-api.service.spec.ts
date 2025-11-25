@@ -504,7 +504,7 @@ describe('GinisAPIService', () => {
     })
   })
 
-  describe('findUpdateContactInContactDatabase', () => {
+  describe('findAndUpdateContactInContactDatabase', () => {
     beforeEach(() => {
       jest
         .spyOn(service['ginis'].gin, 'najdiEsu')
@@ -521,7 +521,7 @@ describe('GinisAPIService', () => {
     it('should search databases in order', async () => {
       const findSpy = jest.spyOn(service['ginis'].gin, 'najdiEsu')
 
-      await (service as any).findUpdateContactInContactDatabase(
+      await (service as any).findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
       )
@@ -541,7 +541,7 @@ describe('GinisAPIService', () => {
     it('should use extended search when extended is true', async () => {
       const findSpy = jest.spyOn(service['ginis'].gin, 'najdiEsu')
 
-      await (service as any).findUpdateContactInContactDatabase(
+      await (service as any).findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
         true,
@@ -567,7 +567,9 @@ describe('GinisAPIService', () => {
       )
       updateSpy.mockResolvedValueOnce('updated-contact-id')
 
-      const result = await (service as any).findUpdateContactInContactDatabase(
+      const result = await (
+        service as any
+      ).findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
       )
@@ -581,7 +583,9 @@ describe('GinisAPIService', () => {
     })
 
     it('should return undefined when contact not found', async () => {
-      const result = await (service as any).findUpdateContactInContactDatabase(
+      const result = await (
+        service as any
+      ).findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
       )
@@ -590,39 +594,39 @@ describe('GinisAPIService', () => {
     })
   })
 
-  describe('findUpdateContactByUri', () => {
+  describe('findAndUpdateContactByUri', () => {
     it('should return undefined when uri is missing', async () => {
-      const result = await (service as any).findUpdateContactByUri({})
+      const result = await (service as any).findAndUpdateContactByUri({})
 
       expect(result).toBeUndefined()
       expect(service['ginis'].gin.najdiEsu).not.toHaveBeenCalled()
     })
 
-    it('should call findUpdateContactInContactDatabase with uri', async () => {
-      const findUpdateSpy = jest
-        .spyOn(service as any, 'findUpdateContactInContactDatabase')
+    it('should call findAndUpdateContactInContactDatabase with uri', async () => {
+      const findAndUpdateSpy = jest
+        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findUpdateContactByUri({
+      const result = await (service as any).findAndUpdateContactByUri({
         uri: 'test-uri',
         email: 'test@example.com',
       })
 
       expect(result).toBe('contact-id')
-      expect(findUpdateSpy).toHaveBeenCalledWith(
+      expect(findAndUpdateSpy).toHaveBeenCalledWith(
         { 'Id-dat-schranky': 'test-uri' },
         { uri: 'test-uri', email: 'test@example.com' },
       )
     })
   })
 
-  describe('findUpdateContactByIdentifier', () => {
+  describe('findAndUpdateContactByIdentifier', () => {
     it('should search by firstName, lastName, and birthNumber', async () => {
-      const findUpdateSpy = jest
-        .spyOn(service as any, 'findUpdateContactInContactDatabase')
+      const findAndUpdateSpy = jest
+        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findUpdateContactByIdentifier({
+      const result = await (service as any).findAndUpdateContactByIdentifier({
         firstName: 'John',
         lastName: 'Doe',
         birthNumber: '001122/3344',
@@ -631,7 +635,7 @@ describe('GinisAPIService', () => {
       })
 
       expect(result).toBe('contact-id')
-      expect(findUpdateSpy).toHaveBeenCalledWith(
+      expect(findAndUpdateSpy).toHaveBeenCalledWith(
         {
           Jmeno: 'John',
           Prijmeni: 'Doe',
@@ -648,11 +652,11 @@ describe('GinisAPIService', () => {
     })
 
     it('should search by name and ico for legal entity', async () => {
-      const findUpdateSpy = jest
-        .spyOn(service as any, 'findUpdateContactInContactDatabase')
+      const findAndUpdateSpy = jest
+        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findUpdateContactByIdentifier({
+      const result = await (service as any).findAndUpdateContactByIdentifier({
         name: 'Company',
         ico: '12345678',
         uri: 'test-uri',
@@ -660,7 +664,7 @@ describe('GinisAPIService', () => {
       })
 
       expect(result).toBe('contact-id')
-      expect(findUpdateSpy).toHaveBeenCalledWith(
+      expect(findAndUpdateSpy).toHaveBeenCalledWith(
         {
           'Obchodni-jmeno': 'Company',
           Ico: '12345678',
@@ -675,19 +679,19 @@ describe('GinisAPIService', () => {
     })
 
     it('should return undefined when no identifier provided', async () => {
-      const result = await (service as any).findUpdateContactByIdentifier({})
+      const result = await (service as any).findAndUpdateContactByIdentifier({})
 
       expect(result).toBeUndefined()
     })
   })
 
-  describe('findUpdateContactByEmail', () => {
+  describe('findAndUpdateContactByEmail', () => {
     it('should search by firstName, lastName, and email', async () => {
-      const findUpdateSpy = jest
-        .spyOn(service as any, 'findUpdateContactInContactDatabase')
+      const findAndUpdateSpy = jest
+        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findUpdateContactByEmail({
+      const result = await (service as any).findAndUpdateContactByEmail({
         firstName: 'John',
         lastName: 'Doe',
         email: 'test@example.com',
@@ -695,7 +699,7 @@ describe('GinisAPIService', () => {
       })
 
       expect(result).toBe('contact-id')
-      expect(findUpdateSpy).toHaveBeenCalledWith(
+      expect(findAndUpdateSpy).toHaveBeenCalledWith(
         {
           Jmeno: 'John',
           Prijmeni: 'Doe',
@@ -712,18 +716,18 @@ describe('GinisAPIService', () => {
     })
 
     it('should search by name and email for legal entity', async () => {
-      const findUpdateSpy = jest
-        .spyOn(service as any, 'findUpdateContactInContactDatabase')
+      const findAndUpdateSpy = jest
+        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findUpdateContactByEmail({
+      const result = await (service as any).findAndUpdateContactByEmail({
         name: 'Company',
         email: 'test@example.com',
         type: GinContactType.LEGAL_ENTITY,
       })
 
       expect(result).toBe('contact-id')
-      expect(findUpdateSpy).toHaveBeenCalledWith(
+      expect(findAndUpdateSpy).toHaveBeenCalledWith(
         {
           'Obchodni-jmeno': 'Company',
           'E-mail': 'test@example.com',
@@ -738,27 +742,27 @@ describe('GinisAPIService', () => {
     })
 
     it('should return undefined when no email provided', async () => {
-      const result = await (service as any).findUpdateContactByEmail({})
+      const result = await (service as any).findAndUpdateContactByEmail({})
 
       expect(result).toBeUndefined()
     })
   })
 
-  describe('findUpdateContact', () => {
+  describe('findAndUpdateContact', () => {
     it('should try uri first, then identifier, then email', async () => {
       const uriSpy = jest
-        .spyOn(service as any, 'findUpdateContactByUri')
+        .spyOn(service as any, 'findAndUpdateContactByUri')
         // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       const identifierSpy = jest
-        .spyOn(service as any, 'findUpdateContactByIdentifier')
+        .spyOn(service as any, 'findAndUpdateContactByIdentifier')
         // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       const emailSpy = jest
-        .spyOn(service as any, 'findUpdateContactByEmail')
+        .spyOn(service as any, 'findAndUpdateContactByEmail')
         .mockResolvedValue('contact-id')
 
-      const result = await service.findUpdateContact({
+      const result = await service.findAndUpdateContact({
         uri: 'test-uri',
         firstName: 'John',
         lastName: 'Doe',
@@ -774,15 +778,15 @@ describe('GinisAPIService', () => {
 
     it('should return immediately when uri search succeeds', async () => {
       const uriSpy = jest
-        .spyOn(service as any, 'findUpdateContactByUri')
+        .spyOn(service as any, 'findAndUpdateContactByUri')
         .mockResolvedValue('contact-id')
       const identifierSpy = jest.spyOn(
         service as any,
-        'findUpdateContactByIdentifier',
+        'findAndUpdateContactByIdentifier',
       )
-      const emailSpy = jest.spyOn(service as any, 'findUpdateContactByEmail')
+      const emailSpy = jest.spyOn(service as any, 'findAndUpdateContactByEmail')
 
-      const result = await service.findUpdateContact({
+      const result = await service.findAndUpdateContact({
         uri: 'test-uri',
         email: 'test@example.com',
       })
@@ -795,19 +799,19 @@ describe('GinisAPIService', () => {
 
     it('should return undefined when all searches fail', async () => {
       jest
-        .spyOn(service as any, 'findUpdateContactByUri')
+        .spyOn(service as any, 'findAndUpdateContactByUri')
         // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       jest
-        .spyOn(service as any, 'findUpdateContactByIdentifier')
+        .spyOn(service as any, 'findAndUpdateContactByIdentifier')
         // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       jest
-        .spyOn(service as any, 'findUpdateContactByEmail')
+        .spyOn(service as any, 'findAndUpdateContactByEmail')
         // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
 
-      const result = await service.findUpdateContact({
+      const result = await service.findAndUpdateContact({
         email: 'test@example.com',
         type: GinContactType.PHYSICAL_ENTITY,
       })
@@ -915,7 +919,7 @@ describe('GinisAPIService', () => {
   describe('upsertContact', () => {
     it('should return existing contact when found', async () => {
       jest
-        .spyOn(service, 'findUpdateContact')
+        .spyOn(service, 'findAndUpdateContact')
         .mockResolvedValue('existing-contact-id')
       const createSpy = jest.spyOn(service, 'createContact')
 
@@ -930,7 +934,7 @@ describe('GinisAPIService', () => {
 
     it('should create contact when not found', async () => {
       jest
-        .spyOn(service, 'findUpdateContact')
+        .spyOn(service, 'findAndUpdateContact')
         // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       jest.spyOn(service, 'createContact').mockResolvedValue('new-contact-id')

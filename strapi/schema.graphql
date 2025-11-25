@@ -1125,7 +1125,7 @@ type Tax {
   createdAt: DateTime
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
-  displayCurrentYearTaxInPreparation: Boolean!
+  : Boolean!
   paymentSuccessFaqLink: String
   paymentSuccessFeedbackLink: String
   paymentSuccessPrivacyPolicyLink: String
@@ -1154,7 +1154,6 @@ input TaxFiltersInput {
   createdAt: DateTimeFilterInput
   currentYearTaxInPreparationText: StringFilterInput
   currentYearTaxInPreparationTitle: StringFilterInput
-  displayCurrentYearTaxInPreparation: BooleanFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
   paymentSuccessFaqLink: StringFilterInput
@@ -1169,7 +1168,6 @@ input TaxInput {
   channelChangeEffectiveNextYearTitle: String
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
-  displayCurrentYearTaxInPreparation: Boolean
   paymentSuccessFaqLink: String
   paymentSuccessFeedbackLink: String
   paymentSuccessPrivacyPolicyLink: String

@@ -1,6 +1,6 @@
 'use client'
 
-import { cityAccountClient } from '@clients/city-account'
+import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { Amplify } from 'aws-amplify'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import { createContext, PropsWithChildren, useContext } from 'react'
@@ -14,6 +14,20 @@ import {
   redirectUriQueryParam,
   stateQueryParam,
 } from './queryParamRedirect'
+
+export const getOAuthClientInfo = (clientId: string) =>
+  (
+    ({
+      '3ei88tn1gkvhfqpfckkd6plopr': {
+        name: 'PAAS_MPA',
+        title: 'PAAS',
+      },
+      '536t828sp4o7gsn3cmg3fbks5i': {
+        name: 'DPB',
+        title: 'start.dpb.sk',
+      },
+    }) satisfies Record<string, { name: LoginClientEnum; title: string }>
+  )[clientId] ?? null
 
 const useGetContext = () => {
   const { clientId, payload, redirectUri, state } = useOAuthParams()
@@ -76,11 +90,14 @@ const useGetContext = () => {
     }
   }
 
+  const clientInfo = clientId ? getOAuthClientInfo(clientId) : null
+
   return {
     isOAuthLogin,
     currentClientId,
     handlePostOAuthTokens,
     getOAuthContinueUrl,
+    clientInfo,
   }
 }
 

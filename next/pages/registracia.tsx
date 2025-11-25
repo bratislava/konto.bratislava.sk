@@ -84,7 +84,7 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens } =
+  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens, clientInfo } =
     useAmplifyClientOAuthContext()
 
   const { t } = useTranslation('account')
@@ -120,17 +120,23 @@ const RegisterPage = () => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
         if (isOAuthLogin) {
+          logger.info(`[AUTH] Proceeding to OAuth login`)
+          logger.info(`[AUTH] Storing tokens to BE`)
           await handlePostOAuthTokens()
+
+          logger.info(`[AUTH] Clearing session`)
           clearOAuthSessionStorage()
 
-          // TODO OAuth: add client name to userControllerUpsertUserAndRecordClient
+          logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
           // This endpoint must be called to register user also to the City Account BE
           await cityAccountClient.userControllerUpsertUserAndRecordClient(
-            { loginClient: LoginClientEnum.CityAccount },
+            // TODO OAuth: Handle missing clientInfo.name
+            { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
+            // TODO OAuth: Double-check if we can correctly use 'authOnly' here
             { authStrategy: 'authOnly' },
           )
-          setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
 
+          setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
           return
         }
 
@@ -309,6 +315,7 @@ const RegisterPage = () => {
         confirmLabel: t('identity_verification_link'),
         onConfirm: async () => {
           // TODO OAuth: handle errors
+          logger.info(`[AUTH] Calling Continue endpoint`)
           await router.push(getOAuthContinueUrl())
         },
       }

@@ -42,7 +42,7 @@ const LoginPage = () => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens } =
+  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens, clientInfo } =
     useAmplifyClientOAuthContext()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
@@ -63,15 +63,17 @@ const LoginPage = () => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         if (isOAuthLogin) {
-          logger.info(`[AUTH] Proceeding to OAuth login (isOAuthLogin=${isOAuthLogin})`)
+          logger.info(`[AUTH] Proceeding to OAuth login`)
+          logger.info(`[AUTH] Storing tokens to BE`)
           await handlePostOAuthTokens()
 
           logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
-          // TODO OAuth: add client name to userControllerUpsertUserAndRecordClient
           // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
           // there might be some cases where user is not there yet.
           await cityAccountClient.userControllerUpsertUserAndRecordClient(
-            { loginClient: LoginClientEnum.CityAccount },
+            // TODO OAuth: Handle missing clientInfo.name
+            { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
+            // TODO OAuth: Double-check if we can correctly use 'authOnly' here
             { authStrategy: 'authOnly' },
           )
 

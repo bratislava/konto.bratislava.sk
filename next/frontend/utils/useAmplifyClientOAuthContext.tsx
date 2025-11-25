@@ -4,10 +4,18 @@ import { cityAccountClient } from '@clients/city-account'
 import { Amplify } from 'aws-amplify'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import { CookieStorage, sessionStorage } from 'aws-amplify/utils'
-import { createContext, PropsWithChildren, useCallback, useContext } from 'react'
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 import { environment } from '../../environment'
 import { useOAuthParams } from '../hooks/useOAuthParams'
+import { clearOAuthSessionStorage } from './amplifyClient'
 import { amplifyConfig, amplifyLibraryOptions, createAmplifyConfig } from './amplifyConfig'
 import logger from './logger'
 import {
@@ -19,6 +27,8 @@ import {
 
 const useGetContext = () => {
   const { clientId, payload, redirectUri, state } = useOAuthParams()
+
+  const [currentClientId, setCurrentClientId] = useState<string | null>(null)
 
   // TODO OAuth: Discuss what should be considered as oauth login, now we check only if clientId exists in url params
   const isOAuthLogin = !!clientId
@@ -37,6 +47,25 @@ const useGetContext = () => {
 
     return currentConfig.Auth?.Cognito.userPoolClientId
   }, [clientId, isOAuthLogin])
+
+  useEffect(() => {
+    const userPoolClientId = amplifyConfigureByClientId()
+    setCurrentClientId(userPoolClientId || null)
+
+    clearOAuthSessionStorage()
+  }, [amplifyConfigureByClientId])
+
+  // TODO OAuth: client info endpoint
+  // const getClientInfo = useCallback(async () => {
+  //   const { data: clientInfo } = await cityAccountClient.oAuth2ControllerInfo(
+  //     payload ?? '',
+  //     clientId ?? undefined,
+  //     redirectUri ?? undefined,
+  //     state ?? undefined,
+  //   )
+  //
+  //   return clientInfo
+  // }, [clientId, payload, redirectUri, state])
 
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
@@ -94,6 +123,7 @@ const useGetContext = () => {
 
   return {
     isOAuthLogin,
+    currentClientId,
     amplifyConfigureByClientId,
     handlePostOAuthTokens,
     getOAuthContinueUrl,

@@ -9,6 +9,7 @@ import { RefObject } from 'react'
 import cn from '../../../../frontend/cn'
 import { getLanguageKey } from '../../../../frontend/utils/general'
 import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
+import OAuthInfo from '../OAuthConfigure/OAuthInfo'
 
 interface LoginRegisterNavBarProps {
   className?: string
@@ -54,27 +55,32 @@ export const LoginRegisterNavBar = ({
       <div
         id="desktop-navbar"
         className={cn(
-          'items-center text-p2',
+          'items-center text-p2 max-lg:hidden',
           'sticky top-0 left-0 z-40 w-full bg-white shadow-default',
           className,
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center lg:flex">
-          {!backButtonHidden && <BackButton />}
-          <Brand
-            className="group"
-            url={brandLinkHref}
-            title={
-              <p
-                className={cn('text-p2 text-font', { 'group-hover:text-gray-600': brandLinkHref })}
-              >
-                {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
-                {t('common:capitalCity')}
-                {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
-              </p>
-            }
-          />
+        <div className="m-auto flex h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between">
+          <div>
+            {!backButtonHidden && <BackButton />}
+            <Brand
+              className="group"
+              url={brandLinkHref}
+              title={
+                <p
+                  className={cn('text-p2 text-font', {
+                    'group-hover:text-gray-600': brandLinkHref,
+                  })}
+                >
+                  {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
+                  {t('common:capitalCity')}
+                  {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
+                </p>
+              }
+            />
+          </div>
+          <OAuthInfo />
         </div>
       </div>
       {/* Mobile */}
@@ -96,6 +102,7 @@ export const LoginRegisterNavBar = ({
               </p>
             }
           />
+          <OAuthInfo />
         </div>
       </div>
       <div className="lg:hidden">

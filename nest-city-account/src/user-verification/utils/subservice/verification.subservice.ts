@@ -3,7 +3,7 @@ import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 import { MagproxyService } from '../../../magproxy/magproxy.service'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
@@ -23,7 +23,6 @@ export class VerificationSubservice {
   private logger: LineLoggerSubservice
 
   constructor(
-    private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard,
     private magproxyService: MagproxyService,
     private databaseSubservice: DatabaseSubserviceUser,
@@ -37,10 +36,20 @@ export class VerificationSubservice {
     identityCard: string
   ): ResponseVerificationIdentityCardDto {
     if (rfoData.datumUmrtia && rfoData.datumUmrtia !== 'unknown' && rfoData.datumUmrtia !== '') {
-      return this.errorMessengerGuard.rfoDeadPerson()
+      return {
+        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        status: 'CustomError',
+        message: 'User is not alive in registry.',
+        errorName: VerificationErrorsEnum.DEAD_PERSON,
+      }
     }
     if (!rfoData.doklady || Object.keys(rfoData.doklady).length === 0) {
-      return this.errorMessengerGuard.birthNumberICInconsistency()
+      return {
+        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        status: 'CustomError',
+        message: 'This identity card number is not matching identity card for birthNumber',
+        errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+      }
     }
     for (const document of rfoData.doklady) {
       if (
@@ -73,7 +82,12 @@ export class VerificationSubservice {
         }
       }
     }
-    return this.errorMessengerGuard.birthNumberICInconsistency()
+    return {
+      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      status: 'CustomError',
+      message: 'This identity card number is not matching identity card for birthNumber',
+      errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+    }
   }
 
   private verifyRpoStatutory(
@@ -85,7 +99,15 @@ export class VerificationSubservice {
     for (const statutoryBody of statutoryBodies ?? []) {
       for (const externalId of statutoryBody.osoba.fyzickaOsoba.externeIds) {
         if (!externalId.typIdentifikatora.nazov) {
-          this.errorMessengerGuard.rpoFieldNotExists('externalId.typIdentifikatora.nazov')
+          // TODO this does nothing.
+          //this.errorMessengerGuard.rpoFieldNotExists('externalId.typIdentifikatora.nazov')
+          // Perhaps we want
+          return {
+            statusCode: HttpStatus.NOT_FOUND,
+            status: 'NotFound',
+            message: `Field externalId.typIdentifikatora.nazov does not exists in RPO object from registry.`,
+            errorName: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS,
+          }
         }
         if (
           externalId.typIdentifikatora.nazov === 'Rodné číslo' &&
@@ -104,7 +126,12 @@ export class VerificationSubservice {
       ico: legalEntity.ico,
       birthNumber: birthNumber,
     })
-    return this.errorMessengerGuard.birthNumberNotExists()
+    return {
+      statusCode: HttpStatus.NOT_FOUND,
+      status: 'NotFound',
+      message: 'Birth number does not exists in registry.',
+      errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+    }
   }
 
   /**
@@ -126,7 +153,12 @@ export class VerificationSubservice {
     ico?: string
   ): Promise<ResponseVerificationIdentityCardDto> {
     if (!isValidBirthNumber(data.birthNumber)) {
-      return this.errorMessengerGuard.birthNumberBadFormat()
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        status: 'CustomError',
+        message: 'Birth number has wrong format.',
+        errorName: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
+      }
     }
 
     // request RFO data and handle exceptions that may be resolved later
@@ -178,7 +210,12 @@ export class VerificationSubservice {
     }
 
     if (!rfoData.data || rfoData.data.length == 0) {
-      return this.errorMessengerGuard.birthNumberNotExists()
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        status: 'NotFound',
+        message: 'Birth number does not exists in registry.',
+        errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+      }
     }
 
     let birthNumberNotExistCounter = 0
@@ -229,7 +266,12 @@ export class VerificationSubservice {
 
     // No RFO response contained birthNumber
     if (birthNumberNotExistCounter == rfoData.data.length) {
-      return this.errorMessengerGuard.birthNumberNotExists()
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        status: 'NotFound',
+        message: 'Birth number does not exists in registry.',
+        errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+      }
     }
 
     const rfoDataDcom = await this.magproxyService.rfoBirthNumberDcom(data.birthNumber)
@@ -245,7 +287,12 @@ export class VerificationSubservice {
     }
 
     if (!rfoDataDcom.data?.rodneCislo) {
-      return this.errorMessengerGuard.birthNumberNotExists()
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        status: 'NotFound',
+        message: 'Birth number does not exists in registry.',
+        errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+      }
     }
 
     const rfoCheckDcom = this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
@@ -283,7 +330,12 @@ export class VerificationSubservice {
     data: RequestBodyVerifyWithRpoDto
   ): Promise<ResponseVerificationIdentityCardDto> {
     if (!isValidBirthNumber(data.birthNumber)) {
-      return this.errorMessengerGuard.birthNumberBadFormat()
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        status: 'CustomError',
+        message: 'Birth number has wrong format.',
+        errorName: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
+      }
     }
 
     const rpoData = await this.magproxyService.rpoIco(data.ico)
@@ -297,7 +349,12 @@ export class VerificationSubservice {
       return rpoData.errorData
     }
     if (!rpoData || !rpoData.data) {
-      return this.errorMessengerGuard.rpoFieldNotExists('ico')
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        status: 'NotFound',
+        message: `Field ico does not exists in RPO object from registry.`,
+        errorName: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS,
+      }
     }
     const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)
     if (verifyStatutory.statusCode !== 200) {

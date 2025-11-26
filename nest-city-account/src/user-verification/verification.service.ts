@@ -19,7 +19,7 @@ import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from './verification.errors.enum'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
@@ -47,7 +47,6 @@ export class VerificationService {
     private cognitoSubservice: CognitoSubservice,
     private databaseSubservice: DatabaseSubserviceUser,
     private nasesService: NasesService,
-    private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard,
     private mailgunSubservice: MailgunSubservice,
     private readonly amqpConnection: AmqpConnection,
@@ -220,11 +219,7 @@ export class VerificationService {
         } catch (error) {
           this.logger.error('Error while sending verification success email: ', error)
         }
-        this.errorMessengerGuard.verificationQueueLog(
-          data.msg.user,
-          verification,
-          newUserData[CognitoUserAttributesEnum.TIER]
-        )
+        this.logger.log({ type: 'ALL GOOD - 200', user: data.msg.user, log: verification, cognitoData: newUserData[CognitoUserAttributesEnum.TIER] })
         return new Nack()
       }
     } else if (
@@ -233,7 +228,7 @@ export class VerificationService {
       verification.errorName === VerificationErrorsEnum.RFO_NOT_RESPONDING ||
       verification.errorName === VerificationErrorsEnum.RFO_ACCESS_ERROR
     ) {
-      this.errorMessengerGuard.verificationQueueError(data.msg.user, verification)
+      this.logger.error({ type: 'Not Verified without error - 200', user : data.msg.user, error: verification })
       const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
@@ -288,7 +283,7 @@ export class VerificationService {
         } catch (error) {
           this.logger.error('Error while sending verification failed email: ', error)
         }
-        this.errorMessengerGuard.verificationQueueError(data.msg.user, verification)
+        this.logger.error({ type: 'Not Verified without error - 200', user: data.msg.user, error: verification })
         return new Nack()
       }
     }

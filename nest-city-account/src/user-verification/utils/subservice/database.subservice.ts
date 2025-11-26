@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 
 import { LegalPerson, User } from '@prisma/client'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { ResponseVerificationIdentityCardDto } from '../../dtos/requests.verification.dto'
 import {
   VerificationErrorsEnum,
@@ -14,7 +14,6 @@ import {
 export class DatabaseSubserviceUser {
   constructor(
     private prisma: PrismaService,
-    private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
@@ -118,7 +117,12 @@ export class DatabaseSubserviceUser {
             },
           })
         }
-        return this.errorMessengerGuard.birthNumberDuplicity()
+        return {
+          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          status: 'custom_error',
+          message: VerificationErrorsResponseEnum.BIRTHNUMBER_IFO_DUPLICITY,
+          errorName: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY,
+        }
       } else {
         const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
         if (user) {
@@ -198,7 +202,13 @@ export class DatabaseSubserviceUser {
               externalId: cognitoUser.idUser,
             },
           })
-          return this.errorMessengerGuard.birthNumberIcoDuplicity()
+          return {
+            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            status: 'custom_error',
+            message:
+              'Duplicity of ICO - birth number pair. This user is already registered with different account.',
+            errorName: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
+          }
         } else {
           await this.prisma.legalPerson.update({
             where: {

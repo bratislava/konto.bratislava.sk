@@ -8,12 +8,13 @@ import {
   RfoIdentityListElement,
   RfoIdentityListSchema,
 } from '../rfo-by-birthnumber/dtos/rfoSchema'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { RpoDataMagproxyDto } from './dtos/magproxy.dto'
 import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ClientsService from '../clients/clients.service'
+import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -37,7 +38,6 @@ export class MagproxyService {
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly errorMessengerGuard: ErrorMessengerGuard,
     private readonly clientsService: ClientsService
   ) {
     if (
@@ -197,7 +197,12 @@ export class MagproxyService {
       .catch(async (error) => {
         if (error.response.status === HttpStatus.UNAUTHORIZED) {
           magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
-          const dataError = this.errorMessengerGuard.azureAdGetTokenTimeout()
+          const dataError = {
+            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            status: 'CustomError',
+            message: 'There is problem with authentication to registry. More details in app logs.',
+            errorName: VerificationErrorsEnum.RFO_ACCESS_ERROR,
+          }
           return {
             statusCode: dataError.statusCode,
             errorData: dataError,
@@ -205,14 +210,25 @@ export class MagproxyService {
           }
         }
         if (error.response.status === HttpStatus.NOT_FOUND) {
-          const dataError = this.errorMessengerGuard.birthNumberNotExists()
+          const dataError = {
+            statusCode: HttpStatus.NOT_FOUND,
+            status: 'NotFound',
+            message: 'Birth number does not exists in registry.',
+            errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+          }
           return {
             statusCode: dataError.statusCode,
             errorData: dataError,
             data: null,
           }
         } else {
-          const dataError = this.errorMessengerGuard.rfoNotResponding(error)
+          this.logger.warn(error.response?.data)
+          const dataError = {
+            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            status: 'CustomError',
+            message: 'There is problem with unexpected registry response. More details in app logs.',
+            errorName: VerificationErrorsEnum.RFO_NOT_RESPONDING,
+          }
           return {
             statusCode: dataError.statusCode,
             errorData: dataError,
@@ -239,7 +255,12 @@ export class MagproxyService {
       .catch(async (error) => {
         if (error.response.status === HttpStatus.UNAUTHORIZED) {
           magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
-          const dataError = this.errorMessengerGuard.azureAdGetTokenTimeout()
+          const dataError = {
+            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            status: 'CustomError',
+            message: 'There is problem with authentication to registry. More details in app logs.',
+            errorName: VerificationErrorsEnum.RFO_ACCESS_ERROR,
+          }
           return {
             statusCode: dataError.statusCode,
             errorData: dataError,
@@ -247,14 +268,24 @@ export class MagproxyService {
           }
         }
         if (error.response.status === HttpStatus.NOT_FOUND) {
-          const dataError = this.errorMessengerGuard.birthNumberNotExists()
+          const dataError = {
+            statusCode: HttpStatus.NOT_FOUND,
+            status: 'NotFound',
+            message: 'Birth number does not exists in registry.',
+            errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+          }
           return {
             statusCode: dataError.statusCode,
             errorData: dataError,
             data: null,
           }
-        } else {
-          const dataError = this.errorMessengerGuard.rpoNotResponding(error)
+        } else {this.logger.warn(error.response?.data)
+          const dataError = {
+            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            status: 'CustomError',
+            message: 'There is problem with unexpected registry response. More details in app logs.',
+            errorName: VerificationErrorsEnum.RPO_NOT_RESPONDING,
+          }
           return {
             statusCode: dataError.statusCode,
             errorData: dataError,

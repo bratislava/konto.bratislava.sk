@@ -1,3 +1,4 @@
+import { LoginClientEnum } from '@clients/city-account'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
@@ -16,6 +17,8 @@ import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
+
+import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
 
 interface Data {
   email: string
@@ -114,6 +117,9 @@ const schema = {
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const { t } = useTranslation('account')
+
+  const { currentClientId, clientInfo } = useAmplifyClientOAuthContext()
+
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
     handleSubmit,
@@ -153,6 +159,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           family_name: data.family_name,
           name: data.name,
           'custom:account_type': data.account_type,
+          'custom:origin_client_id': currentClientId,
+          'custom:origin_client_name': clientInfo?.name ?? LoginClientEnum.CityAccount,
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()

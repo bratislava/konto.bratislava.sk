@@ -117,6 +117,7 @@ const LoginPage = () => {
             pathname: ROUTES.REGISTER,
             query: { ...redirectQueryParams, [loginConfirmSignUpEmailHiddenQueryParam]: email },
           },
+          // TODO OAuth: Keep oauth url params
           // This hides the param from the URL, but it's still accessible in the query object.
           getRouteWithRedirect(ROUTES.REGISTER),
         )

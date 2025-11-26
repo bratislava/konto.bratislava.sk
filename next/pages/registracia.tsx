@@ -284,6 +284,7 @@ const RegisterPage = () => {
         confirmLabel: t('register_success_go_to_login'),
         onConfirm: () =>
           router
+            // TODO OAuth: Keep oauth url params
             .push(getRouteWithRedirect(ROUTES.LOGIN))
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
       }
@@ -301,6 +302,7 @@ const RegisterPage = () => {
         confirmLabel: t('identity_verification_link'),
         onConfirm: () =>
           router
+            // TODO OAuth: Keep oauth url params
             .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
         cancelLabel: t('identity_verification_skip'),
@@ -328,6 +330,7 @@ const RegisterPage = () => {
     //     confirmLabel: t('identity_verification_link'),
     //     onConfirm: () =>
     //       router
+    //         // TODO OAuth: Keep oauth url params
     //         .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
     //         .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
     //   }

@@ -62,8 +62,6 @@ const useGetContext = () => {
     const id_token = idToken?.toString()
     const refresh_token = refreshToken
 
-    logger.info(`[AUTH] Storing tokens to BE`)
-
     if (!access_token || !refresh_token || !payload) {
       logger.error(
         `[AUTH] Missing access_token or refresh_token or payload in handlePostOAuthTokens`,

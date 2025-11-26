@@ -124,17 +124,16 @@ const RegisterPage = () => {
           logger.info(`[AUTH] Storing tokens to BE`)
           await handlePostOAuthTokens()
 
-          logger.info(`[AUTH] Clearing session`)
-          clearOAuthSessionStorage()
-
           logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
           // This endpoint must be called to register user also to the City Account BE
           await cityAccountClient.userControllerUpsertUserAndRecordClient(
             // TODO OAuth: Handle missing clientInfo.name
             { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
-            // TODO OAuth: Double-check if we can correctly use 'authOnly' here
             { authStrategy: 'authOnly' },
           )
+
+          logger.info(`[AUTH] Clearing session`)
+          clearOAuthSessionStorage()
 
           setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
           return

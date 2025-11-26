@@ -73,7 +73,6 @@ const LoginPage = () => {
           await cityAccountClient.userControllerUpsertUserAndRecordClient(
             // TODO OAuth: Handle missing clientInfo.name
             { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
-            // TODO OAuth: Double-check if we can correctly use 'authOnly' here
             { authStrategy: 'authOnly' },
           )
 

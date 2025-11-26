@@ -230,7 +230,7 @@ export class VerificationSubservice {
       const rfoCheck = this.checkIdentityCard(rfoDataSingle, data.identityCard)
 
       if (rfoCheck.statusCode === 200) {
-        let dbResult: ResponseVerificationIdentityCardDto
+        let dbResult: { success: boolean }
         const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
         if (ico) {
           dbResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
@@ -247,8 +247,14 @@ export class VerificationSubservice {
           )
         }
 
-        if (dbResult.statusCode !== 200) {
-          return dbResult
+        if (!dbResult.success) {
+          // FIXME: This is a "do not resuscitate" kind of problem, do not resend to queue
+          return {
+            errorName: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
+            message: 'Db user not created.',
+            status: 'DB no good',
+            statusCode: 400,
+          }
         } else {
           if (!ico) {
             const dbUser = await this.databaseSubservice.findUserByEmailOrExternalId(
@@ -299,7 +305,7 @@ export class VerificationSubservice {
 
     if (rfoCheckDcom.statusCode === 200) {
       const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
-      let dbResultDcom: ResponseVerificationIdentityCardDto
+      let dbResultDcom: { success: boolean }
       if (ico) {
         dbResultDcom = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
           user,
@@ -315,8 +321,14 @@ export class VerificationSubservice {
         )
       }
 
-      if (dbResultDcom.statusCode !== 200) {
-        return dbResultDcom
+      if (!dbResultDcom.success) {
+        // FIXME: This is a "do not resuscitate" kind of problem, do not resend to queue
+        return {
+          errorName: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
+          message: 'Db user not created.',
+          status: 'DB no good',
+          statusCode: 400,
+        }
       } else {
         return rfoCheckDcom
       }

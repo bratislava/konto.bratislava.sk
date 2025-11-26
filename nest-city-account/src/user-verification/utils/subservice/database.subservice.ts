@@ -79,7 +79,7 @@ export class DatabaseSubserviceUser {
     ifo: string | null,
     birthNumber: string,
     oldMagproxyDatabase: number
-  ): Promise<ResponseVerificationIdentityCardDto> {
+  ): Promise<{ success: boolean }> {
     try {
       const checkUser = await this.prisma.user.findUnique({
         where: {
@@ -117,12 +117,7 @@ export class DatabaseSubserviceUser {
             },
           })
         }
-        return {
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'custom_error',
-          message: VerificationErrorsResponseEnum.BIRTHNUMBER_IFO_DUPLICITY,
-          errorName: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY,
-        }
+        return { success: false }
       } else {
         const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
         if (user) {
@@ -153,11 +148,7 @@ export class DatabaseSubserviceUser {
           })
         }
 
-        return {
-          statusCode: 200,
-          status: 'OK',
-          message: 'upserted',
-        }
+        return { success: true }
       }
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -173,7 +164,7 @@ export class DatabaseSubserviceUser {
     cognitoUser: CognitoGetUserData,
     ico: string,
     birthNumber: string
-  ): Promise<ResponseVerificationIdentityCardDto> {
+  ): Promise<{ success: boolean }> {
     try {
       const checkUser = await this.prisma.legalPerson.findUnique({
         where: {
@@ -202,13 +193,7 @@ export class DatabaseSubserviceUser {
               externalId: cognitoUser.idUser,
             },
           })
-          return {
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            status: 'custom_error',
-            message:
-              'Duplicity of ICO - birth number pair. This user is already registered with different account.',
-            errorName: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
-          }
+          return { success: false }
         } else {
           await this.prisma.legalPerson.update({
             where: {
@@ -254,11 +239,7 @@ export class DatabaseSubserviceUser {
         }
       }
 
-      return {
-        statusCode: 200,
-        status: 'OK',
-        message: 'upserted',
-      }
+      return { success: true }
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,

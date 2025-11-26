@@ -320,7 +320,7 @@ export class VerificationService {
         birthNumber,
         0
       )
-      if (response.statusCode !== 200) {
+      if (!response.success) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
@@ -338,7 +338,7 @@ export class VerificationService {
         ico,
         birthNumber
       )
-      if (response.statusCode !== 200) {
+      if (!response.success) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,

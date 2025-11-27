@@ -80,7 +80,8 @@ const getInitialState = (query: ParsedUrlQuery) => {
 
 const RegisterPage = () => {
   const router = useRouter()
-  const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
+  const { safeRedirect, getRouteWithRedirect, redirect, getRedirectQueryParams } =
+    useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
   const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
@@ -271,8 +272,10 @@ const RegisterPage = () => {
         confirmLabel: t('register_success_go_to_login'),
         onConfirm: () =>
           router
-            // TODO OAuth: Keep oauth url params
-            .push(getRouteWithRedirect(ROUTES.LOGIN))
+            .push({
+              pathname: ROUTES.LOGIN,
+              query: { ...getRedirectQueryParams() },
+            })
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
       }
     }
@@ -329,6 +332,7 @@ const RegisterPage = () => {
     }
   }, [
     getOAuthContinueUrl,
+    getRedirectQueryParams,
     getRouteWithRedirect,
     isOAuthLogin,
     redirect,

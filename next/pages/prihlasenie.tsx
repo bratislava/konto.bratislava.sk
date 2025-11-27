@@ -36,7 +36,7 @@ export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 // TODO OAuth: Show partially filled form (username) for oauth instead of redirecting
 const LoginPage = () => {
   const router = useRouter()
-  const { redirect, getRouteWithRedirect, getRedirectQueryParams } = useQueryParamRedirect()
+  const { redirect, getRedirectQueryParams } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
@@ -102,9 +102,11 @@ const LoginPage = () => {
             pathname: ROUTES.REGISTER,
             query: { ...redirectQueryParams, [loginConfirmSignUpEmailHiddenQueryParam]: email },
           },
-          // TODO OAuth: Keep oauth url params
-          // This hides the param from the URL, but it's still accessible in the query object.
-          getRouteWithRedirect(ROUTES.REGISTER),
+          // This hides the email param from the URL, but it's still accessible in the query object.
+          {
+            pathname: ROUTES.REGISTER,
+            query: { ...redirectQueryParams },
+          },
         )
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign in: ${JSON.stringify(nextStep)}`)

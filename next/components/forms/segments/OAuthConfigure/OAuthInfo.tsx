@@ -8,9 +8,9 @@ import { DpbLogoSvg, PaasMpaLogoSvg } from './logos'
 const OAuthClientLogo = ({ clientName }: { clientName: LoginClientEnum }) => {
   switch (clientName) {
     case 'DPB':
-      return <DpbLogoSvg className="size-full" />
+      return <DpbLogoSvg className="h-full w-auto" />
     case 'PAAS_MPA':
-      return <PaasMpaLogoSvg className="size-full" />
+      return <PaasMpaLogoSvg className="h-full w-auto" />
     default:
       return null
   }

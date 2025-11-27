@@ -11,6 +11,7 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
+import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   NorisBaseTaxSchema,
   NorisCommunalWasteTaxSchema,
@@ -119,10 +120,95 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     return [...birthNumbersResult]
   }
 
-  getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(): Promise<{
+  async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    year: number,
+    birthNumbers: string[],
+  ): Promise<{
     updated: number
   }> {
-    throw new Error('Not implemented')
+    let norisData: NorisCommunalWasteTaxGrouped[]
+    try {
+      norisData = await this.getTaxDataByYearAndBirthNumber(year, birthNumbers)
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        'Failed to get taxes from Noris',
+        undefined,
+        undefined,
+        error,
+      )
+    }
+    let count = 0
+
+    const taxDefinitionCommunalWaste = getTaxDefinitionByType(TaxType.KO)
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        norisData.map((norisRecord) => norisRecord.ICO_RC),
+      )
+
+    const taxesExist = await this.prismaService.tax.findMany({
+      select: {
+        id: true,
+        variableSymbol: true,
+      },
+      where: {
+        year,
+        variableSymbol: {
+          in: norisData.map((norisRecord) => norisRecord.variabilny_symbol),
+        },
+        type: TaxType.KO,
+      },
+    })
+    const variableSymbolToTax = new Map(
+      taxesExist.map((tax) => [tax.variableSymbol, tax]),
+    )
+
+    await Promise.all(
+      norisData.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          const taxExists = variableSymbolToTax.get(norisItem.variabilny_symbol)
+          if (!taxExists) {
+            return
+          }
+          try {
+            await this.prismaService.$transaction(async (tx) => {
+              await tx.taxInstallment.deleteMany({
+                where: {
+                  taxId: taxExists.id,
+                },
+              })
+
+              const userFromCityAccount =
+                userDataFromCityAccount[norisItem.ICO_RC] || null
+
+              const tax = await this.insertTaxDataToDatabase(
+                taxDefinitionCommunalWaste,
+                norisItem,
+                year,
+                tx,
+                userFromCityAccount,
+              )
+              if (tax) {
+                count += 1
+              }
+            })
+          } catch (error) {
+            this.logger.error(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                'Failed to update tax in database.',
+                undefined,
+                undefined,
+                error,
+              ),
+            )
+          }
+        }),
+      ),
+    )
+
+    return { updated: count }
   }
 
   /**

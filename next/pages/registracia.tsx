@@ -80,8 +80,7 @@ const getInitialState = (query: ParsedUrlQuery) => {
 
 const RegisterPage = () => {
   const router = useRouter()
-  const { safeRedirect, getRouteWithRedirect, redirect, getRedirectQueryParams } =
-    useQueryParamRedirect()
+  const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
   const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
@@ -272,10 +271,7 @@ const RegisterPage = () => {
         confirmLabel: t('register_success_go_to_login'),
         onConfirm: () =>
           router
-            .push({
-              pathname: ROUTES.LOGIN,
-              query: { ...getRedirectQueryParams() },
-            })
+            .push(getRouteWithRedirect(ROUTES.LOGIN))
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
       }
     }
@@ -292,7 +288,6 @@ const RegisterPage = () => {
         confirmLabel: t('identity_verification_link'),
         onConfirm: () =>
           router
-            // TODO OAuth: Keep oauth url params
             .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
         cancelLabel: t('identity_verification_skip'),
@@ -320,7 +315,6 @@ const RegisterPage = () => {
     //     confirmLabel: t('identity_verification_link'),
     //     onConfirm: () =>
     //       router
-    //         // TODO OAuth: Keep oauth url params
     //         .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
     //         .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
     //   }
@@ -332,7 +326,6 @@ const RegisterPage = () => {
     }
   }, [
     getOAuthContinueUrl,
-    getRedirectQueryParams,
     getRouteWithRedirect,
     isOAuthLogin,
     redirect,

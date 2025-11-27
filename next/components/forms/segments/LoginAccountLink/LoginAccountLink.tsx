@@ -5,17 +5,14 @@ import { ROUTES } from '../../../../frontend/api/constants'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 
 const LoginAccountLink = () => {
-  const { getRedirectQueryParams } = useQueryParamRedirect()
+  const { getRouteWithRedirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
 
   return (
     <AccountLink
       label={t('login_link')}
       description={t('login_description')}
-      href={{
-        pathname: ROUTES.LOGIN,
-        query: { ...getRedirectQueryParams() },
-      }}
+      href={getRouteWithRedirect(ROUTES.LOGIN)}
     />
   )
 }

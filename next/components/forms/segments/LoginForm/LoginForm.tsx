@@ -40,7 +40,7 @@ const schema = {
 }
 
 const LoginForm = ({ onSubmit, error }: Props) => {
-  const { getRedirectQueryParams } = useQueryParamRedirect()
+  const { getRouteWithRedirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
 
   const {
@@ -90,10 +90,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       <AccountLink
         label={t('forgotten_password_link')}
         description={t('forgotten_password_description')}
-        href={{
-          pathname: ROUTES.FORGOTTEN_PASSWORD,
-          query: { ...getRedirectQueryParams() },
-        }}
+        href={getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD)}
       />
       <Button
         className="min-w-full"
@@ -105,10 +102,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       />
       <AccountLink
         label={t('register_link')}
-        href={{
-          pathname: ROUTES.REGISTER,
-          query: { ...getRedirectQueryParams() },
-        }}
+        href={getRouteWithRedirect(ROUTES.REGISTER)}
         description={t('register_description')}
         variant="category"
       />

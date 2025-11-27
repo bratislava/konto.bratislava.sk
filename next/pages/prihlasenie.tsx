@@ -36,7 +36,7 @@ export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 // TODO OAuth: Show partially filled form (username) for oauth instead of redirecting
 const LoginPage = () => {
   const router = useRouter()
-  const { redirect, getRedirectQueryParams } = useQueryParamRedirect()
+  const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
@@ -92,7 +92,6 @@ const LoginPage = () => {
           `[AUTH] User didn't confirm the code in the registration process, requesting sign-up code for email ${email}`,
         )
         await resendSignUpCode({ username: email })
-        const redirectQueryParams = getRedirectQueryParams()
 
         logger.info(
           `[AUTH] Redirecting to registration page for sign up confirmation for email ${email}`,
@@ -100,13 +99,13 @@ const LoginPage = () => {
         await router.push(
           {
             pathname: ROUTES.REGISTER,
-            query: { ...redirectQueryParams, [loginConfirmSignUpEmailHiddenQueryParam]: email },
+            query: {
+              ...getRedirectQueryParams(),
+              [loginConfirmSignUpEmailHiddenQueryParam]: email,
+            },
           },
           // This hides the email param from the URL, but it's still accessible in the query object.
-          {
-            pathname: ROUTES.REGISTER,
-            query: { ...redirectQueryParams },
-          },
+          getRouteWithRedirect(ROUTES.REGISTER),
         )
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign in: ${JSON.stringify(nextStep)}`)

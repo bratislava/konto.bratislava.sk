@@ -41,7 +41,7 @@ const ForgottenPasswordPage = () => {
   )
   const { t } = useTranslation('account')
   const router = useRouter()
-  const { getRedirectQueryParams } = useQueryParamRedirect()
+  const { getRouteWithRedirect } = useQueryParamRedirect()
   const accountContainerRef = useRef<HTMLDivElement>(null)
 
   const handleErrorChange = (error: Error | null) => {
@@ -54,10 +54,7 @@ const ForgottenPasswordPage = () => {
 
   const onConfirm = async () => {
     await router
-      .push({
-        pathname: ROUTES.LOGIN,
-        query: { ...getRedirectQueryParams() },
-      })
+      .push(getRouteWithRedirect(ROUTES.LOGIN))
       .catch((error) => logger.error('Failed redirect', error))
   }
 

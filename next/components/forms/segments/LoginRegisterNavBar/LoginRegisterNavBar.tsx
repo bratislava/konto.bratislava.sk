@@ -62,7 +62,7 @@ export const LoginRegisterNavBar = ({
         ref={desktopNavbarRef}
       >
         <div className="m-auto flex h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between">
-          <div>
+          <div className="flex">
             {!backButtonHidden && <BackButton />}
             <Brand
               className="group"

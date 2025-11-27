@@ -33,6 +33,12 @@ dayjs.extend(timezone)
 
 const bratislavaTimeZone = 'Europe/Bratislava'
 
+const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
+  1: QrPaymentNoteEnum.QR_firstInstallment,
+  2: QrPaymentNoteEnum.QR_secondInstallment,
+  3: QrPaymentNoteEnum.QR_thirdInstallment,
+}
+
 export const stateHolidays = [
   {
     year: 2023,
@@ -261,32 +267,8 @@ const calculateInstallmentAmounts = (
 }
 
 /**
- * Determines installment statuses and remaining amounts based on due dates and payment status.
- *
- * CRITICAL BUSINESS LOGIC - AGGREGATION WITH SUM PRESERVATION:
- * When installments are late, their remaining amounts are set to 0 and aggregated into subsequent installments.
- * This preserves the total sum while preventing payment of late installments individually.
- *
- * Example scenario (as mentioned in CR):
- * - Target tax: 300, Installments: [100, 100, 100]
- * - 1st installment: 50 paid (50 remaining), but LATE
- * - 2nd installment: 0 paid, but also LATE
- * - 3rd installment: 0 paid
- *
- * Individual installment amounts to pay: [50, 100, 100] = 250 total remaining
- *
- * Result after aggregation:
- * - 1st: remainingAmount = 0 (set to 0 because LATE, debt moved forward)
- * - 2nd: remainingAmount = 0 (set to 0 because LATE, debt moved forward)
- * - 3rd: remainingAmount = 250 (receives all unpaid debt: 50 + 100 + 100)
- *
- * Sum check: 0 + 0 + 250 = 250 ✓ (equals total remaining debt)
- *
- * This aggregation ensures that:
- * 1. The sum of remaining amounts always equals the total unpaid debt
- * 2. Late installments cannot be paid individually (remainingAmount = 0)
- * 3. All unpaid amounts are consolidated into the next available installment
- * 4. Users can only pay through the earliest available non-late installment
+ * Determines installment statuses based on due dates and payment status.
+ * Each installment is independent and pays one after another.
  */
 const calculateInstallmentStatus = (
   dueDate: dayjs.Dayjs | undefined,
@@ -309,46 +291,23 @@ const calculateInstallmentStatus = (
     !dueDateSecondInstallmentInFuture &&
     installmentAmounts[1].status !== InstallmentPaidStatusEnum.PAID &&
     installmentAmounts[1].status !== InstallmentPaidStatusEnum.OVER_PAID
+
   // First installment status logic
-  const firstInstallmentStatus =
-    isFirstInstallmentLate || isSecondInstallmentLate
-      ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
-      : installmentAmounts[0].status
-  const firstInstallmentRemainingAmount =
-    isFirstInstallmentLate || isSecondInstallmentLate
-      ? 0
-      : installmentAmounts[0].toPay
+  const firstInstallmentStatus = isFirstInstallmentLate
+    ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
+    : installmentAmounts[0].status
+  const firstInstallmentRemainingAmount = installmentAmounts[0].toPay
 
   // Second installment status logic
-  let secondInstallmentStatus: InstallmentPaidStatusEnum
-  let secondInstallmentRemainingAmount: number
-
-  if (isSecondInstallmentLate) {
-    secondInstallmentStatus = InstallmentPaidStatusEnum.AFTER_DUE_DATE
-    secondInstallmentRemainingAmount = 0
-  } else if (isFirstInstallmentLate) {
-    secondInstallmentStatus = installmentAmounts[0].status
-    secondInstallmentRemainingAmount =
-      installmentAmounts[1].toPay + installmentAmounts[0].toPay
-  } else {
-    secondInstallmentStatus = installmentAmounts[1].status
-    secondInstallmentRemainingAmount = installmentAmounts[1].toPay
-  }
+  const secondInstallmentStatus = isSecondInstallmentLate
+    ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
+    : installmentAmounts[1].status
+  const secondInstallmentRemainingAmount = installmentAmounts[1].toPay
 
   // Third installment status logic
-  let thirdInstallmentStatus: InstallmentPaidStatusEnum
-  let thirdInstallmentRemainingAmount: number
+  const thirdInstallmentStatus = installmentAmounts[2].status
+  const thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
 
-  if (isSecondInstallmentLate) {
-    thirdInstallmentStatus = installmentAmounts[1].status
-    thirdInstallmentRemainingAmount = installmentAmounts.reduce(
-      (agg, i) => i.toPay + agg,
-      0,
-    )
-  } else {
-    thirdInstallmentStatus = installmentAmounts[2].status
-    thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
-  }
   return {
     firstInstallmentStatus,
     firstInstallmentRemainingAmount,
@@ -464,7 +423,8 @@ const calculateInstallmentPaymentDetails = (options: {
   const active = installmentDetails.find(
     (installment) =>
       installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
-      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
+      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID ||
+      installment.status === InstallmentPaidStatusEnum.AFTER_DUE_DATE,
   )
 
   // All valid reasons for no active payment should have been caught before
@@ -476,17 +436,9 @@ const calculateInstallmentPaymentDetails = (options: {
     )
   }
 
-  let paymentNote
-  if (active.installmentNumber === 1) {
-    paymentNote = QrPaymentNoteEnum.QR_firstInstallment
-  } else if (active.installmentNumber === 2) {
-    paymentNote =
-      installmentDetails[0].status === InstallmentPaidStatusEnum.AFTER_DUE_DATE
-        ? QrPaymentNoteEnum.QR_firstSecondInstallment
-        : QrPaymentNoteEnum.QR_secondInstallment
-  } else {
-    paymentNote = QrPaymentNoteEnum.QR_thirdInstallment
-  }
+  const paymentNote =
+    INSTALLMENT_TO_QR_NOTE[active.installmentNumber] ??
+    QrPaymentNoteEnum.QR_thirdInstallment
 
   const activeInstallment = {
     remainingAmount: active.remainingAmount,

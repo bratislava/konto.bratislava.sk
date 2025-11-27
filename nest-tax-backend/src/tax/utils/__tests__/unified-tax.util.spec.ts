@@ -438,7 +438,7 @@ describe('UnifiedTaxUtil', () => {
               draft.installmentPayment.activeInstallment!.remainingAmount = 4400
               draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
               draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
-                QrPaymentNoteEnum.QR_firstSecondInstallment
+                QrPaymentNoteEnum.QR_firstInstallment
             })
 
             expectEqualAsJsonStringsWithDates(output, expected)
@@ -461,7 +461,7 @@ describe('UnifiedTaxUtil', () => {
               draft.installmentPayment.activeInstallment!.remainingAmount = 4399
               draft.installmentPayment.activeInstallment!.qrCode.amount = 4399
               draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
-                QrPaymentNoteEnum.QR_firstSecondInstallment
+                QrPaymentNoteEnum.QR_firstInstallment
               draft.oneTimePayment.type =
                 OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
               draft.oneTimePayment.amount = 6599
@@ -553,7 +553,7 @@ describe('UnifiedTaxUtil', () => {
             draft.installmentPayment.activeInstallment!.remainingAmount = 4400
             draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
             draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
-              QrPaymentNoteEnum.QR_firstSecondInstallment
+              QrPaymentNoteEnum.QR_firstInstallment
           })
 
           expectEqualAsJsonStringsWithDates(output, expected)

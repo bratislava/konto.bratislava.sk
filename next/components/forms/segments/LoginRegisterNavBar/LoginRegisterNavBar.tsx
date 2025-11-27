@@ -89,19 +89,22 @@ export const LoginRegisterNavBar = ({
         className={cn(className, 'sticky top-0 left-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileNavbarRef}
       >
-        <div className="flex h-16 items-center border-b-2 px-8 py-5">
-          {!backButtonHidden && <BackButton />}
-          <Brand
-            url={brandLinkHref}
-            className="mx-auto"
-            title={
-              <p
-                className={cn('text-p2 text-font', { 'group-hover:text-gray-600': brandLinkHref })}
-              >
-                <span className="font-semibold">Bratislava</span>
-              </p>
-            }
-          />
+        <div className="flex h-16 w-full items-center justify-between border-b-2 px-4">
+          <div className="flex">
+            {!backButtonHidden && <BackButton />}
+            <Brand
+              url={brandLinkHref}
+              title={
+                <p
+                  className={cn('text-p2 text-font', {
+                    'group-hover:text-gray-600': brandLinkHref,
+                  })}
+                >
+                  <span className="font-semibold">Bratislava</span>
+                </p>
+              }
+            />
+          </div>
           <OAuthInfo />
         </div>
       </div>

@@ -9,3 +9,5 @@ export class CreateBirthNumbersResponseDto {
   })
   birthNumbers: string[]
 }
+
+export class UpdateDeliveryMethodsInNorisResponseDto extends CreateBirthNumbersResponseDto {}

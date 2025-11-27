@@ -1,6 +1,7 @@
 FROM node:22-slim AS base
 
-# Install dependencies needed for "pdf-to-img" which uses "node-canvas"
+# Install build tools and Python needed for native npm dependencies (e.g., deasync)
+# Note: pdf-to-img v5.0.0+ no longer uses node-canvas, but we keep build tools for other deps, as canvas is still a peer dependency of for example jsdom.
 # https://github.com/Automattic/node-canvas/wiki/Installation%3A-Ubuntu-and-other-Debian-based-systems
 RUN apt-get update && apt-get install -y \
     build-essential \

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
-import { Request } from 'mssql'
+import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
@@ -20,7 +20,11 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
-import { NorisPaymentsDto } from '../noris.dto'
+import { NorisPaymentSchema } from '../types/noris.schema'
+import {
+  NorisPayment,
+  NorisPaymentWithVariableSymbol,
+} from '../types/noris.types'
 import { convertCurrencyToInt } from '../utils/mapping.helper'
 import {
   queryOverpaymentsFromNorisByDateRange,
@@ -28,6 +32,7 @@ import {
   queryPaymentsFromNorisByVariableSymbols,
 } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
+import { NorisValidatorSubservice } from './noris-validator.subservice'
 
 @Injectable()
 export class NorisPaymentSubservice {
@@ -43,19 +48,22 @@ export class NorisPaymentSubservice {
     private readonly prismaService: PrismaService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
+    private readonly norisValidatorSubservice: NorisValidatorSubservice,
   ) {}
 
-  async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
+  async getPaymentDataFromNoris(
+    data: RequestPostNorisPaymentDataLoadDto,
+  ): Promise<NorisPayment[]> {
     const { fromDate, toDate, overPayments, year } = data
 
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('fromDate', fromDate)
-        request.input('toDate', toDate)
-        request.input('overPayments', overPayments ? 1 : 0)
-        request.input('years', year)
+        request.input('fromDate', mssql.SmallDateTime, fromDate)
+        request.input('toDate', mssql.SmallDateTime, toDate)
+        request.input('overPayments', mssql.TinyInt, overPayments ? 1 : 0)
+        request.input('years', mssql.Int, year)
 
         return request.query(queryPaymentsFromNorisByFromToDate)
       },
@@ -69,12 +77,15 @@ export class NorisPaymentSubservice {
         )
       },
     )
-    return norisData.recordset
+    return this.norisValidatorSubservice.validateNorisData(
+      NorisPaymentSchema,
+      norisData.recordset,
+    )
   }
 
   async getPaymentDataFromNorisByVariableSymbols(
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
-  ) {
+  ): Promise<NorisPayment[]> {
     const filteredVariableSymbols = data.variableSymbols.filter(
       (variableSymbol) => {
         if (/^\d+$/.test(variableSymbol)) {
@@ -99,20 +110,24 @@ export class NorisPaymentSubservice {
 
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
         const yearPlaceholders = data.years
           .map((_, index) => `@year${index}`)
           .join(',')
         data.years.forEach((year, index) => {
-          request.input(`year${index}`, year)
+          request.input(`year${index}`, mssql.Int, year)
         })
 
         const variableSymbolsPlaceholders = filteredVariableSymbols
           .map((_, index) => `@variable_symbol${index}`)
           .join(',')
         filteredVariableSymbols.forEach((variableSymbol, index) => {
-          request.input(`variable_symbol${index}`, variableSymbol)
+          request.input(
+            `variable_symbol${index}`,
+            mssql.VarChar(20),
+            variableSymbol,
+          )
         })
 
         return request.query(
@@ -131,18 +146,24 @@ export class NorisPaymentSubservice {
         )
       },
     )
-    return norisData.recordset
+    return this.norisValidatorSubservice.validateNorisData(
+      NorisPaymentSchema,
+      norisData.recordset,
+    )
   }
 
   async updateOverpaymentsDataFromNorisByDateRange(
     data: DateRangeDto,
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const overpaymentsData = await this.connectionService.withConnection(
       async (connection) => {
-        const request = new Request(connection)
+        const request = new mssql.Request(connection)
 
-        request.input('fromDate', data.fromDate)
-        request.input('toDate', data.toDate ?? new Date())
+        request.input('fromDate', mssql.SmallDateTime, data.fromDate)
+        request.input('toDate', mssql.SmallDateTime, data.toDate ?? new Date())
 
         return request.query(queryOverpaymentsFromNorisByDateRange)
       },
@@ -157,18 +178,24 @@ export class NorisPaymentSubservice {
       },
     )
 
-    return this.updatePaymentsFromNorisWithData(overpaymentsData.recordset)
+    const validatedOverpaymentsData =
+      this.norisValidatorSubservice.validateNorisData(
+        NorisPaymentSchema,
+        overpaymentsData.recordset,
+      )
+    return this.updatePaymentsFromNorisWithData(
+      validatedOverpaymentsData,
+      bloomreachSettings,
+    )
   }
 
-  private async createTaxMapByVariableSymbol(
-    norisPaymentData: Partial<NorisPaymentsDto>[],
-  ) {
+  private async createTaxMapByVariableSymbol(norisPaymentData: NorisPayment[]) {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {
           in: norisPaymentData
-            .filter((item) => item.variabilny_symbol !== undefined)
-            .map((item) => item.variabilny_symbol as string),
+            .map((item) => item.variabilny_symbol)
+            .filter((item) => item !== null && item !== undefined),
         },
       },
       include: {
@@ -179,7 +206,10 @@ export class NorisPaymentSubservice {
   }
 
   async updatePaymentsFromNorisWithData(
-    norisPaymentData: Partial<NorisPaymentsDto>[],
+    norisPaymentData: NorisPayment[],
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
@@ -197,6 +227,7 @@ export class NorisPaymentSubservice {
       norisPaymentData,
       taxesDataByVsMap,
       userDataFromCityAccount,
+      bloomreachSettings,
     )
     const created = resultList.filter((item) => item === 'CREATED').length
     const alreadyCreated = resultList.filter(
@@ -217,15 +248,24 @@ export class NorisPaymentSubservice {
     }
   }
 
+  private hasVariableSymbol(
+    payment: NorisPayment,
+  ): payment is NorisPaymentWithVariableSymbol {
+    return (
+      payment.variabilny_symbol !== null && payment.variabilny_symbol !== ''
+    )
+  }
+
   private async processNorisPaymentData(
-    norisPaymentData: Partial<NorisPaymentsDto>[],
+    norisPaymentData: NorisPayment[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ) {
-    const validPayments = norisPaymentData.filter(
-      (norisPayment) =>
-        norisPayment.variabilny_symbol !== undefined &&
-        norisPayment.uhrazeno !== undefined,
+    const validPayments = norisPaymentData.filter((payment) =>
+      this.hasVariableSymbol(payment),
     )
 
     // Step 2: Process each payment separately with concurrency limit
@@ -235,6 +275,7 @@ export class NorisPaymentSubservice {
           norisPayment,
           taxesDataByVsMap,
           userDataFromCityAccount,
+          bloomreachSettings,
         ),
       ),
     )
@@ -244,18 +285,21 @@ export class NorisPaymentSubservice {
   }
 
   private async processIndividualPayment(
-    norisPayment: Partial<NorisPaymentsDto>,
+    norisPayment: NorisPaymentWithVariableSymbol,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ) {
     try {
-      const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol!)
+      const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol)
 
       if (!taxData) {
         return 'NOT_EXIST'
       }
 
-      const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!)
+      const paidFromNoris = this.formatAmount(norisPayment.uhrazeno)
 
       return await this.prismaService.$transaction(async (tx) => {
         // Lock the tax row to prevent concurrent updates
@@ -290,6 +334,7 @@ export class NorisPaymentSubservice {
           taxData,
           createdTaxPayment,
           userDataFromCityAccount,
+          bloomreachSettings,
         )
 
         return 'CREATED'
@@ -315,6 +360,9 @@ export class NorisPaymentSubservice {
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    bloomreachSettings?: {
+      suppressEmail?: boolean
+    },
   ) {
     const userFromCityAccount =
       userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
@@ -325,6 +373,7 @@ export class NorisPaymentSubservice {
           amount: createdTaxPayment.amount,
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
+          suppress_email: bloomreachSettings?.suppressEmail ?? false,
         },
         userFromCityAccount.externalId,
       )

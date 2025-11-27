@@ -5,10 +5,10 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachEventNameEnum,
-  TaxBloomreachDataDto,
-  TaxPaymentBloomreachDataDto,
-  UnpaidTaxReminderBloomreachDataDto,
-} from './bloomreach.dto'
+  TaxBloomreachData,
+  TaxPaymentBloomreachData,
+  UnpaidTaxReminderBloomreachData,
+} from './bloomreach.types'
 
 @Injectable()
 export class BloomreachService {
@@ -70,7 +70,7 @@ export class BloomreachService {
   }
 
   async trackEventTaxPayment(
-    taxPaymentData: TaxPaymentBloomreachDataDto,
+    taxPaymentData: TaxPaymentBloomreachData,
     cognitoId?: string,
   ): Promise<boolean> {
     if (!cognitoId) {
@@ -85,7 +85,7 @@ export class BloomreachService {
   }
 
   async trackEventTax(
-    taxData: TaxBloomreachDataDto,
+    taxData: TaxBloomreachData,
     cognitoId?: string,
   ): Promise<boolean> {
     if (!cognitoId) {
@@ -100,7 +100,7 @@ export class BloomreachService {
   }
 
   async trackEventUnpaidTaxReminder(
-    taxData: UnpaidTaxReminderBloomreachDataDto,
+    taxData: UnpaidTaxReminderBloomreachData,
     cognitoId: string,
   ): Promise<void> {
     await this.trackEvent(

@@ -425,12 +425,25 @@ const basePaymentsQuery = `
         (case 
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
-        ) uhrazeno,
+        ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
         dane21_doklad.specificky_symbol specificky_symbol
     FROM lcs.dane21_doklad as dane21_doklad
     JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
         ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
         AND view_doklad_saldo.uhrazeno > 0
+    LEFT OUTER JOIN (
+        SELECT 
+            dane21_doklad_overpayment.podklad,
+            dane21_doklad_overpayment.rok_podkladu,
+            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+        FROM lcs.dane21_doklad dane21_doklad_overpayment
+        JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
+            ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+        WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+        GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
+    ) overpayment_sum
+        ON overpayment_sum.podklad = dane21_doklad.podklad 
+        AND overpayment_sum.rok_podkladu = dane21_doklad.rok_podkladu
     LEFT OUTER JOIN 
         lcs.dane21_druh_dokladu
         ON
@@ -519,18 +532,24 @@ export const queryOverpaymentsFromNorisByDateRange = `
 `
 
 export const setDeliveryMethodsForUser = `
-    UPDATE lcs.uda_21_organizacia_mag
+    UPDATE org_mag
     SET
-        dkba_stav = @dkba_stav,
-        dkba_datum_suhlasu = @dkba_datum_suhlasu,
-        dkba_sposob_dorucovania = @dkba_sposob_dorucovania
-    WHERE
-        cislo_subjektu IN (
-            SELECT DISTINCT subjekt
-            FROM lcs.dane21_priznanie
-            WHERE podnikatel = 'N' 
-            AND rodne_cislo IN (@birth_numbers)
-        )
+        org_mag.dkba_stav = @dkba_stav,
+        org_mag.dkba_datum_suhlasu = @dkba_datum_suhlasu,
+        org_mag.dkba_sposob_dorucovania = @dkba_sposob_dorucovania
+    OUTPUT
+        inserted.cislo_subjektu
+    FROM lcs.uda_21_organizacia_mag org_mag
+    INNER JOIN lcs.organizace org
+        ON org_mag.cislo_subjektu = org.cislo_subjektu
+    WHERE TRIM(org.ico) IN (@birth_numbers)
+`
+
+export const getBirthNumbersForSubjects = `
+    -- birth numbers are stored in column 'ico'
+    SELECT ico
+    FROM lcs.organizace
+    WHERE cislo_subjektu IN (@subjects)
 `
 
 /**
@@ -552,7 +571,7 @@ export const getCommunalWasteTaxesFromNoris = `
         (case 
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
-        ) uhrazeno,
+        ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,
@@ -672,6 +691,21 @@ export const getCommunalWasteTaxesFromNoris = `
     JOIN lcs.pko21_poplatok poplatok ON nadoba.pko_poplatok = poplatok.cislo_subjektu
     JOIN lcs.subjekty sub_adresa ON sub_adresa.cislo_subjektu = nadoba.adresa
     JOIN lcs.dane21_doklad doklad ON doklad.podklad = poplatok.cislo_subjektu
+
+    LEFT OUTER JOIN (
+        SELECT 
+            dane21_doklad_overpayment.podklad,
+            dane21_doklad_overpayment.rok_podkladu,
+            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+        FROM lcs.dane21_doklad dane21_doklad_overpayment
+        JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
+            ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
+        WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
+        GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
+    ) overpayment_sum
+        ON overpayment_sum.podklad = doklad.podklad 
+        AND overpayment_sum.rok_podkladu = doklad.rok_podkladu
+
     JOIN lcs.organizace_vlastni ov  ON 1=1
     JOIN 
         lcs.dane21_druh_dokladu
@@ -745,6 +779,7 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.dane21_druh_dokladu.typ_dokladu = 'V'AND
         lcs.dane21_druh_dokladu.typ_dane = '4' AND
         doklad.stav_dokladu<>'s' AND
-        doklad.rok_podkladu = @year
+        doklad.rok_podkladu = @year AND
+        (nadoba.objem IS NOT NULL AND nadoba.pocet_nadob IS NOT NULL AND nadoba.pocet_odvozov IS NOT NULL AND nadoba.sadzba_mena IS NOT NULL AND nadoba.suma_uhrada_mena IS NOT NULL AND nadoba.druh_nadoby IS NOT NULL)
 `
 /* eslint-enable no-secrets/no-secrets */

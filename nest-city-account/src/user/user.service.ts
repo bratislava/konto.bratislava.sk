@@ -19,7 +19,12 @@ import {
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { GDPRSubTypeEnum } from '@prisma/client'
-import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
+import { LoginClientEnum } from '@prisma/client'
 
 @Injectable()
 export class UserService {
@@ -63,6 +68,33 @@ export class UserService {
     const user = await this.databaseSubservice.getOrCreateLegalPerson(cognitoUserData)
     const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
+  }
+
+  async recordUserLoginClient(externalId: string, loginClient: LoginClientEnum): Promise<void> {
+    const user = await this.databaseSubservice.getUserByExternalId(externalId)
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        `User not found for Cognito ID: ${externalId}`,
+        `Failed to record login client '${loginClient}' for user with Cognito ID: ${externalId}. User does not exist in database.`
+      )
+    }
+    await this.databaseSubservice.recordUserLoginClient(loginClient, user.id)
+  }
+
+  async recordLegalPersonLoginClient(
+    externalId: string,
+    loginClient: LoginClientEnum
+  ): Promise<void> {
+    const legalPerson = await this.databaseSubservice.getLegalPersonByExternalId(externalId)
+    if (!legalPerson) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        `Legal person not found for Cognito ID: ${externalId}`,
+        `Failed to record login client '${loginClient}' for legal person with Cognito ID: ${externalId}. Legal person does not exist in database.`
+      )
+    }
+    await this.databaseSubservice.recordLegalPersonLoginClient(loginClient, legalPerson.id)
   }
 
   async removeBirthNumber(id: string): Promise<ResponseUserDataDto> {
@@ -248,10 +280,14 @@ export class UserService {
     }
   }
 
-  async getOrCreateUserOrLegalPerson(
-    accountType: CognitoUserAccountTypesEnum,
-    cognitoUserData: CognitoGetUserData
-  ) {
+  /**
+   * Gets or creates user/legal person from Cognito user data as raw database entity
+   *
+   * @param cognitoUserData Cognito user data
+   * @returns raw database entity without additional computed fields
+   */
+  async getOrCreateUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
       const result = await this.databaseSubservice.getOrCreateUser(cognitoUserData, true)
       return result
@@ -263,5 +299,53 @@ export class UserService {
       const result = await this.databaseSubservice.getOrCreateLegalPerson(cognitoUserData)
       return result
     }
+  }
+
+  async getOrCreateUserOrLegalPerson(
+    cognitoUserData: CognitoGetUserData
+  ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      return this.getOrCreateUserData(cognitoUserData)
+    }
+
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      return this.getOrCreateLegalPersonData(cognitoUserData)
+    }
+
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
+  }
+
+  async recordLoginClient(
+    cognitoUserData: CognitoGetUserData,
+    loginClient: LoginClientEnum
+  ): Promise<void> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    const externalId = cognitoUserData.idUser
+
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      await this.recordUserLoginClient(externalId, loginClient)
+      return
+    }
+
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      await this.recordLegalPersonLoginClient(externalId, loginClient)
+      return
+    }
+
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
   }
 }

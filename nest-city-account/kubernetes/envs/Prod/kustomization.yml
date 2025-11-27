@@ -1,6 +1,8 @@
 resources:
   - ../../base
   - secrets/database.secret.yml
+  - ./secrets/oauth2-dpb.secret.yml
+  - ./secrets/oauth2-paas-mpa.secret.yml
 
 generatorOptions:
   disableNameSuffixHash: true

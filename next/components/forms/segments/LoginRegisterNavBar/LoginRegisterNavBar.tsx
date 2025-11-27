@@ -8,6 +8,8 @@ import { RefObject } from 'react'
 
 import cn from '../../../../frontend/cn'
 import { getLanguageKey } from '../../../../frontend/utils/general'
+import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
+import OAuthInfo from '../OAuthConfigure/OAuthInfo'
 
 interface LoginRegisterNavBarProps {
   className?: string
@@ -37,9 +39,13 @@ export const LoginRegisterNavBar = ({
   desktopNavbarRef,
   mobileNavbarRef,
 }: LoginRegisterNavBarProps) => {
+  const { t } = useTranslation('account')
   const languageKey = getLanguageKey(currentLanguage)
 
-  const { t } = useTranslation('account')
+  const { isOAuthLogin } = useAmplifyClientOAuthContext()
+
+  const brandLinkHref = isOAuthLogin ? undefined : ROUTES.HOME
+
   return (
     <div data-cy="navbar" className="contents">
       {/* Desktop */}
@@ -49,25 +55,32 @@ export const LoginRegisterNavBar = ({
       <div
         id="desktop-navbar"
         className={cn(
-          'items-center text-p2',
+          'items-center text-p2 max-lg:hidden',
           'sticky top-0 left-0 z-40 w-full bg-white shadow-default',
           className,
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center lg:flex">
-          {!backButtonHidden && <BackButton />}
-          <Brand
-            className="group"
-            url={ROUTES.HOME}
-            title={
-              <p className="text-p2 text-font group-hover:text-gray-600">
-                {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
-                {t('common:capitalCity')}
-                {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
-              </p>
-            }
-          />
+        <div className="m-auto flex h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between">
+          <div className="flex">
+            {!backButtonHidden && <BackButton />}
+            <Brand
+              className="group"
+              url={brandLinkHref}
+              title={
+                <p
+                  className={cn('text-p2 text-font', {
+                    'group-hover:text-gray-600': brandLinkHref,
+                  })}
+                >
+                  {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
+                  {t('common:capitalCity')}
+                  {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
+                </p>
+              }
+            />
+          </div>
+          <OAuthInfo />
         </div>
       </div>
       {/* Mobile */}
@@ -79,14 +92,17 @@ export const LoginRegisterNavBar = ({
         <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}
           <Brand
-            url={ROUTES.HOME}
+            url={brandLinkHref}
             className="mx-auto"
             title={
-              <p className="text-p2 text-font group-hover:text-gray-600">
+              <p
+                className={cn('text-p2 text-font', { 'group-hover:text-gray-600': brandLinkHref })}
+              >
                 <span className="font-semibold">Bratislava</span>
               </p>
             }
           />
+          <OAuthInfo />
         </div>
       </div>
       <div className="lg:hidden">

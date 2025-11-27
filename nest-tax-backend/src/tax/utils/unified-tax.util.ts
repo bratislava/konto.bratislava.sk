@@ -203,20 +203,25 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
  * Calculates installment payment amounts and their statuses based on overall paid amount.
  *
  * IMPORTANT: The sum of all installments should always equal the total tax amount.
- * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd).
+ * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd, then 4th).
  */
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
 ) => {
-  if (installments.length !== 3) {
+  if (installments.length !== 3 && installments.length !== 4) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
     )
   }
 
-  const amounts = [1, 2, 3].map((order) => {
+  const installmentCount = installments.length
+  const installmentOrders = Array.from(
+    { length: installmentCount },
+    (_, i) => i + 1,
+  )
+  const amounts = installmentOrders.map((order) => {
     const installment = installments.find((item) => item.order === order)
     if (!installment) {
       throw new ThrowerErrorGuard().InternalServerErrorException(

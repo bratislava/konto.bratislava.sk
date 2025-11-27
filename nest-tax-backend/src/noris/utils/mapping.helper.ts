@@ -91,7 +91,7 @@ export const mapNorisToTaxInstallmentsData = (
     ]
   }
 
-  return [
+  const installments = [
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_1),
@@ -111,6 +111,15 @@ export const mapNorisToTaxInstallmentsData = (
       text: data.TXTSPL4_3,
     },
   ]
+  if (data.SPL4_4) {
+    installments.push({
+      taxId,
+      amount: convertCurrencyToInt(data.SPL4_4),
+      order: 4,
+      text: data.TXTSPL4_4,
+    })
+  }
+  return installments
 }
 
 export const mapDeliveryMethodToNoris = (

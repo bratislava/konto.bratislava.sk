@@ -204,6 +204,29 @@ describe('mapNorisToTaxInstallmentsData', () => {
     expect(result[1].amount).toBe(2575)
     expect(result[2].amount).toBe(1550)
   })
+
+  it('should return four installments when SPL4_4 is not empty', () => {
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '25,75',
+      SPL4_1: '10,25',
+      SPL4_3: '15,50',
+      TXTSPL4_1: 'First',
+      TXTSPL4_2: 'Second',
+      TXTSPL4_3: 'Third',
+      SPL4_4: '10,00',
+      TXTSPL4_4: 'Fourth',
+    } as NorisRealEstateTax
+
+    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
+
+    expect(result).toHaveLength(4)
+    expect(result).toContainEqual({
+      taxId: 1,
+      amount: 1000,
+      order: 4,
+      text: 'Fourth',
+    })
+  })
 })
 
 describe('mapDeliveryMethodToNoris', () => {

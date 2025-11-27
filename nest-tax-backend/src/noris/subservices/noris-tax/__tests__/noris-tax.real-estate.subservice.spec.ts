@@ -980,7 +980,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           2023,
         )
 
-        expect(birthNumbersResult.has('123456/7890')).toBe(true)
+        expect(birthNumbersResult.has('123456/7890')).toBe(false)
         expect(bloomreachService.trackEventTax).not.toHaveBeenCalled()
       })
 

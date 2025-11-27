@@ -13,7 +13,6 @@ import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import {
-  clearOAuthSessionStorage,
   removeAllCookiesAndClearLocalStorage,
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
@@ -42,8 +41,7 @@ const LoginPage = () => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens, clientInfo } =
-    useAmplifyClientOAuthContext()
+  const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
 
   // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
@@ -64,20 +62,7 @@ const LoginPage = () => {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         if (isOAuthLogin) {
           logger.info(`[AUTH] Proceeding to OAuth login`)
-          logger.info(`[AUTH] Storing tokens to BE`)
-          await handlePostOAuthTokens()
-
-          logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
-          // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
-          // there might be some cases where user is not there yet.
-          await cityAccountClient.userControllerUpsertUserAndRecordClient(
-            // TODO OAuth: Handle missing clientInfo.name
-            { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
-            { authStrategy: 'authOnly' },
-          )
-
-          logger.info(`[AUTH] Clearing session`)
-          clearOAuthSessionStorage()
+          await handleOAuthLogin()
 
           logger.info(`[AUTH] Calling Continue endpoint`)
           // TODO OAuth: handle errors

@@ -18,7 +18,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { clearOAuthSessionStorage } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
@@ -84,8 +83,7 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, getOAuthContinueUrl, handlePostOAuthTokens, clientInfo } =
-    useAmplifyClientOAuthContext()
+  const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -121,19 +119,7 @@ const RegisterPage = () => {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
         if (isOAuthLogin) {
           logger.info(`[AUTH] Proceeding to OAuth login`)
-          logger.info(`[AUTH] Storing tokens to BE`)
-          await handlePostOAuthTokens()
-
-          logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
-          // This endpoint must be called to register user also to the City Account BE
-          await cityAccountClient.userControllerUpsertUserAndRecordClient(
-            // TODO OAuth: Handle missing clientInfo.name
-            { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
-            { authStrategy: 'authOnly' },
-          )
-
-          logger.info(`[AUTH] Clearing session`)
-          clearOAuthSessionStorage()
+          await handleOAuthLogin()
 
           setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
           return

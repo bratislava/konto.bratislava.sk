@@ -7,6 +7,7 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { environment } from '../../environment'
 import { useOAuthParams } from '../hooks/useOAuthParams'
+import { clearOAuthSessionStorage } from './amplifyClient'
 import logger from './logger'
 import {
   clientIdQueryParam,
@@ -36,6 +37,8 @@ const useGetContext = () => {
   const isOAuthLogin = !!clientId
 
   const currentClientId = Amplify.getConfig().Auth?.Cognito.userPoolClientId
+
+  const clientInfo = clientId ? getOAuthClientInfo(clientId) : null
 
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
@@ -88,14 +91,29 @@ const useGetContext = () => {
     }
   }
 
-  const clientInfo = clientId ? getOAuthClientInfo(clientId) : null
+  const handleOAuthLogin = async () => {
+    logger.info(`[AUTH] Storing tokens to BE`)
+    await handlePostOAuthTokens()
+
+    logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
+    // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
+    // there might be some cases where user is not there yet.
+    await cityAccountClient.userControllerUpsertUserAndRecordClient(
+      // TODO OAuth: Handle missing clientInfo.name
+      { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
+      { authStrategy: 'authOnly' },
+    )
+
+    logger.info(`[AUTH] Clearing session`)
+    clearOAuthSessionStorage()
+  }
 
   return {
     isOAuthLogin,
     currentClientId,
-    handlePostOAuthTokens,
-    getOAuthContinueUrl,
     clientInfo,
+    getOAuthContinueUrl,
+    handleOAuthLogin,
   }
 }
 

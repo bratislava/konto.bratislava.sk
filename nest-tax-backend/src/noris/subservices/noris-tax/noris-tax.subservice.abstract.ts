@@ -5,15 +5,18 @@ import pLimit from 'p-limit'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import {
   TaxDefinition,
   TaxTypeToNorisData,
 } from '../../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
+import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   convertCurrencyToInt,
   mapNorisToDatabaseBaseTax,
@@ -21,6 +24,7 @@ import {
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from '../../utils/mapping.helper'
+import { NorisPaymentSubservice } from '../noris-payment.subservice'
 
 export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   protected readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
@@ -33,7 +37,22 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly bloomreachService: BloomreachService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
     protected readonly logger: LineLoggerSubservice,
+    protected readonly cityAccountSubservice: CityAccountSubservice,
+    protected readonly paymentSubservice: NorisPaymentSubservice,
   ) {}
+
+  /**
+   * Gets the tax definition for this tax type.
+   */
+  protected getTaxDefinition(): TaxDefinition<TTaxType> {
+    return getTaxDefinitionByType(this.getTaxType())
+  }
+
+  /**
+   * Gets the tax type for this subservice.
+   * Must be implemented by subclasses.
+   */
+  protected abstract getTaxType(): TTaxType
 
   /**
    * Gets the tax data from Noris for given birth numbers and year.
@@ -47,6 +66,46 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     birthNumbers: string[],
   ): Promise<TaxTypeToNorisData[TTaxType][]>
 
+  private async filterNorisDataNotInDatabase(
+    norisData: TaxTypeToNorisData[TTaxType][],
+    year: number,
+  ): Promise<TaxTypeToNorisData[TTaxType][]> {
+    const taxDefinition = this.getTaxDefinition()
+    const selectQuery = taxDefinition.isUnique
+      ? {
+          taxPayer: {
+            select: {
+              birthNumber: true,
+            },
+          },
+        }
+      : {
+          variableSymbol: true,
+        }
+    const taxesExist = await this.prismaService.tax.findMany({
+      select: selectQuery,
+      where: {
+        year: +year,
+        taxPayer: {
+          birthNumber: {
+            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
+          },
+        },
+        type: taxDefinition.type,
+      },
+    })
+    const existingTaxIdentifiers = new Set(
+      taxDefinition.isUnique
+        ? taxesExist.map((tax) => tax.taxPayer.birthNumber)
+        : taxesExist.map((tax) => tax.variableSymbol),
+    )
+    return norisData.filter((norisItem) =>
+      taxDefinition.isUnique
+        ? !existingTaxIdentifiers.has(norisItem.ICO_RC)
+        : !existingTaxIdentifiers.has(norisItem.variabilny_symbol),
+    )
+  }
+
   /**
    * Processes the tax data from Noris to insert into the database.
    *
@@ -54,10 +113,43 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    * @param year - Year of the taxes
    * @returns Birth numbers of the tax payers that were processed
    */
-  abstract processNorisTaxData(
+  async processNorisTaxData(
     norisData: TaxTypeToNorisData[TTaxType][],
     year: number,
-  ): Promise<string[]>
+  ): Promise<string[]> {
+    const birthNumbersResult: Set<string> = new Set()
+
+    this.logger.log(`Data loaded from noris - count ${norisData.length}`)
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        norisData.map((norisRecord) => norisRecord.ICO_RC),
+      )
+
+    const taxDefinition = this.getTaxDefinition()
+    const norisDataNotInDatabase = await this.filterNorisDataNotInDatabase(
+      norisData,
+      year,
+    )
+    await Promise.all(
+      norisDataNotInDatabase.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          await this.processTaxRecordFromNoris(
+            taxDefinition,
+            birthNumbersResult,
+            norisItem,
+            userDataFromCityAccount,
+            year,
+          )
+        }),
+      ),
+    )
+
+    // Add the payments for these added taxes to database
+    await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
+
+    return [...birthNumbersResult]
+  }
 
   /**
    * Gets the tax data from Noris and updates the existing records in the database.
@@ -66,10 +158,120 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    * @param birthNumbers - Birth numbers of the tax payers to update
    * @returns Number of records that were updated
    */
-  abstract getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+  async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     year: number,
     birthNumbers: string[],
-  ): Promise<{ updated: number }>
+  ): Promise<{ updated: number }> {
+    let norisData: TaxTypeToNorisData[TTaxType][]
+    try {
+      norisData = await this.getTaxDataByYearAndBirthNumber(year, birthNumbers)
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        'Failed to get taxes from Noris',
+        undefined,
+        undefined,
+        error,
+      )
+    }
+    let count = 0
+
+    const taxDefinition = this.getTaxDefinition()
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        norisData.map((norisRecord) => norisRecord.ICO_RC),
+      )
+
+    // Query existing taxes - use birthNumber for unique taxes, variableSymbol for non-unique
+    const selectQuery = taxDefinition.isUnique
+      ? {
+          id: true,
+          taxPayer: {
+            select: {
+              birthNumber: true,
+            },
+          },
+        }
+      : {
+          id: true,
+          variableSymbol: true,
+        }
+
+    const whereCondition = taxDefinition.isUnique
+      ? {
+          taxPayer: {
+            birthNumber: {
+              in: norisData.map((norisRecord) => norisRecord.ICO_RC),
+            },
+          },
+        }
+      : {
+          variableSymbol: {
+            in: norisData.map((norisRecord) => norisRecord.variabilny_symbol),
+          },
+        }
+
+    const taxesExist = await this.prismaService.tax.findMany({
+      select: selectQuery,
+      where: { ...whereCondition, year, type: taxDefinition.type },
+    })
+
+    const taxIdentifierToTax = new Map(
+      taxDefinition.isUnique
+        ? taxesExist.map((tax) => [tax.taxPayer.birthNumber, tax])
+        : taxesExist.map((tax) => [tax.variableSymbol, tax]),
+    )
+
+    await Promise.all(
+      norisData.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
+          const taxIdentifier = taxDefinition.isUnique
+            ? norisItem.ICO_RC
+            : norisItem.variabilny_symbol
+          const taxExists = taxIdentifierToTax.get(taxIdentifier)
+          if (!taxExists) {
+            return
+          }
+          try {
+            await this.prismaService.$transaction(async (tx) => {
+              await tx.taxInstallment.deleteMany({
+                where: {
+                  taxId: taxExists.id,
+                },
+              })
+
+              const userFromCityAccount =
+                userDataFromCityAccount[norisItem.ICO_RC] || null
+
+              const tax = await this.insertTaxDataToDatabase(
+                taxDefinition,
+                norisItem,
+                year,
+                tx,
+                userFromCityAccount,
+              )
+              if (tax) {
+                count += 1
+              }
+            })
+          } catch (error) {
+            this.logger.error(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                'Failed to update tax in database.',
+                undefined,
+                undefined,
+                error,
+              ),
+            )
+          }
+        }),
+      ),
+    )
+
+    return { updated: count }
+  }
 
   /**
    * Gets the tax data from Noris and processes it by inserting into the database.

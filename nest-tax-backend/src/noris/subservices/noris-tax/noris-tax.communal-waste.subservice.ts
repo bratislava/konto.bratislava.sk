@@ -5,13 +5,11 @@ import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
-import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   NorisBaseTaxSchema,
   NorisCommunalWasteTaxSchema,
@@ -33,14 +31,14 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
 > {
   constructor(
     private readonly connectionService: NorisConnectionSubservice,
-    private readonly cityAccountSubservice: CityAccountSubservice,
-    private readonly paymentSubservice: NorisPaymentSubservice,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
 
     qrCodeSubservice: QrCodeSubservice,
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     bloomreachService: BloomreachService,
+    cityAccountSubservice: CityAccountSubservice,
+    paymentSubservice: NorisPaymentSubservice,
   ) {
     const logger = new LineLoggerSubservice(
       NorisTaxCommunalWasteSubservice.name,
@@ -51,7 +49,13 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       bloomreachService,
       throwerErrorGuard,
       logger,
+      cityAccountSubservice,
+      paymentSubservice,
     )
+  }
+
+  protected getTaxType(): typeof TaxType.KO {
+    return TaxType.KO
   }
 
   protected async getTaxDataByYearAndBirthNumber(
@@ -63,152 +67,6 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       birthNumbers,
     )
     return this.groupCommunalWasteTaxRecords(norisData)
-  }
-
-  async processNorisTaxData(
-    norisData: NorisCommunalWasteTaxGrouped[],
-    year: number,
-  ): Promise<string[]> {
-    const birthNumbersResult: Set<string> = new Set()
-
-    this.logger.log(`Data loaded from noris - count ${norisData.length}`)
-
-    const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
-        norisData.map((norisRecord) => norisRecord.ICO_RC),
-      )
-
-    const taxDefinitionCommunalWaste = getTaxDefinitionByType(TaxType.KO)
-
-    const taxesExist = await this.prismaService.tax.findMany({
-      select: {
-        variableSymbol: true,
-      },
-      where: {
-        year: +year,
-        taxPayer: {
-          birthNumber: {
-            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
-          },
-        },
-        type: TaxType.KO,
-      },
-    })
-    const existingTaxes = new Set(taxesExist.map((tax) => tax.variableSymbol))
-
-    const norisDataNotInDatabase = norisData.filter(
-      (norisItem) => !existingTaxes.has(norisItem.variabilny_symbol),
-    )
-
-    await Promise.all(
-      norisDataNotInDatabase.map(async (norisItem) =>
-        this.concurrencyLimit(async () => {
-          await this.processTaxRecordFromNoris(
-            taxDefinitionCommunalWaste,
-            birthNumbersResult,
-            norisItem,
-            userDataFromCityAccount,
-            year,
-          )
-        }),
-      ),
-    )
-
-    // Add the payments for these added taxes to database
-    await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
-
-    return [...birthNumbersResult]
-  }
-
-  async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-    year: number,
-    birthNumbers: string[],
-  ): Promise<{
-    updated: number
-  }> {
-    let norisData: NorisCommunalWasteTaxGrouped[]
-    try {
-      norisData = await this.getTaxDataByYearAndBirthNumber(year, birthNumbers)
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        undefined,
-        error,
-      )
-    }
-    let count = 0
-
-    const taxDefinitionCommunalWaste = getTaxDefinitionByType(TaxType.KO)
-
-    const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
-        norisData.map((norisRecord) => norisRecord.ICO_RC),
-      )
-
-    const taxesExist = await this.prismaService.tax.findMany({
-      select: {
-        id: true,
-        variableSymbol: true,
-      },
-      where: {
-        year,
-        variableSymbol: {
-          in: norisData.map((norisRecord) => norisRecord.variabilny_symbol),
-        },
-        type: TaxType.KO,
-      },
-    })
-    const variableSymbolToTax = new Map(
-      taxesExist.map((tax) => [tax.variableSymbol, tax]),
-    )
-
-    await Promise.all(
-      norisData.map(async (norisItem) =>
-        this.concurrencyLimit(async () => {
-          const taxExists = variableSymbolToTax.get(norisItem.variabilny_symbol)
-          if (!taxExists) {
-            return
-          }
-          try {
-            await this.prismaService.$transaction(async (tx) => {
-              await tx.taxInstallment.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
-
-              const userFromCityAccount =
-                userDataFromCityAccount[norisItem.ICO_RC] || null
-
-              const tax = await this.insertTaxDataToDatabase(
-                taxDefinitionCommunalWaste,
-                norisItem,
-                year,
-                tx,
-                userFromCityAccount,
-              )
-              if (tax) {
-                count += 1
-              }
-            })
-          } catch (error) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Failed to update tax in database.',
-                undefined,
-                undefined,
-                error,
-              ),
-            )
-          }
-        }),
-      ),
-    )
-
-    return { updated: count }
   }
 
   /**

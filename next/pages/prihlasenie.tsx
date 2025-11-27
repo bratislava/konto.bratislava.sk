@@ -18,6 +18,7 @@ import {
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async () => {
@@ -32,12 +33,17 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 
+// TODO OAuth: Show partially filled form (username) for oauth instead of redirecting
 const LoginPage = () => {
   const router = useRouter()
-  const { redirect, getRouteWithRedirect, getRedirectQueryParams } = useQueryParamRedirect()
+  const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
+
+  const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
+
+  // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -49,10 +55,22 @@ const LoginPage = () => {
 
   const onLogin = async (email: string, password: string) => {
     logger.info(`[AUTH] Attempting to sign in for email ${email}`)
+
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
+        if (isOAuthLogin) {
+          logger.info(`[AUTH] Proceeding to OAuth login`)
+          await handleOAuthLogin()
+
+          logger.info(`[AUTH] Calling Continue endpoint`)
+          // TODO OAuth: handle errors
+          await router.push(getOAuthContinueUrl())
+
+          return
+        }
+
         // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
         removeAmplifyGuestIdentityIdCookies()
         await prepareFormMigration()
@@ -63,6 +81,7 @@ const LoginPage = () => {
           { authStrategy: 'authOnly' },
         )
         await redirect()
+
         return
       }
       if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
@@ -73,7 +92,6 @@ const LoginPage = () => {
           `[AUTH] User didn't confirm the code in the registration process, requesting sign-up code for email ${email}`,
         )
         await resendSignUpCode({ username: email })
-        const redirectQueryParams = getRedirectQueryParams()
 
         logger.info(
           `[AUTH] Redirecting to registration page for sign up confirmation for email ${email}`,
@@ -81,9 +99,12 @@ const LoginPage = () => {
         await router.push(
           {
             pathname: ROUTES.REGISTER,
-            query: { ...redirectQueryParams, [loginConfirmSignUpEmailHiddenQueryParam]: email },
+            query: {
+              ...getRedirectQueryParams(),
+              [loginConfirmSignUpEmailHiddenQueryParam]: email,
+            },
           },
-          // This hides the param from the URL, but it's still accessible in the query object.
+          // This hides the email param from the URL, but it's still accessible in the query object.
           getRouteWithRedirect(ROUTES.REGISTER),
         )
       } else {

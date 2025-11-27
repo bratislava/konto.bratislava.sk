@@ -1,4 +1,3 @@
-import { LoginClientEnum } from '@clients/city-account'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
@@ -159,8 +158,11 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           family_name: data.family_name,
           name: data.name,
           'custom:account_type': data.account_type,
-          'custom:origin_client_id': currentClientId,
-          'custom:origin_client_name': clientInfo?.name ?? LoginClientEnum.CityAccount,
+          // Add client id and name only for registrations that happened through oauth
+          ...(clientInfo && {
+            'custom:origin_client_id': currentClientId,
+            'custom:origin_client_name': clientInfo.name,
+          }),
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()

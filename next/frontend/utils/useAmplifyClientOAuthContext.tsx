@@ -40,6 +40,7 @@ const useGetContext = () => {
 
   const clientInfo = currentClientId ? getOAuthClientInfo(currentClientId) : null
 
+  // TODO OAuth: We cannot use GET request due to some cors policy issues. This workaround works, but there may also be a better solution.
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
     if (payload) {

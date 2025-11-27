@@ -16,7 +16,6 @@ const OAuthClientLogo = ({ clientName }: { clientName: LoginClientEnum }) => {
   }
 }
 
-// TODO OAuth: Replace by client info endpoint and logo
 const OAuthInfo = () => {
   const { isOAuthLogin, clientInfo } = useAmplifyClientOAuthContext()
 

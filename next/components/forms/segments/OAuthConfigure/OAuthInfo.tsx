@@ -1,25 +1,30 @@
+import { LoginClientEnum } from '@clients/city-account'
 import React from 'react'
 
 import { isProductionDeployment } from '../../../../frontend/utils/general'
-import {
-  getOAuthClientInfo,
-  useAmplifyClientOAuthContext,
-} from '../../../../frontend/utils/useAmplifyClientOAuthContext'
+import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
+import { DpbLogoSvg, PaasMpaLogoSvg } from './logos'
+
+const OAuthClientLogo = ({ clientName }: { clientName: LoginClientEnum }) => {
+  switch (clientName) {
+    case 'DPB':
+      return <DpbLogoSvg className="size-full" />
+    case 'PAAS_MPA':
+      return <PaasMpaLogoSvg className="size-full" />
+    default:
+      return null
+  }
+}
 
 // TODO OAuth: Replace by client info endpoint and logo
 const OAuthInfo = () => {
-  const { isOAuthLogin, currentClientId } = useAmplifyClientOAuthContext()
+  const { isOAuthLogin, clientInfo } = useAmplifyClientOAuthContext()
 
-  const clientInfo = currentClientId ? getOAuthClientInfo(currentClientId) : null
-
-  return isProductionDeployment() ? null : (
-    <div className="shrink-0">
-      isOAuthLogin: {String(isOAuthLogin)}
-      <br />
-      clientName: {clientInfo?.name ?? 'nie je'}
-      <br />
+  return isProductionDeployment() ? null : isOAuthLogin && clientInfo?.name ? (
+    <div className="relative h-full shrink-0 py-3">
+      <OAuthClientLogo clientName={clientInfo.name} />
     </div>
-  )
+  ) : null
 }
 
 export default OAuthInfo

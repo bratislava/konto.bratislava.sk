@@ -38,7 +38,7 @@ const useGetContext = () => {
 
   const currentClientId = Amplify.getConfig().Auth?.Cognito.userPoolClientId
 
-  const clientInfo = clientId ? getOAuthClientInfo(clientId) : null
+  const clientInfo = currentClientId ? getOAuthClientInfo(currentClientId) : null
 
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)

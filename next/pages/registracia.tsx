@@ -180,6 +180,7 @@ const RegisterPage = () => {
           `[AUTH] Successfully signed up for email ${email}, proceeding to manual sign in`,
         )
         if (!isOAuthLogin) {
+          // TODO: Is is even needed to call prepareFormMigration here when it's called also in handleAutoSignIn?
           await prepareFormMigration()
         }
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)

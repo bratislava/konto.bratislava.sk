@@ -430,16 +430,16 @@ describe('UnifiedTaxUtil', () => {
               today: new Date('2025-01-22'),
             })
 
-            const expected = createExpectedOutput((draft) => {
-              draft.installmentPayment.installments![0].status =
-                InstallmentPaidStatusEnum.AFTER_DUE_DATE
-              draft.installmentPayment.installments![0].remainingAmount = 0
-              draft.installmentPayment.installments![1].remainingAmount = 4400
-              draft.installmentPayment.activeInstallment!.remainingAmount = 4400
-              draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
-              draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
-                QrPaymentNoteEnum.QR_firstInstallment
-            })
+          const expected = createExpectedOutput((draft) => {
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.AFTER_DUE_DATE
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![1].remainingAmount = 4400
+            draft.installmentPayment.activeInstallment!.remainingAmount = 4400
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_firstInstallment
+          })
 
             expectEqualAsJsonStringsWithDates(output, expected)
           })
@@ -451,26 +451,26 @@ describe('UnifiedTaxUtil', () => {
               today: new Date('2025-01-22'),
             })
 
-            const expected = createExpectedOutput((draft) => {
-              draft.installmentPayment.installments![0].status =
-                InstallmentPaidStatusEnum.AFTER_DUE_DATE
-              draft.installmentPayment.installments![0].remainingAmount = 0
-              draft.installmentPayment.installments![1].remainingAmount = 4399
-              draft.installmentPayment.installments![1].status =
-                InstallmentPaidStatusEnum.PARTIALLY_PAID
-              draft.installmentPayment.activeInstallment!.remainingAmount = 4399
-              draft.installmentPayment.activeInstallment!.qrCode.amount = 4399
-              draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
-                QrPaymentNoteEnum.QR_firstInstallment
-              draft.oneTimePayment.type =
-                OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
-              draft.oneTimePayment.amount = 6599
-              draft.oneTimePayment.qrCode!.amount = 6599
-              draft.oneTimePayment.qrCode!.paymentNote =
-                QrPaymentNoteEnum.QR_remainingAmount
-              draft.overallBalance = 6599
-              draft.overallPaid = 1
-            })
+          const expected = createExpectedOutput((draft) => {
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.AFTER_DUE_DATE
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![1].remainingAmount = 4399
+            draft.installmentPayment.installments![1].status =
+              InstallmentPaidStatusEnum.PARTIALLY_PAID
+            draft.installmentPayment.activeInstallment!.remainingAmount = 4399
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 4399
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_firstInstallment
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.amount = 6599
+            draft.oneTimePayment.qrCode!.amount = 6599
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+            draft.overallBalance = 6599
+            draft.overallPaid = 1
+          })
 
             expectEqualAsJsonStringsWithDates(output, expected)
           })
@@ -545,16 +545,16 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-08-31'),
           })
 
-          const expected = createExpectedOutput((draft) => {
-            draft.installmentPayment.installments![0].status =
-              InstallmentPaidStatusEnum.AFTER_DUE_DATE
-            draft.installmentPayment.installments![0].remainingAmount = 0
-            draft.installmentPayment.installments![1].remainingAmount = 4400
-            draft.installmentPayment.activeInstallment!.remainingAmount = 4400
-            draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
-            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
-              QrPaymentNoteEnum.QR_firstInstallment
-          })
+        const expected = createExpectedOutput((draft) => {
+          draft.installmentPayment.installments![0].status =
+            InstallmentPaidStatusEnum.AFTER_DUE_DATE
+          draft.installmentPayment.installments![0].remainingAmount = 0
+          draft.installmentPayment.installments![1].remainingAmount = 4400
+          draft.installmentPayment.activeInstallment!.remainingAmount = 4400
+          draft.installmentPayment.activeInstallment!.qrCode.amount = 4400
+          draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+            QrPaymentNoteEnum.QR_firstInstallment
+        })
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })

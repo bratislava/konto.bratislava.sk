@@ -77,6 +77,11 @@ export type TaxDefinition<TTaxType extends TaxType> = {
   isUnique: boolean
 
   numberOfInstallments: number
+  installmentDueDates: {
+    second: string
+    third: string
+    fourth?: string
+  }
 
   /** Threshold for allowing installment payments (splátková hranica) in eurocents */
   paymentCalendarThreshold: number

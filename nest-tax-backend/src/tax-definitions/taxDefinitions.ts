@@ -19,6 +19,10 @@ export const taxDefinitions: TaxDefinitionsMap = {
     type: TaxType.DZN,
     isUnique: true,
     numberOfInstallments: 3,
+    installmentDueDates: {
+      second: '09-01',
+      third: '11-01',
+    },
     paymentCalendarThreshold: 6600,
     mapNorisToTaxDetailData: mapNorisToRealEstateDatabaseDetail,
     generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
@@ -28,6 +32,11 @@ export const taxDefinitions: TaxDefinitionsMap = {
     type: TaxType.KO,
     isUnique: false,
     numberOfInstallments: 4,
+    installmentDueDates: {
+      second: '05-31',
+      third: '08-31',
+      fourth: '10-31',
+    },
     paymentCalendarThreshold: 0,
     mapNorisToTaxDetailData: mapNorisToCommunalWasteDatabaseDetail,
     generateItemizedTaxDetail: generateItemizedCommunalWasteTaxDetail,

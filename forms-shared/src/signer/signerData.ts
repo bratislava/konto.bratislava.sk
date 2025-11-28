@@ -31,19 +31,27 @@ export type GetSignerDataParams<
 /**
  * Formats a form title into a XDCF filename by removing diacritics and replacing spaces with underscores.
  *
+ * Additionally, adds a prefix to the final formatted object ID required by internal systems GINIS and
+ * NORIS, so they can mint information about the signed form and process it accordingly.
+ *
  * More info: https://www.slovensko.sk/sk/institucie-formulare-a-ziado/nova-pripona-xdcf-pre-xmldata
  *
  * @example
- * formatTitleForObjectId("Žiadosť o nájom bytu") // returns "Ziadost_o_najom_bytu.xdcf"
- * formatTitleForObjectId("Predzáhradky") // returns "Predzahradky.xdcf"
- * formatTitleForObjectId("Komunitné záhrady") // returns "Komunitne_zahrady.xdcf"
+ * formatTitleForObjectId("Priznanie k dani z nehnuteľností") // returns "signed_form_Priznanie_k_dani_z_nehnutelnosti.xdcf"
+ * formatTitleForObjectId("Oznámenie o poplatkovej povinnosti za komunálne odpady")
+ * // returns "signed_form_Oznamenie_o_poplatkovej_povinnosti_za_komunalne_odpady.xdcf"
+ * formatTitleForObjectId("Žiadosť o nájom bytu") // returns "signed_form_Ziadost_o_najom_bytu.xdcf"
+
  */
 const formatTitleForObjectId = (title: string): string => {
-  // https://stackoverflow.com/a/37511463
-  const withoutDiacritics = title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  const formatted = withoutDiacritics.replace(/\s+/g, '_')
+  // internal systems GINIS and NORIS require a specific prefix for the object ID
+  const OBJECT_ID_PREFIX = 'signed_form'
 
-  return `${formatted}.xdcf`
+  // https://stackoverflow.com/a/37511463
+  const titleWithoutDiacritics = title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const formattedTitle = titleWithoutDiacritics.replace(/\s+/g, '_')
+
+  return `${OBJECT_ID_PREFIX}_${formattedTitle}.xdcf`
 }
 
 const getCommonSignerData = (formDefinition: FormDefinitionSlovenskoSk, formData: TaxFormData) => {

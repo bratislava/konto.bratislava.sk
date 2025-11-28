@@ -4,6 +4,7 @@ export enum QrPaymentNoteEnum {
   QR_firstInstallment = 'QR_prva_splatka',
   QR_secondInstallment = 'QR_druha_splatka',
   QR_thirdInstallment = 'QR_tretia_splatka',
+  QR_fourthInstallment = 'QR_stvrta_splatka',
 }
 
 export interface QrCodeGeneratorDto {

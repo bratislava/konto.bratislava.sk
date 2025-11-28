@@ -1,12 +1,17 @@
-import { TaxAdministrator, TaxType } from '@prisma/client'
+import { TaxType } from '@prisma/client'
 import currency from 'currency.js'
 
 import {
+  CommunalWasteTaxDetail,
   RealEstateTaxAreaType,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
 } from '../../prisma/json-types'
-import { NorisBaseTax, NorisRealEstateTax } from '../types/noris.types'
+import {
+  NorisBaseTax,
+  NorisCommunalWasteTaxGrouped,
+  NorisRealEstateTax,
+} from '../types/noris.types'
 import { DeliveryMethod, DeliveryMethodNoris } from './noris.types'
 
 export const convertCurrencyToInt = (value: string): number => {
@@ -14,10 +19,7 @@ export const convertCurrencyToInt = (value: string): number => {
 }
 
 // Helper mapping functions to improve maintainability
-export const mapNorisToTaxPayerData = (
-  data: NorisBaseTax,
-  taxAdministrator?: TaxAdministrator,
-) => {
+export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   return {
     birthNumber: data.ICO_RC,
     permanentResidenceAddress: data.adresa_tp_sidlo,
@@ -28,7 +30,6 @@ export const mapNorisToTaxPayerData = (
     permanentResidenceStreetTxt: data.TXT_UL,
     permanentResidenceCity: data.obec_nazev_tb,
     nameTxt: data.TXT_MENO,
-    taxAdministratorId: taxAdministrator?.id,
   }
 }
 
@@ -86,7 +87,7 @@ export const mapNorisToTaxInstallmentsData = (
     ]
   }
 
-  return [
+  const installments = [
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_1),
@@ -106,6 +107,15 @@ export const mapNorisToTaxInstallmentsData = (
       text: data.TXTSPL4_3,
     },
   ]
+  if (data.SPL4_4) {
+    installments.push({
+      taxId,
+      amount: convertCurrencyToInt(data.SPL4_4),
+      order: 4,
+      text: data.TXTSPL4_4,
+    })
+  }
+  return installments
 }
 
 export const mapDeliveryMethodToNoris = (
@@ -139,6 +149,15 @@ export const mapNorisToDatabaseBaseTax = (
     dateCreateTax: data.akt_datum,
     dateTaxRuling: data.datum_platnosti,
     taxId: data.cislo_konania,
+  }
+}
+
+export const mapNorisToCommunalWasteDatabaseDetail = (
+  data: NorisCommunalWasteTaxGrouped,
+): CommunalWasteTaxDetail => {
+  return {
+    type: TaxType.KO,
+    containers: data.containers,
   }
 }
 

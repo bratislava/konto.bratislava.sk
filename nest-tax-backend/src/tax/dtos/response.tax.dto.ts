@@ -707,6 +707,13 @@ export class ResponseCommunalWasteTaxItemizedAddressDto {
   unitRate: number
 
   @ApiProperty({
+    description: 'Container type (druh_nadoby)',
+    example: 'Plastová nádoba',
+  })
+  @IsString()
+  containerType: string
+
+  @ApiProperty({
     description: 'Fee amount (poplatok)',
     example: 5200,
   })

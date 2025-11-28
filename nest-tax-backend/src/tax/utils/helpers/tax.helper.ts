@@ -1,6 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs'
 
 import {
+  CommunalWasteTaxDetail,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
@@ -100,7 +101,37 @@ export const generateItemizedRealEstateTaxDetail = (
   }
 }
 
-export const generateItemizedCommunalWasteTaxDetail =
-  (): ResponseCommunalWasteTaxDetailItemizedDto => {
-    throw new Error('Not implemented: generateItemizedRealEstateTaxDetail')
+export const generateItemizedCommunalWasteTaxDetail = (
+  taxDetails: CommunalWasteTaxDetail,
+): ResponseCommunalWasteTaxDetailItemizedDto => {
+  const addressDetail = taxDetails.containers.map((container) => {
+    // Calculate total amount for this address (sum of all poplatok)
+    const totalAmount = container.details.reduce(
+      (sum, detail) => sum + detail.poplatok,
+      0,
+    )
+
+    // Map details to itemized containers
+    const itemizedContainers = container.details.map((detail) => ({
+      containerVolume: detail.objem_nadoby,
+      containerCount: detail.pocet_nadob,
+      numberOfDisposals: detail.pocet_odvozov,
+      unitRate: detail.sadzba,
+      containerType: detail.druh_nadoby,
+      fee: detail.poplatok,
+    }))
+
+    return {
+      address: {
+        street: container.address.street ?? '',
+        orientationNumber: container.address.orientationNumber ?? '',
+      },
+      totalAmount,
+      itemizedContainers,
+    }
+  })
+
+  return {
+    addressDetail,
   }
+}

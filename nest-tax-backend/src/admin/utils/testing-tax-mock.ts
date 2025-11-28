@@ -1,9 +1,9 @@
 import { randomBytes } from 'node:crypto'
 
-import { TaxAdministrator } from '@prisma/client'
+import { TaxAdministrator, TaxType } from '@prisma/client'
 
 import {
-  NorisCommunalWasteTax,
+  NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
 } from '../../noris/types/noris.types'
 import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
@@ -132,7 +132,7 @@ export const createTestingCommunalWasteTaxMock = (
   norisData: RequestAdminCreateTestingTaxNorisData,
   taxAdministrator: TaxAdministrator,
   year: number,
-): NorisCommunalWasteTax => {
+): NorisCommunalWasteTaxGrouped => {
   // This is not exact, but makes sure the total will be correct
   const total = parseFloat(norisData.taxTotal.replace(',', '.'))
   const spl1 = total / 3
@@ -140,6 +140,7 @@ export const createTestingCommunalWasteTaxMock = (
   const spl3 = total - spl1 - spl2
 
   return {
+    type: TaxType.KO,
     // base identification
     ICO_RC: norisData.fakeBirthNumber,
     subjekt_nazev: norisData.nameSurname,
@@ -189,13 +190,23 @@ export const createTestingCommunalWasteTaxMock = (
     SPL4_4: (0).toFixed(2).replace('.', ','),
 
     // communal waste specific fields (mock but type-correct)
-    objem_nadoby: 120, // liters
-    pocet_nadob: 1,
-    pocet_odvozov: 52,
-    sadzba: 0.5,
-    poplatok: total,
-    druh_nadoby: 'KLASICKA_NADOBA',
-    ulica: 'Testovacia ulica',
-    orientacne_cislo: '10A',
+    containers: [
+      {
+        address: {
+          street: 'Testovacia ulica',
+          orientationNumber: '10A',
+        },
+        details: [
+          {
+            objem_nadoby: 120, // liters
+            pocet_nadob: 1,
+            pocet_odvozov: 52,
+            sadzba: 0.5,
+            poplatok: total,
+            druh_nadoby: 'KLASICKA_NADOBA',
+          },
+        ],
+      },
+    ],
   }
 }

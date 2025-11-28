@@ -130,7 +130,11 @@ export default class NasesConsumerService {
       return new Nack(false)
     }
 
-    const result = await this.handleSlovenskoSkForm(form, data, formDefinition)
+    const result = await this.handleSlovenskoSkGenericForm(
+      form,
+      data,
+      formDefinition,
+    )
     return result
   }
 
@@ -161,7 +165,7 @@ export default class NasesConsumerService {
     })
   }
 
-  private async handleSlovenskoSkForm(
+  private async handleSlovenskoSkGenericForm(
     form: Forms,
     data: RabbitPayloadDto,
     formDefinition: FormDefinitionSlovenskoSkGeneric,

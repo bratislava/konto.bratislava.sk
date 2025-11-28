@@ -326,7 +326,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         })
       : undefined
 
-    const taxPayerData = mapNorisToTaxPayerData(dataFromNoris, taxAdministrator)
+    const taxPayerData = mapNorisToTaxPayerData(dataFromNoris)
     const taxPayer = await transaction.taxPayer.upsert({
       where: {
         birthNumber: dataFromNoris.ICO_RC,
@@ -334,6 +334,21 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       create: taxPayerData,
       update: taxPayerData,
     })
+
+    if (taxAdministrator?.id) {
+      const taxPayerTaxAdministratorData = {
+        taxPayerId: taxPayer.id,
+        taxAdministratorId: taxAdministrator.id,
+        taxType: taxDefinition.type,
+      }
+      await transaction.taxPayerTaxAdministrator.upsert({
+        where: {
+          taxPayerId_taxAdministratorId_taxType: taxPayerTaxAdministratorData,
+        },
+        create: taxPayerTaxAdministratorData,
+        update: taxPayerTaxAdministratorData,
+      })
+    }
 
     // deliveryMethod is missing here, since we do not want to update
     // historical taxes with the current delivery method in Noris

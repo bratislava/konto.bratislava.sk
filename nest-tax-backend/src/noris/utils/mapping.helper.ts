@@ -1,4 +1,4 @@
-import { TaxAdministrator, TaxType } from '@prisma/client'
+import { TaxType } from '@prisma/client'
 import currency from 'currency.js'
 
 import {
@@ -19,10 +19,7 @@ export const convertCurrencyToInt = (value: string): number => {
 }
 
 // Helper mapping functions to improve maintainability
-export const mapNorisToTaxPayerData = (
-  data: NorisBaseTax,
-  taxAdministrator?: TaxAdministrator,
-) => {
+export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   return {
     birthNumber: data.ICO_RC,
     permanentResidenceAddress: data.adresa_tp_sidlo,
@@ -33,7 +30,6 @@ export const mapNorisToTaxPayerData = (
     permanentResidenceStreetTxt: data.TXT_UL,
     permanentResidenceCity: data.obec_nazev_tb,
     nameTxt: data.TXT_MENO,
-    taxAdministratorId: taxAdministrator?.id,
   }
 }
 

@@ -11,10 +11,13 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { RpoDataMagproxyDto } from './dtos/magproxy.dto'
 import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import { CustomErrorEnums, ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ClientsService from '../clients/clients.service'
-import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -24,6 +27,9 @@ const INCORRECT_RFO_DATA_ERROR = 'Incorrect RFO data'
 
 let magproxyAzureAdToken = ''
 
+/**
+ * Thrown errors are retryable. But if {success: false} is returned, the problem is not retryable.
+ */
 @Injectable()
 export class MagproxyService {
   private readonly logger: LineLoggerSubservice
@@ -127,7 +133,11 @@ export class MagproxyService {
   }
 
   // TODO use this instead of rfoBirthNumber / rfoBirthNumberDcom
-  async rfoBirthNumberList(birthNumber: string) {
+  async rfoBirthNumberList(
+    birthNumber: string
+  ): Promise<
+    { success: true; data: RfoIdentityList } | { success: false; reason: CustomErrorEnums }
+  > {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
     const processedBirthNumber = birthNumber.replaceAll('/', '')
     try {
@@ -139,8 +149,10 @@ export class MagproxyService {
           },
         }
       )
-      // TODO this validation belongs to magproxy, TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
-      return this.validateRfoDataFormat(result?.data?.items)
+      // TODO this validation belongs to magproxy
+      // TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
+      const validatedData = this.validateRfoDataFormat(result?.data?.items)
+      return { success: true as const, data: validatedData }
     } catch (error) {
       if (!isAxiosError(error)) {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -151,8 +163,6 @@ export class MagproxyService {
         )
       }
       if (error.response?.status === HttpStatus.UNAUTHORIZED) {
-        // attemp re-auth ? (TODO was here, check if this makes sense ?)
-        magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
         throw this.throwerErrorGuard.UnauthorizedException(
           MagproxyErrorsEnum.RFO_ACCESS_ERROR,
           MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
@@ -161,12 +171,8 @@ export class MagproxyService {
         )
       }
       if (error.response?.status === HttpStatus.NOT_FOUND) {
-        throw this.throwerErrorGuard.NotFoundException(
-          MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-          MagproxyErrorsResponseEnum.BIRTHNUMBER_NOT_EXISTS,
-          undefined,
-          error
-        )
+        // Non-retryable error. Return failure.
+        return { success: false as const, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
       }
       // RFO responded but with unexpected data
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -189,57 +195,34 @@ export class MagproxyService {
       })
       .then((response) => {
         return {
-          statusCode: 200,
+          success: true as const,
           data: JSON.parse(JSON.stringify(response.data)) as RfoIdentityListElement,
-          errorData: null,
         }
       })
       .catch(async (error) => {
         if (error.response.status === HttpStatus.UNAUTHORIZED) {
-          magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
-          const dataError = {
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            status: 'CustomError',
-            message: 'There is problem with authentication to registry. More details in app logs.',
-            errorName: VerificationErrorsEnum.RFO_ACCESS_ERROR,
-          }
-          return {
-            statusCode: dataError.statusCode,
-            errorData: dataError,
-            data: null,
-          }
-        }
-        if (error.response.status === HttpStatus.NOT_FOUND) {
-          const dataError = {
-            statusCode: HttpStatus.NOT_FOUND,
-            status: 'NotFound',
-            message: 'Birth number does not exists in registry.',
-            errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-          }
-          return {
-            statusCode: dataError.statusCode,
-            errorData: dataError,
-            data: null,
-          }
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            VerificationErrorsEnum.RFO_ACCESS_ERROR,
+            'There is problem with authentication to registry. More details in app logs.',
+            undefined,
+            error
+          )
+        } else if (error.response.status === HttpStatus.NOT_FOUND) {
+          // Non-retryable error. Return failure.
+          return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
         } else {
-          this.logger.warn(error.response?.data)
-          const dataError = {
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            status: 'CustomError',
-            message: 'There is problem with unexpected registry response. More details in app logs.',
-            errorName: VerificationErrorsEnum.RFO_NOT_RESPONDING,
-          }
-          return {
-            statusCode: dataError.statusCode,
-            errorData: dataError,
-            data: null,
-          }
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            VerificationErrorsEnum.RFO_NOT_RESPONDING,
+            'There is problem with unexpected registry response. More details in app logs.',
+            undefined,
+            error
+          )
         }
       })
     return result
   }
 
-  async rpoIco(ico: string): Promise<RpoDataMagproxyDto> {
+  async rpoIco(ico: string) {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
 
     const result = await this.clientsService.magproxyApi
@@ -250,47 +233,23 @@ export class MagproxyService {
         },
       })
       .then((response) => {
-        return { statusCode: 200, data: response.data, errorData: null }
+        return { success: true as const, data: response.data }
       })
       .catch(async (error) => {
         if (error.response.status === HttpStatus.UNAUTHORIZED) {
-          magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
-          const dataError = {
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            status: 'CustomError',
-            message: 'There is problem with authentication to registry. More details in app logs.',
-            errorName: VerificationErrorsEnum.RFO_ACCESS_ERROR,
-          }
-          return {
-            statusCode: dataError.statusCode,
-            errorData: dataError,
-            data: null,
-          }
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            VerificationErrorsEnum.RFO_ACCESS_ERROR,
+            'There is problem with authentication to registry. More details in app logs.'
+          )
         }
         if (error.response.status === HttpStatus.NOT_FOUND) {
-          const dataError = {
-            statusCode: HttpStatus.NOT_FOUND,
-            status: 'NotFound',
-            message: 'Birth number does not exists in registry.',
-            errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-          }
-          return {
-            statusCode: dataError.statusCode,
-            errorData: dataError,
-            data: null,
-          }
-        } else {this.logger.warn(error.response?.data)
-          const dataError = {
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            status: 'CustomError',
-            message: 'There is problem with unexpected registry response. More details in app logs.',
-            errorName: VerificationErrorsEnum.RPO_NOT_RESPONDING,
-          }
-          return {
-            statusCode: dataError.statusCode,
-            errorData: dataError,
-            data: null,
-          }
+          // Non-retryable error. Return failure.
+          return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+        } else {
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            VerificationErrorsEnum.RPO_NOT_RESPONDING,
+            'There is problem with unexpected registry response. More details in app logs.'
+          )
         }
       })
     return result

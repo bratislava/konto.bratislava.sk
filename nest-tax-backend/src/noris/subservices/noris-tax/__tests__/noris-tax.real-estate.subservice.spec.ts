@@ -761,6 +761,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         isUnique: true,
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
+        installmentDueDates: {
+          second: '09-01',
+          third: '11-01',
+        },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([
@@ -872,6 +876,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         isUnique: true,
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
+        installmentDueDates: {
+          second: '09-01',
+          third: '11-01',
+        },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([

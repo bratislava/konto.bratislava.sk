@@ -60,9 +60,7 @@ describe('VerificationSubservice', () => {
       }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual({
-        statusCode: 200,
-        status: 'OK',
-        message: { message: 'ok' },
+        success: true,
       })
     })
 
@@ -86,9 +84,7 @@ describe('VerificationSubservice', () => {
       }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual({
-        statusCode: 200,
-        status: 'OK',
-        message: { message: 'ok' },
+        success: true,
       })
     })
 
@@ -113,9 +109,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+          success: false,
+          reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
       )
     })
@@ -128,9 +123,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+          success: false,
+          reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
       )
     })
@@ -141,9 +135,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+          success: false,
+          reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
       )
     })
@@ -170,9 +163,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.DEAD_PERSON,
+          success: false,
+          reason: VerificationErrorsEnum.DEAD_PERSON,
         })
       )
     })

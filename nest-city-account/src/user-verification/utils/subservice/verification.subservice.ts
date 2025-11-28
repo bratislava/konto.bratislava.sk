@@ -11,12 +11,11 @@ import {
 } from '../../dtos/requests.verification.dto'
 import { DatabaseSubserviceUser } from './database.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
-import { ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
-import { UserErrorsEnum } from '../../../user/user.error.enum'
+import { CustomErrorEnums, ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
 import { RfoIdentityList, RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
-import { RfoDataDto } from './types/verification-types.dto'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 
 @Injectable()
 export class VerificationSubservice {
@@ -31,106 +30,75 @@ export class VerificationSubservice {
     this.logger = new LineLoggerSubservice(VerificationSubservice.name)
   }
 
-  private checkIdentityCard(
-    rfoData: RfoIdentityListElement,
-    identityCard: string
-  ): ResponseVerificationIdentityCardDto {
+  private checkIdentityCard(rfoData: RfoIdentityListElement, identityCard: string) {
     if (rfoData.datumUmrtia && rfoData.datumUmrtia !== 'unknown' && rfoData.datumUmrtia !== '') {
-      return {
-        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        status: 'CustomError',
-        message: 'User is not alive in registry.',
-        errorName: VerificationErrorsEnum.DEAD_PERSON,
-      }
+      return { success: false as const, reason: VerificationErrorsEnum.DEAD_PERSON }
     }
+
     if (!rfoData.doklady || Object.keys(rfoData.doklady).length === 0) {
       return {
-        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        status: 'CustomError',
-        message: 'This identity card number is not matching identity card for birthNumber',
-        errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+        success: false as const,
+        reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
       }
     }
-    for (const document of rfoData.doklady) {
+
+    for (const { druhDokladu, jednoznacnyIdentifikator } of rfoData.doklady) {
       if (
-        (document.druhDokladu === 'Občiansky preukaz' ||
-          document.druhDokladu === 'Povolenie na pobyt' ||
-          document.druhDokladu === 'Pobytový preukaz občana EÚ' ||
-          document.druhDokladu === 'Cestovný pas') &&
-        document.jednoznacnyIdentifikator
+        (druhDokladu === 'Občiansky preukaz' ||
+          druhDokladu === 'Povolenie na pobyt' ||
+          druhDokladu === 'Pobytový preukaz občana EÚ' ||
+          druhDokladu === 'Cestovný pas') &&
+        jednoznacnyIdentifikator
       ) {
-        if (document.jednoznacnyIdentifikator === identityCard) {
-          return {
-            statusCode: 200,
-            status: 'OK',
-            message: { message: 'ok' },
-          }
+        if (jednoznacnyIdentifikator === identityCard) {
+          return { success: true as const }
         }
 
         // Some identity card numbers are in format "000000 XX" in registry, but users enter identity card as "XX000000"
-        const identityCardMagproxy = document.jednoznacnyIdentifikator.trim().split(' ')
+        const identityCardMagproxy = jednoznacnyIdentifikator.trim().split(' ')
 
         if (
           identityCardMagproxy.length === 2 &&
           identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard
         ) {
-          return {
-            statusCode: 200,
-            status: 'OK',
-            message: { message: 'ok' },
-          }
+          return { success: true as const }
         }
       }
     }
     return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'CustomError',
-      message: 'This identity card number is not matching identity card for birthNumber',
-      errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+      success: false as const,
+      reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
     }
   }
 
-  private verifyRpoStatutory(
-    legalEntity: ResponseRpoLegalPersonDto,
-    birthNumber: string
-  ): ResponseVerificationIdentityCardDto {
+  private verifyRpoStatutory(legalEntity: ResponseRpoLegalPersonDto, birthNumber: string) {
     const statutoryBodies = legalEntity.statutarneOrgany
 
     for (const statutoryBody of statutoryBodies ?? []) {
       for (const externalId of statutoryBody.osoba.fyzickaOsoba.externeIds) {
-        if (!externalId.typIdentifikatora.nazov) {
-          // TODO this does nothing.
-          //this.errorMessengerGuard.rpoFieldNotExists('externalId.typIdentifikatora.nazov')
-          // Perhaps we want
-          return {
-            statusCode: HttpStatus.NOT_FOUND,
-            status: 'NotFound',
-            message: `Field externalId.typIdentifikatora.nazov does not exists in RPO object from registry.`,
-            errorName: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS,
-          }
-        }
+        // TODO this does nothing.
+        // if (!externalId.typIdentifikatora.nazov) {
+        //   this.errorMessengerGuard.rpoFieldNotExists('externalId.typIdentifikatora.nazov')
+        //   // Perhaps we want
+        //   return { success: false as const , reason: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS}
+        // }
         if (
           externalId.typIdentifikatora.nazov === 'Rodné číslo' &&
           externalId.identifikator.replace('/', '') === birthNumber.replace('/', '')
         ) {
-          return {
-            statusCode: 200,
-            status: 'OK',
-            message: externalId.identifikator,
-          }
+          return { success: true as const }
         }
       }
     }
+
     this.logger.warn({
       message: 'Could not match birthnumber with statutory organ from RPO',
       ico: legalEntity.ico,
       birthNumber: birthNumber,
     })
     return {
-      statusCode: HttpStatus.NOT_FOUND,
-      status: 'NotFound',
-      message: 'Birth number does not exists in registry.',
-      errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
+      success: false as const,
+      reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
     }
   }
 
@@ -143,7 +111,6 @@ export class VerificationSubservice {
    * @param {CognitoGetUserData} user - The user object from Cognito.
    * @param {RequestBodyVerifyIdentityCardDto} data - The data for verifying the identity card.
    * @param {string} [ico] - The optional ICO number.
-   * @returns {Promise<ResponseVerificationIdentityCardDto>} - The response containing the result of the verification.
    * @throws {Error} - If there is an unexpected error during the verification process.
    */
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -151,71 +118,20 @@ export class VerificationSubservice {
     user: CognitoGetUserData,
     data: RequestBodyVerifyIdentityCardDto,
     ico?: string
-  ): Promise<ResponseVerificationIdentityCardDto> {
+  ) {
     if (!isValidBirthNumber(data.birthNumber)) {
-      return {
-        statusCode: HttpStatus.BAD_REQUEST,
-        status: 'CustomError',
-        message: 'Birth number has wrong format.',
-        errorName: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
-      }
+      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
     }
 
     // request RFO data and handle exceptions that may be resolved later
-    let rfoData: RfoDataDto
-    try {
-      const rfoRequest: RfoIdentityList = await this.physicalEntityService.createFromBirthNumber(
-        data.birthNumber
-      )
-      rfoData = {
-        statusCode: 200,
-        data: rfoRequest,
-        errorData: null,
-      }
-    } catch (error) {
-      if (error instanceof HttpException) {
-        if (
-          [
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            HttpStatus.UNPROCESSABLE_ENTITY,
-            HttpStatus.NOT_FOUND,
-          ].includes(error.getStatus())
-        ) {
-          rfoData = {
-            statusCode: error.getStatus(),
-            data: null,
-            errorData: error.getResponse() as ResponseErrorInternalDto,
-          }
-        } else {
-          throw error
-        }
-      } else {
-        throw error
-      }
-    }
+    let rfoData = await this.physicalEntityService.createFromBirthNumber(data.birthNumber)
 
-    if (rfoData.statusCode !== 200 && rfoData.data === null) {
-      if (rfoData.errorData === null) {
-        // different `data` type, but it is null in this case
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.NO_EXTERNAL_ID,
-          `Data and Error data null: ${JSON.stringify({
-            statusCode: rfoData.statusCode,
-            data: null,
-            errorData: null,
-          })}`
-        )
-      }
-      return rfoData.errorData
+    if (!rfoData.success) {
+      return rfoData
     }
 
     if (!rfoData.data || rfoData.data.length == 0) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        status: 'NotFound',
-        message: 'Birth number does not exists in registry.',
-        errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-      }
+      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
     let birthNumberNotExistCounter = 0
@@ -227,153 +143,112 @@ export class VerificationSubservice {
         continue
       }
 
-      const rfoCheck = this.checkIdentityCard(rfoDataSingle, data.identityCard)
-
-      if (rfoCheck.statusCode === 200) {
-        let dbResult: { success: boolean }
-        const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
-        if (ico) {
-          dbResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-            user,
-            ico,
-            birthNumber
-          )
-        } else {
-          dbResult = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
-            user,
-            rfoDataSingle.ifo || null,
-            birthNumber,
-            0
-          )
-        }
-
-        if (!dbResult.success) {
-          // FIXME: This is a "do not resuscitate" kind of problem, do not resend to queue
-          return {
-            errorName: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
-            message: 'Db user not created.',
-            status: 'DB no good',
-            statusCode: 400,
-          }
-        } else {
-          if (!ico) {
-            const dbUser = await this.databaseSubservice.findUserByEmailOrExternalId(
-              user.email,
-              user.idUser
-            )
-            if (dbUser !== null) {
-              await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
-            }
-          }
-          return rfoCheck
-        }
+      const identityCardCheckResult = this.checkIdentityCard(rfoDataSingle, data.identityCard)
+      if (!identityCardCheckResult.success) {
+        continue
       }
-    }
 
-    // No RFO response contained birthNumber
-    if (birthNumberNotExistCounter == rfoData.data.length) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        status: 'NotFound',
-        message: 'Birth number does not exists in registry.',
-        errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-      }
-    }
-
-    const rfoDataDcom = await this.magproxyService.rfoBirthNumberDcom(data.birthNumber)
-
-    if (rfoDataDcom.statusCode !== 200 && rfoDataDcom.data === null) {
-      if (rfoDataDcom.errorData === null) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.EMPTY_RFO_RESPONSE,
-          `Data and Error data null: ${JSON.stringify(rfoDataDcom)}`
-        )
-      }
-      return rfoDataDcom.errorData
-    }
-
-    if (!rfoDataDcom.data?.rodneCislo) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        status: 'NotFound',
-        message: 'Birth number does not exists in registry.',
-        errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-      }
-    }
-
-    const rfoCheckDcom = this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
-
-    if (rfoCheckDcom.statusCode === 200) {
-      const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
-      let dbResultDcom: { success: boolean }
+      const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
+      let databaseResult: { success: false; reason: CustomErrorEnums } | { success: true }
       if (ico) {
-        dbResultDcom = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+        databaseResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
           user,
           ico,
           birthNumber
         )
       } else {
-        dbResultDcom = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+        databaseResult = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
           user,
-          rfoDataDcom.data.ifo || null,
+          rfoDataSingle.ifo || null,
           birthNumber,
-          1
+          0
         )
       }
 
-      if (!dbResultDcom.success) {
-        // FIXME: This is a "do not resuscitate" kind of problem, do not resend to queue
-        return {
-          errorName: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
-          message: 'Db user not created.',
-          status: 'DB no good',
-          statusCode: 400,
-        }
-      } else {
-        return rfoCheckDcom
+      if (!databaseResult.success) {
+        return databaseResult
       }
-    } else {
-      return rfoCheckDcom
+
+      if (!ico) {
+        const dbUser = await this.databaseSubservice.findUserByEmailOrExternalId(
+          user.email,
+          user.idUser
+        )
+        if (dbUser !== null) {
+          await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
+        }
+      }
+      return { success: true as const }
     }
+
+    // No RFO response contained birthNumber
+    if (birthNumberNotExistCounter == rfoData.data.length) {
+      return { success: false as const, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+    }
+
+    const rfoDataDcom = await this.magproxyService.rfoBirthNumberDcom(data.birthNumber)
+
+    if (!rfoDataDcom.success) {
+      return rfoDataDcom
+    }
+
+    if (!rfoDataDcom.data?.rodneCislo) {
+      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+    }
+
+    this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
+
+    const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
+    let dbResultDcom: { success: boolean }
+    if (ico) {
+      dbResultDcom = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+        user,
+        ico,
+        birthNumber
+      )
+    } else {
+      dbResultDcom = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+        user,
+        rfoDataDcom.data.ifo || null,
+        birthNumber,
+        1
+      )
+    }
+
+    return dbResultDcom.success
+      ? { success: true as const }
+      : { success: false as const, reason: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY }
   }
 
   async verifyIcoIdentityCard(
     user: CognitoGetUserData,
     data: RequestBodyVerifyWithRpoDto
-  ): Promise<ResponseVerificationIdentityCardDto> {
+  ): Promise<{ success: true } | { success: false; reason: CustomErrorEnums }> {
     if (!isValidBirthNumber(data.birthNumber)) {
-      return {
-        statusCode: HttpStatus.BAD_REQUEST,
-        status: 'CustomError',
-        message: 'Birth number has wrong format.',
-        errorName: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
-      }
+      throw this.throwerErrorGuard.BadRequestException(
+        VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
+        'Birth number has wrong format.'
+      )
     }
 
     const rpoData = await this.magproxyService.rpoIco(data.ico)
-    if (rpoData.statusCode !== 200 && rpoData.data === null) {
-      if (rpoData.errorData === null) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.EMPTY_RPO_RESPONSE,
-          `Data and Error data null: ${JSON.stringify(rpoData)}`
-        )
-      }
-      return rpoData.errorData
+    if (!rpoData.success) {
+      return rpoData
     }
-    if (!rpoData || !rpoData.data) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        status: 'NotFound',
-        message: `Field ico does not exists in RPO object from registry.`,
-        errorName: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS,
-      }
+
+    if (!rpoData.data) {
+      throw this.throwerErrorGuard.NotFoundException(
+        VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS,
+        `Field ico does not exists in RPO object from registry.`
+      )
     }
+
     const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)
-    if (verifyStatutory.statusCode !== 200) {
+    if (!verifyStatutory.success) {
       return verifyStatutory
     }
 
-    const resultVerifyIdentityCard = await this.verifyIdentityCard(
+    return await this.verifyIdentityCard(
       user,
       {
         birthNumber: data.birthNumber,
@@ -382,7 +257,5 @@ export class VerificationSubservice {
       },
       data.ico
     )
-
-    return resultVerifyIdentityCard
   }
 }

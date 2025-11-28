@@ -3,13 +3,19 @@ import { setTimeout } from 'node:timers/promises'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState, GinisState } from '@prisma/client'
+import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
-import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSkGeneric,
+  isSlovenskoSkGenericFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
+import {
+  extractFormSubjectPlain,
+  extractFormSubjectTechnical,
+} from 'forms-shared/form-utils/formDataExtractors'
 
 import BaConfigService from '../config/ba-config.service'
 import {
@@ -28,7 +34,9 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
-import GinisAPIService from './subservices/ginis-api.service'
+import GinisAPIService, {
+  GinContactParams,
+} from './subservices/ginis-api.service'
 
 @Injectable()
 export default class GinisService {
@@ -454,6 +462,86 @@ export default class GinisService {
         removeOnComplete: true,
         removeOnFail: true,
       },
+    )
+  }
+
+  private async handleDocumentSender(form: Forms): Promise<string> {
+    const ANONYMOUS_SENDER_ID = 'MAG0SE1GGEW9' // ID for anonymous sender in Ginis
+
+    const contactParams: GinContactParams = {}
+
+    if (form.externalId) {
+      // TODO: get contact by externalId
+    }
+
+    if (form.mainUri) {
+      contactParams.uri = form.mainUri
+      // TODO: extract verified contact information from URI
+    }
+
+    // Skip update call if there are no updates to make
+    const hasContactInformation = Object.values(contactParams).some(
+      (value) => value !== undefined,
+    )
+    if (!hasContactInformation) {
+      return ANONYMOUS_SENDER_ID
+    }
+    return this.ginisApiService.upsertContact(contactParams)
+  }
+
+  public async createDocument(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSkGeneric,
+  ) {
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+        `No form data json in form id: ${form.id}`,
+      )
+    }
+    const senderId = await this.handleDocumentSender(form)
+
+    const documentId =
+      form.ginisDocumentId ??
+      (await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.createDocument(
+          form.id,
+          formDefinition.ginisDocumentTypeId,
+          form.updatedAt,
+          senderId,
+          extractFormSubjectTechnical(formDefinition, form.formDataJson!),
+        ),
+      ))
+
+    // called to reset the state to REGISTERED even if ginisDocumentId is already set
+    await this.updateSuccessfulRegistration(form.id, documentId)
+
+    const detail = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.getDocumentDetail(documentId),
+    )
+    if (!detail['Cj-dokumentu']) {
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.assignReferenceNumber(documentId),
+      )
+    }
+
+    const foundDocumentId = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.findDocumentId(form.id),
+    )
+    if (foundDocumentId === documentId) {
+      return
+    }
+
+    const propertyOrder = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.createFormIdProperty(documentId),
+    )
+    await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.setFormIdProperty(
+        documentId,
+        propertyOrder,
+        form.id,
+      ),
     )
   }
 }

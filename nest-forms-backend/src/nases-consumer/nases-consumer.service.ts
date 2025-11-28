@@ -6,8 +6,8 @@ import { FormError, Forms, FormState } from '@prisma/client'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
+  FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
-  isSlovenskoSkFormDefinition,
   isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -16,9 +16,7 @@ import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtract
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import NasesService from '../nases/nases.service'
-import { SendMessageNasesSenderType } from '../nases/types/send-message-nases-sender.type'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
+import GinisService from '../ginis/ginis.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ } from '../utils/constants'
@@ -41,14 +39,13 @@ export default class NasesConsumerService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly nasesUtilsService: NasesUtilsService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly formsService: FormsService,
     private readonly mailgunService: MailgunService,
     private readonly emailFormsSubservice: EmailFormsSubservice,
     private readonly webhookSubservice: WebhookSubservice,
     private readonly prismaService: PrismaService,
-    private readonly nasesService: NasesService,
+    private readonly ginisService: GinisService,
     private readonly convertPdfService: ConvertPdfService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
@@ -124,9 +121,10 @@ export default class NasesConsumerService {
       return webhookResult
     }
 
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+    // this filters out tax forms, as they should always be sent with eID and never fall under the nases-consumer queue
+    if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
       alertError(
-        `ERROR onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} In the nases-consumer queue only Slovensko.sk forms can be sent to Nases. Form id: ${form.id}.`,
+        `ERROR onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} In the nases-consumer queue only generic Slovensko.sk forms can be processed. Form id: ${form.id}.`,
         this.logger,
       )
       return new Nack(false)
@@ -166,10 +164,8 @@ export default class NasesConsumerService {
   private async handleSlovenskoSkForm(
     form: Forms,
     data: RabbitPayloadDto,
-    formDefinition: FormDefinitionSlovenskoSk,
+    formDefinition: FormDefinitionSlovenskoSkGeneric,
   ): Promise<Nack> {
-    const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
-
     try {
       // create a pdf image of the form, upload it to minio and at it among form files
       await this.convertPdfService.createPdfImageInFormFiles(
@@ -177,9 +173,7 @@ export default class NasesConsumerService {
         formDefinition,
       )
 
-      await this.nasesService.sendToNasesAndUpdateState(jwt, form, data, {
-        type: SendMessageNasesSenderType.Self,
-      })
+      await this.ginisService.createDocument(form, formDefinition)
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
@@ -189,9 +183,9 @@ export default class NasesConsumerService {
           error,
         ),
       )
-      if (data.tries <= 1) {
+      if (data.tries <= 2) {
         const toEmail = data.userData.email || form.email
-        if (data.tries === 1 && toEmail) {
+        if (data.tries === 2 && toEmail) {
           await this.sendFormSubmissionEmail(form, formDefinition, {
             template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
             to: toEmail,
@@ -201,7 +195,7 @@ export default class NasesConsumerService {
         await this.queueDelayedForm(
           data.formId,
           data.tries,
-          FormError.NASES_SEND_ERROR,
+          FormError.GINIS_SEND_ERROR,
           data.userData,
           FormState.QUEUED,
         )
@@ -211,14 +205,12 @@ export default class NasesConsumerService {
       return requeueFinal
     }
 
-    if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
-      // If this throws, the flow breaks and requires manual intervention
-      await this.rabbitmqClientService.publishToGinis({
-        formId: data.formId,
-        tries: 0,
-        userData: data.userData,
-      })
-    }
+    // If this throws, the flow breaks and requires manual intervention
+    await this.rabbitmqClientService.publishToGinis({
+      formId: data.formId,
+      tries: 0,
+      userData: data.userData,
+    })
 
     const toEmail = data.userData.email || form.email
     if (toEmail) {

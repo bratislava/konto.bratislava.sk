@@ -102,6 +102,7 @@ export const formDefinitions: FormDefinition[] = [
       extractPlain: stanoviskoKInvesticnemuZameruExtractPlainSubject,
       extractTechnical: stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
     },
+    ginisDocumentTypeId: 'MAG00400ACDD',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A0ZV',
       ginisFunctionId: 'MAG0SF00ASI3',
@@ -124,6 +125,7 @@ export const formDefinitions: FormDefinition[] = [
       extractPlain: zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
       extractTechnical: zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
     },
+    ginisDocumentTypeId: 'MAG00400ACAS',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A0ZV',
       ginisFunctionId: 'MAG0SF00ASI3',
@@ -147,6 +149,7 @@ export const formDefinitions: FormDefinition[] = [
       extractTechnical: predzahradkyExtractTechnicalSubject,
     },
     isSigned: false,
+    ginisDocumentTypeId: 'MAG00400AC9X',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A381',
       ginisFunctionId: 'MAG0SF00AG9O',
@@ -168,6 +171,7 @@ export const formDefinitions: FormDefinition[] = [
       extractTechnical: komunitneZahradyExtractTechnicalSubject,
     },
     isSigned: false,
+    ginisDocumentTypeId: 'MAG00400ACE8',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A0Q4',
       ginisFunctionId: 'MAG0SF00A93V',
@@ -224,6 +228,7 @@ export const formDefinitions: FormDefinition[] = [
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKiASWp',
     sharepointData: ziadostONajomBytuSharepointData,
     skipGinisStateUpdate: true,
+    ginisDocumentTypeId: 'MAG00400ACCI',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A3NY',
     },
@@ -551,6 +556,7 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
+    ginisDocumentTypeId: 'MAG00400ACBN',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A129',
     },
@@ -568,6 +574,7 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
+    ginisDocumentTypeId: 'MAG00400ACF3',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A3M3',
     },
@@ -587,6 +594,7 @@ export const formDefinitions: FormDefinition[] = [
     subject: {
       extractTechnical: ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
     },
+    ginisDocumentTypeId: 'MAG00400ACRF',
     ginisAssignment: {
       ginisNodeId: 'MAG0SS00A0ZV',
       ginisFunctionId: 'MAG0SF00ASI3',

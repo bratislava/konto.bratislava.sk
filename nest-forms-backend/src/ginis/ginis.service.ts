@@ -3,19 +3,34 @@ import { setTimeout } from 'node:timers/promises'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState, GinisState } from '@prisma/client'
+import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
-import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSkGeneric,
+  isSlovenskoSkGenericFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
+import {
+  extractFormSubjectPlain,
+  extractFormSubjectTechnical,
+} from 'forms-shared/form-utils/formDataExtractors'
+import {
+  UpvsCorporateBody,
+  UpvsNaturalPerson,
+} from 'openapi-clients/slovensko-sk'
 
+import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
+import NasesUtilsService, {
+  isUpvsCorporateBody,
+  isUpvsNaturalPerson,
+} from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -28,7 +43,10 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
-import GinisAPIService from './subservices/ginis-api.service'
+import GinisAPIService, {
+  GinContactParams,
+  GinContactType,
+} from './subservices/ginis-api.service'
 
 @Injectable()
 export default class GinisService {
@@ -36,12 +54,14 @@ export default class GinisService {
 
   constructor(
     private readonly baConfigService: BaConfigService,
+    private readonly clientsService: ClientsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
     private mailgunService: MailgunService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private prismaService: PrismaService,
+    private readonly nasesUtilsService: NasesUtilsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
     this.logger = new LineLoggerSubservice('GinisService')
@@ -454,6 +474,174 @@ export default class GinisService {
         removeOnComplete: true,
         removeOnFail: true,
       },
+    )
+  }
+
+  private async fetchContactByUri(
+    uri: string,
+  ): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
+    const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
+    const response =
+      await this.clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost(
+        {
+          uris: [uri],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        },
+      )
+    const result = response.data
+
+    if (result.length === 0) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `handleDocumentSender: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases. Uri: ${uri}`,
+      )
+    }
+    if (result.length > 1) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `handleDocumentSender: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri. Uri: ${uri}`,
+      )
+    }
+    return result[0]
+  }
+
+  private async extractContactParamsFromUri(
+    form: Forms,
+  ): Promise<GinContactParams> {
+    if (!form.mainUri) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `handleDocumentSender: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
+      )
+    }
+
+    const contact = await this.fetchContactByUri(form.mainUri)
+    const params: GinContactParams = {
+      uri: form.mainUri,
+      email:
+        contact.emails && contact.emails.length > 0
+          ? contact.emails[0].address
+          : undefined,
+    }
+
+    if (isUpvsNaturalPerson(contact)) {
+      params.type = GinContactType.PHYSICAL_ENTITY
+      const extractedData =
+        this.nasesUtilsService.extractNaturalPersonData(contact)
+      if (extractedData.firstName.length > 0) {
+        params.firstName = extractedData.firstName.join(' ')
+      }
+      if (extractedData.lastName.length > 0) {
+        params.lastName = extractedData.lastName.join(' ')
+      }
+      return params
+    }
+
+    if (isUpvsCorporateBody(contact)) {
+      params.type = GinContactType.LEGAL_ENTITY
+      const extractedData =
+        this.nasesUtilsService.extractCorporateBodyData(contact)
+      if (extractedData.name) {
+        params.name = extractedData.name
+      }
+      if (extractedData.ico) {
+        params.ico = extractedData.ico
+      }
+      return params
+    }
+
+    // Fallback: return basic params with name if available
+    const fallbackContact = contact as UpvsNaturalPerson | UpvsCorporateBody
+    if (fallbackContact.name) {
+      params.name = fallbackContact.name
+    }
+    return params
+  }
+
+  private async handleDocumentSender(form: Forms): Promise<string> {
+    const ANONYMOUS_SENDER_ID = 'MAG0SE1GGEW9' // ID for anonymous sender in Ginis
+
+    const contactParams: GinContactParams = {}
+
+    if (form.externalId) {
+      // TODO: get contact by externalId
+    }
+
+    if (form.mainUri) {
+      const originalEmail = contactParams.email
+      Object.assign(contactParams, await this.extractContactParamsFromUri(form))
+      if (originalEmail) {
+        contactParams.email = originalEmail
+      }
+    }
+
+    // Skip update call if there are no updates to make
+    const hasContactInformation = Object.values(contactParams).some(
+      (value) => value !== undefined,
+    )
+    if (!hasContactInformation) {
+      return ANONYMOUS_SENDER_ID
+    }
+    return this.ginisApiService.upsertContact(contactParams)
+  }
+
+  public async createDocument(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSkGeneric,
+  ) {
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+        `No form data json in form id: ${form.id}`,
+      )
+    }
+    const senderId = await this.handleDocumentSender(form)
+
+    const documentId =
+      form.ginisDocumentId ??
+      (await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.createDocument(
+          form.id,
+          formDefinition.ginisDocumentTypeId,
+          form.updatedAt,
+          senderId,
+          extractFormSubjectTechnical(formDefinition, form.formDataJson!),
+        ),
+      ))
+
+    // called to reset the state to REGISTERED even if ginisDocumentId is already set
+    await this.updateSuccessfulRegistration(form.id, documentId)
+
+    const detail = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.getDocumentDetail(documentId),
+    )
+    if (!detail['Cj-dokumentu']) {
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.assignReferenceNumber(documentId),
+      )
+    }
+
+    const foundDocumentId = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.findDocumentId(form.id),
+    )
+    if (foundDocumentId === documentId) {
+      return
+    }
+
+    const propertyOrder = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.createFormIdProperty(documentId),
+    )
+    await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.setFormIdProperty(
+        documentId,
+        propertyOrder,
+        form.id,
+      ),
     )
   }
 }

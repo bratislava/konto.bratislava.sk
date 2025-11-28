@@ -1,318 +1,272 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import { LegalPerson, User } from '@prisma/client'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { ResponseVerificationIdentityCardDto } from '../../dtos/requests.verification.dto'
+import { VerificationErrorsEnum } from '../../verification.errors.enum'
 import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../../verification.errors.enum'
+  CatchDatabaseError,
+  IHasThrowerErrorGuard,
+} from '../../../utils/decorators/CatchDatabaseError.decorators'
 
 @Injectable()
-export class DatabaseSubserviceUser {
+export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
   constructor(
     private prisma: PrismaService,
-    private throwerErrorGuard: ThrowerErrorGuard
+    public readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
+  @CatchDatabaseError()
   async findUserByEmailOrExternalId(email: string, externalId: string): Promise<User | null> {
     let user: User | null
-    try {
+    user = await this.prisma.user.findUnique({
+      where: {
+        email,
+        ...ACTIVE_USER_FILTER,
+      },
+    })
+    if (!user) {
       user = await this.prisma.user.findUnique({
         where: {
-          email,
+          externalId,
           ...ACTIVE_USER_FILTER,
         },
       })
-      if (!user) {
-        user = await this.prisma.user.findUnique({
-          where: {
-            externalId,
-            ...ACTIVE_USER_FILTER,
-          },
-        })
-      }
-      return user
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.DATABASE_ERROR,
-        VerificationErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        error
-      )
     }
+    return user
   }
 
+  @CatchDatabaseError()
   async findLegalPersonByEmailOrExternalId(
     email: string,
     externalId: string
   ): Promise<LegalPerson | null> {
     let legalPerson: LegalPerson | null
-    try {
+    legalPerson = await this.prisma.legalPerson.findUnique({
+      where: {
+        email,
+      },
+    })
+    if (!legalPerson) {
       legalPerson = await this.prisma.legalPerson.findUnique({
         where: {
-          email,
+          externalId,
         },
       })
-      if (!legalPerson) {
-        legalPerson = await this.prisma.legalPerson.findUnique({
-          where: {
-            externalId,
-          },
-        })
-      }
-      return legalPerson
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.DATABASE_ERROR,
-        VerificationErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        error
-      )
     }
+    return legalPerson
   }
 
+  @CatchDatabaseError()
   async checkAndCreateUserIfoAndBirthNumber(
     cognitoUser: CognitoGetUserData,
     ifo: string | null,
     birthNumber: string,
     oldMagproxyDatabase: number
-  ): Promise<{ success: boolean }> {
-    try {
-      const checkUser = await this.prisma.user.findUnique({
+  ) {
+    const checkUser = await this.prisma.user.findUnique({
+      where: {
+        birthNumber,
+      },
+    })
+    const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
+
+    // TODO this is a weird situation. We should look more into this.
+    if (checkUser && user && checkUser.externalId !== cognitoUser.idUser) {
+      await this.prisma.user.update({
         where: {
-          birthNumber,
+          id: user.id,
+          ...ACTIVE_USER_FILTER,
+        },
+        data: {
+          lastVerificationIdentityCard: new Date(),
+          oldMagproxyDatabase: {
+            increment: oldMagproxyDatabase,
+          },
+          birthnumberAlreadyExistsCounter: {
+            increment: 1,
+          },
+          birthnumberAlreadyExistsLast: birthNumber,
+          externalId: cognitoUser.idUser,
         },
       })
-      if (checkUser && checkUser.externalId !== cognitoUser.idUser) {
-        const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
-        if (user) {
-          await this.prisma.user.update({
-            where: {
-              id: user.id,
-              ...ACTIVE_USER_FILTER,
-            },
-            data: {
-              lastVerificationIdentityCard: new Date(),
-              oldMagproxyDatabase: {
-                increment: oldMagproxyDatabase,
-              },
-              birthnumberAlreadyExistsCounter: {
-                increment: 1,
-              },
-              birthnumberAlreadyExistsLast: birthNumber,
-              externalId: cognitoUser.idUser,
-            },
-          })
-        } else {
-          await this.prisma.user.create({
-            data: {
-              externalId: cognitoUser.idUser,
-              lastVerificationIdentityCard: new Date(),
-              birthnumberAlreadyExistsCounter: 1,
-              birthnumberAlreadyExistsLast: birthNumber,
-              email: cognitoUser.email,
-            },
-          })
-        }
-        return { success: false }
-      } else {
-        const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
-        if (user) {
-          await this.prisma.user.update({
-            where: {
-              id: user.id,
-              ...ACTIVE_USER_FILTER,
-            },
-            data: {
-              ifo,
-              birthNumber,
-              lastVerificationIdentityCard: new Date(),
-              externalId: cognitoUser.idUser,
-              oldMagproxyDatabase: {
-                increment: oldMagproxyDatabase,
-              },
-            },
-          })
-        } else {
-          await this.prisma.user.create({
-            data: {
-              externalId: cognitoUser.idUser,
-              ifo,
-              lastVerificationIdentityCard: new Date(),
-              birthNumber,
-              email: cognitoUser.email,
-            },
-          })
-        }
-
-        return { success: true }
-      }
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.DATABASE_ERROR,
-        VerificationErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        error
-      )
+      return { success: true as const }
     }
+
+    if (checkUser && !user && checkUser.externalId !== cognitoUser.idUser) {
+      await this.prisma.user.create({
+        data: {
+          externalId: cognitoUser.idUser,
+          lastVerificationIdentityCard: new Date(),
+          birthnumberAlreadyExistsCounter: 1,
+          birthnumberAlreadyExistsLast: birthNumber,
+          email: cognitoUser.email,
+        },
+      })
+      return { success: true as const }
+    }
+
+    if (user) {
+      await this.prisma.user.update({
+        where: {
+          id: user.id,
+          ...ACTIVE_USER_FILTER,
+        },
+        data: {
+          ifo,
+          birthNumber,
+          lastVerificationIdentityCard: new Date(),
+          externalId: cognitoUser.idUser,
+          oldMagproxyDatabase: {
+            increment: oldMagproxyDatabase,
+          },
+        },
+      })
+      return { success: true as const }
+    }
+
+    await this.prisma.user.create({
+      data: {
+        externalId: cognitoUser.idUser,
+        ifo,
+        lastVerificationIdentityCard: new Date(),
+        birthNumber,
+        email: cognitoUser.email,
+      },
+    })
+    return { success: true as const }
   }
 
+  @CatchDatabaseError()
   async checkAndCreateLegalPersonIcoAndBirthNumber(
     cognitoUser: CognitoGetUserData,
     ico: string,
     birthNumber: string
-  ): Promise<{ success: boolean }> {
-    try {
-      const checkUser = await this.prisma.legalPerson.findUnique({
+  ) {
+    const checkUser = await this.prisma.legalPerson.findUnique({
+      where: {
+        ico_birthNumber: {
+          ico,
+          birthNumber,
+        },
+      },
+    })
+    const legalPerson = await this.findLegalPersonByEmailOrExternalId(
+      cognitoUser.email,
+      cognitoUser.idUser
+    )
+
+    // TODO this is a weird situation. We should look more into this.
+    if (checkUser && legalPerson && checkUser.externalId !== cognitoUser.idUser) {
+      await this.prisma.legalPerson.update({
+        where: {
+          id: legalPerson.id,
+        },
+        data: {
+          lastVerificationAttempt: new Date(),
+          birthnumberIcoAlreadyExistsCounter: {
+            increment: 1,
+          },
+          birthnumberIcoAlreadyExistsLast: birthNumber + '-' + ico,
+          externalId: cognitoUser.idUser,
+        },
+      })
+      return {
+        success: false as const,
+        reason: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
+      }
+    }
+
+    if (checkUser && !legalPerson && checkUser.externalId !== cognitoUser.idUser) {
+      await this.prisma.legalPerson.update({
         where: {
           ico_birthNumber: {
             ico,
             birthNumber,
           },
         },
+        data: {
+          externalId: cognitoUser.idUser,
+          email: cognitoUser.email,
+          lastVerificationAttempt: new Date(),
+        },
       })
-      if (checkUser && checkUser.externalId !== cognitoUser.idUser) {
-        const legalPerson = await this.findLegalPersonByEmailOrExternalId(
-          cognitoUser.email,
-          cognitoUser.idUser
-        )
-        if (legalPerson) {
-          await this.prisma.legalPerson.update({
-            where: {
-              id: legalPerson.id,
-            },
-            data: {
-              lastVerificationAttempt: new Date(),
-              birthnumberIcoAlreadyExistsCounter: {
-                increment: 1,
-              },
-              birthnumberIcoAlreadyExistsLast: birthNumber + '-' + ico,
-              externalId: cognitoUser.idUser,
-            },
-          })
-          return { success: false }
-        } else {
-          await this.prisma.legalPerson.update({
-            where: {
-              ico_birthNumber: {
-                ico,
-                birthNumber,
-              },
-            },
-            data: {
-              externalId: cognitoUser.idUser,
-              email: cognitoUser.email,
-              lastVerificationAttempt: new Date(),
-            },
-          })
-        }
-      } else {
-        const legalPerson = await this.findLegalPersonByEmailOrExternalId(
-          cognitoUser.email,
-          cognitoUser.idUser
-        )
-        if (legalPerson) {
-          await this.prisma.legalPerson.update({
-            where: {
-              id: legalPerson.id,
-            },
-            data: {
-              ico,
-              birthNumber,
-              lastVerificationAttempt: new Date(),
-              externalId: cognitoUser.idUser,
-            },
-          })
-        } else {
-          await this.prisma.legalPerson.create({
-            data: {
-              externalId: cognitoUser.idUser,
-              ico,
-              lastVerificationAttempt: new Date(),
-              birthNumber,
-              email: cognitoUser.email,
-            },
-          })
-        }
-      }
-
-      return { success: true }
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.DATABASE_ERROR,
-        VerificationErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        error
-      )
+      return { success: true as const }
     }
+
+    if (legalPerson) {
+      await this.prisma.legalPerson.update({
+        where: {
+          id: legalPerson.id,
+        },
+        data: {
+          externalId: cognitoUser.idUser,
+          ico,
+          birthNumber,
+          lastVerificationAttempt: new Date(),
+        },
+      })
+      return { success: true as const }
+    }
+
+    await this.prisma.legalPerson.create({
+      data: {
+        externalId: cognitoUser.idUser,
+        ico,
+        birthNumber,
+        lastVerificationAttempt: new Date(),
+        email: cognitoUser.email,
+      },
+    })
+    return { success: true as const }
   }
 
+  @CatchDatabaseError()
   async requeuedInVerificationIncrement(cognitoUser: CognitoGetUserData) {
-    try {
-      const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
-      if (user) {
-        return await this.prisma.user.update({
-          where: {
-            id: user.id,
-            ...ACTIVE_USER_FILTER,
+    const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
+    if (user) {
+      return await this.prisma.user.update({
+        where: {
+          id: user.id,
+          ...ACTIVE_USER_FILTER,
+        },
+        data: {
+          requeuedInVerification: {
+            increment: 1,
           },
-          data: {
-            requeuedInVerification: {
-              increment: 1,
-            },
-          },
-        })
-      } else {
-        return await this.prisma.user.create({
-          data: {
-            externalId: cognitoUser.idUser,
-            email: cognitoUser.email,
-            requeuedInVerification: 1,
-          },
-        })
-      }
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.DATABASE_ERROR,
-        VerificationErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        error
-      )
+        },
+      })
     }
+    return await this.prisma.user.create({
+      data: {
+        externalId: cognitoUser.idUser,
+        email: cognitoUser.email,
+        requeuedInVerification: 1,
+      },
+    })
   }
 
+  @CatchDatabaseError()
   async createVerificationUserInQueue(cognitoUser: CognitoGetUserData) {
-    try {
-      const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
-      if (user) {
-        return await this.prisma.user.update({
-          where: {
-            id: user.id,
-            ...ACTIVE_USER_FILTER,
-          },
-          data: {
-            requeuedInVerification: 0,
-          },
-        })
-      } else {
-        return await this.prisma.user.create({
-          data: {
-            externalId: cognitoUser.idUser,
-            email: cognitoUser.email,
-            requeuedInVerification: 0,
-          },
-        })
-      }
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.DATABASE_ERROR,
-        VerificationErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        error
-      )
+    const user = await this.findUserByEmailOrExternalId(cognitoUser.email, cognitoUser.idUser)
+    if (user) {
+      return await this.prisma.user.update({
+        where: {
+          id: user.id,
+          ...ACTIVE_USER_FILTER,
+        },
+        data: {
+          requeuedInVerification: 0,
+        },
+      })
     }
+    return await this.prisma.user.create({
+      data: {
+        externalId: cognitoUser.idUser,
+        email: cognitoUser.email,
+        requeuedInVerification: 0,
+      },
+    })
   }
 }

@@ -48,7 +48,7 @@ const formatTitleForObjectId = (title: string): string => {
   const OBJECT_ID_PREFIX = 'signed_form'
 
   // https://stackoverflow.com/a/37511463
-  const titleWithoutDiacritics = title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const titleWithoutDiacritics = title.normalize('NFD').replace(/\p{Diacritic}/gu, '')
   const formattedTitle = titleWithoutDiacritics.replace(/\s+/g, '_')
 
   return `${OBJECT_ID_PREFIX}_${formattedTitle}.xdcf`

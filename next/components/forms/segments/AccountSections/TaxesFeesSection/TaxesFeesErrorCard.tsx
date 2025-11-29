@@ -1,5 +1,6 @@
 import ImageMestskeKontoSituacia from '@assets/images/mestske-konto-situacia.png'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { ROUTES } from 'frontend/api/constants'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 
@@ -9,7 +10,7 @@ const TaxesFeesErrorCard = () => {
   const content = `
   <h4>${t('account_section_payment.error_card_title')}</h4>
   <div>${t('account_section_payment.error_card_content.title')}
-  <ul>${t('account_section_payment.error_card_content.list.other')}</ul><br /></div>
+  <ul>${t('account_section_payment.error_card_content.list.other', { url: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti') })}</ul><br /></div>
   `
 
   return (

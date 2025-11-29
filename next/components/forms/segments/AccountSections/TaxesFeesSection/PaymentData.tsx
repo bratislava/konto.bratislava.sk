@@ -167,6 +167,16 @@ const Details = ({ paymentMethod }: DetailsProps) => {
                   </span>
                 </span>
               </div>
+              <div className="h-0.5 w-full bg-gray-200" />
+              <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
+                <span className="text-p2">{t('beneficiary_name_title')}</span>
+                <span className="flex items-center gap-2">
+                  <span className="grow text-16-semibold">{t('beneficiary_name')}</span>
+                  <span className="size-6 cursor-pointer">
+                    <ClipboardCopy copyText={t('beneficiary_name')} />
+                  </span>
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex grow flex-col gap-4 self-stretch rounded-lg border-solid border-gray-200 p-0 lg:flex-row lg:border-2 lg:p-6">

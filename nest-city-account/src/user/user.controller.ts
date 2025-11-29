@@ -28,6 +28,7 @@ import {
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
+import { UpsertUserRecordClientRequestDto } from './dtos/user.requests.dto'
 import { UserService } from './user.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -51,9 +52,13 @@ export class UserController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get or create user with his data',
+    summary:
+      'Get or create user with their data (use when already logged in, not duing login/registration)',
     description:
-      'This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.',
+      'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. ' +
+      'Use this endpoint AFTER login/registration, not during the login/registration flow. ' +
+      'For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. ' +
+      'This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).',
   })
   @ApiResponse({
     status: 200,
@@ -75,26 +80,42 @@ export class UserController {
   async getOrCreateUser(
     @User() user: CognitoGetUserData
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      const result = await this.userService.getOrCreateUserData(user)
-      return result
-    }
+    return this.userService.getOrCreateUserOrLegalPerson(user)
+  }
 
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const result = await this.userService.getOrCreateLegalPersonData(user)
-      return result
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Upsert user and record login client (use during login/registration)',
+    description:
+      'Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. ' +
+      'Use this endpoint DURING login/registration flows to track login client usage. ' +
+      'For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. ' +
+      'This endpoint should be called once per login/registration to properly track which client was used.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User/legal person data with login client recorded successfully',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataDto) },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @UseGuards(CognitoGuard)
+  @Post('upsert-user-record-client')
+  async upsertUserAndRecordClient(
+    @User() user: CognitoGetUserData,
+    @Body() body: UpsertUserRecordClientRequestDto
+  ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
+    const userData = await this.userService.getOrCreateUserOrLegalPerson(user)
+    await this.userService.recordLoginClient(user, body.loginClient)
+    return userData
   }
 
   @HttpCode(200)

@@ -382,6 +382,8 @@
   "payment_data": "Platobné metódy",
   "payment_data_installments": "Rozpis splátok",
   "variable_symbol": "Variabilný symbol",
+  "bank_account_holder_name": "Meno príjemcu",
+  "full_city_name": "Hlavné mesto Slovenskej republiky Bratislava",
   "qr_code_and_bank_transfer": "QR kód alebo bankový prevod",
   "card_payment": "Platba kartou",
   "qr_code": "QR kód",

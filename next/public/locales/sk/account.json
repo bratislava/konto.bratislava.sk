@@ -280,8 +280,6 @@
     "set_delivery_method_content": "## Prehľad daní a poplatkov\n\nNa zobrazenie prehľadu si najskôr **nastavte spôsob informovania o výške daní a poplatkov**.\n\nAk máte aktívnu elektronickú schránku na portáli **slovensko.sk**, nič nenastavujete. Spôsob informovania sa vám aktivuje automaticky.",
     "verify_identity_content": "## Prehľad daní a poplatkov\n\nNa zobrazenie prehľadu najskôr **overte svoju totožnosť a nastavte si spôsob informovania o výške daní a poplatkov.**\n\nAk máte aktivovanú elektronickú schránku na portáli **slovensko.sk**, spôsob informovania sa vám nastaví automaticky. Stačí overiť svoju totožnosť.",
     "verify_and_set": "Overiť a nastaviť",
-    "delivery_method": "Spôsob doručenia",
-    "tax_administrator": "Správca dane",
     "your_tax_administrator": "Váš správca dane",
     "tax_paid": "Daň z nehnuteľností je zaplatená. Ďakujeme.",
     "tax_payment_year_over": "Po termíne poslednej splátky je možné daň zaplatiť už len v plnej výške.",
@@ -358,7 +356,7 @@
     "edesk": "Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte",
     "change_button": "Zmeniť"
   },
-  "communication_channel_info_title": "Spôsob doručovania na rok {{year}}",
+  "communication_channel_info_title": "Spôsob informovania na rok {{year}}",
   "communication_channel_info_change_link_text": "Spôsob doručenia zmeníte na stránke <a href={{url}}>Dane a poplatky</a>. <br /> Zaplatiť daň môžete cez túto stránku.",
   "working_hours": "Úradné hodiny",
   "to_pay": "Prejsť na platbu",
@@ -394,7 +392,6 @@
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
   "thank_you": {
     "footer_text": "© {{currentYear}} Hlavné mesto Bratislava",
-    "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
     "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
     "button_privacy_text": "Ochrana osobných údajov",
@@ -460,9 +457,6 @@
     "content": "Vytvorte si svoj účet a majte rôzne služby mesta na jednom mieste, zaplaťte daň z nehnuteľností online alebo si kúpte lístok na kúpalisko bez čakania v rade.",
     "button_text": "Viac informácií"
   },
-  "tax_footer": {
-    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href={{url}}>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
-  },
   "payment_schedule": {
     "title": "Splátkový kalendár",
     "subtitle": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
@@ -479,6 +473,7 @@
     "title_payment_rest": "Platba zostávajúcej sumy",
     "title_payment_installments": "Platba splátkou",
     "installments": {
+      "not_available": "Prvá splátka do 15 dní odo dňa právoplatnosti rozhodnutia",
       "0": "Prvá splátka do {{date}}",
       "1": "Druhá splátka do {{date}}",
       "2": "Tretia splátka do {{date}}",
@@ -498,6 +493,7 @@
     "tax_payment_full": "<strong>Platba plnej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_rest": "<strong>Platba zostávajúcej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_rest_subtitle": "Platba do {{date}}",
+    "tax_payment_rest_subtitle_not_available": "Úhrada do 15 dní odo dňa právoplatnosti rozhodnutia",
     "tax_payment_under_threshold_alert": "Ak je vaša daň 66,00 € alebo menej, platba v splátkach nie je možná.",
     "tax_payment_installment": "<strong>Platba splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_installment_subtitle": "Platba nasledujúcej splátky do {{date}}",

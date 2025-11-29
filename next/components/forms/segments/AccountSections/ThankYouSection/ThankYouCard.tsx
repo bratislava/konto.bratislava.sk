@@ -1,5 +1,4 @@
-import PaymentDeclined from '@assets/icons/other/payment-declined.svg'
-import { CheckIcon } from '@assets/ui-icons'
+import { CheckIcon, CrossIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import cn from 'frontend/cn'
 
@@ -43,7 +42,7 @@ const ThankYouCard = ({
         {success ? (
           <CheckIcon className="flex size-8 items-center justify-center text-success-700 md:size-10" />
         ) : (
-          <PaymentDeclined className="flex size-8 items-center justify-center text-negative-700 md:size-10" />
+          <CrossIcon className="flex size-8 items-center justify-center text-negative-700 md:size-10" />
         )}
       </span>
       <div className="flex flex-col items-center gap-8 md:gap-3">

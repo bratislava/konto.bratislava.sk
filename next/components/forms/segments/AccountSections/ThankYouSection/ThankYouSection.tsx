@@ -1,4 +1,5 @@
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
+import { ROUTES } from 'frontend/api/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
@@ -11,6 +12,10 @@ export const PaymentStatusOptions = {
   ALREADY_PAID: 'payment-already-paid',
   FAILED: 'payment-failed',
   SUCCESS: 'payment-success',
+}
+
+export enum PaymentTypeEnum {
+  DZN = 'DzN',
 }
 
 const statusToTranslationPath = {
@@ -32,6 +37,13 @@ const statusToTranslationPath = {
   },
 }
 
+const getTaxDetailLink = (year?: string, paymentType?: PaymentTypeEnum) => {
+  if (year && paymentType === PaymentTypeEnum.DZN) {
+    return ROUTES.TAXES_AND_FEES_YEAR(Number(year))
+  }
+  return ROUTES.TAXES_AND_FEES
+}
+
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
@@ -44,6 +56,19 @@ const ThankYouSection = () => {
         ? router.query.status
         : PaymentStatusOptions.FAILED_TO_VERIFY,
     [router.query.status],
+  )
+
+  const paymentType = useMemo(
+    () =>
+      typeof router.query.paymentType === 'string' &&
+      Object.values(PaymentTypeEnum).includes(router.query.paymentType as PaymentTypeEnum) // test how this behaves when string is not a valid PaymentTypeEnum
+        ? (router.query.paymentType as PaymentTypeEnum)
+        : undefined,
+    [router.query.paymentType],
+  )
+  const year = useMemo(
+    () => (typeof router.query.year === 'string' ? router.query.year : undefined),
+    [router.query.year],
   )
   const success =
     status === PaymentStatusOptions.SUCCESS || status === PaymentStatusOptions.ALREADY_PAID
@@ -62,7 +87,8 @@ const ThankYouSection = () => {
             title={t(statusToTranslationPath[status].title)}
             content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
             firstButtonTitle={t('thank_you.button_to_formular_text')}
-            secondButtonTitle={t('thank_you.button_to_profil_text')}
+            secondButtonTitle={t('thank_you.button_to_tax_detail_text')}
+            secondButtonLink={getTaxDetailLink(year, paymentType)}
             feedbackLink={paymentSuccessFeedbackLink ?? undefined}
           />
         ) : (
@@ -71,6 +97,7 @@ const ThankYouSection = () => {
             title={t(statusToTranslationPath[status].title)}
             content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
             firstButtonTitle={t('thank_you.button_restart_text')}
+            firstButtonLink={getTaxDetailLink(year, paymentType)}
             secondButtonTitle={t('thank_you.button_cancel_text')}
           />
         )}

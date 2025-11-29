@@ -15,6 +15,9 @@ import Modal, { ModalProps } from '../../../simple-components/Modal'
 import Radio from '../../../widget-components/RadioButton/Radio'
 import RadioGroup from '../../../widget-components/RadioButton/RadioGroup'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
+import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
+import { useStrapiTax } from './useStrapiTax'
+import { useTaxChannel } from './useTaxChannel'
 
 type AgreementProps = {
   onScrollToBottom: () => void
@@ -188,6 +191,8 @@ const TaxesFeesDeliveryMethodChangeModal = ({
   const { t } = useTranslation('account')
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { channelChangeEffectiveNextYear } = useTaxChannel()
+  const strapiTax = useStrapiTax()
 
   const handleSubmit = async ({ data }: { data: FormData }) => {
     return changeSubscription(data.isSubscribed, {
@@ -213,6 +218,16 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       <Heading slot="title" className="mb-2 text-h3">
         {t('delivery_method_change_modal_title')}
       </Heading>
+      <AccountMarkdown
+        content={t('delivery_method_change_modal_description')}
+        variant="sm"
+        className="mb-4"
+      />
+      {channelChangeEffectiveNextYear && (
+        <div className="mb-4">
+          <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
+        </div>
+      )}
       <Form
         defaultValues={{
           isSubscribed: subType ? isSubscribed : undefined,

@@ -2,7 +2,10 @@ import Alert from 'components/forms/info-components/Alert'
 import { ROUTES } from 'frontend/api/constants'
 import { formatDate } from 'frontend/utils/general'
 import { Trans, useTranslation } from 'next-i18next'
-import { ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum } from 'openapi-clients/tax'
+import {
+  ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
+  TaxPaidStatusEnum,
+} from 'openapi-clients/tax'
 import React from 'react'
 
 import PaymentMethodItem from './PaymentMethodItem'
@@ -22,7 +25,11 @@ const TaxFeePaymentMethodSection = () => {
             title={
               <Trans
                 ns="account"
-                i18nKey="tax_detail_section.tax_payment_rest"
+                i18nKey={
+                  taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid
+                    ? 'tax_detail_section.tax_payment_rest'
+                    : 'tax_detail_section.tax_payment_full'
+                }
                 components={{ strong: <strong className="font-semibold" /> }}
               />
             }
@@ -36,7 +43,9 @@ const TaxFeePaymentMethodSection = () => {
                 : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
             }
             amount={taxData.overallBalance}
-            buttonText={t('pay_all')}
+            buttonText={
+              taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid ? t('pay_rest') : t('pay_all')
+            }
             buttonVariant="black-solid"
             buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}
           />

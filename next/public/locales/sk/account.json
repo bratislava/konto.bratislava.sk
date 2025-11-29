@@ -494,6 +494,7 @@
     "tax_payment_rest": "<strong>Platba zostávajúcej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_rest_subtitle": "Platba do {{date}}",
     "tax_payment_rest_subtitle_not_available": "Úhrada do 15 dní odo dňa právoplatnosti rozhodnutia",
+    "tax_payment_rest_subtitle_not_available": "Úhrada do 15 dní odo dňa právoplatnosti rozhodnutia",
     "tax_payment_under_threshold_alert": "Ak je vaša daň 66,00 € alebo menej, platba v splátkach nie je možná.",
     "tax_payment_installment": "<strong>Platba splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
     "tax_payment_installment_subtitle": "Platba nasledujúcej splátky do {{date}}",

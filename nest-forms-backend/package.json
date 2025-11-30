@@ -75,7 +75,7 @@
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "5.1.4",
     "@golevelup/ts-jest": "^0.7.0",
-    "@nestjs/cli": "11.0.12",
+    "@nestjs/cli": "11.0.14",
     "@nestjs/schematics": "11.0.9",
     "@nestjs/testing": "11.1.9",
     "@ngneat/falso": "^8.0.2",

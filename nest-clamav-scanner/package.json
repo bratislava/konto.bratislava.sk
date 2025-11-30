@@ -39,7 +39,7 @@
     "base64url": "^3.0.1",
     "clamdjs": "^1.0.2",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.2",
+    "class-validator": "^0.14.3",
     "husky": "^9.1.7",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.2.0",

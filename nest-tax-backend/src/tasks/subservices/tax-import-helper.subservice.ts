@@ -110,7 +110,7 @@ export default class TaxImportHelperSubservice {
       WHERE NOT EXISTS (
         SELECT 1
         FROM "Tax" t
-        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}
+        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}::"TaxType"
       )
       ORDER BY 
         (tp."createdAt" = tp."updatedAt") DESC,

@@ -123,7 +123,7 @@ export class VerificationSubservice {
     }
 
     // request RFO data and handle exceptions that may be resolved later
-    let rfoData = await this.physicalEntityService.createFromBirthNumber(data.birthNumber)
+    const rfoData = await this.physicalEntityService.createFromBirthNumber(data.birthNumber)
 
     if (!rfoData.success) {
       return rfoData

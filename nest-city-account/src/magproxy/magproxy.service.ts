@@ -9,14 +9,12 @@ import {
   RfoIdentityListSchema,
 } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { RpoDataMagproxyDto } from './dtos/magproxy.dto'
 import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
 import { CustomErrorEnums, ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ClientsService from '../clients/clients.service'
 import {
   VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
 } from '../user-verification/verification.errors.enum'
 
 const httpsAgent = new https.Agent({

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 import { MagproxyService } from '../../../magproxy/magproxy.service'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
@@ -7,12 +7,11 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
-  ResponseVerificationIdentityCardDto,
 } from '../../dtos/requests.verification.dto'
 import { DatabaseSubserviceUser } from './database.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
-import { CustomErrorEnums, ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
-import { RfoIdentityList, RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
+import { CustomErrorEnums } from '../../../utils/guards/dtos/error.dto'
+import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'

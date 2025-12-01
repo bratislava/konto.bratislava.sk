@@ -1,14 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import alertReporting from '../constants/error.alerts'
-import { ResponseVerificationIdentityCardDto } from '../../user-verification/dtos/requests.verification.dto'
-import { CognitoGetUserData } from '../global-dtos/cognito.dto'
 import { CustomErrorEnums, ErrorSymbols, ResponseErrorInternalDto } from './dtos/error.dto'
-import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../../user-verification/verification.errors.enum'
-import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
-import { AxiosError } from 'axios'
 
 @Injectable()
 export default class ThrowerErrorGuard {

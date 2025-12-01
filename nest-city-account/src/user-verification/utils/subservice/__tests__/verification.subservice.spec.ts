@@ -1,5 +1,4 @@
 import { createMock } from '@golevelup/ts-jest'
-import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { MagproxyService } from '../../../../magproxy/magproxy.service'

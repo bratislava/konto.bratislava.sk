@@ -12,7 +12,6 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 import {
   SendToQueueErrorsEnum,
   SendToQueueErrorsResponseEnum,
@@ -29,7 +28,6 @@ import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
   ResponseVerificationDto,
-  ResponseVerificationIdentityCardDto,
   ResponseVerificationIdentityCardMessageEnum,
   ResponseVerificationIdentityCardToQueueDto,
 } from './dtos/requests.verification.dto'

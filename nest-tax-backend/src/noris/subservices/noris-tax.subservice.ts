@@ -3,19 +3,12 @@ import { TaxType } from '@prisma/client'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
-import { PrismaService } from '../../prisma/prisma.service'
 import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { NorisRealEstateTax } from '../types/noris.types'
-import { NorisConnectionSubservice } from './noris-connection.subservice'
-import { NorisPaymentSubservice } from './noris-payment.subservice'
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
-import { NorisValidatorSubservice } from './noris-validator.subservice'
 
 type TaxTypeToNorisSubservice = {
   [TaxType.DZN]: NorisTaxRealEstateSubservice
@@ -33,13 +26,6 @@ export class NorisTaxSubservice {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly norisTaxRealEstateSubservice: NorisTaxRealEstateSubservice,
     private readonly norisTaxCommunalWasteSubservice: NorisTaxCommunalWasteSubservice,
-    private readonly connectionService: NorisConnectionSubservice,
-    private readonly cityAccountSubservice: CityAccountSubservice,
-    private readonly paymentSubservice: NorisPaymentSubservice,
-    private readonly prismaService: PrismaService,
-    private readonly bloomreachService: BloomreachService,
-    private readonly norisValidatorSubservice: NorisValidatorSubservice,
-    private readonly databaseSubservice: DatabaseSubservice,
   ) {}
 
   private getImplementationByType<TTaxType extends TaxType>(

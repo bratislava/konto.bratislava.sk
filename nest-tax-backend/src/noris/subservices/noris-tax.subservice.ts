@@ -203,14 +203,14 @@ export class NorisTaxSubservice {
       ])
       const batchSizeLimit = parseInt(config.TAX_IMPORT_BATCH_SIZE, 10)
       if (Number.isNaN(batchSizeLimit) || batchSizeLimit < 0) {
-        this.logger.log(
+        this.logger.warn(
           `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax records`,
         )
         return undefined
       }
       return batchSizeLimit
     } catch (error) {
-      this.logger.log(
+      this.logger.warn(
         'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax records',
       )
       return undefined

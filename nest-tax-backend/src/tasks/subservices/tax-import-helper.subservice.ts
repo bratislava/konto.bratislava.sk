@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -91,6 +92,7 @@ export default class TaxImportHelperSubservice {
    * Get prioritized birth numbers for tax import with metadata
    * @param year - The tax year
    * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by updatedAt
+   * @returns {Object} - The prioritized birth numbers and newly created birth numbers (imported immediately), these sets are disjoint
    */
   async getPrioritizedBirthNumbersWithMetadata(
     year: number,
@@ -111,17 +113,25 @@ export default class TaxImportHelperSubservice {
       )
       ORDER BY 
         (tp."createdAt" = tp."updatedAt") DESC,
-        CASE WHEN ${isImportPhase} THEN tp."readyToImport"::int ELSE 0 END DESC,
+        ${isImportPhase ? Prisma.sql`tp."readyToImport"::int` : Prisma.sql`0`} DESC,
         tp."updatedAt" ASC
       LIMIT ${this.UPLOAD_BIRTHNUMBERS_BATCH}
     `
 
-    const birthNumbers = prioritized.map((p) => p.birthNumber)
-    const newlyCreated = prioritized
-      .filter((p) => p.isNewlyCreated)
-      .map((p) => p.birthNumber)
+    const birthNumbers: string[] = []
+    const newlyCreated: string[] = []
+    prioritized.forEach((p) => {
+      if (p.isNewlyCreated) {
+        newlyCreated.push(p.birthNumber)
+      } else {
+        birthNumbers.push(p.birthNumber)
+      }
+    })
 
-    return { birthNumbers, newlyCreated }
+    return {
+      birthNumbers,
+      newlyCreated,
+    }
   }
 
   async importTaxes(birthNumbers: string[], year: number): Promise<void> {

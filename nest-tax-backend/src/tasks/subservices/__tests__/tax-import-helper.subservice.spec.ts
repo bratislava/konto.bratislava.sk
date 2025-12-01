@@ -333,11 +333,7 @@ describe('TaxImportHelperSubservice', () => {
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(year)
 
-      expect(result.birthNumbers).toEqual([
-        '123456/7890',
-        '987654/3210',
-        '111111/2222',
-      ])
+      expect(result.birthNumbers).toEqual(['987654/3210'])
       expect(result.newlyCreated).toEqual(['123456/7890', '111111/2222'])
       expect(queryRawSpy).toHaveBeenCalled()
     })

@@ -672,8 +672,7 @@ describe('TasksService', () => {
     it('should import newly created users immediately regardless of window or limit', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
       const newlyCreated = ['123456/7890', '111111/2222']
-      const otherUsers = ['987654/3210']
-      const allBirthNumbers = [...newlyCreated, ...otherUsers]
+      const birthNumbers = ['987654/3210']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -687,7 +686,7 @@ describe('TasksService', () => {
       jest
         .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
         .mockResolvedValue({
-          birthNumbers: allBirthNumbers,
+          birthNumbers,
           newlyCreated,
         })
       const importTaxesSpy = jest
@@ -702,15 +701,14 @@ describe('TasksService', () => {
       // Newly created users should be imported immediately
       expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
       // Other users should be prepared (since outside window and over limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(otherUsers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
     it('should import newly created users immediately when outside window and under limit', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
       const newlyCreated = ['123456/7890']
-      const otherUsers = ['987654/3210']
-      const allBirthNumbers = [...newlyCreated, ...otherUsers]
+      const birthNumbers = ['987654/3210']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -724,7 +722,7 @@ describe('TasksService', () => {
       jest
         .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
         .mockResolvedValue({
-          birthNumbers: allBirthNumbers,
+          birthNumbers,
           newlyCreated,
         })
       const importTaxesSpy = jest
@@ -739,15 +737,14 @@ describe('TasksService', () => {
       // Newly created users should be imported immediately
       expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
       // Other users should be prepared (since outside window and under limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(otherUsers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
     it('should import newly created users immediately when within window and over limit', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
       const newlyCreated = ['123456/7890']
-      const otherUsers = ['987654/3210']
-      const allBirthNumbers = [...newlyCreated, ...otherUsers]
+      const birthNumbers = ['987654/3210']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -762,7 +759,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
 
         .mockResolvedValue({
-          birthNumbers: allBirthNumbers,
+          birthNumbers,
           newlyCreated,
         })
       const importTaxesSpy = jest
@@ -777,15 +774,14 @@ describe('TasksService', () => {
       // Newly created users should be imported immediately
       expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
       // Other users should be prepared (since within window and over limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(otherUsers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
     it('should import newly created users even when within window and under limit', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
       const newlyCreated = ['123456/7890']
-      const otherUsers = ['987654/3210']
-      const allBirthNumbers = [...newlyCreated, ...otherUsers]
+      const birthNumbers = ['987654/3210']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -799,7 +795,7 @@ describe('TasksService', () => {
       jest
         .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
         .mockResolvedValue({
-          birthNumbers: allBirthNumbers,
+          birthNumbers,
           newlyCreated,
         })
       const importTaxesSpy = jest
@@ -817,7 +813,7 @@ describe('TasksService', () => {
         expect.any(Number),
       )
       expect(importTaxesSpy).toHaveBeenCalledWith(
-        otherUsers,
+        birthNumbers,
         expect.any(Number),
       )
       expect(importTaxesSpy).toHaveBeenCalledTimes(2)
@@ -826,7 +822,7 @@ describe('TasksService', () => {
 
     it('should process remaining users based on window and limit when no newly created users', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
-      const otherUsers = ['987654/3210', '555555/6666']
+      const birthNumbers = ['987654/3210', '555555/6666']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -840,7 +836,7 @@ describe('TasksService', () => {
       jest
         .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
         .mockResolvedValue({
-          birthNumbers: otherUsers,
+          birthNumbers,
           newlyCreated: [],
         })
       const importTaxesSpy = jest
@@ -851,7 +847,7 @@ describe('TasksService', () => {
 
       // Only other users should be imported (no newly created)
       expect(importTaxesSpy).toHaveBeenCalledWith(
-        otherUsers,
+        birthNumbers,
         expect.any(Number),
       )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1)
@@ -860,7 +856,7 @@ describe('TasksService', () => {
     it('should prepare remaining users when outside window or over limit', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
       const newlyCreated = ['123456/7890']
-      const otherUsers = ['987654/3210']
+      const birthNumbers = ['987654/3210']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -874,7 +870,7 @@ describe('TasksService', () => {
       jest
         .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
         .mockResolvedValue({
-          birthNumbers: [...newlyCreated, ...otherUsers],
+          birthNumbers,
           newlyCreated,
         })
       const importTaxesSpy = jest
@@ -889,7 +885,7 @@ describe('TasksService', () => {
       // Newly created should be imported
       expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
       // Other users should be prepared (outside window)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(otherUsers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
     })
 
     it('should return early when no birth numbers found', async () => {
@@ -926,8 +922,7 @@ describe('TasksService', () => {
     it('should only import newly created users when no other users are found', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
       const newlyCreated = ['123456/7890']
-      const otherUsers: string[] = []
-      const allBirthNumbers = [...newlyCreated, ...otherUsers]
+      const birthNumbers: string[] = []
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -941,7 +936,7 @@ describe('TasksService', () => {
       jest
         .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
         .mockResolvedValue({
-          birthNumbers: allBirthNumbers,
+          birthNumbers,
           newlyCreated,
         })
       const importTaxesSpy = jest

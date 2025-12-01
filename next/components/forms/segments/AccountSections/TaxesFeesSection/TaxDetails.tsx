@@ -53,7 +53,7 @@ const TaxDetails = () => {
           data={taxData.itemizedDetail.constructionTaxDetail}
         />
       </div>
-      <div className="flex w-full flex-col rounded-lg border-gray-200 bg-gray-100 px-6 py-2 lg:border-2">
+      <div className="flex w-full flex-col rounded-lg border-gray-200 bg-gray-50 px-6 py-2 lg:border-2">
         <div className="flex w-full justify-between border-b-2 border-gray-200 py-4">
           <span className="text-h4">{t('tax')}</span>
           <span className="text-h4-semibold">

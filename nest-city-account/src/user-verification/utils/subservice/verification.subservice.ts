@@ -10,11 +10,11 @@ import {
 } from '../../dtos/requests.verification.dto'
 import { DatabaseSubserviceUser } from './database.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
-import { CustomErrorEnums } from '../../../utils/guards/dtos/error.dto'
 import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
+import { VerificationReturnType } from '../../types'
 
 @Injectable()
 export class VerificationSubservice {
@@ -29,7 +29,7 @@ export class VerificationSubservice {
     this.logger = new LineLoggerSubservice(VerificationSubservice.name)
   }
 
-  private checkIdentityCard(rfoData: RfoIdentityListElement, identityCard: string) {
+  private checkIdentityCard(rfoData: RfoIdentityListElement, identityCard: string): VerificationReturnType {
     if (rfoData.datumUmrtia && rfoData.datumUmrtia !== 'unknown' && rfoData.datumUmrtia !== '') {
       return { success: false as const, reason: VerificationErrorsEnum.DEAD_PERSON }
     }
@@ -70,7 +70,7 @@ export class VerificationSubservice {
     }
   }
 
-  private verifyRpoStatutory(legalEntity: ResponseRpoLegalPersonDto, birthNumber: string) {
+  private verifyRpoStatutory(legalEntity: ResponseRpoLegalPersonDto, birthNumber: string): VerificationReturnType {
     const statutoryBodies = legalEntity.statutarneOrgany
 
     for (const statutoryBody of statutoryBodies ?? []) {
@@ -111,7 +111,7 @@ export class VerificationSubservice {
     user: CognitoGetUserData,
     data: RequestBodyVerifyIdentityCardDto,
     ico?: string
-  ) {
+  ): Promise<VerificationReturnType> {
     if (!isValidBirthNumber(data.birthNumber)) {
       return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
     }
@@ -142,7 +142,7 @@ export class VerificationSubservice {
       }
 
       const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
-      let databaseResult: { success: false; reason: CustomErrorEnums } | { success: true }
+      let databaseResult: VerificationReturnType
       if (ico) {
         databaseResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
           user,
@@ -220,7 +220,7 @@ export class VerificationSubservice {
   async verifyIcoIdentityCard(
     user: CognitoGetUserData,
     data: RequestBodyVerifyWithRpoDto
-  ): Promise<{ success: true } | { success: false; reason: CustomErrorEnums }> {
+  ): Promise<VerificationReturnType> {
     if (!isValidBirthNumber(data.birthNumber)) {
       throw this.throwerErrorGuard.BadRequestException(
         VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,

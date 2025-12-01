@@ -36,6 +36,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { VerificationReturnType } from './types'
 
 @Injectable()
 export class VerificationService {
@@ -145,7 +146,7 @@ export class VerificationService {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(_: unknown, amqpMessage: ConsumeMessage) {
     const data = JSON.parse(amqpMessage.content.toString()) as RabbitMessageDto
-    let verification: { success: true } | { success: false; reason: CustomErrorEnums }
+    let verification: VerificationReturnType
     try {
       if (data.msg.type === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
         const body = data.msg.data as RequestBodyVerifyIdentityCardDto

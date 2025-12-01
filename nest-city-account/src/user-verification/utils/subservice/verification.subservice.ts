@@ -29,7 +29,10 @@ export class VerificationSubservice {
     this.logger = new LineLoggerSubservice(VerificationSubservice.name)
   }
 
-  private checkIdentityCard(rfoData: RfoIdentityListElement, identityCard: string): VerificationReturnType {
+  private checkIdentityCard(
+    rfoData: RfoIdentityListElement,
+    identityCard: string
+  ): VerificationReturnType {
     if (rfoData.datumUmrtia && rfoData.datumUmrtia !== 'unknown' && rfoData.datumUmrtia !== '') {
       return { success: false as const, reason: VerificationErrorsEnum.DEAD_PERSON }
     }
@@ -70,7 +73,10 @@ export class VerificationSubservice {
     }
   }
 
-  private verifyRpoStatutory(legalEntity: ResponseRpoLegalPersonDto, birthNumber: string): VerificationReturnType {
+  private verifyRpoStatutory(
+    legalEntity: ResponseRpoLegalPersonDto,
+    birthNumber: string
+  ): VerificationReturnType {
     const statutoryBodies = legalEntity.statutarneOrgany
 
     for (const statutoryBody of statutoryBodies ?? []) {
@@ -222,10 +228,7 @@ export class VerificationSubservice {
     data: RequestBodyVerifyWithRpoDto
   ): Promise<VerificationReturnType> {
     if (!isValidBirthNumber(data.birthNumber)) {
-      throw this.throwerErrorGuard.BadRequestException(
-        VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
-        'Birth number has wrong format.'
-      )
+      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
     }
 
     const rpoData = await this.magproxyService.rpoIco(data.ico)
@@ -234,10 +237,7 @@ export class VerificationSubservice {
     }
 
     if (!rpoData.data) {
-      throw this.throwerErrorGuard.NotFoundException(
-        VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS,
-        `Field ico does not exists in RPO object from registry.`
-      )
+      return { success: false, reason: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS }
     }
 
     const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)

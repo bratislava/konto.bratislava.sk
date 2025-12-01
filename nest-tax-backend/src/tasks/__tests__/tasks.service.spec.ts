@@ -701,9 +701,17 @@ describe('TasksService', () => {
       await service.loadRealEstateTaxesForUsers()
 
       // Newly created users should be imported immediately
-      expect(importTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (since outside window and over limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
@@ -737,9 +745,17 @@ describe('TasksService', () => {
       await service.loadRealEstateTaxesForUsers()
 
       // Newly created users should be imported immediately
-      expect(importTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (since outside window and under limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
@@ -774,9 +790,17 @@ describe('TasksService', () => {
       await service.loadRealEstateTaxesForUsers()
 
       // Newly created users should be imported immediately
-      expect(importTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (since within window and over limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
@@ -888,9 +912,17 @@ describe('TasksService', () => {
       await service.loadRealEstateTaxesForUsers()
 
       // Newly created should be imported
-      expect(importTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (outside window)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
     })
 
     it('should return early when no birth numbers found', async () => {
@@ -953,7 +985,11 @@ describe('TasksService', () => {
 
       await service.loadRealEstateTaxesForUsers()
 
-      expect(importTaxesSpy).toHaveBeenCalledWith(TaxType.DZN, newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
     })

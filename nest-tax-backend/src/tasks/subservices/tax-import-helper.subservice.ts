@@ -113,7 +113,7 @@ export default class TaxImportHelperSubservice {
       )
       ORDER BY 
         (tp."createdAt" = tp."updatedAt") DESC,
-        ${isImportPhase ? Prisma.sql`tp."readyToImport"::int` : Prisma.sql`0`} DESC,
+        ${isImportPhase ? Prisma.sql`tp."readyToImport"::int` : Prisma.sql`0::int`} DESC,
         tp."updatedAt" ASC
       LIMIT ${this.UPLOAD_BIRTHNUMBERS_BATCH}
     `

@@ -353,6 +353,7 @@
   "thank_you.result.payment_already_paid.title": "Platba už bola vykonaná",
   "thank_you.result.payment_already_paid.content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
   "thank_you.button_to_formular_text": "Vyplniť dotazník",
+  "thank_you.button_to_tax_detail_text": "Detail dane",
   "thank_you.button_to_profile_text": "Pokračovať do konta",
   "thank_you.button_to_tax_detail_text": "Detail dane",
   "thank_you.button_to_formular_text_2": "Vyplniť dotazník",

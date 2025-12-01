@@ -13,9 +13,9 @@ export function CatchDatabaseError() {
   ) {
     const originalMethod = descriptor.value
 
-    descriptor.value = async function (this: IHasThrowerErrorGuard, ...args: any[]) {
+    descriptor.value = async function (this: IHasThrowerErrorGuard, ...args: unknown[]) {
       try {
-        return await originalMethod.apply(this, args)
+        return originalMethod.apply(this, args)
       } catch (error) {
         if (!this.throwerErrorGuard) {
           throw new Error(

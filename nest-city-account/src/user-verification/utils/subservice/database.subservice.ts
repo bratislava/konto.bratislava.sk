@@ -91,7 +91,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
           externalId: cognitoUser.idUser,
         },
       })
-      return { success: true as const }
+      return { success: false as const, reason: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY }
     }
 
     if (checkUser && !user && checkUser.externalId !== cognitoUser.idUser) {

@@ -3,6 +3,7 @@ import { TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
 import pLimit from 'p-limit'
 
+import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -10,6 +11,7 @@ import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitio
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
+import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
@@ -39,6 +41,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     bloomreachService: BloomreachService,
     qrCodeSubservice: QrCodeSubservice,
     prismaService: PrismaService,
+    databaseSubservice: DatabaseSubservice,
   ) {
     const logger = new LineLoggerSubservice(NorisTaxRealEstateSubservice.name)
     super(
@@ -46,6 +49,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       prismaService,
       bloomreachService,
       throwerErrorGuard,
+      databaseSubservice,
       logger,
     )
   }
@@ -92,6 +96,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
     year: number,
     birthNumbers: string[],
+    options: RequestPostNorisLoadDataOptionsDto = {},
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
     const norisData = await this.getTaxDataByYearAndBirthNumber(
@@ -99,26 +104,30 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       birthNumbers,
     )
 
-    const birthNumbersResult: string[] = await this.processNorisTaxData(
+    const birthNumbersResult = await this.processNorisTaxData(
       norisData,
       year,
+      options,
     )
 
-    return { birthNumbers: birthNumbersResult }
+    // Include birth numbers found in Noris (regardless of whether they were processed)
+    return {
+      ...birthNumbersResult,
+      foundInNoris: norisData.map((item) => item.ICO_RC),
+    }
   }
 
   async processNorisTaxData(
     norisData: NorisRealEstateTax[],
     year: number,
-  ): Promise<string[]> {
+    options: RequestPostNorisLoadDataOptionsDto = {},
+  ): Promise<CreateBirthNumbersResponseDto> {
     const birthNumbersResult: Set<string> = new Set()
+    const { prepareOnly = false, ignoreBatchLimit = false } = options
 
-    this.logger.log(`Data loaded from noris - count ${norisData.length}`)
-
-    const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
-        norisData.map((norisRecord) => norisRecord.ICO_RC),
-      )
+    this.logger.log(
+      `Data loaded from noris - count ${norisData.length}, prepareOnly: ${prepareOnly}, ignoreBatchLimit: ${ignoreBatchLimit}`,
+    )
 
     const taxDefinitionRealEstate = getTaxDefinitionByType(TaxType.DZN)
 
@@ -148,8 +157,48 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       (norisItem) => !birthNumbersWithExistingTax.has(norisItem.ICO_RC),
     )
 
+    if (prepareOnly) {
+      // In prepare mode, mark birth numbers as ready to import, and return them
+      // No need to check for userFromCityAccount - that will be validated during actual import
+      const birthNumbers = norisDataNotInDatabase.map(
+        (norisItem) => norisItem.ICO_RC,
+      )
+      await this.prismaService.taxPayer.updateMany({
+        where: {
+          birthNumber: { in: birthNumbers },
+        },
+        data: { readyToImport: true },
+      })
+      return { birthNumbers }
+    }
+
+    // Normal mode: process and create taxes
+    const batchSizeLimit = ignoreBatchLimit
+      ? undefined
+      : await this.getBatchSizeLimit()
+
+    // Limit the number of records to process in this batch
+    const recordsToProcess =
+      batchSizeLimit === undefined
+        ? norisDataNotInDatabase
+        : norisDataNotInDatabase.slice(0, batchSizeLimit)
+
+    if (
+      batchSizeLimit !== undefined &&
+      norisDataNotInDatabase.length > batchSizeLimit
+    ) {
+      this.logger.log(
+        `Limiting batch processing to ${batchSizeLimit} records out of ${norisDataNotInDatabase.length} available`,
+      )
+    }
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        recordsToProcess.map((norisRecord) => norisRecord.ICO_RC),
+      )
+
     await Promise.all(
-      norisDataNotInDatabase.map(async (norisItem) =>
+      recordsToProcess.map(async (norisItem) =>
         this.concurrencyLimit(async () => {
           await this.processTaxRecordFromNoris(
             taxDefinitionRealEstate,
@@ -162,10 +211,12 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       ),
     )
 
-    // Add the payments for these added taxes to database
-    await this.paymentSubservice.updatePaymentsFromNorisWithData(norisData)
+    // Add the payments only for processed taxes
+    await this.paymentSubservice.updatePaymentsFromNorisWithData(
+      recordsToProcess,
+    )
 
-    return [...birthNumbersResult]
+    return { birthNumbers: [...birthNumbersResult] }
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(

@@ -24,7 +24,7 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.927.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.936.0",
     "@nestjs-cognito/auth": "^2.5.1",
     "@nestjs/cli": "^11.0.12",
     "@nestjs/common": "^11.1.9",
@@ -47,7 +47,7 @@
     "form-urlencoded": "^6.1.6",
     "lodash": "^4.17.21",
     "mssql": "^12.1.0",
-    "nodemailer": "^7.0.6",
+    "nodemailer": "^7.0.10",
     "openapi-clients": "file:../openapi-clients",
     "p-limit": "3.1.0",
     "passport-headerapikey": "^1.2.2",
@@ -65,7 +65,7 @@
     "@types/jest": "30.0.0",
     "@types/lodash": "^4.17.20",
     "@types/node": "^20.12.7",
-    "@types/nodemailer": "^7.0.2",
+    "@types/nodemailer": "^7.0.4",
     "@types/qrcode": "^1.5.6",
     "@types/ssh2-sftp-client": "^9.0.5",
     "@types/supertest": "^6.0.3",

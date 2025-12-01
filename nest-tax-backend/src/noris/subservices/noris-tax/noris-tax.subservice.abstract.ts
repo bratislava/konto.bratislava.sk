@@ -1,6 +1,7 @@
 import { Prisma, TaxType } from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
+import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -10,6 +11,7 @@ import {
 } from '../../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
@@ -27,6 +29,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly prismaService: PrismaService,
     protected readonly bloomreachService: BloomreachService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
+    protected readonly databaseSubservice: DatabaseSubservice,
     protected readonly logger: LineLoggerSubservice,
   ) {}
 
@@ -47,12 +50,13 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    *
    * @param norisData - Tax data from Noris
    * @param year - Year of the taxes
-   * @returns Birth numbers of the tax payers that were processed
+   * @returns CreateBirthNumbersResponseDto containing birth numbers of the tax payers that were processed
    */
   abstract processNorisTaxData(
     norisData: TaxTypeToNorisData[TTaxType][],
     year: number,
-  ): Promise<string[]>
+    options: RequestPostNorisLoadDataOptionsDto,
+  ): Promise<CreateBirthNumbersResponseDto>
 
   /**
    * Gets the tax data from Noris and updates the existing records in the database.
@@ -65,6 +69,27 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     year: number,
     birthNumbers: string[],
   ): Promise<{ updated: number }>
+
+  protected async getBatchSizeLimit(): Promise<number | undefined> {
+    try {
+      const config = await this.databaseSubservice.getConfigByKeys([
+        'TAX_IMPORT_BATCH_SIZE',
+      ])
+      const batchSizeLimit = parseInt(config.TAX_IMPORT_BATCH_SIZE, 10)
+      if (Number.isNaN(batchSizeLimit) || batchSizeLimit < 0) {
+        this.logger.warn(
+          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax records`,
+        )
+        return undefined
+      }
+      return batchSizeLimit
+    } catch (error) {
+      this.logger.warn(
+        'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax records',
+      )
+      return undefined
+    }
+  }
 
   /**
    * Inserts the tax data into the database.

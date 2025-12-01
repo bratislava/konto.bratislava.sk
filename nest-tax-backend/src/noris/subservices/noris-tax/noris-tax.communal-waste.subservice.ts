@@ -10,6 +10,7 @@ import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
+import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import {
@@ -41,6 +42,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     bloomreachService: BloomreachService,
+    databaseSubservice: DatabaseSubservice,
   ) {
     const logger = new LineLoggerSubservice(
       NorisTaxCommunalWasteSubservice.name,
@@ -50,6 +52,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       prismaService,
       bloomreachService,
       throwerErrorGuard,
+      databaseSubservice,
       logger,
     )
   }
@@ -60,7 +63,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
 
   processNorisTaxData() // data: TaxTypeToNorisData['KO'][],
   // year: number,
-  : Promise<string[]> {
+  : Promise<CreateBirthNumbersResponseDto> {
     throw new Error('Not implemented')
   }
 

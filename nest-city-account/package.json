@@ -59,7 +59,7 @@
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^5.2.1",
     "@golevelup/ts-jest": "^0.7.0",
-    "@nestjs/cli": "^11.0.12",
+    "@nestjs/cli": "^11.0.14",
     "@nestjs/testing": "^11.1.9",
     "@types/amqplib": "^0.10.8",
     "@types/jest": "^30.0.0",

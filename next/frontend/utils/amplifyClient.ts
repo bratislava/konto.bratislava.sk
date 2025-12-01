@@ -36,6 +36,13 @@ export const removeAmplifyGuestIdentityIdCookies = () => {
   })
 }
 
+/**
+ * Clear temporarily stored tokens in session storage when using OAuth sign up or sign in
+ */
+export const clearOAuthSessionStorage = () => {
+  sessionStorage.clear()
+}
+
 export const useSignOut = () => {
   const router = useRouter()
   const queryClient = useQueryClient()

@@ -16,17 +16,6 @@
       "type": "richtext",
       "required": true
     },
-    "displayCurrentYearTaxInPreparation": {
-      "type": "boolean",
-      "default": false,
-      "required": true
-    },
-    "currentYearTaxInPreparationTitle": {
-      "type": "string"
-    },
-    "currentYearTaxInPreparationText": {
-      "type": "richtext"
-    },
     "channelChangeEffectiveNextYearTitle": {
       "type": "string"
     },
@@ -36,11 +25,8 @@
     "paymentSuccessFeedbackLink": {
       "type": "string"
     },
-    "paymentSuccessPrivacyPolicyLink": {
-      "type": "string"
-    },
-    "paymentSuccessFaqLink": {
-      "type": "string"
+    "paymentAlertText": {
+      "type": "richtext"
     }
   }
 }

@@ -32,11 +32,13 @@ model TaxPayer {
   permanentResidenceStreet    String?
   permanentResidenceZip       String?
   permanentResidenceCity      String?
+  readyToImport               Boolean           @default(false)
 
   taxes Tax[]
 
   @@unique([birthNumber])
   @@unique([uuid])
+  @@index([readyToImport])
 }
 
 model Tax {

@@ -15,6 +15,7 @@ import { TaxDefinition } from '../../../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
+import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
 import { QrCodeSubservice } from '../../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../../utils/types/types.prisma'
 import { CustomErrorNorisTypesEnum } from '../../../noris.errors'
@@ -193,6 +194,10 @@ describe('NorisTaxRealEstateSubservice', () => {
           provide: NorisValidatorSubservice,
           useValue: createMock<NorisValidatorSubservice>(),
         },
+        {
+          provide: DatabaseSubservice,
+          useValue: createMock<DatabaseSubservice>(),
+        },
       ],
     }).compile()
 
@@ -209,6 +214,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       value: {
         log: jest.fn(),
         error: jest.fn(),
+        warn: jest.fn(),
       },
       writable: true,
     })
@@ -331,14 +337,17 @@ describe('NorisTaxRealEstateSubservice', () => {
         .mockResolvedValue(mockNorisData)
       jest
         .spyOn(service as any, 'processNorisTaxData')
-        .mockResolvedValue(['123456/7890'])
+        .mockResolvedValue({ birthNumbers: ['123456/7890'] })
 
       const result =
         await service.getAndProcessNorisTaxDataByBirthNumberAndYear(2023, [
           '123456/7890',
         ])
 
-      expect(result).toEqual({ birthNumbers: ['123456/7890'] })
+      expect(result).toEqual({
+        birthNumbers: ['123456/7890'],
+        foundInNoris: ['123456/7890'],
+      })
     })
   })
 
@@ -378,7 +387,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           },
         )
 
-      const result = await service.processNorisTaxData(mockNorisData, 2023)
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {})
 
       expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
         mockNorisData.map((record) => record.ICO_RC),
@@ -405,7 +414,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       expect(
         paymentSubservice.updatePaymentsFromNorisWithData,
       ).toHaveBeenCalledWith(mockNorisData)
-      expect(result).toEqual(['123456/7890'])
+      expect(result).toEqual({ birthNumbers: ['123456/7890'] })
     })
 
     it('should filter out existing taxes', async () => {
@@ -418,19 +427,19 @@ describe('NorisTaxRealEstateSubservice', () => {
       ] as any
       prismaMock.tax.findMany.mockResolvedValue(existingTaxes)
 
-      const result = await service.processNorisTaxData(mockNorisData, 2023)
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {})
 
       expect(service['processTaxRecordFromNoris']).not.toHaveBeenCalled()
-      expect(result).toEqual([])
+      expect(result).toEqual({ birthNumbers: [] })
     })
 
     it('should handle empty Noris data', async () => {
-      const result = await service.processNorisTaxData([], 2023)
+      const result = await service.processNorisTaxData([], 2023, {})
 
       expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
         [],
       )
-      expect(result).toEqual([])
+      expect(result).toEqual({ birthNumbers: [] })
     })
   })
 
@@ -662,7 +671,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         .spyOn(service as any, 'processTaxRecordFromNoris')
         .mockImplementation(() => {})
 
-      await service.processNorisTaxData(mockNorisData, 2023)
+      await service.processNorisTaxData(mockNorisData, 2023, {})
 
       expect(mockConcurrencyLimit).toHaveBeenCalled()
     })

@@ -3,6 +3,7 @@ import { TaxType } from '@prisma/client'
 
 import {
   DateRangeDto,
+  RequestPostNorisLoadDataOptionsDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -48,11 +49,13 @@ export class NorisService {
     taxType: TaxType,
     year: number,
     birthNumbers: string[],
+    options: RequestPostNorisLoadDataOptionsDto = {},
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
       taxType,
       year,
       birthNumbers,
+      options,
     )
   }
 
@@ -68,8 +71,14 @@ export class NorisService {
     taxType: TaxType,
     norisData: NorisTax[],
     year: number,
-  ): Promise<string[]> {
-    return this.taxSubservice.processNorisTaxData(taxType, norisData, year)
+    options: RequestPostNorisLoadDataOptionsDto = {},
+  ) {
+    return this.taxSubservice.processNorisTaxData(
+      taxType,
+      norisData,
+      year,
+      options,
+    )
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(

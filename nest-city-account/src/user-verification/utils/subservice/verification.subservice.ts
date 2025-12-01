@@ -189,7 +189,11 @@ export class VerificationSubservice {
       return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
-    this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
+    const rfoCheckDcom = this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
+
+    if (!rfoCheckDcom.success) {
+      return rfoCheckDcom
+    }
 
     const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
     let dbResultDcom: { success: boolean }

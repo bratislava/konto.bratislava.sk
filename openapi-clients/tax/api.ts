@@ -179,7 +179,6 @@ export interface RequestPostNorisLoadDataDto {
    */
   options?: RequestPostNorisLoadDataOptionsDto
 }
-
 export interface RequestPostNorisLoadDataOptionsDto {
   /**
    * If true, only prepare data (validate and mark as ready) without creating taxes

@@ -11,7 +11,9 @@ import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../test/singleton'
+import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
+import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -27,9 +29,13 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
 }))
 jest.mock('./subservices/ginis.helper')
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
-jest.mock('node:crypto', () => ({
-  randomUUID: jest.fn(),
-}))
+jest.mock('node:crypto', () => {
+  const actualCrypto = jest.requireActual('node:crypto')
+  return {
+    ...actualCrypto,
+    randomUUID: jest.fn(),
+  }
+})
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
   extractFormSubjectTechnical: jest.fn(),
@@ -64,6 +70,7 @@ describe('GinisService', () => {
         GinisService,
         GinisAPIService,
         GinisHelper,
+        { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
           provide: MinioClientSubservice,
@@ -73,6 +80,10 @@ describe('GinisService', () => {
         },
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
+        {
+          provide: NasesUtilsService,
+          useValue: createMock<NasesUtilsService>(),
+        },
         { provide: getQueueToken('sharepoint'), useValue: { add: jest.fn() } },
         {
           provide: BaConfigService,

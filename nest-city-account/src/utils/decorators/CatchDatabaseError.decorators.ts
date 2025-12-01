@@ -6,13 +6,23 @@ export interface IHasThrowerErrorGuard {
 }
 
 export function CatchDatabaseError() {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: IHasThrowerErrorGuard,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
     const originalMethod = descriptor.value
 
     descriptor.value = async function (this: IHasThrowerErrorGuard, ...args: any[]) {
       try {
         return await originalMethod.apply(this, args)
       } catch (error) {
+        if (!this.throwerErrorGuard) {
+          throw new Error(
+            `CatchDatabaseError decorator requires the class to have a 'throwerErrorGuard' property. ` +
+            `Please ensure ${target.constructor.name} implements IHasThrowerErrorGuard.`
+          )
+        }
         throw this.throwerErrorGuard.UnprocessableEntityException(
           ErrorsEnum.DATABASE_ERROR,
           ErrorsResponseEnum.DATABASE_ERROR,

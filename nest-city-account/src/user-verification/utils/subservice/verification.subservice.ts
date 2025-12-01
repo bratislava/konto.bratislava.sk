@@ -75,12 +75,6 @@ export class VerificationSubservice {
 
     for (const statutoryBody of statutoryBodies ?? []) {
       for (const externalId of statutoryBody.osoba.fyzickaOsoba.externeIds) {
-        // TODO this does nothing.
-        // if (!externalId.typIdentifikatora.nazov) {
-        //   this.errorMessengerGuard.rpoFieldNotExists('externalId.typIdentifikatora.nazov')
-        //   // Perhaps we want
-        //   return { success: false as const , reason: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS}
-        // }
         if (
           externalId.typIdentifikatora.nazov === 'Rodné číslo' &&
           externalId.identifikator.replace('/', '') === birthNumber.replace('/', '')

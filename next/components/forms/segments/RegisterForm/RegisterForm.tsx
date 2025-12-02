@@ -147,6 +147,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
 
   const type = watch('account_type')
 
+  const emailHelptextTranslationMap = {
+    fo: t('email_fo_description'),
+    'fo-p': t('email_fo-p_description'),
+    po: t('email_po_description'),
+  } satisfies Record<AccountType, string>
+
   return (
     <form
       className="flex flex-col space-y-4"
@@ -206,7 +212,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            helptext={t(`email_${type}_description`)}
+            helptext={emailHelptextTranslationMap[type]}
             label={t('email_label')}
             placeholder={t('email_placeholder')}
             autoComplete="username"

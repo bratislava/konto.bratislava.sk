@@ -48,7 +48,7 @@
     "jwks-rsa": "^3.2.0",
     "lodash": "^4.17.21",
     "luxon": "^3.7.2",
-    "mailgun.js": "^12.1.1",
+    "mailgun.js": "^12.3.0",
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.1",

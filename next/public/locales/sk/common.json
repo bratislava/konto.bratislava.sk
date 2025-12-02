@@ -27,9 +27,7 @@
   "viewTheDocument": "Pozrieť dokument",
   "download": "Stiahnuť",
   "transparentCity": "Transparentné mesto",
-  "sorryNoResultsFound": "Ľutujeme, pre dané vyhľadávanie sa nenašli žiadne výsledky.",
   "allResults": "Všetky výsledky",
-  "toTheMainPage": "Späť do Bratislavského konta",
   "toOfficialBoard": "Prejsť na úradnú tabuľu",
   "acceptAll": "Prijať všetky",
   "denyAll": "Odmietnuť všetky",
@@ -121,8 +119,6 @@
   "menu.show_more": "Zobraziť viac",
   "skipNavigation": "Preskočiť navigáciu",
   "statusBarContent": "",
-  "modal_close_aria": "Zavrieť",
-  "ariaCloseStatusBar": "Zavrieť upozornenie",
   "breadcrumbs.back": "Späť",
   "breadcrumbs.homepage": "Domov"
 }

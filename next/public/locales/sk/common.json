@@ -127,15 +127,9 @@
   "statusBarContent": "",
   "modal_close_aria": "Zavrieť",
   "ariaCloseStatusBar": "Zavrieť upozornenie",
-  "NavMenu": {
-    "aria": {
-      "navMenuLabel": "Navigačné menu",
-      "backTo": "Späť na {backTo}"
-    },
-    "more": "Ďalšie"
-  },
-  "breadcrumbs": {
-    "back": "Späť",
-    "homepage": "Domov"
-  }
+  "NavMenu.aria.navMenuLabel": "Navigačné menu",
+  "NavMenu.aria.backTo": "Späť na {backTo}",
+  "NavMenu.more": "Ďalšie",
+  "breadcrumbs.back": "Späť",
+  "breadcrumbs.homepage": "Domov"
 }

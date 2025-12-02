@@ -4,11 +4,9 @@
   "minLength": "Zadaná hodnota obsahuje primálo znakov",
   "pattern": "Zadajte hodnotu v požadovanom formáte",
   "unknown": "Neznáma chyba",
-  "format": {
-    "unknown": "Zadajte hodnotu v požadovanom formáte",
-    "ba-zip": "Zadajte PSČ v tvare \"81101\"",
-    "ba-phone-number": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
-    "ba-iban": "Zadajte IBAN v správnom formáte",
-    "email": "Zadajte e-mail v správnom formáte"
-  }
+  "format.unknown": "Zadajte hodnotu v požadovanom formáte",
+  "format.ba-zip": "Zadajte PSČ v tvare \"81101\"",
+  "format.ba-phone-number": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
+  "format.ba-iban": "Zadajte IBAN v správnom formáte",
+  "format.email": "Zadajte e-mail v správnom formáte"
 }

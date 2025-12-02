@@ -47,7 +47,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     const ref = useObjectRef(forwardedRef)
     const dateFieldRef = useObjectRef<HTMLDivElement>(null)
     const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
-    const { t } = useTranslation('account', { keyPrefix: 'DatePicker' })
+    const { t } = useTranslation('account')
 
     const parsedValue = useMemo(() => {
       if (!valueControlled) {
@@ -142,7 +142,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             isDisabled={disabled}
             icon={<CalendarIcon />}
             // TODO investigate why t can return undefined
-            aria-label={t('aria.openCalendar') ?? 'Open calendar'}
+            aria-label={t('DatePicker.aria.openCalendar') ?? 'Open calendar'}
           />
         </DateField>
       </div>

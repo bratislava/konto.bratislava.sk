@@ -27,7 +27,7 @@ describe('A05 -', { testIsolation: false }, () => {
           cy.get('[data-cy=alert-container]').should('be.visible')
           cy.get('[data-cy=alert-container]')
             .find('[data-cy="alert-container-title"]')
-            .should('contain', 'Neoverený profil')
+            .should('contain', 'Neoverený používateľ')
           cy.get('[data-cy=alert-container]')
             .find('[data-cy="alert-container-content"]')
             .should(

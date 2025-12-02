@@ -81,7 +81,7 @@ export const NavBar = ({
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()
 
-  const { t } = useTranslation(['common', 'account'])
+  const { t } = useTranslation('account')
   const router = useRouter()
 
   // we need to keep the work in progress of the open form if navigating away form it
@@ -117,7 +117,7 @@ export const NavBar = ({
             url={ROUTES.HOME}
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
-                {t('common:capitalCity')}
+                {t('NavBar.capitalCityOfSR')}
                 <span className="font-semibold"> Bratislava</span>
               </p>
             }
@@ -154,13 +154,13 @@ export const NavBar = ({
                   size="sm"
                   onPress={login}
                   variant="plain-black"
-                  text={t('account:menu_login_link')}
+                  text={t('menu_login_link')}
                   data-cy="login-button"
                 />
                 <Button
                   onPress={register}
                   variant="negative"
-                  text={t('account:menu_register_link')}
+                  text={t('menu_register_link')}
                   size="sm"
                   data-cy="register-button"
                 />

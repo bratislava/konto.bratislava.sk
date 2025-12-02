@@ -12,9 +12,11 @@ on:
       - 'prod**'
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   cypress-tests:
+    if: github.actor != 'dependabot[bot]' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 25
 

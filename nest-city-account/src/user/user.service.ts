@@ -17,6 +17,10 @@ import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
+import {
+  LegalPersonContactAndIdInfoDto,
+  UserContactAndIdInfoDto,
+} from './dtos/user-contact-info.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { GDPRSubTypeEnum } from '@prisma/client'
 import {
@@ -24,6 +28,7 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LoginClientEnum } from '@prisma/client'
 
 @Injectable()
@@ -32,7 +37,8 @@ export class UserService {
     private databaseSubservice: DatabaseSubserviceUser,
     private prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private bloomreachService: BloomreachService
+    private bloomreachService: BloomreachService,
+    private cognitoSubservice: CognitoSubservice
   ) {}
 
   private verificationDeadline(verificationDate: Date | null): boolean {
@@ -341,6 +347,61 @@ export class UserService {
     ) {
       await this.recordLegalPersonLoginClient(externalId, loginClient)
       return
+    }
+
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
+  }
+
+  async getContactAndIdInfoByExternalId(
+    externalId: string
+  ): Promise<UserContactAndIdInfoDto | LegalPersonContactAndIdInfoDto> {
+    // Get data from Cognito
+    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
+    const accountType = cognitoData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      // Get user from database
+      const user = await this.databaseSubservice.getUserByExternalId(externalId)
+      if (!user) {
+        throw this.throwerErrorGuard.NotFoundException(
+          UserErrorsEnum.USER_NOT_FOUND,
+          `User not found for external ID: ${externalId}`
+        )
+      }
+
+      return {
+        externalId: externalId,
+        email: cognitoData.email,
+        firstName: cognitoData.given_name,
+        lastName: cognitoData.family_name,
+        birthNumber: user.birthNumber ?? undefined,
+        accountType: accountType,
+      }
+    }
+
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      // Get legal person from database
+      const legalPerson = await this.databaseSubservice.getLegalPersonByExternalId(externalId)
+      if (!legalPerson) {
+        throw this.throwerErrorGuard.NotFoundException(
+          UserErrorsEnum.USER_NOT_FOUND,
+          `Legal person not found for external ID: ${externalId}`
+        )
+      }
+
+      return {
+        externalId: externalId,
+        email: cognitoData.email,
+        name: cognitoData.name,
+        ico: legalPerson.ico ?? undefined,
+        accountType: accountType,
+      }
     }
 
     throw this.throwerErrorGuard.UnprocessableEntityException(

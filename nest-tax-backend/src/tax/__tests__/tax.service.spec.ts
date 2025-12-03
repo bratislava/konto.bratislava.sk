@@ -1,6 +1,5 @@
 /* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
-import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 
@@ -14,14 +13,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
-import {
-  ResponseRealEstateTaxSummaryDetailDto,
-  TaxAvailabilityStatus,
-  TaxPaidStatusEnum,
-  TaxStatusEnum,
-} from '../dtos/response.tax.dto'
-import { TaxCommunalWasteSubservice } from '../subservices/tax/tax.communal-waste.subservice'
-import { TaxRealEstateSubservice } from '../subservices/tax/tax.real-estate.subservice'
+import { TaxAvailabilityStatus, TaxStatusEnum } from '../dtos/response.tax.dto'
 import { TaxService } from '../tax.service'
 import * as unifiedTaxUtil from '../utils/unified-tax.util'
 
@@ -90,8 +82,6 @@ describe('TaxService', () => {
         ThrowerErrorGuard,
         { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
-        TaxRealEstateSubservice,
-        TaxCommunalWasteSubservice,
       ],
     }).compile()
 
@@ -976,26 +966,34 @@ describe('TaxService', () => {
 
   describe('getTaxDetail', () => {
     it('should return tax detail from implementation', async () => {
-      const mockTaxDetail = {
-        paidStatus: TaxPaidStatusEnum.PAID,
-        year: 2023,
-        overallPaid: 1000,
-        overallBalance: 0,
+      jest.spyOn(service as any, 'fetchTaxData').mockResolvedValue({
+        id: 1,
+        amount: 1000,
+        variableSymbol: 'VS123',
+        dateTaxRuling: new Date('2023-01-01'),
+        taxInstallments: [],
+        taxPayments: [],
+        taxDetails: { type: TaxType.DZN } as any,
+        taxPayer: {
+          name: 'Test User',
+          permanentResidenceStreet: 'Test Street',
+          permanentResidenceZip: '12345',
+          permanentResidenceCity: 'Test City',
+          externalId: 'ext-1',
+          taxAdministrator: null,
+        },
+      })
+      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue({
+        overallPaid: 0,
+        overallBalance: 1000,
         overallAmount: 1000,
+        oneTimePayment: { qrCode: { data: 'test' } } as any,
+        installmentPayment: { activeInstallment: null } as any,
         itemizedDetail: {} as any,
-        oneTimePayment: {} as any,
-        installmentPayment: {} as any,
-        taxAdministrator: null,
-        taxPayer: {} as any,
-      } as ResponseRealEstateTaxSummaryDetailDto
-
-      const mockImplementation = {
-        getTaxDetail: jest.fn().mockResolvedValue(mockTaxDetail),
-      }
-
+      })
       jest
-        .spyOn(service as any, 'getImplementationByType')
-        .mockReturnValue(mockImplementation)
+        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .mockResolvedValue('qr-code-url')
 
       const result = await service.getTaxDetail(
         '123456/789',
@@ -1004,26 +1002,24 @@ describe('TaxService', () => {
         1,
       )
 
-      expect(mockImplementation.getTaxDetail).toHaveBeenCalledWith(
-        '123456/789',
+      expect(service['fetchTaxData']).toHaveBeenCalledWith(
+        { birthNumber: '123456/789' },
+        {
+          taxInstallments: true,
+          taxPayer: {
+            include: {
+              taxAdministrator: true,
+            },
+          },
+          taxPayments: true,
+        },
         2023,
+        TaxType.DZN,
         1,
       )
-      expect(result).toEqual(mockTaxDetail)
-    })
-
-    it('should throw error for unsupported tax type', async () => {
-      const thrownError = new HttpException(
-        'Implementation for tax type UNKNOWN_TYPE not found',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
-      jest
-        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
-        .mockReturnValue(thrownError)
-
-      await expect(
-        service.getTaxDetail('123456/789', 2023, 'UNKNOWN_TYPE' as TaxType, 1),
-      ).rejects.toThrow(thrownError)
+      expect(result.type).toBe('DZN')
+      expect(result.year).toBe(2023)
+      expect(result.order).toBe(1)
     })
   })
 
@@ -1045,13 +1041,9 @@ describe('TaxService', () => {
     } as PaymentGateURLGeneratorDto
 
     it('should return one-time payment generator for valid tax type', async () => {
-      const mockImplementation = {
-        fetchTaxData: jest.fn().mockResolvedValue(mockOneTimeTaxData),
-      }
-
       jest
-        .spyOn(service as any, 'getImplementationByType')
-        .mockReturnValue(mockImplementation)
+        .spyOn(service as any, 'fetchTaxData')
+        .mockResolvedValue(mockOneTimeTaxData)
       jest
         .spyOn(unifiedTaxUtil, 'getTaxDetailPureForOneTimeGenerator')
         .mockReturnValue(mockPaymentGeneratorDto)
@@ -1063,7 +1055,7 @@ describe('TaxService', () => {
         1,
       )
 
-      expect(mockImplementation.fetchTaxData).toHaveBeenCalledWith(
+      expect(service['fetchTaxData']).toHaveBeenCalledWith(
         mockTaxPayerWhereUniqueInput,
         { taxPayments: true },
         2023,
@@ -1078,25 +1070,6 @@ describe('TaxService', () => {
         taxPayments: mockOneTimeTaxData.taxPayments,
       })
       expect(result).toEqual(mockPaymentGeneratorDto)
-    })
-
-    it('should throw error for unsupported tax type', async () => {
-      const thrownError = new HttpException(
-        'Implementation for tax type INVALID_TAX_TYPE not found',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
-      jest
-        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
-        .mockReturnValue(thrownError)
-
-      await expect(
-        service.getOneTimePaymentGenerator(
-          mockTaxPayerWhereUniqueInput,
-          2023,
-          'INVALID_TAX_TYPE' as TaxType,
-          1,
-        ),
-      ).rejects.toThrow(thrownError)
     })
   })
 
@@ -1130,13 +1103,9 @@ describe('TaxService', () => {
     })
 
     it('should return installment payment generator for valid tax type', async () => {
-      const mockImplementation = {
-        fetchTaxData: jest.fn().mockResolvedValue(mockInstallmentTaxData),
-      }
-
       jest
-        .spyOn(service as any, 'getImplementationByType')
-        .mockReturnValue(mockImplementation)
+        .spyOn(service as any, 'fetchTaxData')
+        .mockResolvedValue(mockInstallmentTaxData)
       jest
         .spyOn(unifiedTaxUtil, 'getTaxDetailPureForInstallmentGenerator')
         .mockReturnValue(mockPaymentGeneratorDto)
@@ -1150,7 +1119,7 @@ describe('TaxService', () => {
         1,
       )
 
-      expect(mockImplementation.fetchTaxData).toHaveBeenCalledWith(
+      expect(service['fetchTaxData']).toHaveBeenCalledWith(
         mockTaxPayerWhereUniqueInput,
         { taxInstallments: true, taxPayments: true },
         2023,
@@ -1174,36 +1143,13 @@ describe('TaxService', () => {
       expect(result).toEqual(mockPaymentGeneratorDto)
     })
 
-    it('should throw error for unsupported tax type', async () => {
-      const thrownError = new HttpException(
-        'Implementation for tax type INVALID_TAX_TYPE not found',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
-      jest
-        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
-        .mockReturnValue(thrownError)
-
-      await expect(
-        service.getInstallmentPaymentGenerator(
-          mockTaxPayerWhereUniqueInput,
-          2023,
-          'INVALID_TAX_TYPE' as TaxType,
-          1,
-        ),
-      ).rejects.toThrow(thrownError)
-    })
-
     it('should use current date for today parameter', async () => {
       const fixedDate = new Date('2023-06-15T14:30:00.000Z')
       jest.setSystemTime(fixedDate)
 
-      const mockImplementation = {
-        fetchTaxData: jest.fn().mockResolvedValue(mockInstallmentTaxData),
-      }
-
       jest
-        .spyOn(service as any, 'getImplementationByType')
-        .mockReturnValue(mockImplementation)
+        .spyOn(service as any, 'fetchTaxData')
+        .mockResolvedValue(mockInstallmentTaxData)
       jest
         .spyOn(unifiedTaxUtil, 'getTaxDetailPureForInstallmentGenerator')
         .mockReturnValue(mockPaymentGeneratorDto)
@@ -1226,6 +1172,172 @@ describe('TaxService', () => {
   })
 
   describe('private methods', () => {
+    describe('fetchTaxData', () => {
+      const mockTaxData = {
+        id: 1,
+        uuid: 'tax-uuid',
+        year: 2023,
+        amount: 1000,
+        variableSymbol: 'VS123',
+        dateTaxRuling: new Date('2023-01-01'),
+        taxInstallments: [
+          {
+            id: 1,
+            installmentNumber: 1,
+            amount: 500,
+            dueDate: new Date('2023-06-01'),
+            text: 'First installment',
+            order: 1,
+          },
+          {
+            id: 2,
+            installmentNumber: 2,
+            amount: 500,
+            dueDate: new Date('2023-09-01'),
+            text: 'Second installment',
+            order: 2,
+          },
+        ],
+        taxPayer: {
+          id: 1,
+          birthNumber: '123456/789',
+          taxAdministrator: {
+            id: 1,
+            name: 'Test Administrator',
+            email: 'admin@test.sk',
+          },
+        },
+        taxDetails: {
+          type: TaxType.DZN,
+        },
+        taxPayments: [
+          {
+            id: 1,
+            amount: 200,
+            status: PaymentStatus.SUCCESS,
+            createdAt: new Date('2023-05-01'),
+          },
+        ],
+      }
+
+      it('should fetch tax data successfully', async () => {
+        prismaMock.taxPayer.findUnique.mockResolvedValue({
+          id: 1,
+        } as any)
+        prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
+
+        const result = await service['fetchTaxData'](
+          { birthNumber: '123456/789' },
+          { taxInstallments: true },
+          2023,
+          TaxType.DZN,
+          1,
+        )
+
+        expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({
+          where: { birthNumber: '123456/789' },
+          select: { id: true },
+        })
+        expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
+          where: {
+            taxPayerId_year_type_order: {
+              year: 2023,
+              taxPayerId: 1,
+              type: TaxType.DZN,
+              order: 1,
+            },
+          },
+          include: {
+            taxInstallments: true,
+          },
+        })
+        expect(result).toEqual(mockTaxData)
+      })
+
+      it('should throw error when tax payer not found', async () => {
+        prismaMock.taxPayer.findUnique.mockResolvedValue(null)
+        const notFoundExceptionSpy = jest.spyOn(
+          service['throwerErrorGuard'],
+          'NotFoundException',
+        )
+
+        await expect(
+          service['fetchTaxData'](
+            { birthNumber: '123456/789' },
+            {},
+            2023,
+            TaxType.DZN,
+            1,
+          ),
+        ).rejects.toThrow()
+
+        expect(notFoundExceptionSpy).toHaveBeenCalledWith(
+          CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+          CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+        )
+      })
+
+      it('should throw error when tax not found', async () => {
+        prismaMock.taxPayer.findUnique.mockResolvedValue({
+          id: 1,
+        } as any)
+        prismaMock.tax.findUnique.mockResolvedValue(null)
+        const notFoundExceptionSpy = jest.spyOn(
+          service['throwerErrorGuard'],
+          'NotFoundException',
+        )
+
+        await expect(
+          service['fetchTaxData'](
+            { birthNumber: '123456/789' },
+            {},
+            2023,
+            TaxType.DZN,
+            1,
+          ),
+        ).rejects.toThrow()
+
+        expect(notFoundExceptionSpy).toHaveBeenCalledWith(
+          CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+          CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        )
+      })
+
+      it('should work with uuid as tax payer identifier', async () => {
+        prismaMock.taxPayer.findUnique.mockResolvedValue({
+          id: 1,
+        } as any)
+        prismaMock.tax.findUnique.mockResolvedValue(mockTaxData as any)
+
+        const result = await service['fetchTaxData'](
+          { uuid: 'taxpayer-uuid' },
+          { taxPayments: true },
+          2023,
+          TaxType.KO,
+          1,
+        )
+
+        expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({
+          where: { uuid: 'taxpayer-uuid' },
+          select: { id: true },
+        })
+        expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
+          where: {
+            taxPayerId_year_type_order: {
+              year: 2023,
+              taxPayerId: 1,
+              type: TaxType.KO,
+              order: 1,
+            },
+          },
+          include: {
+            taxPayments: true,
+          },
+        })
+        expect(result).toEqual(mockTaxData)
+      })
+    })
+
     describe('getAmountAlreadyPaidByTaxId', () => {
       it('should return total paid amount', async () => {
         prismaMock.taxPayment.aggregate.mockResolvedValue({

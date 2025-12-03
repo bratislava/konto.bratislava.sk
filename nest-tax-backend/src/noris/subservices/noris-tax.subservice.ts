@@ -6,7 +6,10 @@ import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
 import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { NorisRealEstateTax } from '../types/noris.types'
+import {
+  NorisCommunalWasteTaxGrouped,
+  NorisRealEstateTax,
+} from '../types/noris.types'
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 
@@ -57,11 +60,11 @@ export class NorisTaxSubservice {
     }
 
     if (taxType === TaxType.KO) {
-      return this.subservices[TaxType.KO]
-        .processNorisTaxData
-        // norisData as NorisCommunalWasteTax[],
-        // year,
-        ()
+      return this.subservices[TaxType.KO].processNorisTaxData(
+        norisData as NorisCommunalWasteTaxGrouped[],
+        year,
+        options,
+      )
     }
 
     // Fallback for exhaustiveness

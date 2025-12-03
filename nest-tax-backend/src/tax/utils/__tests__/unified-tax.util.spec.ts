@@ -223,9 +223,10 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
 }
 
 function createExpectedOutput(
-  modifier: (draft: typeof defaultOutputRealEstate) => void,
+  modifier: <T extends TaxType>(draft: GetTaxDetailPureResponse<T>) => void,
+  base?: GetTaxDetailPureResponse<TaxType>,
 ) {
-  const draft = structuredClone(defaultOutputRealEstate)
+  const draft = structuredClone(base ?? defaultOutputRealEstate)
   modifier(draft)
   return draft
 }
@@ -734,6 +735,574 @@ describe('UnifiedTaxUtil', () => {
       )
     })
   })
+
+  describe('4 installments', () => {
+    const defaultInput4Installments: GetTaxDetailPureOptions<
+      typeof TaxType.KO
+    > = {
+      type: TaxType.KO,
+      taxYear: 2025,
+      today: new Date('2025-01-01'),
+      overallAmount: 8000,
+      paymentCalendarThreshold: 0,
+      variableSymbol: '1234567890',
+      dateOfValidity: new Date('2025-01-01'),
+      installments: [
+        { order: 1, amount: 2000 },
+        { order: 2, amount: 2000 },
+        { order: 3, amount: 2000 },
+        { order: 4, amount: 2000 },
+      ],
+      taxDetails: {
+        type: TaxType.KO,
+        addresses: [
+          {
+            addressDetail: {
+              street: 'Test Street',
+              orientationNumber: '1',
+            },
+            containers: [
+              {
+                objem_nadoby: 120,
+                pocet_nadob: 1,
+                pocet_odvozov: 12,
+                sadzba: 100,
+                poplatok: 2000,
+                druh_nadoby: 'KO',
+              },
+            ],
+          },
+        ],
+      },
+      specificSymbol: '2025200000',
+      taxPayments: [],
+    }
+
+    const defaultOutput4Installments: GetTaxDetailPureResponse<'KO'> = {
+      overallPaid: 0,
+      overallBalance: 8000,
+      overallAmount: 8000,
+      oneTimePayment: {
+        isPossible: true,
+        type: OneTimePaymentTypeEnum.ONE_TIME_PAYMENT,
+        amount: 8000,
+        dueDate: new Date('2025-01-21T23:00:00.000Z'),
+        qrCode: {
+          amount: 8000,
+          variableSymbol: '1234567890',
+          specificSymbol: '2025200000',
+          paymentNote: QrPaymentNoteEnum.QR_oneTimePay,
+        },
+        variableSymbol: '1234567890',
+      },
+      installmentPayment: {
+        isPossible: true,
+        dueDateLastPayment: new Date('2025-10-31T22:00:00.000Z'),
+        installments: [
+          {
+            installmentNumber: 1,
+            dueDate: new Date('2025-01-21T23:00:00.000Z'),
+            status: InstallmentPaidStatusEnum.NOT_PAID,
+            remainingAmount: 2000,
+            totalInstallmentAmount: 2000,
+          },
+          {
+            installmentNumber: 2,
+            dueDate: new Date('2025-05-31T22:00:00.000Z'),
+            status: InstallmentPaidStatusEnum.NOT_PAID,
+            remainingAmount: 2000,
+            totalInstallmentAmount: 2000,
+          },
+          {
+            installmentNumber: 3,
+            dueDate: new Date('2025-08-31T22:00:00.000Z'),
+            status: InstallmentPaidStatusEnum.NOT_PAID,
+            remainingAmount: 2000,
+            totalInstallmentAmount: 2000,
+          },
+          {
+            installmentNumber: 4,
+            dueDate: new Date('2025-10-31T22:00:00.000Z'),
+            status: InstallmentPaidStatusEnum.NOT_PAID,
+            remainingAmount: 2000,
+            totalInstallmentAmount: 2000,
+          },
+        ],
+        activeInstallment: {
+          remainingAmount: 2000,
+          variableSymbol: '1234567890',
+          qrCode: {
+            amount: 2000,
+            variableSymbol: '1234567890',
+            specificSymbol: '2025200000',
+            paymentNote: QrPaymentNoteEnum.QR_firstInstallment,
+          },
+        },
+      },
+      itemizedDetail: {
+        addressDetail: [
+          {
+            address: {
+              street: 'Test Street',
+              orientationNumber: '1',
+            },
+            totalAmount: 2000,
+            itemizedContainers: [
+              {
+                containerVolume: 120,
+                containerCount: 1,
+                numberOfDisposals: 12,
+                unitRate: 100,
+                containerType: 'N12',
+                fee: 2000,
+              },
+            ],
+          },
+        ],
+      },
+    }
+
+    describe('- calculateUnifiedTax should create tax detail correctly for', () => {
+      describe('value = ', () => {
+        it('unpaid', () => {
+          const output = getTaxDetailPure(defaultInput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, defaultOutput4Installments)
+        })
+
+        it('partial first', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 500, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            const newOverallBalance = 7500
+            draft.overallPaid = 500
+            draft.overallBalance = newOverallBalance
+            draft.installmentPayment.installments![0].remainingAmount = 1500
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.PARTIALLY_PAID
+            draft.installmentPayment.activeInstallment!.remainingAmount = 1500
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 1500
+            draft.oneTimePayment.amount = newOverallBalance
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.qrCode!.amount = newOverallBalance
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('full first', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 2000, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            const newOverallBalance = 6000
+            draft.overallPaid = 2000
+            draft.overallBalance = newOverallBalance
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_secondInstallment
+            draft.oneTimePayment.amount = newOverallBalance
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.qrCode!.amount = newOverallBalance
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('partial second', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 2500, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            const newOverallBalance = 5500
+            draft.overallPaid = 2500
+            draft.overallBalance = newOverallBalance
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![1].remainingAmount = 1500
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![1].status =
+              InstallmentPaidStatusEnum.PARTIALLY_PAID
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_secondInstallment
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 1500
+            draft.installmentPayment.activeInstallment!.remainingAmount = 1500
+            draft.oneTimePayment.amount = newOverallBalance
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.qrCode!.amount = newOverallBalance
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('full second', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 4000, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            const newOverallBalance = 4000
+            draft.overallPaid = 4000
+            draft.overallBalance = newOverallBalance
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![1].remainingAmount = 0
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![1].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_thirdInstallment
+            draft.oneTimePayment.amount = newOverallBalance
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.qrCode!.amount = newOverallBalance
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('partial third', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 5500, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            const newOverallBalance = 2500
+            draft.overallPaid = 5500
+            draft.overallBalance = newOverallBalance
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![1].remainingAmount = 0
+            draft.installmentPayment.installments![2].remainingAmount = 1500
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![1].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![2].status =
+              InstallmentPaidStatusEnum.PARTIALLY_PAID
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_thirdInstallment
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 1500
+            draft.installmentPayment.activeInstallment!.remainingAmount = 1500
+            draft.oneTimePayment.amount = newOverallBalance
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.qrCode!.amount = newOverallBalance
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('full third', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 6000, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            const newOverallBalance = 2000
+            draft.overallPaid = 6000
+            draft.overallBalance = newOverallBalance
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![1].remainingAmount = 0
+            draft.installmentPayment.installments![2].remainingAmount = 0
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![1].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![2].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_fourthInstallment
+            draft.oneTimePayment.amount = newOverallBalance
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.qrCode!.amount = newOverallBalance
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('partial fourth', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 7500, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            const newOverallBalance = 500
+            draft.overallPaid = 7500
+            draft.overallBalance = newOverallBalance
+            draft.installmentPayment.installments![0].remainingAmount = 0
+            draft.installmentPayment.installments![1].remainingAmount = 0
+            draft.installmentPayment.installments![2].remainingAmount = 0
+            draft.installmentPayment.installments![3].remainingAmount = 500
+            draft.installmentPayment.installments![0].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![1].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![2].status =
+              InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.installments![3].status =
+              InstallmentPaidStatusEnum.PARTIALLY_PAID
+            draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
+              QrPaymentNoteEnum.QR_fourthInstallment
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 500
+            draft.installmentPayment.activeInstallment!.remainingAmount = 500
+            draft.oneTimePayment.amount = newOverallBalance
+            draft.oneTimePayment.type =
+              OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+            draft.oneTimePayment.qrCode!.amount = newOverallBalance
+            draft.oneTimePayment.qrCode!.paymentNote =
+              QrPaymentNoteEnum.QR_remainingAmount
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('fully paid', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [{ amount: 8000, status: PaymentStatus.SUCCESS }],
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            draft.overallPaid = 8000
+            draft.overallBalance = 0
+            draft.installmentPayment = {
+              isPossible: false,
+              reasonNotPossible:
+                InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+              dueDateLastPayment: new Date('2025-10-31T22:00:00.000Z'),
+            }
+            draft.oneTimePayment = {
+              isPossible: false,
+              reasonNotPossible:
+                OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
+            }
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+      })
+
+      describe('date', () => {
+        it('after fourth payment due threshold', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            taxPayments: [],
+            today: new Date('2025-11-01'),
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            delete draft.installmentPayment.activeInstallment
+            delete draft.installmentPayment.installments
+            draft.installmentPayment = {
+              ...draft.installmentPayment,
+              isPossible: false,
+              reasonNotPossible:
+                InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+            }
+          }, defaultOutput4Installments)
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+      })
+
+      describe('for all possible installment payment scenarios', () => {
+        const testInputArrays = {
+          today: [
+            new Date('2025-01-01'), // Before first due date
+            new Date('2025-01-21T23:00:00.000Z'), // At first due date
+            new Date('2025-01-22'), // After first due date
+            new Date('2025-05-31T22:00:00.000Z'), // At second due date
+            new Date('2025-06-01'), // After second due date
+            new Date('2025-08-31T22:00:00.000Z'), // At third due date
+            new Date('2025-09-01'), // After third due date
+            new Date('2025-10-31T22:00:00.000Z'), // At fourth due date
+            new Date('2025-11-01'), // After fourth due date
+          ],
+          dateOfValidity: [null, new Date('2025-01-01')],
+          taxPayments: [
+            // No payments
+            [],
+            [{ amount: 500, status: PaymentStatus.FAIL }],
+            [{ amount: 500, status: PaymentStatus.NEW }],
+            [{ amount: 2000, status: PaymentStatus.NEW }],
+            // Partial first installment
+            [{ amount: 500, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 500, status: PaymentStatus.SUCCESS },
+              { amount: 500, status: PaymentStatus.FAIL },
+            ],
+            // Full first installment
+            [{ amount: 2000, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 1000, status: PaymentStatus.SUCCESS },
+              { amount: 1000, status: PaymentStatus.SUCCESS },
+            ],
+            // Partial second installment
+            [{ amount: 3000, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 1000, status: PaymentStatus.SUCCESS },
+            ],
+            // Full second installment
+            [{ amount: 4000, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+            ],
+            // Partial third installment
+            [{ amount: 5000, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 1000, status: PaymentStatus.SUCCESS },
+            ],
+            // Full third installment
+            [{ amount: 6000, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+            ],
+            // Partial fourth installment
+            [{ amount: 7000, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 1000, status: PaymentStatus.SUCCESS },
+            ],
+            // Fully paid
+            [{ amount: 8000, status: PaymentStatus.SUCCESS }],
+            [
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+              { amount: 2000, status: PaymentStatus.SUCCESS },
+            ],
+            // Overpaid
+            [{ amount: 9000, status: PaymentStatus.SUCCESS }],
+          ],
+        }
+
+        // eslint-disable-next-line unicorn/no-array-reduce
+        const combinations = Object.entries(testInputArrays).reduce(
+          (acc, [key, values]) => {
+            if (acc.length === 0) {
+              return values.map((value) => ({ [key]: value }))
+            }
+            return acc.flatMap((combo) =>
+              values.map((value) => ({ ...combo, [key]: value })),
+            )
+          },
+          [] as Array<Partial<typeof defaultInput4Installments>>,
+        )
+
+        test.each(combinations.map((combination) => [combination]))(
+          'should return total amount for all installments equal to the overall amount for input: %j',
+          (combination) => {
+            const input = { ...defaultInput4Installments, ...combination }
+            const output = getTaxDetailPure(input)
+
+            if (
+              !output.installmentPayment.isPossible ||
+              !output.installmentPayment.installments
+            ) {
+              return
+            }
+
+            const totalInstallmentAmount =
+              output.installmentPayment.installments.reduce(
+                (sum, installment) => sum + installment.remainingAmount,
+                0,
+              )
+
+            expect(totalInstallmentAmount).toBe(output.overallBalance)
+          },
+        )
+      })
+    })
+  })
+
+  describe('installment count mismatch', () => {
+    it('should throw error when installments.length !== numberOfInstallments (fewer installments)', () => {
+      const input = {
+        ...defaultInputRealEstate,
+        installments: [
+          { order: 1, amount: 2200 },
+          { order: 2, amount: 2200 },
+        ],
+      }
+
+      expect(() => getTaxDetailPure(input)).toThrow(
+        new ThrowerErrorGuard().InternalServerErrorException(
+          CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+          CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        ),
+      )
+    })
+
+    it('should throw error when installments.length !== numberOfInstallments (more installments)', () => {
+      const input = {
+        ...defaultInputRealEstate,
+        installments: [
+          { order: 1, amount: 1650 },
+          { order: 2, amount: 1650 },
+          { order: 3, amount: 1650 },
+          { order: 4, amount: 1650 },
+        ],
+      }
+
+      expect(() => getTaxDetailPure(input)).toThrow(
+        new ThrowerErrorGuard().InternalServerErrorException(
+          CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+          CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        ),
+      )
+    })
+
+    it('should throw error when installments array is empty', () => {
+      const input = {
+        ...defaultInputRealEstate,
+        installments: [],
+      }
+
+      expect(() => getTaxDetailPure(input)).toThrow(
+        new ThrowerErrorGuard().InternalServerErrorException(
+          CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+          CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        ),
+      )
+    })
+  })
 })
 
 describe('getTaxDetailPureForInstallmentGenerator', () => {
@@ -890,6 +1459,42 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     const options = {
       ...baseOptionsRealEstate,
       installments: [],
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().InternalServerErrorException(
+        CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      ),
+    )
+  })
+
+  it('should throw error when installments.length !== numberOfInstallments (fewer installments)', () => {
+    const options = {
+      ...baseOptionsRealEstate,
+      installments: [
+        { order: 1, amount: 2200 },
+        { order: 2, amount: 2200 },
+      ],
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().InternalServerErrorException(
+        CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      ),
+    )
+  })
+
+  it('should throw error when installments.length > numberOfInstallments', () => {
+    const options = {
+      ...baseOptionsRealEstate,
+      installments: [
+        { order: 1, amount: 1650 },
+        { order: 2, amount: 1650 },
+        { order: 3, amount: 1650 },
+        { order: 4, amount: 1650 },
+      ],
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(

@@ -2,7 +2,7 @@ import { PaymentStatus, TaxAdministrator, TaxType } from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
 import {
-  NorisCommunalWasteTax,
+  NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
 } from '../noris/types/noris.types'
 import {
@@ -25,7 +25,7 @@ export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
 // Central type mapping - single source of truth
 export type TaxTypeToNorisData = {
   [TaxType.DZN]: NorisRealEstateTax
-  [TaxType.KO]: NorisCommunalWasteTax
+  [TaxType.KO]: NorisCommunalWasteTaxGrouped
 }
 
 export type TaxTypeToTaxDetail = {
@@ -77,6 +77,11 @@ export type TaxDefinition<TTaxType extends TaxType> = {
   isUnique: boolean
 
   numberOfInstallments: number
+  installmentDueDates: {
+    second: string
+    third: string
+    fourth?: string
+  }
 
   /** Threshold for allowing installment payments (splátková hranica) in eurocents */
   paymentCalendarThreshold: number

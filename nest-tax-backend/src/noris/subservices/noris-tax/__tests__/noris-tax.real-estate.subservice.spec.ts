@@ -387,7 +387,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           },
         )
 
-      const result = await service.processNorisTaxData(mockNorisData, 2023)
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {})
 
       expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
         mockNorisData.map((record) => record.ICO_RC),
@@ -427,14 +427,14 @@ describe('NorisTaxRealEstateSubservice', () => {
       ] as any
       prismaMock.tax.findMany.mockResolvedValue(existingTaxes)
 
-      const result = await service.processNorisTaxData(mockNorisData, 2023)
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {})
 
       expect(service['processTaxRecordFromNoris']).not.toHaveBeenCalled()
       expect(result).toEqual({ birthNumbers: [] })
     })
 
     it('should handle empty Noris data', async () => {
-      const result = await service.processNorisTaxData([], 2023)
+      const result = await service.processNorisTaxData([], 2023, {})
 
       expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
         [],
@@ -671,7 +671,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         .spyOn(service as any, 'processTaxRecordFromNoris')
         .mockImplementation(() => {})
 
-      await service.processNorisTaxData(mockNorisData, 2023)
+      await service.processNorisTaxData(mockNorisData, 2023, {})
 
       expect(mockConcurrencyLimit).toHaveBeenCalled()
     })
@@ -770,6 +770,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         isUnique: true,
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
+        installmentDueDates: {
+          second: '09-01',
+          third: '11-01',
+        },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([
@@ -881,6 +885,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         isUnique: true,
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
+        installmentDueDates: {
+          second: '09-01',
+          third: '11-01',
+        },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([

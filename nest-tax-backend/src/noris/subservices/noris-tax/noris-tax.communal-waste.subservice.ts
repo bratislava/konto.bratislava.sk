@@ -3,8 +3,6 @@ import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 
-import { RequestPostNorisLoadDataDto } from '../../../admin/dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
@@ -34,14 +32,14 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
 > {
   constructor(
     private readonly connectionService: NorisConnectionSubservice,
-    private readonly cityAccountSubservice: CityAccountSubservice,
-    private readonly paymentSubservice: NorisPaymentSubservice,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
 
     qrCodeSubservice: QrCodeSubservice,
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     bloomreachService: BloomreachService,
+    cityAccountSubservice: CityAccountSubservice,
+    paymentSubservice: NorisPaymentSubservice,
     databaseSubservice: DatabaseSubservice,
   ) {
     const logger = new LineLoggerSubservice(
@@ -54,23 +52,24 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       throwerErrorGuard,
       databaseSubservice,
       logger,
+      cityAccountSubservice,
+      paymentSubservice,
     )
   }
 
-  getAndProcessNorisTaxDataByBirthNumberAndYear(): Promise<CreateBirthNumbersResponseDto> {
-    throw new Error('Not implemented')
+  protected getTaxType(): typeof TaxType.KO {
+    return TaxType.KO
   }
 
-  processNorisTaxData() // data: TaxTypeToNorisData['KO'][],
-  // year: number,
-  : Promise<CreateBirthNumbersResponseDto> {
-    throw new Error('Not implemented')
-  }
-
-  getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(): Promise<{
-    updated: number
-  }> {
-    throw new Error('Not implemented')
+  protected async getTaxDataByYearAndBirthNumber(
+    year: number,
+    birthNumbers: string[],
+  ): Promise<NorisCommunalWasteTaxGrouped[]> {
+    const norisData = await this.getCommunalWasteTaxDataByBirthNumberAndYear(
+      year,
+      birthNumbers,
+    )
+    return this.groupCommunalWasteTaxRecords(norisData)
   }
 
   /**
@@ -85,19 +84,20 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
    * @returns An array of records for given birth numbers and year.
    */
   private async getCommunalWasteTaxDataByBirthNumberAndYear(
-    data: RequestPostNorisLoadDataDto,
+    year: number,
+    birthNumbers: string[],
   ): Promise<NorisCommunalWasteTax[]> {
     const norisData = await this.connectionService.withConnection(
       async (connection) => {
         const request = new mssql.Request(connection)
 
-        const birthNumbersPlaceholders = data.birthNumbers
+        const birthNumbersPlaceholders = birthNumbers
           .map((_, index) => `@birth_number${index}`)
           .join(',')
-        data.birthNumbers.forEach((birthNumber, index) => {
+        birthNumbers.forEach((birthNumber, index) => {
           request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
-        request.input('year', mssql.Int, data.year)
+        request.input('year', mssql.Int, year)
 
         const queryWithPlaceholders = getCommunalWasteTaxesFromNoris.replaceAll(
           '@birth_numbers',
@@ -122,7 +122,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     )
   }
 
-  processWasteTaxRecords(
+  private groupCommunalWasteTaxRecords(
     records: NorisCommunalWasteTax[],
   ): NorisCommunalWasteTaxGrouped[] {
     const grouped = groupBy(records, 'variabilny_symbol')
@@ -133,20 +133,32 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       // Take the first record as "base" since all other fields are the same
       const base = group[0]
 
-      const containers = group.map((r) => ({
-        address: {
-          street: r.ulica,
-          orientationNumber: r.orientacne_cislo,
-        },
-        details: {
+      // Group by address within this variable symbol group
+      const addressGrouped = groupBy(group, (r) => {
+        return `${r.ulica || ''}_${r.orientacne_cislo || ''}`
+      })
+
+      const addresses = Object.values(addressGrouped).map((addressGroup) => {
+        // Take the first record to get the address (all records in this group have the same address)
+        const firstRecord = addressGroup[0]
+
+        const containers = addressGroup.map((r) => ({
           objem_nadoby: r.objem_nadoby,
           pocet_nadob: r.pocet_nadob,
           pocet_odvozov: r.pocet_odvozov,
           sadzba: r.sadzba,
           poplatok: r.poplatok,
           druh_nadoby: r.druh_nadoby,
-        },
-      }))
+        }))
+
+        return {
+          addressDetail: {
+            street: firstRecord.ulica,
+            orientationNumber: firstRecord.orientacne_cislo,
+          },
+          containers,
+        }
+      })
 
       // Get all keys from BaseNorisCommunalWasteTaxDto
       const baseKeys = Object.keys(
@@ -160,7 +172,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       const groupedData: NorisCommunalWasteTaxGrouped = {
         type: TaxType.KO,
         ...baseData,
-        containers,
+        addresses,
       }
 
       result.push(groupedData)

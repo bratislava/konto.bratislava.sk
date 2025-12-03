@@ -2,11 +2,16 @@ import { TaxAdministrator, TaxType } from '@prisma/client'
 import currency from 'currency.js'
 
 import {
+  CommunalWasteTaxDetail,
   RealEstateTaxAreaType,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
 } from '../../prisma/json-types'
-import { NorisBaseTax, NorisRealEstateTax } from '../types/noris.types'
+import {
+  NorisBaseTax,
+  NorisCommunalWasteTaxGrouped,
+  NorisRealEstateTax,
+} from '../types/noris.types'
 import { DeliveryMethod, DeliveryMethodNoris } from './noris.types'
 
 export const convertCurrencyToInt = (value: string): number => {
@@ -86,7 +91,7 @@ export const mapNorisToTaxInstallmentsData = (
     ]
   }
 
-  return [
+  const installments = [
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_1),
@@ -106,6 +111,15 @@ export const mapNorisToTaxInstallmentsData = (
       text: data.TXTSPL4_3,
     },
   ]
+  if (data.SPL4_4) {
+    installments.push({
+      taxId,
+      amount: convertCurrencyToInt(data.SPL4_4),
+      order: 4,
+      text: data.TXTSPL4_4,
+    })
+  }
+  return installments
 }
 
 export const mapDeliveryMethodToNoris = (
@@ -139,6 +153,15 @@ export const mapNorisToDatabaseBaseTax = (
     dateCreateTax: data.akt_datum,
     dateTaxRuling: data.datum_platnosti,
     taxId: data.cislo_konania,
+  }
+}
+
+export const mapNorisToCommunalWasteDatabaseDetail = (
+  data: NorisCommunalWasteTaxGrouped,
+): CommunalWasteTaxDetail => {
+  return {
+    type: TaxType.KO,
+    addresses: data.addresses,
   }
 }
 

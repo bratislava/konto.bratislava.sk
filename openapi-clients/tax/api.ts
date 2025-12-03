@@ -179,6 +179,7 @@ export interface RequestPostNorisLoadDataDto {
    */
   options?: RequestPostNorisLoadDataOptionsDto
 }
+
 export interface RequestPostNorisLoadDataOptionsDto {
   /**
    * If true, only prepare data (validate and mark as ready) without creating taxes
@@ -330,6 +331,10 @@ export interface ResponseCommunalWasteTaxItemizedAddressDto {
    * Unit tax rate (sadzba)
    */
   unitRate: number
+  /**
+   * Container type (druh_nadoby)
+   */
+  containerType: string
   /**
    * Fee amount (poplatok)
    */

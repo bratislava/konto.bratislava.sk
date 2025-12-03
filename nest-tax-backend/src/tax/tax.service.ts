@@ -6,7 +6,10 @@ import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -15,20 +18,24 @@ import {
   ResponseAnyTaxSummaryDetailDto,
   ResponseGetTaxesListBodyDto,
   ResponseGetTaxesListDto,
+  ResponseInstallmentPaymentDetailDto,
+  ResponseOneTimePaymentDetailsDto,
+  ResponseTaxPayerReducedDto,
   TaxAvailabilityStatus,
   TaxStatusEnum,
 } from './dtos/response.tax.dto'
-import { TaxCommunalWasteSubservice } from './subservices/tax/tax.communal-waste.subservice'
-import { TaxRealEstateSubservice } from './subservices/tax/tax.real-estate.subservice'
-import { specificSymbol } from './subservices/tax/tax.subservice.abstract'
 import {
   checkTaxDateInclusion,
   getExistingTaxStatus,
+  getTaxStatus,
 } from './utils/helpers/tax.helper'
 import {
+  getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
+
+export const specificSymbol = '2025200000'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -43,25 +50,8 @@ export class TaxService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly taxRealEstateSubservice: TaxRealEstateSubservice,
-    private readonly taxCommunalWasteSubservice: TaxCommunalWasteSubservice,
+    private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
-
-  private getImplementationByType(taxType: TaxType) {
-    switch (taxType) {
-      case TaxType.DZN:
-        return this.taxRealEstateSubservice
-
-      case TaxType.KO:
-        return this.taxCommunalWasteSubservice
-
-      default:
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          CustomErrorTaxTypesEnum.TAX_TYPE_NOT_FOUND,
-          `Implementation for tax type ${taxType} not found`,
-        )
-    }
-  }
 
   private async getAmountAlreadyPaidByTaxId(id: number) {
     const taxPayment = await this.prisma.taxPayment.aggregate({
@@ -178,17 +168,160 @@ export class TaxService {
     }
   }
 
+  /**
+   * Fetches the tax data from database for a given tax payer, year, type and order.
+   *
+   * @param taxPayerWhereUniqueInput - Tax payer where unique input
+   * @param include - Include fields
+   * @param year - Year of the tax
+   * @param type - Type of the tax
+   * @param order - Order of the tax
+   * @returns Tax data from database
+   */
+  private async fetchTaxData<T extends Prisma.TaxInclude>(
+    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    include: T,
+    year: number,
+    type: TaxType,
+    order: number,
+  ) {
+    const taxPayer = await this.prisma.taxPayer.findUnique({
+      where: taxPayerWhereUniqueInput,
+      select: { id: true },
+    })
+
+    if (!taxPayer) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      )
+    }
+
+    const tax = await this.prisma.tax.findUnique<{
+      where: Prisma.TaxWhereUniqueInput
+      include: T
+    }>({
+      where: {
+        taxPayerId_year_type_order: {
+          year,
+          taxPayerId: taxPayer.id,
+          type,
+          order,
+        },
+      },
+      include,
+    })
+
+    if (!tax) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+      )
+    }
+
+    return tax
+  }
+
   async getTaxDetail(
     birthNumber: string,
     year: number,
     type: TaxType,
     order: number,
   ): Promise<ResponseAnyTaxSummaryDetailDto> {
-    return this.getImplementationByType(type).getTaxDetail(
-      birthNumber,
+    const today = dayjs().tz('Europe/Bratislava')
+    const taxDefinition = getTaxDefinitionByType(type)
+
+    const tax = await this.fetchTaxData(
+      { birthNumber },
+      {
+        taxInstallments: true,
+        taxPayer: {
+          include: {
+            taxAdministrator: true,
+          },
+        },
+        taxPayments: true,
+      },
       year,
+      type,
       order,
     )
+
+    // Validate tax details type matches expected type
+    if (tax.taxDetails.type !== type) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Tax details type is not ${type}: ${tax.taxDetails.type}`,
+      )
+    }
+
+    const detailWithoutQrCode = getTaxDetailPure({
+      type,
+      taxYear: +year,
+      today: today.toDate(),
+      overallAmount: tax.amount,
+      paymentCalendarThreshold: taxDefinition.paymentCalendarThreshold,
+      variableSymbol: tax.variableSymbol,
+      dateOfValidity: tax.dateTaxRuling,
+      installments: tax.taxInstallments,
+      taxDetails: tax.taxDetails,
+      specificSymbol,
+      taxPayments: tax.taxPayments,
+    })
+
+    let oneTimePaymentQrCode: string | undefined
+    if (detailWithoutQrCode.oneTimePayment.qrCode) {
+      oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
+        detailWithoutQrCode.oneTimePayment.qrCode,
+      )
+    }
+    const oneTimePayment: ResponseOneTimePaymentDetailsDto = {
+      ...detailWithoutQrCode.oneTimePayment,
+      qrCode: oneTimePaymentQrCode,
+    }
+
+    const installmentPayment: ResponseInstallmentPaymentDetailDto = {
+      ...detailWithoutQrCode.installmentPayment,
+      activeInstallment: detailWithoutQrCode.installmentPayment
+        .activeInstallment
+        ? {
+            remainingAmount:
+              detailWithoutQrCode.installmentPayment.activeInstallment
+                .remainingAmount,
+            variableSymbol:
+              detailWithoutQrCode.installmentPayment.activeInstallment
+                .variableSymbol,
+            qrCode: await this.qrCodeSubservice.createQrCode(
+              detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
+            ),
+          }
+        : undefined,
+    }
+
+    const { taxAdministrator } = tax.taxPayer
+    const taxPayer: ResponseTaxPayerReducedDto = {
+      name: tax.taxPayer.name,
+      permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,
+      permanentResidenceZip: tax.taxPayer.permanentResidenceZip,
+      permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
+      externalId: tax.taxPayer.externalId,
+    }
+    const paidStatus = getTaxStatus(
+      detailWithoutQrCode.overallAmount,
+      detailWithoutQrCode.overallPaid,
+    )
+
+    return {
+      ...detailWithoutQrCode,
+      year,
+      order,
+      type: type === TaxType.DZN ? 'DZN' : 'KO',
+      paidStatus,
+      oneTimePayment,
+      installmentPayment,
+      taxAdministrator,
+      taxPayer,
+    } as ResponseAnyTaxSummaryDetailDto
   }
 
   async getOneTimePaymentGenerator(
@@ -197,7 +330,7 @@ export class TaxService {
     type: TaxType,
     order: number,
   ): Promise<PaymentGateURLGeneratorDto> {
-    const tax = await this.getImplementationByType(type).fetchTaxData(
+    const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,
       { taxPayments: true },
       year,
@@ -220,7 +353,7 @@ export class TaxService {
   ): Promise<PaymentGateURLGeneratorDto> {
     const today = dayjs().tz('Europe/Bratislava').toDate()
 
-    const tax = await this.getImplementationByType(taxType).fetchTaxData(
+    const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,
       { taxInstallments: true, taxPayments: true },
       year,

@@ -190,13 +190,13 @@ export const createTestingCommunalWasteTaxMock = (
     SPL4_4: (0).toFixed(2).replace('.', ','),
 
     // communal waste specific fields (mock but type-correct)
-    containers: [
+    addresses: [
       {
-        address: {
+        addressDetail: {
           street: 'Testovacia ulica',
           orientationNumber: '10A',
         },
-        details: [
+        containers: [
           {
             objem_nadoby: 120, // liters
             pocet_nadob: 1,

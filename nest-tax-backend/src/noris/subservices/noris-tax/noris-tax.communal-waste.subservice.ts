@@ -138,11 +138,11 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         return `${r.ulica || ''}_${r.orientacne_cislo || ''}`
       })
 
-      const containers = Object.values(addressGrouped).map((addressGroup) => {
+      const addresses = Object.values(addressGrouped).map((addressGroup) => {
         // Take the first record to get the address (all records in this group have the same address)
         const firstRecord = addressGroup[0]
 
-        const details = addressGroup.map((r) => ({
+        const containers = addressGroup.map((r) => ({
           objem_nadoby: r.objem_nadoby,
           pocet_nadob: r.pocet_nadob,
           pocet_odvozov: r.pocet_odvozov,
@@ -152,11 +152,11 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         }))
 
         return {
-          address: {
+          addressDetail: {
             street: firstRecord.ulica,
             orientationNumber: firstRecord.orientacne_cislo,
           },
-          details,
+          containers,
         }
       })
 
@@ -172,7 +172,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       const groupedData: NorisCommunalWasteTaxGrouped = {
         type: TaxType.KO,
         ...baseData,
-        containers,
+        addresses,
       }
 
       result.push(groupedData)

@@ -130,30 +130,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
 
     const taxDefinition = this.getTaxDefinition()
 
-    const taxesExist = await this.prismaService.tax.findMany({
-      select: {
-        taxPayer: {
-          select: {
-            birthNumber: true,
-          },
-        },
-      },
-      where: {
-        year: +year,
-        taxPayer: {
-          birthNumber: {
-            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
-          },
-        },
-        type: this.getTaxType(),
-      },
-    })
-    const birthNumbersWithExistingTax = new Set(
-      taxesExist.map((tax) => tax.taxPayer.birthNumber),
-    )
-
-    const norisDataNotInDatabase = norisData.filter(
-      (norisItem) => !birthNumbersWithExistingTax.has(norisItem.ICO_RC),
+    const norisDataNotInDatabase = await this.filterNorisDataNotInDatabase(
+      norisData,
+      year,
     )
 
     if (prepareOnly) {

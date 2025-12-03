@@ -755,13 +755,13 @@ describe('UnifiedTaxUtil', () => {
       ],
       taxDetails: {
         type: TaxType.KO,
-        containers: [
+        addresses: [
           {
-            address: {
+            addressDetail: {
               street: 'Test Street',
               orientationNumber: '1',
             },
-            details: [
+            containers: [
               {
                 objem_nadoby: 120,
                 pocet_nadob: 1,

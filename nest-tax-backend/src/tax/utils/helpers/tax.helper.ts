@@ -104,27 +104,27 @@ export const generateItemizedRealEstateTaxDetail = (
 export const generateItemizedCommunalWasteTaxDetail = (
   taxDetails: CommunalWasteTaxDetail,
 ): ResponseCommunalWasteTaxDetailItemizedDto => {
-  const addressDetail = taxDetails.containers.map((container) => {
+  const addressDetail = taxDetails.addresses.map((address) => {
     // Calculate total amount for this address (sum of all poplatok)
-    const totalAmount = container.details.reduce(
+    const totalAmount = address.containers.reduce(
       (sum, detail) => sum + detail.poplatok,
       0,
     )
 
     // Map details to itemized containers
-    const itemizedContainers = container.details.map((detail) => ({
-      containerVolume: detail.objem_nadoby,
-      containerCount: detail.pocet_nadob,
-      numberOfDisposals: detail.pocet_odvozov,
-      unitRate: detail.sadzba,
-      containerType: detail.druh_nadoby,
-      fee: detail.poplatok,
+    const itemizedContainers = address.containers.map((container) => ({
+      containerVolume: container.objem_nadoby,
+      containerCount: container.pocet_nadob,
+      numberOfDisposals: container.pocet_odvozov,
+      unitRate: container.sadzba,
+      containerType: container.druh_nadoby,
+      fee: container.poplatok,
     }))
 
     return {
       address: {
-        street: container.address.street ?? '',
-        orientationNumber: container.address.orientationNumber ?? '',
+        street: address.addressDetail.street ?? '',
+        orientationNumber: address.addressDetail.orientationNumber ?? '',
       },
       totalAmount,
       itemizedContainers,

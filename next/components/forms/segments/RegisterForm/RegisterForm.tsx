@@ -17,6 +17,8 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
+import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
+
 interface Data {
   email: string
   name?: string
@@ -114,6 +116,9 @@ const schema = {
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const { t } = useTranslation('account')
+
+  const { currentClientId, clientInfo } = useAmplifyClientOAuthContext()
+
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
     handleSubmit,
@@ -142,6 +147,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
 
   const type = watch('account_type')
 
+  const emailHelptextTranslationMap = {
+    fo: t('email_fo_description'),
+    'fo-p': t('email_fo-p_description'),
+    po: t('email_po_description'),
+  } satisfies Record<AccountType, string>
+
   return (
     <form
       className="flex flex-col space-y-4"
@@ -153,6 +164,11 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           family_name: data.family_name,
           name: data.name,
           'custom:account_type': data.account_type,
+          // Add client id and name only for registrations that happened through oauth
+          ...(clientInfo && {
+            'custom:origin_client_id': currentClientId,
+            'custom:origin_client_name': clientInfo.name,
+          }),
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()
@@ -196,7 +212,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            helptext={t(`email_${type}_description`)}
+            helptext={emailHelptextTranslationMap[type]}
             label={t('email_label')}
             placeholder={t('email_placeholder')}
             autoComplete="username"

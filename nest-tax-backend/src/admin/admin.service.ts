@@ -137,7 +137,15 @@ export class AdminService {
     }
 
     // Process the mock data to create the testing tax
-    await this.norisService.processNorisTaxData(taxType, [mockTaxRecord], year)
+    await this.norisService.processNorisTaxData(
+      taxType,
+      [mockTaxRecord],
+      year,
+      {
+        prepareOnly: false,
+        ignoreBatchLimit: true,
+      },
+    )
   }
 
   async deleteTax({

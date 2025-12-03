@@ -43,13 +43,13 @@ export const RealEstateTaxDetailSchema = z.object({
 // TODO test if real data matches this data, as well as tax mocks (enum/int..?)
 export const CommunalWasteTaxDetailSchema = z.object({
   type: z.literal(TaxType.KO),
-  containers: z.array(
+  addresses: z.array(
     z.object({
-      address: z.object({
+      addressDetail: z.object({
         street: z.string().nullable(),
         orientationNumber: z.string().nullable(),
       }),
-      details: z.array(
+      containers: z.array(
         z.object({
           objem_nadoby: z.number(),
           pocet_nadob: z.number(),

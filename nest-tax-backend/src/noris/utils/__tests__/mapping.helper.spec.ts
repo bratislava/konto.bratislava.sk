@@ -1,6 +1,4 @@
 /* eslint-disable no-secrets/no-secrets */
-import { TaxAdministrator } from '@prisma/client'
-
 import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
 import { NorisRealEstateTax } from '../../types/noris.types'
 import {
@@ -52,18 +50,8 @@ describe('mapNorisToTaxPayerData', () => {
     TXT_MENO: 'Test Name',
   } as NorisRealEstateTax
 
-  const mockTaxAdministrator: TaxAdministrator = {
-    id: 1,
-    name: 'Test Admin',
-    email: 'admin@test.com',
-    phoneNumber: '123456789',
-    externalId: 'ADM123',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }
-
   it('should map Noris data to TaxPayer data correctly', () => {
-    const result = mapNorisToTaxPayerData(mockNorisData, mockTaxAdministrator)
+    const result = mapNorisToTaxPayerData(mockNorisData)
 
     expect(result).toEqual({
       birthNumber: '1234567890',
@@ -75,7 +63,6 @@ describe('mapNorisToTaxPayerData', () => {
       permanentResidenceStreetTxt: 'Test Street Text',
       permanentResidenceCity: 'Test City',
       nameTxt: 'Test Name',
-      taxAdministratorId: 1,
     })
   })
 })

@@ -7,6 +7,7 @@ import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
+import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { NorisRealEstateTaxSchema } from '../../types/noris.schema'
@@ -31,6 +32,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     prismaService: PrismaService,
     cityAccountSubservice: CityAccountSubservice,
     paymentSubservice: NorisPaymentSubservice,
+    databaseSubservice: DatabaseSubservice,
   ) {
     const logger = new LineLoggerSubservice(NorisTaxRealEstateSubservice.name)
     super(
@@ -38,6 +40,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       prismaService,
       bloomreachService,
       throwerErrorGuard,
+      databaseSubservice,
       logger,
       cityAccountSubservice,
       paymentSubservice,

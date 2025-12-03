@@ -299,7 +299,6 @@ const calculateInstallmentStatus = (
     const isDueDateInFuture =
       installmentDueDate !== undefined && installmentDueDate > dayjs(today)
     const isLateInstallment =
-      installmentDueDate !== undefined &&
       !isDueDateInFuture &&
       installmentAmounts[i].status !== InstallmentPaidStatusEnum.PAID &&
       installmentAmounts[i].status !== InstallmentPaidStatusEnum.OVER_PAID
@@ -348,10 +347,11 @@ const calculateInstallmentPaymentDetails = (options: {
     numberOfInstallments,
   } = options
 
-  const installmentCount = numberOfInstallments
-
   // Calculate due dates for all installments
   // First installment due date is calculated from dateOfValidity (may be undefined)
+  const parseInstallmentDueDate = (dateString: string): Dayjs =>
+    dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
+
   const installmentDueDatesParsed: [
     dayjs.Dayjs | undefined,
     dayjs.Dayjs,
@@ -361,17 +361,12 @@ const calculateInstallmentPaymentDetails = (options: {
     // First installment due date is calculated from dateOfValidity
     dueDate,
     // Second installment:
-    dayjs.tz(`${taxYear}-${installmentDueDates.second}`, bratislavaTimeZone),
+    parseInstallmentDueDate(installmentDueDates.second),
     // Third installment:
-    dayjs.tz(`${taxYear}-${installmentDueDates.third}`, bratislavaTimeZone),
+    parseInstallmentDueDate(installmentDueDates.third),
     // Fourth installment (if exists):
-    ...(installmentCount === 4 && installmentDueDates.fourth
-      ? [
-          dayjs.tz(
-            `${taxYear}-${installmentDueDates.fourth}`,
-            bratislavaTimeZone,
-          ),
-        ]
+    ...(installmentDueDates.fourth
+      ? [parseInstallmentDueDate(installmentDueDates.fourth)]
       : []),
   ]
 

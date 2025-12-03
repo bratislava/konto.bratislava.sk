@@ -33,7 +33,7 @@ jest.mock('../utils/unified-tax.util', () => ({
 
 // Type definitions for the mock objects
 type MockTaxPayer = Prisma.TaxPayerGetPayload<{
-  include: { taxAdministrator: true }
+  include: { taxAdministrators: { include: { taxAdministrator: true } } }
 }>
 
 // Helper function to create base mock TaxPayer
@@ -48,16 +48,22 @@ const createMockTaxPayer = (
     createdAt: baseDate,
     updatedAt: baseDate,
     birthNumber: '123456/789',
-    taxAdministratorId: 1,
-    taxAdministrator: {
-      id: 1,
-      createdAt: baseDate,
-      updatedAt: baseDate,
-      externalId: 'ext-admin-1',
-      name: 'Test Tax Administrator',
-      phoneNumber: '+421123456789',
-      email: 'admin@test.sk',
-    },
+    taxAdministrators: [
+      {
+        taxAdministrator: {
+          id: 1,
+          createdAt: baseDate,
+          updatedAt: baseDate,
+          externalId: 'ext-admin-1',
+          name: 'Test Tax Administrator',
+          phoneNumber: '+421123456789',
+          email: 'admin@test.sk',
+        },
+        taxPayerId: 1,
+        taxAdministratorId: 1,
+        taxType: TaxType.DZN,
+      },
+    ],
     permanentResidenceAddress: 'Test Address 123',
     externalId: 'ext-taxpayer-1',
     name: 'John Doe',
@@ -66,6 +72,7 @@ const createMockTaxPayer = (
     permanentResidenceStreet: 'Test Street',
     permanentResidenceZip: '12345',
     permanentResidenceCity: 'Test City',
+    readyToImport: false,
     ...overrides,
   }
 }
@@ -527,7 +534,9 @@ describe('TaxService', () => {
         type: TaxType.DZN,
         order: 1,
       })
-      expect(result.taxAdministrator).toEqual(mockTaxPayer.taxAdministrator)
+      expect(result.taxAdministrator).toEqual(
+        mockTaxPayer.taxAdministrators[0].taxAdministrator,
+      )
     })
 
     it('should add current year tax when no current year tax exists and shouldAddCurrentYear is true', async () => {
@@ -742,7 +751,9 @@ describe('TaxService', () => {
         type: TaxType.KO,
         order: 1,
       })
-      expect(result.taxAdministrator).toEqual(mockTaxPayer.taxAdministrator)
+      expect(result.taxAdministrator).toEqual(
+        mockTaxPayer.taxAdministrators[0].taxAdministrator,
+      )
     })
 
     it('should process multiple KO taxes for the same year with different orders', async () => {
@@ -842,7 +853,9 @@ describe('TaxService', () => {
         order: 3,
       })
 
-      expect(result.taxAdministrator).toEqual(mockTaxPayer.taxAdministrator)
+      expect(result.taxAdministrator).toEqual(
+        mockTaxPayer.taxAdministrators[0].taxAdministrator,
+      )
     })
 
     it('should process multiple KO taxes across different years with different orders', async () => {
@@ -959,12 +972,15 @@ describe('TaxService', () => {
         order: 1,
       })
 
-      expect(result.taxAdministrator).toEqual(mockTaxPayer.taxAdministrator)
+      expect(result.taxAdministrator).toEqual(
+        mockTaxPayer.taxAdministrators[0].taxAdministrator,
+      )
     })
   })
 
   describe('getTaxDetail', () => {
     it('should return tax detail from implementation', async () => {
+      const baseDate = new Date('2023-01-01T10:00:00.000Z')
       jest.spyOn(service as any, 'fetchTaxData').mockResolvedValue({
         id: 1,
         amount: 1000,
@@ -979,7 +995,22 @@ describe('TaxService', () => {
           permanentResidenceZip: '12345',
           permanentResidenceCity: 'Test City',
           externalId: 'ext-1',
-          taxAdministrator: null,
+          taxAdministrators: [
+            {
+              taxAdministrator: {
+                id: 1,
+                createdAt: baseDate,
+                updatedAt: baseDate,
+                externalId: 'ext-admin-1',
+                name: 'Test Tax Administrator',
+                phoneNumber: '+421123456789',
+                email: 'admin@test.sk',
+              },
+              taxPayerId: 1,
+              taxAdministratorId: 1,
+              taxType: TaxType.DZN,
+            },
+          ],
         },
       })
       jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue({
@@ -1007,7 +1038,14 @@ describe('TaxService', () => {
           taxInstallments: true,
           taxPayer: {
             include: {
-              taxAdministrator: true,
+              taxAdministrators: {
+                where: {
+                  taxType: TaxType.DZN,
+                },
+                include: {
+                  taxAdministrator: true,
+                },
+              },
             },
           },
           taxPayments: true,
@@ -1019,6 +1057,336 @@ describe('TaxService', () => {
       expect(result.type).toBe('DZN')
       expect(result.year).toBe(2023)
       expect(result.order).toBe(1)
+    })
+
+    it('should return tax detail for KO type', async () => {
+      const baseDate = new Date('2023-01-01T10:00:00.000Z')
+      jest.spyOn(service as any, 'fetchTaxData').mockResolvedValue({
+        id: 1,
+        amount: 1500,
+        variableSymbol: 'VS456',
+        dateTaxRuling: new Date('2023-01-01'),
+        taxInstallments: [],
+        taxPayments: [],
+        taxDetails: { type: TaxType.KO } as any,
+        taxPayer: {
+          name: 'Test User KO',
+          permanentResidenceStreet: 'Test Street KO',
+          permanentResidenceZip: '54321',
+          permanentResidenceCity: 'Test City KO',
+          externalId: 'ext-ko-1',
+          taxAdministrators: [
+            {
+              taxAdministrator: {
+                id: 2,
+                createdAt: baseDate,
+                updatedAt: baseDate,
+                externalId: 'ext-admin-ko-1',
+                name: 'Test KO Tax Administrator',
+                phoneNumber: '+421987654321',
+                email: 'admin-ko@test.sk',
+              },
+              taxPayerId: 1,
+              taxAdministratorId: 2,
+              taxType: TaxType.KO,
+            },
+          ],
+        },
+      })
+      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue({
+        overallPaid: 0,
+        overallBalance: 1500,
+        overallAmount: 1500,
+        oneTimePayment: { qrCode: { data: 'test-ko' } } as any,
+        installmentPayment: { activeInstallment: null } as any,
+        itemizedDetail: {} as any,
+      })
+      jest
+        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .mockResolvedValue('qr-code-url-ko')
+
+      const result = await service.getTaxDetail(
+        '987654/321',
+        2023,
+        TaxType.KO,
+        1,
+      )
+
+      expect(service['fetchTaxData']).toHaveBeenCalledWith(
+        { birthNumber: '987654/321' },
+        {
+          taxInstallments: true,
+          taxPayer: {
+            include: {
+              taxAdministrators: {
+                where: {
+                  taxType: TaxType.KO,
+                },
+                include: {
+                  taxAdministrator: true,
+                },
+              },
+            },
+          },
+          taxPayments: true,
+        },
+        2023,
+        TaxType.KO,
+        1,
+      )
+      expect(result.type).toBe('KO')
+      expect(result.year).toBe(2023)
+      expect(result.order).toBe(1)
+      expect(result.taxAdministrator).toEqual({
+        id: 2,
+        createdAt: baseDate,
+        updatedAt: baseDate,
+        externalId: 'ext-admin-ko-1',
+        name: 'Test KO Tax Administrator',
+        phoneNumber: '+421987654321',
+        email: 'admin-ko@test.sk',
+      })
+    })
+
+    it('should return tax detail for KO type with installments', async () => {
+      const baseDate = new Date('2023-01-01T10:00:00.000Z')
+      jest.spyOn(service as any, 'fetchTaxData').mockResolvedValue({
+        id: 2,
+        amount: 2000,
+        variableSymbol: 'VS789',
+        dateTaxRuling: new Date('2023-01-01'),
+        taxInstallments: [
+          {
+            id: 1,
+            installmentNumber: 1,
+            amount: 1000,
+            dueDate: new Date('2023-06-01'),
+            text: 'First installment',
+            order: 1,
+          },
+          {
+            id: 2,
+            installmentNumber: 2,
+            amount: 1000,
+            dueDate: new Date('2023-09-01'),
+            text: 'Second installment',
+            order: 2,
+          },
+        ],
+        taxPayments: [],
+        taxDetails: { type: TaxType.KO } as any,
+        taxPayer: {
+          name: 'Test User KO Installments',
+          permanentResidenceStreet: 'Test Street',
+          permanentResidenceZip: '12345',
+          permanentResidenceCity: 'Test City',
+          externalId: 'ext-ko-2',
+          taxAdministrators: [
+            {
+              taxAdministrator: {
+                id: 2,
+                createdAt: baseDate,
+                updatedAt: baseDate,
+                externalId: 'ext-admin-ko-2',
+                name: 'Test KO Tax Administrator',
+                phoneNumber: '+421987654321',
+                email: 'admin-ko@test.sk',
+              },
+              taxPayerId: 1,
+              taxAdministratorId: 2,
+              taxType: TaxType.KO,
+            },
+          ],
+        },
+      })
+      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue({
+        overallPaid: 0,
+        overallBalance: 2000,
+        overallAmount: 2000,
+        oneTimePayment: { qrCode: { data: 'test-ko-installments' } } as any,
+        installmentPayment: {
+          activeInstallment: {
+            remainingAmount: 1000,
+            variableSymbol: 'VS789',
+            qrCode: { data: 'active-installment-qr' },
+          },
+        } as any,
+        itemizedDetail: {} as any,
+      })
+      jest
+        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .mockResolvedValueOnce('qr-code-url-ko-one-time')
+        .mockResolvedValueOnce('qr-code-url-ko-installment')
+
+      const result = await service.getTaxDetail(
+        '987654/321',
+        2023,
+        TaxType.KO,
+        1,
+      )
+
+      expect(result.type).toBe('KO')
+      expect(result.year).toBe(2023)
+      expect(result.order).toBe(1)
+      expect(result.oneTimePayment.qrCode).toBe('qr-code-url-ko-one-time')
+      expect(result.installmentPayment.activeInstallment).toBeDefined()
+      expect(result.installmentPayment.activeInstallment?.qrCode).toBe(
+        'qr-code-url-ko-installment',
+      )
+    })
+
+    it('should return tax detail for KO type with payments', async () => {
+      const baseDate = new Date('2023-01-01T10:00:00.000Z')
+      jest.spyOn(service as any, 'fetchTaxData').mockResolvedValue({
+        id: 3,
+        amount: 3000,
+        variableSymbol: 'VS999',
+        dateTaxRuling: new Date('2023-01-01'),
+        taxInstallments: [],
+        taxPayments: [
+          {
+            id: 1,
+            amount: 1000,
+            status: PaymentStatus.SUCCESS,
+            createdAt: new Date('2023-05-01'),
+          },
+          {
+            id: 2,
+            amount: 500,
+            status: PaymentStatus.SUCCESS,
+            createdAt: new Date('2023-06-01'),
+          },
+        ],
+        taxDetails: { type: TaxType.KO } as any,
+        taxPayer: {
+          name: 'Test User KO Payments',
+          permanentResidenceStreet: 'Test Street',
+          permanentResidenceZip: '12345',
+          permanentResidenceCity: 'Test City',
+          externalId: 'ext-ko-3',
+          taxAdministrators: [
+            {
+              taxAdministrator: {
+                id: 2,
+                createdAt: baseDate,
+                updatedAt: baseDate,
+                externalId: 'ext-admin-ko-3',
+                name: 'Test KO Tax Administrator',
+                phoneNumber: '+421987654321',
+                email: 'admin-ko@test.sk',
+              },
+              taxPayerId: 1,
+              taxAdministratorId: 2,
+              taxType: TaxType.KO,
+            },
+          ],
+        },
+      })
+      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue({
+        overallPaid: 1500,
+        overallBalance: 1500,
+        overallAmount: 3000,
+        oneTimePayment: { qrCode: { data: 'test-ko-payments' } } as any,
+        installmentPayment: { activeInstallment: null } as any,
+        itemizedDetail: {} as any,
+      })
+      jest
+        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .mockResolvedValue('qr-code-url-ko-payments')
+
+      const result = await service.getTaxDetail(
+        '987654/321',
+        2023,
+        TaxType.KO,
+        1,
+      )
+
+      expect(result.type).toBe('KO')
+      expect(result.year).toBe(2023)
+      expect(result.order).toBe(1)
+      expect(result.overallPaid).toBe(1500)
+      expect(result.overallBalance).toBe(1500)
+      expect(result.overallAmount).toBe(3000)
+    })
+
+    it('should return tax detail for KO type with order 2', async () => {
+      const baseDate = new Date('2023-01-01T10:00:00.000Z')
+      jest.spyOn(service as any, 'fetchTaxData').mockResolvedValue({
+        id: 4,
+        amount: 1200,
+        variableSymbol: 'VS111',
+        dateTaxRuling: new Date('2023-01-01'),
+        taxInstallments: [],
+        taxPayments: [],
+        taxDetails: { type: TaxType.KO } as any,
+        taxPayer: {
+          name: 'Test User KO Order 2',
+          permanentResidenceStreet: 'Test Street',
+          permanentResidenceZip: '12345',
+          permanentResidenceCity: 'Test City',
+          externalId: 'ext-ko-4',
+          taxAdministrators: [
+            {
+              taxAdministrator: {
+                id: 2,
+                createdAt: baseDate,
+                updatedAt: baseDate,
+                externalId: 'ext-admin-ko-4',
+                name: 'Test KO Tax Administrator',
+                phoneNumber: '+421987654321',
+                email: 'admin-ko@test.sk',
+              },
+              taxPayerId: 1,
+              taxAdministratorId: 2,
+              taxType: TaxType.KO,
+            },
+          ],
+        },
+      })
+      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue({
+        overallPaid: 0,
+        overallBalance: 1200,
+        overallAmount: 1200,
+        oneTimePayment: { qrCode: { data: 'test-ko-order2' } } as any,
+        installmentPayment: { activeInstallment: null } as any,
+        itemizedDetail: {} as any,
+      })
+      jest
+        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .mockResolvedValue('qr-code-url-ko-order2')
+
+      const result = await service.getTaxDetail(
+        '987654/321',
+        2023,
+        TaxType.KO,
+        2,
+      )
+
+      expect(service['fetchTaxData']).toHaveBeenCalledWith(
+        { birthNumber: '987654/321' },
+        {
+          taxInstallments: true,
+          taxPayer: {
+            include: {
+              taxAdministrators: {
+                where: {
+                  taxType: TaxType.KO,
+                },
+                include: {
+                  taxAdministrator: true,
+                },
+              },
+            },
+          },
+          taxPayments: true,
+        },
+        2023,
+        TaxType.KO,
+        2,
+      )
+      expect(result.type).toBe('KO')
+      expect(result.year).toBe(2023)
+      expect(result.order).toBe(2)
     })
   })
 

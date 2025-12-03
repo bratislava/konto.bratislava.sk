@@ -33,7 +33,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     },
     ref,
   ) => {
-    const { t } = useTranslation('account', { keyPrefix: 'Upload' })
+    const { t } = useTranslation('account')
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 
@@ -82,7 +82,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
               <span>
                 <UploadIcon />
               </span>
-              <span>{allowsMultiple ? t('uploadFiles') : t('uploadFile')}</span>
+              <span>{allowsMultiple ? t('Upload.uploadFiles') : t('Upload.uploadFile')}</span>
             </div>
           </ReactAriaButton>
         </FileTrigger>
@@ -91,7 +91,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
           <dl className={buttonInfoClassNames}>
             {sizeLimit ? (
               <>
-                <dt className="sr-only">{t('sizeLimit')}</dt>
+                <dt className="sr-only">{t('Upload.sizeLimit')}</dt>
                 <dd>
                   <PrettyBytes number={sizeLimit * 1000 * 1000} />
                 </dd>
@@ -99,7 +99,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
             ) : null}
             {displaySupportedFileExtensions?.length ? (
               <>
-                <dt className="sr-only">{t('supportedFormats')}</dt>
+                <dt className="sr-only">{t('Upload.supportedFormats')}</dt>
                 <dd>{displaySupportedFileExtensions.join(', ')}</dd>
               </>
             ) : null}

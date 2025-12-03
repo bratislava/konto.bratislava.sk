@@ -157,7 +157,7 @@ export const mapNorisToCommunalWasteDatabaseDetail = (
 ): CommunalWasteTaxDetail => {
   return {
     type: TaxType.KO,
-    containers: data.containers,
+    addresses: data.addresses,
   }
 }
 

@@ -10,6 +10,10 @@ export enum SafeRedirectType {
 }
 
 export const redirectQueryParam = 'from'
+export const clientIdQueryParam = 'client_id'
+export const payloadQueryParam = 'payload'
+export const redirectUriQueryParam = 'redirect_uri'
+export const stateQueryParam = 'state'
 
 export type SafeRedirect = {
   url: string
@@ -49,6 +53,7 @@ export const getSafeRedirect = (queryParam: unknown) => {
         type: SafeRedirectType.Remote,
       }
     }
+
     // eslint-disable-next-line no-empty
   } catch (error) {}
 
@@ -100,7 +105,7 @@ export const removeRedirectQueryParamFromUrl = (resolvedUrl: string) => {
 }
 
 /**
- * Returns the URL to redirect to. Remote URLs in redirect query params are used to pass the access token to the target
+ * Returns the URL to redirect to. "Remote" URLs in redirect query params are used to pass the access token to the target
  * domain, therefore we add the access token to the query string.
  */
 export const getRedirectUrl = async (

@@ -2,11 +2,13 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsDateString,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
@@ -15,6 +17,45 @@ import {
 } from 'class-validator'
 
 import { DeliveryMethod } from '../../noris/utils/noris.types'
+
+// eslint-disable-next-line no-secrets/no-secrets
+/**
+ * Options for processing Noris tax data.
+ *
+ * Used to configure how tax data is processed when calling methods like
+ * `processNorisTaxData()` or `getAndProcessNewNorisTaxDataByBirthNumberAndYear()`.
+ */
+export class RequestPostNorisLoadDataOptionsDto {
+  /**
+   * If `true`, only prepares data (validates and marks as ready) without creating taxes.
+   * If `false` or undefined, taxes will be created normally.
+   *
+   * @default false
+   */
+  @ApiPropertyOptional({
+    description:
+      'If true, only prepare data (validate and mark as ready) without creating taxes',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  prepareOnly?: boolean
+
+  /**
+   * If `true`, ignores the batch limit for the number of taxes to process.
+   * Useful when you need to process a large number of taxes in a single operation.
+   *
+   * @default false
+   */
+  @ApiPropertyOptional({
+    description:
+      'If true, ignore the batch limit for the number of taxes to process',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  ignoreBatchLimit?: boolean
+}
 
 export class RequestPostNorisLoadDataDto {
   @ApiProperty({
@@ -29,6 +70,8 @@ export class RequestPostNorisLoadDataDto {
     default: ['000000/0000'],
   })
   @IsString({ each: true })
+  @IsArray()
+  @IsNotEmpty({ each: true })
   birthNumbers: string[]
 
   @ApiProperty({
@@ -39,6 +82,15 @@ export class RequestPostNorisLoadDataDto {
   })
   @IsEnum(TaxType)
   taxType: TaxType
+
+  @ApiPropertyOptional({
+    description: 'Options for the tax import',
+    type: RequestPostNorisLoadDataOptionsDto,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => RequestPostNorisLoadDataOptionsDto)
+  options?: RequestPostNorisLoadDataOptionsDto
 }
 
 export class RequestPostNorisPaymentDataLoadDto {

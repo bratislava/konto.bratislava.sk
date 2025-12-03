@@ -368,8 +368,8 @@ export default class GinisAPIService {
     externalDocumentId: string,
     type: string,
     sentAtDate: Date,
-    senderId: string,
     subject: string,
+    senderId?: string,
   ) {
     const sentAtIso = sentAtDate.toISOString().split('T')[0]
     const data = await this.ginis.ssl.zalozPisemnost(
@@ -390,7 +390,8 @@ export default class GinisAPIService {
         'Druh-zasilky': 'neurceno',
         'Druh-zachazeni': 'neurceno',
         'Datum-prijmu-podani': `${sentAtIso}T00:00:00`,
-        'Id-odesilatele': senderId,
+        'Id-odesilatele':
+          senderId ?? this.baConfigService.ginisApi.anonymousSenderId,
         // 'Poznamka-k-doruceni': subject,
       },
       {

@@ -134,6 +134,9 @@ export default class EnvironmentVariables {
   @EnvString()
   GINIS_FORM_ID_PROPERTY_ID: string
 
+  @EnvString()
+  GINIS_ANONYMOUS_SENDER_ID: string
+
   @EnvBoolean()
   GINIS_SHOULD_REGISTER: boolean
 

@@ -299,7 +299,6 @@ const calculateInstallmentStatus = (
     const isDueDateInFuture =
       installmentDueDate !== undefined && installmentDueDate > dayjs(today)
     const isLateInstallment =
-      installmentDueDate !== undefined &&
       !isDueDateInFuture &&
       installmentAmounts[i].status !== InstallmentPaidStatusEnum.PAID &&
       installmentAmounts[i].status !== InstallmentPaidStatusEnum.OVER_PAID

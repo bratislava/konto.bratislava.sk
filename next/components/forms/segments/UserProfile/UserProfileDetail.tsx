@@ -45,6 +45,11 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
     })
   }
 
+  const translationMap = {
+    success: t('profile_detail.success_alert'),
+    error: t('profile_detail.error_alert'),
+  } satisfies Record<UserProfileDetailProps['alertType'], string>
+
   return (
     <div
       className={cn('flex flex-col bg-white pt-3 md:static md:z-0', {
@@ -88,12 +93,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           {/* Alert only for alertType === error */}
           {isAlertOpened && (
             <div className="p-2">
-              <Alert
-                fullWidth
-                type={alertType}
-                solid
-                message={t(`profile_detail.${alertType}_alert`)}
-              />
+              <Alert fullWidth type={alertType} solid message={translationMap[alertType]} />
             </div>
           )}
           <div

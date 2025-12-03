@@ -61,7 +61,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   useResizeObserver({ ref: desktopNavbarRef, onResize: handleHeaderResize })
   useResizeObserver({ ref: mobileNavbarRef, onResize: handleHeaderResize })
 
-  const [t] = useTranslation('common')
+  const [t] = useTranslation('account')
 
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
@@ -120,19 +120,19 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     ? [
         {
           id: 0,
-          title: t('account:menu_profile_link'),
+          title: t('menu_profile_link'),
           icon: <ProfileIcon className="size-5" />,
           url: ROUTES.USER_PROFILE,
         },
         {
           id: 1,
-          title: t('account:menu_help_link'),
+          title: t('menu_help_link'),
           icon: <HelpIcon className="size-5" />,
           url: ROUTES.HELP,
         },
         {
           id: 2,
-          title: t('account:menu_logout_link'),
+          title: t('menu_logout_link'),
           icon: <LogoutIcon className="size-5 text-negative-700" />,
           onPress: () => signOut(),
           itemClassName: 'bg-negative-50',
@@ -141,13 +141,13 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     : [
         {
           id: 0,
-          title: t('account:menu_login_link'),
+          title: t('menu_login_link'),
           icon: <ProfileIcon className="size-5" />,
           onPress: login,
         },
         {
           id: 1,
-          title: t('account:menu_register_link'),
+          title: t('menu_register_link'),
           icon: <ProfileIcon className="size-5" />,
           onPress: register,
         },

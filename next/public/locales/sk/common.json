@@ -1,8 +1,4 @@
 {
-  "language_short.sk": "SK",
-  "language_short.en": "EN",
-  "language_long.sk": "Slovensky",
-  "language_long.en": "English",
   "e_services": "E-služby",
   "signin": "Prihlásenie",
   "signup": "Registrácia",
@@ -31,9 +27,7 @@
   "viewTheDocument": "Pozrieť dokument",
   "download": "Stiahnuť",
   "transparentCity": "Transparentné mesto",
-  "sorryNoResultsFound": "Ľutujeme, pre dané vyhľadávanie sa nenašli žiadne výsledky.",
   "allResults": "Všetky výsledky",
-  "toTheMainPage": "Späť do Bratislavského konta",
   "toOfficialBoard": "Prejsť na úradnú tabuľu",
   "acceptAll": "Prijať všetky",
   "denyAll": "Odmietnuť všetky",
@@ -125,11 +119,6 @@
   "menu.show_more": "Zobraziť viac",
   "skipNavigation": "Preskočiť navigáciu",
   "statusBarContent": "",
-  "modal_close_aria": "Zavrieť",
-  "ariaCloseStatusBar": "Zavrieť upozornenie",
-  "NavMenu.aria.navMenuLabel": "Navigačné menu",
-  "NavMenu.aria.backTo": "Späť na {backTo}",
-  "NavMenu.more": "Ďalšie",
   "breadcrumbs.back": "Späť",
   "breadcrumbs.homepage": "Domov"
 }

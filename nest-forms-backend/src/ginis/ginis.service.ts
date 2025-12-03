@@ -16,6 +16,7 @@ import {
   extractFormSubjectPlain,
   extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
+import { ContactAndIdInfoTypeEnum } from 'openapi-clients/city-account'
 import {
   UpvsCorporateBody,
   UpvsNaturalPerson,
@@ -497,13 +498,13 @@ export default class GinisService {
     if (result.length === 0) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DATA_INVALID,
-        `handleDocumentSender: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases. Uri: ${uri}`,
+        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases. Uri: ${uri}`,
       )
     }
     if (result.length > 1) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DATA_INVALID,
-        `handleDocumentSender: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri. Uri: ${uri}`,
+        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri. Uri: ${uri}`,
       )
     }
     return result[0]
@@ -515,7 +516,7 @@ export default class GinisService {
     if (!form.mainUri) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DATA_INVALID,
-        `handleDocumentSender: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
+        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
       )
     }
 
@@ -562,14 +563,64 @@ export default class GinisService {
     return params
   }
 
-  private async handleDocumentSender(form: Forms): Promise<string> {
-    const ANONYMOUS_SENDER_ID = 'MAG0SE1GGEW9' // ID for anonymous sender in Ginis
-
-    const contactParams: GinContactParams = {}
-
-    if (form.externalId) {
-      // TODO: get contact by externalId
+  private async extractContactParamsFromExternalId(
+    form: Forms,
+  ): Promise<GinContactParams> {
+    if (!form.externalId) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
+      )
     }
+
+    const params: GinContactParams = {}
+    const contactResponse =
+      await this.clientsService.cityAccountApi.userIntegrationControllerGetContactAndIdInfoByExternalId(
+        form.externalId,
+        {
+          headers: {
+            apiKey: this.baConfigService.cityAccountBackend.apiKey,
+          },
+        },
+      )
+
+    const contactInfo = contactResponse.data
+    if (!contactInfo) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Contact info not found in city account for external id: ${form.externalId}. Form id: ${form.id}`,
+      )
+    }
+
+    params.email = contactInfo.email
+
+    // Map Cognito account type to Ginis contact type and set appropriate fields
+    if (contactInfo.accountType === ContactAndIdInfoTypeEnum.Fo) {
+      // Physical entity (UserContactAndIdInfoDto)
+      params.type = GinContactType.PHYSICAL_ENTITY
+      params.firstName = contactInfo.firstName
+      params.lastName = contactInfo.lastName
+      params.birthNumber = contactInfo.birthNumber
+    } else if (
+      contactInfo.accountType === ContactAndIdInfoTypeEnum.Po ||
+      contactInfo.accountType === ContactAndIdInfoTypeEnum.FoP
+    ) {
+      // Legal entity or self-employed entity (LegalPersonContactAndIdInfoDto)
+      params.type =
+        contactInfo.accountType === ContactAndIdInfoTypeEnum.Po
+          ? GinContactType.LEGAL_ENTITY
+          : GinContactType.SELF_EMPLOYED_ENTITY
+      params.name = contactInfo.name
+      params.ico = contactInfo.ico
+    }
+
+    return params
+  }
+
+  private async handleDocumentSender(form: Forms): Promise<string | undefined> {
+    const contactParams: GinContactParams = form.externalId
+      ? await this.extractContactParamsFromExternalId(form)
+      : {}
 
     if (form.mainUri) {
       const originalEmail = contactParams.email
@@ -584,7 +635,7 @@ export default class GinisService {
       (value) => value !== undefined,
     )
     if (!hasContactInformation) {
-      return ANONYMOUS_SENDER_ID
+      return undefined
     }
     return this.ginisApiService.upsertContact(contactParams)
   }
@@ -609,8 +660,8 @@ export default class GinisService {
           form.id,
           formDefinition.ginisDocumentTypeId,
           form.updatedAt,
-          senderId,
           extractFormSubjectTechnical(formDefinition, form.formDataJson!),
+          senderId,
         ),
       ))
 

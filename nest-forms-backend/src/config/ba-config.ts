@@ -82,6 +82,7 @@ export default class BaConfig {
   get cityAccountBackend() {
     return {
       url: this.validatedConfig.USER_ACCOUNT_API,
+      apiKey: this.validatedConfig.USER_ACCOUNT_API_KEY,
     }
   }
 

@@ -108,6 +108,9 @@ export default class EnvironmentVariables {
   USER_ACCOUNT_API: string
 
   @EnvString()
+  USER_ACCOUNT_API_KEY: string
+
+  @EnvString()
   NEST_CLAMAV_SCANNER: string
 
   @EnvString()

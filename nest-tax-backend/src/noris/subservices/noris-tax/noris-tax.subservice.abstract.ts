@@ -345,7 +345,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     // Include birth numbers found in Noris (regardless of whether they were processed)
     return {
       ...birthNumbersResult,
-      foundInNoris: norisData.map((item) => item.ICO_RC),
+      foundInNoris: [...new Set(norisData.map((item) => item.ICO_RC))],
     }
   }
 

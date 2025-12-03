@@ -378,7 +378,7 @@ export default class GinisAPIService {
           value: externalDocumentId,
           attributes: ['externi="true"'],
         },
-        Vec: subject,
+        Vec: subject.slice(0, 100),
         'Id-typu-dokumentu': type,
         'Priznak-fyz-existence': 'neexistuje',
       },
@@ -392,12 +392,10 @@ export default class GinisAPIService {
         'Datum-prijmu-podani': `${sentAtIso}T00:00:00`,
         'Id-odesilatele':
           senderId ?? this.baConfigService.ginisApi.anonymousSenderId,
-        // 'Poznamka-k-doruceni': subject,
       },
       {
         Pristup: 'ke zverejneni',
-        'Vec-podrobne': subject,
-        // Poznamka: subject,
+        'Vec-podrobne': subject.slice(0, 254),
         'Datum-podani': `${sentAtIso}T00:00:00`,
       },
     )

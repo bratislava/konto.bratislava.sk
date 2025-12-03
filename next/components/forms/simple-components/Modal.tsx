@@ -68,7 +68,7 @@ const Modal = ({
   dataCy,
   ...rest
 }: ModalProps) => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
 
   // Makes `{ isDismissable: true }` default.
   const modalProps = mergeProps({ isDismissable: true }, rest)

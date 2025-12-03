@@ -18,8 +18,8 @@ import {
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import {
-  LegalPersonContactAndIdInfoDto,
-  UserContactAndIdInfoDto,
+  LegalPersonContactAndIdInfoResponseDto,
+  UserContactAndIdInfoResponseDto,
 } from './dtos/user-contact-info.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { GDPRSubTypeEnum } from '@prisma/client'
@@ -357,7 +357,7 @@ export class UserService {
 
   async getContactAndIdInfoByExternalId(
     externalId: string
-  ): Promise<UserContactAndIdInfoDto | LegalPersonContactAndIdInfoDto> {
+  ): Promise<UserContactAndIdInfoResponseDto | LegalPersonContactAndIdInfoResponseDto> {
     // Get data from Cognito
     const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
     const accountType = cognitoData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
@@ -374,11 +374,11 @@ export class UserService {
 
       return {
         externalId: externalId,
+        accountType: accountType,
         email: cognitoData.email,
         firstName: cognitoData.given_name,
         lastName: cognitoData.family_name,
         birthNumber: user.birthNumber ?? undefined,
-        accountType: accountType,
       }
     }
 
@@ -397,10 +397,10 @@ export class UserService {
 
       return {
         externalId: externalId,
+        accountType: accountType,
         email: cognitoData.email,
         name: cognitoData.name,
         ico: legalPerson.ico ?? undefined,
-        accountType: accountType,
       }
     }
 

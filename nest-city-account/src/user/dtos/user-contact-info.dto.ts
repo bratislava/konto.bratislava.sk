@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { CognitoUserAccountTypesEnum } from '../../utils/global-dtos/cognito.dto'
-
-export class UserContactAndIdInfoDto {
+abstract class BaseContactAndIdInfoResponseDto {
   @ApiProperty({
     description: 'External ID from Cognito',
     example: '9e7791b2-787b-4b93-8473-94a70a516025',
@@ -9,12 +8,21 @@ export class UserContactAndIdInfoDto {
   externalId!: string
 
   @ApiProperty({
+    description: 'Account type from Cognito',
+    enum: CognitoUserAccountTypesEnum,
+    enumName: 'ContactAndIdInfoTypeEnum',
+  })
+  accountType!: CognitoUserAccountTypesEnum
+
+  @ApiProperty({
     description: 'Email address',
-    example: 'user@example.com',
     required: false,
+    example: 'user@example.com',
   })
   email?: string
+}
 
+export class UserContactAndIdInfoResponseDto extends BaseContactAndIdInfoResponseDto {
   @ApiProperty({
     description: 'First name',
     example: 'John',
@@ -35,30 +43,9 @@ export class UserContactAndIdInfoDto {
     required: false,
   })
   birthNumber?: string
-
-  @ApiProperty({
-    description: 'Account type from Cognito',
-    enum: CognitoUserAccountTypesEnum,
-    enumName: 'ContactAndIdInfoTypeEnum',
-    example: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
-  })
-  accountType!: CognitoUserAccountTypesEnum
 }
 
-export class LegalPersonContactAndIdInfoDto {
-  @ApiProperty({
-    description: 'External ID from Cognito',
-    example: '9e7791b2-787b-4b93-8473-94a70a516025',
-  })
-  externalId!: string
-
-  @ApiProperty({
-    description: 'Email address',
-    example: 'company@example.com',
-    required: false,
-  })
-  email?: string
-
+export class LegalPersonContactAndIdInfoResponseDto extends BaseContactAndIdInfoResponseDto {
   @ApiProperty({
     description: 'Company name',
     example: 'Company Name, s. r. o.',
@@ -72,12 +59,4 @@ export class LegalPersonContactAndIdInfoDto {
     required: false,
   })
   ico?: string
-
-  @ApiProperty({
-    description: 'Account type from Cognito',
-    enum: CognitoUserAccountTypesEnum,
-    enumName: 'ContactAndIdInfoTypeEnum',
-    example: CognitoUserAccountTypesEnum.LEGAL_ENTITY,
-  })
-  accountType!: CognitoUserAccountTypesEnum
 }

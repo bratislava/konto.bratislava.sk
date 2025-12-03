@@ -11,14 +11,14 @@ import {
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 import {
-  LegalPersonContactAndIdInfoDto,
-  UserContactAndIdInfoDto,
+  LegalPersonContactAndIdInfoResponseDto,
+  UserContactAndIdInfoResponseDto,
 } from './dtos/user-contact-info.dto'
 import { UserService } from './user.service'
 
 @ApiTags('User integration')
 @ApiSecurity('apiKey')
-@ApiExtraModels(UserContactAndIdInfoDto, LegalPersonContactAndIdInfoDto)
+@ApiExtraModels(UserContactAndIdInfoResponseDto, LegalPersonContactAndIdInfoResponseDto)
 @Controller('user-integration')
 export class UserIntegrationController {
   constructor(private readonly userService: UserService) {}
@@ -34,16 +34,20 @@ export class UserIntegrationController {
     description: 'Contact and ID information retrieved successfully',
     schema: {
       oneOf: [
-        { $ref: getSchemaPath(UserContactAndIdInfoDto) },
-        { $ref: getSchemaPath(LegalPersonContactAndIdInfoDto) },
+        { $ref: getSchemaPath(UserContactAndIdInfoResponseDto) },
+        { $ref: getSchemaPath(LegalPersonContactAndIdInfoResponseDto) },
       ],
       discriminator: {
         propertyName: 'accountType',
         mapping: {
-          [CognitoUserAccountTypesEnum.PHYSICAL_ENTITY]: getSchemaPath(UserContactAndIdInfoDto),
-          [CognitoUserAccountTypesEnum.LEGAL_ENTITY]: getSchemaPath(LegalPersonContactAndIdInfoDto),
+          [CognitoUserAccountTypesEnum.PHYSICAL_ENTITY]: getSchemaPath(
+            UserContactAndIdInfoResponseDto
+          ),
+          [CognitoUserAccountTypesEnum.LEGAL_ENTITY]: getSchemaPath(
+            LegalPersonContactAndIdInfoResponseDto
+          ),
           [CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY]: getSchemaPath(
-            LegalPersonContactAndIdInfoDto
+            LegalPersonContactAndIdInfoResponseDto
           ),
         },
       },
@@ -53,7 +57,7 @@ export class UserIntegrationController {
   @Get('contact-and-id-info/:externalId')
   async getContactAndIdInfoByExternalId(
     @Param('externalId') externalId: string
-  ): Promise<UserContactAndIdInfoDto | LegalPersonContactAndIdInfoDto> {
+  ): Promise<UserContactAndIdInfoResponseDto | LegalPersonContactAndIdInfoResponseDto> {
     return this.userService.getContactAndIdInfoByExternalId(externalId)
   }
 }

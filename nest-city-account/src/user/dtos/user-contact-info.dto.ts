@@ -39,6 +39,7 @@ export class UserContactAndIdInfoDto {
   @ApiProperty({
     description: 'Account type from Cognito',
     enum: CognitoUserAccountTypesEnum,
+    enumName: 'ContactAndIdInfoTypeEnum',
     example: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
   })
   accountType!: CognitoUserAccountTypesEnum
@@ -75,6 +76,7 @@ export class LegalPersonContactAndIdInfoDto {
   @ApiProperty({
     description: 'Account type from Cognito',
     enum: CognitoUserAccountTypesEnum,
+    enumName: 'ContactAndIdInfoTypeEnum',
     example: CognitoUserAccountTypesEnum.LEGAL_ENTITY,
   })
   accountType!: CognitoUserAccountTypesEnum

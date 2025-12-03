@@ -143,6 +143,19 @@ export const CognitoGetUserDataUserStatusEnum = {
 export type CognitoGetUserDataUserStatusEnum =
   (typeof CognitoGetUserDataUserStatusEnum)[keyof typeof CognitoGetUserDataUserStatusEnum]
 
+/**
+ * Account type from Cognito
+ */
+
+export const ContactAndIdInfoTypeEnum = {
+  Fo: 'fo',
+  Po: 'po',
+  FoP: 'fo-p',
+} as const
+
+export type ContactAndIdInfoTypeEnum =
+  (typeof ContactAndIdInfoTypeEnum)[keyof typeof ContactAndIdInfoTypeEnum]
+
 export interface DeactivateAccountResponseDto {
   /**
    * Marks if the operation has been successful
@@ -295,17 +308,8 @@ export interface LegalPersonContactAndIdInfoDto {
   /**
    * Account type from Cognito
    */
-  accountType: LegalPersonContactAndIdInfoDtoAccountTypeEnum
+  accountType: ContactAndIdInfoTypeEnum
 }
-
-export const LegalPersonContactAndIdInfoDtoAccountTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type LegalPersonContactAndIdInfoDtoAccountTypeEnum =
-  (typeof LegalPersonContactAndIdInfoDtoAccountTypeEnum)[keyof typeof LegalPersonContactAndIdInfoDtoAccountTypeEnum]
 
 export interface ManuallyVerifyUserRequestDto {
   /**
@@ -1109,17 +1113,8 @@ export interface UserContactAndIdInfoDto {
   /**
    * Account type from Cognito
    */
-  accountType: UserContactAndIdInfoDtoAccountTypeEnum
+  accountType: ContactAndIdInfoTypeEnum
 }
-
-export const UserContactAndIdInfoDtoAccountTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type UserContactAndIdInfoDtoAccountTypeEnum =
-  (typeof UserContactAndIdInfoDtoAccountTypeEnum)[keyof typeof UserContactAndIdInfoDtoAccountTypeEnum]
 
 /**
  * @type UserControllerChangeEmail200Response
@@ -1139,8 +1134,9 @@ export type UserControllerGetOrCreateUser200Response =
  * @type UserIntegrationControllerGetContactAndIdInfoByExternalId200Response
  */
 export type UserIntegrationControllerGetContactAndIdInfoByExternalId200Response =
-  | LegalPersonContactAndIdInfoDto
-  | UserContactAndIdInfoDto
+  | ({ accountType: 'fo' } & UserContactAndIdInfoDto)
+  | ({ accountType: 'fo-p' } & LegalPersonContactAndIdInfoDto)
+  | ({ accountType: 'po' } & LegalPersonContactAndIdInfoDto)
 
 /**
  * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.

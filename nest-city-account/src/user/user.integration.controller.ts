@@ -9,6 +9,7 @@ import {
 } from '@nestjs/swagger'
 
 import { AdminGuard } from '../auth/guards/admin.guard'
+import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 import {
   LegalPersonContactAndIdInfoDto,
   UserContactAndIdInfoDto,
@@ -36,6 +37,16 @@ export class UserIntegrationController {
         { $ref: getSchemaPath(UserContactAndIdInfoDto) },
         { $ref: getSchemaPath(LegalPersonContactAndIdInfoDto) },
       ],
+      discriminator: {
+        propertyName: 'accountType',
+        mapping: {
+          [CognitoUserAccountTypesEnum.PHYSICAL_ENTITY]: getSchemaPath(UserContactAndIdInfoDto),
+          [CognitoUserAccountTypesEnum.LEGAL_ENTITY]: getSchemaPath(LegalPersonContactAndIdInfoDto),
+          [CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY]: getSchemaPath(
+            LegalPersonContactAndIdInfoDto
+          ),
+        },
+      },
     },
   })
   @UseGuards(AdminGuard)

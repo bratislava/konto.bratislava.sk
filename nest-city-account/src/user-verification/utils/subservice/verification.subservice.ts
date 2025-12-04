@@ -54,7 +54,7 @@ export class VerificationSubservice {
           return { success: true }
         }
 
-        // Some identity card numbers are in format "000000 XX" in registry, but users enter identity card as "XX000000"
+        // Some identity card numbers are in format "000000 XX" in the registry, but users enter identity card as "XX000000"
         const identityCardMagproxy = jednoznacnyIdentifikator.trim().split(' ')
 
         if (
@@ -103,7 +103,7 @@ export class VerificationSubservice {
    * Verifies the identity card of a user.
    *
    * The function attempts to verify the user's identity by comparing RFO data from magproxy with the provided data.
-   * It creates PhysicalEntity entry in the database alongside a new User (user only if the verification is successful).
+   * It creates a PhysicalEntity entry in the database alongside a new User (user only if the verification is successful).
    *
    * @param {CognitoGetUserData} user - The user object from Cognito.
    * @param {RequestBodyVerifyIdentityCardDto} data - The data for verifying the identity card.
@@ -134,7 +134,7 @@ export class VerificationSubservice {
     let birthNumberNotExistCounter = 0
 
     for (const rfoDataSingle of rfoData.data) {
-      // If check fails, increment counter
+      // If the check fails, increment counter
       if (!rfoDataSingle.rodneCislo) {
         birthNumberNotExistCounter += 1
         continue

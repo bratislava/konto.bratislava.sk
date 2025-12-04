@@ -52,6 +52,8 @@
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.1",
+    "pdf-lib-with-encrypt": "^1.2.1",
+    "playwright": "^1.56.0",
     "rodnecislo": "^1.6.0",
     "uuid": "^11.1.0",
     "zod": "^4.1.13"

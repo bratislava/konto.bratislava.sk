@@ -15,16 +15,18 @@ import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.sub
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 import {
+  DeliveryMethodEnum,
+  DeliveryMethodUserEnum,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
   LegalPerson,
   LoginClientEnum,
+  Prisma,
   User,
 } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
-import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 
 @Injectable()
@@ -452,6 +454,12 @@ export class DatabaseSubserviceUser {
     }
 
     if (taxDeliveryData.length > 0) {
+      if (!user.externalId || !user.birthNumber) {
+        throw this.throwerErrorGuard.ForbiddenException(
+          ErrorsEnum.FORBIDDEN_ERROR,
+          'Unable to set delivery method for user without birth number or cognito'
+        )
+      }
       await this.prisma.user.update({
         where: { id: userId },
         data: {
@@ -461,6 +469,12 @@ export class DatabaseSubserviceUser {
           }),
         },
       })
+      if (taxDeliveryData[0] === DeliveryMethodUserEnum.CITY_ACCOUNT) {
+        await this.bloomreachService.sendDeliveryMethodChangedToNotify(
+          user.externalId,
+          user.birthNumber
+        )
+      }
     }
 
     await this.prisma.userGdprData.createMany({

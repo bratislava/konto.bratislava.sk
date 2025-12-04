@@ -139,7 +139,11 @@ export class VerificationService {
 
         const pdfConverterService = new PdfConverterService()
 
-        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard, pdfConverterService)
+        const bloomreachService = new BloomreachService(
+          cognitoSubservice,
+          throwerErrorGuard,
+          pdfConverterService
+        )
 
         await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {

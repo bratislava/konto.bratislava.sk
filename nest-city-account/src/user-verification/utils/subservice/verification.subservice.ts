@@ -3,7 +3,6 @@ import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 import { MagproxyService } from '../../../magproxy/magproxy.service'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
@@ -21,7 +20,6 @@ export class VerificationSubservice {
   private logger: LineLoggerSubservice
 
   constructor(
-    private throwerErrorGuard: ThrowerErrorGuard,
     private magproxyService: MagproxyService,
     private databaseSubservice: DatabaseSubserviceUser,
     private physicalEntityService: PhysicalEntityService

@@ -34,12 +34,12 @@ export class VerificationSubservice {
     identityCard: string
   ): VerificationReturnType {
     if (rfoData.datumUmrtia && rfoData.datumUmrtia !== 'unknown' && rfoData.datumUmrtia !== '') {
-      return { success: false as const, reason: VerificationErrorsEnum.DEAD_PERSON }
+      return { success: false, reason: VerificationErrorsEnum.DEAD_PERSON }
     }
 
     if (!rfoData.doklady || Object.keys(rfoData.doklady).length === 0) {
       return {
-        success: false as const,
+        success: false,
         reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
       }
     }
@@ -53,7 +53,7 @@ export class VerificationSubservice {
         jednoznacnyIdentifikator
       ) {
         if (jednoznacnyIdentifikator === identityCard) {
-          return { success: true as const }
+          return { success: true }
         }
 
         // Some identity card numbers are in format "000000 XX" in registry, but users enter identity card as "XX000000"
@@ -63,12 +63,12 @@ export class VerificationSubservice {
           identityCardMagproxy.length === 2 &&
           identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard
         ) {
-          return { success: true as const }
+          return { success: true }
         }
       }
     }
     return {
-      success: false as const,
+      success: false,
       reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
     }
   }
@@ -85,7 +85,7 @@ export class VerificationSubservice {
           externalId.typIdentifikatora.nazov === 'Rodné číslo' &&
           externalId.identifikator.replace('/', '') === birthNumber.replace('/', '')
         ) {
-          return { success: true as const }
+          return { success: true }
         }
       }
     }
@@ -96,7 +96,7 @@ export class VerificationSubservice {
       birthNumber: birthNumber,
     })
     return {
-      success: false as const,
+      success: false,
       reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
     }
   }
@@ -119,7 +119,7 @@ export class VerificationSubservice {
     ico?: string
   ): Promise<VerificationReturnType> {
     if (!isValidBirthNumber(data.birthNumber)) {
-      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
+      return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
     }
 
     // request RFO data and handle exceptions that may be resolved later
@@ -130,7 +130,7 @@ export class VerificationSubservice {
     }
 
     if (!rfoData.data || rfoData.data.length == 0) {
-      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+      return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
     let birthNumberNotExistCounter = 0
@@ -177,12 +177,12 @@ export class VerificationSubservice {
           await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
         }
       }
-      return { success: true as const }
+      return { success: true }
     }
 
     // No RFO response contained birthNumber
     if (birthNumberNotExistCounter == rfoData.data.length) {
-      return { success: false as const, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+      return { success: false, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
     const rfoDataDcom = await this.magproxyService.rfoBirthNumberDcom(data.birthNumber)
@@ -192,7 +192,7 @@ export class VerificationSubservice {
     }
 
     if (!rfoDataDcom.data?.rodneCislo) {
-      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+      return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
     const rfoCheckDcom = this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
@@ -219,8 +219,8 @@ export class VerificationSubservice {
     }
 
     return dbResultDcom.success
-      ? { success: true as const }
-      : { success: false as const, reason: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY }
+      ? { success: true }
+      : { success: false, reason: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY }
   }
 
   async verifyIcoIdentityCard(
@@ -228,7 +228,7 @@ export class VerificationSubservice {
     data: RequestBodyVerifyWithRpoDto
   ): Promise<VerificationReturnType> {
     if (!isValidBirthNumber(data.birthNumber)) {
-      return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
+      return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
     }
 
     const rpoData = await this.magproxyService.rpoIco(data.ico)

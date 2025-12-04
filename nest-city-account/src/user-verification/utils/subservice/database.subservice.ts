@@ -9,6 +9,7 @@ import {
   CatchDatabaseError,
   IHasThrowerErrorGuard,
 } from '../../../utils/decorators/CatchDatabaseError.decorators'
+import { VerificationReturnType } from '../../types'
 
 @Injectable()
 export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
@@ -64,7 +65,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
     ifo: string | null,
     birthNumber: string,
     oldMagproxyDatabase: number
-  ) {
+  ): Promise<VerificationReturnType> {
     const checkUser = await this.prisma.user.findUnique({
       where: {
         birthNumber,
@@ -91,7 +92,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
           externalId: cognitoUser.idUser,
         },
       })
-      return { success: false as const, reason: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY }
+      return { success: false, reason: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY }
     }
 
     if (checkUser && !user && checkUser.externalId !== cognitoUser.idUser) {
@@ -104,7 +105,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
           email: cognitoUser.email,
         },
       })
-      return { success: true as const }
+      return { success: false, reason: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY }
     }
 
     if (user) {
@@ -123,7 +124,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
           },
         },
       })
-      return { success: true as const }
+      return { success: true }
     }
 
     await this.prisma.user.create({
@@ -135,7 +136,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
         email: cognitoUser.email,
       },
     })
-    return { success: true as const }
+    return { success: true }
   }
 
   @CatchDatabaseError()
@@ -143,7 +144,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
     cognitoUser: CognitoGetUserData,
     ico: string,
     birthNumber: string
-  ) {
+  ): Promise<VerificationReturnType> {
     const checkUser = await this.prisma.legalPerson.findUnique({
       where: {
         ico_birthNumber: {
@@ -173,7 +174,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
         },
       })
       return {
-        success: false as const,
+        success: false,
         reason: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
       }
     }
@@ -192,7 +193,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
           lastVerificationAttempt: new Date(),
         },
       })
-      return { success: true as const }
+      return { success: true }
     }
 
     if (legalPerson) {
@@ -207,7 +208,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
           lastVerificationAttempt: new Date(),
         },
       })
-      return { success: true as const }
+      return { success: true }
     }
 
     await this.prisma.legalPerson.create({
@@ -219,7 +220,7 @@ export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
         email: cognitoUser.email,
       },
     })
-    return { success: true as const }
+    return { success: true }
   }
 
   @CatchDatabaseError()

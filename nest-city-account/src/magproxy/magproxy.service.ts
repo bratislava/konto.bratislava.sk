@@ -14,7 +14,7 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ClientsService from '../clients/clients.service'
 import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
-import { VerificationFailure, VerificationSuccess } from '../user-verification/types'
+import { VerificationReturnType } from '../user-verification/types'
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -130,9 +130,7 @@ export class MagproxyService {
   }
 
   // TODO use this instead of rfoBirthNumber / rfoBirthNumberDcom
-  async rfoBirthNumberList(
-    birthNumber: string
-  ): Promise<(VerificationSuccess & { data: RfoIdentityList }) | VerificationFailure> {
+  async rfoBirthNumberList(birthNumber: string): Promise<VerificationReturnType<RfoIdentityList>> {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
     const processedBirthNumber = birthNumber.replaceAll('/', '')
     try {
@@ -181,7 +179,7 @@ export class MagproxyService {
 
   async rfoBirthNumberDcom(
     birthNumber: string
-  ): Promise<(VerificationSuccess & { data: RfoIdentityListElement }) | VerificationFailure> {
+  ): Promise<VerificationReturnType<RfoIdentityListElement>> {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
     const result = await this.clientsService.magproxyApi
       .rfoControllerGetOneDcom(birthNumber, {

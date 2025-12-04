@@ -1,5 +1,10 @@
 import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
 
-export type VerificationSuccess = { success: true }
-export type VerificationFailure = { success: false; reason: CustomErrorEnums }
-export type VerificationReturnType = VerificationSuccess | VerificationFailure
+export type VerificationReturnType<T = void> =
+  | (T extends void
+      ? { success: true }
+      : {
+          success: true
+          data: T
+        })
+  | { success: false; reason: CustomErrorEnums }

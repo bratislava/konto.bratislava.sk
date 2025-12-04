@@ -15,6 +15,7 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
+import { VerificationReturnType } from '../user-verification/types'
 
 // In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
 
@@ -157,7 +158,7 @@ export class PhysicalEntityService {
     return { uri, physicalEntityId: entity.id }
   }
 
-  async createFromBirthNumber(birthNumber: string) {
+  async createFromBirthNumber(birthNumber: string): Promise<VerificationReturnType<RfoIdentityList>> {
     // Creates PhysicalEntity record before user is verified / created. The new record does not have
     // userID set.
 

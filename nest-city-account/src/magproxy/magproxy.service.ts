@@ -233,7 +233,7 @@ export class MagproxyService {
       .catch(async (error) => {
         if (error.response.status === HttpStatus.UNAUTHORIZED) {
           throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.RFO_ACCESS_ERROR,
+            VerificationErrorsEnum.RPO_ACCESS_ERROR,
             'There is problem with authentication to registry. More details in app logs.'
           )
         }

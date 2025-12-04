@@ -42,7 +42,7 @@ const TimeField = (props: TimeFieldProps) => {
 
   const ref = useRef<HTMLInputElement>(null)
 
-  const { i18n } = useTranslation('account', { keyPrefix: 'TimePicker' })
+  const { i18n } = useTranslation('account')
 
   const propsReactAria = {
     label,
@@ -99,7 +99,7 @@ const TimeField = (props: TimeFieldProps) => {
       {/* <ButtonNew */}
       {/*  variant="icon-wrapped-negative-margin" */}
       {/*  icon={<ClockIcon />} */}
-      {/*  aria-label={t('aria.openClock') ?? 'Open clock'} */}
+      {/*  aria-label={t('TimePicker.aria.openClock') ?? 'Open clock'} */}
       {/*  excludeFromTabOrder */}
       {/*  className="cursor-default pointer-events-none" */}
       {/* /> */}

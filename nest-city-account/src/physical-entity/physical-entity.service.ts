@@ -269,8 +269,9 @@ export class PhysicalEntityService {
 
   async updateEdeskFromUpvs(where: Prisma.PhysicalEntityWhereInput): Promise<void>
   async updateEdeskFromUpvs(entities: PhysicalEntity[]): Promise<void>
-  async updateEdeskFromUpvs(whereOrEntities: Prisma.PhysicalEntityWhereInput | PhysicalEntity[]): Promise<void>
-  {
+  async updateEdeskFromUpvs(
+    whereOrEntities: Prisma.PhysicalEntityWhereInput | PhysicalEntity[]
+  ): Promise<void> {
     let physicalEntitiesFromDb: PhysicalEntity[]
 
     if (Array.isArray(whereOrEntities)) {

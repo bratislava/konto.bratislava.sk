@@ -75,6 +75,10 @@ postgres
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
+# Postgres
+postgresql
+postgres
+
 # Next.js build output
 .next
 

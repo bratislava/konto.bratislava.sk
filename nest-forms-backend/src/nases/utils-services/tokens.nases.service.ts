@@ -34,6 +34,7 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { toLogfmt } from '../../utils/logging'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
@@ -43,6 +44,7 @@ import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
+  NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
 import {
@@ -60,7 +62,9 @@ export interface NaturalPersonData {
 
 export interface CorporateBodyData {
   name?: string
+  /** IČO */
   cin?: string
+  /** DIČ */
   tin?: string | null
 }
 
@@ -83,8 +87,8 @@ export function isUpvsCorporateBody(
 }
 
 export interface NaturalPersonExtractedData {
-  firstName: string[]
-  lastName: string[]
+  firstNames: string[]
+  lastNames: string[]
 }
 
 export interface CorporateBodyExtractedData {
@@ -606,8 +610,8 @@ export default class NasesUtilsService {
       | undefined
 
     const result: NaturalPersonExtractedData = {
-      firstName: [],
-      lastName: [],
+      firstNames: [],
+      lastNames: [],
     }
 
     if (!naturalPerson) {
@@ -616,7 +620,7 @@ export default class NasesUtilsService {
 
     // given_names is already an array of strings, maintain order
     if (naturalPerson.given_names && naturalPerson.given_names.length > 0) {
-      result.firstName = [...naturalPerson.given_names]
+      result.firstNames = [...naturalPerson.given_names]
     }
 
     // family_names is an array of objects, extract values maintaining order
@@ -628,7 +632,7 @@ export default class NasesUtilsService {
         if (!a.primary && b.primary) return 1
         return 0 // Maintain original order for same primary status
       })
-      result.lastName = sortedFamilyNames
+      result.lastNames = sortedFamilyNames
         .map((name) => name.value)
         .filter((value): value is string => value !== undefined)
     }
@@ -665,6 +669,17 @@ export default class NasesUtilsService {
       if (icoEntry?.value) {
         result.ico = icoEntry.value
       }
+
+      // don't throw, alert only
+      this.logger.error(
+        this.throwerErrorGuard.UnprocessableEntityException(
+          NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+          `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases ${contact.uri}.`,
+          toLogfmt({
+            alert: 1,
+          }),
+        ),
+      )
     }
 
     return result

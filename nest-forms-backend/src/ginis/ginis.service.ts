@@ -28,6 +28,10 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../nases/nases.errors.enum'
 import NasesUtilsService, {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,
@@ -37,6 +41,7 @@ import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { toLogfmt } from '../utils/logging'
 import alertError, {
   LineLoggerSubservice,
 } from '../utils/subservices/line-logger.subservice'
@@ -533,11 +538,11 @@ export default class GinisService {
       params.type = GinContactType.PHYSICAL_ENTITY
       const extractedData =
         this.nasesUtilsService.extractNaturalPersonData(contact)
-      if (extractedData.firstName.length > 0) {
-        params.firstName = extractedData.firstName.join(' ')
+      if (extractedData.firstNames.length > 0) {
+        params.firstName = extractedData.firstNames.join(' ')
       }
-      if (extractedData.lastName.length > 0) {
-        params.lastName = extractedData.lastName.join(' ')
+      if (extractedData.lastNames.length > 0) {
+        params.lastName = extractedData.lastNames.join(' ')
       }
       return params
     }
@@ -554,6 +559,17 @@ export default class GinisService {
       }
       return params
     }
+
+    // don't throw, alert only
+    this.logger.error(
+      this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+        `extractContactParamsFromUri: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: Contact shape not identified from nases identity search data for uri: ${form.mainUri}.`,
+        toLogfmt({
+          alert: 1,
+        }),
+      ),
+    )
 
     // Fallback: return basic params with name if available
     const fallbackContact = contact as UpvsNaturalPerson | UpvsCorporateBody
@@ -586,9 +602,9 @@ export default class GinisService {
 
     const contactInfo = contactResponse.data
     if (!contactInfo) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Contact info not found in city account for external id: ${form.externalId}. Form id: ${form.id}`,
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.externalId}. Form id: ${form.id}`,
       )
     }
 
@@ -618,16 +634,22 @@ export default class GinisService {
   }
 
   private async handleDocumentSender(form: Forms): Promise<string | undefined> {
-    const contactParams: GinContactParams = form.externalId
+    let contactParams: GinContactParams = form.externalId
       ? await this.extractContactParamsFromExternalId(form)
       : {}
 
     if (form.mainUri) {
-      const originalEmail = contactParams.email
-      Object.assign(contactParams, await this.extractContactParamsFromUri(form))
-      if (originalEmail) {
-        contactParams.email = originalEmail
+      const uriParams = await this.extractContactParamsFromUri(form)
+
+      if (contactParams.email) {
+        // throw away email from nases if we already have one
+        uriParams.email = undefined
       }
+      // Filter out undefined values
+      const filteredUriParams = Object.fromEntries(
+        Object.entries(uriParams).filter((entry) => entry[1] !== undefined),
+      )
+      contactParams = { ...contactParams, ...filteredUriParams }
     }
 
     // Skip update call if there are no updates to make
@@ -644,7 +666,7 @@ export default class GinisService {
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSkGeneric,
   ) {
-    if (form.formDataJson == null) {
+    if (form.formDataJson === null) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.EMPTY_FORM_DATA,
         `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,

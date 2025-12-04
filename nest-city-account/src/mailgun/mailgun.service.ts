@@ -5,12 +5,12 @@ import { Interfaces } from 'mailgun.js/definitions'
 
 const mailgun = new Mailgun(formData)
 
-import { MailgunTemplates } from '../global-dtos/mailgun.dto'
-import { LineLoggerSubservice } from './line-logger.subservice'
-import { MAILGUN } from '../../user-verification/constants'
+import { MailgunTemplates } from './dto/mailgun.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { MAILGUN } from '../user-verification/constants'
 
 @Injectable()
-export class MailgunSubservice {
+export class MailgunService {
   private mg: Interfaces.IMailgunClient
 
   private readonly config
@@ -31,7 +31,7 @@ export class MailgunSubservice {
       key: process.env.MAILGUN_API_KEY,
       url: MAILGUN.API_URL,
     })
-    this.logger = new LineLoggerSubservice(MailgunSubservice.name)
+    this.logger = new LineLoggerSubservice(MailgunService.name)
     this.logger.log('Successfully initialized Mailgun')
   }
 

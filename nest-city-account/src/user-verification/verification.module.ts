@@ -7,7 +7,6 @@ import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
 import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
 import { TurnstileSubservice } from '../utils/subservices/turnstile.subservice'
 import { RABBIT_MQ } from './constants'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
@@ -15,6 +14,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { VerificationController } from './verification.controller'
 import { VerificationService } from './verification.service'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
+import { MailgunModule } from '../mailgun/mailgun.module'
 
 @Module({
   imports: [
@@ -36,6 +36,7 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
     MagproxyModule,
     PhysicalEntityModule,
     BloomreachModule,
+    MailgunModule,
   ],
   providers: [
     VerificationService,
@@ -43,7 +44,6 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
     CognitoSubservice,
     TurnstileSubservice,
     VerificationSubservice,
-    MailgunSubservice,
     ThrowerErrorGuard,
     ErrorMessengerGuard,
   ],

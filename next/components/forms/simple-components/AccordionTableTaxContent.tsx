@@ -77,15 +77,47 @@ const TableData = ({
 }) => {
   const { t } = useTranslation('account')
 
+  const translationMap = {
+    GROUND: {
+      A: t('tax_detail_section.tax_type.GROUND.ground_type.A.title'),
+      B: t('tax_detail_section.tax_type.GROUND.ground_type.B.title'),
+      C: t('tax_detail_section.tax_type.GROUND.ground_type.C.title'),
+      D: t('tax_detail_section.tax_type.GROUND.ground_type.D.title'),
+      E: t('tax_detail_section.tax_type.GROUND.ground_type.E.title'),
+      F: t('tax_detail_section.tax_type.GROUND.ground_type.F.title'),
+      G: t('tax_detail_section.tax_type.GROUND.ground_type.G.title'),
+      H: t('tax_detail_section.tax_type.GROUND.ground_type.H.title'),
+    },
+    CONSTRUCTION: {
+      A: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.A.title'),
+      B: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.B.title'),
+      C: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.C.title'),
+      D: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.D.title'),
+      E: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.E.title'),
+      F: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.F.title'),
+      G: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.G.title'),
+      jH: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.jH.title'),
+      jI: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.jI.title'),
+      H: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.H.title'),
+    },
+    APARTMENT: {
+      byt: t('tax_detail_section.tax_type.APARTMENT.ground_type.byt.title'),
+      nebyt: t('tax_detail_section.tax_type.APARTMENT.ground_type.nebyt.title'),
+    },
+  } as const
+
   return (
     <tbody>
       {data.map((taxDetail) => {
+        const title =
+          dataType in translationMap && taxDetail.type in translationMap[dataType]
+            ? translationMap[dataType][taxDetail.type]
+            : taxDetail.type
+
         return (
           <tr key={taxDetail.type} className="not-last:lg:border-b-2">
             <td className="h-max p-4 not-first:text-center not-first:text-20-semibold lg:px-6 lg:py-5">
-              <div className="inline h-0 font-semibold">
-                {t(`tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.type}.title`)}
-              </div>
+              <div className="inline h-0 font-semibold">{title}</div>
             </td>
             {dataType === 'GROUND' && (
               <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">

@@ -3,20 +3,33 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 permissions:
   pull-requests: write
   contents: read
 
 jobs:
+  dependabot-approval:
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    environment: dependabot
+    steps:
+      - name: Wait for approval
+        run: echo "Approved to run CI for Dependabot PR"
+
   test-forms-shared:
     name: Run tests on forms-shared
+    needs: [dependabot-approval]
+    if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
     uses: ./.github/workflows/validate-forms-shared-konto.yml
     with:
       directory: forms-shared/
 
   build-forms-shared:
     name: Build image of forms-shared and push it to harbor
+    needs: [dependabot-approval]
+    if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: forms-shared/
@@ -29,6 +42,8 @@ jobs:
 
   build-openapi-clients:
     name: Build image of openapi-clients and push it to harbor
+    needs: [dependabot-approval]
+    if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: openapi-clients/
@@ -46,9 +61,9 @@ jobs:
     permissions: write-all
 
   build-next:
+    if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: build next
     needs: [conditions]
-    if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
@@ -62,9 +77,9 @@ jobs:
     permissions: write-all
 
   build-strapi:
+    if: needs.conditions.outputs.strapi == 'true'
     name: build Strapi
     needs: conditions
-    if: needs.conditions.outputs.strapi == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
@@ -73,9 +88,9 @@ jobs:
     permissions: write-all
 
   validate-nest-forms-backend:
+    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-forms-backend
     needs: conditions
-    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-forms-backend/
@@ -83,9 +98,9 @@ jobs:
     permissions: write-all
 
   build-nest-forms-backend:
+    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: build nest-forms-backend
     needs: [conditions, validate-nest-forms-backend]
-    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
@@ -98,18 +113,18 @@ jobs:
     permissions: write-all
 
   validate-nest-clamav-scanner:
+    if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-clamav-scanner
     needs: conditions
-    if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-clamav-scanner/
     permissions: write-all
 
   build-nest-clamav-scanner:
+    if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: build nest-clamav-scanner
     needs: [conditions, validate-nest-clamav-scanner]
-    if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
@@ -121,18 +136,18 @@ jobs:
     permissions: write-all
 
   validate-nest-tax-backend:
+    if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-tax-backend
     needs: conditions
-    if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-tax-backend/
     permissions: write-all
 
   build-nest-tax-backend:
+    if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: build nest-tax-backend
     needs: [conditions, validate-nest-tax-backend]
-    if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
@@ -144,18 +159,18 @@ jobs:
     permissions: write-all
 
   validate-nest-city-account:
+    if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-city-account
     needs: conditions
-    if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-city-account/
     permissions: write-all
 
   build-nest-city-account:
+    if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: build nest-city-account
     needs: [conditions, validate-nest-city-account]
-    if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/

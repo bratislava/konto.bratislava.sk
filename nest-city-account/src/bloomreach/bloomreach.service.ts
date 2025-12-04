@@ -21,6 +21,7 @@ import {
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { PdfConverterService } from './pdf-converter/pdf-converter.service'
 
 @Injectable()
 export class BloomreachService {
@@ -33,7 +34,8 @@ export class BloomreachService {
 
   constructor(
     private readonly cognitoSubservice: CognitoSubservice,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly pdfConverterService: PdfConverterService
   ) {
     if (
       !process.env.BLOOMREACH_API_URL ||

@@ -38,6 +38,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { PdfConverterService } from '../bloomreach/pdf-converter/pdf-converter.service'
 
 @Injectable()
 export class VerificationService {
@@ -136,7 +137,9 @@ export class VerificationService {
           data.msg.type
         )
 
-        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard)
+        const pdfConverterService = new PdfConverterService()
+
+        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard, pdfConverterService)
 
         await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {

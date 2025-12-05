@@ -6,9 +6,9 @@ import utc from 'dayjs/plugin/utc'
 
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -129,7 +129,7 @@ export default class TaxImportHelperSubservice {
     const remainingCapacity =
       this.UPLOAD_BIRTHNUMBERS_BATCH - newlyCreatedTaxPayers.length * 2
 
-    if (remainingCapacity == 0) {
+    if (remainingCapacity === 0) {
       return {
         newlyCreated: newlyCreatedTaxPayers.map((u) => u.birthNumber),
         birthNumbers: [],
@@ -150,9 +150,9 @@ export default class TaxImportHelperSubservice {
         WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}::"TaxType"
       )
       AND NOT tp."createdAt" = tp."updatedAt"
-      ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp.${Prisma.raw(`"${readyToImportFieldName}"`)} = FALSE`}
+      ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp."${Prisma.raw(readyToImportFieldName)}" = FALSE`}
       ORDER BY 
-        ${isImportPhase ? Prisma.sql`tp.${Prisma.raw(`"${readyToImportFieldName}"::INT`)} DESC` : Prisma.empty},
+        ${isImportPhase ? Prisma.sql`tp."${Prisma.raw(readyToImportFieldName)}"::INT DESC` : Prisma.empty},
         tp."updatedAt" ASC
       LIMIT ${remainingCapacity}
     `

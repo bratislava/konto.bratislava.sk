@@ -486,7 +486,7 @@ export class TasksService {
             year,
           ))
     }
-    if (birthNumbers.length === 0 && newlyCreated.length === 0){
+    if (birthNumbers.length === 0 && newlyCreated.length === 0) {
       this.logger.log('No birth numbers found to import taxes')
     }
   }

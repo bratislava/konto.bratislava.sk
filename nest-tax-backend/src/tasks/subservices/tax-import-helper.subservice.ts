@@ -8,6 +8,7 @@ import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -74,15 +75,14 @@ export default class TaxImportHelperSubservice {
       return
     }
 
-    const fieldName =
-      taxType === TaxType.DZN ? 'readyToImportDZN' : 'readyToImportKO'
+    const { readyToImportFieldName } = getTaxDefinitionByType(taxType)
 
     await this.prismaService.taxPayer.updateMany({
       where: {
         birthNumber: { in: birthNumbers },
       },
       data: {
-        [fieldName]: false,
+        [readyToImportFieldName]: false,
       },
     })
   }
@@ -110,8 +110,7 @@ export default class TaxImportHelperSubservice {
     newlyCreated: string[]
   }> {
     // Determine which readyToImport field to use
-    const readyToImportField =
-      taxType === TaxType.DZN ? 'readyToImportDZN' : 'readyToImportKO'
+    const { readyToImportFieldName } = getTaxDefinitionByType(taxType)
 
     // Get users that have no taxes loaded and were never updated as a priority
     const newlyCreatedTaxPayers = await this.prismaService.$queryRaw<
@@ -151,9 +150,9 @@ export default class TaxImportHelperSubservice {
         WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}::"TaxType"
       )
       AND NOT tp."createdAt" = tp."updatedAt"
-      ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp.${Prisma.raw(`"${readyToImportField}"`)} = FALSE`}
+      ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp.${Prisma.raw(`"${readyToImportFieldName}"`)} = FALSE`}
       ORDER BY 
-        ${isImportPhase ? Prisma.sql`tp.${Prisma.raw(`"${readyToImportField}"::INT`)} DESC` : Prisma.empty},
+        ${isImportPhase ? Prisma.sql`tp.${Prisma.raw(`"${readyToImportFieldName}"::INT`)} DESC` : Prisma.empty},
         tp."updatedAt" ASC
       LIMIT ${remainingCapacity}
     `

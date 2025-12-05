@@ -41,7 +41,6 @@ import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { toLogfmt } from '../utils/logging'
 import alertError, {
   LineLoggerSubservice,
 } from '../utils/subservices/line-logger.subservice'
@@ -565,9 +564,6 @@ export default class GinisService {
       this.throwerErrorGuard.UnprocessableEntityException(
         NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
         `extractContactParamsFromUri: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: Contact shape not identified from nases identity search data for uri: ${form.mainUri}.`,
-        toLogfmt({
-          alert: 1,
-        }),
       ),
     )
 

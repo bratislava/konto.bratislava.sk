@@ -34,7 +34,6 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { toLogfmt } from '../../utils/logging'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
@@ -675,9 +674,6 @@ export default class NasesUtilsService {
         this.throwerErrorGuard.UnprocessableEntityException(
           NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
           `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases ${contact.uri}.`,
-          toLogfmt({
-            alert: 1,
-          }),
         ),
       )
     }

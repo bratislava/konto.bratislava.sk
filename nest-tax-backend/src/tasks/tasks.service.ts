@@ -425,7 +425,7 @@ export class TasksService {
 
   @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
-  async loadRealEstateTaxesForUsers() {
+  async loadTaxesForUsers() {
     this.lastTaxType =
       this.lastTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
 
@@ -433,10 +433,10 @@ export class TasksService {
       `Starting LoadTaxForUsers task for TaxType: ${this.lastTaxType}`,
     )
 
-    await this.loadTaxDataForUser(this.lastTaxType)
+    await this.loadTaxDataForUserByTaxType(this.lastTaxType)
   }
 
-  private async loadTaxDataForUser(taxType: TaxType) {
+  private async loadTaxDataForUserByTaxType(taxType: TaxType) {
     const year = new Date().getFullYear()
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
@@ -471,6 +471,9 @@ export class TasksService {
     }
 
     if (birthNumbers.length > 0) {
+      this.logger.log(
+        `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'}`,
+      )
       await (importPhase
         ? this.taxImportHelperSubservice.importTaxes(
             taxType,
@@ -482,6 +485,9 @@ export class TasksService {
             birthNumbers,
             year,
           ))
+    }
+    if (birthNumbers.length === 0 && newlyCreated.length === 0){
+      this.logger.log('No birth numbers found to import taxes')
     }
   }
 

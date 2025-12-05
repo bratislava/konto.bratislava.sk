@@ -275,6 +275,26 @@ export interface GetUserDataByBirthNumbersBatchResponseDto {
    */
   users: { [key: string]: ResponseUserByBirthNumberDto }
 }
+export interface IdentityDataDto {
+  /**
+   * Birth number in format with slash
+   */
+  birthNumber: string
+  /**
+   * Birth number in format with slash
+   */
+  identityCard: string
+}
+export interface ManuallySendUserToVerificationQueueDto {
+  /**
+   * User identifier for finding the user
+   */
+  where: WhereUserBasicUniqueDto
+  /**
+   * Optional identity verification data
+   */
+  identityData?: IdentityDataDto
+}
 export interface ManuallyVerifyUserRequestDto {
   /**
    * userBirthNumber
@@ -1188,6 +1208,28 @@ export interface VerificationDataForUserResponseDto {
    */
   verificationDataLastMonth: Array<VerificationDataForUser>
 }
+export interface WhereUserBasicUniqueDto {
+  /**
+   * Local UUID of user
+   */
+  id?: string
+  /**
+   * Email of the user
+   */
+  email?: string
+  /**
+   * External ID (e.g., Cognito sub)
+   */
+  externalId?: string
+  /**
+   * IFO (internal identifier, if applicable)
+   */
+  ifo?: string
+  /**
+   * Birth number without slash (9 or 10 digits)
+   */
+  birthNumber?: string
+}
 
 /**
  * ADMINApi - axios parameter creator
@@ -1517,6 +1559,58 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Manually send user to verification queue. This endpoint is only for manual administration.
+     * @summary Manually send user to verification queue.
+     * @param {ManuallySendUserToVerificationQueueDto} manuallySendUserToVerificationQueueDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerManuallySendToVerificationQueue: async (
+      manuallySendUserToVerificationQueueDto: ManuallySendUserToVerificationQueueDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'manuallySendUserToVerificationQueueDto' is not null or undefined
+      assertParamExists(
+        'adminControllerManuallySendToVerificationQueue',
+        'manuallySendUserToVerificationQueueDto',
+        manuallySendUserToVerificationQueueDto,
+      )
+      const localVarPath = `/admin/user/manually-send-to-verification-queue`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        manuallySendUserToVerificationQueueDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -2033,6 +2127,35 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Manually send user to verification queue. This endpoint is only for manual administration.
+     * @summary Manually send user to verification queue.
+     * @param {ManuallySendUserToVerificationQueueDto} manuallySendUserToVerificationQueueDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerManuallySendToVerificationQueue(
+      manuallySendUserToVerificationQueueDto: ManuallySendUserToVerificationQueueDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OnlySuccessDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerManuallySendToVerificationQueue(
+          manuallySendUserToVerificationQueueDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerManuallySendToVerificationQueue']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.
      * @summary Mark accounts as deceased
      * @param {MarkDeceasedAccountRequestDto} markDeceasedAccountRequestDto
@@ -2334,6 +2457,24 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Manually send user to verification queue. This endpoint is only for manual administration.
+     * @summary Manually send user to verification queue.
+     * @param {ManuallySendUserToVerificationQueueDto} manuallySendUserToVerificationQueueDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerManuallySendToVerificationQueue(
+      manuallySendUserToVerificationQueueDto: ManuallySendUserToVerificationQueueDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<OnlySuccessDto> {
+      return localVarFp
+        .adminControllerManuallySendToVerificationQueue(
+          manuallySendUserToVerificationQueueDto,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.
      * @summary Mark accounts as deceased
      * @param {MarkDeceasedAccountRequestDto} markDeceasedAccountRequestDto
@@ -2529,6 +2670,25 @@ export class ADMINApi extends BaseAPI {
   public adminControllerGetVerificationDataForUser(email: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetVerificationDataForUser(email, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Manually send user to verification queue. This endpoint is only for manual administration.
+   * @summary Manually send user to verification queue.
+   * @param {ManuallySendUserToVerificationQueueDto} manuallySendUserToVerificationQueueDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public adminControllerManuallySendToVerificationQueue(
+    manuallySendUserToVerificationQueueDto: ManuallySendUserToVerificationQueueDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerManuallySendToVerificationQueue(
+        manuallySendUserToVerificationQueueDto,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath))
   }
 

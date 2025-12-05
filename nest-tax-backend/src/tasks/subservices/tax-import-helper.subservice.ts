@@ -66,17 +66,23 @@ export default class TaxImportHelperSubservice {
     })
   }
 
-  async clearReadyToImport(birthNumbers: string[]): Promise<void> {
+  async clearReadyToImport(
+    taxType: TaxType,
+    birthNumbers: string[],
+  ): Promise<void> {
     if (birthNumbers.length === 0) {
       return
     }
+
+    const fieldName =
+      taxType === TaxType.DZN ? 'readyToImportDZN' : 'readyToImportKO'
 
     await this.prismaService.taxPayer.updateMany({
       where: {
         birthNumber: { in: birthNumbers },
       },
       data: {
-        readyToImport: false,
+        [fieldName]: false,
       },
     })
   }
@@ -103,36 +109,58 @@ export default class TaxImportHelperSubservice {
     birthNumbers: string[]
     newlyCreated: string[]
   }> {
-    const prioritized = await this.prismaService.$queryRaw<
-      { birthNumber: string; isNewlyCreated: boolean }[]
+    // Determine which readyToImport field to use
+    const readyToImportField =
+      taxType === TaxType.DZN ? 'readyToImportDZN' : 'readyToImportKO'
+
+    // Get users that have no taxes loaded and were never updated as a priority
+    const newlyCreatedTaxPayers = await this.prismaService.$queryRaw<
+      { birthNumber: string }[]
     >`
-      SELECT tp."birthNumber", (tp."createdAt" = tp."updatedAt") as "isNewlyCreated"
+      SELECT tp."birthNumber"
       FROM "TaxPayer" tp
       WHERE NOT EXISTS (
+        SELECT 1 FROM "Tax" t WHERE t."taxPayerId" = tp."id"
+      )
+        AND tp."createdAt" = tp."updatedAt"
+      ORDER BY tp."updatedAt" ASC
+      LIMIT ${Math.floor(this.UPLOAD_BIRTHNUMBERS_BATCH / 2)}
+    `
+
+    const remainingCapacity =
+      this.UPLOAD_BIRTHNUMBERS_BATCH - newlyCreatedTaxPayers.length * 2
+
+    if (remainingCapacity == 0) {
+      return {
+        newlyCreated: newlyCreatedTaxPayers.map((u) => u.birthNumber),
+        birthNumbers: [],
+      }
+    }
+
+    // Then get existing users for the remaining capacity.
+    // In the preparation phase ignore already prepared
+    // In the import phase prioritize marked as ready to import
+    const existingTaxPayers = await this.prismaService.$queryRaw<
+      { birthNumber: string }[]
+    >`
+      SELECT tp."birthNumber"
+      FROM "TaxPayer" tp
+      WHERE EXISTS (
         SELECT 1
         FROM "Tax" t
         WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}::"TaxType"
       )
+      AND NOT tp."createdAt" = tp."updatedAt"
+      ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp.${Prisma.raw(`"${readyToImportField}"`)} = FALSE`}
       ORDER BY 
-        (tp."createdAt" = tp."updatedAt") DESC,
-        ${isImportPhase ? Prisma.sql`tp."readyToImport"::int` : Prisma.sql`0::int`} DESC,
+        ${isImportPhase ? Prisma.sql`tp.${Prisma.raw(`"${readyToImportField}"::INT`)} DESC` : Prisma.empty},
         tp."updatedAt" ASC
-      LIMIT ${this.UPLOAD_BIRTHNUMBERS_BATCH}
+      LIMIT ${remainingCapacity}
     `
 
-    const birthNumbers: string[] = []
-    const newlyCreated: string[] = []
-    prioritized.forEach((p) => {
-      if (p.isNewlyCreated) {
-        newlyCreated.push(p.birthNumber)
-      } else {
-        birthNumbers.push(p.birthNumber)
-      }
-    })
-
     return {
-      birthNumbers,
-      newlyCreated,
+      birthNumbers: existingTaxPayers.map((tp) => tp.birthNumber),
+      newlyCreated: newlyCreatedTaxPayers.map((tp) => tp.birthNumber),
     }
   }
 
@@ -156,7 +184,7 @@ export default class TaxImportHelperSubservice {
       )
 
     // Clear readyToImport flag for successfully imported birth numbers
-    await this.clearReadyToImport(result.birthNumbers)
+    await this.clearReadyToImport(taxType, result.birthNumbers)
 
     // Move only birth numbers not found in Noris to the end of the queue
     const foundInNoris = result.foundInNoris || []

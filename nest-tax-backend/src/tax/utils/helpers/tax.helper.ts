@@ -1,7 +1,16 @@
-import { TaxDetail, TaxDetailType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 
-import { TaxPaidStatusEnum, TaxStatusEnum } from '../../dtos/response.tax.dto'
+import {
+  CommunalWasteTaxDetail,
+  RealEstateTaxDetail,
+  RealEstateTaxPropertyType,
+} from '../../../prisma/json-types'
+import {
+  ResponseCommunalWasteTaxDetailItemizedDto,
+  ResponseRealEstateTaxDetailItemizedDto,
+  TaxPaidStatusEnum,
+  TaxStatusEnum,
+} from '../../dtos/response.tax.dto'
 
 export const getTaxStatus = (
   desiredPayment: number,
@@ -32,6 +41,7 @@ export const getExistingTaxStatus = (
 
   return TaxStatusEnum.PARTIALLY_PAID
 }
+
 export const checkTaxDateInclusion = (
   currentTime: Dayjs,
   lookingForTaxDate: {
@@ -50,9 +60,11 @@ export const checkTaxDateInclusion = (
   return currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
 }
 
-export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {
-  const apartmentTaxDetail = taxDetails
-    .filter((detail) => detail.type === TaxDetailType.APARTMENT)
+export const generateItemizedRealEstateTaxDetail = (
+  taxDetails: RealEstateTaxDetail,
+): ResponseRealEstateTaxDetailItemizedDto => {
+  const apartmentTaxDetail = taxDetails.propertyDetails
+    .filter((detail) => detail.type === RealEstateTaxPropertyType.APARTMENT)
     .map((detail) => {
       return {
         type: detail.areaType,
@@ -60,8 +72,8 @@ export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {
         amount: detail.amount,
       }
     })
-  const groundTaxDetail = taxDetails
-    .filter((detail) => detail.type === TaxDetailType.GROUND)
+  const groundTaxDetail = taxDetails.propertyDetails
+    .filter((detail) => detail.type === RealEstateTaxPropertyType.GROUND)
     .map((detail) => {
       return {
         type: detail.areaType,
@@ -70,8 +82,8 @@ export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {
         amount: detail.amount,
       }
     })
-  const constructionTaxDetail = taxDetails
-    .filter((detail) => detail.type === TaxDetailType.CONSTRUCTION)
+  const constructionTaxDetail = taxDetails.propertyDetails
+    .filter((detail) => detail.type === RealEstateTaxPropertyType.CONSTRUCTION)
     .map((detail) => {
       return {
         type: detail.areaType,
@@ -80,8 +92,46 @@ export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {
       }
     })
   return {
+    apartmentTotalAmount: taxDetails.taxFlat,
+    constructionTotalAmount: taxDetails.taxConstructions,
+    groundTotalAmount: taxDetails.taxLand,
     apartmentTaxDetail,
     groundTaxDetail,
     constructionTaxDetail,
+  }
+}
+
+export const generateItemizedCommunalWasteTaxDetail = (
+  taxDetails: CommunalWasteTaxDetail,
+): ResponseCommunalWasteTaxDetailItemizedDto => {
+  const addressDetail = taxDetails.addresses.map((address) => {
+    // Calculate total amount for this address (sum of all poplatok)
+    const totalAmount = address.containers.reduce(
+      (sum, detail) => sum + detail.poplatok,
+      0,
+    )
+
+    // Map details to itemized containers
+    const itemizedContainers = address.containers.map((container) => ({
+      containerVolume: container.objem_nadoby,
+      containerCount: container.pocet_nadob,
+      numberOfDisposals: container.pocet_odvozov,
+      unitRate: container.sadzba,
+      containerType: container.druh_nadoby,
+      fee: container.poplatok,
+    }))
+
+    return {
+      address: {
+        street: address.addressDetail.street ?? '',
+        orientationNumber: address.addressDetail.orientationNumber ?? '',
+      },
+      totalAmount,
+      itemizedContainers,
+    }
+  })
+
+  return {
+    addressDetail,
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -95,6 +95,7 @@ export default class TaxImportHelperSubservice {
    * @returns {Object} - The prioritized birth numbers and newly created birth numbers (imported immediately), these sets are disjoint
    */
   async getPrioritizedBirthNumbersWithMetadata(
+    taxType: TaxType,
     year: number,
     isImportPhase: boolean = true,
   ): Promise<{
@@ -109,7 +110,7 @@ export default class TaxImportHelperSubservice {
       WHERE NOT EXISTS (
         SELECT 1
         FROM "Tax" t
-        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year}
+        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}::"TaxType"
       )
       ORDER BY 
         (tp."createdAt" = tp."updatedAt") DESC,
@@ -134,19 +135,24 @@ export default class TaxImportHelperSubservice {
     }
   }
 
-  async importTaxes(birthNumbers: string[], year: number): Promise<void> {
+  async importTaxes(
+    taxType: TaxType,
+    birthNumbers: string[],
+    year: number,
+  ): Promise<void> {
     if (birthNumbers.length === 0) {
       return
     }
 
     const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+        taxType,
         year,
         birthNumbers,
-        options: {
+        {
           prepareOnly: false,
         },
-      })
+      )
 
     // Clear readyToImport flag for successfully imported birth numbers
     await this.clearReadyToImport(result.birthNumbers)
@@ -172,19 +178,24 @@ export default class TaxImportHelperSubservice {
     )
   }
 
-  async prepareTaxes(birthNumbers: string[], year: number): Promise<void> {
+  async prepareTaxes(
+    taxType: TaxType,
+    birthNumbers: string[],
+    year: number,
+  ): Promise<void> {
     if (birthNumbers.length === 0) {
       return
     }
 
     const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+        taxType,
         year,
         birthNumbers,
-        options: {
+        {
           prepareOnly: true,
         },
-      })
+      )
 
     // Move birth numbers to the end of the queue
     if (birthNumbers.length > 0) {

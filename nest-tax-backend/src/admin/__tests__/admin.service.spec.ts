@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 describe('Minimal test suite', () => {
   test('should pass', () => {
     expect(true).toBe(true)
@@ -312,7 +313,7 @@ describe('AdminService', () => {
         .mockImplementation((callback) => callback(prismaMock))
 
       const insertSpy = jest
-        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .spyOn(service as any, 'insertTaxDataToDatabase')
         .mockImplementation((data) =>
           Promise.resolve({ birthNumber: (data as NorisRealEstateTax).ICO_RC }),
         )
@@ -358,7 +359,7 @@ describe('AdminService', () => {
         .mockImplementation((callback) => callback(prismaMock))
 
       const insertSpy = jest
-        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .spyOn(service as any, 'insertTaxDataToDatabase')
         .mockImplementation((data) => {
           if ((data as NorisRealEstateTax).ICO_RC === '123456/789') {
             return Promise.reject(new Error('Insert failed'))
@@ -419,7 +420,7 @@ describe('AdminService', () => {
         .mockImplementation((callback) => callback(prismaMock))
 
       const insertSpy = jest
-        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .spyOn(service as any, 'insertTaxDataToDatabase')
         .mockImplementation((data) => {
           return Promise.resolve({
             birthNumber: (data as NorisRealEstateTax).ICO_RC,
@@ -470,7 +471,7 @@ describe('AdminService', () => {
         .mockImplementation((callback) => callback(prismaMock))
 
       const insertSpy = jest
-        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .spyOn(service as any, 'insertTaxDataToDatabase')
         .mockRejectedValue(new Error('Insert failed'))
 
       const result = await service.processNorisTaxData(norisData, 2025)
@@ -482,7 +483,7 @@ describe('AdminService', () => {
     })
   })
 
-  describe('insertTaxPayerDataToDatabase', () => {
+  describe('insertTaxDataToDatabase', () => {
     let mockTransaction: Prisma.TransactionClient
 
     beforeEach(() => {
@@ -510,7 +511,7 @@ describe('AdminService', () => {
         .mockRejectedValueOnce(mockError)
 
       await expect(
-        service['insertTaxPayerDataToDatabase'](
+        service['insertTaxDataToDatabase'](
           mockData,
           2025,
           mockTransaction,
@@ -576,7 +577,7 @@ describe('AdminService', () => {
           },
         ])
 
-      const result = await service['insertTaxPayerDataToDatabase'](
+      const result = await service['insertTaxDataToDatabase'](
         mockData,
         2025,
         mockTransaction,
@@ -704,3 +705,5 @@ describe('AdminService', () => {
   })
 })
 */
+
+/* eslint-enable no-secrets/no-secrets */

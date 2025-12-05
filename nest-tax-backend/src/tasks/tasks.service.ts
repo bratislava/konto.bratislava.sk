@@ -1,14 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  Prisma,
+  TaxType,
+} from '@prisma/client'
 import dayjs from 'dayjs'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
-import { NorisPayment } from '../noris/types/noris.types'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -64,7 +69,7 @@ export class TasksService {
     }[] = []
 
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
-    // this function "updatePaymentsFromNoris" will overwrite the testing taxes payments which is not desired
+    // this function will overwrite the testing taxes payments which is not desired
     if (
       this.configService.getOrThrow<string>(
         'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
@@ -135,7 +140,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData: NorisPayment[] =
+      const norisPaymentData: NorisTaxPayment[] =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(
@@ -169,7 +174,7 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
-  async updateTaxesFromNoris() {
+  async updateRealEstateTaxesFromNoris() {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
     if (
@@ -180,6 +185,7 @@ export class TasksService {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return
     }
+
     const currentYear = new Date().getFullYear()
     const taxes = await this.prismaService.tax.findMany({
       select: {
@@ -192,6 +198,7 @@ export class TasksService {
       },
       where: {
         year: currentYear,
+        type: TaxType.DZN,
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
       orderBy: {
@@ -209,13 +216,12 @@ export class TasksService {
 
     const { updated } =
       await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-        {
-          year: currentYear,
-          birthNumbers: taxes.map((t) => t.taxPayer.birthNumber),
-        },
+        TaxType.DZN,
+        currentYear,
+        taxes.map((t) => t.taxPayer.birthNumber),
       )
 
-    this.logger.log(`TasksService: Updated ${updated} taxes from Noris`)
+    this.logger.log(`TasksService: Updated ${updated} DZN taxes from Noris`)
 
     await this.prismaService.tax.updateMany({
       where: {
@@ -259,6 +265,8 @@ export class TasksService {
       select: {
         id: true,
         year: true,
+        type: true,
+        order: true,
         taxPayer: {
           select: {
             birthNumber: true,
@@ -322,7 +330,7 @@ export class TasksService {
           userDataFromCityAccount[tax.taxPayer.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           await this.bloomreachService.trackEventUnpaidTaxReminder(
-            { year: tax.year },
+            { year: tax.year, taxType: tax.type, order: tax.order! },
             userFromCityAccount.externalId,
           )
         }
@@ -405,6 +413,7 @@ export class TasksService {
     } else {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
+        // eslint-disable-next-line no-secrets/no-secrets
         'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
         undefined,
         `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
@@ -414,10 +423,11 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   @HandleErrors('Cron Error')
-  async loadTaxesForUsers() {
-    this.logger.log('Starting loadTaxesForUsers task')
+  async loadRealEstateTaxesForUsers() {
+    this.logger.log('Starting loadRealEstateTaxesForUsers task')
 
     const year = new Date().getFullYear()
+
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
       this.taxImportHelperSubservice.isWithinImportWindow(),
       this.taxImportHelperSubservice.getTodayTaxCount(),
@@ -432,6 +442,7 @@ export class TasksService {
 
     const { birthNumbers, newlyCreated } =
       await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
+        TaxType.DZN,
         year,
         importPhase,
       )
@@ -441,13 +452,25 @@ export class TasksService {
       this.logger.log(
         `Found ${newlyCreated.length} newly created users, importing immediately`,
       )
-      await this.taxImportHelperSubservice.importTaxes(newlyCreated, year)
+      await this.taxImportHelperSubservice.importTaxes(
+        TaxType.DZN,
+        newlyCreated,
+        year,
+      )
     }
 
     if (birthNumbers.length > 0) {
       await (importPhase
-        ? this.taxImportHelperSubservice.importTaxes(birthNumbers, year)
-        : this.taxImportHelperSubservice.prepareTaxes(birthNumbers, year))
+        ? this.taxImportHelperSubservice.importTaxes(
+            TaxType.DZN,
+            birthNumbers,
+            year,
+          )
+        : this.taxImportHelperSubservice.prepareTaxes(
+            TaxType.DZN,
+            birthNumbers,
+            year,
+          ))
     }
   }
 

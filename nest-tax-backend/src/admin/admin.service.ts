@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common'
+import { TaxType } from '@prisma/client'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { NorisService } from '../noris/noris.service'
-import { NorisPayment } from '../noris/types/noris.types'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -15,14 +17,12 @@ import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import {
   CreateBirthNumbersResponseDto,
   UpdateDeliveryMethodsInNorisResponseDto,
 } from './dtos/responses.dto'
-import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()
 export class AdminService {
@@ -39,23 +39,33 @@ export class AdminService {
   }
 
   async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto,
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 
-  async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
+  async updateDataFromNoris(
+    taxType: TaxType,
+    year: number,
+    birthNumbers: string[],
+  ) {
     return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-      data,
+      taxType,
+      year,
+      birthNumbers,
     )
   }
 
   async updatePaymentsFromNoris(
     norisRequest: NorisRequestGeneral,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    const norisPaymentData: NorisPayment[] =
+    const norisPaymentData: NorisTaxPayment[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
@@ -92,10 +102,10 @@ export class AdminService {
    * Creates a testing tax record with specified details for development and testing purposes.
    * WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.
    */
-  async createTestingTax({
-    year,
-    norisData,
-  }: RequestAdminCreateTestingTaxDto): Promise<void> {
+  async createTestingTax(
+    { year, norisData }: RequestAdminCreateTestingTaxDto,
+    taxType: TaxType,
+  ): Promise<void> {
     const taxAdministrator =
       await this.prismaService.taxAdministrator.findFirst({})
     if (!taxAdministrator) {
@@ -105,20 +115,21 @@ export class AdminService {
       )
     }
 
-    // Generate the mock tax record
-    const mockTaxRecord = createTestingTaxMock(
+    // Get tax definition for the tax type
+    const taxDefinition = getTaxDefinitionByType(taxType)
+    const mockTaxRecord = taxDefinition.createTestingTaxMock(
       norisData,
       taxAdministrator,
       year,
     )
 
-    const taxesByVariabileSymbolExist = await this.prismaService.tax.findFirst({
+    const taxesByVariableSymbolExist = await this.prismaService.tax.findFirst({
       where: {
         variableSymbol: mockTaxRecord.variabilny_symbol,
       },
     })
 
-    if (taxesByVariabileSymbolExist) {
+    if (taxesByVariableSymbolExist) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Tax with this variable symbol already exists',
@@ -126,15 +137,22 @@ export class AdminService {
     }
 
     // Process the mock data to create the testing tax
-    await this.norisService.processNorisTaxData([mockTaxRecord], year, {
-      prepareOnly: false,
-      ignoreBatchLimit: true,
-    })
+    await this.norisService.processNorisTaxData(
+      taxType,
+      [mockTaxRecord],
+      year,
+      {
+        prepareOnly: false,
+        ignoreBatchLimit: true,
+      },
+    )
   }
 
   async deleteTax({
     year,
     birthNumber,
+    taxType,
+    order,
   }: RequestAdminDeleteTaxDto): Promise<void> {
     const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
     const taxPayer = await this.prismaService.taxPayer.findUnique({
@@ -151,9 +169,11 @@ export class AdminService {
 
     const tax = await this.prismaService.tax.findUnique({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
+          order,
         },
       },
     })
@@ -166,9 +186,11 @@ export class AdminService {
 
     await this.prismaService.tax.delete({
       where: {
-        taxPayerId_year: {
+        taxPayerId_year_type_order: {
           taxPayerId: taxPayer.id,
           year,
+          type: taxType,
+          order,
         },
       },
     })
@@ -184,6 +206,8 @@ export class AdminService {
         year,
         amount: 0,
         delivery_method: null,
+        taxType,
+        order,
       },
       userDataFromCityAccount.externalId ?? undefined,
     )

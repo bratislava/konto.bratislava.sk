@@ -1,14 +1,17 @@
 import { randomBytes } from 'node:crypto'
 
-import { TaxAdministrator } from '@prisma/client'
+import { TaxAdministrator, TaxType } from '@prisma/client'
 
-import { NorisRealEstateTax } from '../../noris/types/noris.types'
+import {
+  NorisCommunalWasteTaxGrouped,
+  NorisRealEstateTax,
+} from '../../noris/types/noris.types'
 import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
 
 /**
  * Creates a mock Noris tax record for testing purposes based on user input
  */
-export const createTestingTaxMock = (
+export const createTestingRealEstateTaxMock = (
   norisData: RequestAdminCreateTestingTaxNorisData,
   taxAdministrator: TaxAdministrator,
   year: number,
@@ -113,7 +116,6 @@ export const createTestingTaxMock = (
     det_stavba_DAN_H: '150,75',
 
     // additional required fields
-    sposob_dorucenia: 'TEST',
     cislo_subjektu: 123_456,
     akt_datum: new Date().toISOString().split('T')[0],
     dan_stavby: '600,50',
@@ -123,5 +125,88 @@ export const createTestingTaxMock = (
 
     // user type
     TYP_USER: 'FO',
+  }
+}
+
+export const createTestingCommunalWasteTaxMock = (
+  norisData: RequestAdminCreateTestingTaxNorisData,
+  taxAdministrator: TaxAdministrator,
+  year: number,
+): NorisCommunalWasteTaxGrouped => {
+  // This is not exact, but makes sure the total will be correct
+  const total = parseFloat(norisData.taxTotal.replace(',', '.'))
+  const spl1 = total / 3
+  const spl2 = (total - spl1) / 2
+  const spl3 = total - spl1 - spl2
+
+  return {
+    type: TaxType.KO,
+    // base identification
+    ICO_RC: norisData.fakeBirthNumber,
+    subjekt_nazev: norisData.nameSurname,
+    dan_spolu: norisData.taxTotal,
+    rok: year,
+    datum_platnosti: norisData.dateTaxRuling,
+
+    // payment data
+    specificky_symbol: '2024100000',
+    variabilny_symbol: norisData.variableSymbol,
+    uhrazeno: norisData.alreadyPaid,
+
+    // existing tax administrator data to not overwrite
+    vyb_email: taxAdministrator.email,
+    cislo_poradace: +taxAdministrator.externalId,
+    vyb_id: taxAdministrator.id,
+    vyb_nazov: taxAdministrator.name,
+    vyb_telefon_prace: taxAdministrator.phoneNumber,
+
+    // generated case number
+    cislo_konania: randomBytes(4).toString('hex'),
+
+    // additional required fields from base schema (mock values)
+    subjekt_refer: '123456789',
+    ulica_tb_cislo: 'test ulica cislo',
+    psc_ref_tb: 'test psc',
+    psc_naz_tb: 'test psc nazov',
+    stat_nazov_plny: 'test stat',
+    obec_nazev_tb: 'test obec',
+    TXT_UL: 'test ulica txt',
+    TXT_MENO: 'test meno txt',
+    adresa_tp_sidlo: 'test sidlo',
+    cislo_subjektu: 123_456,
+    akt_datum: new Date().toISOString().split('T')[0],
+    TYP_USER: 'FO',
+
+    // splátky (installments) data
+    TXTSPL1: 'TEST: Poplatok za rok je splatný do xx.yy',
+    SPL1: norisData.taxTotal,
+    TXTSPL4_1: 'Test splatka1',
+    SPL4_1: spl1.toFixed(2).replace('.', ','),
+    TXTSPL4_2: 'Test splatka2',
+    SPL4_2: spl2.toFixed(2).replace('.', ','),
+    TXTSPL4_3: 'Test splatka3',
+    SPL4_3: spl3.toFixed(2).replace('.', ','),
+    TXTSPL4_4: '',
+    SPL4_4: (0).toFixed(2).replace('.', ','),
+
+    // communal waste specific fields (mock but type-correct)
+    addresses: [
+      {
+        addressDetail: {
+          street: 'Testovacia ulica',
+          orientationNumber: '10A',
+        },
+        containers: [
+          {
+            objem_nadoby: 120, // liters
+            pocet_nadob: 1,
+            pocet_odvozov: 52,
+            sadzba: 0.5,
+            poplatok: total,
+            druh_nadoby: 'KLASICKA_NADOBA',
+          },
+        ],
+      },
+    ],
   }
 }

@@ -3,6 +3,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseEnumPipe,
   ParseIntPipe,
   Post,
   Query,
@@ -16,12 +17,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
+import { TaxType } from '@prisma/client'
+import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
 import { Tiers } from '../utils/decorators/tier.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
-import { CognitoTiersEnum } from '../utils/global-dtos/cognito.dto'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
@@ -42,9 +44,10 @@ export class PaymentController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Generate payment link for full tax payment for the current year.',
+    summary:
+      'Generate payment link for full tax payment for the current year and tax type.',
     description:
-      'Creates a payment link for paying the entire tax amount or remaining balance for the current year.',
+      'Creates a payment link for paying the entire tax amount or remaining balance for the current year and tax type.',
   })
   @ApiResponse({
     status: 200,
@@ -62,19 +65,23 @@ export class PaymentController {
     type: ResponseInternalServerErrorDto,
   })
   @ApiBearerAuth()
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Post('cardpay/full-payment/:year')
+  @Post('cardpay/full-payment/:year/:type/:order')
   async generateFullPaymentLink(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Param('year', ParseIntPipe) year: number,
+    @Param('type', new ParseEnumPipe(TaxType)) type: TaxType,
+    @Param('order', ParseIntPipe) order: number,
   ) {
     const urlToRedirect = await this.paymentService.generateFullPaymentLink(
       {
         birthNumber: baUser.birthNumber,
       },
       year,
+      type,
+      order,
     )
 
     return { url: urlToRedirect }
@@ -84,7 +91,7 @@ export class PaymentController {
   @ApiOperation({
     summary: 'Generate payment link for installment tax payment.',
     description:
-      'Creates a payment link for making an installment payment for the specified year.',
+      'Creates a payment link for making an installment payment for the specified year and tax type.',
   })
   @ApiResponse({
     status: 200,
@@ -102,13 +109,15 @@ export class PaymentController {
     type: ResponseInternalServerErrorDto,
   })
   @ApiBearerAuth()
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Post('cardpay/installment-payment/:year')
+  @Post('cardpay/installment-payment/:year/:type/:order')
   async generateInstallmentPaymentLink(
     @BratislavaUser() baUser: BratislavaUserDto,
     @Param('year', ParseIntPipe) year: number,
+    @Param('type', new ParseEnumPipe(TaxType)) type: TaxType,
+    @Param('order', ParseIntPipe) order: number,
   ) {
     const urlToRedirect =
       await this.paymentService.generateInstallmentPaymentLink(
@@ -116,6 +125,8 @@ export class PaymentController {
           birthNumber: baUser.birthNumber,
         },
         year,
+        type,
+        order,
       )
 
     return { url: urlToRedirect }

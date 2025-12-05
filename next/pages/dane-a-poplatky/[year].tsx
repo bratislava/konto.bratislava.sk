@@ -9,7 +9,7 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { convertYearToNumber } from 'frontend/utils/general'
-import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
+import { ResponseRealEstateTaxSummaryDetailDto, TaxType } from 'openapi-clients/tax'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
@@ -20,7 +20,7 @@ import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
-  taxData: ResponseTaxSummaryDetailDto
+  taxData: ResponseRealEstateTaxSummaryDetailDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
@@ -42,7 +42,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
-        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, {
+        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, 1, TaxType.Dzn, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),
@@ -53,6 +53,11 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
       if (!strapiTax) {
         return { notFound: true }
+      }
+
+      // TODO This is a temporary "fix" while solution for multiple tax types is not implemented.
+      if ( taxData.type !== TaxType.Dzn ){
+        return { notFound: true}
       }
 
       return {

@@ -3,7 +3,7 @@ import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
+import { ResponseRealEstateTaxSummaryDetailDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
@@ -11,7 +11,7 @@ import { base64ToArrayBuffer, downloadBlob } from '../../../../../frontend/utils
 import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
-  taxData: ResponseTaxSummaryDetailDto
+  taxData: ResponseRealEstateTaxSummaryDetailDto
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
@@ -27,7 +27,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
   const { mutate: redirectToFullPaymentMutate, isPending: redirectToFullPaymentIsPending } =
     useMutation({
       mutationFn: () =>
-        taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, {
+        taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, taxData.type, taxData.order, {
           authStrategy: 'authOnly',
         }),
       networkMode: 'always',
@@ -49,7 +49,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     isPending: redirectToInstallmentPaymentIsPending,
   } = useMutation({
     mutationFn: () =>
-      taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, {
+      taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, taxData.type, taxData.order, {
         authStrategy: 'authOnly',
       }),
     networkMode: 'always',

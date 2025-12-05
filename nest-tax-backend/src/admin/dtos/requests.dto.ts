@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -72,6 +73,15 @@ export class RequestPostNorisLoadDataDto {
   @IsArray()
   @IsNotEmpty({ each: true })
   birthNumbers: string[]
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
 
   @ApiPropertyOptional({
     description: 'Options for the tax import',
@@ -289,6 +299,22 @@ export class RequestAdminDeleteTaxDto {
   })
   @IsString()
   birthNumber: string
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class RequestPostReportingSendReport {

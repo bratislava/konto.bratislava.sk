@@ -1,7 +1,9 @@
+/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 
 import prismaMock from '../../../test/singleton'
@@ -666,7 +668,7 @@ describe('TasksService', () => {
     })
   })
 
-  describe('loadTaxesForUsers', () => {
+  describe('loadRealEstateTaxesForUsers', () => {
     const currentYear = new Date().getFullYear()
 
     it('should import newly created users immediately regardless of window or limit', async () => {
@@ -696,12 +698,20 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
       // Newly created users should be imported immediately
-      expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (since outside window and over limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
@@ -732,12 +742,20 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
       // Newly created users should be imported immediately
-      expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (since outside window and under limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
@@ -769,12 +787,20 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
       // Newly created users should be imported immediately
-      expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (since within window and over limit)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
     })
 
@@ -805,14 +831,16 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
       // Both newly created and other users should be imported
       expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
         newlyCreated,
         expect.any(Number),
       )
       expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
         birthNumbers,
         expect.any(Number),
       )
@@ -843,10 +871,11 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'importTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
       // Only other users should be imported (no newly created)
       expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
         birthNumbers,
         expect.any(Number),
       )
@@ -880,12 +909,20 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
       // Newly created should be imported
-      expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       // Other users should be prepared (outside window)
-      expect(prepareTaxesSpy).toHaveBeenCalledWith(birthNumbers, currentYear)
+      expect(prepareTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        birthNumbers,
+        currentYear,
+      )
     })
 
     it('should return early when no birth numbers found', async () => {
@@ -913,7 +950,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
       expect(importTaxesSpy).not.toHaveBeenCalled()
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
@@ -946,11 +983,17 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadTaxesForUsers()
+      await service.loadRealEstateTaxesForUsers()
 
-      expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.DZN,
+        newlyCreated,
+        currentYear,
+      )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
     })
   })
 })
+
+/* eslint-enable no-secrets/no-secrets */

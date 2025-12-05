@@ -145,7 +145,11 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         where: {
           birthNumber: { in: birthNumbers },
         },
-        data: { readyToImport: true },
+        data: {
+          [this.getTaxType() == TaxType.DZN
+            ? 'readyToImportDZN'
+            : 'readyToImportKO']: true,
+        },
       })
       return { birthNumbers }
     }

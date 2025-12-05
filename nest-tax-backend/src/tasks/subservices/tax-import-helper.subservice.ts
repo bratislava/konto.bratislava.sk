@@ -90,6 +90,7 @@ export default class TaxImportHelperSubservice {
 
   /**
    * Get prioritized birth numbers for tax import with metadata
+   * @param taxType - Type of tax
    * @param year - The tax year
    * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by updatedAt
    * @returns {Object} - The prioritized birth numbers and newly created birth numbers (imported immediately), these sets are disjoint

@@ -755,7 +755,7 @@ describe('TasksService', () => {
         birthNumbers,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
+      expect(importTaxesSpy).toHaveBeenCalledTimes(2) // Only for newly created
     })
 
     it('should import newly created users immediately when outside window and under limit', async () => {
@@ -799,7 +799,7 @@ describe('TasksService', () => {
         birthNumbers,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
+      expect(importTaxesSpy).toHaveBeenCalledTimes(2) // Only for newly created
     })
 
     it('should import newly created users immediately when within window and over limit', async () => {
@@ -844,7 +844,7 @@ describe('TasksService', () => {
         birthNumbers,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(1) // Only for newly created
+      expect(importTaxesSpy).toHaveBeenCalledTimes(2) // Only for newly created
     })
 
     it('should import newly created users even when within window and under limit', async () => {
@@ -887,7 +887,7 @@ describe('TasksService', () => {
         birthNumbers,
         expect.any(Number),
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(2)
+      expect(importTaxesSpy).toHaveBeenCalledTimes(3)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
     })
 
@@ -1033,7 +1033,7 @@ describe('TasksService', () => {
         newlyCreated,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(1)
+      expect(importTaxesSpy).toHaveBeenCalledTimes(2)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
     })
 

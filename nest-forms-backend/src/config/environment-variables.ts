@@ -108,6 +108,9 @@ export default class EnvironmentVariables {
   USER_ACCOUNT_API: string
 
   @EnvString()
+  USER_ACCOUNT_API_KEY: string
+
+  @EnvString()
   NEST_CLAMAV_SCANNER: string
 
   @EnvString()
@@ -133,6 +136,9 @@ export default class EnvironmentVariables {
 
   @EnvString()
   GINIS_FORM_ID_PROPERTY_ID: string
+
+  @EnvString()
+  GINIS_ANONYMOUS_SENDER_ID: string
 
   @EnvBoolean()
   GINIS_SHOULD_REGISTER: boolean

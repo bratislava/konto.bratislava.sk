@@ -1,5 +1,6 @@
 resources:
   - ../../base
+  - ./secrets/admin.secret.yml
   - ./secrets/cognito.secret.yml
   - ./secrets/sharepoint.secret.yml
 

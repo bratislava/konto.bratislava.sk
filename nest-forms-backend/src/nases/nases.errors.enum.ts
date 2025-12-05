@@ -17,6 +17,7 @@ export enum NasesErrorsEnum {
   SEND_TO_GINIS_ERROR = 'SEND_TO_GINIS_ERROR',
   FAILED_FORM_REGISTRATION_VERIFICATION = 'FAILED_FORM_REGISTRATION_VERIFICATION',
   CREATE_PDF_IMAGE_ERROR = 'CREATE_PDF_IMAGE_ERROR',
+  IDENTITY_SEARCH_DATA_INCONSISTENT = 'IDENTITY_SEARCH_DATA_INCONSISTENT',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -38,6 +39,7 @@ export enum NasesErrorsResponseEnum {
   SEND_TO_GINIS_ERROR = 'There was an error when sending to Ginis.',
   FAILED_FORM_REGISTRATION_VERIFICATION = 'Failed to verify form registration in Slovensko.sk.',
   CREATE_PDF_IMAGE_ERROR = 'Error while creating pdf image.',
+  IDENTITY_SEARCH_DATA_INCONSISTENT = 'Data from identity search is inconsistent or missing.',
 }
 
 export enum NasesErrorCodesEnum {

@@ -175,6 +175,7 @@ describe('NasesService', () => {
         publisher: 'Test Publisher',
         isSigned: false,
         sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+        ginisDocumentTypeId: '',
         ginisAssignment: {
           ginisNodeId: '',
         },

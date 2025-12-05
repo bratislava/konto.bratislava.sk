@@ -18,6 +18,11 @@ jest.mock('@bratislava/ginis-sdk', () => ({
       pridatSouborMtom: jest.fn(async (bodyObj: object) => bodyObj),
       prehledDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
       prideleni: jest.fn(async (bodyObj: object) => bodyObj),
+      zalozPisemnost: jest.fn(async () => ({
+        'Zaloz-pisemnost': {
+          'Id-dokumentu': 'test-doc-id',
+        },
+      })),
     }
 
     gin = {
@@ -49,6 +54,7 @@ describe('GinisAPIService', () => {
               sslMtomHost: '',
               ginHost: '',
               formIdPropertyId: 'MAG00example',
+              anonymousSenderId: 'anonymous-sender-id',
             },
           },
         },
@@ -949,6 +955,83 @@ describe('GinisAPIService', () => {
         email: 'test@example.com',
         type: GinContactType.PHYSICAL_ENTITY,
       })
+    })
+  })
+
+  describe('createDocument', () => {
+    it('should trim subject to first 100 characters and detail subject to first 254 characters', async () => {
+      const zalozPisemnostSpy = jest.spyOn(
+        service['ginis'].ssl,
+        'zalozPisemnost',
+      )
+
+      // Create a subject that exceeds both limits with distinct start/end to verify first characters are used
+      const firstPart = 'START'.repeat(20) // 100 characters
+      const middlePart = `${'MIDDLE'.repeat(25)}STOP` // 154 characters
+      const lastPart = 'TAIL'.repeat(25) // 100 characters
+      const longSubject = firstPart + middlePart + lastPart // 354 characters total
+      const expectedDetailSubject = firstPart + middlePart // First 254 characters
+      const sentAtDate = new Date('2025-01-15')
+
+      await service.createDocument(
+        'external-doc-id',
+        'document-type',
+        sentAtDate,
+        longSubject,
+      )
+
+      expect(zalozPisemnostSpy).toHaveBeenCalledWith(
+        {
+          'Id-dokumentu': {
+            value: 'external-doc-id',
+            attributes: ['externi="true"'],
+          },
+          Vec: firstPart, // Should be trimmed to first 100 characters
+          'Id-typu-dokumentu': 'document-type',
+          'Priznak-fyz-existence': 'neexistuje',
+        },
+        expect.any(Object),
+        {
+          Pristup: 'ke zverejneni',
+          'Vec-podrobne': expectedDetailSubject, // Should be trimmed to first 254 characters
+          'Datum-podani': '2025-01-15T00:00:00',
+        },
+      )
+    })
+
+    it('should not trim subject and detail subject when subject is shorter than limits', async () => {
+      const zalozPisemnostSpy = jest.spyOn(
+        service['ginis'].ssl,
+        'zalozPisemnost',
+      )
+
+      const shortSubject = 'Short subject' // 14 characters
+      const sentAtDate = new Date('2025-01-15')
+
+      await service.createDocument(
+        'external-doc-id',
+        'document-type',
+        sentAtDate,
+        shortSubject,
+      )
+
+      expect(zalozPisemnostSpy).toHaveBeenCalledWith(
+        {
+          'Id-dokumentu': {
+            value: 'external-doc-id',
+            attributes: ['externi="true"'],
+          },
+          Vec: shortSubject, // Should remain unchanged
+          'Id-typu-dokumentu': 'document-type',
+          'Priznak-fyz-existence': 'neexistuje',
+        },
+        expect.any(Object),
+        {
+          Pristup: 'ke zverejneni',
+          'Vec-podrobne': shortSubject, // Should remain unchanged
+          'Datum-podani': '2025-01-15T00:00:00',
+        },
+      )
     })
   })
 })

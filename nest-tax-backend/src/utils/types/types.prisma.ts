@@ -10,6 +10,15 @@ export type TaxPaymentWithTaxYear = Prisma.TaxPaymentGetPayload<{
   }
 }>
 
+export type TaxPaymentWithTaxYearAndTaxPayer = Prisma.TaxPaymentGetPayload<{
+  include: {
+    tax: {
+      include: {
+        taxPayer: true
+      }
+    }
+  }
+}>
 export type TaxWithTaxPayer = Prisma.TaxGetPayload<{
   include: {
     taxPayer: true

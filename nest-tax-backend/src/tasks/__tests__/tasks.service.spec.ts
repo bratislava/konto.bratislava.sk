@@ -668,8 +668,51 @@ describe('TasksService', () => {
     })
   })
 
-  describe('loadRealEstateTaxesForUsers', () => {
+  describe('loadTaxesForUsers', () => {
     const currentYear = new Date().getFullYear()
+
+    beforeEach(() => {
+      // Reset the lastTaxType to a known state before each test
+      service['lastTaxType'] = TaxType.KO
+    })
+
+    it('should alternate between DZN and KO on subsequent calls', async () => {
+      const mockTaxImportHelper = service['taxImportHelperSubservice']
+
+      jest
+        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
+        .mockResolvedValue(true)
+      jest
+        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
+        .mockResolvedValue(1000)
+      jest
+        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
+        .mockResolvedValue(7200)
+      jest
+        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
+        .mockResolvedValue({
+          birthNumbers: [],
+          newlyCreated: [],
+        })
+
+      // First call should use DZN (because lastTaxType starts as KO)
+      await service.loadTaxesForUsers()
+      expect(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).toHaveBeenCalledWith(TaxType.DZN, currentYear, true)
+
+      // Second call should use KO
+      await service.loadTaxesForUsers()
+      expect(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).toHaveBeenCalledWith(TaxType.KO, currentYear, true)
+
+      // Third call should use DZN again
+      await service.loadTaxesForUsers()
+      expect(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).toHaveBeenCalledWith(TaxType.DZN, currentYear, true)
+    })
 
     it('should import newly created users immediately regardless of window or limit', async () => {
       const mockTaxImportHelper = service['taxImportHelperSubservice']
@@ -698,7 +741,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       // Newly created users should be imported immediately
       expect(importTaxesSpy).toHaveBeenCalledWith(
@@ -742,7 +785,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       // Newly created users should be imported immediately
       expect(importTaxesSpy).toHaveBeenCalledWith(
@@ -787,7 +830,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       // Newly created users should be imported immediately
       expect(importTaxesSpy).toHaveBeenCalledWith(
@@ -831,7 +874,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       // Both newly created and other users should be imported
       expect(importTaxesSpy).toHaveBeenCalledWith(
@@ -871,7 +914,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'importTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       // Only other users should be imported (no newly created)
       expect(importTaxesSpy).toHaveBeenCalledWith(
@@ -909,7 +952,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       // Newly created should be imported
       expect(importTaxesSpy).toHaveBeenCalledWith(
@@ -950,7 +993,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       expect(importTaxesSpy).not.toHaveBeenCalled()
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
@@ -983,7 +1026,7 @@ describe('TasksService', () => {
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
         .mockResolvedValue()
 
-      await service.loadRealEstateTaxesForUsers()
+      await service.loadTaxesForUsers()
 
       expect(importTaxesSpy).toHaveBeenCalledWith(
         TaxType.DZN,
@@ -992,6 +1035,42 @@ describe('TasksService', () => {
       )
       expect(importTaxesSpy).toHaveBeenCalledTimes(1)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
+    })
+
+    it('should handle KO tax type on second call', async () => {
+      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const birthNumbers = ['987654/3210']
+
+      jest
+        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
+        .mockResolvedValue(true)
+      jest
+        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
+        .mockResolvedValue(1000)
+      jest
+        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
+        .mockResolvedValue(7200)
+      jest
+        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
+        .mockResolvedValue({
+          birthNumbers,
+          newlyCreated: [],
+        })
+      const importTaxesSpy = jest
+        .spyOn(mockTaxImportHelper, 'importTaxes')
+        .mockResolvedValue()
+
+      // First call (DZN)
+      await service.loadTaxesForUsers()
+
+      // Second call should use KO
+      await service.loadTaxesForUsers()
+
+      expect(importTaxesSpy).toHaveBeenCalledWith(
+        TaxType.KO,
+        birthNumbers,
+        currentYear,
+      )
     })
   })
 })

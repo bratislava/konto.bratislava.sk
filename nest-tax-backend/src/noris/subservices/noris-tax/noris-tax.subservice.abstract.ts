@@ -415,7 +415,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       }
       await transaction.taxPayerTaxAdministrator.upsert({
         where: {
-          taxPayerId_taxAdministratorId_taxType: taxPayerTaxAdministratorData,
+          taxPayerId_taxType: {
+            taxPayerId: taxPayer.id,
+            taxType: taxDefinition.type,
+          },
         },
         create: taxPayerTaxAdministratorData,
         update: taxPayerTaxAdministratorData,

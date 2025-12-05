@@ -60,7 +60,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
 export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) => {
   const router = useRouter()
   const { menuValue, setMenuValue, setMobileMenuOpen, isMobileMenuOpen } = useNavMenuContext()
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
 
   useEventListener('keydown', (event) => {
     if (event.key === 'Escape') {

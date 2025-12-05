@@ -13,7 +13,7 @@ import Spinner from '../simple-components/Spinner'
 type FormLightboxModalProps = { imageUrl: string }
 
 const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightboxModalProps>) => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
   const [isOpen, setIsOpen] = useState(false)
 
   return (

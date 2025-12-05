@@ -1,28 +1,26 @@
 {
-  "errors": {
-    "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
-    "UserLambdaValidationException": "Zdá sa, že ste robot. Ak to tak náhodou nie je, prosíme, načítajte stránku znova, väčšinou to vyrieši problém.",
-    "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
-    "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
-    "NotAuthorizedException User is disabled.": "Konto so zadanou e-mailovou adresou bolo deaktivované. Kontaktujte podporu na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>, ak si želáte znova ho aktivovať.",
-    "CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
-    "LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
-    "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
-    "MigrationUserNotFoundException": "E-mail {{email}} sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
-    "UserNotConfirmedException": "E-mail nie je verifikovaný.",
-    "UsernameExistsException": " E-mail {{email}} sa už používa. Na každý e-mail je v Bratislavskom konte možné vytvoriť len jeden účet. V prípade nejasností nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
-    "ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
-    "IncorrectPasswordException": "Zadané heslo nie je správne.",
-    "AliasExistsException": "E-mail {{email}} už používa iné Bratislavské konto. Ak si stále želáte zmeniť e-mail svojho konta, vráťte sa do svojho profilu kliknutím na šípku späť vedľa bratislavského loga a zopakujte proces zmeny e-mailu s inou e-mailovou adresou.",
-    "API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
-    "RFO_ACCESS_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
-    "RFO_NOT_RESPONDING": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
-    "DEAD_PERSON": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
-    "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
-    "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk.",
-    "unsuccessful-identity-verification": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
-    "InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number": "Konto s týmto e-mailom už existuje, avšak e-mail nebol overený. Zaregistujte sa s iným e-mailom, ktorý vzápätí overíte alebo nám napíšte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a> so žiadosťou o zmazanie existujúceho konta. Následne sa s pôvodným e-mailom budete môcť registrovať a overiť nanovo."
-  },
+  "errors.unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
+  "errors.UserLambdaValidationException": "Zdá sa, že ste robot. Ak to tak náhodou nie je, prosíme, načítajte stránku znova, väčšinou to vyrieši problém.",
+  "errors.Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
+  "errors.NotAuthorizedException": "Nesprávne prihlasovacie údaje",
+  "errors.NotAuthorizedException User is disabled.": "Konto so zadanou e-mailovou adresou bolo deaktivované. Kontaktujte podporu na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>, ak si želáte znova ho aktivovať.",
+  "errors.CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
+  "errors.LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
+  "errors.UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
+  "errors.MigrationUserNotFoundException": "E-mail {{email}} sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
+  "errors.UserNotConfirmedException": "E-mail nie je verifikovaný.",
+  "errors.UsernameExistsException": " E-mail {{email}} sa už používa. Na každý e-mail je v Bratislavskom konte možné vytvoriť len jeden účet. V prípade nejasností nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+  "errors.ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
+  "errors.IncorrectPasswordException": "Zadané heslo nie je správne.",
+  "errors.AliasExistsException": "E-mail {{email}} už používa iné Bratislavské konto. Ak si stále želáte zmeniť e-mail svojho konta, vráťte sa do svojho profilu kliknutím na šípku späť vedľa bratislavského loga a zopakujte proces zmeny e-mailu s inou e-mailovou adresou.",
+  "errors.API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
+  "errors.RFO_ACCESS_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
+  "errors.RFO_NOT_RESPONDING": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
+  "errors.DEAD_PERSON": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
+  "errors.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
+  "errors.BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk.",
+  "errors.unsuccessful-identity-verification": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
+  "errors.InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number": "Konto s týmto e-mailom už existuje, avšak e-mail nebol overený. Zaregistujte sa s iným e-mailom, ktorý vzápätí overíte alebo nám napíšte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a> so žiadosťou o zmazanie existujúceho konta. Následne sa s pôvodným e-mailom budete môcť registrovať a overiť nanovo.",
   "bratislava_account": "Bratislavské konto",
   "sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. <a href='/'>Späť domov</a>.",
   "login_title": "Prihláste sa do svojho konta",
@@ -85,14 +83,12 @@
   "verification_status_success": "Overený používateľ",
   "verification_status_required": "Neoverený používateľ",
   "verification_status_required_alert": "Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
-  "verification_modal": {
-    "title": "Overenie identity",
-    "subtitle": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné <strong>jednorazovo</strong> overiť identitu profilu.",
-    "info": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť, ale odoslať iba pomocou eID cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>.",
-    "footer_desktop_continue": "Pokračovať na žiadosť",
-    "footer_desktop_eID_text": "Pokračovať s eID",
-    "footer_choice": "alebo"
-  },
+  "verification_modal.title": "Overenie identity",
+  "verification_modal.subtitle": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné <strong>jednorazovo</strong> overiť identitu profilu.",
+  "verification_modal.info": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť, ale odoslať iba pomocou eID cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>.",
+  "verification_modal.footer_desktop_continue": "Pokračovať na žiadosť",
+  "verification_modal.footer_desktop_eID_text": "Pokračovať s eID",
+  "verification_modal.footer_choice": "alebo",
   "account_continue_link": "Pokračovať do konta",
   "register_title": "Vytvorte si Bratislavské konto",
   "gdpr_confirmation_label": "Súhlas so spracovaním osobných údajov",
@@ -164,138 +160,104 @@
   "new_email_password_label": "Vaše heslo",
   "new_email_text": "Vyplnením týchto údajov si môžete zmeniť e-mail, ktorým sa do konta prihlasujete. Po zmene e-mailu je potrebné overiť nový e-mail cez overovací kód, ktorý nájdete v novom e-maili.",
   "new_email_submit": "Pokračovať",
-  "account_section_intro": {
-    "navigation": "Úvod",
-    "header_title": "Dobrý deň,",
-    "header_title_without_name": "Dobrý deň",
-    "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
-    "all_services": "Všetky služby",
-    "announcement_title": "Aktuálne",
-    "banner_title": "Potrebujete pomôcť?",
-    "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v časti Pomoc.",
-    "banner_button_text": "Prejsť na otázky"
-  },
-  "account_section_services": {
-    "navigation": "Mestské služby",
-    "select_field_placeholder": "Vyberte kategórie",
-    "new_service": "Nová služba",
-    "services_list": "Zoznam mestských služieb",
-    "all_categories": "Všetky kategórie"
-  },
-  "account_section_applications": {
-    "navigation": "Moje žiadosti",
-    "navigation_sent": "Odoslané",
-    "navigation_sending": "Odosiela sa",
-    "navigation_draft": "Koncepty",
-    "error_snackbar": "Pri načítaní žiadostí nastala chyba. Skúste to prosím neskôr.",
-    "mobile_modal_menu": {
-      "title": "Akcie"
-    },
-    "navigation_concept_card": {
-      "createDate": "Vytvorené",
-      "edit_button_text": "Upraviť",
-      "continue_button_text": "Pokračovať",
-      "view_button_text": "Zobraziť",
-      "status_draft": "",
-      "status_scanning": "Prebieha antivírová kontrola",
-      "status_sending": "Doručené",
-      "delivered_nases": "Odoslané",
-      "status_processing": "Vybavuje sa",
-      "status_finished": "Vybavené",
-      "status_rejected": "Zamietnuté",
-      "status_error": "Nastala neznáma chyba",
-      "status_error_antivirus": "Antivírová kontrola neúspešná",
-      "status_error_other": "Odoslanie neúspešné"
-    },
-    "placeholder": {
-      "title": "Zatiaľ ste neodoslali žiadne podanie",
-      "subtitle": "Pozrite si ponuku dostupných <a href='/mestske-sluzby'>mestských služieb</a>."
-    },
-    "last_change": "Posledná zmena:",
-    "status": {
-      "draft": "Koncept",
-      "toSend": "Na odoslanie",
-      "sent": "Odoslané",
-      "processing": "Vybavuje sa",
-      "finished": "Vybavené",
-      "rejected": "Zamietnuté"
-    },
-    "details": {
-      "application_details": {
-        "sent": "Odoslané",
-        "title": "Detail žiadosti",
-        "record_number": "Číslo záznamu",
-        "file_number": "Číslo spisu",
-        "handle_person": "Vybavuje",
-        "contact": "Kontakt",
-        "email_unavailable": "E-mailová adresa nie je k dispozícii"
-      },
-      "application_history": {
-        "title": "História zmien",
-        "edit_date": "Dátum zmeny",
-        "description": "Popis",
-        "state": {
-          "DOCUMENT_CREATED": "Žiadosť bola doručená na magistrát.",
-          "UNKNOWN": "Zmena stavu dokumentu."
-        }
-      }
-    },
-    "concept_menu_list": {
-      "download_xml": "Stiahnuť ako XML",
-      "download_pdf": "Stiahnuť ako PDF",
-      "delete": "Vymazať"
-    }
-  },
-  "account_section_payment": {
-    "title": "Dane a poplatky",
-    "tax_overview_title": "Prehľad daní",
-    "property_tax_title": "Daň z nehnuteľností",
-    "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
-    "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú postupne v kontách pribúdať od <strong>28. apríla. do 20. mája</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
-    "searching_card_title": "Hľadáme vašu daň",
-    "searching_card_text": "Ak vlastníte nehnuteľnosť, daň uvidíte vo svojom konte hneď po našom spracovaní. Platí to aj vtedy, ak ide o vašu prvú daň. O novej dani v konte vás upozorníme e-mailom.",
-    "error_card_title": "Nenašli sme žiadnu daň z nehnuteľností",
-    "error_card_content": {
-      "title": "<p>Dôvodom môže byť, že:</p>",
-      "list": {
-        "other": "<li>nevlastníte nehnuteľnosť,</li><li>za platbu dane zodpovedá spoluvlastník/čka nehnuteľnosti,</li><li>ste nepodali <a href='{{url}}'>priznanie k dani z nehnuteľností</a>.</li>"
-      },
-      "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
-    },
-    "tax_card_title": "Daň z nehnuteľností za rok {{year}}",
-    "tax_card_delivered": "Doručená do konta",
-    "tax_card_amount": "Suma na zaplatenie",
-    "tax_card_status": "Stav",
-    "tax_card_status_waiting_for_processing": "Čaká na spracovanie",
-    "tax_card_status_not_paid": "Nezaplatená",
-    "tax_card_status_partially_paid": "Čiastočne zaplatená",
-    "tax_card_status_paid": "Zaplatená",
-    "tax_card_status_overpaid": "Preplatok",
-    "tax_form_change_ownership_alert_title": "Predali, darovali alebo nadobudli ste nehnuteľnosť? Musíte podať daňové priznanie.",
-    "tax_form_change_ownership_alert_text": "Daňové priznanie k dani z nehnuteľností podávate, ak ste minulý rok kúpili nehnuteľnosť, nadobudli nehnuteľnosť darom, predali nehnuteľnosť alebo darovali nehnuteľnosť.",
-    "tax_form_change_ownership_alert_link_text": "Podať daňové priznanie",
-    "effective_next_year_link_text": "Zistiť viac",
-    "set_delivery_method": "Nastaviť informovanie",
-    "verifying_identity_content": "## Overujeme vašu totožnosť\n\nPráve overujeme vašu totožnosť. Proces môže chvíľu trvať.\nAk sa totožnosť nepodarí overiť do 24 hodín, kontaktujte nás na **info@bratislava.sk**.",
-    "set_delivery_method_content": "## Prehľad daní a poplatkov\n\nNa zobrazenie prehľadu si najskôr **nastavte spôsob informovania o výške daní a poplatkov**.\n\nAk máte aktívnu elektronickú schránku na portáli **slovensko.sk**, nič nenastavujete. Spôsob informovania sa vám aktivuje automaticky.",
-    "verify_identity_content": "## Prehľad daní a poplatkov\n\nNa zobrazenie prehľadu najskôr **overte svoju totožnosť a nastavte si spôsob informovania o výške daní a poplatkov.**\n\nAk máte aktivovanú elektronickú schránku na portáli **slovensko.sk**, spôsob informovania sa vám nastaví automaticky. Stačí overiť svoju totožnosť.",
-    "verify_and_set": "Overiť a nastaviť",
-    "your_tax_administrator": "Váš správca dane",
-    "tax_paid": "Daň z nehnuteľností je zaplatená. Ďakujeme.",
-    "tax_payment_year_over": "Po termíne poslednej splátky je možné daň zaplatiť už len v plnej výške.",
-    "redirecting_to_payment": "Presmerovávam na platbu.",
-    "payment_redirect_error": "Nepodarilo sa presmerovať na platbu.",
-    "tax_detail": "Detail dane"
-  },
-  "account_section_help": {
-    "navigation": "Pomoc",
-    "banner_title": "Nenašli ste odpoveď na vašu otázku?",
-    "banner_content": "Kontaktujte nás a radi vás nasmerujeme na správnu odpoveď.",
-    "banner_button_text": "Napísať správu",
-    "faq": {
-      "title": "Často kladené otázky"
-    }
-  },
+  "account_section_intro.navigation": "Úvod",
+  "account_section_intro.header_title": "Dobrý deň,",
+  "account_section_intro.header_title_without_name": "Dobrý deň",
+  "account_section_intro.header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
+  "account_section_intro.all_services": "Všetky služby",
+  "account_section_intro.announcement_title": "Aktuálne",
+  "account_section_intro.banner_title": "Potrebujete pomôcť?",
+  "account_section_intro.banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v časti Pomoc.",
+  "account_section_intro.banner_button_text": "Prejsť na otázky",
+  "account_section_services.navigation": "Mestské služby",
+  "account_section_services.select_field_placeholder": "Vyberte kategórie",
+  "account_section_services.new_service": "Nová služba",
+  "account_section_services.services_list": "Zoznam mestských služieb",
+  "account_section_services.all_categories": "Všetky kategórie",
+  "account_section_applications.navigation": "Moje žiadosti",
+  "account_section_applications.navigation_sent": "Odoslané",
+  "account_section_applications.navigation_sending": "Odosiela sa",
+  "account_section_applications.navigation_draft": "Koncepty",
+  "account_section_applications.error_snackbar": "Pri načítaní žiadostí nastala chyba. Skúste to prosím neskôr.",
+  "account_section_applications.mobile_modal_menu.title": "Akcie",
+  "account_section_applications.navigation_concept_card.createDate": "Vytvorené",
+  "account_section_applications.navigation_concept_card.edit_button_text": "Upraviť",
+  "account_section_applications.navigation_concept_card.continue_button_text": "Pokračovať",
+  "account_section_applications.navigation_concept_card.view_button_text": "Zobraziť",
+  "account_section_applications.navigation_concept_card.status_draft": "",
+  "account_section_applications.navigation_concept_card.status_scanning": "Prebieha antivírová kontrola",
+  "account_section_applications.navigation_concept_card.status_sending": "Doručené",
+  "account_section_applications.navigation_concept_card.delivered_nases": "Odoslané",
+  "account_section_applications.navigation_concept_card.status_processing": "Vybavuje sa",
+  "account_section_applications.navigation_concept_card.status_finished": "Vybavené",
+  "account_section_applications.navigation_concept_card.status_rejected": "Zamietnuté",
+  "account_section_applications.navigation_concept_card.status_error": "Nastala neznáma chyba",
+  "account_section_applications.navigation_concept_card.status_error_antivirus": "Antivírová kontrola neúspešná",
+  "account_section_applications.navigation_concept_card.status_error_other": "Odoslanie neúspešné",
+  "account_section_applications.placeholder.title": "Zatiaľ ste neodoslali žiadne podanie",
+  "account_section_applications.placeholder.subtitle": "Pozrite si ponuku dostupných <a href='/mestske-sluzby'>mestských služieb</a>.",
+  "account_section_applications.last_change": "Posledná zmena:",
+  "account_section_applications.status.draft": "Koncept",
+  "account_section_applications.status.toSend": "Na odoslanie",
+  "account_section_applications.status.sent": "Odoslané",
+  "account_section_applications.status.processing": "Vybavuje sa",
+  "account_section_applications.status.finished": "Vybavené",
+  "account_section_applications.status.rejected": "Zamietnuté",
+  "account_section_applications.details.application_details.sent": "Odoslané",
+  "account_section_applications.details.application_details.title": "Detail žiadosti",
+  "account_section_applications.details.application_details.record_number": "Číslo záznamu",
+  "account_section_applications.details.application_details.file_number": "Číslo spisu",
+  "account_section_applications.details.application_details.handle_person": "Vybavuje",
+  "account_section_applications.details.application_details.contact": "Kontakt",
+  "account_section_applications.details.application_details.email_unavailable": "E-mailová adresa nie je k dispozícii",
+  "account_section_applications.details.application_history.title": "História zmien",
+  "account_section_applications.details.application_history.edit_date": "Dátum zmeny",
+  "account_section_applications.details.application_history.description": "Popis",
+  "account_section_applications.details.application_history.state.DOCUMENT_CREATED": "Žiadosť bola doručená na magistrát.",
+  "account_section_applications.details.application_history.state.UNKNOWN": "Zmena stavu dokumentu.",
+  "account_section_applications.concept_menu_list.download_xml": "Stiahnuť ako XML",
+  "account_section_applications.concept_menu_list.download_pdf": "Stiahnuť ako PDF",
+  "account_section_applications.concept_menu_list.delete": "Vymazať",
+  "account_section_payment.title": "Dane a poplatky",
+  "account_section_payment.tax_overview_title": "Prehľad daní",
+  "account_section_payment.property_tax_title": "Daň z nehnuteľností",
+  "account_section_payment.waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
+  "account_section_payment.waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú postupne v kontách pribúdať od <strong>28. apríla. do 20. mája</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
+  "account_section_payment.searching_card_title": "Hľadáme vašu daň",
+  "account_section_payment.searching_card_text": "Ak vlastníte nehnuteľnosť, daň uvidíte vo svojom konte hneď po našom spracovaní. Platí to aj vtedy, ak ide o vašu prvú daň. O novej dani v konte vás upozorníme e-mailom.",
+  "account_section_payment.error_card_title": "Nenašli sme žiadnu daň z nehnuteľností",
+  "account_section_payment.error_card_content.title": "<p>Dôvodom môže byť, že:</p>",
+  "account_section_payment.error_card_content.list.other": "<li>nevlastníte nehnuteľnosť,</li><li>za platbu dane zodpovedá spoluvlastník/čka nehnuteľnosti,</li><li>ste nepodali <a href='{{url}}'>priznanie k dani z nehnuteľností</a>.</li>",
+  "account_section_payment.error_card_content.help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>",
+  "account_section_payment.tax_card_title": "Daň z nehnuteľností za rok {{year}}",
+  "account_section_payment.tax_card_delivered": "Doručená do konta",
+  "account_section_payment.tax_card_amount": "Suma na zaplatenie",
+  "account_section_payment.tax_card_status": "Stav",
+  "account_section_payment.tax_card_status_waiting_for_processing": "Čaká na spracovanie",
+  "account_section_payment.tax_card_status_not_paid": "Nezaplatená",
+  "account_section_payment.tax_card_status_partially_paid": "Čiastočne zaplatená",
+  "account_section_payment.tax_card_status_paid": "Zaplatená",
+  "account_section_payment.tax_card_status_overpaid": "Preplatok",
+  "account_section_payment.tax_form_change_ownership_alert_title": "Predali, darovali alebo nadobudli ste nehnuteľnosť? Musíte podať daňové priznanie.",
+  "account_section_payment.tax_form_change_ownership_alert_text": "Daňové priznanie k dani z nehnuteľností podávate, ak ste minulý rok kúpili nehnuteľnosť, nadobudli nehnuteľnosť darom, predali nehnuteľnosť alebo darovali nehnuteľnosť.",
+  "account_section_payment.tax_form_change_ownership_alert_link_text": "Podať daňové priznanie",
+  "account_section_payment.effective_next_year_link_text": "Zistiť viac",
+  "account_section_payment.set_delivery_method": "Nastaviť informovanie",
+  "account_section_payment.verifying_identity_content": "## Overujeme vašu totožnosť\n\nPráve overujeme vašu totožnosť. Proces môže chvíľu trvať.\nAk sa totožnosť nepodarí overiť do 24 hodín, kontaktujte nás na **info@bratislava.sk**.",
+  "account_section_payment.set_delivery_method_content": "## Prehľad daní a poplatkov\n\nNa zobrazenie prehľadu si najskôr **nastavte spôsob informovania o výške daní a poplatkov**.\n\nAk máte aktívnu elektronickú schránku na portáli **slovensko.sk**, nič nenastavujete. Spôsob informovania sa vám aktivuje automaticky.",
+  "account_section_payment.verify_identity_content": "## Prehľad daní a poplatkov\n\nNa zobrazenie prehľadu najskôr **overte svoju totožnosť a nastavte si spôsob informovania o výške daní a poplatkov.**\n\nAk máte aktivovanú elektronickú schránku na portáli **slovensko.sk**, spôsob informovania sa vám nastaví automaticky. Stačí overiť svoju totožnosť.",
+  "account_section_payment.verify_and_set": "Overiť a nastaviť",
+  "account_section_payment.your_tax_administrator": "Váš správca dane",
+  "account_section_payment.tax_paid": "Daň z nehnuteľností je zaplatená. Ďakujeme.",
+  "account_section_payment.tax_payment_year_over": "Po termíne poslednej splátky je možné daň zaplatiť už len v plnej výške.",
+  "account_section_payment.redirecting_to_payment": "Presmerovávam na platbu.",
+  "account_section_payment.payment_redirect_error": "Nepodarilo sa presmerovať na platbu.",
+  "account_section_payment.tax_detail": "Detail dane",
+  "account_section_help.navigation": "Pomoc",
+  "account_section_help.banner_title": "Nenašli ste odpoveď na vašu otázku?",
+  "account_section_help.banner_content": "Kontaktujte nás a radi vás nasmerujeme na správnu odpoveď.",
+  "account_section_help.banner_button_text": "Napísať správu",
+  "account_section_help.faq.title": "Často kladené otázky",
   "menu_contacts_link": "Kontakty",
   "menu_account_link": "Bratislavské konto",
   "menu_profile_link": "Môj profil",
@@ -304,58 +266,46 @@
   "menu_login_link": "Prihlásenie",
   "menu_register_link": "Registrácia",
   "my_profile": "Môj profil",
-  "consents": {
-    "title": "Súhlasy",
-    "text": "Spravujte udelené súhlasy",
-    "receive_information": {
-      "title": "Mám záujem dostávať informácie aj o iných digitálnych službách mesta Bratislava",
-      "text": "Chcem sa prihlásiť na odber noviniek a marketingových upozornení"
-    }
-  },
-  "password_change": {
-    "title": "Heslo",
-    "text": "Zmeňte svoje prihlasovacie heslo",
-    "button": "Zmeniť heslo"
-  },
-  "profile_detail": {
-    "title": "Osobné údaje",
-    "text": "Spravujte svoje osobné údaje",
-    "start_edit_button": "Upraviť",
-    "save_edit_button": "Uložiť zmeny",
-    "save_button": "Uložiť",
-    "stop_edit_button": "Zahodiť zmeny",
-    "titles_before_name": "Tituly pred menom",
-    "titles_after_name": "Tituly za menom",
-    "full_name": "Meno a priezvisko",
-    "business_name": "Obchodné meno",
-    "given_name": "Meno",
-    "family_name": "Priezvisko",
-    "email": "E-mail",
-    "email_button": "Zmeniť e-mail",
-    "phone_number": "Telefónne číslo",
-    "phone_number_placeholder": "+421",
-    "address": "Korešpondenčná adresa",
-    "street": "Ulica a číslo",
-    "city": "Mesto",
-    "postal_code": "PSČ",
-    "postal_code_tooltip": "V prípade, že je vaša korešpondenčná adresa v zahraničí a PSČ má iný formát ako 5 čísiel, kontaktujte nás na info@bratislava.sk.",
-    "success_alert": "Zmeny boli uložené.",
-    "error_alert": "Zmeny sa nepodarilo uložiť.",
-    "modal_title": "Zmeniť e-mail",
-    "modal_message": "Ak by ste si priali zmeniť e-mail, ktorým sa do konta prihlasujete a na ktorý vám zasielame všetky informácie týkajúce sa vášho konta, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
-    "modal_thanks": "Ďakujeme!"
-  },
-  "adding_phone_number_modal": {
-    "title": "Doplnenie telefónneho čísla",
-    "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
-  },
-  "communication_channel": {
-    "title": "Spôsob doručovania daní a poplatkov",
-    "email": "Oznámenie cez Bratislavské konto",
-    "postal": "Rozhodnutie poštou do vlastných rúk",
-    "edesk": "Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte",
-    "change_button": "Zmeniť"
-  },
+  "consents.title": "Súhlasy",
+  "consents.text": "Spravujte udelené súhlasy",
+  "consents.receive_information.title": "Mám záujem dostávať informácie aj o iných digitálnych službách mesta Bratislava",
+  "consents.receive_information.text": "Chcem sa prihlásiť na odber noviniek a marketingových upozornení",
+  "password_change.title": "Heslo",
+  "password_change.text": "Zmeňte svoje prihlasovacie heslo",
+  "password_change.button": "Zmeniť heslo",
+  "profile_detail.title": "Osobné údaje",
+  "profile_detail.text": "Spravujte svoje osobné údaje",
+  "profile_detail.start_edit_button": "Upraviť",
+  "profile_detail.save_edit_button": "Uložiť zmeny",
+  "profile_detail.save_button": "Uložiť",
+  "profile_detail.stop_edit_button": "Zahodiť zmeny",
+  "profile_detail.titles_before_name": "Tituly pred menom",
+  "profile_detail.titles_after_name": "Tituly za menom",
+  "profile_detail.full_name": "Meno a priezvisko",
+  "profile_detail.business_name": "Obchodné meno",
+  "profile_detail.given_name": "Meno",
+  "profile_detail.family_name": "Priezvisko",
+  "profile_detail.email": "E-mail",
+  "profile_detail.email_button": "Zmeniť e-mail",
+  "profile_detail.phone_number": "Telefónne číslo",
+  "profile_detail.phone_number_placeholder": "+421",
+  "profile_detail.address": "Korešpondenčná adresa",
+  "profile_detail.street": "Ulica a číslo",
+  "profile_detail.city": "Mesto",
+  "profile_detail.postal_code": "PSČ",
+  "profile_detail.postal_code_tooltip": "V prípade, že je vaša korešpondenčná adresa v zahraničí a PSČ má iný formát ako 5 čísiel, kontaktujte nás na info@bratislava.sk.",
+  "profile_detail.success_alert": "Zmeny boli uložené.",
+  "profile_detail.error_alert": "Zmeny sa nepodarilo uložiť.",
+  "profile_detail.modal_title": "Zmeniť e-mail",
+  "profile_detail.modal_message": "Ak by ste si priali zmeniť e-mail, ktorým sa do konta prihlasujete a na ktorý vám zasielame všetky informácie týkajúce sa vášho konta, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+  "profile_detail.modal_thanks": "Ďakujeme!",
+  "adding_phone_number_modal.title": "Doplnenie telefónneho čísla",
+  "adding_phone_number_modal.description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte.",
+  "communication_channel.title": "Spôsob doručovania daní a poplatkov",
+  "communication_channel.email": "Oznámenie cez Bratislavské konto",
+  "communication_channel.postal": "Rozhodnutie poštou do vlastných rúk",
+  "communication_channel.edesk": "Rozhodnutie do elektronickej schránky (slovensko.sk) s možnosťou platby v Bratislavskom konte",
+  "communication_channel.change_button": "Zmeniť",
   "communication_channel_info_title": "Spôsob informovania na rok {{year}}",
   "communication_channel_info_change_link_text": "Spôsob doručenia zmeníte na stránke <a href={{url}}>Dane a poplatky</a>. <br /> Zaplatiť daň môžete cez túto stránku.",
   "working_hours": "Úradné hodiny",
@@ -390,54 +340,37 @@
   "use_your_banking_app_to_load": "Načítajte kód v bankovej aplikácii alebo nahrajte stiahnutý kód v aplikácii.",
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
-  "thank_you": {
-    "footer_text": "© {{currentYear}} Hlavné mesto Bratislava",
-    "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
-    "button_faq_text": "Často kladené otázky",
-    "button_privacy_text": "Ochrana osobných údajov",
-    "result": {
-      "failed_to_verify": {
-        "title": "Nepodarilo sa overiť platbu",
-        "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
-      },
-      "payment_failed": {
-        "title": "Platba dane zlyhala",
-        "content": "Daň sa nepodarilo zaplatiť. Opakujte platbu alebo to skúste neskôr.<br />V prípade problémov nás kontaktujte."
-      },
-      "payment_success": {
-        "title": "Daň bola úspešne zaplatená",
-        "content": "Ďakujeme za platbu dane z nehnuteľností. Stav platby si môžete skontrolovať v detaile dane v Bratislavskom konte."
-      },
-      "payment_already_paid": {
-        "title": "Platba už bola vykonaná",
-        "content": "Ďakujeme za zaplatenie dane z nehnuteľností."
-      }
-    },
-    "button_to_formular_text": "Vyplniť dotazník",
-    "button_to_profile_text": "Pokračovať do konta",
-    " ": "Detail dane",
-    "button_to_formular_text_2": "Vyplniť dotazník",
-    "button_restart_text": "Zopakovať platbu",
-    "button_cancel_text": "Zrušiť platbu",
-    "form_submit": {
-      "title": "Ďakujeme za odoslanie žiadosti",
-      "content_generic": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.",
-      "content_signed_in": "Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti).",
-      "content_feedback": "Prosíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
-      "content_embedded": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať."
-    },
-    "form_submit_tax": {
-      "title": "Ďakujeme za odoslanie priznania",
-      "content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.",
-      "feedbackTitle": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka."
-    }
-  },
-  "bank_info": {
-    "slovak_sporitelna": "Slovenská sporiteľňa, a.s.",
-    "slovak_sporitelna_iban": "SK75 0900 0000 0053 5353 5353",
-    "csob": "ČSOB, a.s.",
-    "csob_iban": "SK31 7500 0000 0000 2574 7653"
-  },
+  "thank_you.footer_text": "© {{currentYear}} Hlavné mesto Bratislava",
+  "thank_you.subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
+  "thank_you.button_faq_text": "Často kladené otázky",
+  "thank_you.button_privacy_text": "Ochrana osobných údajov",
+  "thank_you.result.failed_to_verify.title": "Nepodarilo sa overiť platbu",
+  "thank_you.result.failed_to_verify.content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne.",
+  "thank_you.result.payment_failed.title": "Platba dane zlyhala",
+  "thank_you.result.payment_failed.content": "Daň sa nepodarilo zaplatiť. Opakujte platbu alebo to skúste neskôr.<br />V prípade problémov nás kontaktujte.",
+  "thank_you.result.payment_success.title": "Daň bola úspešne zaplatená",
+  "thank_you.result.payment_success.content": "Ďakujeme za platbu dane z nehnuteľností. Stav platby si môžete skontrolovať v detaile dane v Bratislavskom konte.",
+  "thank_you.result.payment_already_paid.title": "Platba už bola vykonaná",
+  "thank_you.result.payment_already_paid.content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
+  "thank_you.button_to_formular_text": "Vyplniť dotazník",
+  "thank_you.button_to_tax_detail_text": "Detail dane",
+  "thank_you.button_to_profile_text": "Pokračovať do konta",
+  "thank_you.button_to_tax_detail_text": "Detail dane",
+  "thank_you.button_to_formular_text_2": "Vyplniť dotazník",
+  "thank_you.button_restart_text": "Zopakovať platbu",
+  "thank_you.button_cancel_text": "Zrušiť platbu",
+  "thank_you.form_submit.title": "Ďakujeme za odoslanie žiadosti",
+  "thank_you.form_submit.content_generic": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.",
+  "thank_you.form_submit.content_signed_in": "Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti).",
+  "thank_you.form_submit.content_feedback": "Prosíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
+  "thank_you.form_submit.content_embedded": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.",
+  "thank_you.form_submit_tax.title": "Ďakujeme za odoslanie priznania",
+  "thank_you.form_submit_tax.content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.",
+  "thank_you.form_submit_tax.feedbackTitle": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka.",
+  "bank_info.slovak_sporitelna": "Slovenská sporiteľňa, a.s.",
+  "bank_info.slovak_sporitelna_iban": "SK75 0900 0000 0053 5353 5353",
+  "bank_info.csob": "ČSOB, a.s.",
+  "bank_info.csob_iban": "SK31 7500 0000 0000 2574 7653",
   "delivery_method_change_modal_label": "Spôsob informovania",
   "delivery_method_change_success": "Zmena spôsobu doručenia bola uložená",
   "delivery_method_change_modal_description_true": "Papierové rozhodnutie poštou vám už chodiť nebude. Všetky informácie o platbách dane z nehnuteľností nájdete vo svojom Bratislavskom konte.",
@@ -452,220 +385,123 @@
   "payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností Vám sprístupníme platobné metódy.",
   "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "redirect_to_payment_loading": "Presmerovávam…",
-  "account_activator": {
-    "title": "Vitajte v Bratislavskom konte",
-    "content": "Vytvorte si svoj účet a majte rôzne služby mesta na jednom mieste, zaplaťte daň z nehnuteľností online alebo si kúpte lístok na kúpalisko bez čakania v rade.",
-    "button_text": "Viac informácií"
-  },
-  "payment_schedule": {
-    "title": "Splátkový kalendár",
-    "subtitle": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
-    "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
-    "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
-    "first_installment": "Prvá splátka v termíne <strong>do 15 dní odo dňa právoplatnosti rozhodnutia</strong>",
-    "first_installment_email_channel": "Prvá splátka v termíne do <strong>15 dní od doručenia notifikačného emailu o dani z nehnuteľností</strong>",
-    "second_installment": "Druhá splátka v termíne <strong>do 31. 8. {{year}}</strong>",
-    "third_installment": "Tretia splátka v termíne <strong>do 31. 10. {{year}}</strong>"
-  },
-  "tax_detail_section": {
-    "title": "Daň z nehnuteľností za rok {{year}}",
-    "title_payment_all": "Platba plnej sumy",
-    "title_payment_rest": "Platba zostávajúcej sumy",
-    "title_payment_installments": "Platba splátkou",
-    "installments": {
-      "not_available": "Prvá splátka do 15 dní odo dňa právoplatnosti rozhodnutia",
-      "0": "Prvá splátka do {{date}}",
-      "1": "Druhá splátka do {{date}}",
-      "2": "Tretia splátka do {{date}}",
-      "3": "Štvrtá splátka do {{date}}"
-    },
-    "tax_status": {
-      "negative": "Neuhradená",
-      "warning": "Čiastočne uhradená",
-      "success": "Uhradená"
-    },
-    "tax_remainder_text": "(zostáva uhradiť {{amount}})",
-    "tax_total": "Daň z nehnuteľností celkom",
-    "tax_already_paid": "Uhradené / Preplatok z minulého roka",
-    "tax_to_pay": "Zostáva uhradiť",
-    "tax_detail_fees_link": "Sadzby dane z nehnuteľností",
-    "tax_payment_methods": "Spôsob úhrady",
-    "tax_payment_full": "<strong>Platba plnej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
-    "tax_payment_rest": "<strong>Platba zostávajúcej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
-    "tax_payment_rest_subtitle": "Platba do {{date}}",
-    "tax_payment_rest_subtitle_not_available": "Úhrada do 15 dní odo dňa právoplatnosti rozhodnutia",
-    "tax_payment_rest_subtitle_not_available": "Úhrada do 15 dní odo dňa právoplatnosti rozhodnutia",
-    "tax_payment_under_threshold_alert": "Ak je vaša daň 66,00 € alebo menej, platba v splátkach nie je možná.",
-    "tax_payment_installment": "<strong>Platba splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
-    "tax_payment_installment_subtitle": "Platba nasledujúcej splátky do {{date}}",
-    "tax_payment_installment_alert_before_next_payment": "Pred termínom nasledujúcej splátky vám pošleme pripomienku na <strong>{{email}}</strong>",
-    "tax_type": {
-      "GROUND": {
-        "title": "Daň z pozemkov",
-        "ground_type": {
-          "A": {
-            "title": "Orná pôda, chmeľnice, vinice, ovocné sady",
-            "description": "(§ 6 ods. 1 písm. a) zákona)"
-          },
-          "B": {
-            "title": "Trvalé trávnaté porasty",
-            "description": "(§ 6 ods. 1 písm. a) zákona)"
-          },
-          "C": {
-            "title": "Záhrady",
-            "description": "(§ 6 ods. 1 písm. b) zákona)"
-          },
-          "D": {
-            "title": "Lesné pozemky, na ktorých sú hospodárske lesy",
-            "description": "(§ 6 ods. 1 písm. d) zákona)"
-          },
-          "E": {
-            "title": "Rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy",
-            "description": "(§ 6 ods. 1 písm. d) zákona)"
-          },
-          "F": {
-            "title": "Zastavané plochy a nádvoria",
-            "description": "(§ 6 ods. 1 písm. c) zákona)"
-          },
-          "G": {
-            "title": "Stavebné pozemky",
-            "description": "(§ 6 ods. 1 písm. e) zákona)"
-          },
-          "H": {
-            "title": "Ostatné plochy",
-            "description": "(§ 6 ods. 1 písm. c) zákona)"
-          }
-        }
-      },
-      "CONSTRUCTION": {
-        "title": "Daň zo stavieb",
-        "ground_type": {
-          "A": {
-            "title": "Stavba na bývanie",
-            "description": "(§ 10 ods. 1 písm. a) zákona)"
-          },
-          "B": {
-            "title": "Stavby na pôdohospodársku produkciu",
-            "description": "(§ 10 ods. 1 písm. b) zákona)"
-          },
-          "C": {
-            "title": "Chaty",
-            "description": "(§ 10 ods. 1 písm. c) zákona)"
-          },
-          "D": {
-            "title": "Samostatne stojace garáže",
-            "description": "(§ 10 ods. 1 písm. d) zákona)"
-          },
-          "E": {
-            "title": "Stavby hromadných garáží",
-            "description": "(§ 10 ods. 1 písm. e) zákona)"
-          },
-          "F": {
-            "title": "Stavby hromadných garáží umiestnených pod zemou",
-            "description": "(§ 10 ods. 1 písm. f) zákona)"
-          },
-          "G": {
-            "title": "Priemyselné stavby",
-            "description": "(§ 10 ods. 1 písm. g) zákona)"
-          },
-          "jH": {
-            "title": "Stavba na ost. podnik. a zárobk. činnosť, skladovanie a administratívu",
-            "description": "(§ 10 ods. 1 písm. h) zákona)"
-          },
-          "jI": {
-            "title": "Ostatné stavby",
-            "description": "(§ 10 ods. 1 písm. i) zákona)"
-          },
-          "H": {
-            "title": "Viacúčelová stavba",
-            "description": "(§ 12 ods. 6 zákona)"
-          }
-        }
-      },
-      "APARTMENT": {
-        "title": "Daň z bytov",
-        "ground_type": {
-          "byt": {
-            "title": "Byt",
-            "description": "(§ 14 zákona)"
-          },
-          "nebyt": {
-            "title": "Nebytový priestor",
-            "description": "(§ 14 zákona)"
-          }
-        }
-      }
-    }
-  },
-  "logout_page": {
-    "title": "Odhlásenie",
-    "description": "Budete odhlásený zo všetkých aplikácii využívajúcich Bratislavské konto.",
-    "confirm_label": "Odhlásiť sa",
-    "cancel_label": "Späť"
-  },
-  "Upload": {
-    "aria": {
-      "removeFile": "Odstrániť súbor"
-    },
-    "retry": "Skúsiť znova",
-    "supportedFormats": "Podporované formáty",
-    "sizeLimit": "Maximálna veľkosť súboru",
-    "uploadFile": "Nahrať súbor",
-    "uploadFiles": "Nahrať súbory",
-    "uploadingList": "Nahrávané súbory",
-    "messages": {
-      "upload_queued": "Čaká sa na nahratie",
-      "uploading": "Nahráva sa",
-      "waiting_for_scan": "Čaká na antivírovú kontrolu",
-      "scanning": "Prebieha antivírová kontrola"
-    },
-    "errors": {
-      "large_file": "Súbor je príliš veľký, maximálna veľkosť {{maxFileSize}}.",
-      "invalid_file_type": "Nepodporovaný formát súboru, podporované formáty: {{supportedFormats}}.",
-      "scan_error": "Nastala chyba pri antivírovej kontrole. Skúste to znova.",
-      "scan_infected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
-      "unknown_error": "Súbor sa nepodarilo nahrať. Skúste to znova."
-    }
-  },
-  "DatePicker": {
-    "aria": {
-      "openCalendar": "Otvoriť kalendár"
-    }
-  },
-  "TimePicker": {
-    "aria": {
-      "openClock": "Otvoriť hodiny"
-    }
-  },
-  "Tooltip": {
-    "aria": {
-      "tooltip": "Tooltip"
-    }
-  },
-  "FieldHeader": {
-    "optional": "(Nepovinné)"
-  },
-  "RadioGroup": {
-    "resetChoice": "Vymazať výber"
-  },
-  "SelectField": {
-    "noOptions": "Žiadne možnosti",
-    "placeholder": "Vyberte…"
-  },
-  "InputField": {
-    "aria": {
-      "reset": "Vymazať hodnotu"
-    }
-  },
-  "SearchField": {
-    "aria": {
-      "reset": "Vymazať hodnotu"
-    }
-  },
-  "ClipboardCopy": {
-    "aria": {
-      "copyToClipboard": "Kopírovať do schránky"
-    },
-    "success": "Skopírované do schránky."
-  }
+  "account_activator.title": "Vitajte v Bratislavskom konte",
+  "account_activator.content": "Vytvorte si svoj účet a majte rôzne služby mesta na jednom mieste, zaplaťte daň z nehnuteľností online alebo si kúpte lístok na kúpalisko bez čakania v rade.",
+  "account_activator.button_text": "Viac informácií",
+  "payment_schedule.title": "Splátkový kalendár",
+  "payment_schedule.subtitle": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
+  "payment_schedule.pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
+  "payment_schedule.change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
+  "payment_schedule.first_installment": "Prvá splátka v termíne <strong>do 15 dní odo dňa právoplatnosti rozhodnutia</strong>",
+  "payment_schedule.first_installment_email_channel": "Prvá splátka v termíne do <strong>15 dní od doručenia notifikačného emailu o dani z nehnuteľností</strong>",
+  "payment_schedule.second_installment": "Druhá splátka v termíne <strong>do 31. 8. {{year}}</strong>",
+  "payment_schedule.third_installment": "Tretia splátka v termíne <strong>do 31. 10. {{year}}</strong>",
+  "tax_detail_section.title": "Daň z nehnuteľností za rok {{year}}",
+  "tax_detail_section.title_payment_all": "Platba plnej sumy",
+  "tax_detail_section.title_payment_rest": "Platba zostávajúcej sumy",
+  "tax_detail_section.title_payment_installments": "Platba splátkou",
+  "tax_detail_section.installments.0": "Prvá splátka do {{date}}",
+  "tax_detail_section.installments.1": "Druhá splátka do {{date}}",
+  "tax_detail_section.installments.2": "Tretia splátka do {{date}}",
+  "tax_detail_section.installments.3": "Štvrtá splátka do {{date}}",
+  "tax_detail_section.installments.not_available": "Prvá splátka do 15 dní odo dňa právoplatnosti rozhodnutia",
+  "tax_detail_section.tax_status.negative": "Neuhradená",
+  "tax_detail_section.tax_status.warning": "Čiastočne uhradená",
+  "tax_detail_section.tax_status.success": "Uhradená",
+  "tax_detail_section.tax_remainder_text": "(zostáva uhradiť {{amount}})",
+  "tax_detail_section.tax_total": "Daň z nehnuteľností celkom",
+  "tax_detail_section.tax_already_paid": "Uhradené / Preplatok z minulého roka",
+  "tax_detail_section.tax_to_pay": "Zostáva uhradiť",
+  "tax_detail_section.tax_detail_fees_link": "Sadzby dane z nehnuteľností",
+  "tax_detail_section.tax_payment_methods": "Spôsob úhrady",
+  "tax_detail_section.tax_payment_full": "<strong>Platba plnej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
+  "tax_detail_section.tax_payment_rest": "<strong>Platba zostávajúcej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
+  "tax_detail_section.tax_payment_rest_subtitle": "Platba do {{date}}",
+  "tax_detail_section.tax_payment_rest_subtitle_not_available": "Úhrada do 15 dní odo dňa právoplatnosti rozhodnutia",
+  "tax_detail_section.tax_payment_under_threshold_alert": "Ak je vaša daň 66,00 € alebo menej, platba v splátkach nie je možná.",
+  "tax_detail_section.tax_payment_installment": "<strong>Platba splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
+  "tax_detail_section.tax_payment_installment_subtitle": "Platba nasledujúcej splátky do {{date}}",
+  "tax_detail_section.tax_payment_installment_alert_before_next_payment": "Pred termínom nasledujúcej splátky vám pošleme pripomienku na <strong>{{email}}</strong>",
+  "tax_detail_section.tax_type.GROUND.title": "Daň z pozemkov",
+  "tax_detail_section.tax_type.GROUND.ground_type.A.title": "Orná pôda, chmeľnice, vinice, ovocné sady",
+  "tax_detail_section.tax_type.GROUND.ground_type.A.description": "(§ 6 ods. 1 písm. a) zákona)",
+  "tax_detail_section.tax_type.GROUND.ground_type.B.title": "Trvalé trávnaté porasty",
+  "tax_detail_section.tax_type.GROUND.ground_type.B.description": "(§ 6 ods. 1 písm. a) zákona)",
+  "tax_detail_section.tax_type.GROUND.ground_type.C.title": "Záhrady",
+  "tax_detail_section.tax_type.GROUND.ground_type.C.description": "(§ 6 ods. 1 písm. b) zákona)",
+  "tax_detail_section.tax_type.GROUND.ground_type.D.title": "Lesné pozemky, na ktorých sú hospodárske lesy",
+  "tax_detail_section.tax_type.GROUND.ground_type.D.description": "(§ 6 ods. 1 písm. d) zákona)",
+  "tax_detail_section.tax_type.GROUND.ground_type.E.title": "Rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy",
+  "tax_detail_section.tax_type.GROUND.ground_type.E.description": "(§ 6 ods. 1 písm. d) zákona)",
+  "tax_detail_section.tax_type.GROUND.ground_type.F.title": "Zastavané plochy a nádvoria",
+  "tax_detail_section.tax_type.GROUND.ground_type.F.description": "(§ 6 ods. 1 písm. c) zákona)",
+  "tax_detail_section.tax_type.GROUND.ground_type.G.title": "Stavebné pozemky",
+  "tax_detail_section.tax_type.GROUND.ground_type.G.description": "(§ 6 ods. 1 písm. e) zákona)",
+  "tax_detail_section.tax_type.GROUND.ground_type.H.title": "Ostatné plochy",
+  "tax_detail_section.tax_type.GROUND.ground_type.H.description": "(§ 6 ods. 1 písm. c) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.title": "Daň zo stavieb",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.A.title": "Stavba na bývanie",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.A.description": "(§ 10 ods. 1 písm. a) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.B.title": "Stavby na pôdohospodársku produkciu",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.B.description": "(§ 10 ods. 1 písm. b) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.C.title": "Chaty",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.C.description": "(§ 10 ods. 1 písm. c) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.D.title": "Samostatne stojace garáže",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.D.description": "(§ 10 ods. 1 písm. d) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.E.title": "Stavby hromadných garáží",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.E.description": "(§ 10 ods. 1 písm. e) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.F.title": "Stavby hromadných garáží umiestnených pod zemou",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.F.description": "(§ 10 ods. 1 písm. f) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.G.title": "Priemyselné stavby",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.G.description": "(§ 10 ods. 1 písm. g) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.jH.title": "Stavba na ost. podnik. a zárobk. činnosť, skladovanie a administratívu",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.jH.description": "(§ 10 ods. 1 písm. h) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.jI.title": "Ostatné stavby",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.jI.description": "(§ 10 ods. 1 písm. i) zákona)",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.H.title": "Viacúčelová stavba",
+  "tax_detail_section.tax_type.CONSTRUCTION.ground_type.H.description": "(§ 12 ods. 6 zákona)",
+  "tax_detail_section.tax_type.APARTMENT.title": "Daň z bytov",
+  "tax_detail_section.tax_type.APARTMENT.ground_type.byt.title": "Byt",
+  "tax_detail_section.tax_type.APARTMENT.ground_type.byt.description": "(§ 14 zákona)",
+  "tax_detail_section.tax_type.APARTMENT.ground_type.nebyt.title": "Nebytový priestor",
+  "tax_detail_section.tax_type.APARTMENT.ground_type.nebyt.description": "(§ 14 zákona)",
+  "logout_page.title": "Odhlásenie",
+  "logout_page.description": "Budete odhlásený zo všetkých aplikácii využívajúcich Bratislavské konto.",
+  "logout_page.confirm_label": "Odhlásiť sa",
+  "logout_page.cancel_label": "Späť",
+  "Upload.aria.removeFile": "Odstrániť súbor",
+  "Upload.retry": "Skúsiť znova",
+  "Upload.supportedFormats": "Podporované formáty",
+  "Upload.sizeLimit": "Maximálna veľkosť súboru",
+  "Upload.uploadFile": "Nahrať súbor",
+  "Upload.uploadFiles": "Nahrať súbory",
+  "Upload.uploadingList": "Nahrávané súbory",
+  "Upload.messages.upload_queued": "Čaká sa na nahratie",
+  "Upload.messages.uploading": "Nahráva sa",
+  "Upload.messages.waiting_for_scan": "Čaká na antivírovú kontrolu",
+  "Upload.messages.scanning": "Prebieha antivírová kontrola",
+  "Upload.errors.large_file": "Súbor je príliš veľký, maximálna veľkosť {{maxFileSize}}.",
+  "Upload.errors.invalid_file_type": "Nepodporovaný formát súboru, podporované formáty: {{supportedFormats}}.",
+  "Upload.errors.scan_error": "Nastala chyba pri antivírovej kontrole. Skúste to znova.",
+  "Upload.errors.scan_infected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
+  "Upload.errors.unknown_error": "Súbor sa nepodarilo nahrať. Skúste to znova.",
+  "DatePicker.aria.openCalendar": "Otvoriť kalendár",
+  "TimePicker.aria.openClock": "Otvoriť hodiny",
+  "Tooltip.aria.tooltip": "Tooltip",
+  "FieldHeader.optional": "(Nepovinné)",
+  "RadioGroup.resetChoice": "Vymazať výber",
+  "SelectField.noOptions": "Žiadne možnosti",
+  "SelectField.placeholder": "Vyberte…",
+  "InputField.aria.reset": "Vymazať hodnotu",
+  "SearchField.aria.reset": "Vymazať hodnotu",
+  "ClipboardCopy.aria.copyToClipboard": "Kopírovať do schránky",
+  "ClipboardCopy.success": "Skopírované do schránky.",
+  "NavBar.capitalCityOfSR": "Hlavné mesto SR",
+  "NavMenu.aria.navMenuLabel": "Navigačné menu",
+  "language_long.sk": "Slovensky",
+  "language_long.en": "English",
+  "404.sorryNoResultsFound": "Ľutujeme, pre dané vyhľadávanie sa nenašli žiadne výsledky.",
+  "404.toTheMainPage": "Späť do Bratislavského konta",
+  "modal_close_aria": "Zavrieť",
+  "ariaCloseStatusBar": "Zavrieť upozornenie"
 }

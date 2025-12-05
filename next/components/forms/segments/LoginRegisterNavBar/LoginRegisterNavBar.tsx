@@ -74,7 +74,7 @@ export const LoginRegisterNavBar = ({
                   })}
                 >
                   {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
-                  {t('common:capitalCity')}
+                  {t('NavBar.capitalCityOfSR')}
                   {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
                 </p>
               }

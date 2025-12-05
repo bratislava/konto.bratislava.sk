@@ -4,8 +4,6 @@ FROM node:20.9-alpine AS base
 
 ENV NODE_ENV=production
 
-RUN npx playwright install-deps chromium
-
 FROM base AS app-base
 RUN apk update \
  && apk add tini \
@@ -20,8 +18,7 @@ FROM base AS build-base
 WORKDIR /build
 COPY package.json package-lock.json prisma ./
 RUN npm ci --include=dev --frozen-lockfile \
- && npx prisma generate  \
- && npx playwright install chromium
+ && npx prisma generate
 
 FROM build-base AS build
 COPY --from=openapi-clients /app/ /openapi-clients/

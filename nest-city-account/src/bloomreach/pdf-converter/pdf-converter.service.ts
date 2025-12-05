@@ -20,7 +20,7 @@ export class PdfConverterService {
     filename: string,
     htmlVariables: TemplateAttributes<T>,
     password?: string
-  ): Promise<{ data: Buffer; filename: string; contentType: string }> {
+  ): Promise<{ data: Buffer, filename: string, contentType: string }> {
     let browser: Browser | null = null
 
     const template = pdfTemplates[templateName]
@@ -83,15 +83,15 @@ export class PdfConverterService {
     const pdfDoc = await PDFDocument.load(pdfBuffer)
 
     // Set password protection
-    await pdfDoc.encrypt({
+    pdfDoc.encrypt({
       userPassword: password,
       ownerPassword: password,
       permissions: {
-        printing: 'highResolution',
+        printing: 'lowResolution',
         modifying: false,
         copying: false,
         annotating: false,
-        fillingForms: true,
+        fillingForms: false,
         contentAccessibility: false,
         documentAssembly: false,
       },

@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
-import { CustomErrorEnums } from '../../utils/guards/dtos/error.dto'
 import { VerificationErrorsEnum } from '../verification.errors.enum'
 
 export enum ResponseVerificationIdentityCardMessageEnum {
@@ -46,7 +45,7 @@ export class RequestBodyVerifyIdentityCardDto {
   birthNumber!: string
 
   @ApiProperty({
-    description: 'String of identitiy card',
+    description: 'String of identity card',
     example: 'AB123456',
   })
   @IsIdentityCard({
@@ -59,36 +58,6 @@ export class RequestBodyVerifyIdentityCardDto {
     example: '',
   })
   turnstileToken!: string
-}
-
-export class ResponseVerificationIdentityCardDto {
-  @ApiProperty({
-    description: 'number of status code',
-    default: 200,
-  })
-  statusCode!: number
-
-  @ApiProperty({
-    description: 'status',
-    default: 'OK',
-  })
-  status!: string
-
-  @ApiProperty({
-    description: 'Message about update',
-    default: 'Tier was updated',
-  })
-  message!: string | ResponseVerificationIdentityCardMessageDto
-
-  @ApiProperty({
-    description: 'Error if exists',
-    default: '',
-  })
-  errorName?: CustomErrorEnums
-}
-
-export class ResponseVerificationIdentityCardMessageDto {
-  message!: string
 }
 
 export class ResponseCustomErrorVerificationIdentityCardDto {

@@ -6,7 +6,6 @@ import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.
 import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
-import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
 import {
   UpvsCreateManyResult,
   UpvsIdentityByUriService,
@@ -15,6 +14,7 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
+import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 // In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
 
@@ -126,7 +126,11 @@ export class PhysicalEntityService {
       return {
         id: item.physicalEntityId ?? undefined,
         uri: item.uri,
-        activeEdesk: (item.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
+        activeEdesk:
+          // TODO: add zod validation or validation of the data directly in database
+          // as is in nest-forms-backend with prisma-json-types-generator
+          // https://github.com/bratislava/private-konto.bratislava.sk/issues/1109
+          (item.data as ApiIamIdentitiesIdGet200Response)?.upvs?.edesk_status === 'deliverable',
       }
     })
 

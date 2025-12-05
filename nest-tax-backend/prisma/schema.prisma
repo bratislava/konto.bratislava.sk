@@ -29,14 +29,16 @@ model TaxPayer {
   permanentResidenceStreet    String?
   permanentResidenceZip       String?
   permanentResidenceCity      String?
-  readyToImport               Boolean           @default(false)
+  readyToImportDZN            Boolean  @default(false)
+  readyToImportKO             Boolean  @default(false)
 
   taxes             Tax[]
   taxAdministrators TaxPayerTaxAdministrator[]
 
   @@unique([birthNumber])
   @@unique([uuid])
-  @@index([readyToImport])
+  @@index([readyToImportDZN])
+  @@index([readyToImportKO])
 }
 
 model Tax {

@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 
@@ -245,20 +246,38 @@ describe('TaxImportHelperSubservice', () => {
   })
 
   describe('clearReadyToImport', () => {
-    it('should clear readyToImport flag for birth numbers', async () => {
+    it('should clear readyToImportDZN flag for birth numbers', async () => {
       const birthNumbers = ['123456/7890', '987654/3210']
       const updateManySpy = jest
         .spyOn(prismaService.taxPayer, 'updateMany')
         .mockResolvedValue({ count: 2 })
 
-      await service.clearReadyToImport(birthNumbers)
+      await service.clearReadyToImport(TaxType.DZN, birthNumbers)
 
       expect(updateManySpy).toHaveBeenCalledWith({
         where: {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          readyToImport: false,
+          readyToImportDZN: false,
+        },
+      })
+    })
+
+    it('should clear readyToImportKO flag for birth numbers', async () => {
+      const birthNumbers = ['123456/7890', '987654/3210']
+      const updateManySpy = jest
+        .spyOn(prismaService.taxPayer, 'updateMany')
+        .mockResolvedValue({ count: 2 })
+
+      await service.clearReadyToImport(TaxType.KO, birthNumbers)
+
+      expect(updateManySpy).toHaveBeenCalledWith({
+        where: {
+          birthNumber: { in: birthNumbers },
+        },
+        data: {
+          readyToImportKO: false,
         },
       })
     })
@@ -266,7 +285,7 @@ describe('TaxImportHelperSubservice', () => {
     it('should not call updateMany when birth numbers array is empty', async () => {
       const updateManySpy = jest.spyOn(prismaService.taxPayer, 'updateMany')
 
-      await service.clearReadyToImport([])
+      await service.clearReadyToImport(TaxType.DZN, [])
 
       expect(updateManySpy).not.toHaveBeenCalled()
     })
@@ -276,9 +295,9 @@ describe('TaxImportHelperSubservice', () => {
       const error = new Error('Database update failed')
       jest.spyOn(prismaService.taxPayer, 'updateMany').mockRejectedValue(error)
 
-      await expect(service.clearReadyToImport(birthNumbers)).rejects.toThrow(
-        error,
-      )
+      await expect(
+        service.clearReadyToImport(TaxType.DZN, birthNumbers),
+      ).rejects.toThrow(error)
     })
   })
 
@@ -324,14 +343,15 @@ describe('TaxImportHelperSubservice', () => {
     it('should return birth numbers and identify newly created users', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockPrioritized = [
-        { birthNumber: '123456/7890', isNewlyCreated: true },
-        { birthNumber: '987654/3210', isNewlyCreated: false },
-        { birthNumber: '111111/2222', isNewlyCreated: true },
+      const mockNewlyCreated = [
+        { birthNumber: '123456/7890' },
+        { birthNumber: '111111/2222' },
       ]
+      const mockExisting = [{ birthNumber: '987654/3210' }]
       const queryRawSpy = jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValue(mockPrioritized as any)
+        .mockResolvedValueOnce(mockNewlyCreated as any) // First call: newly created
+        .mockResolvedValueOnce(mockExisting as any) // Second call: existing
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -340,13 +360,16 @@ describe('TaxImportHelperSubservice', () => {
 
       expect(result.birthNumbers).toEqual(['987654/3210'])
       expect(result.newlyCreated).toEqual(['123456/7890', '111111/2222'])
-      expect(queryRawSpy).toHaveBeenCalled()
+      expect(queryRawSpy).toHaveBeenCalledTimes(2)
     })
 
     it('should return empty arrays when no birth numbers found', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      jest.spyOn(prismaService, '$queryRaw').mockResolvedValue([])
+      jest
+        .spyOn(prismaService, '$queryRaw')
+        .mockResolvedValueOnce([]) // First call: newly created
+        .mockResolvedValueOnce([]) // Second call: existing
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -360,13 +383,14 @@ describe('TaxImportHelperSubservice', () => {
     it('should return empty newlyCreated array when no newly created users', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockPrioritized = [
-        { birthNumber: '123456/7890', isNewlyCreated: false },
-        { birthNumber: '987654/3210', isNewlyCreated: false },
+      const mockExisting = [
+        { birthNumber: '123456/7890' },
+        { birthNumber: '987654/3210' },
       ]
       jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValue(mockPrioritized as any)
+        .mockResolvedValueOnce([]) // First call: newly created (empty)
+        .mockResolvedValueOnce(mockExisting as any) // Second call: existing
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -381,7 +405,7 @@ describe('TaxImportHelperSubservice', () => {
       const taxType = TaxType.DZN
       const year = 2024
       const error = new Error('Database query failed')
-      jest.spyOn(prismaService, '$queryRaw').mockRejectedValue(error)
+      jest.spyOn(prismaService, '$queryRaw').mockRejectedValueOnce(error)
 
       await expect(
         service.getPrioritizedBirthNumbersWithMetadata(taxType, year),
@@ -391,12 +415,12 @@ describe('TaxImportHelperSubservice', () => {
     it('should call query with import phase ordering when isImportPhase is true', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockPrioritized = [
-        { birthNumber: '123456/7890', isNewlyCreated: false },
-      ]
+      const mockNewlyCreated = [{ birthNumber: '111111/2222' }]
+      const mockExisting = [{ birthNumber: '123456/7890' }]
       const queryRawSpy = jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValue(mockPrioritized as any)
+        .mockResolvedValueOnce(mockNewlyCreated as any)
+        .mockResolvedValueOnce(mockExisting as any)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -404,19 +428,20 @@ describe('TaxImportHelperSubservice', () => {
         true,
       )
 
-      expect(queryRawSpy).toHaveBeenCalledTimes(1)
+      expect(queryRawSpy).toHaveBeenCalledTimes(2)
       expect(result.birthNumbers).toEqual(['123456/7890'])
+      expect(result.newlyCreated).toEqual(['111111/2222'])
     })
 
     it('should call query with prepare phase ordering when isImportPhase is false', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockPrioritized = [
-        { birthNumber: '123456/7890', isNewlyCreated: false },
-      ]
+      const mockNewlyCreated = [{ birthNumber: '111111/2222' }]
+      const mockExisting = [{ birthNumber: '123456/7890' }]
       const queryRawSpy = jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValue(mockPrioritized as any)
+        .mockResolvedValueOnce(mockNewlyCreated as any)
+        .mockResolvedValueOnce(mockExisting as any)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -424,8 +449,9 @@ describe('TaxImportHelperSubservice', () => {
         false,
       )
 
-      expect(queryRawSpy).toHaveBeenCalledTimes(1)
+      expect(queryRawSpy).toHaveBeenCalledTimes(2)
       expect(result.birthNumbers).toEqual(['123456/7890'])
+      expect(result.newlyCreated).toEqual(['111111/2222'])
     })
   })
 
@@ -458,7 +484,9 @@ describe('TaxImportHelperSubservice', () => {
       ).toHaveBeenCalledWith(taxType, year, birthNumbers, {
         prepareOnly: false,
       })
-      expect(clearReadyToImportSpy).toHaveBeenCalledWith(['123456/7890'])
+      expect(clearReadyToImportSpy).toHaveBeenCalledWith(taxType, [
+        '123456/7890',
+      ]) // Add taxType parameter
       // Only birth numbers not found in Noris should have updatedAt updated
       expect(updateManySpy).toHaveBeenCalledWith({
         where: {
@@ -748,3 +776,5 @@ describe('TaxImportHelperSubservice', () => {
     })
   })
 })
+
+/* eslint-enable no-secrets/no-secrets */

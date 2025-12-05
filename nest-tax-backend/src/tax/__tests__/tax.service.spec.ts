@@ -72,7 +72,8 @@ const createMockTaxPayer = (
     permanentResidenceStreet: 'Test Street',
     permanentResidenceZip: '12345',
     permanentResidenceCity: 'Test City',
-    readyToImport: false,
+    readyToImportDZN: false,
+    readyToImportKO: false,
     ...overrides,
   }
 }

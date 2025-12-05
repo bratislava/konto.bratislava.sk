@@ -6,7 +6,7 @@ import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Files, FormError, FormState, GinisState } from '@prisma/client'
+import { Files, FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -22,7 +22,9 @@ import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
-import GinisAPIService from './subservices/ginis-api.service'
+import GinisAPIService, {
+  GinContactType,
+} from './subservices/ginis-api.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
@@ -104,6 +106,9 @@ describe('GinisService', () => {
                 safe: '',
               },
             },
+            cityAccountBackend: {
+              apiKey: 'test-api-key',
+            },
           },
         },
       ],
@@ -114,6 +119,30 @@ describe('GinisService', () => {
     Object.defineProperty(service, 'logger', {
       value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
     })
+
+    // Create a real NasesUtilsService instance for extraction methods
+    // The extraction methods are pure functions that don't need dependencies
+    const realNasesUtilsService = new NasesUtilsService(
+      createMock(),
+      module.get(ThrowerErrorGuard),
+      createMock<PrismaService>(),
+      createMock(),
+      createMock(),
+      createMock(),
+      createMock(),
+    )
+
+    // Use real implementations for extraction methods
+    jest
+      .spyOn(service['nasesUtilsService'], 'extractNaturalPersonData')
+      .mockImplementation((contact) =>
+        realNasesUtilsService.extractNaturalPersonData(contact),
+      )
+    jest
+      .spyOn(service['nasesUtilsService'], 'extractCorporateBodyData')
+      .mockImplementation((contact) =>
+        realNasesUtilsService.extractCorporateBodyData(contact),
+      )
   })
 
   it('should be defined', () => {
@@ -769,6 +798,501 @@ describe('GinisService', () => {
             error: FormError.NONE,
             state: FormState.PROCESSING,
           },
+        }),
+      )
+    })
+  })
+
+  describe('createDocument', () => {
+    const formBase = {
+      id: 'formId1',
+      formDataJson: { test: 'data' },
+      updatedAt: new Date(),
+      ginisDocumentId: null,
+    } as unknown as Forms
+
+    const formDefinitionBase = {
+      type: FormDefinitionType.SlovenskoSkGeneric,
+      ginisDocumentTypeId: 'docType1',
+    }
+
+    beforeEach(() => {
+      const { extractFormSubjectTechnical } = jest.requireMock(
+        'forms-shared/form-utils/formDataExtractors',
+      )
+      ;(extractFormSubjectTechnical as jest.Mock).mockReturnValue(
+        'Test Subject',
+      )
+
+      jest
+        .spyOn(service['ginisHelper'], 'retryWithDelay')
+        .mockImplementation(async (fn) => fn())
+
+      jest
+        .spyOn(service['ginisApiService'], 'createDocument')
+        .mockResolvedValue('newDocId')
+
+      jest
+        .spyOn(service['ginisApiService'], 'getDocumentDetail')
+        .mockResolvedValue({
+          'Cj-dokumentu': 'ref123',
+        } as any)
+
+      jest
+        .spyOn(service['ginisApiService'], 'findDocumentId')
+        .mockResolvedValue('foundDocId')
+
+      jest
+        .spyOn(service['ginisApiService'], 'createFormIdProperty')
+        .mockResolvedValue('1')
+
+      jest
+        .spyOn(service['ginisApiService'], 'setFormIdProperty')
+        .mockResolvedValue()
+
+      jest
+        .spyOn(service['ginisApiService'], 'upsertContact')
+        .mockResolvedValue('contactId')
+
+      jest
+        .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
+        .mockReturnValue('jwt-token')
+    })
+
+    it('should throw error when formDataJson is null', async () => {
+      const form = { ...formBase, formDataJson: null } as Forms
+
+      await expect(
+        service.createDocument(form, formDefinitionBase as any),
+      ).rejects.toThrow('Form data is empty.')
+    })
+
+    it('should create document with externalId only', async () => {
+      const form = {
+        ...formBase,
+        externalId: 'extId1',
+        mainUri: null,
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].cityAccountApi,
+          // eslint-disable-next-line no-secrets/no-secrets
+          'userIntegrationControllerGetContactAndIdInfoByExternalId',
+        )
+        .mockResolvedValue({
+          data: {
+            email: 'test@example.com',
+            accountType: 'fo',
+            firstName: 'John',
+            lastName: 'Doe',
+          },
+        } as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: GinContactType.PHYSICAL_ENTITY,
+          email: 'test@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+        }),
+      )
+      expect(service['ginisApiService'].createDocument).toHaveBeenCalled()
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            state: FormState.DELIVERED_GINIS,
+            ginisDocumentId: 'newDocId',
+            error: FormError.NONE,
+            ginisState: GinisState.REGISTERED,
+          },
+        }),
+      )
+    })
+
+    it('should create document with mainUri only (natural person)', async () => {
+      const form = {
+        ...formBase,
+        externalId: null,
+        mainUri: 'uri://test',
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].slovenskoSkApi,
+          'apiIamIdentitiesSearchPost',
+        )
+        .mockResolvedValue({
+          data: [
+            {
+              type: 'natural_person',
+              uri: 'uri://test',
+              emails: [{ address: 'test@example.com' }],
+              natural_person: {
+                given_names: ['John'],
+                family_names: [{ value: 'Doe', primary: true }],
+              },
+            },
+          ],
+        } as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: GinContactType.PHYSICAL_ENTITY,
+          uri: 'uri://test',
+          email: 'test@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+        }),
+      )
+    })
+
+    it('should create document with mainUri only (corporate body)', async () => {
+      const form = {
+        ...formBase,
+        externalId: null,
+        mainUri: 'uri://test',
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].slovenskoSkApi,
+          'apiIamIdentitiesSearchPost',
+        )
+        .mockResolvedValue({
+          data: [
+            {
+              type: 'legal_entity',
+              uri: 'uri://test',
+              emails: [{ address: 'test@example.com' }],
+              corporate_body: {
+                name: 'Test Company',
+                cin: '12345678',
+              },
+            },
+          ],
+        } as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: GinContactType.LEGAL_ENTITY,
+          uri: 'uri://test',
+          email: 'test@example.com',
+          name: 'Test Company',
+          ico: '12345678',
+        }),
+      )
+    })
+
+    it('should merge contact params from externalId and mainUri', async () => {
+      const form = {
+        ...formBase,
+        externalId: 'extId1',
+        mainUri: 'uri://test',
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].cityAccountApi,
+          // eslint-disable-next-line no-secrets/no-secrets
+          'userIntegrationControllerGetContactAndIdInfoByExternalId',
+        )
+        .mockResolvedValue({
+          data: {
+            email: 'external@example.com',
+            accountType: 'fo',
+            firstName: 'External',
+            lastName: 'User',
+          },
+        } as any)
+
+      jest
+        .spyOn(
+          service['clientsService'].slovenskoSkApi,
+          'apiIamIdentitiesSearchPost',
+        )
+        .mockResolvedValue({
+          data: [
+            {
+              type: 'natural_person',
+              uri: 'uri://test',
+              emails: [{ address: 'uri@example.com' }],
+              natural_person: {
+                given_names: ['John'],
+                family_names: [{ value: 'Doe', primary: true }],
+              },
+            },
+          ],
+        } as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: GinContactType.PHYSICAL_ENTITY,
+          email: 'external@example.com', // email from externalId should be kept
+          firstName: 'John', // extracted from URI natural_person data
+          lastName: 'Doe', // extracted from URI natural_person data
+          uri: 'uri://test',
+        }),
+      )
+    })
+
+    it('should skip upsertContact when no contact information available', async () => {
+      const form = {
+        ...formBase,
+        externalId: null,
+        mainUri: null,
+      } as Forms
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].upsertContact).not.toHaveBeenCalled()
+      expect(service['ginisApiService'].createDocument).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        undefined, // senderId should be undefined
+      )
+    })
+
+    it('should not create a document second time if it already exists in ginis', async () => {
+      const form = {
+        ...formBase,
+        ginisDocumentId: 'existingDocId',
+      } as Forms
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].createDocument).not.toHaveBeenCalled()
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            ginisDocumentId: 'existingDocId',
+          }),
+        }),
+      )
+    })
+
+    it('should assign reference number if not present', async () => {
+      const form = formBase as Forms
+
+      jest
+        .spyOn(service['ginisApiService'], 'getDocumentDetail')
+        .mockResolvedValue({} as any) // no 'Cj-dokumentu'
+
+      jest
+        .spyOn(service['ginisApiService'], 'assignReferenceNumber')
+        .mockResolvedValue()
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(
+        service['ginisApiService'].assignReferenceNumber,
+      ).toHaveBeenCalledWith('newDocId')
+    })
+
+    it('should set formId property when document not found by formId', async () => {
+      const form = formBase as Forms
+
+      jest
+        .spyOn(service['ginisApiService'], 'findDocumentId')
+        .mockResolvedValue('differentDocId') // different from created
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(
+        service['ginisApiService'].createFormIdProperty,
+      ).toHaveBeenCalledWith('newDocId')
+      expect(service['ginisApiService'].setFormIdProperty).toHaveBeenCalledWith(
+        'newDocId',
+        '1',
+        'formId1',
+      )
+    })
+
+    it('should not set formId property when it is already set and document can be found by formId', async () => {
+      const form = formBase as Forms
+
+      jest
+        .spyOn(service['ginisApiService'], 'findDocumentId')
+        .mockResolvedValue('newDocId') // same as created
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(
+        service['ginisApiService'].createFormIdProperty,
+      ).not.toHaveBeenCalled()
+      expect(
+        service['ginisApiService'].setFormIdProperty,
+      ).not.toHaveBeenCalled()
+    })
+
+    it('should throw error when mainUri is missing in extractContactParamsFromUri', async () => {
+      const form = {
+        ...formBase,
+        externalId: null,
+        mainUri: null,
+      } as Forms
+
+      // Access private method through type assertion
+      const extractMethod = (service as any).extractContactParamsFromUri.bind(
+        service,
+      )
+
+      await expect(extractMethod(form)).rejects.toThrow(
+        'Form uri not found in form',
+      )
+    })
+
+    it('should throw error when externalId is missing in extractContactParamsFromExternalId', async () => {
+      const form = {
+        ...formBase,
+        externalId: null,
+      } as Forms
+
+      const extractMethod = (
+        service as any
+      ).extractContactParamsFromExternalId.bind(service)
+
+      await expect(extractMethod(form)).rejects.toThrow(
+        'External id not found in form',
+      )
+    })
+
+    it('should throw error when contact not found in nases', async () => {
+      const form = {
+        ...formBase,
+        externalId: null,
+        mainUri: 'uri://test',
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].slovenskoSkApi,
+          'apiIamIdentitiesSearchPost',
+        )
+        .mockResolvedValue({
+          data: [],
+        } as any)
+
+      await expect(
+        service.createDocument(form, formDefinitionBase as any),
+      ).rejects.toThrow('Form uri not found in nases')
+    })
+
+    it('should throw error when multiple contacts found in nases', async () => {
+      const form = {
+        ...formBase,
+        externalId: null,
+        mainUri: 'uri://test',
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].slovenskoSkApi,
+          'apiIamIdentitiesSearchPost',
+        )
+        .mockResolvedValue({
+          data: [{ type: 'natural_person' }, { type: 'natural_person' }],
+        } as any)
+
+      await expect(
+        service.createDocument(form, formDefinitionBase as any),
+      ).rejects.toThrow('Multiple results found for form uri')
+    })
+
+    it('should throw error when contact info not found in city account', async () => {
+      const form = {
+        ...formBase,
+        externalId: 'extId1',
+        mainUri: null,
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].cityAccountApi,
+          // eslint-disable-next-line no-secrets/no-secrets
+          'userIntegrationControllerGetContactAndIdInfoByExternalId',
+        )
+        .mockResolvedValue({
+          data: null,
+        } as any)
+
+      await expect(
+        service.createDocument(form, formDefinitionBase as any),
+      ).rejects.toThrow('Contact info not found in city account')
+    })
+
+    it('should handle legal entity from externalId', async () => {
+      const form = {
+        ...formBase,
+        externalId: 'extId1',
+        mainUri: null,
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].cityAccountApi,
+          // eslint-disable-next-line no-secrets/no-secrets
+          'userIntegrationControllerGetContactAndIdInfoByExternalId',
+        )
+        .mockResolvedValue({
+          data: {
+            email: 'test@example.com',
+            accountType: 'po',
+            name: 'Company Name',
+            ico: '87654321',
+          },
+        } as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: GinContactType.LEGAL_ENTITY,
+          name: 'Company Name',
+          ico: '87654321',
+        }),
+      )
+    })
+
+    it('should handle self-employed entity from externalId', async () => {
+      const form = {
+        ...formBase,
+        externalId: 'extId1',
+        mainUri: null,
+      } as Forms
+
+      jest
+        .spyOn(
+          service['clientsService'].cityAccountApi,
+          // eslint-disable-next-line no-secrets/no-secrets
+          'userIntegrationControllerGetContactAndIdInfoByExternalId',
+        )
+        .mockResolvedValue({
+          data: {
+            email: 'test@example.com',
+            accountType: 'fo-p',
+            name: 'Self Employed',
+            ico: '11223344',
+          },
+        } as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: GinContactType.SELF_EMPLOYED_ENTITY,
+          name: 'Self Employed',
+          ico: '11223344',
         }),
       )
     })

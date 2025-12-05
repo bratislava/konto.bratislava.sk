@@ -461,10 +461,15 @@ export class TasksService {
     // Import newly created users regardless of window or limit
     if (newlyCreated.length > 0) {
       this.logger.log(
-        `Found ${newlyCreated.length} newly created users, importing immediately`,
+        `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
       )
       await this.taxImportHelperSubservice.importTaxes(
-        taxType,
+        TaxType.DZN,
+        newlyCreated,
+        year,
+      )
+      await this.taxImportHelperSubservice.importTaxes(
+        TaxType.KO,
         newlyCreated,
         year,
       )
@@ -486,6 +491,7 @@ export class TasksService {
             year,
           ))
     }
+
     if (birthNumbers.length === 0 && newlyCreated.length === 0) {
       this.logger.log('No birth numbers found to import taxes')
     }

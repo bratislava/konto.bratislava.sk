@@ -44,7 +44,7 @@ const fetchAlert = async () => {
 }
 
 export const StatusBar = () => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
 
   const { data: alertData } = useQuery({
     queryKey: ['alert'],

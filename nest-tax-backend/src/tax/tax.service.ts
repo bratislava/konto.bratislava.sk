@@ -83,10 +83,18 @@ export class TaxService {
         birthNumber,
       },
       include: {
-        taxAdministrator: true,
+        taxAdministrators: {
+          where: {
+            taxType: type,
+          },
+          include: {
+            taxAdministrator: true,
+          },
+        },
       },
     })
-    const taxAdministrator = taxPayer ? taxPayer.taxAdministrator : null
+    const taxAdministrator =
+      taxPayer?.taxAdministrators[0]?.taxAdministrator ?? null
 
     const taxes = await this.prisma.tax.findMany({
       where: {
@@ -237,7 +245,14 @@ export class TaxService {
         taxInstallments: true,
         taxPayer: {
           include: {
-            taxAdministrator: true,
+            taxAdministrators: {
+              where: {
+                taxType: type,
+              },
+              include: {
+                taxAdministrator: true,
+              },
+            },
           },
         },
         taxPayments: true,
@@ -298,7 +313,8 @@ export class TaxService {
         : undefined,
     }
 
-    const { taxAdministrator } = tax.taxPayer
+    const taxAdministrator =
+      tax.taxPayer.taxAdministrators[0]?.taxAdministrator ?? null
     const taxPayer: ResponseTaxPayerReducedDto = {
       name: tax.taxPayer.name,
       permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,

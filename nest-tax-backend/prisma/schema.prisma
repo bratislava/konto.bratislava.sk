@@ -16,14 +16,11 @@ datasource db {
 }
 
 model TaxPayer {
-  id                          Int               @id @default(autoincrement())
-  uuid                        String            @default(uuid()) @db.Uuid
-  createdAt                   DateTime          @default(now())
-  updatedAt                   DateTime          @default(now()) @updatedAt
+  id                          Int      @id @default(autoincrement())
+  uuid                        String   @default(uuid()) @db.Uuid
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @default(now()) @updatedAt
   birthNumber                 String // with slash
-  // TODO - tax administrator will be one for each type of tax, therefore the relation will be many-to-many
-  taxAdministratorId          Int?
-  taxAdministrator            TaxAdministrator? @relation(fields: [taxAdministratorId], references: [id])
   permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
@@ -34,7 +31,8 @@ model TaxPayer {
   permanentResidenceCity      String?
   readyToImport               Boolean           @default(false)
 
-  taxes Tax[]
+  taxes             Tax[]
+  taxAdministrators TaxPayerTaxAdministrator[]
 
   @@unique([birthNumber])
   @@unique([uuid])
@@ -99,14 +97,25 @@ model TaxInstallment {
 }
 
 model TaxAdministrator {
-  id          Int        @id @default(autoincrement())
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now()) @updatedAt
+  id          Int                        @id @default(autoincrement())
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @default(now()) @updatedAt
   externalId  String
   name        String
   phoneNumber String
   email       String
-  TaxPayer    TaxPayer[]
+  taxPayers   TaxPayerTaxAdministrator[]
+}
+
+model TaxPayerTaxAdministrator {
+  taxPayerId         Int
+  taxPayer           TaxPayer         @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
+  taxAdministratorId Int
+  taxAdministrator   TaxAdministrator @relation(fields: [taxAdministratorId], references: [id], onDelete: Cascade)
+  taxType            TaxType
+
+  @@id([taxPayerId, taxAdministratorId, taxType])
+  @@unique([taxPayerId, taxType])
 }
 
 model CsvFile {

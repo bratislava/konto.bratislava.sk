@@ -942,6 +942,9 @@ describe('NorisTaxRealEstateSubservice', () => {
                 birthNumber: '123456/7890',
               }),
             },
+            taxPayerTaxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
             tax: {
               upsert: jest.fn().mockResolvedValue({
                 id: 1,

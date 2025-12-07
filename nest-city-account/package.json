@@ -44,7 +44,7 @@
     "crypto": "^1.0.1",
     "express": "^5.1.0",
     "form-data": "^4.0.5",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "jwks-rsa": "^3.2.0",
     "lodash": "^4.17.21",
     "luxon": "^3.7.2",

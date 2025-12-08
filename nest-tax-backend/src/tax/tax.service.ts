@@ -358,6 +358,13 @@ export class TaxService {
       order,
     )
 
+    if (tax.isCancelled) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        'Cancelled tax cannot be paid.',
+      )
+    }
+
     return getTaxDetailPureForOneTimeGenerator({
       taxId: tax.id,
       overallAmount: tax.amount,
@@ -380,6 +387,13 @@ export class TaxService {
       taxType,
       order,
     )
+
+    if (tax.isCancelled) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        'Cancelled tax cannot be paid.',
+      )
+    }
 
     return getTaxDetailPureForInstallmentGenerator({
       taxType,

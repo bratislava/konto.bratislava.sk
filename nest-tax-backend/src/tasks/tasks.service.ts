@@ -291,6 +291,7 @@ export class TasksService {
       },
       where: {
         bloomreachUnpaidTaxReminderSent: false,
+        isCancelled: false,
         taxPayments: {
           none: {
             status: PaymentStatus.SUCCESS,

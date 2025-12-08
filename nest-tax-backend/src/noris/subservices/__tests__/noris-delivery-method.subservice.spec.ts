@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { DeliveryMethod, IsInCityAccount } from '../../utils/noris.types'
+import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'

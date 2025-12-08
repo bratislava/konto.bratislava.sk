@@ -3,11 +3,11 @@ import { randomBytes } from 'node:crypto'
 import { TaxAdministrator, TaxType } from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
+import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
 } from '../testing-tax-mock'
-import { DeliveryMethod } from '../../../noris/utils/noris.types'
 
 jest.mock('node:crypto', () => ({
   randomBytes: jest.fn(),

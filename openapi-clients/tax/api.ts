@@ -382,6 +382,10 @@ export interface ResponseCommunalWasteTaxSummaryDetailDto {
    */
   taxPayer: ResponseTaxPayerReducedDto
   /**
+   * Indicates if tax is cancelled
+   */
+  isCancelled: boolean
+  /**
    * Type of tax.
    */
   type: ResponseCommunalWasteTaxSummaryDetailDtoTypeEnum
@@ -472,6 +476,10 @@ export interface ResponseGetTaxesListBodyDto {
    * Order of tax for given year and type
    */
   order: number
+  /**
+   * Indicates if tax is cancelled
+   */
+  isCancelled: boolean
 }
 
 export interface ResponseGetTaxesListDto {
@@ -682,6 +690,10 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
    * Tax payer data
    */
   taxPayer: ResponseTaxPayerReducedDto
+  /**
+   * Indicates if tax is cancelled
+   */
+  isCancelled: boolean
   /**
    * Type of tax.
    */

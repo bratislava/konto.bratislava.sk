@@ -206,7 +206,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
-    // 1. New taxes
+    // New taxes
     const norisDataNotInDatabase = await this.filterNorisDataNotInDatabase(
       norisData,
       year,
@@ -231,25 +231,6 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       )
     }
 
-    // 2. Cancelled taxes
-    await this.prismaService.tax.updateMany({
-      where: {
-        taxPayer: {
-          birthNumber: {
-            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
-          },
-        },
-        variableSymbol: {
-          notIn: norisData.map((norisRecord) => norisRecord.variabilny_symbol),
-        },
-        year,
-        type: this.getTaxType(),
-        isCancelled: false,
-      },
-      data: { isCancelled: true },
-    })
-
-    // 3. Updated taxes
     // Query existing taxes - use variableSymbol for non-unique taxes (KO is not unique)
     const taxesExist = await this.prismaService.tax.findMany({
       select: {

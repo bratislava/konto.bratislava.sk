@@ -5,6 +5,7 @@ import { CommunalWasteTaxDetailSchema } from '../../prisma/json-types'
 // COMMON SCHEMAS
 export const NorisBaseTaxWithoutPaymentSchema = z.object({
   cislo_poradace: z.number(),
+  stav_dokladu: z.string().trim().toUpperCase().nullable(),
   cislo_subjektu: z.number(),
   adresa_tp_sidlo: z.string().nullable(),
   cislo_konania: z.string().nullable(),

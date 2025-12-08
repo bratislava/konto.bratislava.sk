@@ -144,7 +144,7 @@ export default class TaxImportHelperSubservice {
     >`
       SELECT tp."birthNumber"
       FROM "TaxPayer" tp
-      WHERE EXISTS (
+      WHERE NOT EXISTS (
         SELECT 1
         FROM "Tax" t
         WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}::"TaxType"
@@ -152,7 +152,7 @@ export default class TaxImportHelperSubservice {
       AND NOT tp."createdAt" = tp."updatedAt"
       ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp."${Prisma.raw(readyToImportFieldName)}" = FALSE`}
       ORDER BY 
-        ${isImportPhase ? Prisma.sql`tp."${Prisma.raw(readyToImportFieldName)}"::INT DESC` : Prisma.empty},
+        ${isImportPhase ? Prisma.sql`tp."${Prisma.raw(readyToImportFieldName)}"::INT DESC,` : Prisma.empty}
         tp."updatedAt" ASC
       LIMIT ${remainingCapacity}
     `

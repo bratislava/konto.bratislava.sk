@@ -6,7 +6,7 @@ import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
 } from '../../noris/types/noris.types'
-import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
+import { RequestAdminCreateTestingTaxNorisData } from '../../admin/dtos/requests.dto'
 
 /**
  * Creates a mock Noris tax record for testing purposes based on user input

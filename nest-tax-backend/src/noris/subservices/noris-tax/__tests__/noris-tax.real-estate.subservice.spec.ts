@@ -6,7 +6,7 @@ import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
 import prismaMock from '../../../../../test/singleton'
-import { createTestingRealEstateTaxMock } from '../../../../admin/utils/testing-tax-mock'
+import { createTestingRealEstateTaxMock } from '../../../../tax/utils/testing-tax-mock'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpers/tax.helper'

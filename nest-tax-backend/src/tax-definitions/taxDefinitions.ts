@@ -3,7 +3,7 @@ import { TaxType } from '@prisma/client'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
-} from '../admin/utils/testing-tax-mock'
+} from '../tax/utils/testing-tax-mock'
 import {
   mapNorisToCommunalWasteDatabaseDetail,
   mapNorisToRealEstateDatabaseDetail,

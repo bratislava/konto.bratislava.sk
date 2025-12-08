@@ -769,6 +769,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         type: TaxType.DZN,
         isUnique: true,
         readyToImportFieldName: 'readyToImportDZN',
+        lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
         installmentDueDates: {
@@ -885,6 +886,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         type: TaxType.DZN,
         isUnique: true,
         readyToImportFieldName: 'readyToImportDZN',
+        lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
         installmentDueDates: {

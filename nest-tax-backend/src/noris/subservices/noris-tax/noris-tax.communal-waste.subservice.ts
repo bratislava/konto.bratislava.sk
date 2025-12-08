@@ -201,12 +201,55 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     let count = 0
 
     const taxDefinition = this.getTaxDefinition()
-
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
         norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
+    // 1. New taxes
+    const norisDataNotInDatabase = await this.filterNorisDataNotInDatabase(
+      norisData,
+      year,
+    )
+    if (norisDataNotInDatabase.length > 0) {
+      // TODO limit the batch???
+      await Promise.all(
+        norisDataNotInDatabase.map(async (norisItem) =>
+          this.concurrencyLimit(async () => {
+            await this.processTaxRecordFromNoris(
+              taxDefinition,
+              new Set(),
+              norisItem,
+              userDataFromCityAccount,
+              year,
+            )
+          }),
+        ),
+      )
+      await this.paymentSubservice.updatePaymentsFromNorisWithData(
+        norisDataNotInDatabase,
+      )
+    }
+
+    // 2. Cancelled taxes
+    await this.prismaService.tax.updateMany({
+      where: {
+        taxPayer: {
+          birthNumber: {
+            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
+          },
+        },
+        variableSymbol: {
+          notIn: norisData.map((norisRecord) => norisRecord.variabilny_symbol),
+        },
+        year,
+        type: this.getTaxType(),
+        isCancelled: false,
+      },
+      data: { isCancelled: true },
+    })
+
+    // 3. Updated taxes
     // Query existing taxes - use variableSymbol for non-unique taxes (KO is not unique)
     const taxesExist = await this.prismaService.tax.findMany({
       select: {

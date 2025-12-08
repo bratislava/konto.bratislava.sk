@@ -74,6 +74,8 @@ const createMockTaxPayer = (
     permanentResidenceCity: 'Test City',
     readyToImportDZN: false,
     readyToImportKO: false,
+    lastUpdatedAtDZN: new Date('2025-01-01T10:00:00.000Z'),
+    lastUpdatedAtKO: new Date('2025-01-01T10:00:00.000Z'),
     ...overrides,
   }
 }
@@ -552,6 +554,7 @@ describe('TaxService', () => {
           year: 2023, // Not current year (2025)
           type: TaxType.DZN,
           order: 1,
+          isCancelled: false,
         },
       ]
 
@@ -578,6 +581,7 @@ describe('TaxService', () => {
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type: TaxType.DZN,
         order: 1,
+        isCancelled: false,
       })
       expect(result.items[1]).toEqual({
         createdAt: mockTaxes[0].createdAt,
@@ -586,6 +590,7 @@ describe('TaxService', () => {
         status: TaxStatusEnum.NOT_PAID,
         type: TaxType.DZN,
         order: 1,
+        isCancelled: false,
       })
     })
 
@@ -600,6 +605,7 @@ describe('TaxService', () => {
           year: 2025, // Current year already exists
           type: TaxType.DZN,
           order: 1,
+          isCancelled: false,
         },
         {
           id: 2,
@@ -608,6 +614,7 @@ describe('TaxService', () => {
           year: 2023,
           type: TaxType.DZN,
           order: 1,
+          isCancelled: false,
         },
       ]
 
@@ -681,6 +688,7 @@ describe('TaxService', () => {
           year: 2023,
           type: TaxType.DZN,
           order: 1,
+          isCancelled: false,
         },
       ]
 
@@ -707,6 +715,7 @@ describe('TaxService', () => {
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type: TaxType.DZN,
         order: 1,
+        isCancelled: false,
       })
       expect(result.items[1].year).toBe(2023)
     })

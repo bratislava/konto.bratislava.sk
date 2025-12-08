@@ -18,7 +18,6 @@ import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
-import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   convertCurrencyToInt,
   mapNorisToDatabaseBaseTax,
@@ -69,7 +68,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     birthNumbers: string[],
   ): Promise<TaxTypeToNorisData[TTaxType][]>
 
-  private async filterNorisDataNotInDatabase(
+  protected async filterNorisDataNotInDatabase(
     norisData: TaxTypeToNorisData[TTaxType][],
     year: number,
   ): Promise<TaxTypeToNorisData[TTaxType][]> {

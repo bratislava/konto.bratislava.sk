@@ -141,6 +141,13 @@ export class ResponseGetTaxesListBodyDto {
   })
   @IsNumber()
   order: number
+
+  @ApiProperty({
+    description: 'Indicates if tax is cancelled',
+    example: false,
+  })
+  @IsBoolean()
+  isCancelled: boolean
 }
 
 export class ResponseGetTaxesListDto {
@@ -564,6 +571,13 @@ export class ResponseTaxSummaryDetailBaseDto {
   @ValidateNested()
   @Type(() => ResponseTaxPayerReducedDto)
   taxPayer: ResponseTaxPayerReducedDto
+
+  @ApiProperty({
+    description: 'Indicates if tax is cancelled',
+    example: false,
+  })
+  @IsBoolean()
+  isCancelled: boolean
 }
 
 export class ResponseRealEstateTaxDetailItemizedDto {

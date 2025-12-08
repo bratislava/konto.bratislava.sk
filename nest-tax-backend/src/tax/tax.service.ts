@@ -111,6 +111,7 @@ export class TaxService {
         year: true,
         type: true,
         order: true,
+        isCancelled: true,
       },
     })
     const currentTime = dayjs().tz('Europe/Bratislava')
@@ -149,6 +150,7 @@ export class TaxService {
           status,
           type: tax.type,
           order: tax.order!, // non-null by DB trigger and constraint
+          isCancelled: tax.isCancelled,
         }
       }),
     )
@@ -166,6 +168,7 @@ export class TaxService {
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type,
         order: 1,
+        isCancelled: false,
       })
     }
 
@@ -337,6 +340,7 @@ export class TaxService {
       installmentPayment,
       taxAdministrator,
       taxPayer,
+      isCancelled: tax.isCancelled,
     } as ResponseAnyTaxSummaryDetailDto
   }
 

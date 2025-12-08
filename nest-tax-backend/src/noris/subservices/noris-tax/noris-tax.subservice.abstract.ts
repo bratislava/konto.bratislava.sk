@@ -389,9 +389,13 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           userFromCityAccount,
         )
 
+        const amountToTrack = tax.isCancelled
+          ? 0
+          : convertCurrencyToInt(norisItem.dan_spolu)
+
         const bloomreachTracker = await this.bloomreachService.trackEventTax(
           {
-            amount: convertCurrencyToInt(norisItem.dan_spolu),
+            amount: amountToTrack,
             year,
             delivery_method:
               userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -11,6 +12,7 @@ import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.su
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
+import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   NorisBaseTaxSchema,
@@ -182,6 +184,30 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     return result
   }
 
+  private async trackCancelledTax(
+    tax: TaxWithTaxPayer,
+    year: number,
+    userFromCityAccount: ResponseUserByBirthNumberDto,
+  ) {
+    const bloomreachTracker = await this.bloomreachService.trackEventTax(
+      {
+        amount: 0,
+        year,
+        delivery_method:
+          userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
+        taxType: this.getTaxType(),
+        order: tax.order!,
+      },
+      userFromCityAccount.externalId ?? undefined,
+    )
+    if (!bloomreachTracker) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+      )
+    }
+  }
+
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     year: number,
     birthNumbers: string[],
@@ -206,31 +232,6 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
-    // New taxes
-    const norisDataNotInDatabase = await this.filterNorisDataNotInDatabase(
-      norisData,
-      year,
-    )
-    if (norisDataNotInDatabase.length > 0) {
-      // TODO limit the batch???
-      await Promise.all(
-        norisDataNotInDatabase.map(async (norisItem) =>
-          this.concurrencyLimit(async () => {
-            await this.processTaxRecordFromNoris(
-              taxDefinition,
-              new Set(),
-              norisItem,
-              userDataFromCityAccount,
-              year,
-            )
-          }),
-        ),
-      )
-      await this.paymentSubservice.updatePaymentsFromNorisWithData(
-        norisDataNotInDatabase,
-      )
-    }
-
     // Query existing taxes - use variableSymbol for non-unique taxes (KO is not unique)
     const taxesExist = await this.prismaService.tax.findMany({
       select: {
@@ -245,10 +246,15 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         type: this.getTaxType(),
       },
     })
+
+    // Process new taxes
+    await this.processNorisTaxData(norisData, year, userDataFromCityAccount)
+
     const taxIdentifierToTax = new Map(
       taxesExist.map((tax) => [tax.variableSymbol, tax]),
     )
 
+    // Update only taxes that were in database
     await Promise.all(
       norisData.map(async (norisItem) =>
         this.concurrencyLimit(async () => {
@@ -275,6 +281,11 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
                 tx,
                 userFromCityAccount,
               )
+
+              if (tax.isCancelled) {
+                await this.trackCancelledTax(tax, year, userFromCityAccount)
+              }
+
               if (tax) {
                 count += 1
               }

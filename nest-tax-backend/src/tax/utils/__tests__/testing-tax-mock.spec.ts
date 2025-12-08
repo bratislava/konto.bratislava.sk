@@ -140,7 +140,7 @@ describe('testing-tax-mock', () => {
         const spl3 = parseFloat(result.SPL4_3.replace(',', '.'))
         const spl4 = parseFloat(result.SPL4_4.replace(',', '.'))
 
-        expect(spl1 + spl2 + spl3 + spl4).toBeCloseTo(150.0, 2)
+        expect(spl1 + spl2 + spl3 + spl4).toBeCloseTo(150, 2)
         expect(spl4).toBe(0)
       })
 
@@ -160,7 +160,7 @@ describe('testing-tax-mock', () => {
       it.each([
         { taxTotal: '100.50', expected: 100.5 },
         { taxTotal: '333.33', expected: 333.33 },
-        { taxTotal: '1000.00', expected: 1000.0 },
+        { taxTotal: '1000.00', expected: 1000 },
       ])(
         'should calculate installments correctly for taxTotal=$taxTotal',
         ({ taxTotal, expected }) => {
@@ -354,7 +354,7 @@ describe('testing-tax-mock', () => {
         const spl3 = parseFloat(result.SPL4_3.replace(',', '.'))
         const spl4 = parseFloat(result.SPL4_4.replace(',', '.'))
 
-        expect(spl1 + spl2 + spl3 + spl4).toBeCloseTo(200.0, 2)
+        expect(spl1 + spl2 + spl3 + spl4).toBeCloseTo(200, 2)
       })
 
       it('should have correct installment format (comma as decimal separator)', () => {
@@ -371,9 +371,9 @@ describe('testing-tax-mock', () => {
       })
 
       it.each([
-        { taxTotal: '100.00', expected: 100.0 },
+        { taxTotal: '100.00', expected: 100 },
         { taxTotal: '444.44', expected: 444.44 },
-        { taxTotal: '1200.00', expected: 1200.0 },
+        { taxTotal: '1200.00', expected: 1200 },
       ])(
         'should calculate installments correctly for taxTotal=$taxTotal',
         ({ taxTotal, expected }) => {
@@ -470,7 +470,7 @@ describe('testing-tax-mock', () => {
         )
 
         const container = result.addresses[0].containers[0]
-        const totalInCents = Math.round(150.0 * 100)
+        const totalInCents = Math.round(150 * 100)
 
         expect(container.poplatok).toBe(totalInCents)
       })

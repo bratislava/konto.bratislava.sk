@@ -2,11 +2,11 @@ import { randomBytes } from 'node:crypto'
 
 import { TaxAdministrator, TaxType } from '@prisma/client'
 
+import { RequestAdminCreateTestingTaxNorisData } from '../../admin/dtos/requests.dto'
 import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
 } from '../../noris/types/noris.types'
-import { RequestAdminCreateTestingTaxNorisData } from '../../admin/dtos/requests.dto'
 
 /**
  * Creates a mock Noris tax record for testing purposes based on user input
@@ -17,11 +17,16 @@ export const createTestingRealEstateTaxMock = (
   year: number,
 ): NorisRealEstateTax => {
   // This is not exact, but makes sure the total will be correct
-  const total = parseFloat(norisData.taxTotal.replace(',', '.'))
-  const spl1 = total / 3
-  const spl2 = (total - spl1) / 2
-  const spl3 = total - spl1 - spl2
+  const total = Math.round(
+    parseFloat(norisData.taxTotal.replace(',', '')) * 100,
+  )
+  const spl1InCents = Math.round(total / 3)
+  const spl2InCents = Math.round((total - spl1InCents) / 2)
+  const spl3InCents = total - spl1InCents - spl2InCents
 
+  const spl1 = spl1InCents / 100
+  const spl2 = spl2InCents / 100
+  const spl3 = spl3InCents / 100
   return {
     ICO_RC: norisData.fakeBirthNumber,
     subjekt_nazev: norisData.nameSurname,
@@ -134,10 +139,18 @@ export const createTestingCommunalWasteTaxMock = (
   year: number,
 ): NorisCommunalWasteTaxGrouped => {
   // This is not exact, but makes sure the total will be correct
-  const total = parseFloat(norisData.taxTotal.replace(',', '.'))
-  const spl1 = total / 3
-  const spl2 = (total - spl1) / 2
-  const spl3 = total - spl1 - spl2
+  const total = Math.round(
+    parseFloat(norisData.taxTotal.replace(',', '')) * 100,
+  )
+  const spl1InCents = Math.round(total / 4)
+  const spl2InCents = Math.round((total - spl1InCents) / 3)
+  const spl3InCents = Math.round((total - spl1InCents - spl2InCents) / 2)
+  const spl4InCents = total - spl1InCents - spl2InCents - spl3InCents
+
+  const spl1 = spl1InCents / 100
+  const spl2 = spl2InCents / 100
+  const spl3 = spl3InCents / 100
+  const spl4 = spl4InCents / 100
 
   return {
     type: TaxType.KO,
@@ -186,8 +199,8 @@ export const createTestingCommunalWasteTaxMock = (
     SPL4_2: spl2.toFixed(2).replace('.', ','),
     TXTSPL4_3: 'Test splatka3',
     SPL4_3: spl3.toFixed(2).replace('.', ','),
-    TXTSPL4_4: '',
-    SPL4_4: (0).toFixed(2).replace('.', ','),
+    TXTSPL4_4: 'Test splatka4',
+    SPL4_4: spl4.toFixed(2).replace('.', ','),
 
     // communal waste specific fields (mock but type-correct)
     addresses: [

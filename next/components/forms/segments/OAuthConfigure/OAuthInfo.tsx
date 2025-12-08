@@ -20,7 +20,7 @@ const OAuthInfo = () => {
   const { isOAuthLogin, clientInfo } = useAmplifyClientOAuthContext()
 
   return isProductionDeployment() ? null : isOAuthLogin && clientInfo?.name ? (
-    <div className="relative h-full shrink-0 py-3">
+    <div className="relative h-full shrink-0 py-2.5">
       <OAuthClientLogo clientName={clientInfo.name} />
     </div>
   ) : null

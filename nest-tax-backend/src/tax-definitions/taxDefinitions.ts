@@ -1,10 +1,6 @@
 import { TaxType } from '@prisma/client'
 
 import {
-  createTestingCommunalWasteTaxMock,
-  createTestingRealEstateTaxMock,
-} from '../tax/utils/testing-tax-mock'
-import {
   mapNorisToCommunalWasteDatabaseDetail,
   mapNorisToRealEstateDatabaseDetail,
 } from '../noris/utils/mapping.helper'
@@ -12,6 +8,10 @@ import {
   generateItemizedCommunalWasteTaxDetail,
   generateItemizedRealEstateTaxDetail,
 } from '../tax/utils/helpers/tax.helper'
+import {
+  createTestingCommunalWasteTaxMock,
+  createTestingRealEstateTaxMock,
+} from '../tax/utils/testing-tax-mock'
 import { TaxDefinitionsMap } from './taxDefinitionsTypes'
 
 export const taxDefinitions: TaxDefinitionsMap = {

@@ -40,6 +40,8 @@ const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 export class TasksService {
   private readonly logger: Logger
 
+  private lastTaxType: TaxType = TaxType.DZN
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -421,11 +423,20 @@ export class TasksService {
     }
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
-  async loadRealEstateTaxesForUsers() {
-    this.logger.log('Starting loadRealEstateTaxesForUsers task')
+  async loadTaxesForUsers() {
+    this.lastTaxType =
+      this.lastTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
 
+    this.logger.log(
+      `Starting LoadTaxForUsers task for TaxType: ${this.lastTaxType}`,
+    )
+
+    await this.loadTaxDataForUserByTaxType(this.lastTaxType)
+  }
+
+  private async loadTaxDataForUserByTaxType(taxType: TaxType) {
     const year = new Date().getFullYear()
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
@@ -442,7 +453,7 @@ export class TasksService {
 
     const { birthNumbers, newlyCreated } =
       await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
-        TaxType.DZN,
+        taxType,
         year,
         importPhase,
       )
@@ -450,27 +461,39 @@ export class TasksService {
     // Import newly created users regardless of window or limit
     if (newlyCreated.length > 0) {
       this.logger.log(
-        `Found ${newlyCreated.length} newly created users, importing immediately`,
+        `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
       )
       await this.taxImportHelperSubservice.importTaxes(
         TaxType.DZN,
         newlyCreated,
         year,
       )
+      await this.taxImportHelperSubservice.importTaxes(
+        TaxType.KO,
+        newlyCreated,
+        year,
+      )
     }
 
     if (birthNumbers.length > 0) {
+      this.logger.log(
+        `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'}`,
+      )
       await (importPhase
         ? this.taxImportHelperSubservice.importTaxes(
-            TaxType.DZN,
+            taxType,
             birthNumbers,
             year,
           )
         : this.taxImportHelperSubservice.prepareTaxes(
-            TaxType.DZN,
+            taxType,
             birthNumbers,
             year,
           ))
+    }
+
+    if (birthNumbers.length === 0 && newlyCreated.length === 0) {
+      this.logger.log('No birth numbers found to import taxes')
     }
   }
 

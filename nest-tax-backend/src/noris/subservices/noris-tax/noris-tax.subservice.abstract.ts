@@ -145,7 +145,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         where: {
           birthNumber: { in: birthNumbers },
         },
-        data: { readyToImport: true },
+        data: {
+          [taxDefinition.readyToImportFieldName]: true,
+        },
       })
       return { birthNumbers }
     }

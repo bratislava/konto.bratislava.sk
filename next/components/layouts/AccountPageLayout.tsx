@@ -120,19 +120,19 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     ? [
         {
           id: 0,
-          title: t('menu_profile_link'),
+          title: t('menu_links.profile'),
           icon: <ProfileIcon className="size-5" />,
           url: ROUTES.USER_PROFILE,
         },
         {
           id: 1,
-          title: t('menu_help_link'),
+          title: t('menu_links.help'),
           icon: <HelpIcon className="size-5" />,
           url: ROUTES.HELP,
         },
         {
           id: 2,
-          title: t('menu_logout_link'),
+          title: t('menu_links.logout'),
           icon: <LogoutIcon className="size-5 text-negative-700" />,
           onPress: () => signOut(),
           itemClassName: 'bg-negative-50',
@@ -141,13 +141,13 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     : [
         {
           id: 0,
-          title: t('menu_login_link'),
+          title: t('menu_links.login'),
           icon: <ProfileIcon className="size-5" />,
           onPress: login,
         },
         {
           id: 1,
-          title: t('menu_register_link'),
+          title: t('menu_links.register'),
           icon: <ProfileIcon className="size-5" />,
           onPress: register,
         },

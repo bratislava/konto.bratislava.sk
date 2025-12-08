@@ -42,7 +42,7 @@ const IntroSection = ({
     <>
       <PhoneNumberModal />
       <div className="flex flex-col">
-        <h1 className="sr-only">{t('bratislava_account')}</h1>
+        <h1 className="sr-only">{t('common.bratislava_account')}</h1>
         <AccountSectionHeader
           title={
             name

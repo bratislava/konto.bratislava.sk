@@ -24,12 +24,15 @@ const schema = {
       type: 'string',
       minLength: 1,
       format: 'email',
-      errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.email_required_message',
+        format: 'account:auth.fields.email_format',
+      },
     },
     password: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:password_required' },
+      errorMessage: { minLength: 'account:auth.fields.password_required' },
     },
   },
   required: ['newEmail', 'password'],
@@ -54,8 +57,8 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
       data-cy="change-email-form"
     >
-      <h1 className="text-h3">{t('email_change_title')}</h1>
-      <p className="text-p3 lg:text-p2">{t('new_email_text')}</p>
+      <h1 className="text-h3">{t('auth.email_change_title')}</h1>
+      <p className="text-p3 lg:text-p2">{t('auth.new_email_text')}</p>
       <AccountErrorAlert error={error} />
       <Controller
         name="newEmail"
@@ -63,8 +66,8 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            label={t('new_email_label')}
-            placeholder={t('email_placeholder')}
+            label={t('auth.fields.new_email_label')}
+            placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
           />
@@ -76,8 +79,8 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
-            label={t('new_email_password_label')}
-            placeholder={t('password_placeholder')}
+            label={t('auth.fields.new_email_password_label')}
+            placeholder={t('auth.fields.password_placeholder')}
             {...field}
             errorMessage={errors.password}
           />
@@ -86,7 +89,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
       <Button
         className="min-w-full"
         type="submit"
-        text={t('new_email_submit')}
+        text={t('auth.new_email_submit')}
         variant="category"
         disabled={isSubmitting}
         data-cy="change-email-submit"

@@ -55,7 +55,7 @@ const UserProfileView = () => {
       })
 
       // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
-      openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+      openSnackbarSuccess(t('my_profile.profile_detail.success_snackbar_message'), 3000)
       // at time of coding cognito is not providing user attributes change event, this is next best thing i come up with
       // this doesn't affect FE, therfore we don't need to wait for result
       updateBloomreachData()
@@ -94,7 +94,7 @@ const UserProfileView = () => {
         <UserProfileConsents />
         <div className="bg-gray-100 md:bg-gray-0">
           <AccountMarkdown
-            content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}
+            content={`<span className='text-p2'>${t('UserProfileView.gdpr_details_link')}</span>`}
             variant="sm"
             className="mx-auto w-full max-w-(--breakpoint-lg) px-4 pt-3 pb-5 md:px-8 md:pt-4 md:pb-6 lg:px-0"
           />

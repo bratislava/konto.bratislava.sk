@@ -124,8 +124,8 @@ const ForgottenPasswordPage = () => {
           />
         ) : (
           <AccountSuccessAlert
-            title={t('forgotten_password_success_title')}
-            confirmLabel={t('forgotten_password_success_go_to_login')}
+            title={t('auth.forgotten_password_success_title')}
+            confirmLabel={t('auth.forgotten_password_success_go_to_login')}
             onConfirm={onConfirm}
           />
         )}

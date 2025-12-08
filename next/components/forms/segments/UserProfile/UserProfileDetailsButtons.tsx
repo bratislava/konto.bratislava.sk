@@ -24,14 +24,14 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
               className="hidden h-full"
               variant="plain-black"
               size="sm"
-              text={t('profile_detail.stop_edit_button')}
+              text={t('my_profile.profile_detail.discard_changes_button')}
               onPress={onCancelEditing}
             />
             <Button
               className="hidden md:block"
               variant="black"
               size="sm"
-              text={t('profile_detail.save_edit_button')}
+              text={t('my_profile.profile_detail.save_changes_button')}
               type="submit"
               form={formId}
               data-cy="save-personal-information-button"
@@ -47,7 +47,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
               variant="black"
               startIcon={<EditIcon fill="white" className="size-6" />}
               size="sm"
-              text={t('profile_detail.start_edit_button')}
+              text={t('my_profile.profile_detail.edit_button')}
               className="hidden md:block"
               onPress={() => onChangeIsEditing(true)}
               data-cy="edit-personal-information-button"

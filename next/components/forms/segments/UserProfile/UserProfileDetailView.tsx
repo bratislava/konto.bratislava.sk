@@ -31,17 +31,23 @@ const UserProfileDetailView = ({ userAttributes }: UserProfileDetailViewProps) =
     : ''
   const nameLabel =
     account_type === AccountType.FyzickaOsoba
-      ? t('profile_detail.full_name')
-      : t('profile_detail.business_name')
+      ? t('my_profile.profile_detail.full_name')
+      : t('my_profile.profile_detail.business_name')
 
   return (
     <div className="flex grow flex-col gap-6">
-      {/* <UserProfileDetailViewRow label={t('profile_detail.titles_before_name')} /> */}
+      {/* <UserProfileDetailViewRow label={t('my_profile.profile_detail.titles_before_name')} /> */}
       <UserProfileDetailViewRow label={nameLabel} value={fullName} />
-      {/* <UserProfileDetailViewRow label={t('profile_detail.titles_after_name')} /> */}
-      <UserProfileDetailViewRow label={t('profile_detail.email')} value={email} />
-      <UserProfileDetailViewRow label={t('profile_detail.phone_number')} value={phone_number} />
-      <UserProfileDetailViewRow label={t('profile_detail.address')} value={fullAddress} />
+      {/* <UserProfileDetailViewRow label={t('my_profile.profile_detail.titles_after_name')} /> */}
+      <UserProfileDetailViewRow label={t('my_profile.profile_detail.email')} value={email} />
+      <UserProfileDetailViewRow
+        label={t('my_profile.profile_detail.phone_number')}
+        value={phone_number}
+      />
+      <UserProfileDetailViewRow
+        label={t('my_profile.profile_detail.address')}
+        value={fullAddress}
+      />
     </div>
   )
 }

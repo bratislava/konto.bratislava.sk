@@ -28,12 +28,15 @@ const schema = {
       type: 'string',
       minLength: 1,
       format: 'email',
-      errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.email_required_message',
+        format: 'account:auth.fields.email_format',
+      },
     },
     password: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:password_required' },
+      errorMessage: { minLength: 'account:auth.fields.password_required' },
     },
   },
   required: ['email', 'password'],
@@ -59,7 +62,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
       data-cy="login-container"
     >
-      <h1 className="text-h3">{t('login_title')}</h1>
+      <h1 className="text-h3">{t('auth.login_title')}</h1>
       <AccountErrorAlert error={error} />
       <Controller
         name="email"
@@ -67,8 +70,8 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            label={t('email_label')}
-            placeholder={t('email_placeholder')}
+            label={t('auth.fields.email_label')}
+            placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
           />
@@ -80,30 +83,30 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
-            label={t('password_label')}
-            placeholder={t('password_placeholder')}
+            label={t('auth.fields.password_label')}
+            placeholder={t('auth.fields.password_placeholder')}
             {...field}
             errorMessage={errors.password}
           />
         )}
       />
       <AccountLink
-        label={t('forgotten_password_link')}
-        description={t('forgotten_password_description')}
+        label={t('auth.links.forgotten_password_link_text')}
+        description={t('auth.links.forgotten_password_description')}
         href={getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD)}
       />
       <Button
         className="min-w-full"
         type="submit"
-        text={t('login_submit')}
+        text={t('auth.login_submit')}
         variant="category"
         disabled={isSubmitting}
         data-cy="login-button"
       />
       <AccountLink
-        label={t('register_link')}
+        label={t('auth.links.register_link_text')}
         href={getRouteWithRedirect(ROUTES.REGISTER)}
-        description={t('register_description')}
+        description={t('auth.links.register_description')}
         variant="category"
       />
     </form>

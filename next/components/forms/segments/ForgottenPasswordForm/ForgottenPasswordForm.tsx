@@ -26,7 +26,10 @@ const schema = {
       type: 'string',
       minLength: 1,
       format: 'email',
-      errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.email_required_message',
+        format: 'account:auth.fields.email_format',
+      },
     },
   },
   required: ['email'],
@@ -53,7 +56,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         return onSubmit(data.email)
       })}
     >
-      <h1 className="text-h3">{t('forgotten_password_title')}</h1>
+      <h1 className="text-h3">{t('auth.forgotten_password_title')}</h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
         name="email"
@@ -61,8 +64,8 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         render={({ field }) => (
           <InputField
             required
-            label={t('email_label')}
-            placeholder={t('email_placeholder')}
+            label={t('auth.fields.email_label')}
+            placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
           />
@@ -71,7 +74,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
       <Button
         className="min-w-full"
         type="submit"
-        text={t('forgotten_password_submit')}
+        text={t('auth.forgotten_password_submit')}
         variant="category"
         disabled={isSubmitting}
       />

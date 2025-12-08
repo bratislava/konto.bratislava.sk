@@ -199,10 +199,10 @@ const EmailChangePage = () => {
           />
         ) : (
           <AccountSuccessAlert
-            title={t('email_change_success_title')}
-            confirmLabel={t('account_continue_link')}
+            title={t('auth.email_change_success_title')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={onConfirm}
-            description={t('email_change_success_description', { email: lastEmail })}
+            description={t('auth.email_change_success_description', { email: lastEmail })}
           />
         )}
       </AccountContainer>

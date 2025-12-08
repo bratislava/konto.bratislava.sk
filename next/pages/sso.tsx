@@ -43,7 +43,7 @@ const SSOPage = ({ accessToken }: SSOPageProps) => {
     }
   })
 
-  return <AccountMarkdown content={t('sso_placeholder')} />
+  return <AccountMarkdown content={t('sso_page.sso_placeholder')} />
 }
 
 export default SSOPage

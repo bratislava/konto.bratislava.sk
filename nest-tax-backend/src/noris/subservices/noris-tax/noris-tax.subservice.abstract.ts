@@ -1,4 +1,5 @@
 import { Prisma, TaxType } from '@prisma/client'
+import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
@@ -156,19 +157,27 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       ? undefined
       : await this.getBatchSizeLimit()
 
-    // Limit the number of records to process in this batch
-    const recordsToProcess =
-      batchSizeLimit === undefined
-        ? norisDataNotInDatabase
-        : norisDataNotInDatabase.slice(0, batchSizeLimit)
-
-    if (
-      batchSizeLimit !== undefined &&
-      norisDataNotInDatabase.length > batchSizeLimit
-    ) {
-      this.logger.log(
-        `Limiting batch processing to ${batchSizeLimit} records out of ${norisDataNotInDatabase.length} available`,
+    // Limit the number of unique tax payers to process in this batch
+    // All taxes for the first x unique tax payers will be included
+    let recordsToProcess: TaxTypeToNorisData[TTaxType][]
+    if (batchSizeLimit === undefined) {
+      recordsToProcess = norisDataNotInDatabase
+    } else {
+      const taxesByTaxPayer = groupBy(norisDataNotInDatabase, 'ICO_RC')
+      const uniqueTaxPayers = Object.keys(taxesByTaxPayer).slice(
+        0,
+        batchSizeLimit,
       )
+      recordsToProcess = uniqueTaxPayers.flatMap(
+        (birthNumber) => taxesByTaxPayer[birthNumber],
+      )
+
+      const uniqueTaxPayersCount = Object.keys(taxesByTaxPayer).length
+      if (uniqueTaxPayersCount > batchSizeLimit) {
+        this.logger.log(
+          `Limiting batch processing to ${batchSizeLimit} unique tax payers (${recordsToProcess.length} taxes) out of ${uniqueTaxPayersCount} unique tax payers (${norisDataNotInDatabase.length} taxes) available`,
+        )
+      }
     }
 
     const userDataFromCityAccount =
@@ -249,14 +258,14 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       const batchSizeLimit = parseInt(config.TAX_IMPORT_BATCH_SIZE, 10)
       if (Number.isNaN(batchSizeLimit) || batchSizeLimit < 0) {
         this.logger.warn(
-          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax records`,
+          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax payers`,
         )
         return undefined
       }
       return batchSizeLimit
     } catch (error) {
       this.logger.warn(
-        'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax records',
+        'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax payers',
       )
       return undefined
     }

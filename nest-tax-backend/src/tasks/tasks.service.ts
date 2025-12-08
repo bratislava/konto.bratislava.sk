@@ -20,6 +20,7 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
@@ -41,6 +42,8 @@ export class TasksService {
   private readonly logger: Logger
 
   private lastTaxType: TaxType = TaxType.DZN
+
+  private lastUpdateTaxType: TaxType = TaxType.KO
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -174,9 +177,9 @@ export class TasksService {
     )
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   @HandleErrors('Cron Error')
-  async updateRealEstateTaxesFromNoris() {
+  async updateTaxesFromNoris() {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
     if (
@@ -188,51 +191,62 @@ export class TasksService {
       return
     }
 
+    this.lastUpdateTaxType =
+      this.lastUpdateTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+
+    await this.updateTaxesFromNorisByTaxType(this.lastUpdateTaxType)
+  }
+
+  private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
     const currentYear = new Date().getFullYear()
-    const taxes = await this.prismaService.tax.findMany({
+    const { lastUpdatedAtFieldName } = getTaxDefinitionByType(taxType)
+
+    const taxPayers = await this.prismaService.taxPayer.findMany({
       select: {
         id: true,
-        taxPayer: {
-          select: {
-            birthNumber: true,
+        birthNumber: true,
+      },
+      where: {
+        taxes: {
+          some: {
+            year: currentYear,
+            type: taxType,
           },
         },
       },
-      where: {
-        year: currentYear,
-        type: TaxType.DZN,
+      orderBy: {
+        [lastUpdatedAtFieldName]: 'asc',
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
-      orderBy: {
-        lastCheckedUpdates: 'asc',
-      },
     })
 
-    if (taxes.length === 0) {
+    if (taxPayers.length === 0) {
       return
     }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris with ids: ${taxes.map((t) => t.id).join(', ')}`,
+      `TasksService: Updating taxes from Noris for tax payers with birth numbers: ${taxPayers.map((t) => t.birthNumber).join(', ')}`,
     )
 
     const { updated } =
       await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-        TaxType.DZN,
+        taxType,
         currentYear,
-        taxes.map((t) => t.taxPayer.birthNumber),
+        taxPayers.map((t) => t.birthNumber),
       )
 
-    this.logger.log(`TasksService: Updated ${updated} DZN taxes from Noris`)
+    this.logger.log(
+      `TasksService: Updated ${updated} ${taxType} taxes from Noris`,
+    )
 
-    await this.prismaService.tax.updateMany({
+    await this.prismaService.taxPayer.updateMany({
       where: {
         id: {
-          in: taxes.map((t) => t.id),
+          in: taxPayers.map((t) => t.id),
         },
       },
       data: {
-        lastCheckedUpdates: new Date(),
+        [lastUpdatedAtFieldName]: new Date(),
       },
     })
   }

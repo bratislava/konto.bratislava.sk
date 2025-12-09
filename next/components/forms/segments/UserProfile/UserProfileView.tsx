@@ -13,7 +13,6 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import UserProfileConsents from './UserProfileConsents'
 import UserProfileDetail from './UserProfileDetail'
 import UserProfilePassword from './UserProfilePassword'
@@ -92,13 +91,6 @@ const UserProfileView = () => {
         />
         <UserProfilePassword />
         <UserProfileConsents />
-        <div className="bg-gray-100 md:bg-gray-0">
-          <AccountMarkdown
-            content={`<span className='text-p2'>${t('UserProfileView.gdpr_details_link')}</span>`}
-            variant="sm"
-            className="mx-auto w-full max-w-(--breakpoint-lg) px-4 pt-3 pb-5 md:px-8 md:pt-4 md:pb-6 lg:px-0"
-          />
-        </div>
       </div>
     </section>
   )

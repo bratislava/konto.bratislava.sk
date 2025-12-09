@@ -100,7 +100,7 @@ export class AdminService {
 
   /**
    * Creates a testing tax record with specified details for development and testing purposes.
-   * WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.
+   * @WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.
    */
   async createTestingTax(
     { year, norisData }: RequestAdminCreateTestingTaxDto,
@@ -115,17 +115,9 @@ export class AdminService {
       )
     }
 
-    // Get tax definition for the tax type
-    const taxDefinition = getTaxDefinitionByType(taxType)
-    const mockTaxRecord = taxDefinition.createTestingTaxMock(
-      norisData,
-      taxAdministrator,
-      year,
-    )
-
     const taxesByVariableSymbolExist = await this.prismaService.tax.findFirst({
       where: {
-        variableSymbol: mockTaxRecord.variabilny_symbol,
+        variableSymbol: norisData.variableSymbol,
       },
     })
 
@@ -135,6 +127,14 @@ export class AdminService {
         'Tax with this variable symbol already exists',
       )
     }
+
+    // Get tax definition for the tax type
+    const taxDefinition = getTaxDefinitionByType(taxType)
+    const mockTaxRecord = taxDefinition.createTestingTaxMock(
+      norisData,
+      taxAdministrator,
+      year,
+    )
 
     // Process the mock data to create the testing tax
     await this.norisService.processNorisTaxData(

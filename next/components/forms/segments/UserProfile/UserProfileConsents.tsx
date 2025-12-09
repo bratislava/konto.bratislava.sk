@@ -5,7 +5,6 @@ import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../frontend/hooks/useUser'
 import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
-import UserProfileSectionHeader from './UserProfileSectionHeader'
 
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
@@ -17,29 +16,28 @@ const UserProfileConsents = () => {
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
-  const handleOnChangeConsent = async (value: boolean) => {
+  const handleOnChangeConsent = async (newValue: boolean) => {
     if (subscriptionChangePending) {
       return
     }
 
-    await changeSubscription(value, {
+    await changeSubscription(newValue, {
       onSuccess: () => {
-        openSnackbarSuccess(t('my_profile.profile_detail.success_snackbar_message'), 3000)
+        openSnackbarSuccess(
+          newValue
+            ? t('my_profile.consents.success_on_snackbar_message')
+            : t('my_profile.consents.success_off_snackbar_message'),
+          3000,
+        )
       },
       onError: () => {
-        openSnackbarError(t('my_profile.profile_detail.error_snackbar_message'))
+        openSnackbarError(t('my_profile.consents.error_snackbar_message'))
       },
     })
   }
 
   return (
     <UserProfileSection>
-      <UserProfileSectionHeader
-        title={t('my_profile.consents.title')}
-        text={t('my_profile.consents.text')}
-        underline
-        isMobileColumn
-      />
       <div className="px-4 md:px-8">
         <UserConsent
           consent={{
@@ -49,7 +47,6 @@ const UserProfileConsents = () => {
             isDisabled: subscriptionChangePending,
             isSelected: isSubscribed,
           }}
-          isLast
           onChange={handleOnChangeConsent}
         />
       </div>

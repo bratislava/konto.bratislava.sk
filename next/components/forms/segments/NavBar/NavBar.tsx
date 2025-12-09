@@ -154,13 +154,13 @@ export const NavBar = ({
                   size="sm"
                   onPress={login}
                   variant="plain-black"
-                  text={t('menu_login_link')}
+                  text={t('menu_links.login')}
                   data-cy="login-button"
                 />
                 <Button
                   onPress={register}
                   variant="negative"
-                  text={t('menu_register_link')}
+                  text={t('menu_links.register')}
                   size="sm"
                   data-cy="register-button"
                 />

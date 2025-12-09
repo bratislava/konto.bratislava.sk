@@ -10,8 +10,8 @@ const LoginAccountLink = () => {
 
   return (
     <AccountLink
-      label={t('login_link')}
-      description={t('login_description')}
+      label={t('auth.links.login_link_text')}
+      description={t('auth.links.login_description')}
       href={getRouteWithRedirect(ROUTES.LOGIN)}
     />
   )

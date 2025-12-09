@@ -126,39 +126,39 @@ const IdentityVerificationPage = () => {
         )}
         {tierStatus.tier === Tier.QUEUE_IDENTITY_CARD && (
           <AccountVerificationPendingAlert
-            title={t('identity_verification_pending_title')}
+            title={t('auth.identity_verification_pending_title')}
             description={
               isLegalEntity
                 ? lastIco && lastRc && lastIdCard
-                  ? t('identity_verification_pending_description_legal_entity', {
+                  ? t('auth.identity_verification_pending_description_legal_entity', {
                       ico: lastIco,
                       rc: lastRc,
                       idCard: lastIdCard,
                     })
-                  : t('identity_verification_pending_description_without_data_legal_entity')
+                  : t('auth.identity_verification_pending_description_without_data_legal_entity')
                 : lastRc && lastIdCard
-                  ? t('identity_verification_pending_description', {
+                  ? t('auth.identity_verification_pending_description', {
                       rc: lastRc,
                       idCard: lastIdCard,
                     })
-                  : t('identity_verification_pending_description_without_data')
+                  : t('auth.identity_verification_pending_description_without_data')
             }
-            confirmLabel={t('account_continue_link')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={() => redirect()}
           />
         )}
         {tierStatus.isIdentityVerified && (
           <AccountSuccessAlert
-            title={t('identity_verification_success_title')}
+            title={t('auth.identity_verification_success_title')}
             description={
               lastRc &&
               lastIdCard &&
-              t('identity_verification_success_description', {
+              t('auth.identity_verification_success_description', {
                 rc: lastRc,
                 idCard: lastIdCard,
               })
             }
-            confirmLabel={t('account_continue_link')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={() => redirect()}
           />
         )}

@@ -82,8 +82,8 @@ const PasswordChangePage = () => {
       <AccountContainer ref={accountContainerRef}>
         {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
           <AccountSuccessAlert
-            title={t('password_change_success_title')}
-            confirmLabel={t('account_continue_link')}
+            title={t('auth.password_change_success_title')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={onConfirm}
           />
         ) : (

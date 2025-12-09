@@ -28,8 +28,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:verification_code_required',
-        format: 'account:verification_code_format',
+        minLength: 'account:auth.fields.verification_code_required',
+        format: 'account:auth.fields.verification_code_format',
       },
     },
   },
@@ -75,9 +75,9 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         )
       })}
     >
-      <h1 className="text-h3">{t('email_verification_title')}</h1>
+      <h1 className="text-h3">{t('auth.email_verification_title')}</h1>
       <p className="text-p3 lg:text-p2" data-cy="verification-description">
-        {t('email_verification_description', { email: lastEmail || '' })}
+        {t('auth.email_verification_description', { email: lastEmail || '' })}
       </p>
       <AccountErrorAlert
         error={error}
@@ -93,8 +93,8 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
           <InputField
             required
             autoComplete="off"
-            label={t('verification_code_label')}
-            placeholder={t('verification_code_placeholder')}
+            label={t('auth.fields.verification_code_label')}
+            placeholder={t('auth.fields.verification_code_placeholder')}
             {...field}
             errorMessage={errors.verificationCode}
           />
@@ -103,7 +103,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       <Button
         className="min-w-full"
         type="submit"
-        text={t('email_verification_submit')}
+        text={t('auth.email_verification_submit')}
         variant="category"
         disabled={isSubmitting}
       />
@@ -112,18 +112,18 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       <div className="text-p3 lg:text-p2">
         {noError && cnt > 0 && (
           <div className="mb-4">
-            <span>{t('verification_description')}</span>{' '}
-            <span>{t('verification_cnt_description', { cnt })}</span>
+            <span>{t('auth.verification_description')}</span>{' '}
+            <span>{t('auth.verification_cnt_description', { cnt })}</span>
           </div>
         )}
-        <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />
+        <AccountMarkdown variant="sm" content={t('auth.verification_cnt_info')} />
       </div>
 
       <Button
         loading={resendIsLoading}
         onPress={handleResend}
         className="min-w-full"
-        text={t('verification_resend')}
+        text={t('auth.verification_resend')}
         variant="category-outline"
         disabled={cnt > 0 && noError}
       />

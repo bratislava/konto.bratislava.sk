@@ -68,7 +68,7 @@ const TaxesFeesTaxAdministratorCard = ({
               href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti"
               variant="underlined-medium"
             >
-              {t('working_hours')}
+              {t('taxes.tax_administrator_card.working_hours')}
             </MLinkNew>
           </span>
         </div>

@@ -268,7 +268,7 @@ const RegisterPage = () => {
   const accountSuccessAlertProps = useMemo(() => {
     if (registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) {
       return {
-        confirmLabel: t('register_success_go_to_login'),
+        confirmLabel: t('auth.register_success_go_to_login'),
         onConfirm: () =>
           router
             .push(getRouteWithRedirect(ROUTES.LOGIN))
@@ -285,12 +285,12 @@ const RegisterPage = () => {
 
     if (redirectToIdentityVerification) {
       return {
-        confirmLabel: t('identity_verification_link'),
+        confirmLabel: t('auth.identity_verification_link'),
         onConfirm: () =>
           router
             .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
-        cancelLabel: t('identity_verification_skip'),
+        cancelLabel: t('auth.identity_verification_skip'),
         onCancel: () => redirect(),
       }
     }
@@ -298,7 +298,7 @@ const RegisterPage = () => {
     if (isOAuthLogin) {
       return {
         // TODO OAuth: Add client title to continue button
-        confirmLabel: t('identity_verification_link'),
+        confirmLabel: t('auth.identity_verification_link'),
         onConfirm: async () => {
           // TODO OAuth: handle errors
           logger.info(`[AUTH] Calling Continue endpoint`)
@@ -312,7 +312,7 @@ const RegisterPage = () => {
     //
     // if (redirectToIdentityVerificationAfterOAuthLogin) {
     //   return {
-    //     confirmLabel: t('identity_verification_link'),
+    //     confirmLabel: t('auth.identity_verification_link'),
     //     onConfirm: () =>
     //       router
     //         .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
@@ -321,7 +321,7 @@ const RegisterPage = () => {
     // }
 
     return {
-      confirmLabel: t('identity_verification_not_required'),
+      confirmLabel: t('auth.identity_verification_not_required'),
       onConfirm: () => redirect(),
     }
   }, [
@@ -359,8 +359,8 @@ const RegisterPage = () => {
         {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
           registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
           <AccountSuccessAlert
-            title={t('register_success_title')}
-            description={t('register_success_description', { email: lastEmail })}
+            title={t('auth.register_success_title')}
+            description={t('auth.register_success_description', { email: lastEmail })}
             {...accountSuccessAlertProps}
           />
         )}

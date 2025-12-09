@@ -46,7 +46,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
       <div className="whitespace-pre-line">
-        <div className="text-p2">{t('adding_phone_number_modal.description')}</div>
+        <div className="text-p2">{t('phone_number_modal.description')}</div>
       </div>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
@@ -54,8 +54,8 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         control={control}
         render={({ field }) => (
           <InputField
-            label={t('profile_detail.phone_number')}
-            placeholder={t('profile_detail.phone_number_placeholder')}
+            label={t('my_profile.profile_detail.phone_number')}
+            placeholder={t('my_profile.profile_detail.phone_number_placeholder')}
             {...field}
             errorMessage={errors.phone_number}
           />
@@ -64,7 +64,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       <Button
         className="min-w-full"
         type="submit"
-        text={t('profile_detail.save_button')}
+        text={t('phone_number_form.save_changes_button')}
         variant="black"
         disabled={isSubmitting}
       />

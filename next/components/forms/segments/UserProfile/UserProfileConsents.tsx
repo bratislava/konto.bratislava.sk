@@ -24,10 +24,10 @@ const UserProfileConsents = () => {
 
     await changeSubscription(value, {
       onSuccess: () => {
-        openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+        openSnackbarSuccess(t('my_profile.profile_detail.success_snackbar_message'), 3000)
       },
       onError: () => {
-        openSnackbarError(t('profile_detail.error_alert'))
+        openSnackbarError(t('my_profile.profile_detail.error_snackbar_message'))
       },
     })
   }
@@ -35,8 +35,8 @@ const UserProfileConsents = () => {
   return (
     <UserProfileSection>
       <UserProfileSectionHeader
-        title={t('consents.title')}
-        text={t('consents.text')}
+        title={t('my_profile.consents.title')}
+        text={t('my_profile.consents.text')}
         underline
         isMobileColumn
       />
@@ -44,8 +44,8 @@ const UserProfileConsents = () => {
         <UserConsent
           consent={{
             id: 'receive_information',
-            title: t('consents.receive_information.title'),
-            text: t('consents.receive_information.text'),
+            title: t('my_profile.consents.receive_information.title'),
+            text: t('my_profile.consents.receive_information.text'),
             isDisabled: subscriptionChangePending,
             isSelected: isSubscribed,
           }}

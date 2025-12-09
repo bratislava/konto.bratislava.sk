@@ -26,7 +26,12 @@ export const getTaxStatus = (
 export const getExistingTaxStatus = (
   taxAmount: number,
   paidAmount: number,
+  isCancelled: boolean,
 ): TaxStatusEnum => {
+  if (isCancelled) {
+    return TaxStatusEnum.CANCELLED
+  }
+
   if (paidAmount === 0) {
     return TaxStatusEnum.NOT_PAID
   }

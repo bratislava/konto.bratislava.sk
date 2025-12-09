@@ -476,10 +476,6 @@ export interface ResponseGetTaxesListBodyDto {
    * Order of tax for given year and type
    */
   order: number
-  /**
-   * Indicates if tax is cancelled
-   */
-  isCancelled: boolean
 }
 
 export interface ResponseGetTaxesListDto {
@@ -790,6 +786,7 @@ export const TaxStatusEnum = {
   Paid: 'PAID',
   OverPaid: 'OVER_PAID',
   AwaitingProcessing: 'AWAITING_PROCESSING',
+  Cancelled: 'CANCELLED',
 } as const
 
 export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]

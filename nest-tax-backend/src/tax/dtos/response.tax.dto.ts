@@ -38,6 +38,7 @@ export enum TaxStatusEnum {
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
   AWAITING_PROCESSING = 'AWAITING_PROCESSING',
+  CANCELLED = 'CANCELLED',
 }
 
 export enum TaxAvailabilityStatus {
@@ -141,13 +142,6 @@ export class ResponseGetTaxesListBodyDto {
   })
   @IsNumber()
   order: number
-
-  @ApiProperty({
-    description: 'Indicates if tax is cancelled',
-    example: false,
-  })
-  @IsBoolean()
-  isCancelled: boolean
 }
 
 export class ResponseGetTaxesListDto {

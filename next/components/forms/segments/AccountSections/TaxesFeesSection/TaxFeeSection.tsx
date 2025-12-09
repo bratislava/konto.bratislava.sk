@@ -3,7 +3,7 @@ import ResponsiveCarousel from 'components/forms/ResponsiveCarousel'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
-import { TaxStatusEnum } from 'openapi-clients/tax'
+import { TaxPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import ContactInformationSection from './ContactInformation'
@@ -44,8 +44,8 @@ const TaxFeeSection = () => {
           ]}
         />
         <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-10 lg:py-10">
-          {(taxData.paidStatus === TaxStatusEnum.Paid ||
-            taxData.paidStatus === TaxStatusEnum.OverPaid) && (
+          {(taxData.paidStatus === TaxPaidStatusEnum.Paid ||
+            taxData.paidStatus === TaxPaidStatusEnum.OverPaid) && (
             <div className="w-full px-4 lg:px-0">
               <Alert type="success" fullWidth message={t('account_section_payment.tax_paid')} />
             </div>
@@ -68,8 +68,8 @@ const TaxFeeSection = () => {
           </div>
           <ContactInformationSection />
           <TaxDetails />
-          {taxData.paidStatus !== TaxStatusEnum.Paid &&
-            taxData.paidStatus !== TaxStatusEnum.OverPaid && <PaymentMethodSection />}
+          {taxData.paidStatus !== TaxPaidStatusEnum.Paid &&
+            taxData.paidStatus !== TaxPaidStatusEnum.OverPaid && !taxData.isCancelled && <PaymentMethodSection />}
         </div>
       </div>
     </>

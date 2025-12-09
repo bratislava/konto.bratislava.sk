@@ -19,6 +19,7 @@ const TaxPaidStatus = ({ status }: TaxPaidStatusProps) => {
       // colors not defined in design system, using what we have
       status === TaxStatusEnum.PartiallyPaid,
     'text-success-700': status === TaxStatusEnum.Paid,
+    // TODO add color for cancelled
   })
 
   const title = {
@@ -29,6 +30,7 @@ const TaxPaidStatus = ({ status }: TaxPaidStatusProps) => {
     [TaxStatusEnum.PartiallyPaid]: t('account_section_payment.tax_card_status_partially_paid'),
     [TaxStatusEnum.Paid]: t('account_section_payment.tax_card_status_paid'),
     [TaxStatusEnum.OverPaid]: t('account_section_payment.tax_card_status_overpaid'),
+    [TaxStatusEnum.Cancelled]: 'TODO',
   }[status]
 
   return (

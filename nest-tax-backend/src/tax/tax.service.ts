@@ -142,7 +142,7 @@ export class TaxService {
       taxes.map(async (tax) => {
         const paid = await this.getAmountAlreadyPaidByTaxId(tax.id)
         const amountToBePaid = tax.amount - paid
-        const status = getExistingTaxStatus(tax.amount, paid)
+        const status = getExistingTaxStatus(tax.amount, paid, tax.isCancelled)
         return {
           createdAt: tax.createdAt,
           year: tax.year,
@@ -150,7 +150,6 @@ export class TaxService {
           status,
           type: tax.type,
           order: tax.order!, // non-null by DB trigger and constraint
-          isCancelled: tax.isCancelled,
         }
       }),
     )
@@ -168,7 +167,6 @@ export class TaxService {
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type,
         order: 1,
-        isCancelled: false,
       })
     }
 

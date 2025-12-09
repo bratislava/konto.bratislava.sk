@@ -581,7 +581,6 @@ describe('TaxService', () => {
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type: TaxType.DZN,
         order: 1,
-        isCancelled: false,
       })
       expect(result.items[1]).toEqual({
         createdAt: mockTaxes[0].createdAt,
@@ -590,8 +589,59 @@ describe('TaxService', () => {
         status: TaxStatusEnum.NOT_PAID,
         type: TaxType.DZN,
         order: 1,
-        isCancelled: false,
       })
+    })
+
+    it('should return CANCELLED status when tax is cancelled', async () => {
+      // Set outside inclusion period to prevent current year tax addition
+      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+
+      const mockTaxes = [
+        {
+          id: 1,
+          createdAt: new Date('2023-01-01T10:00:00.000Z'),
+          amount: 1000,
+          year: 2023,
+          type: TaxType.DZN,
+          order: 1,
+        },
+        {
+          id: 2,
+          createdAt: new Date('2022-01-01T10:00:00.000Z'),
+          amount: 800,
+          year: 2022,
+          type: TaxType.DZN,
+          order: 1,
+          isCancelled: true,
+        },
+      ]
+
+      const mockTaxPayer = createMockTaxPayer({
+        createdAt: new Date('2025-01-01T10:00:00.000Z'),
+        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // updated to prevent current year addition
+      })
+
+      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
+      prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
+
+      // Mock getAmountAlreadyPaidByTaxId for each tax
+      jest
+        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
+        .mockResolvedValueOnce(200) // For tax id 1
+        .mockResolvedValueOnce(0) // For tax id 2
+
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
+
+      expect(result.availabilityStatus).toBe(TaxAvailabilityStatus.AVAILABLE)
+      expect(result.items).toHaveLength(2)
+      expect(result.items[0].status).toBe(TaxStatusEnum.PARTIALLY_PAID)
+      expect(result.items[1].status).toBe(TaxStatusEnum.CANCELLED)
+      expect(result.taxAdministrator).toEqual(
+        mockTaxPayer.taxAdministrators[0].taxAdministrator,
+      )
     })
 
     it('should not add current year tax when current year tax already exists', async () => {
@@ -715,7 +765,6 @@ describe('TaxService', () => {
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type: TaxType.DZN,
         order: 1,
-        isCancelled: false,
       })
       expect(result.items[1].year).toBe(2023)
     })

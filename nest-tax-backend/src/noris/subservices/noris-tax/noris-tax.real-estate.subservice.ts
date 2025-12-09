@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -50,6 +51,33 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
 
   protected getTaxType(): typeof TaxType.DZN {
     return TaxType.DZN
+  }
+
+  private async updateExistingTaxRecord(
+    taxDefinition: ReturnType<typeof this.getTaxDefinition>,
+    norisItem: NorisRealEstateTax,
+    taxId: number,
+    year: number,
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+  ): Promise<void> {
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.taxInstallment.deleteMany({
+        where: {
+          taxId,
+        },
+      })
+
+      const userFromCityAccount =
+        userDataFromCityAccount[norisItem.ICO_RC] || null
+
+      await this.insertTaxDataToDatabase(
+        taxDefinition,
+        norisItem,
+        year,
+        tx,
+        userFromCityAccount,
+      )
+    })
   }
 
   protected async getTaxDataByYearAndBirthNumber(
@@ -140,50 +168,43 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       taxesExist.map((tax) => [tax.taxPayer.birthNumber, tax]),
     )
 
-    await Promise.all(
-      norisData.map(async (norisItem) =>
-        this.concurrencyLimit(async () => {
-          const taxIdentifier = norisItem.ICO_RC
-          const taxExists = taxIdentifierToTax.get(taxIdentifier)
-          if (!taxExists) {
-            return
-          }
-          try {
-            await this.prismaService.$transaction(async (tx) => {
-              await tx.taxInstallment.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
+    const updateTaxRecord = async (
+      norisItem: NorisRealEstateTax,
+    ): Promise<boolean> => {
+      return this.concurrencyLimit(async () => {
+        const taxIdentifier = norisItem.ICO_RC
+        const taxExists = taxIdentifierToTax.get(taxIdentifier)
+        if (!taxExists) {
+          return false
+        }
+        try {
+          await this.updateExistingTaxRecord(
+            taxDefinition,
+            norisItem,
+            taxExists.id,
+            year,
+            userDataFromCityAccount,
+          )
+          return true
+        } catch (error) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to update tax in database.',
+              undefined,
+              undefined,
+              error,
+            ),
+          )
+          return false
+        }
+      })
+    }
 
-              const userFromCityAccount =
-                userDataFromCityAccount[norisItem.ICO_RC] || null
-
-              const tax = await this.insertTaxDataToDatabase(
-                taxDefinition,
-                norisItem,
-                year,
-                tx,
-                userFromCityAccount,
-              )
-              if (tax) {
-                count += 1
-              }
-            })
-          } catch (error) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Failed to update tax in database.',
-                undefined,
-                undefined,
-                error,
-              ),
-            )
-          }
-        }),
-      ),
+    const results = await Promise.all(
+      norisData.map((norisItem) => updateTaxRecord(norisItem)),
     )
+    count = results.filter(Boolean).length
 
     return { updated: count }
   }

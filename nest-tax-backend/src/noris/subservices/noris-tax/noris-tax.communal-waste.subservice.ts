@@ -208,6 +208,37 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     }
   }
 
+  private async updateExistingTaxRecord(
+    taxDefinition: ReturnType<typeof this.getTaxDefinition>,
+    norisItem: NorisCommunalWasteTaxGrouped,
+    taxId: number,
+    year: number,
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+  ): Promise<void> {
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.taxInstallment.deleteMany({
+        where: {
+          taxId,
+        },
+      })
+
+      const userFromCityAccount =
+        userDataFromCityAccount[norisItem.ICO_RC] || null
+
+      const tax = await this.insertTaxDataToDatabase(
+        taxDefinition,
+        norisItem,
+        year,
+        tx,
+        userFromCityAccount,
+      )
+
+      if (tax.isCancelled) {
+        await this.trackCancelledTax(tax, year, userFromCityAccount)
+      }
+    })
+  }
+
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     year: number,
     birthNumbers: string[],
@@ -254,56 +285,43 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       taxesExist.map((tax) => [tax.variableSymbol, tax]),
     )
 
-    // Update only taxes that were in database
-    await Promise.all(
-      norisData.map(async (norisItem) =>
-        this.concurrencyLimit(async () => {
-          const taxIdentifier = norisItem.variabilny_symbol
-          const taxExists = taxIdentifierToTax.get(taxIdentifier)
-          if (!taxExists) {
-            return
-          }
-          try {
-            await this.prismaService.$transaction(async (tx) => {
-              await tx.taxInstallment.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
+    const updateTaxRecord = async (
+      norisItem: NorisCommunalWasteTaxGrouped,
+    ): Promise<boolean> => {
+      return this.concurrencyLimit(async () => {
+        const taxIdentifier = norisItem.variabilny_symbol
+        const taxExists = taxIdentifierToTax.get(taxIdentifier)
+        if (!taxExists) {
+          return false
+        }
+        try {
+          await this.updateExistingTaxRecord(
+            taxDefinition,
+            norisItem,
+            taxExists.id,
+            year,
+            userDataFromCityAccount,
+          )
+          return true
+        } catch (error) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to update tax in database.',
+              undefined,
+              undefined,
+              error,
+            ),
+          )
+          return false
+        }
+      })
+    }
 
-              const userFromCityAccount =
-                userDataFromCityAccount[norisItem.ICO_RC] || null
-
-              const tax = await this.insertTaxDataToDatabase(
-                taxDefinition,
-                norisItem,
-                year,
-                tx,
-                userFromCityAccount,
-              )
-
-              if (tax.isCancelled) {
-                await this.trackCancelledTax(tax, year, userFromCityAccount)
-              }
-
-              if (tax) {
-                count += 1
-              }
-            })
-          } catch (error) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Failed to update tax in database.',
-                undefined,
-                undefined,
-                error,
-              ),
-            )
-          }
-        }),
-      ),
+    const results = await Promise.all(
+      norisData.map((norisItem) => updateTaxRecord(norisItem)),
     )
+    count = results.filter(Boolean).length
 
     return { updated: count }
   }

@@ -93,7 +93,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       })}
     >
       <h1 className="text-h3">
-        {fromMigration ? t('migration_new_password_title') : t('auth.new_password_title')}
+        {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
       </h1>
       <p className="text-p3 lg:text-p2">
         {t('auth.new_password_description', { email: lastEmail })}

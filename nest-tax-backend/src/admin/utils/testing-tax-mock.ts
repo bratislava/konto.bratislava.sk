@@ -28,7 +28,7 @@ export const createTestingRealEstateTaxMock = (
     dan_spolu: norisData.taxTotal,
     rok: year,
     datum_platnosti: norisData.dateTaxRuling,
-    stav_dokladu: 'Z',
+    stav_dokladu: norisData.isCancelled ? 'S' : 'Z',
 
     // payment data
     specificky_symbol: '2024100000',
@@ -141,7 +141,7 @@ export const createTestingCommunalWasteTaxMock = (
   const spl3 = total - spl1 - spl2
 
   return {
-    stav_dokladu: 'Z',
+    stav_dokladu: norisData.isCancelled ? 'S' : 'Z',
     type: TaxType.KO,
     // base identification
     ICO_RC: norisData.fakeBirthNumber,

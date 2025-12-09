@@ -131,6 +131,10 @@ export interface RequestAdminCreateTestingTaxNorisData {
    * Date of tax ruling (dátum právoplatnosti)
    */
   dateTaxRuling: string | null
+  /**
+   * Indicates if tax is cancelled
+   */
+  isCancelled: boolean
 }
 
 export const RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum = {

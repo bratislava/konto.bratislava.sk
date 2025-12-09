@@ -1,5 +1,10 @@
 /* eslint-disable no-secrets/no-secrets */
 import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
+import {
+  AreaTypesEnum,
+  DeliveryMethod,
+  DeliveryMethodNoris,
+} from '../../types/noris.enums'
 import { NorisRealEstateTax } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
@@ -9,11 +14,6 @@ import {
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from '../mapping.helper'
-import {
-  AreaTypesEnum,
-  DeliveryMethod,
-  DeliveryMethodNoris,
-} from '../noris.types'
 
 describe('convertCurrencyToInt', () => {
   it('should convert string currency with comma to integer', () => {

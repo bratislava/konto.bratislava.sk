@@ -135,7 +135,6 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
         error,
       )
     }
-    let count = 0
 
     const taxDefinition = this.getTaxDefinition()
 
@@ -204,7 +203,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     const results = await Promise.all(
       norisData.map((norisItem) => updateTaxRecord(norisItem)),
     )
-    count = results.filter(Boolean).length
+    const count = results.filter(Boolean).length
 
     return { updated: count }
   }

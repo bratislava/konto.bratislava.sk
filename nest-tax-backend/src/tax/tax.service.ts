@@ -27,7 +27,6 @@ import {
 import {
   checkTaxDateInclusion,
   getExistingTaxStatus,
-  getTaxStatus,
 } from './utils/helpers/tax.helper'
 import {
   getTaxDetailPure,
@@ -323,9 +322,10 @@ export class TaxService {
       permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
       externalId: tax.taxPayer.externalId,
     }
-    const paidStatus = getTaxStatus(
+    const paidStatus = getExistingTaxStatus(
       detailWithoutQrCode.overallAmount,
       detailWithoutQrCode.overallPaid,
+      tax.isCancelled,
     )
 
     return {
@@ -338,7 +338,6 @@ export class TaxService {
       installmentPayment,
       taxAdministrator,
       taxPayer,
-      isCancelled: tax.isCancelled,
     } as ResponseAnyTaxSummaryDetailDto
   }
 

@@ -348,7 +348,7 @@ export interface ResponseCommunalWasteTaxSummaryDetailDto {
   /**
    * Payment status
    */
-  paidStatus: TaxPaidStatusEnum
+  paidStatus: TaxStatusEnum
   /**
    * Year of tax
    */
@@ -385,10 +385,6 @@ export interface ResponseCommunalWasteTaxSummaryDetailDto {
    * Tax payer data
    */
   taxPayer: ResponseTaxPayerReducedDto
-  /**
-   * Indicates if tax is cancelled
-   */
-  isCancelled: boolean
   /**
    * Type of tax.
    */
@@ -653,7 +649,7 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
   /**
    * Payment status
    */
-  paidStatus: TaxPaidStatusEnum
+  paidStatus: TaxStatusEnum
   /**
    * Year of tax
    */
@@ -690,10 +686,6 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
    * Tax payer data
    */
   taxPayer: ResponseTaxPayerReducedDto
-  /**
-   * Indicates if tax is cancelled
-   */
-  isCancelled: boolean
   /**
    * Type of tax.
    */
@@ -769,19 +761,6 @@ export type TaxControllerV2GetTaxDetailByYearV2200Response =
 
 /**
  * Payment status
- */
-
-export const TaxPaidStatusEnum = {
-  NotPaid: 'NOT_PAID',
-  PartiallyPaid: 'PARTIALLY_PAID',
-  Paid: 'PAID',
-  OverPaid: 'OVER_PAID',
-} as const
-
-export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
-
-/**
- * Type of paid status
  */
 
 export const TaxStatusEnum = {

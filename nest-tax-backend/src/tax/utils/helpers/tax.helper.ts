@@ -8,20 +8,8 @@ import {
 import {
   ResponseCommunalWasteTaxDetailItemizedDto,
   ResponseRealEstateTaxDetailItemizedDto,
-  TaxPaidStatusEnum,
   TaxStatusEnum,
 } from '../../dtos/response.tax.dto'
-
-export const getTaxStatus = (
-  desiredPayment: number,
-  alreadyPaid: number | undefined,
-): TaxPaidStatusEnum => {
-  if (!alreadyPaid) return TaxPaidStatusEnum.NOT_PAID
-  if (alreadyPaid === 0) return TaxPaidStatusEnum.NOT_PAID
-  if (alreadyPaid > desiredPayment) return TaxPaidStatusEnum.OVER_PAID
-  if (alreadyPaid === desiredPayment) return TaxPaidStatusEnum.PAID
-  return TaxPaidStatusEnum.PARTIALLY_PAID
-}
 
 export const getExistingTaxStatus = (
   taxAmount: number,

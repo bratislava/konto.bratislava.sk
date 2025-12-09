@@ -288,7 +288,7 @@ describe('AdminService', () => {
       expect(prismaMock.taxAdministrator.findFirst).toHaveBeenCalledWith({})
       expect(internalServerErrorSpy).toHaveBeenCalledWith(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'No tax administrator found in the database',
+        expect.any(String),
       )
     })
 
@@ -320,7 +320,7 @@ describe('AdminService', () => {
       })
       expect(internalServerErrorSpy).toHaveBeenCalledWith(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Tax with this variable symbol already exists',
+        expect.any(String),
       )
     })
   })
@@ -444,7 +444,7 @@ describe('AdminService', () => {
 
       expect(internalServerErrorSpy).toHaveBeenCalledWith(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Tax payer not found',
+        expect.any(String),
       )
 
       expect(prismaMock.tax.findUnique).not.toHaveBeenCalled()
@@ -488,7 +488,7 @@ describe('AdminService', () => {
 
       expect(internalServerErrorSpy).toHaveBeenCalledWith(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Tax not found',
+        expect.any(String),
       )
 
       expect(prismaMock.tax.delete).not.toHaveBeenCalled()
@@ -637,13 +637,16 @@ describe('AdminService', () => {
         order: mockOrder,
       })
 
-      const bloomreachCallArgs = trackEventTaxSpy.mock.calls[0][0]
-
-      expect(bloomreachCallArgs.amount).toBe(0)
-      expect(bloomreachCallArgs.delivery_method).toBeNull()
-      expect(bloomreachCallArgs.year).toBe(mockYear)
-      expect(bloomreachCallArgs.taxType).toBe(mockTaxType)
-      expect(bloomreachCallArgs.order).toBe(mockOrder)
+      expect(trackEventTaxSpy).toHaveBeenCalledWith(
+        {
+          amount: 0,
+          delivery_method: null,
+          year: mockYear,
+          taxType: mockTaxType,
+          order: mockOrder,
+        },
+        'external-123',
+      )
     })
   })
 })

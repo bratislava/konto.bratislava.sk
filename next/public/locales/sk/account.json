@@ -122,7 +122,7 @@
   "auth.fields.email_label": "E-mail",
   "auth.fields.email_placeholder": "E-mail",
   "auth.fields.email_po_description": "Zadajte firemný e-mail, cez ktorý chcete s mestom komunikovať.",
-  "auth.fields.email_required_message": "E-mail je povinný",
+  "auth.fields.email_required": "E-mail je povinný",
   "auth.fields.family_name_label": "Priezvisko",
   "auth.fields.family_name_placeholder": "Priezvisko",
   "auth.fields.family_name_required": "Priezvisko je povinné",

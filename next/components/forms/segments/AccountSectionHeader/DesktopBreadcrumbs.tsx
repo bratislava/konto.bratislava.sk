@@ -10,7 +10,7 @@ import type { BreadcrumbsProps } from './Breadcrumbs'
  */
 
 const DesktopBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('account')
 
   return (
     <ol className="flex flex-wrap items-center gap-x-1 gap-y-1.5 py-3 lg:py-6">

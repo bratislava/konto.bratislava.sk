@@ -98,7 +98,7 @@ export default class TaxImportHelperSubservice {
    * Get prioritized birth numbers for tax import with metadata
    * @param taxType - Type of tax
    * @param year - The tax year
-   * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by updatedAt
+   * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by lastUpdatedAtFieldName
    * @returns {Object} - The prioritized birth numbers and newly created birth numbers (imported immediately), these sets are disjoint
    */
   async getPrioritizedBirthNumbersWithMetadata(
@@ -110,7 +110,8 @@ export default class TaxImportHelperSubservice {
     newlyCreated: string[]
   }> {
     // Determine which readyToImport field to use
-    const { readyToImportFieldName } = getTaxDefinitionByType(taxType)
+    const { readyToImportFieldName, lastUpdatedAtFieldName } =
+      getTaxDefinitionByType(taxType)
 
     // Get users that have no taxes loaded and were never updated as a priority
     const newlyCreatedTaxPayers = await this.prismaService.$queryRaw<
@@ -153,7 +154,7 @@ export default class TaxImportHelperSubservice {
       ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp."${Prisma.raw(readyToImportFieldName)}" = FALSE`}
       ORDER BY 
         ${isImportPhase ? Prisma.sql`tp."${Prisma.raw(readyToImportFieldName)}"::INT DESC,` : Prisma.empty}
-        tp."updatedAt" ASC
+        tp."${Prisma.raw(lastUpdatedAtFieldName)}" ASC
       LIMIT ${remainingCapacity}
     `
 
@@ -191,12 +192,13 @@ export default class TaxImportHelperSubservice {
       (bn) => !foundInNoris.includes(bn),
     )
     if (notFoundInNoris.length > 0) {
+      const { lastUpdatedAtFieldName } = getTaxDefinitionByType(taxType)
       await this.prismaService.taxPayer.updateMany({
         where: {
           birthNumber: { in: notFoundInNoris },
         },
         data: {
-          updatedAt: new Date(),
+          [lastUpdatedAtFieldName]: new Date(),
         },
       })
     }
@@ -215,6 +217,8 @@ export default class TaxImportHelperSubservice {
       return
     }
 
+    const { lastUpdatedAtFieldName } = getTaxDefinitionByType(taxType)
+
     const result =
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
         taxType,
@@ -232,7 +236,7 @@ export default class TaxImportHelperSubservice {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          updatedAt: new Date(),
+          [lastUpdatedAtFieldName]: new Date(),
         },
       })
     }

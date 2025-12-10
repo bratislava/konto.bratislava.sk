@@ -2,7 +2,7 @@
 export const queryPayersFromNoris = `
 SELECT
     subjekt_doklad.cislo_poradace,
-    doklad.stav_dokladu as stav_dokladu,
+    lcs.dane21_doklad.stav_dokladu as stav_dokladu,
     lcs.dane21_doklad.cislo_subjektu,
     subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
     subjekt_doklad.reference_subjektu cislo_konania , 

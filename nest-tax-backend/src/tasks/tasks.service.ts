@@ -177,7 +177,7 @@ export class TasksService {
     )
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async updateTaxesFromNoris() {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
@@ -225,7 +225,7 @@ export class TasksService {
     }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris for tax payers with birth numbers: ${taxPayers.map((t) => t.birthNumber).join(', ')}`,
+      `TasksService: Updating taxes from Noris for tax payers with birth numbers: ${taxPayers.map((t) => t.birthNumber).join(', ')}, tax type: ${taxType}, current year: ${currentYear}`,
     )
 
     const { updated } =

@@ -39,7 +39,7 @@ const foSchema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required_message',
+        minLength: 'account:auth.fields.email_required',
         format: 'account:auth.fields.email_format',
       },
     },
@@ -72,7 +72,7 @@ const poSchema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required_message',
+        minLength: 'account:auth.fields.email_required',
         format: 'account:auth.fields.email_format',
       },
     },

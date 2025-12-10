@@ -31,6 +31,18 @@ export enum GinContactType {
   SELF_EMPLOYED_ENTITY = 'fyz-osoba-osvc', // SZCO
 }
 
+export enum SslFileUploadType {
+  ATTACHMENT = 'elektronicka-priloha',
+  SOURCE = 'elektronicky-obraz',
+}
+
+export enum SslWflDocumentElectronicSourceExistence {
+  EXISTS = 'existuje', // Příznak že dokument nebo jeho obraz existuje v sledované, elektronické podobě. Za sledovaný el. dokument se nepovažuje žádný soubor uložený mimo systém GINIS.
+  EXISTS_NO_AUTOMATIC_CONVERSION = 'existuje-neaut-konv', // Příznak že dokument má el. podobu.
+  HYBRID_DOSSIER = 'hybridni-spis', // Hybridní spis bez elektronického obrazu.
+  DOES_NOT_EXIST = 'neexistuje', // Příznak že k dokument neexistuje sledovaný elektronický obraz.
+}
+
 export interface GinContactParams {
   email?: string
   firstName?: string
@@ -95,6 +107,7 @@ export default class GinisAPIService {
     documentId: string,
     fileName: string,
     fileStream: Readable,
+    fileType: string = SslFileUploadType.ATTACHMENT,
   ): Promise<SslPridatSouborPridatSoubor> {
     const baseName = path.parse(fileName).name
 
@@ -102,7 +115,7 @@ export default class GinisAPIService {
       {
         'Id-dokumentu': documentId,
         'Jmeno-souboru': fileName.slice(-254), // filenames usually differ at the end
-        'Typ-vazby': 'elektronicka-priloha',
+        'Typ-vazby': fileType,
         'Popis-souboru': baseName.slice(0, 50),
         'Podrobny-popis-souboru': baseName.slice(0, 254),
       },

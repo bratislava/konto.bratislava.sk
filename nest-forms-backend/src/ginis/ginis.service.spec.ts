@@ -13,6 +13,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import prismaMock from '../../test/singleton'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
+import ConvertService from '../convert/convert.service'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
@@ -24,6 +25,8 @@ import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService, {
   GinContactType,
+  SslFileUploadType,
+  SslWflDocumentElectronicSourceExistence,
 } from './subservices/ginis-api.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
@@ -41,6 +44,9 @@ jest.mock('node:crypto', () => {
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
   extractFormSubjectTechnical: jest.fn(),
+}))
+jest.mock('forms-shared/slovensko-sk/xmlBuilder', () => ({
+  buildSlovenskoSkXml: jest.fn(),
 }))
 
 describe('GinisService', () => {
@@ -74,6 +80,7 @@ describe('GinisService', () => {
         GinisHelper,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
+        { provide: ConvertService, useValue: createMock<ConvertService>() },
         {
           provide: MinioClientSubservice,
           useValue: {
@@ -836,6 +843,9 @@ describe('GinisService', () => {
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
         .mockResolvedValue({
           'Cj-dokumentu': 'ref123',
+          'Wfl-dokument': {
+            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS,
+          },
         } as any)
 
       jest
@@ -1086,7 +1096,11 @@ describe('GinisService', () => {
 
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue({} as any) // no 'Cj-dokumentu'
+        .mockResolvedValue({
+          'Wfl-dokument': {
+            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS, // skip uploading sopurce document,
+          },
+        } as any) // no 'Cj-dokumentu'
 
       jest
         .spyOn(service['ginisApiService'], 'assignReferenceNumber')
@@ -1295,6 +1309,80 @@ describe('GinisService', () => {
           ico: '11223344',
         }),
       )
+    })
+
+    it('should upload XML source file when electronic source does not exist', async () => {
+      const { buildSlovenskoSkXml } = jest.requireMock(
+        'forms-shared/slovensko-sk/xmlBuilder',
+      )
+      const form = formBase as Forms
+      const mockXmlObject = { root: { data: 'test' } }
+      // eslint-disable-next-line xss/no-mixed-html
+      const mockXmlString =
+        '<?xml version="1.0"?><root><data>test</data></root>'
+
+      jest
+        .spyOn(service['ginisApiService'], 'getDocumentDetail')
+        .mockResolvedValue({
+          'Cj-dokumentu': 'ref123',
+          'Wfl-dokument': {
+            'Priznak-el-obrazu':
+              SslWflDocumentElectronicSourceExistence.DOES_NOT_EXIST,
+          },
+        } as any)
+
+      jest
+        .spyOn(service['convertService'], 'convertJsonToXmlObjectForForm')
+        .mockResolvedValue(mockXmlObject)
+      ;(buildSlovenskoSkXml as jest.Mock).mockReturnValue(mockXmlString)
+
+      jest
+        .spyOn(service['ginisApiService'], 'uploadFile')
+        .mockResolvedValue({} as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(
+        service['convertService'].convertJsonToXmlObjectForForm,
+      ).toHaveBeenCalledWith(form)
+      expect(buildSlovenskoSkXml).toHaveBeenCalledWith(mockXmlObject, {
+        headless: false,
+        pretty: false,
+      })
+      expect(service['ginisApiService'].uploadFile).toHaveBeenCalledWith(
+        'newDocId',
+        `source_form_${form.id}.xml`,
+        expect.any(Readable),
+        SslFileUploadType.SOURCE,
+      )
+    })
+
+    it('should not upload XML source file when electronic source exists', async () => {
+      const form = formBase as Forms
+
+      jest
+        .spyOn(service['ginisApiService'], 'getDocumentDetail')
+        .mockResolvedValue({
+          'Cj-dokumentu': 'ref123',
+          'Wfl-dokument': {
+            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS,
+          },
+        } as any)
+
+      jest
+        .spyOn(service['convertService'], 'convertJsonToXmlObjectForForm')
+        .mockResolvedValue({})
+
+      jest
+        .spyOn(service['ginisApiService'], 'uploadFile')
+        .mockResolvedValue({} as any)
+
+      await service.createDocument(form, formDefinitionBase as any)
+
+      expect(
+        service['convertService'].convertJsonToXmlObjectForForm,
+      ).not.toHaveBeenCalled()
+      expect(service['ginisApiService'].uploadFile).not.toHaveBeenCalled()
     })
   })
 })

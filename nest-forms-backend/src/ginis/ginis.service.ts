@@ -1,3 +1,4 @@
+import { Readable } from 'node:stream'
 import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
@@ -16,6 +17,7 @@ import {
   extractFormSubjectPlain,
   extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
+import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import { ContactAndIdInfoTypeEnum } from 'openapi-clients/city-account'
 import {
   UpvsCorporateBody,
@@ -24,6 +26,7 @@ import {
 
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
+import ConvertService from '../convert/convert.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -51,6 +54,8 @@ import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService, {
   GinContactParams,
   GinContactType,
+  SslFileUploadType,
+  SslWflDocumentElectronicSourceExistence,
 } from './subservices/ginis-api.service'
 
 @Injectable()
@@ -59,6 +64,7 @@ export default class GinisService {
 
   constructor(
     private readonly baConfigService: BaConfigService,
+    private readonly convertService: ConvertService,
     private readonly clientsService: ClientsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly ginisHelper: GinisHelper,
@@ -692,6 +698,26 @@ export default class GinisService {
     if (!detail['Cj-dokumentu']) {
       await this.ginisHelper.retryWithDelay(async () =>
         this.ginisApiService.assignReferenceNumber(documentId),
+      )
+    }
+
+    if (
+      detail['Wfl-dokument']['Priznak-el-obrazu'] !==
+      SslWflDocumentElectronicSourceExistence.EXISTS
+    ) {
+      const message =
+        await this.convertService.convertJsonToXmlObjectForForm(form)
+      const xml = buildSlovenskoSkXml(message, {
+        headless: false,
+        pretty: false,
+      })
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.uploadFile(
+          documentId,
+          `source_form_${form.id}.xml`,
+          Readable.from(xml),
+          SslFileUploadType.SOURCE,
+        ),
       )
     }
 

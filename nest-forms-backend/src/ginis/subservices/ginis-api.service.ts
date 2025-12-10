@@ -107,7 +107,7 @@ export default class GinisAPIService {
     documentId: string,
     fileName: string,
     fileStream: Readable,
-    fileType: string = SslFileUploadType.ATTACHMENT,
+    fileType: SslFileUploadType = SslFileUploadType.ATTACHMENT,
   ): Promise<SslPridatSouborPridatSoubor> {
     const baseName = path.parse(fileName).name
 

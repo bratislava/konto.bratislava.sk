@@ -1,6 +1,6 @@
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 
-import { useUser } from '../../../../../frontend/hooks/useUser'
+import { useUser } from '../../../../../../frontend/hooks/useUser'
 
 export const useTaxChannel = () => {
   const { userData } = useUser()

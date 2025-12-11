@@ -19,8 +19,8 @@ import Button from '../../../simple-components/Button'
 import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import PaymentSchedule from '../../../simple-components/PaymentSchedule'
+import { useTaxChannel } from './TaxesFeesDeliveryMethod/useTaxChannel'
 import TaxesFeesVerifyAndSetDeliveryMethodBanner from './TaxesFeesVerifyAndSetDeliveryBanner'
-import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 type DetailsProps = {

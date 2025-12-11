@@ -539,6 +539,11 @@ export class TasksService {
       },
     })
 
+    if (payments.length === 0) {
+      this.logger.log('No payments to resend bloomreach events for')
+      return
+    }
+
     const concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
     const concurrencyLimit = pLimit(concurrency)
 

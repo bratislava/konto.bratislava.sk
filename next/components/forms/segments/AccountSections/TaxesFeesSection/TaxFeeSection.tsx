@@ -69,7 +69,7 @@ const TaxFeeSection = () => {
           <ContactInformationSection />
           <TaxDetails />
           {taxData.paidStatus !== TaxStatusEnum.Paid &&
-            taxData.paidStatus !== TaxStatusEnum.OverPaid && <PaymentMethodSection />}
+            taxData.paidStatus !== TaxStatusEnum.OverPaid && taxData.paidStatus !== TaxStatusEnum.Cancelled && <PaymentMethodSection />}
         </div>
       </div>
     </>

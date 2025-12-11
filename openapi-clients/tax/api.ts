@@ -131,6 +131,10 @@ export interface RequestAdminCreateTestingTaxNorisData {
    * Date of tax ruling (dátum právoplatnosti)
    */
   dateTaxRuling: string | null
+  /**
+   * Indicates if tax is cancelled
+   */
+  isCancelled: boolean
 }
 
 export const RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum = {
@@ -344,7 +348,7 @@ export interface ResponseCommunalWasteTaxSummaryDetailDto {
   /**
    * Payment status
    */
-  paidStatus: TaxPaidStatusEnum
+  paidStatus: TaxStatusEnum
   /**
    * Year of tax
    */
@@ -645,7 +649,7 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
   /**
    * Payment status
    */
-  paidStatus: TaxPaidStatusEnum
+  paidStatus: TaxStatusEnum
   /**
    * Year of tax
    */
@@ -759,25 +763,13 @@ export type TaxControllerV2GetTaxDetailByYearV2200Response =
  * Payment status
  */
 
-export const TaxPaidStatusEnum = {
-  NotPaid: 'NOT_PAID',
-  PartiallyPaid: 'PARTIALLY_PAID',
-  Paid: 'PAID',
-  OverPaid: 'OVER_PAID',
-} as const
-
-export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
-
-/**
- * Type of paid status
- */
-
 export const TaxStatusEnum = {
   NotPaid: 'NOT_PAID',
   PartiallyPaid: 'PARTIALLY_PAID',
   Paid: 'PAID',
   OverPaid: 'OVER_PAID',
   AwaitingProcessing: 'AWAITING_PROCESSING',
+  Cancelled: 'CANCELLED',
 } as const
 
 export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]

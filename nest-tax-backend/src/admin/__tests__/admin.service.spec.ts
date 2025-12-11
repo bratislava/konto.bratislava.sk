@@ -195,6 +195,7 @@ describe('AdminService', () => {
       taxTotal: '300.04',
       alreadyPaid: 10.99,
       dateTaxRuling: new Date('1970-1-1'),
+      isCancelled: false,
     }
     const mockRequest: RequestAdminCreateTestingTaxDto = {
       norisData: mockNorisData,
@@ -533,7 +534,9 @@ describe('AdminService', () => {
         .spyOn(adminService['bloomreachService'], 'trackEventTax')
         .mockResolvedValue(false)
 
-      const loggerErrorSpy = jest.spyOn(adminService['logger'], 'error')
+      const loggerErrorSpy = jest
+        .spyOn(adminService['logger'], 'error')
+        .mockImplementation(() => {})
 
       await adminService.deleteTax({
         birthNumber: mockBirthNumber,

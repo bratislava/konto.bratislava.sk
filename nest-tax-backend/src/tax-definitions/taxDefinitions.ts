@@ -28,6 +28,7 @@ export const taxDefinitions: TaxDefinitionsMap = {
     generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
     createTestingTaxMock: createTestingRealEstateTaxMock,
     readyToImportFieldName: 'readyToImportDZN',
+    lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
   },
   [TaxType.KO]: {
     type: TaxType.KO,
@@ -43,5 +44,6 @@ export const taxDefinitions: TaxDefinitionsMap = {
     generateItemizedTaxDetail: generateItemizedCommunalWasteTaxDetail,
     createTestingTaxMock: createTestingCommunalWasteTaxMock,
     readyToImportFieldName: 'readyToImportKO',
+    lastUpdatedAtFieldName: 'lastUpdatedAtKO',
   },
 }

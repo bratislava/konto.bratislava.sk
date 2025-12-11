@@ -46,6 +46,7 @@ describe('testing-tax-mock', () => {
       dateTaxRuling: new Date('2024-01-15'),
       variableSymbol: '2024001',
       alreadyPaid: 0,
+      isCancelled: false,
     }
   })
 

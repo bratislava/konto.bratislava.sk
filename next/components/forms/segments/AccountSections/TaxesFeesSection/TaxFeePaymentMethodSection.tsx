@@ -4,7 +4,7 @@ import { formatDate } from 'frontend/utils/general'
 import { Trans, useTranslation } from 'next-i18next'
 import {
   ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
-  TaxPaidStatusEnum,
+  TaxStatusEnum,
 } from 'openapi-clients/tax'
 import React from 'react'
 
@@ -26,7 +26,7 @@ const TaxFeePaymentMethodSection = () => {
               <Trans
                 ns="account"
                 i18nKey={
-                  taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid
+                  taxData.paidStatus === TaxStatusEnum.PartiallyPaid
                     ? 'tax_detail_section.tax_payment_rest'
                     : 'tax_detail_section.tax_payment_full'
                 }
@@ -44,7 +44,7 @@ const TaxFeePaymentMethodSection = () => {
             }
             amount={taxData.overallBalance}
             buttonText={
-              taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid ? t('pay_rest') : t('pay_all')
+              taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? t('pay_rest') : t('pay_all')
             }
             buttonVariant="black-solid"
             buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}

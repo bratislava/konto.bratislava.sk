@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
+import { Tax, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -211,14 +211,14 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
   private async updateExistingTaxRecord(
     taxDefinition: ReturnType<typeof this.getTaxDefinition>,
     norisItem: NorisCommunalWasteTaxGrouped,
-    taxId: number,
+    existingTax: Pick<Tax, 'id' | 'isCancelled'>,
     year: number,
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
   ): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       await tx.taxInstallment.deleteMany({
         where: {
-          taxId,
+          taxId: existingTax.id,
         },
       })
 
@@ -233,7 +233,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         userFromCityAccount,
       )
 
-      if (tax.isCancelled) {
+      if (tax.isCancelled && !existingTax.isCancelled) {
         await this.trackCancelledTax(tax, year, userFromCityAccount)
       }
     })
@@ -268,6 +268,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       select: {
         id: true,
         variableSymbol: true,
+        isCancelled: true,
       },
       where: {
         variableSymbol: {
@@ -290,15 +291,15 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     ): Promise<boolean> => {
       return this.concurrencyLimit(async () => {
         const taxIdentifier = norisItem.variabilny_symbol
-        const taxExists = taxIdentifierToTax.get(taxIdentifier)
-        if (!taxExists) {
+        const existingTax = taxIdentifierToTax.get(taxIdentifier)
+        if (!existingTax) {
           return false
         }
         try {
           await this.updateExistingTaxRecord(
             taxDefinition,
             norisItem,
-            taxExists.id,
+            existingTax,
             year,
             userDataFromCityAccount,
           )

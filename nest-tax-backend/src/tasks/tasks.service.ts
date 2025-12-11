@@ -554,12 +554,10 @@ export class TasksService {
         await concurrencyLimit(async () => {
           const userFromCityAccount =
             userDataFromCityAccount[payment.tax.taxPayer.birthNumber] || null
-          if (userFromCityAccount && userFromCityAccount.externalId) {
-            await this.paymentService.trackPaymentInBloomreach(
-              payment,
-              userFromCityAccount.externalId,
-            )
-          }
+          await this.paymentService.trackPaymentInBloomreach(
+            payment,
+            userFromCityAccount?.externalId ?? undefined,
+          )
         })
         return true
       } catch (error) {

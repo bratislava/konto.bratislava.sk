@@ -165,13 +165,17 @@ export class PaymentService {
    */
   async trackPaymentInBloomreach(
     taxPayment: TaxPaymentWithTaxYear,
-    externalId: string,
+    externalId?: string,
   ) {
     await this.prisma.$transaction(async (tx) => {
       await tx.taxPayment.update({
         where: { id: taxPayment.id },
         data: { bloomreachEventSent: true },
       })
+
+      if (!externalId) {
+        return
+      }
 
       const result = await this.bloomreachService.trackEventTaxPayment(
         {
@@ -295,9 +299,10 @@ export class PaymentService {
         3,
         1000, // 1 second delay, 3 retries
       )
-      if (user?.externalId) {
-        await this.trackPaymentInBloomreach(taxPayment, user.externalId)
-      }
+      await this.trackPaymentInBloomreach(
+        taxPayment,
+        user?.externalId ?? undefined,
+      )
 
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
     } catch (error) {

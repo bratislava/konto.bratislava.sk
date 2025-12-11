@@ -1,7 +1,7 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
@@ -344,13 +344,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           </>
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={t('auth.register_submit')}
-        variant="category"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {t('auth.register_submit')}
+      </Button>
       <LoginAccountLink />
     </form>
   )

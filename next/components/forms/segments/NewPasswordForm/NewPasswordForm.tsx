@@ -1,6 +1,6 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import useHookForm from 'frontend/hooks/useHookForm'
@@ -162,26 +162,16 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
           />
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={
-          fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')
-        }
-        variant="category"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')}
+      </Button>
       <div className="text-p3 lg:text-p2">
         <span>{t('auth.verification_description')}</span>{' '}
         {cnt > 0 && <span>{t('auth.verification_cnt_description', { cnt })}</span>}
       </div>
-      <Button
-        onPress={handleResend}
-        className="min-w-full"
-        text={t('auth.verification_resend')}
-        variant="category-outline"
-        disabled={cnt > 0}
-      />
+      <Button variant="black-outline" onPress={handleResend} fullWidth isDisabled={cnt > 0}>
+        {t('auth.verification_resend')}
+      </Button>
       <LoginAccountLink />
     </form>
   )

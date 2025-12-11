@@ -1,6 +1,6 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
@@ -71,13 +71,9 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
           />
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={t('auth.forgotten_password_submit')}
-        variant="category"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {t('auth.forgotten_password_submit')}
+      </Button>
       <LoginAccountLink />
     </form>
   )

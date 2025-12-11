@@ -12,6 +12,7 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { PaymentTypeEnum } from '../tax/dtos/response.tax.dto'
 import { TaxService } from '../tax/tax.service'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
@@ -162,7 +163,7 @@ export class PaymentService {
    * @param taxPayment - Tax payment to track in Bloomreach
    * @param externalId - External ID of the user
    */
-  private async trackPaymentInBloomreach(
+  async trackPaymentInBloomreach(
     taxPayment: TaxPaymentWithTaxYear,
     externalId: string,
   ) {
@@ -172,15 +173,21 @@ export class PaymentService {
         data: { bloomreachEventSent: true },
       })
 
-      await this.bloomreachService.trackEventTaxPayment(
+      const result = await this.bloomreachService.trackEventTaxPayment(
         {
           amount: taxPayment.amount,
-          payment_source: TaxPaymentSource.CARD,
+          payment_source: taxPayment.source ?? TaxPaymentSource.BANK_ACCOUNT,
           year: taxPayment.tax.year,
           suppress_email: false,
         },
         externalId,
       )
+      if (!result) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to track payment in Bloomreach.',
+        )
+      }
     })
   }
 

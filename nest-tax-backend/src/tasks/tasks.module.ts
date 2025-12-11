@@ -7,6 +7,7 @@ import { NorisModule } from '../noris/noris.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import { RetrySubservice } from '../utils/subservices/retry.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 import { TasksService } from './tasks.service'
@@ -25,6 +26,7 @@ import { TasksService } from './tasks.service'
     CityAccountSubservice,
     TasksConfigSubservice,
     TaxImportHelperSubservice,
+    RetrySubservice,
   ],
   exports: [TasksService],
 })

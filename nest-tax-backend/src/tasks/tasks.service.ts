@@ -23,9 +23,9 @@ import {
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import { RetrySubservice } from '../utils/subservices/retry.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 
@@ -46,6 +46,7 @@ export class TasksService {
     private readonly taxImportHelperSubservice: TaxImportHelperSubservice,
     private readonly norisService: NorisService,
     private readonly configService: ConfigService,
+    private readonly retrySubservice: RetrySubservice,
   ) {
     this.logger = new Logger('TasksService')
     // Check if the required environment variable is set
@@ -451,28 +452,6 @@ export class TasksService {
     }
   }
 
-  private async retryWithDelay<T>(
-    fn: () => Promise<T>,
-    retries = 3,
-    delayMs = 5 * 60 * 1000, // 5 minutes
-  ): Promise<T> {
-    try {
-      return await fn()
-    } catch (error) {
-      if (retries <= 0) {
-        throw error
-      }
-      this.logger.warn(
-        `Retry attempt failed. Retrying in ${(delayMs / 1000).toFixed(2)} seconds. Remaining retries: ${retries - 1}`,
-        toLogfmt(error),
-      )
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, delayMs)
-      })
-      return this.retryWithDelay(fn, retries - 1, delayMs)
-    }
-  }
-
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async loadOverpaymentsFromNoris() {
@@ -515,7 +494,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      result = await this.retryWithDelay(async () => {
+      result = await this.retrySubservice.retryWithDelay(async () => {
         return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
           data,
         )

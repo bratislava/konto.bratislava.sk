@@ -4,7 +4,7 @@ import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import { ResponseTaxAdministratorDto } from 'openapi-clients/tax'
 
-import MLinkNew from '../../../simple-components/MLinkNew'
+import MLinkNew from '../../../../simple-components/MLinkNew'
 
 type TaxesFeesTaxAdministratorCardProps = {
   beTaxAdministrator: ResponseTaxAdministratorDto | null

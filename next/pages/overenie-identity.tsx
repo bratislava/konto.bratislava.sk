@@ -111,7 +111,7 @@ const IdentityVerificationPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef}>
         {tierStatus.isIdentityVerificationNotYetAttempted && (
           <IdentityVerificationForm
             onSubmit={verifyIdentityAndRefreshUserData}

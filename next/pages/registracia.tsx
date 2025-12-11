@@ -340,11 +340,7 @@ const RegisterPage = () => {
     <LoginRegisterLayout backButtonHidden>
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
 
-      <AccountContainer
-        dataCyPrefix="registration"
-        className="mb-0 md:mb-8 md:pt-6"
-        ref={accountContainerRef}
-      >
+      <AccountContainer dataCyPrefix="registration" ref={accountContainerRef}>
         {registrationStatus === RegistrationStatus.INIT && (
           <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
         )}

@@ -77,7 +77,7 @@ model TaxPayment {
   amount              Int
   specificSymbol      String?
   source              TaxPaymentSource?
-  bloomreachEventSent Boolean           @default(false)
+  bloomreachEventSent Boolean
 
   @@unique([orderId])
   @@index([status])

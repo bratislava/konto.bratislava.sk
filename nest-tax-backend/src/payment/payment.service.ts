@@ -77,7 +77,12 @@ export class PaymentService {
     try {
       orderId = Date.now().toString()
       payment = await this.prisma.taxPayment.create({
-        data: { orderId, amount: options.amount, taxId: options.taxId },
+        data: {
+          orderId,
+          amount: options.amount,
+          taxId: options.taxId,
+          bloomreachEventSent: false,
+        },
       })
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(

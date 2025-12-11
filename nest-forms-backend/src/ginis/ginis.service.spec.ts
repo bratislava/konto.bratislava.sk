@@ -24,6 +24,7 @@ import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService, {
+  GinContactParams,
   GinContactType,
   SslFileUploadType,
   SslWflDocumentElectronicSourceExistence,
@@ -1383,6 +1384,115 @@ describe('GinisService', () => {
         service['convertService'].convertJsonToXmlObjectForForm,
       ).not.toHaveBeenCalled()
       expect(service['ginisApiService'].uploadFile).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('sanitizeEmployeeContactParams', () => {
+    it('should transform contact params when ico is Bratislava-OKM', async () => {
+      const contactParams: GinContactParams = {
+        type: GinContactType.LEGAL_ENTITY,
+        ico: 'Bratislava-OKM',
+        email: 'john.doe@bratislava.sk',
+        name: 'John Doe',
+      }
+
+      const result = await (service as any).sanitizeEmployeeContactParams(
+        contactParams,
+      )
+
+      expect(result).toEqual({
+        type: GinContactType.LEGAL_ENTITY,
+        ico: undefined,
+        email: 'john.doe@bratislava.sk',
+        name: 'OSO - john.doe',
+      })
+    })
+
+    it('should transform contact params when ico is BA-SNB', async () => {
+      const contactParams: GinContactParams = {
+        type: GinContactType.LEGAL_ENTITY,
+        ico: 'BA-SNB',
+        email: 'jane.smith@example.com',
+        name: 'Bratislava',
+      }
+
+      const result = await (service as any).sanitizeEmployeeContactParams(
+        contactParams,
+      )
+
+      expect(result).toEqual({
+        type: GinContactType.LEGAL_ENTITY,
+        ico: undefined,
+        email: 'jane.smith@example.com',
+        name: 'SNB/SSV - jane.smith',
+      })
+    })
+
+    it('should return original contact params when ico is undefined (physical entity)', async () => {
+      const contactParams: GinContactParams = {
+        type: GinContactType.PHYSICAL_ENTITY,
+        ico: undefined,
+        email: 'user@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        birthNumber: '9001011234',
+      }
+
+      const result = await (service as any).sanitizeEmployeeContactParams(
+        contactParams,
+      )
+
+      expect(result).toEqual(contactParams)
+    })
+
+    it('should return original contact params when ico is a regular number', async () => {
+      const contactParams: GinContactParams = {
+        type: GinContactType.LEGAL_ENTITY,
+        ico: '12345678',
+        email: 'company@example.com',
+        name: 'Test Company',
+      }
+
+      const result = await (service as any).sanitizeEmployeeContactParams(
+        contactParams,
+      )
+
+      expect(result).toEqual(contactParams)
+    })
+
+    it('should return original contact params when ico is other string', async () => {
+      const contactParams: GinContactParams = {
+        type: GinContactType.LEGAL_ENTITY,
+        ico: 'BA-UNSPECIFIED',
+        email: 'other@example.com',
+        name: 'Other Company',
+      }
+
+      const result = await (service as any).sanitizeEmployeeContactParams(
+        contactParams,
+      )
+
+      expect(result).toEqual(contactParams)
+    })
+
+    it('should handle undefined email when sanitizing employee contact params', async () => {
+      const contactParams: GinContactParams = {
+        type: GinContactType.LEGAL_ENTITY,
+        ico: 'Bratislava-OKM',
+        email: undefined,
+        name: 'John Doe',
+      }
+
+      const result = await (service as any).sanitizeEmployeeContactParams(
+        contactParams,
+      )
+
+      expect(result).toEqual({
+        type: GinContactType.LEGAL_ENTITY,
+        ico: undefined,
+        email: undefined,
+        name: 'OSO - undefined',
+      })
     })
   })
 })

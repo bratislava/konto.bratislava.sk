@@ -635,6 +635,28 @@ export default class GinisService {
     return params
   }
 
+  private async sanitizeEmployeeContactParams(
+    contactParams: GinContactParams,
+  ): Promise<GinContactParams> {
+    let department: string | undefined
+    if (contactParams.ico === 'Bratislava-OKM') {
+      department = 'OSO'
+    } else if (contactParams.ico === 'BA-SNB') {
+      department = 'SNB/SSV'
+    }
+
+    if (!department) {
+      return contactParams
+    }
+
+    return {
+      ...contactParams,
+      ico: undefined,
+      // remove domain from email
+      name: `${department} - ${contactParams.email?.split('@')[0]}`,
+    }
+  }
+
   private async handleDocumentSender(form: Forms): Promise<string | undefined> {
     let contactParams: GinContactParams = form.externalId
       ? await this.extractContactParamsFromExternalId(form)
@@ -661,6 +683,9 @@ export default class GinisService {
     if (!hasContactInformation) {
       return undefined
     }
+    // ginis would refuse ICO if it contains anything other than digits
+    // employees have their department abbreviated in ICO, so we need to sanitize it
+    contactParams = await this.sanitizeEmployeeContactParams(contactParams)
     return this.ginisApiService.upsertContact(contactParams)
   }
 

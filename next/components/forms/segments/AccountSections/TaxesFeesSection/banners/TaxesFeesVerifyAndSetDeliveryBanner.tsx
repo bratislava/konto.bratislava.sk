@@ -4,7 +4,7 @@ import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import AnnouncementBlock from '../IntroSection/Announcements/AnnouncementBlock'
+import AnnouncementBlock from '../../IntroSection/Announcements/AnnouncementBlock'
 
 type TaxesFeesVerifyAndSetDeliveryMethodBannerProps = {
   onDeliveryMethodChange: () => void

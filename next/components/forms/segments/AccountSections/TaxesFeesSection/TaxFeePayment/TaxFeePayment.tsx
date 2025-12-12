@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { useTaxFeeSection } from '../useTaxFeeSection'
 import PaymentData from './PaymentData'
-import { useTaxFeeSection } from './useTaxFeeSection'
 
 // query param "sposob-uhrady" could have "zvysna suma" split to "zvysna-suma" and "jednorazova-uhrada"
 // but only thing that is affecting is title of the page

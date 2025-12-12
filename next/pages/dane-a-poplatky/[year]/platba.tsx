@@ -5,7 +5,7 @@ import {
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import TaxFeePayment from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxFeePayment'
+import TaxFeePayment from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxFeePayment/TaxFeePayment'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
@@ -37,7 +37,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTaxAdministrator] = await Promise.all([
-        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, 1, TaxType.Dzn, { // TODO - for DZN all order values are 1, since it is unique
+        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, 1, TaxType.Dzn, {
+          // TODO - for DZN all order values are 1, since it is unique
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),
@@ -46,8 +47,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
       ])
 
       // TODO This is a temporary "fix" while solution for multiple tax types is not implemented.
-      if (taxData.type !== TaxType.Dzn){
-        throw new Error("TaxType not implemented")
+      if (taxData.type !== TaxType.Dzn) {
+        throw new Error('TaxType not implemented')
       }
 
       return {

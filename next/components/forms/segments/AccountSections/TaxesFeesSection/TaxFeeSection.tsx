@@ -11,7 +11,7 @@ import TaxDetails from './TaxDetails'
 import TaxesFeesAdministratorCardWrapper from './TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
 import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
 import TaxesFeesDeliveryMethodInfoCardWrapper from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
-import PaymentMethodSection from './TaxFeePaymentMethodSection'
+import PaymentMethodSection from './TaxFeePayment/TaxFeePaymentMethodSection'
 import { useStrapiTax } from './useStrapiTax'
 import { useTaxFeeSection } from './useTaxFeeSection'
 

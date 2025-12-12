@@ -2,7 +2,7 @@ import ImageMestskeKontoSituacia from '@assets/images/mestske-konto-situacia.png
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import AnnouncementBlock from '../IntroSection/Announcements/AnnouncementBlock'
+import AnnouncementBlock from '../../IntroSection/Announcements/AnnouncementBlock'
 
 const TaxesFeesUserVerificationInProcess = () => {
   const { t } = useTranslation('account')

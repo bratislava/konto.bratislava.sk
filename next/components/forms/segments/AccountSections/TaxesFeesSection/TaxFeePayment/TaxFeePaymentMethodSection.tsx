@@ -8,8 +8,8 @@ import {
 } from 'openapi-clients/tax'
 import React from 'react'
 
+import { useTaxFeeSection } from '../useTaxFeeSection'
 import PaymentMethodItem from './PaymentMethodItem'
-import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxFeePaymentMethodSection = () => {
   const { taxData } = useTaxFeeSection()

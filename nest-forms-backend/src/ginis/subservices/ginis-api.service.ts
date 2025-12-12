@@ -31,6 +31,18 @@ export enum GinContactType {
   SELF_EMPLOYED_ENTITY = 'fyz-osoba-osvc', // SZCO
 }
 
+export enum SslFileUploadType {
+  ATTACHMENT = 'elektronicka-priloha',
+  SOURCE = 'elektronicky-obraz',
+}
+
+export enum SslWflDocumentElectronicSourceExistence {
+  EXISTS = 'existuje', // Příznak že dokument nebo jeho obraz existuje v sledované, elektronické podobě. Za sledovaný el. dokument se nepovažuje žádný soubor uložený mimo systém GINIS.
+  EXISTS_NO_AUTOMATIC_CONVERSION = 'existuje-neaut-konv', // Příznak že dokument má el. podobu.
+  HYBRID_DOSSIER = 'hybridni-spis', // Hybridní spis bez elektronického obrazu.
+  DOES_NOT_EXIST = 'neexistuje', // Příznak že k dokument neexistuje sledovaný elektronický obraz.
+}
+
 export interface GinContactParams {
   email?: string
   firstName?: string
@@ -95,6 +107,7 @@ export default class GinisAPIService {
     documentId: string,
     fileName: string,
     fileStream: Readable,
+    fileType: SslFileUploadType = SslFileUploadType.ATTACHMENT,
   ): Promise<SslPridatSouborPridatSoubor> {
     const baseName = path.parse(fileName).name
 
@@ -102,7 +115,7 @@ export default class GinisAPIService {
       {
         'Id-dokumentu': documentId,
         'Jmeno-souboru': fileName.slice(-254), // filenames usually differ at the end
-        'Typ-vazby': 'elektronicka-priloha',
+        'Typ-vazby': fileType,
         'Popis-souboru': baseName.slice(0, 50),
         'Podrobny-popis-souboru': baseName.slice(0, 254),
       },
@@ -362,5 +375,76 @@ export default class GinisAPIService {
       (await this.findAndUpdateContact(params)) ??
       (await this.createContact(params))
     )
+  }
+
+  async createDocument(
+    externalDocumentId: string,
+    type: string,
+    sentAtDate: Date,
+    subject: string,
+    senderId?: string,
+  ) {
+    const sentAtIso = sentAtDate.toISOString().split('T')[0]
+    const data = await this.ginis.ssl.zalozPisemnost(
+      {
+        'Id-dokumentu': {
+          value: externalDocumentId,
+          attributes: ['externi="true"'],
+        },
+        Vec: subject.slice(0, 100),
+        'Id-typu-dokumentu': type,
+        'Priznak-fyz-existence': 'neexistuje',
+      },
+      {
+        Stat: 'SVK',
+        'Datum-odeslani': sentAtIso,
+        'Datum-ze-dne': sentAtIso,
+        'Zpusob-doruceni': 'neurceno',
+        'Druh-zasilky': 'neurceno',
+        'Druh-zachazeni': 'neurceno',
+        'Datum-prijmu-podani': `${sentAtIso}T00:00:00`,
+        'Id-odesilatele':
+          senderId ?? this.baConfigService.ginisApi.anonymousSenderId,
+      },
+      {
+        Pristup: 'ke zverejneni',
+        'Vec-podrobne': subject.slice(0, 254),
+        'Datum-podani': `${sentAtIso}T00:00:00`,
+      },
+    )
+    return data['Zaloz-pisemnost']['Id-dokumentu']
+  }
+
+  async assignReferenceNumber(documentId: string) {
+    await this.ginis.ssl.zalozCj({
+      'Id-init-dokumentu': documentId,
+      'Denik-cj': 'MAG',
+    })
+  }
+
+  async createFormIdProperty(documentId: string) {
+    const data = await this.ginis.ssl.zalozitVlastnostDokumentu({
+      'Id-dokumentu': documentId,
+      'Typ-objektu': 'vlastnost',
+      'Id-objektu': this.baConfigService.ginisApi.formIdPropertyId,
+    })
+
+    return data['Zalozit-vlastnost-dokumentu']['Poradove-cislo']
+  }
+
+  async setFormIdProperty(
+    documentId: string,
+    propertyOrder: string,
+    formId: string,
+  ) {
+    const { formIdPropertyId } = this.baConfigService.ginisApi
+    await this.ginis.ssl.nastavitVlastnostDokumentu({
+      'Id-dokumentu': documentId,
+      'Id-profilu': formIdPropertyId,
+      'Id-struktury': formIdPropertyId,
+      'Id-vlastnosti': formIdPropertyId,
+      'Poradove-cislo': propertyOrder,
+      'Hodnota-raw': formId,
+    })
   }
 }

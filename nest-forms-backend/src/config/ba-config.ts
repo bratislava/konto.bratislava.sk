@@ -82,6 +82,7 @@ export default class BaConfig {
   get cityAccountBackend() {
     return {
       url: this.validatedConfig.USER_ACCOUNT_API,
+      apiKey: this.validatedConfig.USER_ACCOUNT_API_KEY,
     }
   }
 
@@ -101,6 +102,7 @@ export default class BaConfig {
       sslMtomHost: this.validatedConfig.GINIS_SSL_MTOM_HOST,
       ginHost: this.validatedConfig.GINIS_GIN_HOST,
       formIdPropertyId: this.validatedConfig.GINIS_FORM_ID_PROPERTY_ID,
+      anonymousSenderId: this.validatedConfig.GINIS_ANONYMOUS_SENDER_ID,
     }
   }
 

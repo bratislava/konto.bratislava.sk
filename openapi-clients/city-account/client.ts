@@ -4,6 +4,7 @@ import {
   AuthApiFactory,
   DPBApiFactory,
   OAuth2ApiFactory,
+  UserIntegrationApiFactory,
   UserVerificationsApiFactory,
   UsersManipulationApiFactory,
 } from './api'
@@ -32,6 +33,7 @@ export const createCityAccountClient = ({
     ...AuthApiFactory(...args),
     ...DPBApiFactory(...args),
     ...OAuth2ApiFactory(...args),
+    ...UserIntegrationApiFactory(...args),
     ...UserVerificationsApiFactory(...args),
     ...UsersManipulationApiFactory(...args),
   }

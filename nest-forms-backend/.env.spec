@@ -55,6 +55,7 @@ GINIS_SSL_HOST=https://test-ginis.example.com/ssl
 GINIS_SSL_MTOM_HOST=https://test-ginis.example.com/ssl/mtom
 GINIS_GIN_HOST=https://test-ginis.example.com/gin
 GINIS_FORM_ID_PROPERTY_ID=TEST_FORM_ID
+GINIS_ANONYMOUS_SENDER_ID=ANON_SENDER_ID
 GINIS_SHOULD_REGISTER=false
 
 # OLO

@@ -1,6 +1,6 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import useHookForm from 'frontend/hooks/useHookForm'
 import logger from 'frontend/utils/logger'
@@ -50,15 +50,15 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
     schema,
     defaultValues: { verificationCode: '' },
   })
-  const [cnt, setCnt] = useState(60)
+  const [count, setCount] = useState(60)
   useEffect(() => {
-    if (cnt > 0) {
-      setTimeout(() => setCnt((state) => state - 1), 1000)
+    if (count > 0) {
+      setTimeout(() => setCount((state) => state - 1), 1000)
     }
-  }, [cnt])
+  }, [count])
 
   const handleResend = async () => {
-    setCnt(60)
+    setCount(60)
     setResendIsLoading(true)
     await onResend()
     setResendIsLoading(false)
@@ -100,33 +100,30 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
           />
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={t('auth.email_verification_submit')}
-        variant="category"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {t('auth.email_verification_submit')}
+      </Button>
       {/* don't show timer if error */}
 
       <div className="text-p3 lg:text-p2">
-        {noError && cnt > 0 && (
+        {noError && count > 0 && (
           <div className="mb-4">
             <span>{t('auth.verification_description')}</span>{' '}
-            <span>{t('auth.verification_cnt_description', { cnt })}</span>
+            <span>{t('auth.verification_cnt_description', { cnt: count })}</span>
           </div>
         )}
         <AccountMarkdown variant="sm" content={t('auth.verification_cnt_info')} />
       </div>
 
       <Button
-        loading={resendIsLoading}
+        variant="black-outline"
         onPress={handleResend}
-        className="min-w-full"
-        text={t('auth.verification_resend')}
-        variant="category-outline"
-        disabled={cnt > 0 && noError}
-      />
+        fullWidth
+        isDisabled={count > 0 && noError}
+        isLoading={resendIsLoading}
+      >
+        {t('auth.verification_resend')}
+      </Button>
     </form>
   )
 }

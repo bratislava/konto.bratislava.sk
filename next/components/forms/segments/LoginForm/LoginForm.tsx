@@ -1,6 +1,6 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import { ROUTES } from 'frontend/api/constants'
@@ -96,18 +96,19 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         href={getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD)}
       />
       <Button
-        className="min-w-full"
+        variant="black-solid"
         type="submit"
-        text={t('auth.login_submit')}
-        variant="category"
-        disabled={isSubmitting}
+        fullWidth
+        isDisabled={isSubmitting}
         data-cy="login-button"
-      />
+      >
+        {t('auth.login_submit')}
+      </Button>
       <AccountLink
         label={t('auth.links.register_link_text')}
         href={getRouteWithRedirect(ROUTES.REGISTER)}
         description={t('auth.links.register_description')}
-        variant="category"
+        variant="black"
       />
     </form>
   )

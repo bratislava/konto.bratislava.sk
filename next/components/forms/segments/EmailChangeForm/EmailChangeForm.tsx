@@ -1,5 +1,5 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import useHookForm from 'frontend/hooks/useHookForm'
@@ -87,13 +87,14 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         )}
       />
       <Button
-        className="min-w-full"
+        variant="black-solid"
         type="submit"
-        text={t('auth.new_email_submit')}
-        variant="category"
-        disabled={isSubmitting}
+        fullWidth
+        isDisabled={isSubmitting}
         data-cy="change-email-submit"
-      />
+      >
+        {t('auth.new_email_submit')}
+      </Button>
     </form>
   )
 }

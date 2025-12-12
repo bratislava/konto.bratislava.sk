@@ -141,7 +141,7 @@ const LoginPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef}>
         <LoginForm onSubmit={onLogin} error={loginError} />
       </AccountContainer>
     </LoginRegisterLayout>

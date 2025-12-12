@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
 
 import logger from '../../../../../frontend/utils/logger'
-import { useStrapiTax } from '../TaxesFeesSection/useStrapiTax'
+import { useStrapiTax } from '../TaxesFees/useStrapiTax'
 
 export const PaymentStatusOptions = {
   FAILED_TO_VERIFY: 'failed-to-verify',

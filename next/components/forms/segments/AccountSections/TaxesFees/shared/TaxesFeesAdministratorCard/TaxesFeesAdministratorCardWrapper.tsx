@@ -1,9 +1,8 @@
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import TaxesFeesTaxAdministratorCard from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCard/TaxesFeesTaxAdministratorCard'
 import { useTranslation } from 'next-i18next'
 import { ResponseTaxAdministratorDto } from 'openapi-clients/tax'
 import React from 'react'
-
-import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
 
 type TaxesFeesTaxAdministratorCardWrapperProps = {
   beTaxAdministrator: ResponseTaxAdministratorDto | null

@@ -5,7 +5,7 @@ import { InstallmentPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
-import { useTaxFeeSection } from '../segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
+import { useTaxFeeSection } from '../segments/AccountSections/TaxesFees/useTaxFeeSection'
 
 const PaymentSchedule = () => {
   const { taxData } = useTaxFeeSection()

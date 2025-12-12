@@ -2,13 +2,13 @@
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import { environment } from '../../../../../environment'
-import { Address } from '../../../../../frontend/dtos/accountDto'
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
-import { isDefined } from '../../../../../frontend/utils/general'
-import SummaryRow from '../../../steps/Summary/SummaryRow'
-import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
-import { useTaxFeeSection } from './useTaxFeeSection'
+import { environment } from '../../../../../../environment'
+import { Address } from '../../../../../../frontend/dtos/accountDto'
+import { useSsrAuth } from '../../../../../../frontend/hooks/useSsrAuth'
+import { isDefined } from '../../../../../../frontend/utils/general'
+import SummaryRow from '../../../../steps/Summary/SummaryRow'
+import CorrespondenceAddressModal from '../../../CorrespondenceAddressModal/CorrespondenceAddressModal'
+import { useTaxFeeSection } from '../useTaxFeeSection'
 
 const formatZip = (zip?: string) => {
   if (!zip) return null

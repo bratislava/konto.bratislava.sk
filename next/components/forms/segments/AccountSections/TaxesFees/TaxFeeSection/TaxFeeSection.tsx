@@ -1,19 +1,19 @@
 import Alert from 'components/forms/info-components/Alert'
 import ResponsiveCarousel from 'components/forms/ResponsiveCarousel'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
+import TaxesFeesDeliveryMethodChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
+import TaxesFeesDeliveryMethodInfoCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
+import ContactInformationSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/ContactInformation'
+import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
+import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
-import TaxesFeesAdministratorCardWrapper from './cards/TaxesFeesAdministratorCardWrapper'
-import ContactInformationSection from './ContactInformation'
 import TaxDetails from './TaxDetails'
-import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
-import TaxesFeesDeliveryMethodInfoCardWrapper from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
 import PaymentMethodSection from './TaxFeePayment/TaxFeePaymentMethodSection'
-import { useStrapiTax } from './useStrapiTax'
-import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxFeeSection = () => {
   const { t } = useTranslation('account')

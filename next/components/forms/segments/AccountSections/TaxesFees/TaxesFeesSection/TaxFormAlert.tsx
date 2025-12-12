@@ -1,10 +1,9 @@
+import Alert from 'components/forms/info-components/Alert'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import MLinkNew from 'components/forms/simple-components/MLinkNew'
 import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import Alert from '../../../info-components/Alert'
-import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
 
 const TaxFormAlert = () => {
   const { t } = useTranslation('account')

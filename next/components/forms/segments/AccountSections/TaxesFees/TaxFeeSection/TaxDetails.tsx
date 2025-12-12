@@ -1,14 +1,13 @@
 import { ExportIcon } from '@assets/ui-icons'
+import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
+import AccordionTableTaxContent from 'components/forms/simple-components/AccordionTableTaxContent'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-
 import {
   FormatCurrencyFromCents,
   useCurrencyFromCentsFormatter,
-} from '../../../../../frontend/utils/formatCurrency'
-import AccordionTableTaxContent from '../../../simple-components/AccordionTableTaxContent'
-import { useTaxFeeSection } from './useTaxFeeSection'
+} from 'frontend/utils/formatCurrency'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 const TaxDetails = () => {
   const { taxData } = useTaxFeeSection()

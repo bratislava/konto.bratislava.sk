@@ -1,9 +1,10 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/ButtonNew'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import Button from '../simple-components/ButtonNew'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   oldPassword: string
@@ -61,7 +62,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.oldPassword, data.password))}
       data-cy="change-password-form"
     >
@@ -89,7 +90,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
             autoComplete="new-password"
             label={t('auth.fields.new_password_label')}
             placeholder={t('auth.fields.new_password_placeholder')}
-            tooltip={t('auth.fields.password_description')}
+            helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
           />

@@ -5,8 +5,6 @@ import { AuthError, autoSignIn, confirmSignUp, resendSignUpCode, signUp } from '
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
-import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { UserAttributes } from 'frontend/dtos/accountDto'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -15,6 +13,10 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import EmailVerificationForm from '../components/forms/auth-forms/EmailVerificationForm'
+import RegisterForm from '../components/forms/auth-forms/RegisterForm'
+import HorizontalDivider from '../components/forms/HorizontalDivider'
+import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
@@ -340,9 +342,17 @@ const RegisterPage = () => {
     <LoginRegisterLayout backButtonHidden>
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
 
-      <AccountContainer dataCyPrefix="registration" ref={accountContainerRef}>
+      <AccountContainer
+        dataCyPrefix="registration"
+        ref={accountContainerRef}
+        className="flex flex-col gap-8 md:gap-10"
+      >
         {registrationStatus === RegistrationStatus.INIT && (
-          <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
+          <>
+            <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
+            <HorizontalDivider />
+            <AccountLink variant="login" />
+          </>
         )}
         {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
           <EmailVerificationForm

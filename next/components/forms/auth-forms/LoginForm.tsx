@@ -1,13 +1,15 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/ButtonNew'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '../segments/AccountLink/AccountLink'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
+
 interface Data {
-  newEmail: string
+  email: string
   password: string
 }
 
@@ -20,7 +22,7 @@ interface Props {
 const schema = {
   type: 'object',
   properties: {
-    newEmail: {
+    email: {
       type: 'string',
       minLength: 1,
       format: 'email',
@@ -35,10 +37,10 @@ const schema = {
       errorMessage: { minLength: 'account:auth.fields.password_required' },
     },
   },
-  required: ['newEmail', 'password'],
+  required: ['email', 'password'],
 }
 
-const EmailChangeForm = ({ onSubmit, error }: Props) => {
+const LoginForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
 
   const {
@@ -48,25 +50,24 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
     formState: { isSubmitting },
   } = useHookForm<Data>({
     schema,
-    defaultValues: { newEmail: '', password: '' },
+    defaultValues: { email: '', password: '' },
   })
 
   return (
     <form
-      className="flex flex-col space-y-4"
-      onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
-      data-cy="change-email-form"
+      className="flex flex-col gap-4 md:gap-6"
+      onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
+      data-cy="login-container"
     >
-      <h1 className="text-h3">{t('auth.email_change_title')}</h1>
-      <p className="text-p3 lg:text-p2">{t('auth.new_email_text')}</p>
+      <h1 className="text-h3">{t('auth.login_title')}</h1>
       <AccountErrorAlert error={error} />
       <Controller
-        name="newEmail"
+        name="email"
         control={control}
         render={({ field }) => (
           <InputField
             required
-            label={t('auth.fields.new_email_label')}
+            label={t('auth.fields.email_label')}
             placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
@@ -79,24 +80,25 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
-            label={t('auth.fields.new_email_password_label')}
+            label={t('auth.fields.password_label')}
             placeholder={t('auth.fields.password_placeholder')}
             {...field}
             errorMessage={errors.password}
           />
         )}
       />
+      <AccountLink variant="forgotten-password" />
       <Button
         variant="black-solid"
         type="submit"
         fullWidth
         isDisabled={isSubmitting}
-        data-cy="change-email-submit"
+        data-cy="login-button"
       >
-        {t('auth.new_email_submit')}
+        {t('auth.login_submit')}
       </Button>
     </form>
   )
 }
 
-export default EmailChangeForm
+export default LoginForm

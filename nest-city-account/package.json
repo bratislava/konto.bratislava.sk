@@ -52,7 +52,7 @@
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.1",
-    "rodnecislo": "^1.6.0",
+    "rodnecislo": "^1.7.0",
     "uuid": "^11.1.0",
     "zod": "^4.1.13"
   },

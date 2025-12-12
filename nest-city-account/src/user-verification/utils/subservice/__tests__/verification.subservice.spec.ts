@@ -1,11 +1,10 @@
 import { createMock } from '@golevelup/ts-jest'
-import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../../../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
 import { DatabaseSubserviceUser } from '../database.subservice'
 import { VerificationSubservice } from '../verification.subservice'
@@ -19,7 +18,6 @@ describe('VerificationSubservice', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         VerificationSubservice,
-        ErrorMessengerGuard,
         ThrowerErrorGuard,
         { provide: MagproxyService, useValue: createMock<MagproxyService>() },
         {
@@ -61,9 +59,7 @@ describe('VerificationSubservice', () => {
       }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual({
-        statusCode: 200,
-        status: 'OK',
-        message: { message: 'ok' },
+        success: true,
       })
     })
 
@@ -87,9 +83,7 @@ describe('VerificationSubservice', () => {
       }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual({
-        statusCode: 200,
-        status: 'OK',
-        message: { message: 'ok' },
+        success: true,
       })
     })
 
@@ -114,9 +108,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+          success: false,
+          reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
       )
     })
@@ -129,9 +122,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+          success: false,
+          reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
       )
     })
@@ -142,9 +134,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+          success: false,
+          reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
       )
     })
@@ -171,9 +162,8 @@ describe('VerificationSubservice', () => {
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
         expect.objectContaining({
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          status: 'CustomError',
-          errorName: VerificationErrorsEnum.DEAD_PERSON,
+          success: false,
+          reason: VerificationErrorsEnum.DEAD_PERSON,
         })
       )
     })

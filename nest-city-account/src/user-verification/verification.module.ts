@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common'
 import { MagproxyModule } from 'src/magproxy/magproxy.module'
 import { NasesModule } from '../nases/nases.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
@@ -45,7 +45,6 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
     VerificationSubservice,
     MailgunSubservice,
     ThrowerErrorGuard,
-    ErrorMessengerGuard,
   ],
   exports: [VerificationService],
   controllers: [VerificationController],

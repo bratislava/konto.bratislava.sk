@@ -32,7 +32,7 @@ const TaxDetails = () => {
       <div className="flex w-full flex-col gap-4">
         <AccordionTableTaxContent
           dataType="APARTMENT"
-          title={t(`tax_detail_section.tax_type.APARTMENT.title`)}
+          title={t('tax_detail_section.tax_type.APARTMENT.title')}
           secondTitle={currencyFromCentsFormatter.format(
             taxData.itemizedDetail.apartmentTotalAmount,
           )}
@@ -40,13 +40,13 @@ const TaxDetails = () => {
         />
         <AccordionTableTaxContent
           dataType="GROUND"
-          title={t(`tax_detail_section.tax_type.GROUND.title`)}
+          title={t('tax_detail_section.tax_type.GROUND.title')}
           secondTitle={currencyFromCentsFormatter.format(taxData.itemizedDetail.groundTotalAmount)}
           data={taxData.itemizedDetail.groundTaxDetail}
         />
         <AccordionTableTaxContent
           dataType="CONSTRUCTION"
-          title={t(`tax_detail_section.tax_type.CONSTRUCTION.title`)}
+          title={t('tax_detail_section.tax_type.CONSTRUCTION.title')}
           secondTitle={currencyFromCentsFormatter.format(
             taxData.itemizedDetail.constructionTotalAmount,
           )}

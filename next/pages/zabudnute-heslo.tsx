@@ -9,6 +9,8 @@ import { useRef, useState } from 'react'
 
 import ForgottenPasswordForm from '../components/forms/auth-forms/ForgottenPasswordForm'
 import NewPasswordForm from '../components/forms/auth-forms/NewPasswordForm'
+import HorizontalDivider from '../components/forms/HorizontalDivider'
+import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
@@ -105,7 +107,7 @@ const ForgottenPasswordPage = () => {
     <LoginRegisterLayout
       backButtonHidden={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
     >
-      <AccountContainer ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
         {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
           <NewPasswordForm
             onSubmit={(verificationCode, newPassword) =>
@@ -116,12 +118,16 @@ const ForgottenPasswordPage = () => {
             lastEmail={lastEmail}
           />
         ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
-          <ForgottenPasswordForm
-            onSubmit={(email: string) => forgotPassword(email)}
-            error={forgotPasswordError}
-            lastEmail={lastEmail}
-            setLastEmail={setLastEmail}
-          />
+          <>
+            <ForgottenPasswordForm
+              onSubmit={(email: string) => forgotPassword(email)}
+              error={forgotPasswordError}
+              lastEmail={lastEmail}
+              setLastEmail={setLastEmail}
+            />
+            <HorizontalDivider />
+            <AccountLink variant="login" />
+          </>
         ) : (
           <AccountSuccessAlert
             title={t('auth.forgotten_password_success_title')}

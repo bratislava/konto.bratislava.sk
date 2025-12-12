@@ -3,7 +3,6 @@ import { Controller } from 'react-hook-form'
 
 import useHookForm from '../../../frontend/hooks/useHookForm'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import AccountLink from '../segments/AccountLink/AccountLink'
 import Button from '../simple-components/ButtonNew'
 import InputField from '../widget-components/InputField/InputField'
 
@@ -74,7 +73,6 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
       <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.forgotten_password_submit')}
       </Button>
-      <AccountLink variant="login" />
     </form>
   )
 }

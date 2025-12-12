@@ -1,14 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
+import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
+import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
+import { environment } from 'environment'
+import { Address } from 'frontend/dtos/accountDto'
+import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
+import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-
-import { environment } from '../../../../../../environment'
-import { Address } from '../../../../../../frontend/dtos/accountDto'
-import { useSsrAuth } from '../../../../../../frontend/hooks/useSsrAuth'
-import { isDefined } from '../../../../../../frontend/utils/general'
-import SummaryRow from '../../../../steps/Summary/SummaryRow'
-import CorrespondenceAddressModal from '../../../CorrespondenceAddressModal/CorrespondenceAddressModal'
-import { useTaxFeeSection } from '../useTaxFeeSection'
 
 const formatZip = (zip?: string) => {
   if (!zip) return null

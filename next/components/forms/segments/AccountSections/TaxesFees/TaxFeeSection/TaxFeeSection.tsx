@@ -5,15 +5,14 @@ import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/Account
 import TaxesFeesDeliveryMethodChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
 import TaxesFeesDeliveryMethodInfoCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
 import ContactInformationSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/ContactInformation'
+import TaxDetails from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxDetails'
+import TaxFeePaymentMethodSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePayment/TaxFeePaymentMethodSection'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
-
-import TaxDetails from './TaxDetails'
-import PaymentMethodSection from './TaxFeePayment/TaxFeePaymentMethodSection'
 
 const TaxFeeSection = () => {
   const { t } = useTranslation('account')
@@ -69,7 +68,7 @@ const TaxFeeSection = () => {
           <ContactInformationSection />
           <TaxDetails />
           {taxData.paidStatus !== TaxStatusEnum.Paid &&
-            taxData.paidStatus !== TaxStatusEnum.OverPaid && <PaymentMethodSection />}
+            taxData.paidStatus !== TaxStatusEnum.OverPaid && <TaxFeePaymentMethodSection />}
         </div>
       </div>
     </>

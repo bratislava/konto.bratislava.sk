@@ -202,10 +202,6 @@ export class PaymentService {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&year=${year}`
       }
 
-      if (taxPaymentWithTax.status === PaymentStatus.SUCCESS) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&paymentType=${taxPaymentWithTax?.tax.type}&year=${year}`
-      }
-
       // TODO: when user has taxPayment with status SUCCESS,
       // it will be updated to FAIL in case of retry payment and failing payment
       // https://github.com/bratislava/private-konto.bratislava.sk/issues/1030

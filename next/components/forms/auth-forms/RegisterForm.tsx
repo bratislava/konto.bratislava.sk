@@ -282,7 +282,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             required
             label={t('auth.fields.password_label')}
             placeholder={t('auth.fields.password_placeholder')}
-            tooltip={t('auth.fields.password_description')}
+            helptext={t('auth.fields.password_description')}
             autoComplete="new-password"
             {...field}
             errorMessage={errors.password}

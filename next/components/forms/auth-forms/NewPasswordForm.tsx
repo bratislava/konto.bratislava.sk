@@ -135,7 +135,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
                 ? t('auth.fields.password_placeholder')
                 : t('auth.fields.new_password_placeholder')
             }
-            tooltip={t('auth.fields.password_description')}
+            helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
           />

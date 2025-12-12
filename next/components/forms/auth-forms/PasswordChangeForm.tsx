@@ -90,7 +90,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
             autoComplete="new-password"
             label={t('auth.fields.new_password_label')}
             placeholder={t('auth.fields.new_password_placeholder')}
-            tooltip={t('auth.fields.password_description')}
+            helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
           />

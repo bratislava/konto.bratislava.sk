@@ -878,10 +878,10 @@ describe('GinisService', () => {
       ).rejects.toThrow('Form data is empty.')
     })
 
-    it('should create document with externalId only', async () => {
+    it('should create document with userExternalId only', async () => {
       const form = {
         ...formBase,
-        externalId: 'extId1',
+        userExternalId: 'extId1',
         mainUri: null,
       } as Forms
 
@@ -926,7 +926,7 @@ describe('GinisService', () => {
     it('should create document with mainUri only (natural person)', async () => {
       const form = {
         ...formBase,
-        externalId: null,
+        userExternalId: null,
         mainUri: 'uri://test',
       } as Forms
 
@@ -965,7 +965,7 @@ describe('GinisService', () => {
     it('should create document with mainUri only (corporate body)', async () => {
       const form = {
         ...formBase,
-        externalId: null,
+        userExternalId: null,
         mainUri: 'uri://test',
       } as Forms
 
@@ -1001,10 +1001,10 @@ describe('GinisService', () => {
       )
     })
 
-    it('should merge contact params from externalId and mainUri', async () => {
+    it('should merge contact params from userExternalId and mainUri', async () => {
       const form = {
         ...formBase,
-        externalId: 'extId1',
+        userExternalId: 'extId1',
         mainUri: 'uri://test',
       } as Forms
 
@@ -1047,7 +1047,7 @@ describe('GinisService', () => {
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
         expect.objectContaining({
           type: GinContactType.PHYSICAL_ENTITY,
-          email: 'external@example.com', // email from externalId should be kept
+          email: 'external@example.com', // email from userExternalId should be kept
           firstName: 'John', // extracted from URI natural_person data
           lastName: 'Doe', // extracted from URI natural_person data
           uri: 'uri://test',
@@ -1058,7 +1058,7 @@ describe('GinisService', () => {
     it('should skip upsertContact when no contact information available', async () => {
       const form = {
         ...formBase,
-        externalId: null,
+        userExternalId: null,
         mainUri: null,
       } as Forms
 
@@ -1153,7 +1153,7 @@ describe('GinisService', () => {
     it('should throw error when mainUri is missing in extractContactParamsFromUri', async () => {
       const form = {
         ...formBase,
-        externalId: null,
+        userExternalId: null,
         mainUri: null,
       } as Forms
 
@@ -1167,10 +1167,10 @@ describe('GinisService', () => {
       )
     })
 
-    it('should throw error when externalId is missing in extractContactParamsFromExternalId', async () => {
+    it('should throw error when userExternalId is missing in extractContactParamsFromExternalId', async () => {
       const form = {
         ...formBase,
-        externalId: null,
+        userExternalId: null,
       } as Forms
 
       const extractMethod = (
@@ -1185,7 +1185,7 @@ describe('GinisService', () => {
     it('should throw error when contact not found in nases', async () => {
       const form = {
         ...formBase,
-        externalId: null,
+        userExternalId: null,
         mainUri: 'uri://test',
       } as Forms
 
@@ -1206,7 +1206,7 @@ describe('GinisService', () => {
     it('should throw error when multiple contacts found in nases', async () => {
       const form = {
         ...formBase,
-        externalId: null,
+        userExternalId: null,
         mainUri: 'uri://test',
       } as Forms
 
@@ -1227,7 +1227,7 @@ describe('GinisService', () => {
     it('should throw error when contact info not found in city account', async () => {
       const form = {
         ...formBase,
-        externalId: 'extId1',
+        userExternalId: 'extId1',
         mainUri: null,
       } as Forms
 
@@ -1246,10 +1246,10 @@ describe('GinisService', () => {
       ).rejects.toThrow('Contact info not found in city account')
     })
 
-    it('should handle legal entity from externalId', async () => {
+    it('should handle legal entity from userExternalId', async () => {
       const form = {
         ...formBase,
-        externalId: 'extId1',
+        userExternalId: 'extId1',
         mainUri: null,
       } as Forms
 
@@ -1279,10 +1279,10 @@ describe('GinisService', () => {
       )
     })
 
-    it('should handle self-employed entity from externalId', async () => {
+    it('should handle self-employed entity from userExternalId', async () => {
       const form = {
         ...formBase,
-        externalId: 'extId1',
+        userExternalId: 'extId1',
         mainUri: null,
       } as Forms
 

@@ -584,7 +584,7 @@ export default class GinisService {
   private async extractContactParamsFromExternalId(
     form: Forms,
   ): Promise<GinContactParams> {
-    if (!form.externalId) {
+    if (!form.userExternalId) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DATA_INVALID,
         `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
@@ -594,7 +594,7 @@ export default class GinisService {
     const params: GinContactParams = {}
     const contactResponse =
       await this.clientsService.cityAccountApi.userIntegrationControllerGetContactAndIdInfoByExternalId(
-        form.externalId,
+        form.userExternalId,
         {
           headers: {
             apiKey: this.baConfigService.cityAccountBackend.apiKey,
@@ -606,7 +606,7 @@ export default class GinisService {
     if (!contactInfo) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.externalId}. Form id: ${form.id}`,
+        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.userExternalId}. Form id: ${form.id}`,
       )
     }
 
@@ -658,7 +658,7 @@ export default class GinisService {
   }
 
   private async handleDocumentSender(form: Forms): Promise<string | undefined> {
-    let contactParams: GinContactParams = form.externalId
+    let contactParams: GinContactParams = form.userExternalId
       ? await this.extractContactParamsFromExternalId(form)
       : {}
 

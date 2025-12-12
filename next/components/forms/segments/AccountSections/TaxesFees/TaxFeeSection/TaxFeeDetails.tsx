@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-const TaxDetails = () => {
+const TaxFeeDetails = () => {
   const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
@@ -76,4 +76,4 @@ const TaxDetails = () => {
   )
 }
 
-export default TaxDetails
+export default TaxFeeDetails

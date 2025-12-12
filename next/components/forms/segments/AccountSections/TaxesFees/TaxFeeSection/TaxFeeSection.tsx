@@ -4,8 +4,8 @@ import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/
 import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
 import TaxesFeesDeliveryMethodChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
 import TaxesFeesDeliveryMethodInfoCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
-import ContactInformationSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/ContactInformation'
-import TaxDetails from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxDetails'
+import TaxFeeContactInformation from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeContactInformation'
+import TaxFeeDetails from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeDetails'
 import TaxFeePaymentMethods from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentMethods/TaxFeePaymentMethods'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
@@ -65,8 +65,8 @@ const TaxFeeSection = () => {
               ]}
             />
           </div>
-          <ContactInformationSection />
-          <TaxDetails />
+          <TaxFeeContactInformation />
+          <TaxFeeDetails />
           {taxData.paidStatus !== TaxStatusEnum.Paid &&
             taxData.paidStatus !== TaxStatusEnum.OverPaid && <TaxFeePaymentMethods />}
         </div>

@@ -225,7 +225,12 @@ export default class FilesService {
       )
     }
 
-    if (!this.filesHelper.isSupportedMimeType(bufferedFile.mimetype)) {
+    if (
+      !this.filesHelper.isSupportedMimeType(
+        bufferedFile.mimetype,
+        bufferedFile.originalname,
+      )
+    ) {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR,
         `${FilesErrorsResponseEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR} Received file mimetype: ${bufferedFile.mimetype}`,

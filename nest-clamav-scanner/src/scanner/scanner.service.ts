@@ -17,6 +17,17 @@ import { isBase64, isDefined, isValidUid } from '../common/utils/helpers'
 import { PrismaService } from '../prisma/prisma.service'
 import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto'
 
+/**
+ * Mapping of file extensions to MIME types for formats that the mime-types library doesn't recognize.
+ * These are ASiC electronic signature container formats.
+ */
+const extensionToMimeType: Record<string, string> = {
+  asice: 'application/vnd.etsi.asic-e+zip',
+  sce: 'application/vnd.etsi.asic-e+zip',
+  asics: 'application/vnd.etsi.asic-s+zip',
+  scs: 'application/vnd.etsi.asic-s+zip',
+}
+
 @Injectable()
 export class ScannerService {
   private readonly logger: Logger
@@ -92,9 +103,12 @@ export class ScannerService {
       // TODO clamav has always octet stream as mime type on file. Needs to do other validation of mimetype in future.
 
       // get file format from bucketFile.fileUid
-      const fileFormat = bucketFile.fileUid.split('.').pop()
+      const fileFormat = bucketFile.fileUid.split('.').pop()?.toLowerCase()
       const proformaName = `proforma.${fileFormat}`
-      const mimeType = contentType(proformaName)
+      // Check custom mapping first for ASiC formats (mime-types library maps .scs incorrectly)
+      const mimeType =
+        (fileFormat ? extensionToMimeType[fileFormat] : undefined) ||
+        contentType(proformaName)
       if (!mimeType || !this.isSupportedMimeType(mimeType)) {
         throw new BadRequestException(
           `Unsupported file mime-type: ${mimeType || 'unknown'}.`,

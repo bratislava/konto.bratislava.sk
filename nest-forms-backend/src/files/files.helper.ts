@@ -33,6 +33,17 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 
+/**
+ * Mapping of file extensions to MIME types for formats that browsers don't recognize
+ * and send as application/octet-stream. These are ASiC electronic signature container formats.
+ */
+const extensionToMimeType: Record<string, string> = {
+  '.asice': 'application/vnd.etsi.asic-e+zip',
+  '.sce': 'application/vnd.etsi.asic-e+zip',
+  '.asics': 'application/vnd.etsi.asic-s+zip',
+  '.scs': 'application/vnd.etsi.asic-s+zip',
+}
+
 // TODO missing tests
 @Injectable()
 export default class FilesHelper {
@@ -54,8 +65,26 @@ export default class FilesHelper {
     this.supportedMimeTypes = mimeTypeList.split(' ')
   }
 
-  isSupportedMimeType(mimeType: string): boolean {
-    return this.supportedMimeTypes.includes(mimeType)
+  /**
+   * Checks if a file's MIME type is supported. When the browser sends application/octet-stream
+   * (which happens for unknown file types like .asice, .scs, etc.), we check the file extension
+   * to determine the actual MIME type.
+   */
+  isSupportedMimeType(mimeType: string, filename?: string): boolean {
+    if (this.supportedMimeTypes.includes(mimeType)) {
+      return true
+    }
+
+    // For application/octet-stream, check if the file extension maps to a supported MIME type
+    if (mimeType === 'application/octet-stream' && filename) {
+      const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase()
+      const mappedMimeType = extensionToMimeType[extension]
+      if (mappedMimeType && this.supportedMimeTypes.includes(mappedMimeType)) {
+        return true
+      }
+    }
+
+    return false
   }
 
   /**

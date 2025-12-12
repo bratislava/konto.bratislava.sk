@@ -129,6 +129,13 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       }
     : { title: null, subtitle: null }
 
+  // TODO Translations: bodyList is "an array", make sure it's correctly used:
+  //   "registration_modal.body_list.0": "Nájdite všetky služby mesta na jednom mieste",
+  //   "registration_modal.body_list.1": "Sledujte aktuálny stav podaných žiadostí a čo sa s nimi deje v čase",
+  //   "registration_modal.body_list.2": "Majte prehľad o daniach a poplatkoch",
+  //   "registration_modal.body_list.3": "Využívajte dôveryhodné digitálne služby pod hlavičkou hlavného mesta",
+  //   "registration_modal.body_list.4": "Uložte si žiadosti a vráťte sa k nim kedykoľvek budete chcieť",
+  //
   const bodyListTranslation = t('registration_modal.body_list', { returnObjects: true })
   const bodyList = Array.isArray(bodyListTranslation) ? (bodyListTranslation as string[]) : []
 

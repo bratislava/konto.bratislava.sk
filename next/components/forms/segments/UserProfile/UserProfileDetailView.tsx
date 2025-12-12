@@ -36,9 +36,7 @@ const UserProfileDetailView = ({ userAttributes }: UserProfileDetailViewProps) =
 
   return (
     <div className="flex grow flex-col gap-6">
-      {/* <UserProfileDetailViewRow label={t('my_profile.profile_detail.titles_before_name')} /> */}
       <UserProfileDetailViewRow label={nameLabel} value={fullName} />
-      {/* <UserProfileDetailViewRow label={t('my_profile.profile_detail.titles_after_name')} /> */}
       <UserProfileDetailViewRow label={t('my_profile.profile_detail.email')} value={email} />
       <UserProfileDetailViewRow
         label={t('my_profile.profile_detail.phone_number')}

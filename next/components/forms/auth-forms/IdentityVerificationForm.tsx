@@ -133,11 +133,11 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
       <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
       <AccountMarkdown
         variant="sm"
-        content={t(
+        content={
           isLegalEntity
-            ? 'auth.identity_verification_subtitle_legal_entity'
-            : 'auth.identity_verification_subtitle',
-        )}
+            ? t('auth.identity_verification_subtitle_legal_entity')
+            : t('auth.identity_verification_subtitle')
+        }
       />
       <AccountErrorAlert error={error} />
       {isLegalEntity && (

@@ -2,7 +2,6 @@ import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import useHookForm from '../../../frontend/hooks/useHookForm'
-import { useQueryParamRedirect } from '../../../frontend/hooks/useQueryParamRedirect'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '../segments/AccountLink/AccountLink'
 import Button from '../simple-components/ButtonNew'
@@ -42,7 +41,6 @@ const schema = {
 }
 
 const LoginForm = ({ onSubmit, error }: Props) => {
-  const { getRouteWithRedirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
 
   const {

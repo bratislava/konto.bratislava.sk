@@ -6,7 +6,7 @@ import TaxesFeesDeliveryMethodChangeModal from 'components/forms/segments/Accoun
 import TaxesFeesDeliveryMethodInfoCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
 import ContactInformationSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/ContactInformation'
 import TaxDetails from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxDetails'
-import TaxFeePaymentMethodSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePayment/TaxFeePaymentMethodSection'
+import TaxFeePaymentMethods from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentMethods/TaxFeePaymentMethods'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
@@ -68,7 +68,7 @@ const TaxFeeSection = () => {
           <ContactInformationSection />
           <TaxDetails />
           {taxData.paidStatus !== TaxStatusEnum.Paid &&
-            taxData.paidStatus !== TaxStatusEnum.OverPaid && <TaxFeePaymentMethodSection />}
+            taxData.paidStatus !== TaxStatusEnum.OverPaid && <TaxFeePaymentMethods />}
         </div>
       </div>
     </>

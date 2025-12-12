@@ -1,13 +1,14 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import useHookForm from 'frontend/hooks/useHookForm'
-import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import logger from '../../../frontend/utils/logger'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '../segments/AccountLink/AccountLink'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   verificationCode: string
@@ -32,22 +33,25 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:verification_code_required',
-        format: 'account:verification_code_format',
+        minLength: 'account:auth.fields.verification_code_required',
+        format: 'account:auth.fields.verification_code_format',
       },
     },
     password: {
       type: 'string',
       minLength: 1,
       format: 'password',
-      errorMessage: { minLength: 'account:password_required', format: 'account:password_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.password_required',
+        format: 'account:auth.fields.password_format',
+      },
     },
     passwordConfirmation: {
       const: {
         $data: '1/password',
       },
       type: 'string',
-      errorMessage: { const: 'account:password_confirmation_required' },
+      errorMessage: { const: 'account:auth.fields.password_confirmation_required' },
     },
   },
   required: ['verificationCode', 'password', 'passwordConfirmation'],
@@ -80,7 +84,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
@@ -90,9 +94,11 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       })}
     >
       <h1 className="text-h3">
-        {t(fromMigration ? 'migration_new_password_title' : 'new_password_title')}
+        {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
       </h1>
-      <p className="text-p3 lg:text-p2">{t('new_password_description', { email: lastEmail })}</p>
+      <p className="text-p3 lg:text-p2">
+        {t('auth.new_password_description', { email: lastEmail })}
+      </p>
       <AccountErrorAlert
         error={error}
         args={{
@@ -107,8 +113,8 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
           <InputField
             required
             autoComplete="off"
-            label={t('verification_code_label')}
-            placeholder={t('verification_code_placeholder')}
+            label={t('auth.fields.verification_code_label')}
+            placeholder={t('auth.fields.verification_code_placeholder')}
             {...field}
             errorMessage={errors.verificationCode}
           />
@@ -121,9 +127,15 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
           <PasswordField
             required
             autoComplete="new-password"
-            label={t(fromMigration ? 'password_label' : 'new_password_label')}
-            placeholder={t(fromMigration ? 'password_placeholder' : 'new_password_placeholder')}
-            tooltip={t('password_description')}
+            label={
+              fromMigration ? t('auth.fields.password_label') : t('auth.fields.new_password_label')
+            }
+            placeholder={
+              fromMigration
+                ? t('auth.fields.password_placeholder')
+                : t('auth.fields.new_password_placeholder')
+            }
+            helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
           />
@@ -136,38 +148,32 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
           <PasswordField
             required
             autoComplete="new-password"
-            label={t(
-              fromMigration ? 'password_confirmation_label' : 'new_password_confirmation_label',
-            )}
-            placeholder={t(
+            label={
               fromMigration
-                ? 'password_confirmation_placeholder'
-                : 'new_password_confirmation_placeholder',
-            )}
+                ? t('auth.fields.password_confirmation_label')
+                : t('auth.fields.new_password_confirmation_label')
+            }
+            placeholder={
+              fromMigration
+                ? t('auth.fields.password_confirmation_placeholder')
+                : t('auth.fields.new_password_confirmation_placeholder')
+            }
             {...field}
             errorMessage={errors.passwordConfirmation}
           />
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={fromMigration ? t('migration_new_password_submit') : t('new_password_submit')}
-        variant="category"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')}
+      </Button>
       <div className="text-p3 lg:text-p2">
-        <span>{t('verification_description')}</span>{' '}
-        {cnt > 0 && <span>{t('verification_cnt_description', { cnt })}</span>}
+        <span>{t('auth.verification_description')}</span>{' '}
+        {cnt > 0 && <span>{t('auth.verification_cnt_description', { cnt })}</span>}
       </div>
-      <Button
-        onPress={handleResend}
-        className="min-w-full"
-        text={t('verification_resend')}
-        variant="category-outline"
-        disabled={cnt > 0}
-      />
-      <LoginAccountLink />
+      <Button variant="black-outline" onPress={handleResend} fullWidth isDisabled={cnt > 0}>
+        {t('auth.verification_resend')}
+      </Button>
+      <AccountLink variant="login" />
     </form>
   )
 }

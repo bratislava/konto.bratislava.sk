@@ -1,20 +1,21 @@
 import { ArrowRightIcon } from '@assets/ui-icons'
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import { environment } from '../../../../environment'
-import { AccountType } from '../../../../frontend/dtos/accountDto'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import { isBrowser } from '../../../../frontend/utils/general'
-import logger from '../../../../frontend/utils/logger'
+import { environment } from '../../../environment'
+import { AccountType } from '../../../frontend/dtos/accountDto'
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import { useQueryParamRedirect } from '../../../frontend/hooks/useQueryParamRedirect'
+import { useSsrAuth } from '../../../frontend/hooks/useSsrAuth'
+import { isBrowser } from '../../../frontend/utils/general'
+import logger from '../../../frontend/utils/logger'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
+import Button from '../simple-components/Button'
+import InputField from '../widget-components/InputField/InputField'
 
 export interface VerificationFormData {
   ico?: string
@@ -36,19 +37,28 @@ const poSchema = {
       type: 'string',
       minLength: 1,
       format: 'ico',
-      errorMessage: { minLength: 'account:ico_required', format: 'account:ico_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.ico_required',
+        format: 'account:auth.fields.ico_format',
+      },
     },
     rc: {
       type: 'string',
       minLength: 1,
       format: 'rc',
-      errorMessage: { minLength: 'account:rc_required', format: 'account:rc_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.rc_required',
+        format: 'account:auth.fields.rc_format',
+      },
     },
     idCard: {
       type: 'string',
       minLength: 1,
       format: 'idCard',
-      errorMessage: { minLength: 'account:id_card_required', format: 'account:id_card_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.id_card_required',
+        format: 'account:auth.fields.id_card_format',
+      },
     },
     turnstileToken: {
       type: 'string',
@@ -65,13 +75,19 @@ const foSchema = {
       type: 'string',
       minLength: 1,
       format: 'rc',
-      errorMessage: { minLength: 'account:rc_required', format: 'account:rc_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.rc_required',
+        format: 'account:auth.fields.rc_format',
+      },
     },
     idCard: {
       type: 'string',
       minLength: 1,
       format: 'idCard',
-      errorMessage: { minLength: 'account:id_card_required', format: 'account:id_card_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.id_card_required',
+        format: 'account:auth.fields.id_card_format',
+      },
     },
     turnstileToken: {
       type: 'string',
@@ -108,20 +124,21 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: VerificationFormData) => {
         incrementCaptchaKey()
         return onSubmit(data)
       })}
     >
-      <h1 className="text-h3">{t('identity_verification_title')}</h1>
-      <p className="text-p2">
-        {t(
+      <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
+      <AccountMarkdown
+        variant="sm"
+        content={
           isLegalEntity
-            ? 'identity_verification_subtitle_legal_entity'
-            : 'identity_verification_subtitle',
-        )}
-      </p>
+            ? t('auth.identity_verification_subtitle_legal_entity')
+            : t('auth.identity_verification_subtitle')
+        }
+      />
       <AccountErrorAlert error={error} />
       {isLegalEntity && (
         <Controller
@@ -130,8 +147,8 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
           render={({ field }) => (
             <InputField
               required
-              label={t('ico_label')}
-              placeholder={t('ico_placeholder')}
+              label={t('auth.fields.ico_label')}
+              placeholder={t('auth.fields.ico_placeholder')}
               {...field}
               errorMessage={errors.ico}
             />
@@ -144,9 +161,9 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            helptext={t('rc_description')}
-            label={t(isFoOrFop ? 'rc_label' : 'rc_label_legal_entity')}
-            placeholder={t('rc_placeholder')}
+            helptext={t('auth.fields.rc_description')}
+            label={isFoOrFop ? t('auth.fields.rc_label') : t('auth.fields.rc_label_legal_entity')}
+            placeholder={t('auth.fields.rc_placeholder')}
             {...field}
             errorMessage={errors.rc}
           />
@@ -158,9 +175,13 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            label={t(isFoOrFop ? 'id_card_label' : 'id_card_label_legal_entity')}
-            placeholder={t('id_card_placeholder')}
-            helptext={t('id_card_description')}
+            label={
+              isFoOrFop
+                ? t('auth.fields.id_card_label')
+                : t('auth.fields.id_card_label_legal_entity')
+            }
+            placeholder={t('auth.fields.id_card_placeholder')}
+            helptext={t('auth.fields.id_card_description')}
             {...field}
             errorMessage={errors.idCard}
           />
@@ -195,22 +216,24 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
               }}
               className="mb-2 self-center"
             />
-            {captchaWarning === 'show' && <p className="text-p3 italic">{t('captcha_warning')}</p>}
+            {captchaWarning === 'show' && (
+              <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
+            )}
           </>
         )}
       />
       <Button
         className="min-w-full"
         type="submit"
-        text={t('identity_verification_submit')}
-        variant="category"
+        text={t('auth.identity_verification_submit')}
+        variant="black"
         loading={isSubmitting}
       />
       <Button
         variant="plain-black"
         className="min-w-full"
         onPress={() => redirect()}
-        text={t('identity_verification_skip')}
+        text={t('auth.identity_verification_skip')}
         endIcon={<ArrowRightIcon />}
       />
     </form>

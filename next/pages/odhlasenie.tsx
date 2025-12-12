@@ -40,14 +40,14 @@ const LogoutPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6">
+      <AccountContainer>
         <AccountSuccessAlert
-          title={t('logout_page.title')}
-          description={t('logout_page.description')}
-          confirmLabel={t('logout_page.confirm_label')}
+          title={t('auth.logout_page.title')}
+          description={t('auth.logout_page.description')}
+          confirmLabel={t('auth.logout_page.confirm_label')}
           onConfirm={logoutHandler}
           confirmIsLoading={isLoading}
-          cancelLabel={t('logout_page.cancel_label')}
+          cancelLabel={t('auth.logout_page.cancel_label')}
           onCancel={() => redirect()}
         />
       </AccountContainer>

@@ -1,5 +1,4 @@
 import { updateUserAttributes } from 'aws-amplify/auth'
-import CorrespondenceAddressForm from 'components/forms/segments/CorrespondenceAddressForm/CorrespondenceAddressForm'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
@@ -8,6 +7,7 @@ import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { GENERIC_ERROR_MESSAGE, isError } from '../../../../frontend/utils/errors'
 import logger from '../../../../frontend/utils/logger'
 import Modal, { ModalProps } from '../../simple-components/Modal'
+import CorrespondenceAddressForm from './CorrespondenceAddressForm'
 
 type Props = { parsedAddress: Address; onSuccess: (newAddress: Address) => void } & ModalProps
 
@@ -30,7 +30,7 @@ const CorrespondenceAddressModal = ({ parsedAddress, isOpen, onOpenChange, onSuc
       })
       if (isUpdated) {
         onSuccess(data)
-        showSnackbar(t('profile_detail.success_alert'))
+        showSnackbar(t('my_profile.profile_detail.success_snackbar_message'))
       } else {
         throw new Error('Unknown error')
       }
@@ -61,7 +61,7 @@ const CorrespondenceAddressModal = ({ parsedAddress, isOpen, onOpenChange, onSuc
       mobileFullScreen
     >
       {/* TODO: Proper title */}
-      <h2 className="mb-2 text-h2">{t('correspondence_address')}</h2>
+      <h2 className="mb-2 text-h2">{t('taxes.contact_information.correspondence_address')}</h2>
       <CorrespondenceAddressForm
         onSubmit={handleSubmit}
         error={error}

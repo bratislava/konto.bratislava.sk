@@ -13,7 +13,7 @@ import Spinner from '../simple-components/Spinner'
 type FormLightboxModalProps = { imageUrl: string }
 
 const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightboxModalProps>) => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -42,7 +42,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
           buttonClose: () => (
             <AriaButton onPress={() => setIsOpen(false)} className="p-2">
               <CrossIcon className="size-6" aria-hidden />
-              <span className="sr-only">{t('modal_close_aria')}</span>
+              <span className="sr-only">{t('Modal.aria.close')}</span>
             </AriaButton>
           ),
           iconLoading: () => <Spinner />,

@@ -14,8 +14,8 @@ const goBack = () => {
  * Based on bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/b8e21a117c691f1f3e3a9be9fa8ae65d4c8172ee/next/src/components/common/Breadcrumbs/MobileBreadcrumbs.tsx#L22
  */
 const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
-  const { t } = useTranslation()
-  const withHome = [{ title: t('breadcrumbs.homepage'), path: '/' }, ...breadcrumbs]
+  const { t } = useTranslation('account')
+  const withHome = [{ title: t('Breadcrumbs.homepage'), path: '/' }, ...breadcrumbs]
   const withHomeWithoutCurrent = withHome.slice(0, -1)
   const last = withHomeWithoutCurrent.at(-1)
   const showDetails = withHomeWithoutCurrent.length > 0
@@ -30,9 +30,9 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
             className="shrink-0 py-3 pl-4 text-[14px]"
             startIcon={<ChevronRightIcon className="shrink-0 rotate-180" />}
           >
-            {t('breadcrumbs.back')}
+            {t('Breadcrumbs.back')}
           </ButtonNew>
-          <div className="bg-grey-300 h-4 w-px" />
+          <div className="h-4 w-px bg-grey-300" />
           {last?.path ? (
             <MLinkNew
               href={last.path}

@@ -44,7 +44,7 @@ const fetchAlert = async () => {
 }
 
 export const StatusBar = () => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
 
   const { data: alertData } = useQuery({
     queryKey: ['alert'],
@@ -79,7 +79,7 @@ export const StatusBar = () => {
           <Button
             className="h-fit shrink-0"
             icon={<CrossIcon />}
-            aria-label={t('ariaCloseStatusBar') ?? ''}
+            aria-label={t('StatusBar.aria.close') ?? ''}
             onPress={handleDismiss}
           />
         </div>

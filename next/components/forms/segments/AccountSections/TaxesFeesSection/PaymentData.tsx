@@ -72,18 +72,18 @@ const Details = ({ paymentMethod }: DetailsProps) => {
               />
             }
           />
-          <div className="text-h3">{t('payment_data_installments')}</div>
+          <div className="text-h3">{t('taxes.payment_data.installments.title')}</div>
 
           {hasMultipleInstallments && <PaymentSchedule />}
         </>
       )}
 
-      <div className="text-h3">{t('payment_data')}</div>
+      <div className="text-h3">{t('taxes.payment_data.payment_methods_title')}</div>
       <div className="flex flex-col gap-4 rounded-lg border-2 border-solid border-gray-200 p-4 lg:flex-row lg:p-6">
         <div className="flex flex-row items-center justify-between gap-2 lg:grow">
           <div className="flex flex-row items-center gap-2">
             <PaymentHandIcon className="size-12" />
-            <div className="text-h5">{t('card_payment')}</div>
+            <div className="text-h5">{t('taxes.payment_data.card_payment_title')}</div>
           </div>
           <div className="flex flex-row items-center gap-2 lg:grow">
             <div className="rounded-lg bg-gray-50 px-3 py-1">
@@ -109,45 +109,51 @@ const Details = ({ paymentMethod }: DetailsProps) => {
                 ? redirectToInstallmentPaymentIsPending
                 : redirectToFullPaymentIsPending
             }
-            isLoadingText={t('redirect_to_payment_loading')}
+            isLoadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
             fullWidthMobile
           >
-            {t('to_pay')}
+            {t('taxes.payment.to_pay')}
           </ButtonNew>
         </div>
       </div>
       <div className="flex flex-col gap-6 rounded-lg border-2 border-solid border-gray-200 p-6">
         <div className="flex w-full items-center gap-4">
           <QrCodeIcon className="size-8" />
-          <span className="text-h4">{t('qr_code_and_bank_transfer')}</span>
+          <span className="text-h4">{t('taxes.payment_data.qr_code_and_bank_transfer_title')}</span>
         </div>
         <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-4">
           <div className="flex w-full gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 md:border-2 md:px-4 md:py-5 lg:px-6">
             <div className="flex w-full flex-col justify-between">
               <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                <span className="text-p2">{t('bank_info.slovak_sporitelna')}</span>
+                <span className="text-p2">
+                  {t('taxes.payment_data.bank_info.slovenska_sporitelna')}
+                </span>
                 <span className="flex items-center gap-2">
                   <span className="grow text-16-semibold">
-                    {t('bank_info.slovak_sporitelna_iban')}
+                    {t('taxes.payment_data.bank_info.slovenska_sporitelna_iban')}
                   </span>
                   <span className="size-6 cursor-pointer">
-                    <ClipboardCopy copyText={t('bank_info.slovak_sporitelna_iban')} />
+                    <ClipboardCopy
+                      copyText={t('taxes.payment_data.bank_info.slovenska_sporitelna_iban')}
+                    />
                   </span>
                 </span>
               </div>
               <div className="h-0.5 w-full bg-gray-200" />
               <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                <span className="text-p2">{t('bank_info.csob')}</span>
+                <span className="text-p2">{t('taxes.payment_data.bank_info.csob')}</span>
                 <span className="flex items-center gap-2">
-                  <span className="grow text-16-semibold">{t('bank_info.csob_iban')}</span>
+                  <span className="grow text-16-semibold">
+                    {t('taxes.payment_data.bank_info.csob_iban')}
+                  </span>
                   <span className="size-6 cursor-pointer">
-                    <ClipboardCopy copyText={t('bank_info.csob_iban')} />
+                    <ClipboardCopy copyText={t('taxes.payment_data.bank_info.csob_iban')} />
                   </span>
                 </span>
               </div>
               <div className="h-0.5 w-full bg-gray-200" />
               <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                <span className="text-p2">{t('variable_symbol')}</span>
+                <span className="text-p2">{t('taxes.payment_data.variable_symbol')}</span>
                 <span className="flex items-center gap-2">
                   <span className="grow text-16-semibold">{variableSymbol}</span>
                   <span className="size-6 cursor-pointer">
@@ -157,7 +163,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
               </div>
               <div className="h-0.5 w-full bg-gray-200" />
               <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                <span className="text-p2">{t('sum')}</span>
+                <span className="text-p2">{t('taxes.payment_data.sum')}</span>
                 <span className="flex items-center gap-2">
                   <span className="grow text-16-semibold">
                     {sum && <FormatCurrencyFromCents value={sum} />}
@@ -167,18 +173,32 @@ const Details = ({ paymentMethod }: DetailsProps) => {
                   </span>
                 </span>
               </div>
+              <div className="h-0.5 w-full bg-gray-200" />
+              <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
+                <span className="text-p2">{t('taxes.payment_data.beneficiary_name')}</span>
+                <span className="flex items-center gap-2">
+                  <span className="grow text-16-semibold">
+                    {t('taxes.payment_data.beneficiary_name_value')}
+                  </span>
+                  <span className="size-6 cursor-pointer">
+                    <ClipboardCopy copyText={t('taxes.payment_data.beneficiary_name_value')} />
+                  </span>
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex grow flex-col gap-4 self-stretch rounded-lg border-solid border-gray-200 p-0 lg:flex-row lg:border-2 lg:p-6">
             <div className="flex w-full grow flex-col items-start justify-between gap-2 self-stretch">
               <div className="flex flex-col items-start gap-2">
-                <div className="text-h4">{t('qr_code')}</div>
-                <div className="text-16">{t('use_your_banking_app_to_load')}</div>
+                <div className="text-h4">{t('taxes.payment_data.qr_code')}</div>
+                <div className="text-16">
+                  {t('taxes.payment_data.use_your_banking_app_to_load')}
+                </div>
               </div>
               <Button
                 startIcon={<DownloadIcon className="size-5" />}
                 variant="black-outline"
-                text={t('download_qr_code')}
+                text={t('taxes.payment_data.download_qr_code')}
                 size="sm"
                 className="block min-w-full lg:w-auto"
                 onPress={
@@ -217,7 +237,11 @@ const PaymentData = () => {
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
       {(!isIdentityVerified && !isInQueue) || showDeliveryMethodNotSetBanner ? (
         <div className="flex flex-col gap-6">
-          <Alert type="warning" fullWidth message={t('payment_method_access_prompt')} />
+          <Alert
+            type="warning"
+            fullWidth
+            message={t('taxes.payment_data.payment_method_access_prompt')}
+          />
           <TaxesFeesVerifyAndSetDeliveryMethodBanner
             onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
           />

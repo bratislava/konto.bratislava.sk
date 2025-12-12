@@ -15,9 +15,9 @@ const TaxFormAlert = () => {
       fullWidth
       message={
         <>
-          <span className="text-h6">
+          <div className="mb-2 text-h6">
             {t('account_section_payment.tax_form_change_ownership_alert_title')}
-          </span>
+          </div>
 
           <AccountMarkdown
             content={t('account_section_payment.tax_form_change_ownership_alert_text')}

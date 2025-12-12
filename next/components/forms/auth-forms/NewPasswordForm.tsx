@@ -1,13 +1,14 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
-import Button from 'components/forms/simple-components/ButtonNew'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import useHookForm from 'frontend/hooks/useHookForm'
-import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import logger from '../../../frontend/utils/logger'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '../segments/AccountLink/AccountLink'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   verificationCode: string
@@ -83,7 +84,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
@@ -172,7 +173,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <Button variant="black-outline" onPress={handleResend} fullWidth isDisabled={cnt > 0}>
         {t('auth.verification_resend')}
       </Button>
-      <LoginAccountLink />
+      <AccountLink variant="login" />
     </form>
   )
 }

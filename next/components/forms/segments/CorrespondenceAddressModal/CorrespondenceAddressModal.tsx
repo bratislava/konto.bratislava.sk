@@ -1,5 +1,4 @@
 import { updateUserAttributes } from 'aws-amplify/auth'
-import CorrespondenceAddressForm from 'components/forms/segments/CorrespondenceAddressForm/CorrespondenceAddressForm'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
@@ -8,6 +7,7 @@ import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { GENERIC_ERROR_MESSAGE, isError } from '../../../../frontend/utils/errors'
 import logger from '../../../../frontend/utils/logger'
 import Modal, { ModalProps } from '../../simple-components/Modal'
+import CorrespondenceAddressForm from './CorrespondenceAddressForm'
 
 type Props = { parsedAddress: Address; onSuccess: (newAddress: Address) => void } & ModalProps
 

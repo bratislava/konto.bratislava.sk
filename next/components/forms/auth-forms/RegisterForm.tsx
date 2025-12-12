@@ -1,23 +1,22 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
-import Button from 'components/forms/simple-components/ButtonNew'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import Radio from 'components/forms/widget-components/RadioButton/Radio'
-import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
-import { environment } from 'environment'
-import { AccountType, UserAttributes } from 'frontend/dtos/accountDto'
-import useHookForm from 'frontend/hooks/useHookForm'
-import { isBrowser } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
+import { environment } from '../../../environment'
+import { AccountType, UserAttributes } from '../../../frontend/dtos/accountDto'
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import { isBrowser } from '../../../frontend/utils/general'
+import logger from '../../../frontend/utils/logger'
+import { useAmplifyClientOAuthContext } from '../../../frontend/utils/useAmplifyClientOAuthContext'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
+import Radio from '../widget-components/RadioButton/Radio'
+import RadioGroup from '../widget-components/RadioButton/RadioGroup'
 
 interface Data {
   email: string
@@ -161,7 +160,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       data-cy="register-form"
       onSubmit={handleSubmit((data: Data) => {
         const userAttributes: UserAttributes = {
@@ -318,6 +317,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               theme="light"
               key={captchaKey}
               sitekey={environment.cloudflareTurnstileSiteKey}
+              className="self-center"
               onVerify={(token) => {
                 setCaptchaWarning('hide')
                 onChange(token)
@@ -336,7 +336,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 logger.warn('Turnstile expire - should refresh automatically')
                 onChange(null)
               }}
-              className="mb-2 self-center"
             />
             {captchaWarning === 'show' && (
               <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
@@ -347,7 +346,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.register_submit')}
       </Button>
-      <LoginAccountLink />
     </form>
   )
 }

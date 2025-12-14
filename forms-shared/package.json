@@ -101,7 +101,7 @@
     "postcss": "8.5.6",
     "prettier": "^3.6.2",
     "prompts": "^2.4.2",
-    "rimraf": "^6.0.1",
+    "rimraf": "^6.1.2",
     "string-to-template-literal": "^3.0.0",
     "tailwindcss": "4.1.11",
     "tmp-promise": "^3.0.3",

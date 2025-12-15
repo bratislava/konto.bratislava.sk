@@ -264,4 +264,59 @@ export class BloomreachService {
       return AnonymizeResponse.ERROR
     }
   }
+
+  async getFileByHash(hash: string) {
+    const hashData = await this.prisma.notificationAgreementHash.findUnique({
+      where: { hash },
+      include: {
+        user: true,
+        legalPerson: true,
+      },
+    })
+
+    if (!hashData) {
+      throw this.throwerErrorGuard.NotFoundException(
+        ErrorsEnum.NOT_FOUND_ERROR,
+        'Hash does not exist.'
+      )
+    }
+
+    if (!hashData.user?.birthNumber) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'User does not contain a birth number.'
+      )
+    }
+
+    const externaId = hashData.user?.externalId || hashData.legalPerson?.externalId
+
+    if (!externaId) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Hash exists but the user does not exist in cognito.'
+      )
+    }
+
+    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externaId)
+
+    if (!cognitoData.given_name || !cognitoData.family_name) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'User does not have the name set.'
+      )
+    }
+
+    const pdf = await this.pdfConverterService.getPdfByTemplateName(
+      'delivery-method-set-to-notification',
+      'súhlas so zasielaním oznámením.pdf',
+      {
+        firstName: cognitoData.given_name,
+        email: cognitoData.email,
+        birthNumber: hashData.user.birthNumber,
+      },
+      hashData.user.birthNumber
+    )
+
+    return pdf
+  }
 }

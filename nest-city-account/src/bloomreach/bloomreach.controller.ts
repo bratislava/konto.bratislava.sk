@@ -51,7 +51,7 @@ export class BloomreachController {
     type: ResponseInternalServerErrorDto,
   })
   @Get('get-notify-agreement-pdf/:hash')
-  async getTaxDetailByYear(@Param('hash') hash: string, @Res() res: Response) {
+  async getPdfByHash(@Param('hash') hash: string, @Res() res: Response) {
     if (!hash) {
       throw this.throwerErrorGuard.BadRequestException(
         BloomreachErrorEnum.HASH_NOT_PROVIDED,

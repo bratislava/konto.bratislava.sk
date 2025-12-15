@@ -1,4 +1,5 @@
 import Alert from 'components/forms/info-components/Alert'
+import TaxFeePaymentMethodsItem from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
 import { formatDate } from 'frontend/utils/general'
@@ -9,9 +10,7 @@ import {
 } from 'openapi-clients/tax'
 import React from 'react'
 
-import PaymentMethodItem from './PaymentMethodItem'
-
-const TaxFeePaymentMethodSection = () => {
+const TaxFeePaymentMethods = () => {
   const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
 
@@ -21,7 +20,7 @@ const TaxFeePaymentMethodSection = () => {
       <div className="flex w-full flex-col gap-4 pt-4 lg:pt-0">
         <div className="text-h3">{t('tax_detail_section.tax_payment_methods')}</div>
         <div className="flex w-full flex-col rounded-lg border-2 border-gray-200">
-          <PaymentMethodItem
+          <TaxFeePaymentMethodsItem
             title={
               <Trans
                 ns="account"
@@ -53,7 +52,7 @@ const TaxFeePaymentMethodSection = () => {
           />
           {taxData.installmentPayment?.isPossible &&
             taxData.installmentPayment.activeInstallment?.remainingAmount !== undefined && (
-              <PaymentMethodItem
+              <TaxFeePaymentMethodsItem
                 title={
                   <Trans
                     ns="account"
@@ -98,4 +97,4 @@ const TaxFeePaymentMethodSection = () => {
   )
 }
 
-export default TaxFeePaymentMethodSection
+export default TaxFeePaymentMethods

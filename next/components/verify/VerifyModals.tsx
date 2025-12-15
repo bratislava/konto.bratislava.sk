@@ -12,7 +12,7 @@ import { useVerifyModals } from './useVerifyModals'
  */
 
 const VerifyModals = () => {
-  const { t } = useTranslation('verify')
+  const { t } = useTranslation('account')
 
   const {
     eidVerifyingModal,
@@ -34,7 +34,7 @@ const VerifyModals = () => {
           setVerifyingConfirmationEidLegalModal({ isOpen: false })
         }
       },
-      title: t('verify_confirmation_eid_legal_modal.title'),
+      title: t('auth.verify_confirmation_eid_legal_modal.title'),
       type: 'info',
       buttons: [
         <Button
@@ -43,7 +43,7 @@ const VerifyModals = () => {
           isDisabled={redirectingToSlovenskoSkLogin}
           fullWidthMobile
         >
-          {t('modals_close_button_title')}
+          {t('auth.verify_modals_close_button_title')}
         </Button>,
         <Button
           variant="black-solid"
@@ -53,21 +53,21 @@ const VerifyModals = () => {
             verifyingConfirmationEidLegalModal.confirmCallback()
           }
           isLoading={redirectingToSlovenskoSkLogin}
-          isLoadingText={t('verify_confirmation_eid_legal_modal.button_title_loading')}
+          isLoadingText={t('auth.verify_confirmation_eid_legal_modal.button_title_loading')}
           fullWidthMobile
         >
-          {t('verify_confirmation_eid_legal_modal.button_title')}
+          {t('auth.verify_confirmation_eid_legal_modal.button_title')}
         </Button>,
       ],
       isDismissable: !redirectingToSlovenskoSkLogin,
       noCloseButton: redirectingToSlovenskoSkLogin,
-      children: t('verify_confirmation_eid_legal_modal.content'),
+      children: t('auth.verify_confirmation_eid_legal_modal.content'),
     },
     {
       key: 'eidVerifyingModal',
       isOpen: eidVerifyingModal,
       onOpenChange: setEidVerifyingModal,
-      title: t('eid_verifying_modal.title'),
+      title: t('auth.eid_verifying_modal.title'),
       type: 'info',
       buttons: [
         // Faux button that show only is loading
@@ -75,7 +75,7 @@ const VerifyModals = () => {
       ],
       isDismissable: false,
       noCloseButton: true,
-      children: t('eid_verifying_modal.content'),
+      children: t('auth.eid_verifying_modal.content'),
     },
     {
       key: 'eidSendErrorModal',
@@ -85,7 +85,7 @@ const VerifyModals = () => {
           setEidSendErrorModal(false)
         }
       },
-      title: t('eid_verifying_error_modal.title'),
+      title: t('auth.eid_verifying_error_modal.title'),
       type: 'info',
       buttons: [
         <Button
@@ -94,12 +94,12 @@ const VerifyModals = () => {
           isDisabled={sendEidPending}
           fullWidthMobile
         >
-          {t('modals_close_button_title')}
+          {t('auth.verify_modals_close_button_title')}
         </Button>,
       ],
       isDismissable: !sendEidPending,
       noCloseButton: sendEidPending,
-      children: t('eid_verifying_error_modal.content'),
+      children: t('auth.eid_verifying_error_modal.content'),
     },
   ]
 

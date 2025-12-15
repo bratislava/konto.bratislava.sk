@@ -15,14 +15,14 @@ import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import Button from '../simple-components/Button'
 import InputField from '../widget-components/InputField/InputField'
 
-export interface VerificationFormData {
+export interface IdentityVerificationOfPhysicalEntityFormData {
   rc: string
   idCard: string
   turnstileToken: string
 }
 
 interface Props {
-  onSubmit: (data: VerificationFormData) => void
+  onSubmit: (data: IdentityVerificationOfPhysicalEntityFormData) => void
   error?: Error | null
 }
 
@@ -56,7 +56,7 @@ const foSchema = {
   required: ['rc', 'idCard', 'turnstileToken'],
 }
 
-const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
+const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
@@ -65,7 +65,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
     control,
     errors,
     formState: { isSubmitting },
-  } = useHookForm<VerificationFormData>({
+  } = useHookForm<IdentityVerificationOfPhysicalEntityFormData>({
     schema: foSchema,
     defaultValues: { rc: '', idCard: '' },
   })
@@ -79,16 +79,13 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   return (
     <form
       className="flex flex-col gap-4 md:gap-6"
-      onSubmit={handleSubmit((data: VerificationFormData) => {
+      onSubmit={handleSubmit((data: IdentityVerificationOfPhysicalEntityFormData) => {
         incrementCaptchaKey()
         return onSubmit(data)
       })}
     >
       <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
-      <AccountMarkdown
-        variant="sm"
-        content={t('auth.identity_verification_subtitle')}
-      />
+      <AccountMarkdown variant="sm" content={t('auth.identity_verification_subtitle')} />
       <AccountErrorAlert error={error} />
 
       <Controller
@@ -172,4 +169,4 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   )
 }
 
-export default IdentityVerificationForm
+export default IdentityVerificationOfPhysicalEntityForm

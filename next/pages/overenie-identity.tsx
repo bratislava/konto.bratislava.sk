@@ -9,9 +9,9 @@ import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/er
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
-import IdentityVerificationForm, {
-  VerificationFormData,
-} from '../components/forms/auth-forms/IdentityVerificationForm'
+import IdentityVerificationOfPhysicalEntityForm, {
+  IdentityVerificationOfPhysicalEntityFormData,
+} from '../components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
 import Button from '../components/forms/simple-components/Button'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useVerifyEid, VerifyEidProvider } from '../components/verify/useVerifyEid'
@@ -57,7 +57,9 @@ const IdentityVerificationPage = () => {
     }
   }
 
-  const verifyIdentityAndRefreshUserData = async (data: VerificationFormData) => {
+  const verifyIdentityAndRefreshUserData = async (
+    data: IdentityVerificationOfPhysicalEntityFormData,
+  ) => {
     setLastRc(data.rc)
     setLastIdCard(data.idCard)
     handleErrorChange(null)
@@ -116,7 +118,7 @@ const IdentityVerificationPage = () => {
                 />
               </div>
             ) : (
-              <IdentityVerificationForm
+              <IdentityVerificationOfPhysicalEntityForm
                 onSubmit={verifyIdentityAndRefreshUserData}
                 error={identityVerificationError}
               />

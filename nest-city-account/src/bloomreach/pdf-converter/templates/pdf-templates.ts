@@ -3,13 +3,13 @@ import { deliveryMethodSetToNotificationHtml } from './delivery-method-set-to-no
 export const pdfTemplates = {
   'delivery-method-set-to-notification': {
     html: deliveryMethodSetToNotificationHtml,
-    attributes: ['name', 'email', 'birthNumber'],
+    variables: ['name', 'email', 'birthNumber'],
   },
 }
 
 export type PdfTemplateKeys = keyof typeof pdfTemplates
 
 export type TemplateAttributes<T extends PdfTemplateKeys> = Record<
-  (typeof pdfTemplates)[T]['attributes'][number],
+  (typeof pdfTemplates)[T]['variables'][number],
   string
 >

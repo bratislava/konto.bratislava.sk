@@ -1,21 +1,21 @@
 import { ArrowRightIcon } from '@assets/ui-icons'
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import { environment } from '../../../../environment'
-import { AccountType } from '../../../../frontend/dtos/accountDto'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import { isBrowser } from '../../../../frontend/utils/general'
-import logger from '../../../../frontend/utils/logger'
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
+import { environment } from '../../../environment'
+import { AccountType } from '../../../frontend/dtos/accountDto'
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import { useQueryParamRedirect } from '../../../frontend/hooks/useQueryParamRedirect'
+import { useSsrAuth } from '../../../frontend/hooks/useSsrAuth'
+import { isBrowser } from '../../../frontend/utils/general'
+import logger from '../../../frontend/utils/logger'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
+import Button from '../simple-components/Button'
+import InputField from '../widget-components/InputField/InputField'
 
 export interface VerificationFormData {
   ico?: string
@@ -124,7 +124,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: VerificationFormData) => {
         incrementCaptchaKey()
         return onSubmit(data)
@@ -133,11 +133,11 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
       <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
       <AccountMarkdown
         variant="sm"
-        content={t(
+        content={
           isLegalEntity
-            ? 'auth.identity_verification_subtitle_legal_entity'
-            : 'auth.identity_verification_subtitle',
-        )}
+            ? t('auth.identity_verification_subtitle_legal_entity')
+            : t('auth.identity_verification_subtitle')
+        }
       />
       <AccountErrorAlert error={error} />
       {isLegalEntity && (

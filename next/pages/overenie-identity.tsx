@@ -2,9 +2,6 @@ import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import IdentityVerificationForm, {
-  VerificationFormData,
-} from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
@@ -12,6 +9,9 @@ import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/er
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
+import IdentityVerificationForm, {
+  VerificationFormData,
+} from '../components/forms/auth-forms/IdentityVerificationForm'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
@@ -111,7 +111,7 @@ const IdentityVerificationPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef}>
         {tierStatus.isIdentityVerificationNotYetAttempted && (
           <IdentityVerificationForm
             onSubmit={verifyIdentityAndRefreshUserData}

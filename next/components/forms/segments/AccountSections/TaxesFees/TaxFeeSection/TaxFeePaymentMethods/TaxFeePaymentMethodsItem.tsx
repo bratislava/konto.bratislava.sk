@@ -1,7 +1,7 @@
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 
-interface PaymentMethodItemProps {
+interface TaxFeePaymentMethodsItemProps {
   title: React.ReactNode
   subtitle: string
   amount: number
@@ -10,14 +10,14 @@ interface PaymentMethodItemProps {
   buttonHref: string
 }
 
-const PaymentMethodItem = ({
+const TaxFeePaymentMethodsItem = ({
   title,
   subtitle,
   amount,
   buttonText,
   buttonVariant,
   buttonHref,
-}: PaymentMethodItemProps) => {
+}: TaxFeePaymentMethodsItemProps) => {
   return (
     // components in figma is not grouped properly, so gaps are all over the place to match figma design
     <div className="flex w-full flex-col justify-between gap-4 border-gray-200 p-4 nth-2:border-t-2 lg:flex-row lg:gap-0 lg:p-6">
@@ -46,4 +46,4 @@ const PaymentMethodItem = ({
   )
 }
 
-export default PaymentMethodItem
+export default TaxFeePaymentMethodsItem

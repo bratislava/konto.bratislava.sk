@@ -54,7 +54,9 @@
     "passport-jwt": "^4.0.1",
     "rodnecislo": "^1.6.0",
     "uuid": "^11.1.0",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "playwright": "^1.54.2",
+    "pdf-lib-with-encrypt": "^1.2.1"
   },
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^5.2.1",

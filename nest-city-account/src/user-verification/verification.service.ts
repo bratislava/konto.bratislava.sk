@@ -39,6 +39,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { PdfConverterService } from '../bloomreach/pdf-converter/pdf-converter.service'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class VerificationService {
@@ -139,7 +140,13 @@ export class VerificationService {
 
         const pdfConverterService = new PdfConverterService()
 
-        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard, pdfConverterService)
+        const bloomreachService = new BloomreachService(
+          cognitoSubservice,
+          throwerErrorGuard,
+          pdfConverterService,
+          new PrismaService(),
+          new ConfigService()
+        )
 
         await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {

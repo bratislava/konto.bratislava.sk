@@ -2,7 +2,7 @@ import type { LibraryOptions } from '@aws-amplify/core'
 import type { ResourcesConfig } from 'aws-amplify'
 import { environment } from 'environment'
 
-export const amplifyConfig: ResourcesConfig = {
+export const amplifyConfig = {
   Auth: {
     Cognito: {
       //  Amazon Cognito User Pool ID
@@ -19,6 +19,17 @@ export const amplifyConfig: ResourcesConfig = {
       allowGuestAccess: true,
     },
   },
+} satisfies ResourcesConfig
+
+export const createAmplifyConfig = ({ clientId }: { clientId?: string }): ResourcesConfig => {
+  return {
+    Auth: {
+      Cognito: {
+        ...amplifyConfig.Auth.Cognito,
+        ...(clientId && { userPoolClientId: clientId }),
+      },
+    },
+  }
 }
 
 export const amplifyLibraryOptions: LibraryOptions = {

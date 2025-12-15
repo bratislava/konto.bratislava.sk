@@ -13,8 +13,8 @@ const UserProfilePassword = () => {
   return (
     <UserProfileSection>
       <UserProfileSectionHeader
-        title={t('password_change.title')}
-        text={t('password_change.text')}
+        title={t('my_profile.password_change.title')}
+        text={t('my_profile.password_change.text')}
         isMobileColumn
         childrenToColumn
       >
@@ -22,7 +22,7 @@ const UserProfilePassword = () => {
           variant="black"
           startIcon={<LockIcon fill="white" className="size-6" />}
           size="sm"
-          text={t('password_change.button')}
+          text={t('my_profile.password_change.button')}
           onPress={() => push(ROUTES.PASSWORD_CHANGE)}
           className="w-full md:w-fit"
           data-cy="change-password-button"

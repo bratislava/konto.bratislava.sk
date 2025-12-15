@@ -1,6 +1,4 @@
-import AccordionV2 from 'components/forms/simple-components/AccordionV2'
 import { useTranslation } from 'next-i18next'
-import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
 import TaxesFeesDeliveryMethodInfoCard from './TaxesFeesDeliveryMethodInfoCard'
@@ -14,24 +12,16 @@ const TaxesFeesDeliveryMethodInfoCardWrapper = () => {
     return null
   }
 
-  // TODO this is repeated 3 time in the codebase, we should move this logic to separate function
-  const type = {
-    [UserOfficialCorrespondenceChannelEnum.Email]: t('communication_channel.email'),
-    [UserOfficialCorrespondenceChannelEnum.Postal]: t('communication_channel.postal'),
-    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('communication_channel.edesk'),
-  }[channel]
-
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <h2 className="text-h5-semibold">{t('account_section_payment.delivery_method')}</h2>
-      <div className="lg:hidden">
-        <AccordionV2 title={type}>
-          <TaxesFeesDeliveryMethodInfoCard />
-        </AccordionV2>
-      </div>
-      <div className="max-lg:hidden">
-        <TaxesFeesDeliveryMethodInfoCard />
-      </div>
+      <h2 className="text-h5-semibold">
+        {/* TODO: current behaviour is confusing, but it is requested by Zdenko,
+            it is showing currently set delivery method, not the one for the year of this tax.
+            IMHO if this is currently set delivery method, it should be shown in grey area
+            or if it's for the year of this tax, it should be shown with same year as in title? */}
+        {t('taxes.communication_channel.info_title', { year: new Date().getFullYear() })}
+      </h2>
+      <TaxesFeesDeliveryMethodInfoCard />
     </div>
   )
 }

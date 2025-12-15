@@ -22,7 +22,7 @@ const UploadFilesList = ({
   onFileDownload = () => {},
   disabled = false,
 }: UploadedFilesListProps) => {
-  const { t } = useTranslation('account', { keyPrefix: 'Upload' })
+  const { t } = useTranslation('account')
 
   let valueArray: string[] = []
   if (value) {
@@ -37,7 +37,7 @@ const UploadFilesList = ({
     <div className="flex flex-col gap-4">
       {/* TODO accordion, "x of n" info */}
       <div>
-        <h3 className="text-p1-semibold">{t('uploadingList')}</h3>
+        <h3 className="text-p1-semibold">{t('Upload.uploadingList')}</h3>
       </div>
 
       <ul className="flex flex-col gap-2">

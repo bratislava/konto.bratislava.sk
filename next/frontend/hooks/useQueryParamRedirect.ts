@@ -1,3 +1,5 @@
+import { UrlObject } from 'node:url'
+
 import { fetchAuthSession } from 'aws-amplify/auth'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
@@ -5,15 +7,22 @@ import { useCallback, useMemo } from 'react'
 
 import { ROUTES } from '../api/constants'
 import {
+  clientIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
   isHomeRedirect,
+  payloadQueryParam,
   redirectQueryParam,
+  redirectUriQueryParam,
+  stateQueryParam,
 } from '../utils/queryParamRedirect'
+import { useOAuthParams } from './useOAuthParams'
 
 export const useQueryParamRedirect = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
+
+  const { clientId, payload, redirectUri, state } = useOAuthParams()
 
   const safeRedirect = useMemo(() => {
     const param = searchParams.get(redirectQueryParam)
@@ -21,30 +30,32 @@ export const useQueryParamRedirect = () => {
   }, [searchParams])
 
   /**
+   * Returns the redirect and oauth query params to be used in the next route.
+   * Or returning empty object, which leads to ignoring all other unknown params.
+   */
+  const getRedirectQueryParams = useCallback(() => {
+    return {
+      ...(!isHomeRedirect(safeRedirect) && { [redirectQueryParam]: safeRedirect.url }),
+      ...(clientId && { [clientIdQueryParam]: clientId }),
+      ...(payload && { [payloadQueryParam]: payload }),
+      ...(redirectUri && { [redirectUriQueryParam]: redirectUri }),
+      ...(state && { [stateQueryParam]: state }),
+    }
+  }, [clientId, payload, redirectUri, safeRedirect, state])
+
+  /**
    * If redirect param exists in the current URL the function appends it to the next route. Should be only used for
    * routes that support redirect query param (e.g. login, signup, etc.).
    */
   const getRouteWithRedirect = useCallback(
-    (route: string) => {
-      if (!isHomeRedirect(safeRedirect)) {
-        return `${route}?${redirectQueryParam}=${encodeURIComponent(safeRedirect.url)}`
+    (route: string): UrlObject => {
+      return {
+        pathname: route,
+        query: getRedirectQueryParams(),
       }
-
-      return route
     },
-    [safeRedirect],
+    [getRedirectQueryParams],
   )
-
-  /**
-   * Returns the redirect query params to be used in the next route.
-   */
-  const getRedirectQueryParams = useCallback(() => {
-    if (!isHomeRedirect(safeRedirect)) {
-      return { [redirectQueryParam]: safeRedirect.url }
-    }
-
-    return null
-  }, [safeRedirect])
 
   /**
    * Appends the current URL to the next route. Should be used when redirecting to login, signup, when want to return

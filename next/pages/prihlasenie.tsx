@@ -1,7 +1,6 @@
 import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
@@ -9,6 +8,9 @@ import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 
+import LoginForm from '../components/forms/auth-forms/LoginForm'
+import HorizontalDivider from '../components/forms/HorizontalDivider'
+import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
@@ -18,6 +20,7 @@ import {
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async () => {
@@ -32,12 +35,17 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 
+// TODO OAuth: Show partially filled form (username) for oauth instead of redirecting
 const LoginPage = () => {
   const router = useRouter()
-  const { redirect, getRouteWithRedirect, getRedirectQueryParams } = useQueryParamRedirect()
+  const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
+
+  const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
+
+  // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -49,10 +57,22 @@ const LoginPage = () => {
 
   const onLogin = async (email: string, password: string) => {
     logger.info(`[AUTH] Attempting to sign in for email ${email}`)
+
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
+        if (isOAuthLogin) {
+          logger.info(`[AUTH] Proceeding to OAuth login`)
+          await handleOAuthLogin()
+
+          logger.info(`[AUTH] Calling Continue endpoint`)
+          // TODO OAuth: handle errors
+          await router.push(getOAuthContinueUrl())
+
+          return
+        }
+
         // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
         removeAmplifyGuestIdentityIdCookies()
         await prepareFormMigration()
@@ -63,6 +83,7 @@ const LoginPage = () => {
           { authStrategy: 'authOnly' },
         )
         await redirect()
+
         return
       }
       if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
@@ -73,7 +94,6 @@ const LoginPage = () => {
           `[AUTH] User didn't confirm the code in the registration process, requesting sign-up code for email ${email}`,
         )
         await resendSignUpCode({ username: email })
-        const redirectQueryParams = getRedirectQueryParams()
 
         logger.info(
           `[AUTH] Redirecting to registration page for sign up confirmation for email ${email}`,
@@ -81,9 +101,12 @@ const LoginPage = () => {
         await router.push(
           {
             pathname: ROUTES.REGISTER,
-            query: { ...redirectQueryParams, [loginConfirmSignUpEmailHiddenQueryParam]: email },
+            query: {
+              ...getRedirectQueryParams(),
+              [loginConfirmSignUpEmailHiddenQueryParam]: email,
+            },
           },
-          // This hides the param from the URL, but it's still accessible in the query object.
+          // This hides the email param from the URL, but it's still accessible in the query object.
           getRouteWithRedirect(ROUTES.REGISTER),
         )
       } else {
@@ -120,8 +143,10 @@ const LoginPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
         <LoginForm onSubmit={onLogin} error={loginError} />
+        <HorizontalDivider />
+        <AccountLink variant="registration" />
       </AccountContainer>
     </LoginRegisterLayout>
   )

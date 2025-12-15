@@ -1,6 +1,6 @@
 import { ArrowRightIcon, ClockIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { ReactNode } from 'react'
 
 interface Props {
@@ -34,15 +34,18 @@ const AccountVerificationPendingAlert = ({
         <AccountMarkdown className="text-center" content={description} variant="sm" />
       )}
       {children}
-      <Button onPress={onConfirm} className="min-w-full" variant="category" text={confirmLabel} />
+      <Button variant="black-solid" onPress={onConfirm} fullWidth>
+        {confirmLabel}
+      </Button>
       {onCancel && (
         <Button
-          variant="plain-black"
-          className="min-w-full"
+          variant="black-plain"
+          fullWidth
           onPress={onCancel}
-          text={cancelLabel}
           endIcon={<ArrowRightIcon className="size-6" />}
-        />
+        >
+          {cancelLabel}
+        </Button>
       )}
     </div>
   )

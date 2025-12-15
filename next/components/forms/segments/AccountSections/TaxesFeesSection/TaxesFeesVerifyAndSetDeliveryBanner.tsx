@@ -21,9 +21,13 @@ const TaxesFeesVerifyAndSetDeliveryMethodBanner = ({
     ? t('account_section_payment.set_delivery_method')
     : t('account_section_payment.verify_and_set')
 
+  const announcementContent = isIdentityVerified
+    ? t('account_section_payment.set_delivery_method_content')
+    : t('account_section_payment.verify_identity_content')
+
   return (
     <AnnouncementBlock
-      announcementContent={t('account_section_payment.set_delivery_method_content')}
+      announcementContent={announcementContent}
       imageSrc={ImageMestskeKontoSituacia}
       buttons={[
         {

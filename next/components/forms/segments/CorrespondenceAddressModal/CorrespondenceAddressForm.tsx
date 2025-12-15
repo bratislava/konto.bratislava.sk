@@ -1,11 +1,11 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import { Address } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
+import { Address } from '../../../../frontend/dtos/accountDto'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
+import Button from '../../simple-components/Button'
+import InputField from '../../widget-components/InputField/InputField'
+import AccountErrorAlert from '../AccountErrorAlert/AccountErrorAlert'
 
 const schema = {
   type: 'object',

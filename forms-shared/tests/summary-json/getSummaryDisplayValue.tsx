@@ -462,6 +462,11 @@ describe('getSummaryDisplayValues', () => {
       const result = getSummaryDisplayValues(inputs, widgetType, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
+
+    test('returns invalid value for a non-array FileUpload value', () => {
+      const result = getSummaryDisplayValues('not-an-array', widgetType, schema, uiOptions)
+      expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
+    })
   })
 
   describe('DatePicker', () => {
@@ -489,6 +494,17 @@ describe('getSummaryDisplayValues', () => {
       const nonStringValue = 123456
       const result = getSummaryDisplayValues(nonStringValue, widgetType, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
+    })
+  })
+
+  describe('Unsupported widget type', () => {
+    const field = textArea('textAreaProperty', { title: 'TextArea Title' }, {})
+    const { schema, uiOptions } = retrieveRuntimeValues(field)
+
+    test('throws an error for an unsupported widget type', () => {
+      expect(() =>
+        getSummaryDisplayValues('value', 'unsupported' as BaWidgetType, schema, uiOptions),
+      ).toThrow('Unsupported widget type: unsupported')
     })
   })
 })

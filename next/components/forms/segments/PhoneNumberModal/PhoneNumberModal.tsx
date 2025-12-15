@@ -6,8 +6,8 @@ import { UserAttributes } from '../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from '../../../../frontend/utils/errors'
 import logger from '../../../../frontend/utils/logger'
+import PhoneNumberForm, { PhoneNumberData } from '../../auth-forms/PhoneNumberForm'
 import MessageModal from '../../widget-components/Modals/MessageModal'
-import PhoneNumberForm, { PhoneNumberData } from '../PhoneNumberForm/PhoneNumberForm'
 
 const getInitialOpen = (userAttributes: UserAttributes | null) => {
   // Signed out
@@ -71,7 +71,7 @@ const PhoneNumberModal = () => {
 
   return (
     <MessageModal
-      title={t('adding_phone_number_modal.title')}
+      title={t('phone_number_modal.title')}
       type="info"
       isOpen={isOpen}
       onOpenChange={handleOpenChange}

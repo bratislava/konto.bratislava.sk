@@ -17,15 +17,26 @@ const PaymentSchedule = () => {
         const isPaid =
           installment.status === InstallmentPaidStatusEnum.Paid ||
           installment.status === InstallmentPaidStatusEnum.OverPaid
+
+        const formattedDate = formatDate(installment.dueDate)
+        const translationMap = {
+          0: t('tax_detail_section.installments.0', { date: formattedDate }),
+          1: t('tax_detail_section.installments.1', { date: formattedDate }),
+          2: t('tax_detail_section.installments.2', { date: formattedDate }),
+          3: t('tax_detail_section.installments.3', { date: formattedDate }),
+        }
+
         return (
           <div
             key={installment.installmentNumber}
             className="flex w-full flex-col justify-between py-4 not-last:border-b-2 not-last:border-gray-200 lg:flex-row"
           >
             <span className="text-h4">
-              {t(`tax_detail_section.installments.${index}`, {
-                date: formatDate(installment.dueDate),
-              })}
+              {/* only first installment is calculated, others are hardcoded so they will always be available for DzN,
+               how date calculation works for PKO is not yet determined same in TaxFeePaymentMethodSection */}
+              {installment.dueDate
+                ? translationMap[index]
+                : t('tax_detail_section.installments.not_available')}
             </span>
             <span
               className={cn({

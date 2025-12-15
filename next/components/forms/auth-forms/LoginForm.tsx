@@ -1,14 +1,12 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import { ROUTES } from 'frontend/api/constants'
-import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '../segments/AccountLink/AccountLink'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   email: string
@@ -28,19 +26,21 @@ const schema = {
       type: 'string',
       minLength: 1,
       format: 'email',
-      errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.email_required',
+        format: 'account:auth.fields.email_format',
+      },
     },
     password: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:password_required' },
+      errorMessage: { minLength: 'account:auth.fields.password_required' },
     },
   },
   required: ['email', 'password'],
 }
 
 const LoginForm = ({ onSubmit, error }: Props) => {
-  const { getRouteWithRedirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
 
   const {
@@ -55,11 +55,11 @@ const LoginForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
       data-cy="login-container"
     >
-      <h1 className="text-h3">{t('login_title')}</h1>
+      <h1 className="text-h3">{t('auth.login_title')}</h1>
       <AccountErrorAlert error={error} />
       <Controller
         name="email"
@@ -67,8 +67,8 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            label={t('email_label')}
-            placeholder={t('email_placeholder')}
+            label={t('auth.fields.email_label')}
+            placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
           />
@@ -80,32 +80,23 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
-            label={t('password_label')}
-            placeholder={t('password_placeholder')}
+            label={t('auth.fields.password_label')}
+            placeholder={t('auth.fields.password_placeholder')}
             {...field}
             errorMessage={errors.password}
           />
         )}
       />
-      <AccountLink
-        label={t('forgotten_password_link')}
-        description={t('forgotten_password_description')}
-        href={getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD)}
-      />
+      <AccountLink variant="forgotten-password" />
       <Button
-        className="min-w-full"
+        variant="black-solid"
         type="submit"
-        text={t('login_submit')}
-        variant="category"
-        disabled={isSubmitting}
+        fullWidth
+        isDisabled={isSubmitting}
         data-cy="login-button"
-      />
-      <AccountLink
-        label={t('register_link')}
-        href={getRouteWithRedirect(ROUTES.REGISTER)}
-        description={t('register_description')}
-        variant="category"
-      />
+      >
+        {t('auth.login_submit')}
+      </Button>
     </form>
   )
 }

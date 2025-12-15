@@ -1,9 +1,10 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
 
 export interface PhoneNumberData {
   phone_number?: string
@@ -46,7 +47,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
       <div className="whitespace-pre-line">
-        <div className="text-p2">{t('adding_phone_number_modal.description')}</div>
+        <div className="text-p2">{t('phone_number_modal.description')}</div>
       </div>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
@@ -54,20 +55,16 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         control={control}
         render={({ field }) => (
           <InputField
-            label={t('profile_detail.phone_number')}
-            placeholder={t('profile_detail.phone_number_placeholder')}
+            label={t('my_profile.profile_detail.phone_number')}
+            placeholder={t('my_profile.profile_detail.phone_number_placeholder')}
             {...field}
             errorMessage={errors.phone_number}
           />
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={t('profile_detail.save_button')}
-        variant="black"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {t('phone_number_form.save_changes_button')}
+      </Button>
     </form>
   )
 }

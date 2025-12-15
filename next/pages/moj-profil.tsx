@@ -34,7 +34,7 @@ const MojProfil = ({ dehydratedState }: MojProfilProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <AccountSectionHeader title={t('my_profile')} />
+        <AccountSectionHeader title={t('account_section_my_profile.title')} />
         <UserProfileView />
       </AccountPageLayout>
     </HydrationBoundary>

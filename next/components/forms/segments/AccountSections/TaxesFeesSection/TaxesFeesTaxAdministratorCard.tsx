@@ -44,7 +44,7 @@ const TaxesFeesTaxAdministratorCard = ({
       )}
     >
       <div className="flex flex-col gap-4 lg:gap-3">
-        <div className="hidden flex-col lg:flex">
+        <div className="flex flex-col">
           <span className="text-p1-semibold">{taxAdministrator.name}</span>
         </div>
         <div className="flex flex-wrap content-center items-center gap-x-5 gap-y-2 self-stretch">
@@ -65,16 +65,16 @@ const TaxesFeesTaxAdministratorCard = ({
           <span className="flex items-center gap-x-2">
             <ClockIcon className="size-5" />
             <MLinkNew
-              href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky"
+              href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti"
               variant="underlined-medium"
             >
-              {t('working_hours')}
+              {t('taxes.tax_administrator_card.working_hours')}
             </MLinkNew>
           </span>
         </div>
       </div>
       {/* TODO: this icon is used /dane-a-poplatky icon in the middle and /dane-a-poplatky/2025 icon in the top */}
-      <div className="hidden rounded-lg bg-gray-100 p-3 lg:block">
+      <div className="block rounded-lg bg-gray-100 p-3">
         <PhoneIcon className="size-6" />
       </div>
     </div>

@@ -26,8 +26,8 @@ import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
+import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 
-const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
 @Injectable()
@@ -42,6 +42,7 @@ export class TasksService {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly configSubservice: TasksConfigSubservice,
+    private readonly taxImportHelperSubservice: TaxImportHelperSubservice,
     private readonly norisService: NorisService,
     private readonly configService: ConfigService,
   ) {
@@ -415,48 +416,38 @@ export class TasksService {
   async loadTaxesForUsers() {
     this.logger.log('Starting loadTaxesForUsers task')
 
-    // Find users without tax this year
     const year = new Date().getFullYear()
-
-    const prioritized = await this.prismaService.$queryRaw<
-      { birthNumber: string }[]
-    >`
-      SELECT tp."birthNumber"
-      FROM "TaxPayer" tp
-      WHERE NOT EXISTS (
-        SELECT 1
-        FROM "Tax" t
-        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year}
-      )
-      ORDER BY (tp."createdAt" = tp."updatedAt") DESC, tp."updatedAt" ASC
-      LIMIT ${UPLOAD_BIRTHNUMBERS_BATCH}
-    `
-
-    const birthNumbers = prioritized.map((p) => p.birthNumber)
-
-    if (birthNumbers.length === 0) {
-      return
-    }
-
-    const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
-        year,
-        birthNumbers,
-      })
-
-    // Move all requested TaxPayers to the end of the queue
-    await this.prismaService.taxPayer.updateMany({
-      where: {
-        birthNumber: { in: birthNumbers },
-      },
-      data: {
-        updatedAt: new Date(),
-      },
-    })
+    const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
+      this.taxImportHelperSubservice.isWithinImportWindow(),
+      this.taxImportHelperSubservice.getTodayTaxCount(),
+      this.taxImportHelperSubservice.getDailyTaxLimit(),
+    ])
+    const isLimitReached = todayTaxCount >= dailyLimit
+    const importPhase = isWithinWindow && !isLimitReached
 
     this.logger.log(
-      `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
+      `Time window: ${isWithinWindow ? 'OPEN' : 'CLOSED'}, Today's tax count: ${todayTaxCount}/${dailyLimit}, Phase: ${importPhase ? 'IMPORT' : 'PREPARE'}`,
     )
+
+    const { birthNumbers, newlyCreated } =
+      await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
+        year,
+        importPhase,
+      )
+
+    // Import newly created users regardless of window or limit
+    if (newlyCreated.length > 0) {
+      this.logger.log(
+        `Found ${newlyCreated.length} newly created users, importing immediately`,
+      )
+      await this.taxImportHelperSubservice.importTaxes(newlyCreated, year)
+    }
+
+    if (birthNumbers.length > 0) {
+      await (importPhase
+        ? this.taxImportHelperSubservice.importTaxes(birthNumbers, year)
+        : this.taxImportHelperSubservice.prepareTaxes(birthNumbers, year))
+    }
   }
 
   private async retryWithDelay<T>(

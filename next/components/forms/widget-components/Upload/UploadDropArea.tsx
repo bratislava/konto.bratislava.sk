@@ -39,7 +39,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     },
     ref,
   ) => {
-    const { t } = useTranslation('account', { keyPrefix: 'Upload' })
+    const { t } = useTranslation('account')
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)
@@ -112,14 +112,14 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
               </div>
 
               <div className="text-16-semibold">
-                {allowsMultiple ? t('uploadFiles') : t('uploadFile')}
+                {allowsMultiple ? t('Upload.uploadFiles') : t('Upload.uploadFile')}
               </div>
 
               {sizeLimit || supportedFormats?.length ? (
                 <dl className="flex gap-2 text-p3">
                   {displayMaxFileSize ? (
                     <>
-                      <dt className="sr-only">{t('sizeLimit')}</dt>
+                      <dt className="sr-only">{t('Upload.sizeLimit')}</dt>
                       <dd>
                         <PrettyBytes number={displayMaxFileSize} />
                       </dd>
@@ -130,7 +130,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
                   )}
                   {displaySupportedFileExtensions?.length ? (
                     <>
-                      <dt className="sr-only">{t('supportedFormats')}</dt>
+                      <dt className="sr-only">{t('Upload.supportedFormats')}</dt>
                       <dd>{displaySupportedFileExtensions.join(', ')}</dd>
                     </>
                   ) : null}

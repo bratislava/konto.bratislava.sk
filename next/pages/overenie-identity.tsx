@@ -2,9 +2,6 @@ import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import IdentityVerificationForm, {
-  VerificationFormData,
-} from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
@@ -12,6 +9,9 @@ import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/er
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
+import IdentityVerificationForm, {
+  VerificationFormData,
+} from '../components/forms/auth-forms/IdentityVerificationForm'
 import Button from '../components/forms/simple-components/Button'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useVerifyEid, VerifyEidProvider } from '../components/verify/useVerifyEid'
@@ -107,12 +107,12 @@ const IdentityVerificationPage = () => {
           <>
             {isLegalEntity ? (
               <div className="flex flex-col space-y-4">
-                <h1 className="text-h3">{t('identity_verification_title')}</h1>
-                <p className="text-p2">{t('identity_verification_subtitle_legal_entity')}</p>
+                <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
+                <p className="text-p2">{t('auth.identity_verification_subtitle_legal_entity')}</p>
                 <Button
                   variant="black"
                   onPress={openVerifyingConfirmationEidLegalModal}
-                  text={t('verify_with_eid')}
+                  text={t('auth.verify_with_eid')}
                 />
               </div>
             ) : (
@@ -125,31 +125,31 @@ const IdentityVerificationPage = () => {
         )}
         {tierStatus.tier === Tier.QUEUE_IDENTITY_CARD && (
           <AccountVerificationPendingAlert
-            title={t('identity_verification_pending_title')}
+            title={t('auth.identity_verification_pending_title')}
             description={
               lastRc && lastIdCard
-                ? t('identity_verification_pending_description', {
+                ? t('auth.identity_verification_pending_description', {
                     rc: lastRc,
                     idCard: lastIdCard,
                   })
-                : t('identity_verification_pending_description_without_data')
+                : t('auth.identity_verification_pending_description_without_data')
             }
-            confirmLabel={t('account_continue_link')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={() => redirect()}
           />
         )}
         {tierStatus.isIdentityVerified && (
           <AccountSuccessAlert
-            title={t('identity_verification_success_title')}
+            title={t('auth.identity_verification_success_title')}
             description={
               lastRc &&
               lastIdCard &&
-              t('identity_verification_success_description', {
+              t('auth.identity_verification_success_description', {
                 rc: lastRc,
                 idCard: lastIdCard,
               })
             }
-            confirmLabel={t('account_continue_link')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={() => redirect()}
           />
         )}

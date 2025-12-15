@@ -31,8 +31,6 @@ export type ItemLinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref' 
 
 const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
   ({ menuItem, isSelected, onClick, ...rest }, ref) => {
-    const { t } = useTranslation()
-
     return menuItem.url ? (
       <Link
         href={menuItem.url}
@@ -50,7 +48,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
         data-cy={`${menuItem.url.replaceAll('/', '')}-menu-item`}
       >
         <div aria-hidden>{menuItem.icon}</div>
-        <span>{t(menuItem?.title)}</span>
+        <span>{menuItem.title}</span>
         {menuItem.url === ROUTES.USER_PROFILE && <IdentityVerificationStatus />}
       </Link>
     ) : null
@@ -60,7 +58,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
 export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) => {
   const router = useRouter()
   const { menuValue, setMenuValue, setMobileMenuOpen, isMobileMenuOpen } = useNavMenuContext()
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
 
   useEventListener('keydown', (event) => {
     if (event.key === 'Escape') {

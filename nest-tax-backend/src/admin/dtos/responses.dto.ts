@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateBirthNumbersResponseDto {
   @ApiProperty({
@@ -8,6 +8,14 @@ export class CreateBirthNumbersResponseDto {
     type: [String],
   })
   birthNumbers: string[]
+
+  @ApiPropertyOptional({
+    description:
+      'An array of birth numbers which were found in Noris (regardless of whether they were processed).',
+    default: ['000000/0000', '000111/2222'],
+    type: [String],
+  })
+  foundInNoris?: string[]
 }
 
 export class UpdateDeliveryMethodsInNorisResponseDto extends CreateBirthNumbersResponseDto {}

@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { useTaxChannel } from '../../useTaxChannel'
 import TaxesFeesDeliveryMethodInfoCard from './TaxesFeesDeliveryMethodInfoCard'
-import { useTaxChannel } from './useTaxChannel'
 
 const TaxesFeesDeliveryMethodInfoCardWrapper = () => {
   const { t } = useTranslation('account')

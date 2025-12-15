@@ -1,16 +1,16 @@
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { useSearchParams } from 'next/navigation'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useTaxFeeSection } from '../useTaxFeeSection'
 import PaymentData from './PaymentData'
 
 // query param "sposob-uhrady" could have "zvysna suma" split to "zvysna-suma" and "jednorazova-uhrada"
 // but only thing that is affecting is title of the page
-const TaxFeePayment = () => {
+const TaxFeePaymentSection = () => {
   const { t } = useTranslation('account')
 
   const { taxData } = useTaxFeeSection()
@@ -55,4 +55,4 @@ const TaxFeePayment = () => {
   )
 }
 
-export default TaxFeePayment
+export default TaxFeePaymentSection

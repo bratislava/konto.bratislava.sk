@@ -6,6 +6,14 @@ import {
   PaymentHandIcon,
   QrCodeIcon,
 } from '@assets/ui-icons'
+import Alert from 'components/forms/info-components/Alert'
+import TaxesFeesVerifyAndSetDeliveryMethodBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesVerifyAndSetDeliveryBanner'
+import { useTaxChannel } from 'components/forms/segments/AccountSections/TaxesFees/useTaxChannel'
+import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
+import Button from 'components/forms/simple-components/Button'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import ClipboardCopy from 'components/forms/simple-components/ClipboardCopy'
+import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { useUser } from 'frontend/hooks/useUser'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
@@ -13,15 +21,6 @@ import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-
-import Alert from '../../../../info-components/Alert'
-import Button from '../../../../simple-components/Button'
-import ButtonNew from '../../../../simple-components/ButtonNew'
-import ClipboardCopy from '../../../../simple-components/ClipboardCopy'
-import PaymentSchedule from '../../../../simple-components/PaymentSchedule'
-import TaxesFeesVerifyAndSetDeliveryMethodBanner from '../banners/TaxesFeesVerifyAndSetDeliveryBanner'
-import { useTaxChannel } from '../TaxesFeesDeliveryMethod/useTaxChannel'
-import { useTaxFeeSection } from '../useTaxFeeSection'
 
 type DetailsProps = {
   paymentMethod: PaymentMethodType

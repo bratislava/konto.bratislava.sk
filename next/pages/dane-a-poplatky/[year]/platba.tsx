@@ -5,7 +5,7 @@ import {
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import TaxFeePayment from 'components/forms/segments/AccountSections/TaxesFees/TaxFeePayment/TaxFeePayment'
+import TaxFeePaymentSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeePaymentSection/TaxFeePaymentSection'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
@@ -83,7 +83,7 @@ const AccountTaxesFeesPage = ({
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
         <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
-          <TaxFeePayment />
+          <TaxFeePaymentSection />
         </TaxFeeSectionProvider>
       </AccountPageLayout>
     </HydrationBoundary>

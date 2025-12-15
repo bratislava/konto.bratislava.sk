@@ -9,10 +9,10 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
+import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
 import { AccountType } from 'frontend/dtos/accountDto'
 import { ResponseGetTaxesListDto } from 'openapi-clients/tax'
 
-import TaxesFeesSection from '../../components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection'
 import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useTaxFeesSection'
 import AccountPageLayout from '../../components/layouts/AccountPageLayout'

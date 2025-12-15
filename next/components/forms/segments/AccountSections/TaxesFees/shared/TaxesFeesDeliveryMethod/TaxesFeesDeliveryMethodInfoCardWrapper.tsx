@@ -1,8 +1,7 @@
+import TaxesFeesDeliveryMethodInfoCard from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCard'
+import { useTaxChannel } from 'components/forms/segments/AccountSections/TaxesFees/useTaxChannel'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { useTaxChannel } from '../../useTaxChannel'
-import TaxesFeesDeliveryMethodInfoCard from './TaxesFeesDeliveryMethodInfoCard'
 
 const TaxesFeesDeliveryMethodInfoCardWrapper = () => {
   const { t } = useTranslation('account')

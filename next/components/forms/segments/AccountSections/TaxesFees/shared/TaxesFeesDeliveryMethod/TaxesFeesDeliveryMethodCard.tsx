@@ -1,10 +1,9 @@
 import { MailIcon, SettingsIcon } from '@assets/ui-icons'
+import { useTaxChannel } from 'components/forms/segments/AccountSections/TaxesFees/useTaxChannel'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
-
-import ButtonNew from '../../../../../simple-components/ButtonNew'
-import { useTaxChannel } from '../../useTaxChannel'
 
 type TaxesFeesDeliveryMethodCardProps = {
   onDeliveryMethodChange: () => void

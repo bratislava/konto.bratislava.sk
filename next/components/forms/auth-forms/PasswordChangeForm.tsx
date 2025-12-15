@@ -1,9 +1,10 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/Button'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import Button from '../simple-components/ButtonNew'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   oldPassword: string
@@ -25,20 +26,23 @@ const schema = {
       // min length set to 2 according to cognito error InvalidParameterException:
       // 1 validation error detected: Value at 'previousPassword' failed to satisfy constraint: Member must satisfy regular expression pattern: ^[\S]+.*[\S]+$
       minLength: 2,
-      errorMessage: { minLength: 'account:password_required' },
+      errorMessage: { minLength: 'account:auth.fields.password_required' },
     },
     password: {
       type: 'string',
       minLength: 1,
       format: 'password',
-      errorMessage: { minLength: 'account:password_required', format: 'account:password_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.password_required',
+        format: 'account:auth.fields.password_format',
+      },
     },
     passwordConfirmation: {
       const: {
         $data: '1/password',
       },
       type: 'string',
-      errorMessage: { const: 'account:password_confirmation_required' },
+      errorMessage: { const: 'account:auth.fields.password_confirmation_required' },
     },
   },
   required: ['oldPassword', 'password', 'passwordConfirmation'],
@@ -58,11 +62,11 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.oldPassword, data.password))}
       data-cy="change-password-form"
     >
-      <h1 className="text-h3">{t('password_change_title')}</h1>
+      <h1 className="text-h3">{t('auth.password_change_title')}</h1>
       <AccountErrorAlert error={error} />
       <Controller
         name="oldPassword"
@@ -70,8 +74,8 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
-            label={t('old_password_label')}
-            placeholder={t('old_password_placeholder')}
+            label={t('auth.fields.old_password_label')}
+            placeholder={t('auth.fields.old_password_placeholder')}
             {...field}
             errorMessage={errors.oldPassword}
           />
@@ -84,9 +88,9 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             required
             autoComplete="new-password"
-            label={t('new_password_label')}
-            placeholder={t('new_password_placeholder')}
-            tooltip={t('password_description')}
+            label={t('auth.fields.new_password_label')}
+            placeholder={t('auth.fields.new_password_placeholder')}
+            helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
           />
@@ -99,21 +103,22 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             required
             autoComplete="new-password"
-            label={t('new_password_confirmation_label')}
-            placeholder={t('new_password_confirmation_placeholder')}
+            label={t('auth.fields.new_password_confirmation_label')}
+            placeholder={t('auth.fields.new_password_confirmation_placeholder')}
             {...field}
             errorMessage={errors.passwordConfirmation}
           />
         )}
       />
       <Button
-        className="min-w-full"
+        variant="black-solid"
         type="submit"
-        text={t('old_password_submit_new')}
-        variant="category"
-        disabled={isSubmitting}
+        fullWidth
+        isDisabled={isSubmitting}
         data-cy="change-password-submit"
-      />
+      >
+        {t('auth.old_password_submit_new')}
+      </Button>
     </form>
   )
 }

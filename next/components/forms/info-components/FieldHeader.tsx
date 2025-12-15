@@ -40,9 +40,9 @@ const FieldHeader = ({
   helptextMarkdown,
   descriptionProps,
   customHeaderBottomMargin = 'mb-1',
-  displayOptionalLabel,
+  displayOptionalLabel = true,
 }: FieldHeaderProps) => {
-  const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
+  const { t } = useTranslation('account')
 
   const useCustomBottomMargin = labelSize === 'default' || !helptext
 
@@ -74,7 +74,9 @@ const FieldHeader = ({
           <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
             {label}
           </label>
-          {showOptionalLabel && <span className="text-p3 sm:text-16">{t('optional')}</span>}
+          {showOptionalLabel && (
+            <span className="text-p3 sm:text-16">{t('FieldHeader.optional')}</span>
+          )}
         </div>
         {tooltip && (
           <div

@@ -1,6 +1,6 @@
 import Toggle from 'components/forms/simple-components/Toggle'
 
-import cn from '../../../../frontend/cn'
+import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 interface Consent {
   id: string
@@ -12,21 +12,19 @@ interface Consent {
 
 interface UserConsentProps {
   consent: Consent
-  isLast?: boolean
   onChange: (isSelected: boolean) => void
 }
 
-const UserConsent = ({ consent, isLast, onChange }: UserConsentProps) => {
+const UserConsent = ({ consent, onChange }: UserConsentProps) => {
   return (
     <div
-      className={cn('flex flex-col gap-4 border-gray-200 py-4', 'sm:flex-row sm:py-6', {
-        'border-b-2': !isLast,
-      })}
+      className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:py-6"
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}
     >
-      <div className="w-full grow">
-        <h3 className="text-h6">{consent.title}</h3>
-        <p className="text-p2-normal">{consent.text}</p>
+      <div className="flex w-full grow flex-col gap-2">
+        <h3 className="text-h5">{consent.title}</h3>
+        {/* TODO remove custom spacing by gap-1 */}
+        <AccountMarkdown variant="sm" content={consent.text} className="gap-1" />
       </div>
       <div>
         <Toggle

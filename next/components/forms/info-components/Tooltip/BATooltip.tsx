@@ -55,7 +55,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
 type BATooltipProps = Pick<TooltipProps, 'placement'> & { children: string }
 
 const BATooltip = ({ placement, children }: BATooltipProps) => {
-  const { t } = useTranslation('account', { keyPrefix: 'Tooltip' })
+  const { t } = useTranslation('account')
 
   // According to documentation
   // >> Note: tooltips are not shown on touch screen interactions. Ensure that your UI is usable without tooltips, or use
@@ -72,7 +72,7 @@ const BATooltip = ({ placement, children }: BATooltipProps) => {
     <TooltipTrigger isOpen={isOpen} onOpenChange={setOpen} delay={0} closeDelay={0}>
       <Button
         className="-m-1.5 flex cursor-pointer items-center justify-center rounded-lg p-1.5"
-        aria-label={t('aria.tooltip')}
+        aria-label={t('Tooltip.aria.tooltip')}
         // If the tooltip is open, and we click on it, it's first closed and then onPress is triggered, onPressStart
         // is triggered before the tooltip is closed, so it won't reopen again.
         onPressStart={() => {

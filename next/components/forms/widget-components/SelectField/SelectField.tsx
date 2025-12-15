@@ -160,7 +160,7 @@ const SelectField = <
   ...rest
 }: SelectMultiNewProps<Option, IsMulti, Group>) => {
   const id = useId()
-  const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
+  const { t } = useTranslation('account')
 
   const isError = !!errorMessage?.length
   const hasDescriptions = someOptionHasDescription<Option, IsMulti, Group>(options)
@@ -190,7 +190,7 @@ const SelectField = <
             options={options}
             closeMenuOnSelect={!rest.isMulti}
             hideSelectedOptions={false}
-            noOptionsMessage={() => t('noOptions')}
+            noOptionsMessage={() => t('SelectField.noOptions')}
             className="w-full"
             classNames={{
               control: ({ isFocused, isDisabled }) =>

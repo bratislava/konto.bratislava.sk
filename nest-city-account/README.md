@@ -1,6 +1,6 @@
 # City Account Backend
 
-This repository contains backend code of City Account project.
+This repository contains backend code of the City Account project.
 
 ## Product specification
 
@@ -8,7 +8,7 @@ This repository contains backend code of City Account project.
 
 ## Development
 
-First of all, duplicate `.env.example` file as `.env` by running following command:
+First, duplicate `.env.example` file as `.env` by running the following command:
 
 ```bash
 cp .env.example .env
@@ -41,7 +41,7 @@ npm install
 
 copy and adjust .env from .env.example
 
-if you are using different database or different posgres with user, adjust env `DATABASE_URL`
+if you are using a different database or different postgres with user, adjust env `DATABASE_URL`
 
 Migrate database and generate prisma files
 
@@ -65,14 +65,14 @@ npm run start:prod
 
 ## Test
 
-```
+```bash
 npm run test
 ```
 
 ## Used external services and tools
 
-- Postgre Database - for data storage
+- Postgres Database - for data storage
 - RabbitMQ - for queue processes
 - Magproxy - for verifying persons by birth number and identity card
-- NASES - for verifying if person has EDESK on slovensko.sk
-- Bloomreach - integration for mailing provider. Sending there events and customer changes. If you want deactivate bloomreach integration, just remove or change environment: `BLOOMREACH_INTEGRATION_STATE='ACTIVE'`
+- NASES - for verifying if a person has EDESK on slovensko.sk
+- Bloomreach - integration for mailing provider. Sending there events and customer changes. If you want to deactivate bloomreach integration, remove or change environment: `BLOOMREACH_INTEGRATION_STATE='ACTIVE'`

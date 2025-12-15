@@ -12,7 +12,10 @@ import {
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
+import {
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
 import {
   CognitoUserAttributesTierEnum,
   GDPRCategoryEnum,
@@ -281,7 +284,9 @@ export class BloomreachService {
       )
     }
 
-    if (!hashData.user?.birthNumber) {
+    const birthNumber = hashData.user?.birthNumber || hashData.legalPerson?.birthNumber
+
+    if (!birthNumber) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'User does not contain a birth number.'
@@ -298,8 +303,12 @@ export class BloomreachService {
     }
 
     const cognitoData = await this.cognitoSubservice.getDataFromCognito(externaId)
+    const name =
+      cognitoData['custom:account_type'] === CognitoUserAccountTypesEnum.LEGAL_ENTITY
+        ? cognitoData.name
+        : [cognitoData.given_name, cognitoData.family_name].join(' ')
 
-    if (!cognitoData.given_name || !cognitoData.family_name) {
+    if (!name) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'User does not have the name set.'
@@ -310,11 +319,11 @@ export class BloomreachService {
       'delivery-method-set-to-notification',
       'súhlas so zasielaním oznámením.pdf',
       {
-        firstName: cognitoData.given_name,
+        name,
         email: cognitoData.email,
-        birthNumber: hashData.user.birthNumber,
+        birthNumber,
       },
-      hashData.user.birthNumber
+      birthNumber
     )
 
     return pdf

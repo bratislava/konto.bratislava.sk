@@ -1,6 +1,6 @@
 import { ArrowRightIcon, CheckIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { ReactNode } from 'react'
 
 interface Props {
@@ -37,22 +37,24 @@ const AccountSuccessAlert = ({
       )}
       {children}
       <Button
+        variant="black-solid"
         onPress={onConfirm}
-        className="min-w-full"
-        variant="category"
-        text={confirmLabel}
-        loading={confirmIsLoading}
+        fullWidth
+        isLoading={confirmIsLoading}
         data-cy={`${confirmLabel.replaceAll(' ', '-').toLowerCase()}-button`}
-      />
+      >
+        {confirmLabel}
+      </Button>
       {onCancel && (
         <Button
-          data-cy="back-button"
-          variant="plain-black"
-          className="min-w-full"
+          variant="black-plain"
           onPress={onCancel}
-          text={cancelLabel}
+          fullWidth
           endIcon={<ArrowRightIcon className="size-6" />}
-        />
+          data-cy="back-button"
+        >
+          {cancelLabel}
+        </Button>
       )}
     </div>
   )

@@ -22,9 +22,9 @@ const TaxesFeesDeliveryMethodCard = ({
 
   // TODO this is repeated 3 time in the codebase, we should move this logic to separate function
   const type = {
-    [UserOfficialCorrespondenceChannelEnum.Email]: t('communication_channel.email'),
-    [UserOfficialCorrespondenceChannelEnum.Postal]: t('communication_channel.postal'),
-    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('communication_channel.edesk'),
+    [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
+    [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
+    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
   }[channel]
 
   return (
@@ -35,7 +35,7 @@ const TaxesFeesDeliveryMethodCard = ({
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
-            <span className="text-p2">{t('communication_channel.title')}</span>
+            <span className="text-p2">{t('taxes.communication_channel.title')}</span>
             <span className="text-p1-semibold">{type}</span>
           </div>
         </div>
@@ -47,7 +47,7 @@ const TaxesFeesDeliveryMethodCard = ({
             variant="black-link"
             startIcon={<SettingsIcon />}
           >
-            {t('communication_channel.change_button')}
+            {t('taxes.communication_channel.change_button')}
           </ButtonNew>
         </div>
       )}

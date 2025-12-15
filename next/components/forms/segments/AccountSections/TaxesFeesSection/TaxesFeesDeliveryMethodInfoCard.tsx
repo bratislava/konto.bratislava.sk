@@ -18,9 +18,9 @@ const TaxesFeesDeliveryMethodInfoCard = () => {
 
   // TODO this is repeated 3 time in the codebase, we should move this logic to separate function
   const type = {
-    [UserOfficialCorrespondenceChannelEnum.Email]: t('communication_channel.email'),
-    [UserOfficialCorrespondenceChannelEnum.Postal]: t('communication_channel.postal'),
-    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('communication_channel.edesk'),
+    [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
+    [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
+    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
   }[channel]
 
   return (
@@ -37,7 +37,7 @@ const TaxesFeesDeliveryMethodInfoCard = () => {
           {canChangeChannel && (
             <div className="pt-3 pb-2 lg:px-0">
               <AccountMarkdown
-                content={`${t('communication_channel_info_change_link_text', {
+                content={`${t('taxes.communication_channel.info_change_link_text', {
                   url: ROUTES.TAXES_AND_FEES,
                 })}`}
                 // variant added to change text size on mobile devices,

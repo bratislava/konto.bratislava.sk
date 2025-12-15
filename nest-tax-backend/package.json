@@ -24,7 +24,7 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.940.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.946.0",
     "@nestjs-cognito/auth": "^2.5.1",
     "@nestjs/cli": "^11.0.14",
     "@nestjs/common": "^11.1.9",
@@ -32,7 +32,7 @@
     "@nestjs/core": "^11.1.9",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.9",
-    "@nestjs/schedule": "^6.0.1",
+    "@nestjs/schedule": "^6.1.0",
     "@nestjs/swagger": "^11.2.3",
     "@prisma/client": "6.17.1",
     "@types/mssql": "^9.1.8",
@@ -43,7 +43,7 @@
     "csv-parse": "^6.1.0",
     "currency.js": "^2.0.4",
     "dayjs": "^1.11.19",
-    "express": "^5.0.1",
+    "express": "^5.2.1",
     "form-urlencoded": "^6.1.6",
     "lodash": "^4.17.21",
     "mssql": "^12.1.0",
@@ -54,14 +54,14 @@
     "qrcode": "^1.5.4",
     "rimraf": "^5.0.5",
     "ssh2-sftp-client": "^12.0.1",
-    "zod": "^4.1.12"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "5.1.4",
     "@golevelup/ts-jest": "^0.7.0",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.9",
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "@types/jest": "30.0.0",
     "@types/lodash": "^4.17.20",
     "@types/node": "^20.12.7",

@@ -15,11 +15,11 @@ const TaxesFeesDeliveryMethodInfoCardWrapper = () => {
   return (
     <div className="flex flex-1 flex-col gap-4">
       <h2 className="text-h5-semibold">
-        {/* TODO: current behaviour is confusing, but it is requested by Zdenko, 
+        {/* TODO: current behaviour is confusing, but it is requested by Zdenko,
             it is showing currently set delivery method, not the one for the year of this tax.
-            IMHO if this is currently set delivery method, it should be shown in grey area 
+            IMHO if this is currently set delivery method, it should be shown in grey area
             or if it's for the year of this tax, it should be shown with same year as in title? */}
-        {t('communication_channel_info_title', { year: new Date().getFullYear() })}
+        {t('taxes.communication_channel.info_title', { year: new Date().getFullYear() })}
       </h2>
       <TaxesFeesDeliveryMethodInfoCard />
     </div>

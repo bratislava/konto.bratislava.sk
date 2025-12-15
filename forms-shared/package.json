@@ -40,7 +40,7 @@
     "adm-zip": "^0.5.16",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
-    "dayjs": "^1.11.18",
+    "dayjs": "^1.11.19",
     "eta": "^3.5.0",
     "expr-eval": "^2.0.2",
     "ibantools": "^4.5.1",
@@ -101,14 +101,14 @@
     "postcss": "8.5.6",
     "prettier": "^3.6.2",
     "prompts": "^2.4.2",
-    "rimraf": "^6.0.1",
+    "rimraf": "^6.1.2",
     "string-to-template-literal": "^3.0.0",
     "tailwindcss": "4.1.11",
     "tmp-promise": "^3.0.3",
     "ts-node": "^10.9.2",
     "typescript": "5.9.2",
     "unzipper": "^0.12.3",
-    "vitest": "3.2.4"
+    "vitest": "4.0.15"
   },
   "engines": {
     "node": ">=20.9.x",

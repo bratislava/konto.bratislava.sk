@@ -44,7 +44,9 @@ const TaxFeePaymentMethodSection = () => {
             }
             amount={taxData.overallBalance}
             buttonText={
-              taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? t('pay_rest') : t('pay_all')
+              taxData.paidStatus === TaxStatusEnum.PartiallyPaid
+                ? t('taxes.payment.pay_rest')
+                : t('taxes.payment.pay_all')
             }
             buttonVariant="black-solid"
             buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}
@@ -63,7 +65,7 @@ const TaxFeePaymentMethodSection = () => {
                   date: formatDate(taxData.installmentPayment.dueDateLastPayment || ''),
                 })}
                 amount={taxData.installmentPayment.activeInstallment?.remainingAmount}
-                buttonText={t('pay_installments')}
+                buttonText={t('taxes.payment.pay_installment')}
                 buttonVariant="black-outline"
                 buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=splatky`}
               />

@@ -2,9 +2,9 @@ import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import IdentityVerificationPhysicalEntityForm, {
+import IdentityVerificationForm, {
   VerificationFormData,
-} from 'components/forms/segments/IdentityVerificationPhysicalEntityForm/IdentityVerificationPhysicalEntityForm'
+} from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
@@ -116,7 +116,7 @@ const IdentityVerificationPage = () => {
                 />
               </div>
             ) : (
-              <IdentityVerificationPhysicalEntityForm
+              <IdentityVerificationForm
                 onSubmit={verifyIdentityAndRefreshUserData}
                 error={identityVerificationError}
               />

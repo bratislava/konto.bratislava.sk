@@ -49,7 +49,7 @@ const foSchema = {
   required: ['rc', 'idCard', 'turnstileToken'],
 }
 
-const IdentityVerificationPhysicalEntityForm = ({ onSubmit, error }: Props) => {
+const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
@@ -160,4 +160,4 @@ const IdentityVerificationPhysicalEntityForm = ({ onSubmit, error }: Props) => {
   )
 }
 
-export default IdentityVerificationPhysicalEntityForm
+export default IdentityVerificationForm

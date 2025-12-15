@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
-import AccountMarkdown from '../../../AccountMarkdown/AccountMarkdown'
-import { useTaxChannel } from './useTaxChannel'
+import AccountMarkdown from '../../../../AccountMarkdown/AccountMarkdown'
+import { useTaxChannel } from '../../useTaxChannel'
 
 const TaxesFeesDeliveryMethodInfoCard = () => {
   const { t } = useTranslation('account')

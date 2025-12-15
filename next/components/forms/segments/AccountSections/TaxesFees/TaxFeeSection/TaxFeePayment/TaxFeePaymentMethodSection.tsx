@@ -1,4 +1,5 @@
 import Alert from 'components/forms/info-components/Alert'
+import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
 import { formatDate } from 'frontend/utils/general'
 import { Trans, useTranslation } from 'next-i18next'
@@ -8,7 +9,6 @@ import {
 } from 'openapi-clients/tax'
 import React from 'react'
 
-import { useTaxFeeSection } from '../useTaxFeeSection'
 import PaymentMethodItem from './PaymentMethodItem'
 
 const TaxFeePaymentMethodSection = () => {

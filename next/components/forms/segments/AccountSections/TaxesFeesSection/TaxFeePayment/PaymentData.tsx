@@ -14,14 +14,14 @@ import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
-import Alert from '../../../info-components/Alert'
-import Button from '../../../simple-components/Button'
-import ButtonNew from '../../../simple-components/ButtonNew'
-import ClipboardCopy from '../../../simple-components/ClipboardCopy'
-import PaymentSchedule from '../../../simple-components/PaymentSchedule'
-import { useTaxChannel } from './TaxesFeesDeliveryMethod/useTaxChannel'
-import TaxesFeesVerifyAndSetDeliveryMethodBanner from './TaxesFeesVerifyAndSetDeliveryBanner'
-import { useTaxFeeSection } from './useTaxFeeSection'
+import Alert from '../../../../info-components/Alert'
+import Button from '../../../../simple-components/Button'
+import ButtonNew from '../../../../simple-components/ButtonNew'
+import ClipboardCopy from '../../../../simple-components/ClipboardCopy'
+import PaymentSchedule from '../../../../simple-components/PaymentSchedule'
+import TaxesFeesVerifyAndSetDeliveryMethodBanner from '../banners/TaxesFeesVerifyAndSetDeliveryBanner'
+import { useTaxChannel } from '../TaxesFeesDeliveryMethod/useTaxChannel'
+import { useTaxFeeSection } from '../useTaxFeeSection'
 
 type DetailsProps = {
   paymentMethod: PaymentMethodType

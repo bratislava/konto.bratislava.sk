@@ -22,7 +22,7 @@ const formatZip = (zip?: string) => {
 const displayStrings = (strings: (string | undefined | null)[], separator: string) =>
   strings.filter(isDefined).join(separator)
 
-const ContactInformationSection = () => {
+const TaxFeeContactInformation = () => {
   const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const { userAttributes } = useSsrAuth()
@@ -117,4 +117,4 @@ const ContactInformationSection = () => {
   )
 }
 
-export default ContactInformationSection
+export default TaxFeeContactInformation

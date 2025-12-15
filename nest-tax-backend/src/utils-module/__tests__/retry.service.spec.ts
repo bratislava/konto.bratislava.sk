@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { RetrySubservice } from '../retry.subservice'
+import { RetryService } from '../retry.service'
 
-describe('RetrySubservice', () => {
-  let service: RetrySubservice
+describe('RetryService', () => {
+  let service: RetryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RetrySubservice],
+      providers: [RetryService],
     }).compile()
-    service = module.get<RetrySubservice>(RetrySubservice)
+    service = module.get<RetryService>(RetryService)
   })
 
   it('should be defined', () => {
@@ -30,7 +30,7 @@ describe('RetrySubservice', () => {
       const mockFn = jest.fn().mockResolvedValue('success')
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const result = await service['retryWithDelay'](mockFn, 3, 1000)
+      const result = await service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       expect(result).toBe('success')
       expect(mockFn).toHaveBeenCalledTimes(1)
@@ -46,7 +46,7 @@ describe('RetrySubservice', () => {
 
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
+      const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
       await jest.advanceTimersByTimeAsync(2000)
@@ -67,15 +67,15 @@ describe('RetrySubservice', () => {
         .mockRejectedValue(new Error('Second attempt failed'))
         .mockRejectedValue(new Error('Third attempt failed'))
 
-      await expect(service['retryWithDelay'](mockFn, 3, 10)).rejects.toThrow(
-        'Third attempt failed',
-      )
+      await expect(
+        service['retryWithDelay'](mockFn, 'test', 3, 10),
+      ).rejects.toThrow('Third attempt failed')
     })
 
     it('should use default retry count and delay when not specified', async () => {
       const mockFn = jest.fn().mockResolvedValue('success')
 
-      const result = await service['retryWithDelay'](mockFn)
+      const result = await service['retryWithDelay'](mockFn, 'test')
 
       expect(result).toBe('success')
       expect(mockFn).toHaveBeenCalledTimes(1)
@@ -86,9 +86,9 @@ describe('RetrySubservice', () => {
       const mockFn = jest.fn().mockRejectedValue(error)
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      await expect(service['retryWithDelay'](mockFn, 0, 1000)).rejects.toThrow(
-        'Immediate failure',
-      )
+      await expect(
+        service['retryWithDelay'](mockFn, 'test', 0, 1000),
+      ).rejects.toThrow('Immediate failure')
 
       expect(mockFn).toHaveBeenCalledTimes(1)
       expect(logMock).not.toHaveBeenCalled()
@@ -102,7 +102,7 @@ describe('RetrySubservice', () => {
 
       jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const resultPromise = service['retryWithDelay'](mockFn, 2, 5000)
+      const resultPromise = service['retryWithDelay'](mockFn, 'test', 2, 5000)
 
       // Fast-forward through the delay
       await jest.advanceTimersByTimeAsync(5000)
@@ -121,7 +121,7 @@ describe('RetrySubservice', () => {
 
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const resultPromise = service['retryWithDelay'](mockFn, 2, 100)
+      const resultPromise = service['retryWithDelay'](mockFn, 'test', 2, 100)
 
       // Fast-forward through the delay
       await jest.advanceTimersByTimeAsync(100)
@@ -131,7 +131,7 @@ describe('RetrySubservice', () => {
       expect(result).toBe('success')
       expect(mockFn).toHaveBeenCalledTimes(2)
       expect(logMock).toHaveBeenCalledWith(
-        'Retry attempt failed. Retrying in 0.10 seconds. Remaining retries: 1',
+        'Retry attempt failed for function test. Retrying in 0.10 seconds. Remaining retries: 1',
         expect.any(String),
       )
     })
@@ -147,7 +147,7 @@ describe('RetrySubservice', () => {
 
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
+      const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
       await jest.advanceTimersByTimeAsync(2000)
@@ -168,7 +168,7 @@ describe('RetrySubservice', () => {
 
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
+      const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
       await jest.advanceTimersByTimeAsync(2000)
@@ -189,7 +189,7 @@ describe('RetrySubservice', () => {
 
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
+      const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
       await jest.advanceTimersByTimeAsync(2000)
@@ -211,7 +211,7 @@ describe('RetrySubservice', () => {
 
       const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
 
-      const resultPromise = service['retryWithDelay'](mockFn, 4, 1000)
+      const resultPromise = service['retryWithDelay'](mockFn, 'test', 4, 1000)
 
       // Fast-forward through all delays
       await jest.advanceTimersByTimeAsync(3000)

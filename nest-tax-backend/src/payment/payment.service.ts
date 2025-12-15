@@ -17,8 +17,8 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
-import { RetrySubservice } from '../utils/subservices/retry.subservice'
 import { TaxPaymentWithTaxYear } from '../utils/types/types.prisma'
+import { RetryService } from '../utils-module/retry.service'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
@@ -36,7 +36,7 @@ export class PaymentService {
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxService: TaxService,
-    private readonly retrySubservice: RetrySubservice,
+    private readonly retryService: RetryService,
   ) {}
 
   private async getTaxPaymentByTaxId(
@@ -291,11 +291,12 @@ export class PaymentService {
         },
       })
 
-      const user = await this.retrySubservice.retryWithDelay(
+      const user = await this.retryService.retryWithDelay(
         () =>
           this.cityAccountSubservice.getUserDataAdmin(
             payment.tax.taxPayer.birthNumber,
           ),
+        'getUserDataAdmin',
         3,
         1000, // 1 second delay, 3 retries
       )

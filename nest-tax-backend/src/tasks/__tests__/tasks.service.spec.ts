@@ -18,7 +18,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { RetrySubservice } from '../../utils/subservices/retry.subservice'
+import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from '../subservices/config.subservice'
 import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
 import { TasksService } from '../tasks.service'
@@ -69,18 +69,18 @@ describe('TasksService', () => {
           useValue: createMock<PaymentService>(),
         },
         {
-          provide: RetrySubservice,
-          useValue: createMock<RetrySubservice>(),
+          provide: RetryService,
+          useValue: createMock<RetryService>(),
         },
       ],
     }).compile()
 
     service = module.get<TasksService>(TasksService)
-    const retrySubserviceInstance = new RetrySubservice()
+    const retryServiceInstance = new RetryService()
     jest
-      .spyOn(service['retrySubservice'], 'retryWithDelay')
+      .spyOn(service['retryService'], 'retryWithDelay')
       .mockImplementation(
-        retrySubserviceInstance.retryWithDelay.bind(retrySubserviceInstance),
+        retryServiceInstance.retryWithDelay.bind(retryServiceInstance),
       )
   })
 
@@ -385,7 +385,7 @@ describe('TasksService', () => {
       const error = new Error('Noris service failed')
 
       const retryWithDelayMock = jest
-        .spyOn(service['retrySubservice'], 'retryWithDelay')
+        .spyOn(service['retryService'], 'retryWithDelay')
         .mockRejectedValue(error)
 
       const configSubserviceMock = jest
@@ -415,7 +415,7 @@ describe('TasksService', () => {
       const error = new Error('Payment update failed')
 
       jest
-        .spyOn(service['retrySubservice'], 'retryWithDelay')
+        .spyOn(service['retryService'], 'retryWithDelay')
         .mockRejectedValue(error)
 
       const configSubserviceMock = jest
@@ -460,7 +460,7 @@ describe('TasksService', () => {
       const error = new Error('Retry failed')
 
       jest
-        .spyOn(service['retrySubservice'], 'retryWithDelay')
+        .spyOn(service['retryService'], 'retryWithDelay')
         .mockRejectedValue(error)
 
       const throwerErrorGuardMock = jest

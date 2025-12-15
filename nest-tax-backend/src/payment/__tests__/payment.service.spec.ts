@@ -10,8 +10,8 @@ import { TaxService } from '../../tax/tax.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { GpWebpaySubservice } from '../../utils/subservices/gpwebpay.subservice'
-import { RetrySubservice } from '../../utils/subservices/retry.subservice'
 import { TaxPaymentWithTaxYear } from '../../utils/types/types.prisma'
+import { RetryService } from '../../utils-module/retry.service'
 import { PaymentService } from '../payment.service'
 
 describe('PaymentService - trackPaymentInBloomreach', () => {
@@ -45,8 +45,8 @@ describe('PaymentService - trackPaymentInBloomreach', () => {
           useValue: createMock<CityAccountSubservice>(),
         },
         {
-          provide: RetrySubservice,
-          useValue: createMock<RetrySubservice>(),
+          provide: RetryService,
+          useValue: createMock<RetryService>(),
         },
         {
           provide: TaxService,

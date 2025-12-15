@@ -27,8 +27,8 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
-import { RetrySubservice } from '../utils/subservices/retry.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
+import { RetryService } from '../utils-module/retry.service'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 
@@ -49,7 +49,7 @@ export class TasksService {
     private readonly taxImportHelperSubservice: TaxImportHelperSubservice,
     private readonly norisService: NorisService,
     private readonly configService: ConfigService,
-    private readonly retrySubservice: RetrySubservice,
+    private readonly retryService: RetryService,
     private readonly paymentService: PaymentService,
   ) {
     this.logger = new Logger('TasksService')
@@ -498,11 +498,11 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      result = await this.retrySubservice.retryWithDelay(async () => {
+      result = await this.retryService.retryWithDelay(async () => {
         return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
           data,
         )
-      })
+      }, 'updateOverpaymentsDataFromNorisByDateRange')
 
       // Success: reset lookback days to default
       await this.configSubservice.resetOverpaymentsLookbackDays()
@@ -580,11 +580,7 @@ export class TasksService {
     )
 
     this.logger.log(
-      `TasksService: Resent ${results.filter(Boolean).length} bloomreach events`,
-    )
-
-    this.logger.log(
-      `TasksService: Failed to resend ${results.filter((result) => !result).length} bloomreach events`,
+      `TasksService: Resent ${results.filter(Boolean).length} bloomreach events. Failed to resend ${results.filter((result) => !result).length} bloomreach events.`,
     )
   }
 }

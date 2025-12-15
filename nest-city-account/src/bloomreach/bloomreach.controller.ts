@@ -1,5 +1,5 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, Res } from '@nestjs/common'
-import { ApiOperation, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger'
+import { Controller, Get, HttpCode, Param, Res } from '@nestjs/common'
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger'
 import { Response } from 'express'
 import { ResponseInternalServerErrorDto } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'

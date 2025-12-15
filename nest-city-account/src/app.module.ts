@@ -15,7 +15,7 @@ import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
 import { OAuth2Module } from './oauth2/oauth2.module'
 import { DpbModule } from './dpb/dpb.module'
-import { MailgunModule } from './mailgun/mailgun.module';
+import { MailgunModule } from './mailgun/mailgun.module'
 
 @Module({
   imports: [

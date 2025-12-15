@@ -7,9 +7,9 @@ export const pdfTemplates = {
   },
 }
 
-export type pdfTemplateKeys = keyof typeof pdfTemplates
+export type PdfTemplateKeys = keyof typeof pdfTemplates
 
-export type TemplateAttributes<T extends pdfTemplateKeys> = Record<
+export type TemplateAttributes<T extends PdfTemplateKeys> = Record<
   (typeof pdfTemplates)[T]['attributes'][number],
   string
 >

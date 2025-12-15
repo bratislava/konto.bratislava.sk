@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Browser, chromium } from 'playwright'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { PDFDocument } from 'pdf-lib-with-encrypt'
-import { pdfTemplateKeys, pdfTemplates, TemplateAttributes } from './templates/pdf-templates'
+import { PdfTemplateKeys, pdfTemplates, TemplateAttributes } from './templates/pdf-templates'
 
 @Injectable()
 export class PdfConverterService {
@@ -15,12 +15,12 @@ export class PdfConverterService {
   /**
    * Generates a password-protected PDF from a Mailgun template
    */
-  async getPdfByTemplateName<T extends pdfTemplateKeys>(
+  async getPdfByTemplateName<T extends PdfTemplateKeys>(
     templateName: T,
     filename: string,
     htmlVariables: TemplateAttributes<T>,
     password?: string
-  ): Promise<{ data: Buffer, filename: string, contentType: string }> {
+  ): Promise<{ data: Buffer; filename: string; contentType: string }> {
     let browser: Browser | null = null
 
     const template = pdfTemplates[templateName]

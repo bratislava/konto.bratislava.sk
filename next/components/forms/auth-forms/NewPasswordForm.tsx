@@ -1,13 +1,14 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import useHookForm from 'frontend/hooks/useHookForm'
-import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import logger from '../../../frontend/utils/logger'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '../segments/AccountLink/AccountLink'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   verificationCode: string
@@ -83,7 +84,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
@@ -134,7 +135,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
                 ? t('auth.fields.password_placeholder')
                 : t('auth.fields.new_password_placeholder')
             }
-            tooltip={t('auth.fields.password_description')}
+            helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
           />
@@ -162,27 +163,17 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
           />
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={
-          fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')
-        }
-        variant="category"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')}
+      </Button>
       <div className="text-p3 lg:text-p2">
         <span>{t('auth.verification_description')}</span>{' '}
         {cnt > 0 && <span>{t('auth.verification_cnt_description', { cnt })}</span>}
       </div>
-      <Button
-        onPress={handleResend}
-        className="min-w-full"
-        text={t('auth.verification_resend')}
-        variant="category-outline"
-        disabled={cnt > 0}
-      />
-      <LoginAccountLink />
+      <Button variant="black-outline" onPress={handleResend} fullWidth isDisabled={cnt > 0}>
+        {t('auth.verification_resend')}
+      </Button>
+      <AccountLink variant="login" />
     </form>
   )
 }

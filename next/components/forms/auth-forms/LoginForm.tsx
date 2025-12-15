@@ -1,14 +1,12 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import { ROUTES } from 'frontend/api/constants'
-import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '../segments/AccountLink/AccountLink'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   email: string
@@ -43,7 +41,6 @@ const schema = {
 }
 
 const LoginForm = ({ onSubmit, error }: Props) => {
-  const { getRouteWithRedirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
 
   const {
@@ -58,7 +55,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
       data-cy="login-container"
     >
@@ -90,25 +87,16 @@ const LoginForm = ({ onSubmit, error }: Props) => {
           />
         )}
       />
-      <AccountLink
-        label={t('auth.links.forgotten_password_link_text')}
-        description={t('auth.links.forgotten_password_description')}
-        href={getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD)}
-      />
+      <AccountLink variant="forgotten-password" />
       <Button
-        className="min-w-full"
+        variant="black-solid"
         type="submit"
-        text={t('auth.login_submit')}
-        variant="category"
-        disabled={isSubmitting}
+        fullWidth
+        isDisabled={isSubmitting}
         data-cy="login-button"
-      />
-      <AccountLink
-        label={t('auth.links.register_link_text')}
-        href={getRouteWithRedirect(ROUTES.REGISTER)}
-        description={t('auth.links.register_description')}
-        variant="category"
-      />
+      >
+        {t('auth.login_submit')}
+      </Button>
     </form>
   )
 }

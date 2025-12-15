@@ -40,7 +40,7 @@ const FieldHeader = ({
   helptextMarkdown,
   descriptionProps,
   customHeaderBottomMargin = 'mb-1',
-  displayOptionalLabel,
+  displayOptionalLabel = true,
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account')
 

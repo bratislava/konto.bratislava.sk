@@ -18,25 +18,6 @@ export enum PaymentTypeEnum {
   DZN = 'DzN',
 }
 
-const statusToTranslationPath = {
-  [PaymentStatusOptions.FAILED_TO_VERIFY]: {
-    title: 'thank_you.result.failed_to_verify.title',
-    content: 'thank_you.result.failed_to_verify.content',
-  },
-  [PaymentStatusOptions.ALREADY_PAID]: {
-    title: 'thank_you.result.payment_already_paid.title',
-    content: 'thank_you.result.payment_already_paid.content',
-  },
-  [PaymentStatusOptions.FAILED]: {
-    title: 'thank_you.result.payment_failed.title',
-    content: 'thank_you.result.payment_failed.content',
-  },
-  [PaymentStatusOptions.SUCCESS]: {
-    title: 'thank_you.result.payment_success.title',
-    content: 'thank_you.result.payment_success.content',
-  },
-}
-
 const getTaxDetailLink = (year?: string, paymentType?: PaymentTypeEnum) => {
   if (year && paymentType === PaymentTypeEnum.DZN) {
     return ROUTES.TAXES_AND_FEES_YEAR(Number(year))
@@ -48,6 +29,25 @@ const ThankYouSection = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
   const { paymentSuccessFeedbackLink } = useStrapiTax()
+
+  const statusToTranslationPath = {
+    [PaymentStatusOptions.FAILED_TO_VERIFY]: {
+      title: t('thank_you.result.failed_to_verify.title'),
+      content: t('thank_you.result.failed_to_verify.content'),
+    },
+    [PaymentStatusOptions.ALREADY_PAID]: {
+      title: t('thank_you.result.payment_already_paid.title'),
+      content: t('thank_you.result.payment_already_paid.content'),
+    },
+    [PaymentStatusOptions.FAILED]: {
+      title: t('thank_you.result.payment_failed.title'),
+      content: t('thank_you.result.payment_failed.content'),
+    },
+    [PaymentStatusOptions.SUCCESS]: {
+      title: t('thank_you.result.payment_success.title'),
+      content: t('thank_you.result.payment_success.content'),
+    },
+  }
 
   const status = useMemo(
     () =>
@@ -84,8 +84,8 @@ const ThankYouSection = () => {
         {success ? (
           <ThankYouCard
             success={success}
-            title={t(statusToTranslationPath[status].title)}
-            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
+            title={statusToTranslationPath[status].title}
+            content={`<span className='text-p2'>${statusToTranslationPath[status].content}</span>`}
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_tax_detail_text')}
             secondButtonLink={getTaxDetailLink(year, paymentType)}
@@ -94,8 +94,8 @@ const ThankYouSection = () => {
         ) : (
           <ThankYouCard
             success={success}
-            title={t(statusToTranslationPath[status].title)}
-            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
+            title={statusToTranslationPath[status].title}
+            content={`<span className='text-p2'>${statusToTranslationPath[status].content}</span>`}
             firstButtonTitle={t('thank_you.button_restart_text')}
             firstButtonLink={getTaxDetailLink(year, paymentType)}
             secondButtonTitle={t('thank_you.button_cancel_text')}

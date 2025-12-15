@@ -1,15 +1,40 @@
 import Link, { LinkProps } from 'next/link'
+import { useTranslation } from 'next-i18next'
 
-import cn from '../../../../frontend/cn'
+import { ROUTES } from '../../../../frontend/api/constants'
+import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 
-interface Props {
-  label: string
-  description: string
-  href: LinkProps['href']
-  variant?: 'black' | 'category'
+type Props = {
+  variant: 'login' | 'registration' | 'forgotten-password'
 }
 
-const AccountLink = ({ description, label, href, variant = 'black' }: Props) => {
+const AccountLink = ({ variant }: Props) => {
+  const { t } = useTranslation('account')
+  const { getRouteWithRedirect } = useQueryParamRedirect()
+
+  const { label, description, href } = (
+    {
+      login: {
+        label: t('auth.links.login_link_text'),
+        description: t('auth.links.login_description'),
+        href: getRouteWithRedirect(ROUTES.LOGIN),
+      },
+      registration: {
+        label: t('auth.links.register_link_text'),
+        description: t('auth.links.register_description'),
+        href: getRouteWithRedirect(ROUTES.REGISTER),
+      },
+      'forgotten-password': {
+        label: t('auth.links.forgotten_password_link_text'),
+        description: t('auth.links.forgotten_password_description'),
+        href: getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD),
+      },
+    } satisfies Record<
+      Props['variant'],
+      { label: string; description: string; href: LinkProps['href'] }
+    >
+  )[variant]
+
   // TODO OAuth revisit data-cy attribute and href.toString()
   // const name = typeof href === 'string' ? href.replaceAll('/', '') : href.href?.replaceAll('/', '')
   return (
@@ -18,11 +43,7 @@ const AccountLink = ({ description, label, href, variant = 'black' }: Props) => 
       <Link
         href={href}
         // data-cy={`${name}-button`}
-        className={cn('font-semibold underline', {
-          'text-gray-700 hover:text-gray-600 focus:text-gray-800': variant === 'black',
-          'text-category-700 hover:text-category-600 focus:text-category-800':
-            variant === 'category',
-        })}
+        className="font-semibold text-gray-700 underline hover:text-gray-600 focus:text-gray-800"
       >
         {label}
       </Link>

@@ -1,10 +1,11 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
+import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   newEmail: string
@@ -53,7 +54,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
       data-cy="change-email-form"
     >
@@ -87,13 +88,14 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         )}
       />
       <Button
-        className="min-w-full"
+        variant="black-solid"
         type="submit"
-        text={t('auth.new_email_submit')}
-        variant="category"
-        disabled={isSubmitting}
+        fullWidth
+        isDisabled={isSubmitting}
         data-cy="change-email-submit"
-      />
+      >
+        {t('auth.new_email_submit')}
+      </Button>
     </form>
   )
 }

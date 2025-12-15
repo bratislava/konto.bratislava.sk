@@ -19,7 +19,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     try {
       await this.$queryRaw`SELECT 1`
       return true
-    } catch (error: unknown) {
+    } catch (error) {
       this.logger.error(error)
       return false
     }

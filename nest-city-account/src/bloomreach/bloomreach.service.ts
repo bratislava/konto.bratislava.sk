@@ -212,7 +212,7 @@ export class BloomreachService {
             ...consentBloomreachData,
             ...(hash
               ? {
-                  document_link: `${this.configService.getOrThrow('LINK_TO_SELF')}/bloomreach/get-notify-agreement-pdf/hash=${hash}`,
+                  document_link: `${this.configService.getOrThrow('SELF_URL')}/bloomreach/get-notify-agreement-pdf/hash=${hash}`,
                 }
               : {}),
           },

@@ -3,10 +3,10 @@ import { useTranslation } from 'next-i18next'
 import { ResponseGetTaxesListBodyDto, TaxStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
-import { FormatCurrencyFromCents } from '../../../../../frontend/utils/formatCurrency'
-import { formatDate, isDefined } from '../../../../../frontend/utils/general'
-import MLinkNew from '../../../simple-components/MLinkNew'
+import { ROUTES } from '../../../../../../frontend/api/constants'
+import { FormatCurrencyFromCents } from '../../../../../../frontend/utils/formatCurrency'
+import { formatDate, isDefined } from '../../../../../../frontend/utils/general'
+import MLinkNew from '../../../../simple-components/MLinkNew'
 import TaxPaidStatus from './TaxPaidStatus'
 
 type TaxesFeesCardProps = {

@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
-import ButtonNew from '../../../simple-components/ButtonNew'
+import ButtonNew from '../../../../simple-components/ButtonNew'
 import { useTaxChannel } from './useTaxChannel'
 
 type TaxesFeesDeliveryMethodCardProps = {

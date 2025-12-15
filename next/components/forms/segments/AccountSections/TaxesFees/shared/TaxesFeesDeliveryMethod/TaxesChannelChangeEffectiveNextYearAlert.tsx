@@ -1,10 +1,9 @@
 import { TaxFragment } from '@clients/graphql-strapi/api'
+import Alert from 'components/forms/info-components/Alert'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import Alert from '../../../info-components/Alert'
-import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
 
 type TaxesChannelChangeEffectiveNextYearAlertProps = {
   strapiTax: TaxFragment

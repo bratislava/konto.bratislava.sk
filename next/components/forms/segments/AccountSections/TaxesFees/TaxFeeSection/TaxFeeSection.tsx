@@ -1,19 +1,18 @@
 import Alert from 'components/forms/info-components/Alert'
 import ResponsiveCarousel from 'components/forms/ResponsiveCarousel'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
+import TaxesFeesDeliveryMethodChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
+import TaxesFeesDeliveryMethodInfoCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
+import TaxFeeContactInformation from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeContactInformation'
+import TaxFeeDetails from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeDetails'
+import TaxFeePaymentMethods from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentMethods/TaxFeePaymentMethods'
+import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
+import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
-
-import ContactInformationSection from './ContactInformation'
-import TaxDetails from './TaxDetails'
-import TaxesFeesAdministratorCardWrapper from './TaxesFeesAdministratorCardWrapper'
-import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethodChangeModal'
-import TaxesFeesDeliveryMethodInfoCardWrapper from './TaxesFeesDeliveryMethodInfoCardWrapper'
-import PaymentMethodSection from './TaxFeePaymentMethodSection'
-import { useStrapiTax } from './useStrapiTax'
-import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxFeeSection = () => {
   const { t } = useTranslation('account')
@@ -66,10 +65,10 @@ const TaxFeeSection = () => {
               ]}
             />
           </div>
-          <ContactInformationSection />
-          <TaxDetails />
+          <TaxFeeContactInformation />
+          <TaxFeeDetails />
           {taxData.paidStatus !== TaxStatusEnum.Paid &&
-            taxData.paidStatus !== TaxStatusEnum.OverPaid && taxData.paidStatus !== TaxStatusEnum.Cancelled && <PaymentMethodSection />}
+            taxData.paidStatus !== TaxStatusEnum.OverPaid && taxData.paidStatus !== TaxStatusEnum.Cancelled && <TaxFeePaymentMethods />}
         </div>
       </div>
     </>

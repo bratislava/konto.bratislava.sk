@@ -580,7 +580,7 @@ export class TasksService {
     )
 
     this.logger.log(
-      `TasksService: Resent ${results.filter(Boolean).length} bloomreach events. Failed to resend ${results.filter((result) => !result).length} bloomreach events.`,
+      `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events.`,
     )
   }
 }

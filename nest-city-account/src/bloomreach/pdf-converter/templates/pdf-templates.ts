@@ -3,7 +3,7 @@ import { deliveryMethodSetToNotificationHtml } from './delivery-method-set-to-no
 export const pdfTemplates = {
   'delivery-method-set-to-notification': {
     html: deliveryMethodSetToNotificationHtml,
-    attributes: ['firstName', 'email', 'birthNumber'],
+    attributes: ['name', 'email', 'birthNumber'],
   },
 }
 

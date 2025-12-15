@@ -151,7 +151,7 @@ export const deliveryMethodSetToNotificationHtml = `<html xmlns:o="urn:schemas-m
                 </td>
                 <td style="vertical-align: top; padding: 0;">
                     <p class="MsoNormal" style="margin-top: 4pt">
-                        <b><span style="font-size: 10pt; font-family: Inter; letter-spacing: -0.1pt">{{firstName}}</span></b>
+                        <b><span style="font-size: 10pt; font-family: Inter; letter-spacing: -0.1pt">{{name}}</span></b>
                     </p>
                 </td>
             </tr>

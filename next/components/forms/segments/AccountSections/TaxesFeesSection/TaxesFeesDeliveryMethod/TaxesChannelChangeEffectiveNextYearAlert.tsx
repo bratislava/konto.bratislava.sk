@@ -3,8 +3,8 @@ import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import Alert from '../../../info-components/Alert'
-import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
+import Alert from '../../../../info-components/Alert'
+import AccountMarkdown from '../../../AccountMarkdown/AccountMarkdown'
 
 type TaxesChannelChangeEffectiveNextYearAlertProps = {
   strapiTax: TaxFragment

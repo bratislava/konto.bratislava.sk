@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 
 import axios, { isAxiosError } from 'axios'
+import * as crypto from 'crypto'
 
 import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import {
@@ -20,8 +21,10 @@ import {
 } from '@prisma/client'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { PdfConverterService } from './pdf-converter/pdf-converter.service'
+import { PrismaService } from '../prisma/prisma.service'
+import { ConfigService } from '@nestjs/config'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class BloomreachService {
@@ -35,7 +38,9 @@ export class BloomreachService {
   constructor(
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly pdfConverterService: PdfConverterService
+    private readonly pdfConverterService: PdfConverterService,
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService
   ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
@@ -126,6 +131,14 @@ export class BloomreachService {
     }
   }
 
+  private isDeliverySubscription(data: GdprDataSubscriptionDto): boolean {
+    return (
+      data.category === GDPRCategoryEnum.TAXES &&
+      data.type === GDPRTypeEnum.FORMAL_COMMUNICATION &&
+      data.subType === GDPRSubTypeEnum.subscribe
+    )
+  }
+
   private async trackEvent(
     data: object,
     cognitoId: string,
@@ -134,6 +147,7 @@ export class BloomreachService {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return
     }
+    console.log(JSON.stringify(data, undefined, 2))
     await axios
       .post(
         `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
@@ -173,13 +187,37 @@ export class BloomreachService {
 
     this.logger.log(`Tracking ${gdprData.length} events for ${userType} with id: ${cognitoId}`)
     await Promise.allSettled(
-      gdprData.map((elem) =>
+      gdprData.map(async (elem) => {
+        const consentBloomreachData = this.createBloomreachConsentCategory(
+          elem.category,
+          elem.type,
+          elem.subType
+        )
+        let hash: string | undefined = undefined
+        if (this.isDeliverySubscription(elem)) {
+          hash = crypto.randomBytes(32).toString('base64url')
+          console.log(hash)
+          await this.prisma.notificationAgreementHash.create({
+            data: {
+              hash,
+              ...(isLegalPerson ? { legalPersonId: userId } : { userId }),
+            },
+          })
+        }
         this.trackEvent(
-          this.createBloomreachConsentCategory(elem.category, elem.type, elem.subType),
+          {
+            ...consentBloomreachData,
+            ...(hash
+              ? {
+                  document_link: `${this.configService.getOrThrow('LINK_TO_SELF')}/bloomreach/get-notify-agreement-pdf/hash=${hash}`,
+                }
+              : {}),
+          },
           cognitoId,
           BloomreachEventNameEnum.CONSENT
         )
-      )
+        console.log('ok ok ok')
+      })
     )
   }
 

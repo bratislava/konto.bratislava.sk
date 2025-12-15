@@ -11,9 +11,9 @@ import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { convertYearToNumber } from 'frontend/utils/general'
 import { ResponseRealEstateTaxSummaryDetailDto, TaxType } from 'openapi-clients/tax'
 
-import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
-import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
-import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
+import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFees/TaxFeeSection'
+import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
+import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
@@ -56,8 +56,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
       }
 
       // TODO This is a temporary "fix" while solution for multiple tax types is not implemented.
-      if ( taxData.type !== TaxType.Dzn ){
-        return { notFound: true}
+      if (taxData.type !== TaxType.Dzn) {
+        return { notFound: true }
       }
 
       return {

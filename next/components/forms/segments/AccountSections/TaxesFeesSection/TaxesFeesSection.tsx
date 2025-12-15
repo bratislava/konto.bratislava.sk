@@ -6,7 +6,7 @@ import { TaxAvailabilityStatus } from 'openapi-clients/tax'
 import React from 'react'
 import { Tab, TabList, Tabs } from 'react-aria-components'
 
-import TaxesFeesAdministratorCardWrapper from './TaxesFeesAdministratorCardWrapper'
+import TaxesFeesAdministratorCardWrapper from './TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesFeesDeliveryMethod/TaxesChannelChangeEffectiveNextYearAlert'
 import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodCard'
 import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'

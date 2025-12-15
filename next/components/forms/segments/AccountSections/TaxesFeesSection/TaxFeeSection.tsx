@@ -8,7 +8,7 @@ import React from 'react'
 
 import ContactInformationSection from './ContactInformation'
 import TaxDetails from './TaxDetails'
-import TaxesFeesAdministratorCardWrapper from './TaxesFeesAdministratorCardWrapper'
+import TaxesFeesAdministratorCardWrapper from './TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
 import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
 import TaxesFeesDeliveryMethodInfoCardWrapper from './TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCardWrapper'
 import PaymentMethodSection from './TaxFeePaymentMethodSection'

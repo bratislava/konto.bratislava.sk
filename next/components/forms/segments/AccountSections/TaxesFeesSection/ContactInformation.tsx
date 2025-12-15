@@ -66,13 +66,13 @@ const ContactInformationSection = () => {
         />
       )}
       <div className="flex w-full flex-col items-start gap-2 px-4 lg:px-0">
-        <div className="text-h3">{t('personal_info')}</div>
+        <div className="text-h3">{t('taxes.contact_information.personal_info')}</div>
         <div className="flex w-full flex-col rounded-lg border-2 border-gray-200 p-4">
           <SummaryRow
             size="small"
             isEditable={false}
             data={{
-              label: t('name_and_surname'),
+              label: t('taxes.contact_information.name_and_surname'),
               value: displayName,
               schemaPath: '',
               isError: false,
@@ -82,7 +82,7 @@ const ContactInformationSection = () => {
             size="small"
             isEditable={false}
             data={{
-              label: t('permanent_address'),
+              label: t('taxes.contact_information.permanent_address'),
               value: displayPermanentAddress,
               schemaPath: '',
               isError: false,
@@ -93,7 +93,7 @@ const ContactInformationSection = () => {
             <SummaryRow
               size="small"
               data={{
-                label: t('correspondence_address'),
+                label: t('taxes.contact_information.correspondence_address'),
                 value: displayCorrespondenceAddress,
                 schemaPath: '',
                 isError: false,
@@ -106,7 +106,7 @@ const ContactInformationSection = () => {
             isEditable={false}
             hasBorder={false}
             data={{
-              label: t('taxpayer_id'),
+              label: t('taxes.contact_information.taxpayer_id'),
               value: taxData.taxPayer?.externalId,
               schemaPath: '',
               isError: false,

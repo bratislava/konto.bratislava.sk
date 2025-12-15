@@ -127,22 +127,24 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
             required
             onChange={(value) => field.onChange(value === 'true')}
             value={isDefined(field.value) ? String(field.value) : undefined}
-            label={t('delivery_method_change_modal_label')}
+            label={t('taxes.delivery_method_change_modal.delivery_method_label')}
             orientation="vertical"
           >
             <Radio
               value="false"
               variant="boxed"
-              description={t('delivery_method_change_modal_description_false')}
+              description={t(
+                'taxes.delivery_method_change_modal.delivery_method_false.description',
+              )}
             >
-              {t('delivery_method_change_modal_description_false_title')}
+              {t('taxes.delivery_method_change_modal.delivery_method_false.title')}
             </Radio>
             <Radio
               value="true"
               variant="boxed"
-              description={t('delivery_method_change_modal_description_true')}
+              description={t('taxes.delivery_method_change_modal.delivery_method_true.description')}
             >
-              {t('delivery_method_change_modal_description_true_title')}
+              {t('taxes.delivery_method_change_modal.delivery_method_true.title')}
             </Radio>
           </RadioGroup>
         )}
@@ -157,7 +159,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
                 onScrollToBottom={() => field.onChange(true)}
                 agreementContent={agreementContent}
               />
-              <p className="text-p2">{t('delivery_method_change_modal_agreement_text')}</p>
+              <p className="text-p2">{t('taxes.delivery_method_change_modal.agreement_text')}</p>
             </div>
           )}
         />
@@ -169,7 +171,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
         isDisabled={isSubmitting || !isValid}
         isLoading={isSubmitting}
       >
-        {t('delivery_method_change_modal_button_text')}
+        {t('taxes.delivery_method_change_modal.confirm_button_text')}
       </ButtonNew>
     </form>
   )
@@ -198,11 +200,11 @@ const TaxesFeesDeliveryMethodChangeModal = ({
     return changeSubscription(data.isSubscribed, {
       onSuccess: () => {
         onOpenChange?.(false)
-        openSnackbarSuccess(t('delivery_method_change_success'))
+        openSnackbarSuccess(t('taxes.delivery_method_change_modal.success_snackbar_message'))
       },
       onError: (error) => {
         logger.error(error)
-        openSnackbarError(t('delivery_method_change_error'))
+        openSnackbarError(t('taxes.delivery_method_change_modal.error_snackbar_message'))
       },
     })
   }
@@ -216,10 +218,10 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       mobileFullScreen
     >
       <Heading slot="title" className="mb-2 text-h3">
-        {t('delivery_method_change_modal_title')}
+        {t('taxes.delivery_method_change_modal.title')}
       </Heading>
       <AccountMarkdown
-        content={t('delivery_method_change_modal_description')}
+        content={t('taxes.delivery_method_change_modal.description')}
         variant="sm"
         className="mb-4"
       />

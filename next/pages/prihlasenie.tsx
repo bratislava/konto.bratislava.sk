@@ -1,7 +1,6 @@
 import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
@@ -9,6 +8,9 @@ import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 
+import LoginForm from '../components/forms/auth-forms/LoginForm'
+import HorizontalDivider from '../components/forms/HorizontalDivider'
+import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
@@ -141,8 +143,10 @@ const LoginPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
         <LoginForm onSubmit={onLogin} error={loginError} />
+        <HorizontalDivider />
+        <AccountLink variant="registration" />
       </AccountContainer>
     </LoginRegisterLayout>
   )

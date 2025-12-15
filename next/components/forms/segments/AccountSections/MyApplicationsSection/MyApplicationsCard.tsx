@@ -64,6 +64,7 @@ const MyApplicationsCard = ({
   formDefinitionSlugTitleMap,
 }: MyApplicationsCardProps) => {
   const { t } = useTranslation('account')
+  // TODO Translations
   const { t: ft } = useTranslation('forms')
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
 
@@ -258,11 +259,17 @@ const MyApplicationsCard = ({
                       target="_blank"
                       className="w-[148px]"
                     >
-                      {t(
-                        `account_section_applications.navigation_concept_card.${
-                          isEditable ? (variant === 'DRAFT' ? 'continue' : 'edit') : 'view'
-                        }_button_text`,
-                      )}
+                      {isEditable
+                        ? variant === 'DRAFT'
+                          ? t(
+                              'account_section_applications.navigation_concept_card.continue_button_text',
+                            )
+                          : t(
+                              'account_section_applications.navigation_concept_card.edit_button_text',
+                            )
+                        : t(
+                            'account_section_applications.navigation_concept_card.view_button_text',
+                          )}
                     </Button>
                     <MenuDropdown
                       buttonTrigger={
@@ -346,11 +353,11 @@ const MyApplicationsCard = ({
         setIsOpen={setBottomSheetIsOpen}
         conceptMenuContent={[
           {
-            title: t(
-              `account_section_applications.navigation_concept_card.${
-                isEditable ? (variant === 'DRAFT' ? 'continue' : 'edit') : 'view'
-              }_button_text`,
-            ),
+            title: isEditable
+              ? variant === 'DRAFT'
+                ? t('account_section_applications.navigation_concept_card.continue_button_text')
+                : t('account_section_applications.navigation_concept_card.edit_button_text')
+              : t('account_section_applications.navigation_concept_card.view_button_text'),
             icon: isEditable ? <EditIcon className="size-6" /> : <EyeIcon className="size-6" />,
             url: formPageHref,
           },

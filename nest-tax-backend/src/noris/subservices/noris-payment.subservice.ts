@@ -314,6 +314,7 @@ export class NorisPaymentSubservice {
             specificSymbol: norisPayment.specificky_symbol,
             taxId: taxData.id,
             status: PaymentStatus.SUCCESS,
+            bloomreachEventSent: true,
           },
         })
 

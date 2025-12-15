@@ -1,5 +1,5 @@
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard/TaxesFeesCard'
+import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesCard/TaxesFeesCard'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { useTranslation } from 'next-i18next'
 import { TaxAvailabilityStatus } from 'openapi-clients/tax'

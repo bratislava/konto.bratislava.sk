@@ -3,7 +3,6 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
@@ -79,7 +78,7 @@ const IdentityVerificationPage = () => {
       })
       // status will be set according to current cognito tier - pending if still processing
       await refreshData()
-      if (tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD) {
+      if (tierStatus.isNotVerifiedIdentityCard) {
         handleErrorChange(
           new ErrorWithName(
             'Unsuccessful identity verification',
@@ -105,7 +104,7 @@ const IdentityVerificationPage = () => {
       <VerifyModals />
       <AccountContainer ref={accountContainerRef}>
         {(tierStatus.isIdentityVerificationNotYetAttempted ||
-          tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD) && (
+          tierStatus.isNotVerifiedIdentityCard) && (
           <>
             {isLegalEntity ? (
               <div className="flex flex-col gap-4 md:gap-6">
@@ -130,7 +129,7 @@ const IdentityVerificationPage = () => {
             )}
           </>
         )}
-        {tierStatus.tier === Tier.QUEUE_IDENTITY_CARD && (
+        {tierStatus.isInQueue && (
           <AccountVerificationPendingAlert
             title={t('auth.identity_verification_pending_title')}
             description={

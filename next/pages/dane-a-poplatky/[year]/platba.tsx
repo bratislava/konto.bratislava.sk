@@ -5,7 +5,7 @@ import {
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import TaxFeePayment from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxFeePayment'
+import TaxFeePayment from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxFeePayment/TaxFeePayment'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'

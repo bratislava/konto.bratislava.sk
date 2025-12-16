@@ -27,11 +27,13 @@ model TaxPayer {
   permanentResidenceStreet    String?
   permanentResidenceZip       String?
   permanentResidenceCity      String?
+  readyToImport               Boolean           @default(false)
 
   taxes Tax[]
 
   @@unique([birthNumber])
   @@unique([uuid])
+  @@index([readyToImport])
 }
 
 model Tax {
@@ -65,16 +67,17 @@ model Tax {
 }
 
 model TaxPayment {
-  id             Int               @id @default(autoincrement())
-  orderId        String?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @default(now()) @updatedAt
-  taxId          Int
-  tax            Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
-  status         PaymentStatus     @default(NEW)
-  amount         Int
-  specificSymbol String?
-  source         TaxPaymentSource?
+  id                  Int               @id @default(autoincrement())
+  orderId             String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @default(now()) @updatedAt
+  taxId               Int
+  tax                 Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
+  status              PaymentStatus     @default(NEW)
+  amount              Int
+  specificSymbol      String?
+  source              TaxPaymentSource?
+  bloomreachEventSent Boolean
 
   @@unique([orderId])
   @@index([status])

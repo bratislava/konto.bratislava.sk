@@ -51,7 +51,7 @@ const UserProfileSectionHeader = ({
             <h2 className="text-h5-semibold md:text-h4-bold">{title}</h2>
             {mainHeader && tierStatus.isIdentityVerified && (
               <span className="rounded-[4px] bg-success-100 px-2 text-p3-medium text-success-700">
-                {t('verification_status_success')}
+                {t('IdentityVerificationStatus.verification_status_success')}
               </span>
             )}
           </div>

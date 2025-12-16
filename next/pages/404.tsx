@@ -17,7 +17,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const NotFoundPage = () => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
 
   return (
     <div className="flex h-screen w-screen px-7 py-10 md:pr-32 md:pl-36 xl:pr-66 xl:pl-80">
@@ -29,10 +29,10 @@ const NotFoundPage = () => {
           {/* text-5xl font-extrabold does not work */}
           <div className="pb-4 text-[48px] font-[800] lg:text-[64px]">404</div>
           <div className="max-w-xs pb-10 text-center text-p1 lg:text-left">
-            {t('sorryNoResultsFound')}
+            {t('404.sorryNoResultsFound')}
           </div>
           <Link href="/">
-            <Button text={t('toTheMainPage')} endIcon={<ArrowRightIcon className="size-6" />} />
+            <Button text={t('404.toTheMainPage')} endIcon={<ArrowRightIcon className="size-6" />} />
           </Link>
         </div>
       </div>

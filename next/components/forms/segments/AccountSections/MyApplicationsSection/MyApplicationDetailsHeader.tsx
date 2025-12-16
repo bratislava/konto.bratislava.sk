@@ -81,7 +81,7 @@ const MyApplicationDetailsHeader = ({
                 <Button
                   className="hidden md:flex"
                   startIcon={<DownloadIcon className="size-6" />}
-                  text={t('download_pdf')}
+                  text={t('my_application.details.download_pdf')}
                   onPress={exportPdf}
                 />
               </div>
@@ -114,7 +114,7 @@ const MyApplicationDetailsHeader = ({
               fullWidth
               className="flex md:hidden"
               startIcon={<DownloadIcon className="size-6" />}
-              text={t('download_pdf')}
+              text={t('my_application.details.download_pdf')}
               onPress={exportPdf}
             />
           </div>

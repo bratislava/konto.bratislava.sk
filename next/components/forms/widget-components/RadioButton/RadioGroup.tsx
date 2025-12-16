@@ -25,7 +25,7 @@ type RadioGroupProps = FieldWrapperProps & {
 }
 
 const RadioGroup = (props: RadioGroupProps) => {
-  const { t } = useTranslation('account', { keyPrefix: 'RadioGroup' })
+  const { t } = useTranslation('account')
 
   const {
     children,
@@ -108,7 +108,7 @@ const RadioGroup = (props: RadioGroupProps) => {
                 className="self-end font-medium"
                 onPress={handleReset}
               >
-                {t('resetChoice')}
+                {t('RadioGroup.resetChoice')}
               </ButtonNew>
             )}
           </div>

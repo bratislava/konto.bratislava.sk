@@ -1,12 +1,13 @@
-import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import useHookForm from 'frontend/hooks/useHookForm'
-import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
+
+import useHookForm from '../../../frontend/hooks/useHookForm'
+import logger from '../../../frontend/utils/logger'
+import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
+import Button from '../simple-components/ButtonNew'
+import InputField from '../widget-components/InputField/InputField'
 
 interface Data {
   verificationCode: string
@@ -28,8 +29,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:verification_code_required',
-        format: 'account:verification_code_format',
+        minLength: 'account:auth.fields.verification_code_required',
+        format: 'account:auth.fields.verification_code_format',
       },
     },
   },
@@ -50,15 +51,15 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
     schema,
     defaultValues: { verificationCode: '' },
   })
-  const [cnt, setCnt] = useState(60)
+  const [count, setCount] = useState(60)
   useEffect(() => {
-    if (cnt > 0) {
-      setTimeout(() => setCnt((state) => state - 1), 1000)
+    if (count > 0) {
+      setTimeout(() => setCount((state) => state - 1), 1000)
     }
-  }, [cnt])
+  }, [count])
 
   const handleResend = async () => {
-    setCnt(60)
+    setCount(60)
     setResendIsLoading(true)
     await onResend()
     setResendIsLoading(false)
@@ -66,7 +67,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 md:gap-6"
       data-cy="verification-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
@@ -75,9 +76,9 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         )
       })}
     >
-      <h1 className="text-h3">{t('email_verification_title')}</h1>
+      <h1 className="text-h3">{t('auth.email_verification_title')}</h1>
       <p className="text-p3 lg:text-p2" data-cy="verification-description">
-        {t('email_verification_description', { email: lastEmail || '' })}
+        {t('auth.email_verification_description', { email: lastEmail || '' })}
       </p>
       <AccountErrorAlert
         error={error}
@@ -93,40 +94,37 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
           <InputField
             required
             autoComplete="off"
-            label={t('verification_code_label')}
-            placeholder={t('verification_code_placeholder')}
+            label={t('auth.fields.verification_code_label')}
+            placeholder={t('auth.fields.verification_code_placeholder')}
             {...field}
             errorMessage={errors.verificationCode}
           />
         )}
       />
-      <Button
-        className="min-w-full"
-        type="submit"
-        text={t('email_verification_submit')}
-        variant="category"
-        disabled={isSubmitting}
-      />
+      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+        {t('auth.email_verification_submit')}
+      </Button>
       {/* don't show timer if error */}
 
       <div className="text-p3 lg:text-p2">
-        {noError && cnt > 0 && (
+        {noError && count > 0 && (
           <div className="mb-4">
-            <span>{t('verification_description')}</span>{' '}
-            <span>{t('verification_cnt_description', { cnt })}</span>
+            <span>{t('auth.verification_description')}</span>{' '}
+            <span>{t('auth.verification_cnt_description', { cnt: count })}</span>
           </div>
         )}
-        <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />
+        <AccountMarkdown variant="sm" content={t('auth.verification_cnt_info')} />
       </div>
 
       <Button
-        loading={resendIsLoading}
+        variant="black-outline"
         onPress={handleResend}
-        className="min-w-full"
-        text={t('verification_resend')}
-        variant="category-outline"
-        disabled={cnt > 0 && noError}
-      />
+        fullWidth
+        isDisabled={count > 0 && noError}
+        isLoading={resendIsLoading}
+      >
+        {t('auth.verification_resend')}
+      </Button>
     </form>
   )
 }

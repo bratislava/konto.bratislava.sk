@@ -2,9 +2,6 @@ import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import IdentityVerificationForm, {
-  VerificationFormData,
-} from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
@@ -13,6 +10,9 @@ import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
 import Button from '../components/forms/simple-components/Button'
+import IdentityVerificationForm, {
+  VerificationFormData,
+} from '../components/forms/auth-forms/IdentityVerificationForm'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useVerifyEid, VerifyEidProvider } from '../components/verify/useVerifyEid'
 import { VerifyModalsProvider } from '../components/verify/useVerifyModals'
@@ -101,7 +101,7 @@ const IdentityVerificationPage = () => {
   return (
     <LoginRegisterLayout backButtonHidden>
       <VerifyModals />
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef}>
         {(tierStatus.isIdentityVerificationNotYetAttempted ||
           tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD) && (
           <>
@@ -125,31 +125,31 @@ const IdentityVerificationPage = () => {
         )}
         {tierStatus.tier === Tier.QUEUE_IDENTITY_CARD && (
           <AccountVerificationPendingAlert
-            title={t('identity_verification_pending_title')}
+            title={t('auth.identity_verification_pending_title')}
             description={
               lastRc && lastIdCard
-                ? t('identity_verification_pending_description', {
+                ? t('auth.identity_verification_pending_description', {
                     rc: lastRc,
                     idCard: lastIdCard,
                   })
-                : t('identity_verification_pending_description_without_data')
+                : t('auth.identity_verification_pending_description_without_data')
             }
-            confirmLabel={t('account_continue_link')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={() => redirect()}
           />
         )}
         {tierStatus.isIdentityVerified && (
           <AccountSuccessAlert
-            title={t('identity_verification_success_title')}
+            title={t('auth.identity_verification_success_title')}
             description={
               lastRc &&
               lastIdCard &&
-              t('identity_verification_success_description', {
+              t('auth.identity_verification_success_description', {
                 rc: lastRc,
                 idCard: lastIdCard,
               })
             }
-            confirmLabel={t('account_continue_link')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={() => redirect()}
           />
         )}

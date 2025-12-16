@@ -81,7 +81,7 @@ export const NavBar = ({
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()
 
-  const { t } = useTranslation(['common', 'account'])
+  const { t } = useTranslation('account')
   const router = useRouter()
 
   // we need to keep the work in progress of the open form if navigating away form it
@@ -106,8 +106,8 @@ export const NavBar = ({
       <div
         id="desktop-navbar"
         className={cn(
-          className,
           'sticky top-0 left-0 z-40 hidden w-full items-center bg-white text-p2 shadow-default lg:block',
+          className,
         )}
         ref={desktopNavbarRef}
       >
@@ -117,7 +117,7 @@ export const NavBar = ({
             url={ROUTES.HOME}
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
-                {t('common:capitalCity')}
+                {t('NavBar.capitalCityOfSR')}
                 <span className="font-semibold"> Bratislava</span>
               </p>
             }
@@ -154,13 +154,13 @@ export const NavBar = ({
                   size="sm"
                   onPress={login}
                   variant="plain-black"
-                  text={t('account:menu_login_link')}
+                  text={t('menu_links.login')}
                   data-cy="login-button"
                 />
                 <Button
                   onPress={register}
                   variant="negative"
-                  text={t('account:menu_register_link')}
+                  text={t('menu_links.register')}
                   size="sm"
                   data-cy="register-button"
                 />
@@ -168,7 +168,8 @@ export const NavBar = ({
             )}
           </nav>
         </div>
-        {/* Header bottom navigation */}
+
+        {/* NavBar menu */}
         {sectionsList && !hiddenHeaderNav && (
           <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between border-t border-gray-200 lg:flex">
             <NavigationMenu.Root
@@ -194,7 +195,7 @@ export const NavBar = ({
                           )}
                         >
                           {sectionItem.icon}
-                          <span className="ml-3">{t(sectionItem?.title)}</span>
+                          <span className="ml-3">{sectionItem.title}</span>
                         </div>
                       </NextLink>
                     </NavigationMenu.Link>

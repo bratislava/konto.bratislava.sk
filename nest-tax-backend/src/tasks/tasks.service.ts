@@ -3,11 +3,13 @@ import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
+import pLimit from 'p-limit'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
+import { PaymentService } from '../payment/payment.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
@@ -22,9 +24,10 @@ import {
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
+import { RetryService } from '../utils-module/retry.service'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 
@@ -45,6 +48,8 @@ export class TasksService {
     private readonly taxImportHelperSubservice: TaxImportHelperSubservice,
     private readonly norisService: NorisService,
     private readonly configService: ConfigService,
+    private readonly retryService: RetryService,
+    private readonly paymentService: PaymentService,
   ) {
     this.logger = new Logger('TasksService')
     // Check if the required environment variable is set
@@ -450,28 +455,6 @@ export class TasksService {
     }
   }
 
-  private async retryWithDelay<T>(
-    fn: () => Promise<T>,
-    retries = 3,
-    delayMs = 5 * 60 * 1000, // 5 minutes
-  ): Promise<T> {
-    try {
-      return await fn()
-    } catch (error) {
-      if (retries <= 0) {
-        throw error
-      }
-      this.logger.warn(
-        `Retry attempt failed. Retrying in ${(delayMs / 1000).toFixed(2)} seconds. Remaining retries: ${retries - 1}`,
-        toLogfmt(error),
-      )
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, delayMs)
-      })
-      return this.retryWithDelay(fn, retries - 1, delayMs)
-    }
-  }
-
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async loadOverpaymentsFromNoris() {
@@ -514,11 +497,11 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      result = await this.retryWithDelay(async () => {
+      result = await this.retryService.retryWithDelay(async () => {
         return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
           data,
         )
-      })
+      }, 'updateOverpaymentsDataFromNorisByDateRange')
 
       // Success: reset lookback days to default
       await this.configSubservice.resetOverpaymentsLookbackDays()
@@ -536,5 +519,67 @@ export class TasksService {
         error,
       )
     }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async resendBloomreachEvents() {
+    this.logger.log('Starting resendBloomreachEvents task')
+    const payments = await this.prismaService.taxPayment.findMany({
+      where: {
+        status: PaymentStatus.SUCCESS,
+        bloomreachEventSent: false,
+      },
+      include: {
+        tax: {
+          include: {
+            taxPayer: true,
+          },
+        },
+      },
+    })
+
+    if (payments.length === 0) {
+      this.logger.log('No payments to resend bloomreach events for')
+      return
+    }
+
+    const concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+    const concurrencyLimit = pLimit(concurrency)
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        payments.map((payment) => payment.tax.taxPayer.birthNumber),
+      )
+
+    const trackPaymentWithConcurrencyLimit = async (
+      payment: TaxPaymentWithTaxAndTaxPayer,
+    ): Promise<boolean> => {
+      try {
+        await concurrencyLimit(async () => {
+          const userFromCityAccount =
+            userDataFromCityAccount[payment.tax.taxPayer.birthNumber] || null
+          await this.paymentService.trackPaymentInBloomreach(
+            payment,
+            userFromCityAccount?.externalId ?? undefined,
+          )
+        })
+        return true
+      } catch (error) {
+        // Throwing would cause the whole task to fail, so we just log the error
+        this.logger.error(error)
+        return false
+      }
+    }
+
+    const results = await Promise.all(
+      payments.map(async (payment) => {
+        const success = await trackPaymentWithConcurrencyLimit(payment)
+        return success
+      }),
+    )
+
+    this.logger.log(
+      `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events.`,
+    )
   }
 }

@@ -5,6 +5,7 @@ import MessageModal, {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
 import { useVerifyModals } from './useVerifyModals'
 
 /**
@@ -61,7 +62,14 @@ const VerifyModals = () => {
       ],
       isDismissable: !redirectingToSlovenskoSkLogin,
       noCloseButton: redirectingToSlovenskoSkLogin,
-      children: t('auth.verify_confirmation_eid_legal_modal.content'),
+      children: (
+        <AccountMarkdown
+          variant="sm"
+          // content="**Blah** blah"
+          // content={t('account_section_payment.set_delivery_method_content')}
+          content={t('auth.verify_confirmation_eid_legal_modal.content')}
+        />
+      ),
     },
     {
       key: 'eidVerifyingModal',

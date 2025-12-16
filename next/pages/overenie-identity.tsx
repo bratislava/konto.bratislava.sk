@@ -12,7 +12,7 @@ import { useRef, useState } from 'react'
 import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
 } from '../components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
-import Button from '../components/forms/simple-components/Button'
+import Button from '../components/forms/simple-components/ButtonNew'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useVerifyEid, VerifyEidProvider } from '../components/verify/useVerifyEid'
 import { VerifyModalsProvider } from '../components/verify/useVerifyModals'
@@ -103,19 +103,24 @@ const IdentityVerificationPage = () => {
   return (
     <LoginRegisterLayout backButtonHidden>
       <VerifyModals />
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
+      <AccountContainer ref={accountContainerRef}>
         {(tierStatus.isIdentityVerificationNotYetAttempted ||
           tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD) && (
           <>
             {isLegalEntity ? (
-              <div className="flex flex-col space-y-4">
+              <div className="flex flex-col gap-4 md:gap-6">
                 <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
                 <p className="text-p2">{t('auth.identity_verification_subtitle_legal_entity')}</p>
                 <Button
-                  variant="black"
+                  variant="black-solid"
                   onPress={openVerifyingConfirmationEidLegalModal}
-                  text={t('auth.verify_with_eid')}
-                />
+                  fullWidth
+                >
+                  {t('auth.verify_with_eid')}
+                </Button>
+                <Button variant="black-plain" fullWidth onPress={() => redirect()}>
+                  {t('auth.identity_verification_skip')}
+                </Button>
               </div>
             ) : (
               <IdentityVerificationOfPhysicalEntityForm

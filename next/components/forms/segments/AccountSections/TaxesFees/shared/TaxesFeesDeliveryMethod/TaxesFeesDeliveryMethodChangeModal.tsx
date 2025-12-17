@@ -1,23 +1,22 @@
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import TaxesChannelChangeEffectiveNextYearAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesChannelChangeEffectiveNextYearAlert'
+import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
+import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import Modal, { ModalProps } from 'components/forms/simple-components/Modal'
+import Radio from 'components/forms/widget-components/RadioButton/Radio'
+import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
+import useHookForm from 'frontend/hooks/useHookForm'
+import useSnackbar from 'frontend/hooks/useSnackbar'
+import { useUserSubscription } from 'frontend/hooks/useUser'
 import { isDefined } from 'frontend/utils/general'
+import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'
 import { Controller } from 'react-hook-form'
 import { useEffectOnce } from 'usehooks-ts'
-
-import useHookForm from '../../../../../frontend/hooks/useHookForm'
-import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
-import { useUserSubscription } from '../../../../../frontend/hooks/useUser'
-import logger from '../../../../../frontend/utils/logger'
-import ButtonNew from '../../../simple-components/ButtonNew'
-import Modal, { ModalProps } from '../../../simple-components/Modal'
-import Radio from '../../../widget-components/RadioButton/Radio'
-import RadioGroup from '../../../widget-components/RadioButton/RadioGroup'
-import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
-import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
-import { useStrapiTax } from './useStrapiTax'
-import { useTaxChannel } from './useTaxChannel'
 
 type AgreementProps = {
   onScrollToBottom: () => void
@@ -177,24 +176,20 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
   )
 }
 
-type TaxesFeesDeliveryMethodChangeModalProps = ModalProps & {
-  agreementContent: string
-}
-
-const TaxesFeesDeliveryMethodChangeModal = ({
-  isOpen,
-  onOpenChange,
-  agreementContent,
-}: TaxesFeesDeliveryMethodChangeModalProps) => {
+const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
   const { isSubscribed, changeSubscription, subType } = useUserSubscription({
     category: GDPRCategoryEnum.Taxes,
     type: GDPRTypeEnum.FormalCommunication,
   })
   const { t } = useTranslation('account')
+
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const { channelChangeEffectiveNextYear } = useTaxChannel()
+
+  const { isChannelChangeEffectiveNextYear } = useOfficialCorrespondenceChannel()
+
   const strapiTax = useStrapiTax()
+  const { accountCommunicationConsentText } = strapiTax
 
   const handleSubmit = async ({ data }: { data: FormData }) => {
     return changeSubscription(data.isSubscribed, {
@@ -225,7 +220,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
         variant="sm"
         className="mb-4"
       />
-      {channelChangeEffectiveNextYear && (
+      {isChannelChangeEffectiveNextYear && (
         <div className="mb-4">
           <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
         </div>
@@ -236,7 +231,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
           scrolledToBottom: false,
         }}
         onSubmit={handleSubmit}
-        agreementContent={agreementContent}
+        agreementContent={accountCommunicationConsentText}
       />
     </Modal>
   )

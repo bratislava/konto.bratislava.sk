@@ -7,7 +7,6 @@ import TaxesFeesDeliveryMethodInfoCardWrapper from 'components/forms/segments/Ac
 import TaxFeeContactInformation from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeContactInformation'
 import TaxFeeDetails from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeDetails'
 import TaxFeePaymentMethods from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentMethods/TaxFeePaymentMethods'
-import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
@@ -22,14 +21,12 @@ const TaxFeeSection = () => {
     setOfficialCorrespondenceChannelModalOpen,
     strapiTaxAdministrator,
   } = useTaxFeeSection()
-  const { accountCommunicationConsentText } = useStrapiTax()
 
   return (
     <>
       <TaxesFeesDeliveryMethodChangeModal
         isOpen={officialCorrespondenceChannelModalOpen}
         onOpenChange={setOfficialCorrespondenceChannelModalOpen}
-        agreementContent={accountCommunicationConsentText}
       />
       <div className="flex flex-col">
         <TaxFeeSectionHeader

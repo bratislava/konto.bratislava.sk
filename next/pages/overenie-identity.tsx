@@ -13,7 +13,6 @@ import IdentityVerificationOfPhysicalEntityForm, {
 } from '../components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import LegalPersonVerificationPageContent from '../components/verify/LegalPersonVerificationPageContent'
-import { VerifyEidProvider } from '../components/verify/useVerifyEid'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
@@ -147,12 +146,4 @@ const IdentityVerificationPage = () => {
   )
 }
 
-const IdentityVerify = () => {
-  return (
-    <VerifyEidProvider>
-      <IdentityVerificationPage />
-    </VerifyEidProvider>
-  )
-}
-
-export default SsrAuthProviderHOC(IdentityVerify)
+export default SsrAuthProviderHOC(IdentityVerificationPage)

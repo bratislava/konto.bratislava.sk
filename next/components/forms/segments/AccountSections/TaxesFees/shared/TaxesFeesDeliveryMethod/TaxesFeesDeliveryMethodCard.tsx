@@ -1,19 +1,17 @@
 import { MailIcon, SettingsIcon } from '@assets/ui-icons'
-import { useTaxChannel } from 'components/forms/segments/AccountSections/TaxesFees/useTaxChannel'
+import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
 type TaxesFeesDeliveryMethodCardProps = {
-  onDeliveryMethodChange: () => void
+  onButtonPress: () => void
 }
 
-const TaxesFeesDeliveryMethodCard = ({
-  onDeliveryMethodChange,
-}: TaxesFeesDeliveryMethodCardProps) => {
+const TaxesFeesDeliveryMethodCard = ({ onButtonPress }: TaxesFeesDeliveryMethodCardProps) => {
   const { t } = useTranslation('account')
-  const { channel, canChangeChannel } = useTaxChannel()
+  const { channel, canUserChangeChannel } = useOfficialCorrespondenceChannel()
 
   if (!channel) {
     return null
@@ -39,13 +37,9 @@ const TaxesFeesDeliveryMethodCard = ({
           </div>
         </div>
       </div>
-      {canChangeChannel && (
+      {canUserChangeChannel && (
         <div>
-          <ButtonNew
-            onPress={onDeliveryMethodChange}
-            variant="black-link"
-            startIcon={<SettingsIcon />}
-          >
+          <ButtonNew onPress={onButtonPress} variant="black-link" startIcon={<SettingsIcon />}>
             {t('taxes.communication_channel.change_button')}
           </ButtonNew>
         </div>

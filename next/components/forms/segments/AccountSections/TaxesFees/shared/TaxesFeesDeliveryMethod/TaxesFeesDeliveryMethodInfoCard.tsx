@@ -1,6 +1,6 @@
 import { MailIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useTaxChannel } from 'components/forms/segments/AccountSections/TaxesFees/useTaxChannel'
+import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { ROUTES } from 'frontend/api/constants'
 import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
@@ -9,7 +9,7 @@ import React from 'react'
 
 const TaxesFeesDeliveryMethodInfoCard = () => {
   const { t } = useTranslation('account')
-  const { channel, canChangeChannel } = useTaxChannel()
+  const { channel, canUserChangeChannel } = useOfficialCorrespondenceChannel()
 
   if (!channel) {
     return null
@@ -33,7 +33,7 @@ const TaxesFeesDeliveryMethodInfoCard = () => {
           <div className="flex flex-col gap-1">
             <span className="block text-p1-semibold">{type}</span>
           </div>
-          {canChangeChannel && (
+          {canUserChangeChannel && (
             <div className="pt-3 pb-2 lg:px-0">
               <AccountMarkdown
                 content={`${t('taxes.communication_channel.info_change_link_text', {

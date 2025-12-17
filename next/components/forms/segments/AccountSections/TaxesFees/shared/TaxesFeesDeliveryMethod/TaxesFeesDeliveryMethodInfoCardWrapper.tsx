@@ -1,11 +1,11 @@
 import TaxesFeesDeliveryMethodInfoCard from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodInfoCard'
-import { useTaxChannel } from 'components/forms/segments/AccountSections/TaxesFees/useTaxChannel'
+import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 const TaxesFeesDeliveryMethodInfoCardWrapper = () => {
   const { t } = useTranslation('account')
-  const { channel } = useTaxChannel()
+  const { channel } = useOfficialCorrespondenceChannel()
 
   if (!channel) {
     return null

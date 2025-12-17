@@ -4,7 +4,7 @@ import TaxesFeesDeliveryMethodChangeModal from 'components/forms/segments/Accoun
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-const OfficialCorrespondenceChannelBanner = () => {
+const OfficialCorrespondenceChannelNeededBanner = () => {
   const { t } = useTranslation('account')
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -28,4 +28,4 @@ const OfficialCorrespondenceChannelBanner = () => {
   )
 }
 
-export default OfficialCorrespondenceChannelBanner
+export default OfficialCorrespondenceChannelNeededBanner

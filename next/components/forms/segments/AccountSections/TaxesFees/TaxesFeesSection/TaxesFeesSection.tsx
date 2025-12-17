@@ -1,7 +1,7 @@
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import IdentityVerificationInProcessBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationInProcessBanner'
 import IdentityVerificationNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationNeededBanner'
-import OfficialCorrespondenceChannelBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelBanner'
+import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import OfficialCorrespondenceChannelInformation from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
 import TaxesFeesOverview from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesOverview'
 import TaxesFeesTabs, {
@@ -65,7 +65,7 @@ const TaxesFeesSection = () => {
           (isIdentityVerified ? (
             <IdentityVerificationNeededBanner />
           ) : (
-            <OfficialCorrespondenceChannelBanner />
+            <OfficialCorrespondenceChannelNeededBanner />
           ))}
         {isInQueue && <IdentityVerificationInProcessBanner />}
         {isIdentityVerified && !showChannelNeededBanner && (

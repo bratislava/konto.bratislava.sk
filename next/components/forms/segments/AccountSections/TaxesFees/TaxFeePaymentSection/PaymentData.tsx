@@ -8,7 +8,7 @@ import {
 } from '@assets/ui-icons'
 import Alert from 'components/forms/info-components/Alert'
 import IdentityVerificationNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationNeededBanner'
-import OfficialCorrespondenceChannelBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelBanner'
+import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import Button from 'components/forms/simple-components/Button'
@@ -244,7 +244,7 @@ const PaymentData = () => {
           {isIdentityVerified ? (
             <IdentityVerificationNeededBanner />
           ) : (
-            <OfficialCorrespondenceChannelBanner />
+            <OfficialCorrespondenceChannelNeededBanner />
           )}
         </div>
       ) : (

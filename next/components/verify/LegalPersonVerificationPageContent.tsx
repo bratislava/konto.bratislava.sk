@@ -4,6 +4,7 @@ import React from 'react'
 
 import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
 import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
+import AccountVerificationPendingAlert from '../forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import Button from '../forms/simple-components/ButtonNew'
 import { useVerifyEid, VerificationStatus } from './useVerifyEid'
 
@@ -13,7 +14,12 @@ const LegalPersonVerificationPageContent = () => {
 
   const { loginWithEid, verificationStatus } = useVerifyEid()
 
-  return verificationStatus === VerificationStatus.ERROR ? (
+  return verificationStatus === VerificationStatus.VERIFYING ? (
+    <AccountVerificationPendingAlert
+      title={t('auth.eid_verifying_modal.title')}
+      description={t('auth.eid_verifying_modal.content')}
+    />
+  ) : verificationStatus === VerificationStatus.ERROR ? (
     <div className="flex flex-col gap-4 md:gap-6">
       <div className="mx-auto size-14 rounded-full bg-negative-100 p-4">
         <div className="flex size-6 items-center justify-center">

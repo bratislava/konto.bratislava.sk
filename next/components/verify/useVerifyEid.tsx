@@ -17,6 +17,7 @@ import { ErrorWithName } from '../../frontend/utils/errors'
 export enum VerificationStatus {
   INIT = 'INIT',
   REDIRECTING = 'REDIRECTING',
+  VERIFYING = 'VERIFYING',
   ERROR = 'ERROR',
 }
 
@@ -39,7 +40,10 @@ export const useVerifyEid = () => {
   const router = useRouter()
 
   const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>(
-    VerificationStatus.INIT,
+    // When the page is opened after redirect from slovensko.sk, we show VERIFYING state and call `verifyWithEid()`
+    router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
+      ? VerificationStatus.VERIFYING
+      : VerificationStatus.INIT,
   )
   const [verificationError, setVerificationError] = useState<Error | null>(null)
 
@@ -100,7 +104,6 @@ export const useVerifyEid = () => {
 
       removeSendIdTokenFromUrl()
 
-      // this needs to happen after coming back from slovensko.sk to show user that verification is in progress
       verifyWithEid()
     }
   })

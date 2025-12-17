@@ -7,12 +7,18 @@ import {
   setVerifyEidMetadata,
 } from 'frontend/utils/metadataStorage'
 import { useRouter } from 'next/router'
-import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useRef, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { environment } from '../../environment'
 import { useRefreshServerSideProps } from '../../frontend/hooks/useRefreshServerSideProps'
-import { useVerifyModals } from './useVerifyModals'
+import { ErrorWithName } from '../../frontend/utils/errors'
+
+export enum VerificationStatus {
+  INIT = 'INIT',
+  REDIRECTING = 'REDIRECTING',
+  ERROR = 'ERROR',
+}
 
 /**
  * Heavily inspired by `useFormSend` hook.
@@ -32,12 +38,10 @@ import { useVerifyModals } from './useVerifyModals'
 const useGetContext = () => {
   const router = useRouter()
 
-  const {
-    setEidVerifyingModal,
-    setEidSendErrorModal,
-    setRedirectingToSlovenskoSkLogin,
-    setVerifyingConfirmationEidLegalModal,
-  } = useVerifyModals()
+  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>(
+    VerificationStatus.INIT,
+  )
+  const [verificationError, setVerificationError] = useState<Error | null>(null)
 
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
@@ -55,12 +59,16 @@ const useGetContext = () => {
       )
     },
     onSuccess: async () => {
-      setEidVerifyingModal(false)
       refreshData()
     },
     onError: () => {
-      setEidVerifyingModal(false)
-      setEidSendErrorModal(true)
+      setVerificationError(
+        new ErrorWithName(
+          'Unsuccessful identity verification',
+          'unsuccessful-identity-verification',
+        ),
+      )
+      setVerificationStatus(VerificationStatus.ERROR)
     },
     networkMode: 'always',
   })
@@ -93,29 +101,25 @@ const useGetContext = () => {
       removeSendIdTokenFromUrl()
 
       // this needs to happen after coming back from slovensko.sk to show user that verification is in progress
-      setEidVerifyingModal(true)
       verifyWithEid()
     }
   })
 
   const loginWithEid = () => {
+    setVerificationStatus(VerificationStatus.REDIRECTING)
     setVerifyEidMetadata({ verifiedProcess: true })
     // We are redirecting to a trusted URL
     // eslint-disable-next-line xss/no-location-href-assign
     window.location.href = environment.slovenskoSkLoginUrl
-    setRedirectingToSlovenskoSkLogin(true)
   }
 
-  const openVerifyingConfirmationEidLegalModal = () => {
-    setVerifyingConfirmationEidLegalModal({
-      isOpen: true,
-      confirmCallback: () => {
-        loginWithEid()
-      },
-    })
+  return {
+    loginWithEid,
+    verificationStatus,
+    setVerificationStatus,
+    verificationError,
+    setVerificationError,
   }
-
-  return { openVerifyingConfirmationEidLegalModal }
 }
 
 const VerifyEidContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)

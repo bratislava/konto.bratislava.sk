@@ -11,11 +11,9 @@ import { useRef, useState } from 'react'
 import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
 } from '../components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
-import Button from '../components/forms/simple-components/ButtonNew'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { useVerifyEid, VerifyEidProvider } from '../components/verify/useVerifyEid'
-import { VerifyModalsProvider } from '../components/verify/useVerifyModals'
-import VerifyModals from '../components/verify/VerifyModals'
+import LegalPersonVerificationPageContent from '../components/verify/LegalPersonVerificationPageContent'
+import { VerifyEidProvider } from '../components/verify/useVerifyEid'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
@@ -42,7 +40,6 @@ const IdentityVerificationPage = () => {
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   // TODO fix is legal entity
   const { tierStatus, isLegalEntity } = useSsrAuth()
-  const { openVerifyingConfirmationEidLegalModal } = useVerifyEid()
 
   const { refreshData } = useRefreshServerSideProps(tierStatus)
 
@@ -101,26 +98,12 @@ const IdentityVerificationPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <VerifyModals />
       <AccountContainer ref={accountContainerRef}>
         {(tierStatus.isIdentityVerificationNotYetAttempted ||
           tierStatus.isNotVerifiedIdentityCard) && (
           <>
             {isLegalEntity ? (
-              <div className="flex flex-col gap-4 md:gap-6">
-                <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
-                <p className="text-p2">{t('auth.identity_verification_subtitle_legal_entity')}</p>
-                <Button
-                  variant="black-solid"
-                  onPress={openVerifyingConfirmationEidLegalModal}
-                  fullWidth
-                >
-                  {t('auth.verify_with_eid')}
-                </Button>
-                <Button variant="black-plain" fullWidth onPress={() => redirect()}>
-                  {t('auth.identity_verification_skip')}
-                </Button>
-              </div>
+              <LegalPersonVerificationPageContent />
             ) : (
               <IdentityVerificationOfPhysicalEntityForm
                 onSubmit={verifyIdentityAndRefreshUserData}
@@ -166,11 +149,9 @@ const IdentityVerificationPage = () => {
 
 const IdentityVerify = () => {
   return (
-    <VerifyModalsProvider>
-      <VerifyEidProvider>
-        <IdentityVerificationPage />
-      </VerifyEidProvider>
-    </VerifyModalsProvider>
+    <VerifyEidProvider>
+      <IdentityVerificationPage />
+    </VerifyEidProvider>
   )
 }
 

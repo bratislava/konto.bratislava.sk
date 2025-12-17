@@ -10,18 +10,18 @@ import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
 import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
+import { TaxesFeesSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
 import { AccountType } from 'frontend/dtos/accountDto'
 import { ResponseGetTaxesListDto, TaxType } from 'openapi-clients/tax'
 
 import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useTaxFeesSection'
 import AccountPageLayout from '../../components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
-type AccountTaxesFeesPageProps = {
+export type AccountTaxesFeesPageProps = {
   taxesData: ResponseGetTaxesListDto | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
@@ -108,12 +108,12 @@ const AccountTaxesFeesPage = ({
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxFeesSectionProvider
+          <TaxesFeesSectionProvider
             taxesData={taxesData}
             strapiTaxAdministrator={strapiTaxAdministrator}
           >
             <TaxesFeesSection />
-          </TaxFeesSectionProvider>
+          </TaxesFeesSectionProvider>
         </StrapiTaxProvider>
       </AccountPageLayout>
     </HydrationBoundary>

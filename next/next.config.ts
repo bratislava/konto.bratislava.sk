@@ -1,5 +1,5 @@
 import { withPlausibleProxy } from 'next-plausible'
-import { i18n } from './next-i18next.config'
+import i18nextConfig from './next-i18next.config'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import path, { join } from 'node:path'
 import fs from 'node:fs'
@@ -53,7 +53,7 @@ const nextConfig: NextConfig = {
   env: {
     IFRAME_RESIZER_PUBLIC_PATH: iframeResizerPublicPath,
   },
-  i18n,
+  i18n: i18nextConfig.i18n,
   reactStrictMode: true,
   images: {
     remotePatterns: [

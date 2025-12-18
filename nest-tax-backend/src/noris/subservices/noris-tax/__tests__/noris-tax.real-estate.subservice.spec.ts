@@ -54,6 +54,7 @@ describe('NorisTaxRealEstateSubservice', () => {
   const mockNorisData: NorisRealEstateTax[] = [
     {
       adresa_tp_sidlo: 'Test Address',
+      stav_dokladu: 'Z',
       cislo_poradace: 1,
       cislo_subjektu: 123,
       cislo_konania: 'KON123',
@@ -745,13 +746,13 @@ describe('NorisTaxRealEstateSubservice', () => {
       )
     })
 
-    it('should not increment count when insertTaxDataToDatabase returns null', async () => {
+    it('should not increment count when insertTaxDataToDatabase throws an error', async () => {
       jest
         .spyOn(service as any, 'getTaxDataByYearAndBirthNumber')
         .mockResolvedValue(mockNorisData)
       jest
         .spyOn(service as any, 'insertTaxDataToDatabase')
-        .mockResolvedValue(null)
+        .mockRejectedValue(new Error('Test error'))
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -769,6 +770,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         type: TaxType.DZN,
         isUnique: true,
         readyToImportFieldName: 'readyToImportDZN',
+        lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
         installmentDueDates: {
@@ -885,6 +887,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         type: TaxType.DZN,
         isUnique: true,
         readyToImportFieldName: 'readyToImportDZN',
+        lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
         installmentDueDates: {

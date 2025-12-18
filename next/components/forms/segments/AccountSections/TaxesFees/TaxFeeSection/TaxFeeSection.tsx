@@ -65,7 +65,7 @@ const TaxFeeSection = () => {
           <TaxFeeContactInformation />
           <TaxFeeDetails />
           {taxData.paidStatus !== TaxStatusEnum.Paid &&
-            taxData.paidStatus !== TaxStatusEnum.OverPaid && <TaxFeePaymentMethods />}
+            taxData.paidStatus !== TaxStatusEnum.OverPaid && taxData.paidStatus !== TaxStatusEnum.Cancelled && <TaxFeePaymentMethods />}
         </div>
       </div>
     </>

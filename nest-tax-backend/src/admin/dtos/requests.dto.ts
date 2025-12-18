@@ -267,6 +267,13 @@ export class RequestAdminCreateTestingTaxNorisData {
   @Type(() => Date)
   @IsOptional()
   dateTaxRuling: Date | null
+
+  @ApiProperty({
+    description: 'Indicates if tax is cancelled',
+    default: false,
+  })
+  @IsBoolean()
+  isCancelled: boolean
 }
 
 export class RequestAdminCreateTestingTaxDto {

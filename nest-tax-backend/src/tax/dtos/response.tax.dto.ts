@@ -24,20 +24,13 @@ export enum TaxDetailTypeEnum {
   GROUND = 'GROUND',
 }
 
-// TODO deprecated enum
-export enum TaxPaidStatusEnum {
-  NOT_PAID = 'NOT_PAID',
-  PARTIALLY_PAID = 'PARTIALLY_PAID',
-  PAID = 'PAID',
-  OVER_PAID = 'OVER_PAID',
-}
-
 export enum TaxStatusEnum {
   NOT_PAID = 'NOT_PAID',
   PARTIALLY_PAID = 'PARTIALLY_PAID',
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
   AWAITING_PROCESSING = 'AWAITING_PROCESSING',
+  CANCELLED = 'CANCELLED',
 }
 
 export enum TaxAvailabilityStatus {
@@ -496,12 +489,12 @@ export class ResponseTaxPayerReducedDto {
 export class ResponseTaxSummaryDetailBaseDto {
   @ApiProperty({
     description: 'Payment status',
-    example: TaxPaidStatusEnum.PAID,
-    enumName: 'TaxPaidStatusEnum',
-    enum: TaxPaidStatusEnum,
+    example: TaxStatusEnum.PAID,
+    enumName: 'TaxStatusEnum',
+    enum: TaxStatusEnum,
   })
-  @IsEnum(TaxPaidStatusEnum)
-  paidStatus: TaxPaidStatusEnum
+  @IsEnum(TaxStatusEnum)
+  paidStatus: TaxStatusEnum
 
   @ApiProperty({ description: 'Year of tax', example: 2024 })
   @IsNumber()

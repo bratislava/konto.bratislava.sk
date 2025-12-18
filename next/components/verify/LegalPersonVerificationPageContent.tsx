@@ -1,4 +1,4 @@
-import { CrossIcon } from '@assets/ui-icons'
+import { ErrorIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -23,7 +23,7 @@ const LegalPersonVerificationPageContent = () => {
     <div className="flex flex-col gap-4 md:gap-6">
       <div className="mx-auto size-14 rounded-full bg-negative-100 p-4">
         <div className="flex size-6 items-center justify-center">
-          <CrossIcon className="size-6 text-negative-700" />
+          <ErrorIcon className="size-6 text-negative-700" />
         </div>
       </div>
       <h1 className="text-center text-h3">

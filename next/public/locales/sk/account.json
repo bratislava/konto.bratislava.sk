@@ -187,7 +187,7 @@
   "auth.identity_verification.fo.success.content": "Rodné číslo {{rc}} a číslo dokladu {{idCard}} boli overené.",
   "auth.identity_verification.fop_po_eid.error.button_text": "Zavrieť",
   "auth.identity_verification.fop_po_eid.error.content": "Zopakujte overenie totožnosti alebo kontaktujte podporu",
-  "auth.identity_verification.fop_po_eid.error.title": "Totožnosť sa nepodarila overiť",
+  "auth.identity_verification.fop_po_eid.error.title": "Overenie nebolo úspešné",
   "auth.identity_verification.fop_po_eid.init.content": "Po kliknutí na Overiť cez eID budete presmerovaní na stránku slovensko.sk. Na overovanie totožnosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí členovi/členke štatutárneho orgánu firmy, ktorej patrí toto Bratislavské konto.",
   "auth.identity_verification.fop_po_eid.init.redirecting_button_text": "Prebieha presmerovanie",
   "auth.identity_verification.fop_po_eid.init.title": "Overte svoju totožnosť",

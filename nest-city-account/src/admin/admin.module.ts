@@ -16,6 +16,7 @@ import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import ClientsModule from '../clients/clients.module'
 import { UserModule } from '../user/user.module'
 import { DatabaseSubserviceUser } from '../user/utils/subservice/database.subservice'
+import { VerificationModule } from '../user-verification/verification.module'
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { DatabaseSubserviceUser } from '../user/utils/subservice/database.subser
     BloomreachModule,
     ClientsModule,
     UserModule,
+    VerificationModule,
   ],
   providers: [
     AdminService,

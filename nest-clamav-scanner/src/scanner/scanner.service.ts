@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FileStatus } from '@prisma/client'
-import { contentType } from 'mime-types'
+import { lookup } from 'mime-types'
 import { ClamavClientService } from 'src/clamav-client/clamav-client.service'
 import { MinioClientService } from 'src/minio-client/minio-client.service'
 
@@ -21,12 +21,12 @@ import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto'
  * Mapping of file extensions to MIME types for formats that the mime-types library doesn't recognize.
  * These are ASiC electronic signature container formats.
  */
-const extensionToMimeType: Record<string, string> = {
-  asice: 'application/vnd.etsi.asic-e+zip',
-  sce: 'application/vnd.etsi.asic-e+zip',
-  asics: 'application/vnd.etsi.asic-s+zip',
-  scs: 'application/vnd.etsi.asic-s+zip',
-}
+const extensionToMimeType = new Map<string, string>([
+  ['asice', 'application/vnd.etsi.asic-e+zip'],
+  ['sce', 'application/vnd.etsi.asic-e+zip'],
+  ['asics', 'application/vnd.etsi.asic-s+zip'],
+  ['scs', 'application/vnd.etsi.asic-s+zip'],
+])
 
 @Injectable()
 export class ScannerService {
@@ -104,11 +104,14 @@ export class ScannerService {
 
       // get file format from bucketFile.fileUid
       const fileFormat = bucketFile.fileUid.split('.').pop()?.toLowerCase()
-      const proformaName = `proforma.${fileFormat}`
+      if (!fileFormat) {
+        throw new BadRequestException(
+          'Unsupported file mime-type: No file format found.',
+        )
+      }
       // Check custom mapping first for ASiC formats (mime-types library maps .scs incorrectly)
-      const mimeType =
-        (fileFormat ? extensionToMimeType[fileFormat] : undefined) ||
-        contentType(proformaName)
+      const customMimeType = extensionToMimeType.get(fileFormat)
+      const mimeType = customMimeType ?? lookup(fileFormat)
       if (!mimeType || !this.isSupportedMimeType(mimeType)) {
         throw new BadRequestException(
           `Unsupported file mime-type: ${mimeType || 'unknown'}.`,

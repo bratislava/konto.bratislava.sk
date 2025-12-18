@@ -37,12 +37,12 @@ import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
  * Mapping of file extensions to MIME types for formats that browsers don't recognize
  * and send as application/octet-stream. These are ASiC electronic signature container formats.
  */
-const extensionToMimeType: Record<string, string> = {
-  '.asice': 'application/vnd.etsi.asic-e+zip',
-  '.sce': 'application/vnd.etsi.asic-e+zip',
-  '.asics': 'application/vnd.etsi.asic-s+zip',
-  '.scs': 'application/vnd.etsi.asic-s+zip',
-}
+const extensionToMimeType = new Map<string, string>([
+  ['.asice', 'application/vnd.etsi.asic-e+zip'],
+  ['.sce', 'application/vnd.etsi.asic-e+zip'],
+  ['.asics', 'application/vnd.etsi.asic-s+zip'],
+  ['.scs', 'application/vnd.etsi.asic-s+zip'],
+])
 
 // TODO missing tests
 @Injectable()
@@ -78,7 +78,7 @@ export default class FilesHelper {
     // For application/octet-stream, check if the file extension maps to a supported MIME type
     if (mimeType === 'application/octet-stream' && filename) {
       const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase()
-      const mappedMimeType = extensionToMimeType[extension]
+      const mappedMimeType = extensionToMimeType.get(extension)
       if (mappedMimeType && this.supportedMimeTypes.includes(mappedMimeType)) {
         return true
       }

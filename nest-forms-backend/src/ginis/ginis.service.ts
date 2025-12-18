@@ -1,21 +1,44 @@
+import { Readable } from 'node:stream'
 import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState, GinisState } from '@prisma/client'
+import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
-import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSkGeneric,
+  isSlovenskoSkGenericFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
+import {
+  extractFormSubjectPlain,
+  extractFormSubjectTechnical,
+} from 'forms-shared/form-utils/formDataExtractors'
+import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
+import { ContactAndIdInfoTypeEnum } from 'openapi-clients/city-account'
+import {
+  UpvsCorporateBody,
+  UpvsNaturalPerson,
+} from 'openapi-clients/slovensko-sk'
 
+import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
+import ConvertService from '../convert/convert.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../nases/nases.errors.enum'
+import NasesUtilsService, {
+  isUpvsCorporateBody,
+  isUpvsNaturalPerson,
+} from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -28,7 +51,12 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
-import GinisAPIService from './subservices/ginis-api.service'
+import GinisAPIService, {
+  GinContactParams,
+  GinContactType,
+  SslFileUploadType,
+  SslWflDocumentElectronicSourceExistence,
+} from './subservices/ginis-api.service'
 
 @Injectable()
 export default class GinisService {
@@ -36,12 +64,15 @@ export default class GinisService {
 
   constructor(
     private readonly baConfigService: BaConfigService,
+    private readonly convertService: ConvertService,
+    private readonly clientsService: ClientsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
     private mailgunService: MailgunService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private prismaService: PrismaService,
+    private readonly nasesUtilsService: NasesUtilsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
     this.logger = new LineLoggerSubservice('GinisService')
@@ -454,6 +485,283 @@ export default class GinisService {
         removeOnComplete: true,
         removeOnFail: true,
       },
+    )
+  }
+
+  private async fetchContactByUri(
+    uri: string,
+  ): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
+    const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
+    const response =
+      await this.clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost(
+        {
+          uris: [uri],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        },
+      )
+    const result = response.data
+
+    if (result.length === 0) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases. Uri: ${uri}`,
+      )
+    }
+    if (result.length > 1) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri. Uri: ${uri}`,
+      )
+    }
+    return result[0]
+  }
+
+  private async extractContactParamsFromUri(
+    form: Forms,
+  ): Promise<GinContactParams> {
+    if (!form.mainUri) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
+      )
+    }
+
+    const contact = await this.fetchContactByUri(form.mainUri)
+    const params: GinContactParams = {
+      uri: form.mainUri,
+      email:
+        contact.emails && contact.emails.length > 0
+          ? contact.emails[0].address
+          : undefined,
+    }
+
+    if (isUpvsNaturalPerson(contact)) {
+      params.type = GinContactType.PHYSICAL_ENTITY
+      const extractedData =
+        this.nasesUtilsService.extractNaturalPersonData(contact)
+      if (extractedData.firstNames.length > 0) {
+        params.firstName = extractedData.firstNames.join(' ')
+      }
+      if (extractedData.lastNames.length > 0) {
+        params.lastName = extractedData.lastNames.join(' ')
+      }
+      return params
+    }
+
+    if (isUpvsCorporateBody(contact)) {
+      params.type = GinContactType.LEGAL_ENTITY
+      const extractedData =
+        this.nasesUtilsService.extractCorporateBodyData(contact)
+      if (extractedData.name) {
+        params.name = extractedData.name
+      }
+      if (extractedData.ico) {
+        params.ico = extractedData.ico
+      }
+      return params
+    }
+
+    // don't throw, alert only
+    this.logger.error(
+      this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+        `extractContactParamsFromUri: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: Contact shape not identified from nases identity search data for uri: ${form.mainUri}.`,
+      ),
+    )
+
+    // Fallback: return basic params with name if available
+    const fallbackContact = contact as UpvsNaturalPerson | UpvsCorporateBody
+    if (fallbackContact.name) {
+      params.name = fallbackContact.name
+    }
+    return params
+  }
+
+  private async extractContactParamsFromExternalId(
+    form: Forms,
+  ): Promise<GinContactParams> {
+    if (!form.userExternalId) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
+      )
+    }
+
+    const params: GinContactParams = {}
+    const contactResponse =
+      await this.clientsService.cityAccountApi.userIntegrationControllerGetContactAndIdInfoByExternalId(
+        form.userExternalId,
+        {
+          headers: {
+            apiKey: this.baConfigService.cityAccountBackend.apiKey,
+          },
+        },
+      )
+
+    const contactInfo = contactResponse.data
+    if (!contactInfo) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.userExternalId}. Form id: ${form.id}`,
+      )
+    }
+
+    params.email = contactInfo.email
+
+    // Map Cognito account type to Ginis contact type and set appropriate fields
+    if (contactInfo.accountType === ContactAndIdInfoTypeEnum.Fo) {
+      // Physical entity (UserContactAndIdInfoDto)
+      params.type = GinContactType.PHYSICAL_ENTITY
+      params.firstName = contactInfo.firstName
+      params.lastName = contactInfo.lastName
+      params.birthNumber = contactInfo.birthNumber
+    } else if (
+      contactInfo.accountType === ContactAndIdInfoTypeEnum.Po ||
+      contactInfo.accountType === ContactAndIdInfoTypeEnum.FoP
+    ) {
+      // Legal entity or self-employed entity (LegalPersonContactAndIdInfoDto)
+      params.type =
+        contactInfo.accountType === ContactAndIdInfoTypeEnum.Po
+          ? GinContactType.LEGAL_ENTITY
+          : GinContactType.SELF_EMPLOYED_ENTITY
+      params.name = contactInfo.name
+      params.ico = contactInfo.ico
+    }
+
+    return params
+  }
+
+  private async sanitizeEmployeeContactParams(
+    contactParams: GinContactParams,
+  ): Promise<GinContactParams> {
+    let department: string | undefined
+    if (contactParams.ico === 'Bratislava-OKM') {
+      department = 'OSO'
+    } else if (contactParams.ico === 'BA-SNB') {
+      department = 'SNB/SSV'
+    }
+
+    if (!department) {
+      return contactParams
+    }
+
+    return {
+      ...contactParams,
+      ico: undefined,
+      // remove domain from email
+      name: `${department} - ${contactParams.email?.split('@')[0]}`,
+    }
+  }
+
+  private async handleDocumentSender(form: Forms): Promise<string | undefined> {
+    let contactParams: GinContactParams = form.userExternalId
+      ? await this.extractContactParamsFromExternalId(form)
+      : {}
+
+    if (form.mainUri) {
+      const uriParams = await this.extractContactParamsFromUri(form)
+
+      if (contactParams.email) {
+        // throw away email from nases if we already have one
+        uriParams.email = undefined
+      }
+      // Filter out undefined values
+      const filteredUriParams = Object.fromEntries(
+        Object.entries(uriParams).filter((entry) => entry[1] !== undefined),
+      )
+      contactParams = { ...contactParams, ...filteredUriParams }
+    }
+
+    // Skip update call if there are no updates to make
+    const hasContactInformation = Object.values(contactParams).some(
+      (value) => value !== undefined,
+    )
+    if (!hasContactInformation) {
+      return undefined
+    }
+    // ginis would refuse ICO if it contains anything other than digits
+    // employees have their department abbreviated in ICO, so we need to sanitize it
+    contactParams = await this.sanitizeEmployeeContactParams(contactParams)
+    return this.ginisApiService.upsertContact(contactParams)
+  }
+
+  public async createDocument(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSkGeneric,
+  ) {
+    if (form.formDataJson === null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+        `No form data json in form id: ${form.id}`,
+      )
+    }
+    const senderId = await this.handleDocumentSender(form)
+
+    const documentId =
+      form.ginisDocumentId ??
+      (await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.createDocument(
+          form.id,
+          formDefinition.ginisDocumentTypeId,
+          form.updatedAt,
+          extractFormSubjectTechnical(formDefinition, form.formDataJson!),
+          senderId,
+        ),
+      ))
+
+    // called to reset the state to REGISTERED even if ginisDocumentId is already set
+    await this.updateSuccessfulRegistration(form.id, documentId)
+
+    const detail = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.getDocumentDetail(documentId),
+    )
+    if (!detail['Cj-dokumentu']) {
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.assignReferenceNumber(documentId),
+      )
+    }
+
+    if (
+      detail['Wfl-dokument']['Priznak-el-obrazu'] !==
+      SslWflDocumentElectronicSourceExistence.EXISTS
+    ) {
+      const message =
+        await this.convertService.convertJsonToXmlObjectForForm(form)
+      const xml = buildSlovenskoSkXml(message, {
+        headless: false,
+        pretty: false,
+      })
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.uploadFile(
+          documentId,
+          `source_form_${form.id}.xml`,
+          Readable.from(xml),
+          SslFileUploadType.SOURCE,
+        ),
+      )
+    }
+
+    const foundDocumentId = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.findDocumentId(form.id),
+    )
+    if (foundDocumentId === documentId) {
+      return
+    }
+
+    const propertyOrder = await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.createFormIdProperty(documentId),
+    )
+    await this.ginisHelper.retryWithDelay(async () =>
+      this.ginisApiService.setFormIdProperty(
+        documentId,
+        propertyOrder,
+        form.id,
+      ),
     )
   }
 }

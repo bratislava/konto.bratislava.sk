@@ -1,8 +1,7 @@
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
 import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
+import TaxesFeesBanner from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesBanner'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesCard/TaxesFeesCard'
-import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesErrorCard'
-import TaxesFeesSearchingCard from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSearchingCard'
 import TaxFormAlert from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxFormAlert'
 import { useTranslation } from 'next-i18next'
 import { TaxAvailabilityStatus } from 'openapi-clients/tax'
@@ -32,8 +31,8 @@ const TaxesFeesOverview = ({ taxesData, strapiTaxAdministrator }: Props) => {
         />
       )}
       <h2 className="text-h5-semibold">{t('account_section_payment.tax_overview_title')}</h2>
-      {displayTaxesLookingFor && <TaxesFeesSearchingCard />}
-      {taxesDataNotOnRecord && <TaxesFeesErrorCard />}
+      {displayTaxesLookingFor && <TaxesFeesBanner variant="lookingFor" />}
+      {taxesDataNotOnRecord && <TaxesFeesBanner variant="noResults" />}
       {taxesDataAvailable && (
         <ul className="flex flex-col rounded-lg border-2 border-gray-200">
           {taxesData.items.map((item, index) => (

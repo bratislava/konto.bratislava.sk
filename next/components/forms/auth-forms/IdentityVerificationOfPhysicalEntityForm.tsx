@@ -84,8 +84,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) =>
         return onSubmit(data)
       })}
     >
-      <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
-      <AccountMarkdown variant="sm" content={t('auth.identity_verification_subtitle')} />
+      <h1 className="text-h3">{t('auth.identity_verification.fo.init.title')}</h1>
+      <AccountMarkdown variant="sm" content={t('auth.identity_verification.fo.init.content')} />
       <AccountErrorAlert error={error} />
 
       <Controller
@@ -154,7 +154,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) =>
       <Button
         className="min-w-full"
         type="submit"
-        text={t('auth.identity_verification_submit')}
+        text={t('auth.identity_verification.fo.init.submit_button_text')}
         variant="black"
         loading={isSubmitting}
       />
@@ -162,7 +162,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) =>
         variant="plain-black"
         className="min-w-full"
         onPress={() => redirect()}
-        text={t('auth.identity_verification_skip')}
+        text={t('auth.identity_verification.common.skip_verification_button_text')}
         endIcon={<ArrowRightIcon />}
       />
     </form>

@@ -113,14 +113,14 @@ const IdentityVerificationPage = () => {
         )}
         {tierStatus.isInQueue && (
           <AccountVerificationPendingAlert
-            title={t('auth.identity_verification_pending_title')}
+            title={t('auth.identity_verification.fo.pending.title')}
             description={
               lastRc && lastIdCard
-                ? t('auth.identity_verification_pending_description', {
+                ? t('auth.identity_verification.fo.pending.content', {
                     rc: lastRc,
                     idCard: lastIdCard,
                   })
-                : t('auth.identity_verification_pending_description_without_data')
+                : t('auth.identity_verification.fo.pending.content_without_data')
             }
             confirmLabel={t('auth.continue_to_account')}
             onConfirm={() => redirect()}
@@ -128,11 +128,12 @@ const IdentityVerificationPage = () => {
         )}
         {tierStatus.isIdentityVerified && (
           <AccountSuccessAlert
-            title={t('auth.identity_verification_success_title')}
+            title={t('auth.identity_verification.common.success.title')}
+            // TODO legal entity text (lastRc && lastIdCard is used only for FO)
             description={
               lastRc &&
               lastIdCard &&
-              t('auth.identity_verification_success_description', {
+              t('auth.identity_verification.fo.success.content', {
                 rc: lastRc,
                 idCard: lastIdCard,
               })

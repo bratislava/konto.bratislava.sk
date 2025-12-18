@@ -16,8 +16,8 @@ const LegalPersonVerificationPageContent = () => {
 
   return verificationStatus === VerificationStatus.VERIFYING ? (
     <AccountVerificationPendingAlert
-      title={t('auth.identity_verification.eid_legal_person.pending.title')}
-      description={t('auth.identity_verification.eid_legal_person.pending.content')}
+      title={t('auth.identity_verification.fop_po_eid.pending.title')}
+      description={t('auth.identity_verification.fop_po_eid.pending.content')}
     />
   ) : verificationStatus === VerificationStatus.ERROR ? (
     <div className="flex flex-col gap-4 md:gap-6">
@@ -27,38 +27,36 @@ const LegalPersonVerificationPageContent = () => {
         </div>
       </div>
       <h1 className="text-center text-h3">
-        {t('auth.identity_verification.eid_legal_person.error.title')}
+        {t('auth.identity_verification.fop_po_eid.error.title')}
       </h1>
       <AccountMarkdown
         className="text-center"
-        content={t('auth.identity_verification.eid_legal_person.error.content')}
+        content={t('auth.identity_verification.fop_po_eid.error.content')}
         variant="sm"
       />
 
       <Button variant="black-solid" onPress={() => redirect()} fullWidth>
-        {t('auth.identity_verification.eid_legal_person.error.button_text')}
+        {t('auth.identity_verification.fop_po_eid.error.button_text')}
       </Button>
     </div>
   ) : (
     <div className="flex flex-col gap-4 md:gap-6">
-      <h1 className="text-h3">{t('auth.identity_verification_title')}</h1>
+      <h1 className="text-h3">{t('auth.identity_verification.fop_po_eid.init.title')}</h1>
       <AccountMarkdown
         variant="sm"
-        content={t('auth.identity_verification.eid_legal_person.init.content')}
+        content={t('auth.identity_verification.fop_po_eid.init.content')}
       />
       <Button
         variant="black-solid"
         onPress={loginWithEid}
         fullWidth
         isLoading={verificationStatus === VerificationStatus.REDIRECTING}
-        isLoadingText={t(
-          'auth.identity_verification.eid_legal_person.init.redirecting_button_text',
-        )}
+        isLoadingText={t('auth.identity_verification.fop_po_eid.init.redirecting_button_text')}
       >
-        {t('auth.identity_verification.eid_legal_person.init.verify_button_text')}
+        {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
       </Button>
       <Button variant="black-plain" fullWidth onPress={() => redirect()}>
-        {t('auth.identity_verification_skip')}
+        {t('auth.identity_verification.common.skip_verification_button_text')}
       </Button>
     </div>
   )

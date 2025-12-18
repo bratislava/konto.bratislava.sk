@@ -11,13 +11,9 @@ import { useOfficialCorrespondenceChannel } from 'components/forms/segments/Acco
 import { useTaxesFeesSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { useTranslation } from 'next-i18next'
+import { TaxType } from 'openapi-clients/tax'
 import React, { useState } from 'react'
 import { Key } from 'react-aria-components'
-
-// TODO replace by proper type from openapi-clients/tax when ready
-export enum TaxType {
-  Dzn = 'DZN',
-}
 
 /**
  * Figma: https://www.figma.com/design/myxp4iAtBRzxWej3osyzjV/BK--Dane-a-poplatky?node-id=1382-2696&p=f&t=cfC6ztqIUDfRkwYY-0
@@ -35,13 +31,13 @@ const TaxesFeesSection = () => {
 
   const taxTypeTabOptions: TaxTypeTabOptions = [
     { title: t('account_section_payment.property_tax_title'), id: TaxType.Dzn },
-    // { title: t('account_section_payment.communal_waste_fee_title'), id: TaxType.Ko },
+    { title: t('account_section_payment.communal_waste_fee_title'), id: TaxType.Ko },
   ]
 
   const [selectedTaxType, setSelectedTaxType] = useState<TaxType>(taxTypeTabOptions[0].id)
 
   const handleTabChange = (key: Key) => {
-    if (key === TaxType.Dzn) {
+    if (key === TaxType.Dzn || key === TaxType.Ko) {
       setSelectedTaxType(key)
     }
   }
@@ -71,7 +67,7 @@ const TaxesFeesSection = () => {
         {isInQueue && <IdentityVerificationInProcessBanner />}
         {isIdentityVerified && !showChannelNeededBanner && (
           <TaxesFeesOverview
-            taxesData={taxesData}
+            taxesData={taxesData[selectedTaxType]}
             strapiTaxAdministrator={strapiTaxAdministrator}
           />
         )}

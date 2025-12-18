@@ -5,10 +5,10 @@ import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFees/T
 import TaxFormAlert from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxFormAlert'
 import { useTranslation } from 'next-i18next'
 import { TaxAvailabilityStatus } from 'openapi-clients/tax'
-import { AccountTaxesFeesPageProps } from 'pages/dane-a-poplatky'
+import { TaxesData } from 'pages/dane-a-poplatky'
 
 type Props = {
-  taxesData: AccountTaxesFeesPageProps['taxesData'] | null
+  taxesData: TaxesData | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
@@ -18,7 +18,6 @@ const TaxesFeesOverview = ({ taxesData, strapiTaxAdministrator }: Props) => {
   const taxesDataAvailable = taxesData?.availabilityStatus === TaxAvailabilityStatus.Available
   const taxesDataNotOnRecord =
     taxesData?.availabilityStatus === TaxAvailabilityStatus.TaxNotOnRecord
-
   const displayTaxesLookingFor =
     taxesData?.availabilityStatus === TaxAvailabilityStatus.LookingForYourTax
 

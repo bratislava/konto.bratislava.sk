@@ -1,5 +1,5 @@
-import { TaxType } from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
 import cn from 'frontend/cn'
+import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 import { Tab, TabList, Tabs, TabsProps } from 'react-aria-components'
 

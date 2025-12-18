@@ -1574,7 +1574,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             links: [
               {
                 title: 'Overiť príjem',
-                href: 'https://bratislavask.s3.bratislava.sk/upload/Tabulka_zivotne_minimum_2024_25970f264b.pdf',
+                href: 'https://bratislavask.s3.bratislava.sk/upload/Tabulka_na_vypocet_Zivotneho_minima_2025_9d3178feea.pdf',
               },
             ],
           },

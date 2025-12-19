@@ -37,20 +37,6 @@ const NasesLoginPage = () => {
 
     const { token } = router.query
 
-    if (metadataVerify) {
-      const query = {
-        ...(typeof token === 'string' ? { [NASES_TOKEN_QUERY_KEY]: token } : {}),
-      }
-
-      router.push(
-        {
-          pathname: ROUTES.IDENTITY_VERIFICATION,
-          query,
-        },
-        ROUTES.IDENTITY_VERIFICATION,
-      )
-    }
-
     if (metadata) {
       const query = {
         [STEP_QUERY_PARAM_KEY]: STEP_QUERY_PARAM_VALUE_SUMMARY,
@@ -65,6 +51,20 @@ const NasesLoginPage = () => {
           query,
         },
         url,
+      )
+    }
+
+    if (metadataVerify) {
+      const query = {
+        ...(typeof token === 'string' ? { [NASES_TOKEN_QUERY_KEY]: token } : {}),
+      }
+
+      router.push(
+        {
+          pathname: ROUTES.IDENTITY_VERIFICATION,
+          query,
+        },
+        ROUTES.IDENTITY_VERIFICATION,
       )
     }
   })

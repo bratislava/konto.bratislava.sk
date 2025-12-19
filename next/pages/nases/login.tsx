@@ -7,7 +7,7 @@ import { STEP_QUERY_PARAM_KEY } from '../../components/forms/useFormCurrentStepI
 import { ROUTES } from '../../frontend/api/constants'
 import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '../../frontend/utils/formState'
 import {
-  FORM_SEND_EID_TOKEN_QUERY_KEY,
+  NASES_TOKEN_QUERY_KEY,
   popSendEidMetadata,
   popSendEidMetadataVerify,
 } from '../../frontend/utils/metadataStorage'
@@ -39,7 +39,7 @@ const NasesLoginPage = () => {
 
     if (metadataVerify) {
       const query = {
-        ...(typeof token === 'string' ? { [FORM_SEND_EID_TOKEN_QUERY_KEY]: token } : {}),
+        ...(typeof token === 'string' ? { [NASES_TOKEN_QUERY_KEY]: token } : {}),
       }
 
       router.push(
@@ -54,7 +54,7 @@ const NasesLoginPage = () => {
     if (metadata) {
       const query = {
         [STEP_QUERY_PARAM_KEY]: STEP_QUERY_PARAM_VALUE_SUMMARY,
-        ...(typeof token === 'string' ? { [FORM_SEND_EID_TOKEN_QUERY_KEY]: token } : {}),
+        ...(typeof token === 'string' ? { [NASES_TOKEN_QUERY_KEY]: token } : {}),
       }
 
       const url = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(metadata.formSlug, metadata.formId)

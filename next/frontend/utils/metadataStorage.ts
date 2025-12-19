@@ -77,4 +77,4 @@ export const popSendEidMetadata = () => {
   }
 }
 
-export const FORM_SEND_EID_TOKEN_QUERY_KEY = 'sendEidToken'
+export const NASES_TOKEN_QUERY_KEY = 'nasesToken'

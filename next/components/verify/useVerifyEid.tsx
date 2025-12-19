@@ -2,7 +2,7 @@ import { cityAccountClient } from '@clients/city-account'
 import { useMutation } from '@tanstack/react-query'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import {
-  FORM_SEND_EID_TOKEN_QUERY_KEY,
+  NASES_TOKEN_QUERY_KEY,
   popSendEidMetadataVerify,
   setVerifyEidMetadata,
 } from 'frontend/utils/metadataStorage'
@@ -41,9 +41,7 @@ export const useVerifyEid = () => {
 
   const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>(
     // When the page is opened after redirect from slovensko.sk, we show VERIFYING state and call `verifyWithEid()`
-    router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
-      ? VerificationStatus.VERIFYING
-      : VerificationStatus.INIT,
+    router.query[NASES_TOKEN_QUERY_KEY] ? VerificationStatus.VERIFYING : VerificationStatus.INIT,
   )
   const [verificationError, setVerificationError] = useState<Error | null>(null)
 
@@ -83,7 +81,7 @@ export const useVerifyEid = () => {
   const removeSendIdTokenFromUrl = () => {
     const url = new URL(window.location.href)
     const params = new URLSearchParams(url.search)
-    params.delete(FORM_SEND_EID_TOKEN_QUERY_KEY)
+    params.delete(NASES_TOKEN_QUERY_KEY)
     url.search = params.toString()
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     router.replace(url.toString(), undefined, { shallow: true })
@@ -99,8 +97,8 @@ export const useVerifyEid = () => {
     popSendEidMetadataVerify()
 
     // If there is a send token in the URL, send the form via eID.
-    if (router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] && !verifyWithEidIsPending) {
-      sendEidTokenRef.current = router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] as string
+    if (router.query[NASES_TOKEN_QUERY_KEY] && !verifyWithEidIsPending) {
+      sendEidTokenRef.current = router.query[NASES_TOKEN_QUERY_KEY] as string
 
       removeSendIdTokenFromUrl()
 

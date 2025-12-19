@@ -21,7 +21,7 @@ import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import {
-  FORM_SEND_EID_TOKEN_QUERY_KEY,
+  NASES_TOKEN_QUERY_KEY,
   popSendEidMetadata,
   setSendEidMetadata,
 } from '../../frontend/utils/metadataStorage'
@@ -210,7 +210,7 @@ const useGetContext = () => {
   const removeSendIdTokenFromUrl = () => {
     const url = new URL(window.location.href)
     const params = new URLSearchParams(url.search)
-    params.delete(FORM_SEND_EID_TOKEN_QUERY_KEY)
+    params.delete(NASES_TOKEN_QUERY_KEY)
     url.search = params.toString()
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     router.replace(url.toString(), undefined, { shallow: true })
@@ -226,8 +226,8 @@ const useGetContext = () => {
     popSendEidMetadata()
 
     // If there is a send token in the URL, send the form via eID.
-    if (router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] && !sendFormEidIsPending) {
-      sendEidTokenRef.current = router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] as string
+    if (router.query[NASES_TOKEN_QUERY_KEY] && !sendFormEidIsPending) {
+      sendEidTokenRef.current = router.query[NASES_TOKEN_QUERY_KEY] as string
 
       removeSendIdTokenFromUrl()
 

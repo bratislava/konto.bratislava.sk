@@ -1,7 +1,7 @@
 import Ajv from 'ajv'
 
 const SEND_EID_SESSION_STORAGE_KEY = 'sendEid_W0t1uvfXMU'
-const SEND_EID_SESSION_STORAGE_KEY_VERIFY = 'sendEid_verify_W0t1uvfXMU'
+const VERIFY_EID_SESSION_STORAGE_KEY = 'verifyEid_W0t1uvfXMU'
 
 const sendEidMetadataSchema = {
   type: 'object',
@@ -15,7 +15,7 @@ const sendEidMetadataSchema = {
   },
   required: ['formSlug', 'formId'],
 }
-const sendEidMetadataVerifySchema = {
+const verifyEidMetadataSchema = {
   type: 'object',
   properties: {
     verifiedProcess: {
@@ -39,7 +39,7 @@ export const setSendEidMetadata = (value: SendEidMetadata) => {
 }
 
 export const setVerifyEidMetadata = (value: VerifyEidMetadata) => {
-  sessionStorage.setItem(SEND_EID_SESSION_STORAGE_KEY_VERIFY, JSON.stringify(value))
+  sessionStorage.setItem(VERIFY_EID_SESSION_STORAGE_KEY, JSON.stringify(value))
 }
 
 export const popSendEidMetadata = () => {
@@ -60,14 +60,14 @@ export const popSendEidMetadata = () => {
 }
 
 // move this to separate file or rename this file
-export const popSendEidMetadataVerify = () => {
-  const value = sessionStorage.getItem(SEND_EID_SESSION_STORAGE_KEY_VERIFY)
-  sessionStorage.removeItem(SEND_EID_SESSION_STORAGE_KEY_VERIFY)
+export const popVerifyEidMetadata = () => {
+  const value = sessionStorage.getItem(VERIFY_EID_SESSION_STORAGE_KEY)
+  sessionStorage.removeItem(VERIFY_EID_SESSION_STORAGE_KEY)
   try {
     const parsed = JSON.parse(value || '')
 
     const ajv = new Ajv()
-    if (ajv.validate(sendEidMetadataVerifySchema, parsed)) {
+    if (ajv.validate(verifyEidMetadataSchema, parsed)) {
       return parsed as VerifyEidMetadata
     }
 

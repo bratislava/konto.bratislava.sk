@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import {
   NASES_TOKEN_QUERY_KEY,
-  popSendEidMetadataVerify,
+  popVerifyEidMetadata,
   setVerifyEidMetadata,
 } from 'frontend/utils/metadataStorage'
 import { useRouter } from 'next/router'
@@ -94,7 +94,7 @@ export const useVerifyEid = () => {
       return
     }
     effectOnceRan.current = true
-    popSendEidMetadataVerify()
+    popVerifyEidMetadata()
 
     // If there is a send token in the URL, send the form via eID.
     if (router.query[NASES_TOKEN_QUERY_KEY] && !verifyWithEidIsPending) {

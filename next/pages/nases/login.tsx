@@ -9,7 +9,7 @@ import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '../../frontend/utils/formState'
 import {
   NASES_TOKEN_QUERY_KEY,
   popSendEidMetadata,
-  popSendEidMetadataVerify,
+  popVerifyEidMetadata,
 } from '../../frontend/utils/metadataStorage'
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -27,9 +27,11 @@ const NasesLoginPage = () => {
       return
     }
     effectOnceRan.current = true
-    const metadata = popSendEidMetadata()
-    const metadataVerify = popSendEidMetadataVerify()
-    if (!metadata && !metadataVerify) {
+
+    const sendEidMetadata = popSendEidMetadata()
+    const verifyEidMetadata = popVerifyEidMetadata()
+
+    if (!sendEidMetadata && !verifyEidMetadata) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       router.push(ROUTES.HOME)
       return
@@ -37,13 +39,16 @@ const NasesLoginPage = () => {
 
     const { token } = router.query
 
-    if (metadata) {
+    if (sendEidMetadata) {
       const query = {
         [STEP_QUERY_PARAM_KEY]: STEP_QUERY_PARAM_VALUE_SUMMARY,
         ...(typeof token === 'string' ? { [NASES_TOKEN_QUERY_KEY]: token } : {}),
       }
 
-      const url = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(metadata.formSlug, metadata.formId)
+      const url = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(
+        sendEidMetadata.formSlug,
+        sendEidMetadata.formId,
+      )
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       router.push(
         {
@@ -54,7 +59,7 @@ const NasesLoginPage = () => {
       )
     }
 
-    if (metadataVerify) {
+    if (verifyEidMetadata) {
       const query = {
         ...(typeof token === 'string' ? { [NASES_TOKEN_QUERY_KEY]: token } : {}),
       }

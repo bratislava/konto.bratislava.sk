@@ -287,12 +287,12 @@ const RegisterPage = () => {
 
     if (redirectToIdentityVerification) {
       return {
-        confirmLabel: t('auth.identity_verification_link'),
+        confirmLabel: t('auth.continue_to_account'),
         onConfirm: () =>
           router
             .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
-        cancelLabel: t('auth.identity_verification_skip'),
+        cancelLabel: t('auth.identity_verification.common.skip_verification_button_text'),
         onCancel: () => redirect(),
       }
     }
@@ -300,7 +300,7 @@ const RegisterPage = () => {
     if (isOAuthLogin) {
       return {
         // TODO OAuth: Add client title to continue button
-        confirmLabel: t('auth.identity_verification_link'),
+        confirmLabel: t('auth.continue_to_account'),
         onConfirm: async () => {
           // TODO OAuth: handle errors
           logger.info(`[AUTH] Calling Continue endpoint`)
@@ -314,7 +314,7 @@ const RegisterPage = () => {
     //
     // if (redirectToIdentityVerificationAfterOAuthLogin) {
     //   return {
-    //     confirmLabel: t('auth.identity_verification_link'),
+    //     confirmLabel: t('auth.continue_to_account'),
     //     onConfirm: () =>
     //       router
     //         .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
@@ -323,7 +323,7 @@ const RegisterPage = () => {
     // }
 
     return {
-      confirmLabel: t('auth.identity_verification_not_required'),
+      confirmLabel: t('auth.continue_to_account'),
       onConfirm: () => redirect(),
     }
   }, [

@@ -14,7 +14,10 @@ const IdentityVerificationStatus = () => {
   // we need to save the WIP of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
 
-  if (!isSignedIn) return null
+  if (!isSignedIn) {
+    return null
+  }
+
   if (tierStatus.isIdentityVerified)
     return (
       <div className="flex rounded-sm bg-success-100 px-2 py-0 lg:px-3 lg:py-1.5">
@@ -24,7 +27,7 @@ const IdentityVerificationStatus = () => {
       </div>
     )
 
-  if (tierStatus.isIdentityVerificationNotYetAttempted || !tierStatus.isInQueue)
+  if (tierStatus.isIdentityVerificationNotYetAttempted || tierStatus.isNotVerifiedIdentityCard)
     return (
       <div className="flex items-center gap-1.5">
         <div className="flex items-center gap-2 rounded-sm bg-warning-100 px-2 py-0 lg:px-3 lg:py-1.5">

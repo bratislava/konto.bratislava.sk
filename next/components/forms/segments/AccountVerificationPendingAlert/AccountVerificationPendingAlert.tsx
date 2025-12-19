@@ -6,8 +6,8 @@ import { ReactNode } from 'react'
 interface Props {
   title: string
   description?: string
-  confirmLabel: string
-  onConfirm: () => void
+  confirmLabel?: string
+  onConfirm?: () => void
   onCancel?: () => void
   cancelLabel?: string
   children?: ReactNode
@@ -23,7 +23,7 @@ const AccountVerificationPendingAlert = ({
   children,
 }: Props) => {
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       <div className="mx-auto size-14 rounded-full bg-warning-100 p-4">
         <div className="flex size-6 items-center justify-center">
           <ClockIcon className="size-6 text-warning-700" />
@@ -34,9 +34,11 @@ const AccountVerificationPendingAlert = ({
         <AccountMarkdown className="text-center" content={description} variant="sm" />
       )}
       {children}
-      <Button variant="black-solid" onPress={onConfirm} fullWidth>
-        {confirmLabel}
-      </Button>
+      {onConfirm && (
+        <Button variant="black-solid" onPress={onConfirm} fullWidth>
+          {confirmLabel}
+        </Button>
+      )}
       {onCancel && (
         <Button
           variant="black-plain"

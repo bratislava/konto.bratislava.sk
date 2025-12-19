@@ -71,20 +71,13 @@ export class NasesService {
         }
       )
       .then((response) => {
-        if (response.status > 400) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
-            VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
-            JSON.stringify(response)
-          )
-        }
         return response.data
       })
       .catch((error) => {
-        throw this.throwerErrorGuard.BadRequestException(
+        throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          undefined,
+          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}`,
           error
         )
       })

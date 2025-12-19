@@ -317,25 +317,24 @@ export class VerificationService {
     const type = payload.sub.split(':')[0]
 
     if (
-      type === 'rc' &&
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !== CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+        CognitoUserAccountTypesEnum.PHYSICAL_ENTITY &&
+      type !== 'rc'
     ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.VERIFY_EID_ERROR,
-        VerificationErrorsResponseEnum.IFO_NOT_PROVIDED,
-        'Ifo for verification was not provided'
+        VerificationErrorsResponseEnum.BIRTH_NUMBER_NOT_PROVIDED
       )
     }
     if (
-      type === 'ico' &&
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !== CognitoUserAccountTypesEnum.LEGAL_ENTITY &&
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !==
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+      (user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+        user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+          CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY) &&
+      type !== 'ico'
     ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.VERIFY_EID_ERROR,
-        VerificationErrorsResponseEnum.ICO_NOT_PROVIDED,
-        'Ico for verification was not provided'
+        VerificationErrorsResponseEnum.ICO_NOT_PROVIDED
       )
     }
 

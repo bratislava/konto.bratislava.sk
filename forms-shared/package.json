@@ -92,7 +92,7 @@
     "classnames": "^2.5.1",
     "cross-env": "^10.0.0",
     "glob": "^11.0.3",
-    "inquirer": "^12.9.4",
+    "inquirer": "^13.1.0",
     "jest-image-snapshot": "^6.5.1",
     "libxml2-wasm": "0.6.0",
     "node-font2base64": "^0.9.2",

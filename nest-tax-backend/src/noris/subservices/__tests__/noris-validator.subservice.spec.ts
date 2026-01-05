@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import noop from 'lodash/noop'
 
 import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
@@ -244,7 +245,7 @@ describe('NorisValidatorSubservice', () => {
     it('should validate all payments, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
       const result = service.validateNorisData(NorisPaymentSchema, [
         testPaymentValid,
         testPaymentStringUhrazeno,
@@ -273,7 +274,7 @@ describe('NorisValidatorSubservice', () => {
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
       const result = service.validateNorisData(
         NorisRealEstateTaxSchema,
         allNorisRealEstateTaxes,
@@ -305,7 +306,7 @@ describe('NorisValidatorSubservice', () => {
     it('should validate all communal waste taxes, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
       const result = service.validateNorisData(
         NorisRawCommunalWasteTaxSchema,
         allNorisCommunalWasteTaxes,

@@ -56,6 +56,7 @@ jobs:
 
   conditions:
     name: Check for conditions
+    if: always() && needs.build-forms-shared.result == 'success' && needs.build-openapi-clients.result == 'success'
     needs: [build-forms-shared, build-openapi-clients]
     uses: ./.github/workflows/build-conditions-konto.yml
     permissions: write-all

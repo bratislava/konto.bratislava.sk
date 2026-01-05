@@ -58,6 +58,10 @@ type AlertBase = {
   hasIcon?: boolean
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-12975&m=dev
+ */
+
 // TODO: implement design system Alert
 const Alert = ({
   title,
@@ -78,13 +82,13 @@ const Alert = ({
   }
 
   const alertContainer = cn(
-    'flex flex-col items-start gap-2 rounded-lg px-3 py-3 lg:px-5 lg:py-4',
+    'flex flex-col items-start gap-2 rounded-lg p-3 lg:p-4',
     className,
     {
       'bg-negative-100 text-negative-700': type === 'error' && !solid,
       'bg-success-50 text-success-700': type === 'success' && !solid,
       'bg-gray-100 text-gray-700': type === 'info' && !solid,
-      'bg-warning-50 text-warning-700': type === 'warning' && !solid,
+      'bg-background-warning-soft-default text-warning-700': type === 'warning' && !solid,
 
       'bg-negative-700 text-white': type === 'error' && solid,
       'bg-success-700 text-white': type === 'success' && solid,

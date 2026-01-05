@@ -4,6 +4,7 @@ import { ROUTES } from 'frontend/api/constants'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { useSearchParams } from 'next/navigation'
 import { useTranslation } from 'next-i18next'
+import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
 import PaymentData from './PaymentData'
@@ -32,15 +33,26 @@ const TaxFeePaymentSection = () => {
         return t('tax_detail_section.title_payment_all')
     }
   }
+
+  // TODO this is duplicated in TaxFeeSection.tsx
+  const pageBreadcrumbTitle = {
+    [TaxType.Dzn]: t('account_section_payment.tax_detail.tax'),
+    [TaxType.Ko]: t('account_section_payment.tax_detail.fee'),
+  }[taxData.type]
+
   return (
     <div className="flex flex-col">
       <TaxFeeSectionHeader
         title={getTitle()}
-        navigationItems={[
+        breadcrumbs={[
           { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
           {
-            title: t('account_section_payment.tax_detail'),
-            path: ROUTES.TAXES_AND_FEES_YEAR(taxData.year),
+            title: pageBreadcrumbTitle,
+            path: ROUTES.TAXES_AND_FEES_DETAIL({
+              year: taxData.year,
+              type: taxData.type,
+              order: taxData.order,
+            }),
           },
           {
             title: getTitle(),

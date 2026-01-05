@@ -1,8 +1,8 @@
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import IdentityVerificationInProcessBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationInProcessBanner'
-import IdentityVerificationNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationNeededBanner'
+import IdentityVerificationBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelInformation from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
 import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
+import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
 import TaxesFeesOverview from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesOverview'
 import TaxesFeesTabs, {
   TaxTypeTabOptions,
@@ -16,17 +16,16 @@ import React, { useState } from 'react'
 import { Key } from 'react-aria-components'
 
 /**
- * Figma: https://www.figma.com/design/myxp4iAtBRzxWej3osyzjV/BK--Dane-a-poplatky?node-id=1382-2696&p=f&t=cfC6ztqIUDfRkwYY-0
- * TODO Add new figma link when ready
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1475&t=fznV5maoQK8a2irI-4
  */
 
 const TaxesFeesSection = () => {
   const { t } = useTranslation('account')
 
   const {
-    tierStatus: { isIdentityVerificationNotYetAttempted, isInQueue, isIdentityVerified },
+    tierStatus: { isInQueue, isIdentityVerified },
   } = useSsrAuth()
-  const { channel, showChannelNeededBanner } = useOfficialCorrespondenceChannel()
+  const { showChannelNeededBanner } = useOfficialCorrespondenceChannel()
   const { taxesData, strapiTaxAdministrator } = useTaxesFeesSection()
 
   const taxTypeTabOptions: TaxTypeTabOptions = [
@@ -50,7 +49,7 @@ const TaxesFeesSection = () => {
         titleWrapperClassName="pb-0 pt-8 lg:py-0"
         wrapperClassName="lg:pt-14"
       >
-        {channel && <OfficialCorrespondenceChannelInformation />}
+        <OfficialCorrespondenceChannelInformation />
         <TaxesFeesTabs
           selectedKey={selectedTaxType}
           onSelectionChange={handleTabChange}
@@ -58,19 +57,27 @@ const TaxesFeesSection = () => {
         />
       </AccountSectionHeader>
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-4 p-4 lg:gap-8 lg:px-0 lg:py-12">
-        {(isIdentityVerificationNotYetAttempted || showChannelNeededBanner) &&
-          (isIdentityVerified ? (
-            <IdentityVerificationNeededBanner />
+        {!isIdentityVerified &&
+          (isInQueue ? (
+            <IdentityVerificationBanner variant="verification-in-process" />
           ) : (
-            <OfficialCorrespondenceChannelNeededBanner />
+            <IdentityVerificationBanner variant="verification-needed" />
           ))}
-        {isInQueue && <IdentityVerificationInProcessBanner />}
-        {isIdentityVerified && !showChannelNeededBanner && (
-          <TaxesFeesOverview
-            taxesData={taxesData[selectedTaxType]}
-            strapiTaxAdministrator={strapiTaxAdministrator}
-          />
-        )}
+        {isIdentityVerified &&
+          (showChannelNeededBanner ? (
+            <OfficialCorrespondenceChannelNeededBanner />
+          ) : (
+            <div className="flex flex-col gap-4 lg:gap-6">
+              {(taxesData[selectedTaxType]?.taxAdministrator || strapiTaxAdministrator) && (
+                <TaxesFeesAdministratorCardWrapper
+                  taxType={selectedTaxType}
+                  beTaxAdministrator={taxesData[selectedTaxType]?.taxAdministrator ?? null}
+                  strapiTaxAdministrator={strapiTaxAdministrator}
+                />
+              )}
+              <TaxesFeesOverview taxesData={taxesData[selectedTaxType]} taxType={selectedTaxType} />
+            </div>
+          ))}
       </div>
     </>
   )

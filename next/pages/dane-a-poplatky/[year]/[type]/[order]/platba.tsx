@@ -9,27 +9,39 @@ import TaxFeePaymentSection from 'components/forms/segments/AccountSections/Taxe
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
+import { TaxFeeRouteProps } from 'frontend/api/constants'
 import { prefetchUserQuery } from 'frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from 'frontend/utils/amplifyServer'
 import { convertYearToNumber } from 'frontend/utils/general'
 import { slovakServerSideTranslations } from 'frontend/utils/slovakServerSideTranslations'
-import { ResponseRealEstateTaxSummaryDetailDto, TaxType } from 'openapi-clients/tax'
+import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 
-type AccountTaxesFeesPageProps = {
-  taxData: ResponseRealEstateTaxSummaryDetailDto
+type PageProps = {
+  taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   dehydratedState: DehydratedState
 }
 
-type Params = {
-  year: string
-}
+type Params = Record<keyof TaxFeeRouteProps, string>
 
-export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
+export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
   async ({ amplifyContextSpec, context, fetchAuthSession }) => {
-    const year = context.params?.year
+    // TODO Unify with same param logic from [year]/[type]/[order]/index.tsx
+    if (!context.params) {
+      return { notFound: true }
+    }
+
+    const { year, type, order } = context.params
+
     const yearNumber = convertYearToNumber(year)
+
     if (!yearNumber) {
+      return { notFound: true }
+    }
+
+    const orderNumber = +order
+
+    if (!orderNumber) {
       return { notFound: true }
     }
 
@@ -37,19 +49,13 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTaxAdministrator] = await Promise.all([
-        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, 1, TaxType.Dzn, {
-          // TODO - for DZN all order values are 1, since it is unique
+        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, orderNumber, type, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),
         getTaxAdministratorForUser(amplifyContextSpec),
         prefetchUserQuery(queryClient, fetchAuthSession),
       ])
-
-      // TODO This is a temporary "fix" while solution for multiple tax types is not implemented.
-      if (taxData.type !== TaxType.Dzn) {
-        throw new Error('TaxType not implemented')
-      }
 
       return {
         props: {
@@ -80,11 +86,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({
-  taxData,
-  dehydratedState,
-  strapiTaxAdministrator,
-}: AccountTaxesFeesPageProps) => {
+const AccountTaxesFeesPage = ({ taxData, dehydratedState, strapiTaxAdministrator }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>

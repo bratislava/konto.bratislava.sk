@@ -7,6 +7,7 @@ import { Address } from 'frontend/dtos/accountDto'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
+import { TaxType } from 'openapi-clients/tax'
 import { useState } from 'react'
 
 const formatZip = (zip?: string) => {
@@ -34,6 +35,11 @@ const TaxFeeContactInformation = () => {
     }
   })
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
+
+  const title = {
+    [TaxType.Dzn]: t('taxes.contact_information.personal_info.tax'),
+    [TaxType.Ko]: t('taxes.contact_information.personal_info.fee'),
+  }[taxData.type]
 
   const displayName =
     taxData.taxPayer?.name ??
@@ -65,7 +71,7 @@ const TaxFeeContactInformation = () => {
         />
       )}
       <div className="flex w-full flex-col items-start gap-2 px-4 lg:px-0">
-        <div className="text-h3">{t('taxes.contact_information.personal_info')}</div>
+        <div className="text-h3">{title}</div>
         <div className="flex w-full flex-col rounded-lg border-2 border-gray-200 p-4">
           <SummaryRow
             size="small"

@@ -6,11 +6,11 @@ import { base64ToArrayBuffer, downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ResponseRealEstateTaxSummaryDetailDto } from 'openapi-clients/tax'
+import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 type TaxFeeSectionProviderProps = {
-  taxData: ResponseRealEstateTaxSummaryDetailDto
+  taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 

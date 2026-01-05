@@ -7,7 +7,7 @@ import {
   QrCodeIcon,
 } from '@assets/ui-icons'
 import Alert from 'components/forms/info-components/Alert'
-import IdentityVerificationNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationNeededBanner'
+import IdentityVerificationBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
@@ -242,9 +242,9 @@ const PaymentData = () => {
             message={t('taxes.payment_data.payment_method_access_prompt')}
           />
           {isIdentityVerified ? (
-            <IdentityVerificationNeededBanner />
-          ) : (
             <OfficialCorrespondenceChannelNeededBanner />
+          ) : (
+            <IdentityVerificationBanner variant="verification-needed" />
           )}
         </div>
       ) : (

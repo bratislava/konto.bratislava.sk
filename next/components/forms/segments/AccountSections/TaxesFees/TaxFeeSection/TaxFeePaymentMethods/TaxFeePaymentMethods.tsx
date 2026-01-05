@@ -14,6 +14,12 @@ const TaxFeePaymentMethods = () => {
   const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
 
+  const paymentPagePath = ROUTES.TAXES_AND_FEES_PAYMENT({
+    year: taxData.year,
+    type: taxData.type,
+    order: taxData.order,
+  })
+
   return (
     <div className="flex w-full flex-col px-4 lg:px-0">
       <div className="flex w-full border-t-2 border-gray-200 lg:hidden lg:border-t-0" />
@@ -48,7 +54,7 @@ const TaxFeePaymentMethods = () => {
                 : t('taxes.payment.pay_all')
             }
             buttonVariant="black-solid"
-            buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}
+            buttonHref={`${paymentPagePath}?sposob-uhrady=zvysna-suma`}
           />
           {taxData.installmentPayment?.isPossible &&
             taxData.installmentPayment.activeInstallment?.remainingAmount !== undefined && (
@@ -66,7 +72,7 @@ const TaxFeePaymentMethods = () => {
                 amount={taxData.installmentPayment.activeInstallment?.remainingAmount}
                 buttonText={t('taxes.payment.pay_installment')}
                 buttonVariant="black-outline"
-                buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=splatky`}
+                buttonHref={`${paymentPagePath}?sposob-uhrady=splatky`}
               />
             )}
           {!taxData.installmentPayment?.isPossible &&

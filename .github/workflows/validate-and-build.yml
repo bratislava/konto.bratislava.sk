@@ -99,7 +99,7 @@ jobs:
     permissions: write-all
 
   build-nest-forms-backend:
-    if: always() && (needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true')
+    if: always() && (needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true') && needs.validate-nest-forms-backend.result == 'success'
     name: build nest-forms-backend
     needs: [conditions, validate-nest-forms-backend]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
@@ -123,7 +123,7 @@ jobs:
     permissions: write-all
 
   build-nest-clamav-scanner:
-    if: always() && (needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true')
+    if: always() && (needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true') && needs.validate-nest-clamav-scanner.result == 'success'
     name: build nest-clamav-scanner
     needs: [conditions, validate-nest-clamav-scanner]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
@@ -146,7 +146,7 @@ jobs:
     permissions: write-all
 
   build-nest-tax-backend:
-    if: always() && (needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true')
+    if: always() && (needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true') && needs.validate-nest-tax-backend.result == 'success'
     name: build nest-tax-backend
     needs: [conditions, validate-nest-tax-backend]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
@@ -169,7 +169,7 @@ jobs:
     permissions: write-all
 
   build-nest-city-account:
-    if: always() && (needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true')
+    if: always() && (needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true') && needs.validate-nest-city-account.result == 'success'
     name: build nest-city-account
     needs: [conditions, validate-nest-city-account]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable

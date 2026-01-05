@@ -193,8 +193,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       {
         amount: 0,
         year,
-        delivery_method:
-          userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
+        delivery_method: tax.deliveryMethod,
         taxType: this.getTaxType(),
         order: tax.order!,
       },

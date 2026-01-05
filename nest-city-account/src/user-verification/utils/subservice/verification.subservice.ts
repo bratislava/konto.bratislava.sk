@@ -278,6 +278,14 @@ export class VerificationSubservice {
     }
   }
 
+  public extractBirthNumberFromUri(sub: string): string | undefined {
+    return sub.split('_')[0].split('/').at(-1)
+  }
+
+  public extractIcoFromUri(sub: string): string | undefined {
+    return sub.split('/').at(-1)
+  }
+
   async verifyIcoIdentityCard(
     user: CognitoGetUserData,
     data: RequestBodyVerifyWithRpoDto

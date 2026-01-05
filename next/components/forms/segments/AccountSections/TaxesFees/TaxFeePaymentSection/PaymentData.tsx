@@ -7,8 +7,9 @@ import {
   QrCodeIcon,
 } from '@assets/ui-icons'
 import Alert from 'components/forms/info-components/Alert'
-import TaxesFeesVerifyAndSetDeliveryMethodBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesVerifyAndSetDeliveryBanner'
-import { useTaxChannel } from 'components/forms/segments/AccountSections/TaxesFees/useTaxChannel'
+import IdentityVerificationNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationNeededBanner'
+import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
+import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import Button from 'components/forms/simple-components/Button'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
@@ -224,26 +225,27 @@ const Details = ({ paymentMethod }: DetailsProps) => {
 }
 
 const PaymentData = () => {
-  const { setOfficialCorrespondenceChannelModalOpen } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const { tierStatus } = useSsrAuth()
-  const { isInQueue, isIdentityVerified } = tierStatus
-  const { showDeliveryMethodNotSetBanner } = useTaxChannel()
+  const { isIdentityVerified, isIdentityVerificationNotYetAttempted } = tierStatus
+  const { showChannelNeededBanner } = useOfficialCorrespondenceChannel()
   const searchParams = useSearchParams()
   const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
-      {(!isIdentityVerified && !isInQueue) || showDeliveryMethodNotSetBanner ? (
+      {isIdentityVerificationNotYetAttempted || showChannelNeededBanner ? (
         <div className="flex flex-col gap-6">
           <Alert
             type="warning"
             fullWidth
             message={t('taxes.payment_data.payment_method_access_prompt')}
           />
-          <TaxesFeesVerifyAndSetDeliveryMethodBanner
-            onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
-          />
+          {isIdentityVerified ? (
+            <IdentityVerificationNeededBanner />
+          ) : (
+            <OfficialCorrespondenceChannelNeededBanner />
+          )}
         </div>
       ) : (
         <Details paymentMethod={paymentMethodParam} />

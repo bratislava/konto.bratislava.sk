@@ -3,7 +3,7 @@ import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSe
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-const TaxesFeesUserVerificationInProcess = () => {
+const IdentityVerificationInProcessBanner = () => {
   const { t } = useTranslation('account')
 
   return (
@@ -15,4 +15,4 @@ const TaxesFeesUserVerificationInProcess = () => {
   )
 }
 
-export default TaxesFeesUserVerificationInProcess
+export default IdentityVerificationInProcessBanner

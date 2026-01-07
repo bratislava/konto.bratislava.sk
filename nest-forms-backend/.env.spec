@@ -42,6 +42,7 @@ NASES_RECIPIENT_URI=ico://sk/test-recipient
 # Frontend
 FRONTEND_URL=https://city-account-next.staging.bratislava.sk
 USER_ACCOUNT_API="https://nest-city-account.staging.bratislava.sk"
+USER_ACCOUNT_API_KEY=test-api-key
 
 # ClamAV Scanner
 NEST_CLAMAV_SCANNER=http://127.0.0.1:3200

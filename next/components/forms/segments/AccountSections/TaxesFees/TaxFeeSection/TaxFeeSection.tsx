@@ -1,16 +1,13 @@
-import { ExportIcon } from '@assets/ui-icons'
 import Alert from 'components/forms/info-components/Alert'
 import ResponsiveCarousel from 'components/forms/ResponsiveCarousel'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import OfficialCorrespondenceChannelCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
 import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCard/TaxesFeesAdministratorCardWrapper'
-import TaxFeeAccordions from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeAccordions'
-import TaxFeeContactInformation from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeContactInformation'
+import TaxFeeDetails from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeDetails'
 import TaxFeePaymentMethods from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentMethods/TaxFeePaymentMethods'
-import TaxFeePaymentSummary from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentSummary'
+import TaxFeeSubjectInformation from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeSubjectInformation'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
-import { EXTERNAL_LINKS, ROUTES } from 'frontend/api/constants'
+import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
@@ -36,20 +33,9 @@ const TaxFeeSection = () => {
     [TaxType.Ko]: t('account_section_payment.tax_detail.fee'),
   }[taxData.type]
 
-  const taxFeeAccordionsHeader = {
-    [TaxType.Dzn]: t('taxes.tax_details.tax_liability_breakdown.taxes'),
-    [TaxType.Ko]: t('taxes.tax_details.tax_liability_breakdown.fees'),
-  }[taxData.type]
-
-  const taxFeeAccordionsHeaderLinkProps = {
-    [TaxType.Dzn]: {
-      href: EXTERNAL_LINKS.BRATISLAVA_TAXES_AND_FEES_INFO_DZN,
-      children: t('tax_detail_section.tax_detail_fees_link.dzn'),
-    },
-    [TaxType.Ko]: {
-      href: EXTERNAL_LINKS.BRATISLAVA_TAXES_AND_FEES_INFO_KO,
-      children: t('tax_detail_section.tax_detail_fees_link.ko'),
-    },
+  const paymentSuccessMessage = {
+    [TaxType.Dzn]: t('account_section_payment.payment_successful.dzn'),
+    [TaxType.Ko]: t('account_section_payment.payment_successful.ko'),
   }[taxData.type]
 
   const breadcrumbs = [
@@ -67,41 +53,23 @@ const TaxFeeSection = () => {
     <div className="flex flex-col">
       <TaxFeeSectionHeader title={pageTitle} breadcrumbs={breadcrumbs} />
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-10 lg:py-10">
-        {showTaxFeePaidAlert && (
-          <div className="w-full px-4 lg:px-0">
-            <Alert type="success" fullWidth message={t('account_section_payment.tax_paid')} />
-          </div>
-        )}
-        <div className="flex w-full flex-col gap-4 lg:flex-row lg:px-0">
-          <ResponsiveCarousel
-            controlsVariant="side"
-            desktop={2}
-            hasVerticalPadding={false}
-            items={[
-              <OfficialCorrespondenceChannelCardWrapper />,
-              <TaxesFeesAdministratorCardWrapper
-                taxType={taxData.type}
-                beTaxAdministrator={taxData.taxAdministrator}
-                strapiTaxAdministrator={strapiTaxAdministrator}
-              />,
-            ]}
-          />
-        </div>
-        <TaxFeeContactInformation />
-        <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
-          <div className="flex w-full flex-col justify-between gap-3 lg:flex-row">
-            <span className="text-h3">{taxFeeAccordionsHeader}</span>
-            <div className="flex items-center justify-between gap-2">
-              <ButtonNew
-                variant="black-link"
-                endIcon={<ExportIcon />}
-                {...taxFeeAccordionsHeaderLinkProps}
-              />
-            </div>
-          </div>
-          <TaxFeeAccordions />
-          <TaxFeePaymentSummary />
-        </div>
+        {showTaxFeePaidAlert && <Alert type="success" fullWidth message={paymentSuccessMessage} />}
+        <ResponsiveCarousel
+          controlsVariant="side"
+          desktop={2}
+          hasVerticalPadding={false}
+          items={[
+            <OfficialCorrespondenceChannelCardWrapper />,
+            <TaxesFeesAdministratorCardWrapper
+              taxType={taxData.type}
+              beTaxAdministrator={taxData.taxAdministrator}
+              strapiTaxAdministrator={strapiTaxAdministrator}
+            />,
+          ]}
+          className="w-full"
+        />
+        <TaxFeeSubjectInformation />
+        <TaxFeeDetails />
         {showPaymentMethods && <TaxFeePaymentMethods />}
       </div>
     </div>

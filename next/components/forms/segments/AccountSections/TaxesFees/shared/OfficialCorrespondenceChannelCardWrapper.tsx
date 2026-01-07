@@ -52,7 +52,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
               </div>
             )}
           </div>
-          <div className="rounded-lg bg-gray-100 p-3">
+          <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
             <MailIcon className="size-6" />
           </div>
         </div>

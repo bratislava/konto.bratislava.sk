@@ -105,8 +105,8 @@ const KoAccordionTableTaxContent = ({
   return (
     <AccordionV2
       title={
-        <div className="flex min-w-0 grow justify-between text-h4 font-semibold">
-          <h3>{title}</h3>
+        <div className="flex min-w-0 grow justify-between text-h5 font-semibold">
+          <h5>{title}</h5>
           <span>{secondTitle}</span>
         </div>
       }

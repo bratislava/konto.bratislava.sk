@@ -82,7 +82,7 @@ const Alert = ({
   }
 
   const alertContainer = cn(
-    'flex flex-col items-start gap-2 rounded-lg p-3 lg:p-4',
+    'flex w-full flex-col items-start gap-2 rounded-lg p-3 lg:p-4',
     className,
     {
       'bg-negative-100 text-negative-700': type === 'error' && !solid,
@@ -95,7 +95,6 @@ const Alert = ({
       'bg-gray-700 text-white': type === 'info' && solid,
       'bg-warning-700 text-white': type === 'warning' && solid,
     },
-    { 'max-w-none': fullWidth },
     { 'max-w-[480px]': !fullWidth },
   )
 

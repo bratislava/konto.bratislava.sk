@@ -1,7 +1,7 @@
 import { MailIcon, SettingsIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import TaxesChannelChangeEffectiveNextYearAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesChannelChangeEffectiveNextYearAlert'
-import TaxesFeesDeliveryMethodChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesFeesDeliveryMethodChangeModal'
+import OfficialCorrespondenceChannelAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
+import OfficialCorrespondenceChannelChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
@@ -35,7 +35,10 @@ const OfficialCorrespondenceChannelInformation = () => {
 
   return (
     <>
-      <TaxesFeesDeliveryMethodChangeModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
+      <OfficialCorrespondenceChannelChangeModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
       <div className="mx-4 flex flex-col gap-4 rounded-lg border bg-gray-0 p-4 lg:mx-0 lg:gap-5 lg:p-5">
         <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -76,7 +79,10 @@ const OfficialCorrespondenceChannelInformation = () => {
         </div>
 
         {isChannelChangeEffectiveNextYear && (
-          <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
+          <OfficialCorrespondenceChannelAlert
+            variant="change-effective-next-year"
+            strapiTax={strapiTax}
+          />
         )}
       </div>
     </>

@@ -1,5 +1,5 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import TaxesChannelChangeEffectiveNextYearAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesChannelChangeEffectiveNextYearAlert'
+import OfficialCorrespondenceChannelAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
@@ -176,7 +176,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
   )
 }
 
-const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
+const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
   const { isSubscribed, changeSubscription, subType } = useUserSubscription({
     category: GDPRCategoryEnum.Taxes,
     type: GDPRTypeEnum.FormalCommunication,
@@ -222,7 +222,10 @@ const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps
       />
       {isChannelChangeEffectiveNextYear && (
         <div className="mb-4">
-          <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
+          <OfficialCorrespondenceChannelAlert
+            variant="change-effective-next-year"
+            strapiTax={strapiTax}
+          />
         </div>
       )}
       <Form
@@ -237,4 +240,4 @@ const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps
   )
 }
 
-export default TaxesFeesDeliveryMethodChangeModal
+export default OfficialCorrespondenceChannelChangeModal

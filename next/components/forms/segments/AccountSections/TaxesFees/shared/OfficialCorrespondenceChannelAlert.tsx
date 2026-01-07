@@ -3,13 +3,14 @@ import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import React from 'react'
 
-type TaxesChannelChangeEffectiveNextYearAlertProps = {
+type Props = {
   strapiTax: TaxFragment
+  variant: 'change-effective-next-year'
 }
 
-const TaxesChannelChangeEffectiveNextYearAlert = ({
-  strapiTax: { channelChangeEffectiveNextYearTitle, channelChangeEffectiveNextYearText },
-}: TaxesChannelChangeEffectiveNextYearAlertProps) => {
+const OfficialCorrespondenceChannelAlert = ({ strapiTax }: Props) => {
+  const { channelChangeEffectiveNextYearTitle, channelChangeEffectiveNextYearText } = strapiTax
+
   if (!channelChangeEffectiveNextYearTitle && !channelChangeEffectiveNextYearText) {
     return null
   }
@@ -32,4 +33,4 @@ const TaxesChannelChangeEffectiveNextYearAlert = ({
   )
 }
 
-export default TaxesChannelChangeEffectiveNextYearAlert
+export default OfficialCorrespondenceChannelAlert

@@ -26,6 +26,7 @@ export default [
   NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
   NasesErrorsEnum.SEND_TO_NASES_ERROR,
   NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+  NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
   ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
   ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
   ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,

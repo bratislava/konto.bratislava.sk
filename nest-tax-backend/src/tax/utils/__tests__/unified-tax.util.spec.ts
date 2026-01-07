@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import { PaymentStatus, TaxType } from '@prisma/client'
+import noop from 'lodash/noop'
 
 import {
   RealEstateTaxAreaType,
@@ -294,16 +295,16 @@ describe('UnifiedTaxUtil', () => {
             draft.oneTimePayment.qrCode!.paymentNote =
               QrPaymentNoteEnum.QR_remainingAmount
           })
-
+  
           expectEqualAsJsonStringsWithDates(output, expected)
         })
-
+  
         it('full first', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
             taxPayments: [{ amount: 2200, status: PaymentStatus.SUCCESS }],
           })
-
+  
           const expected = createExpectedOutput((draft) => {
             const newOverallBalance = 4400
             draft.overallPaid = 2200
@@ -320,16 +321,16 @@ describe('UnifiedTaxUtil', () => {
             draft.oneTimePayment.qrCode!.paymentNote =
               QrPaymentNoteEnum.QR_remainingAmount
           })
-
+  
           expectEqualAsJsonStringsWithDates(output, expected)
         })
-
+  
         it('partial second', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
             taxPayments: [{ amount: 2201, status: PaymentStatus.SUCCESS }],
           })
-
+  
           const expected = createExpectedOutput((draft) => {
             const newOverallBalance = 4399
             draft.overallPaid = 2201
@@ -351,16 +352,16 @@ describe('UnifiedTaxUtil', () => {
             draft.oneTimePayment.qrCode!.paymentNote =
               QrPaymentNoteEnum.QR_remainingAmount
           })
-
+  
           expectEqualAsJsonStringsWithDates(output, expected)
         })
-
+  
         it('full second', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
             taxPayments: [{ amount: 4400, status: PaymentStatus.SUCCESS }],
           })
-
+  
           const expected = createExpectedOutput((draft) => {
             const newOverallBalance = 2200
             draft.overallPaid = 4400
@@ -380,16 +381,16 @@ describe('UnifiedTaxUtil', () => {
             draft.oneTimePayment.qrCode!.paymentNote =
               QrPaymentNoteEnum.QR_remainingAmount
           })
-
+  
           expectEqualAsJsonStringsWithDates(output, expected)
         })
-
+  
         it('fully paid', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
             taxPayments: [{ amount: 6600, status: PaymentStatus.SUCCESS }],
           })
-
+  
           const expected = createExpectedOutput((draft) => {
             draft.overallPaid = 6600
             draft.overallBalance = 0
@@ -401,15 +402,14 @@ describe('UnifiedTaxUtil', () => {
             }
             draft.oneTimePayment = {
               isPossible: false,
-              reasonNotPossible:
-                OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
+              reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
             }
           })
-
+  
           expectEqualAsJsonStringsWithDates(output, expected)
         })
       })
-
+  
       describe('date', () => {
         it('at first payment due threshold', () => {
           const output = getTaxDetailPure({
@@ -417,12 +417,12 @@ describe('UnifiedTaxUtil', () => {
             taxPayments: [],
             today: new Date('2025-01-21 21:00'),
           })
-
-          const expected = createExpectedOutput(() => {})
-
+  
+          const expected = createExpectedOutput(noop)
+  
           expectEqualAsJsonStringsWithDates(output, expected)
         })
-
+  
         describe('after first payment due threshold', () => {
           it('', () => {
             const output = getTaxDetailPure({

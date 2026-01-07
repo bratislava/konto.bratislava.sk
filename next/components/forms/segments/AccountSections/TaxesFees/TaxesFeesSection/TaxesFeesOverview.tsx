@@ -5,6 +5,7 @@ import TaxesFeesOverviewBanner from 'components/forms/segments/AccountSections/T
 import { useTranslation } from 'next-i18next'
 import { TaxAvailabilityStatus, TaxType } from 'openapi-clients/tax'
 import { TaxesData } from 'pages/dane-a-poplatky'
+import { Fragment } from 'react'
 
 type Props = {
   taxType: TaxType
@@ -33,12 +34,12 @@ const TaxesFeesOverview = ({ taxesData, taxType }: Props) => {
       ) : taxesData?.availabilityStatus === TaxAvailabilityStatus.Available ? (
         <ul className="flex flex-col rounded-lg border border-gray-200 px-4 lg:px-6">
           {taxesData.items.map((item, index) => (
-            <>
+            <Fragment key={index}>
               {index > 0 && <HorizontalDivider asListItem />}
-              <li key={index}>
+              <li>
                 <TaxFeeRow taxData={item} />
               </li>
-            </>
+            </Fragment>
           ))}
         </ul>
       ) : null}

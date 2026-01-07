@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { IsString } from 'class-validator'
-import { OAuth2ClientName } from 'src/oauth2/subservices/oauth2-client.subservice'
+import { OAuth2ClientName } from '../../oauth2/subservices/oauth2-client.subservice'
 
 export class CognitoUserAttributesValuesDateDto {
   Name!: CognitoUserAttributesEnum

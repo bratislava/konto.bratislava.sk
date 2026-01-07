@@ -1,0 +1,25 @@
+name: Run checks on pull request
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  dependabot-approval:
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    environment: dependabot
+    steps:
+      - name: Wait for approval
+        run: echo "Approved to run CI for Dependabot PR"
+
+  validate-and-build:
+    name: Validate and build services
+    needs: [dependabot-approval]
+    if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
+    uses: ./.github/workflows/validate-and-build.yml

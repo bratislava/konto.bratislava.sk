@@ -38,6 +38,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
 
 @Injectable()
 export class VerificationService {
@@ -301,10 +302,7 @@ export class VerificationService {
   ): Promise<ResponseVerificationDto> {
     const jwtToken = this.tokenSubservice.createUserJwtToken(oboToken)
     try {
-      // function `getUpvsIdentity` below only returns information about UpvsNaturalPerson,
-      // what we need to proceed with verification is information about legal entity
-      // we do this only to verify that the token is valid
-      // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, we can use `getUpvsIdentity` to get information about legal entity
+      // we do this only to verify that the token is valid, we don't need the result
       await this.nasesService.getUpvsIdentity(jwtToken)
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -320,7 +318,7 @@ export class VerificationService {
     const payload = JSON.parse(payloadBuffer.toString())
     const type = payload.sub.split(':')[0]
 
-    const birthNumber = this.verificationSubservice.extractBirthNumberFromUri(payload.actor.sub)
+    const birthNumber = extractBirthNumberFromUri(payload.actor.sub)
     if (!birthNumber) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.VERIFY_EID_ERROR,
@@ -368,7 +366,7 @@ export class VerificationService {
     }
 
     if (type === 'ico') {
-      const ico = this.verificationSubservice.extractIcoFromUri(payload.sub)
+      const ico = extractIcoFromUri(payload.sub)
       if (!ico) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,

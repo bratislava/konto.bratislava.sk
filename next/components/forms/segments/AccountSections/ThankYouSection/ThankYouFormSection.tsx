@@ -22,7 +22,7 @@ const useThankYouFormSection = () => {
     return {
       title: t('thank_you.form_submit_tax.title'),
       firstButtonTitle: t('thank_you.button_to_formular_text_2'),
-      secondButtonTitle: t('thank_you.button_to_profil_text'),
+      secondButtonTitle: t('thank_you.button_to_profile_text'),
       content: t('thank_you.form_submit_tax.content'),
       feedbackLink,
       feedbackTitle: t('thank_you.form_submit_tax.feedbackTitle'),
@@ -42,7 +42,7 @@ const useThankYouFormSection = () => {
   return {
     title: t('thank_you.form_submit.title'),
     firstButtonTitle: t('thank_you.button_to_formular_text_2'),
-    secondButtonTitle: t('thank_you.button_to_profil_text'),
+    secondButtonTitle: t('thank_you.button_to_profile_text'),
     content: [
       t('thank_you.form_submit.content_generic'),
       isSignedIn ? ` ${t('thank_you.form_submit.content_signed_in')}` : '',

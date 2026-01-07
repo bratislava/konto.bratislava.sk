@@ -42,6 +42,7 @@ NASES_RECIPIENT_URI=ico://sk/test-recipient
 # Frontend
 FRONTEND_URL=https://city-account-next.staging.bratislava.sk
 USER_ACCOUNT_API="https://nest-city-account.staging.bratislava.sk"
+USER_ACCOUNT_API_KEY=test-api-key
 
 # ClamAV Scanner
 NEST_CLAMAV_SCANNER=http://127.0.0.1:3200
@@ -55,6 +56,7 @@ GINIS_SSL_HOST=https://test-ginis.example.com/ssl
 GINIS_SSL_MTOM_HOST=https://test-ginis.example.com/ssl/mtom
 GINIS_GIN_HOST=https://test-ginis.example.com/gin
 GINIS_FORM_ID_PROPERTY_ID=TEST_FORM_ID
+GINIS_ANONYMOUS_SENDER_ID=ANON_SENDER_ID
 GINIS_SHOULD_REGISTER=false
 
 # OLO

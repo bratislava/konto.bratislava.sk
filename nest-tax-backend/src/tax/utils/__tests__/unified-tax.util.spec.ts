@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import { PaymentStatus, TaxDetailareaType, TaxDetailType } from '@prisma/client'
+import noop from 'lodash/noop'
 
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
@@ -416,7 +417,7 @@ describe('UnifiedTaxUtil', () => {
           today: new Date('2025-01-21 21:00'),
         })
 
-        const expected = createExpectedOutput(() => {})
+        const expected = createExpectedOutput(noop)
 
         expectEqualAsJsonStringsWithDates(output, expected)
       })

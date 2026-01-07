@@ -2,22 +2,32 @@ import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { PaymentStatus } from '@prisma/client'
 import dayjs from 'dayjs'
+import noop from 'lodash/noop'
 
 import prismaMock from '../../../test/singleton'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
+import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../utils/constants'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from '../subservices/config.subservice'
 import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
 import { TasksService } from '../tasks.service'
+
+// Mock p-limit to return a function that executes the passed function immediately
+const mockPLimitFn = (fn: () => Promise<any>) => fn()
+jest.mock('p-limit', () => {
+  return jest.fn(() => mockPLimitFn)
+})
 
 describe('TasksService', () => {
   let service: TasksService
@@ -54,10 +64,24 @@ describe('TasksService', () => {
           provide: TaxImportHelperSubservice,
           useValue: createMock<TaxImportHelperSubservice>(),
         },
+        {
+          provide: PaymentService,
+          useValue: createMock<PaymentService>(),
+        },
+        {
+          provide: RetryService,
+          useValue: createMock<RetryService>(),
+        },
       ],
     }).compile()
 
     service = module.get<TasksService>(TasksService)
+    const retryServiceInstance = new RetryService()
+    jest
+      .spyOn(service['retryService'], 'retryWithDelay')
+      .mockImplementation(
+        retryServiceInstance.retryWithDelay.bind(retryServiceInstance),
+      )
   })
 
   it('should be defined', () => {
@@ -103,7 +127,7 @@ describe('TasksService', () => {
             externalId: 'external-id-123',
           },
         } as any)
-      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+      jest.spyOn(service['logger'], 'log').mockImplementation(noop)
 
       await service.sendUnpaidTaxReminders()
 
@@ -156,7 +180,7 @@ describe('TasksService', () => {
             externalId: 'external-id-2',
           },
         } as any)
-      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+      jest.spyOn(service['logger'], 'log').mockImplementation(noop)
 
       await service.sendUnpaidTaxReminders()
 
@@ -291,7 +315,7 @@ describe('TasksService', () => {
 
       jest
         .spyOn(LineLoggerSubservice.prototype, 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
 
       const updateOverpaymentsDataFromNorisByDateRangeSpy = jest.spyOn(
         service['norisService'],
@@ -361,7 +385,7 @@ describe('TasksService', () => {
       const error = new Error('Noris service failed')
 
       const retryWithDelayMock = jest
-        .spyOn(service as any, 'retryWithDelay')
+        .spyOn(service['retryService'], 'retryWithDelay')
         .mockRejectedValue(error)
 
       const configSubserviceMock = jest
@@ -370,7 +394,7 @@ describe('TasksService', () => {
 
       jest
         .spyOn(LineLoggerSubservice.prototype, 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
 
       // The error is caught by @HandleErrors decorator, so we expect it to not throw
       const result = await service.loadOverpaymentsFromNoris()
@@ -390,7 +414,9 @@ describe('TasksService', () => {
 
       const error = new Error('Payment update failed')
 
-      jest.spyOn(service as any, 'retryWithDelay').mockRejectedValue(error)
+      jest
+        .spyOn(service['retryService'], 'retryWithDelay')
+        .mockRejectedValue(error)
 
       const configSubserviceMock = jest
         .spyOn(service['configSubservice'], 'incrementOverpaymentsLookbackDays')
@@ -405,7 +431,9 @@ describe('TasksService', () => {
           ),
         )
 
-      jest.spyOn(LineLoggerSubservice.prototype, 'error').mockImplementation()
+      jest
+        .spyOn(LineLoggerSubservice.prototype, 'error')
+        .mockImplementation(noop)
 
       // Since the method is decorated with @HandleErrors, it will catch the error and return null
       const result = await service.loadOverpaymentsFromNoris()
@@ -431,7 +459,9 @@ describe('TasksService', () => {
 
       const error = new Error('Retry failed')
 
-      jest.spyOn(service as any, 'retryWithDelay').mockRejectedValue(error)
+      jest
+        .spyOn(service['retryService'], 'retryWithDelay')
+        .mockRejectedValue(error)
 
       const throwerErrorGuardMock = jest
         .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
@@ -442,7 +472,9 @@ describe('TasksService', () => {
           ),
         )
 
-      jest.spyOn(LineLoggerSubservice.prototype, 'error').mockImplementation()
+      jest
+        .spyOn(LineLoggerSubservice.prototype, 'error')
+        .mockImplementation(noop)
 
       // Since the method is decorated with @HandleErrors, it will catch the error and return null
       const result = await service.loadOverpaymentsFromNoris()
@@ -455,214 +487,6 @@ describe('TasksService', () => {
         undefined,
         error,
       )
-    })
-  })
-
-  describe('retryWithDelay', () => {
-    beforeEach(() => {
-      jest.clearAllMocks()
-      jest.useFakeTimers()
-    })
-
-    afterEach(() => {
-      jest.useRealTimers()
-    })
-
-    it('should succeed on first attempt without retry', async () => {
-      const mockFn = jest.fn().mockResolvedValue('success')
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const result = await service['retryWithDelay'](mockFn, 3, 1000)
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(1)
-      expect(logMock).not.toHaveBeenCalled()
-    })
-
-    it('should retry specified number of times before succeeding', async () => {
-      const mockFn = jest
-        .fn()
-        .mockRejectedValueOnce(new Error('First attempt failed'))
-        .mockRejectedValueOnce(new Error('Second attempt failed'))
-        .mockResolvedValue('success')
-
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
-
-      // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
-
-      const result = await resultPromise
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(3)
-      expect(logMock).toHaveBeenCalledTimes(2)
-    })
-
-    it('should throw error if all retries fail', async () => {
-      jest.useRealTimers()
-
-      const mockFn = jest
-        .fn()
-        .mockRejectedValue(new Error('First attempt failed'))
-        .mockRejectedValue(new Error('Second attempt failed'))
-        .mockRejectedValue(new Error('Third attempt failed'))
-
-      await expect(service['retryWithDelay'](mockFn, 3, 10)).rejects.toThrow(
-        'Third attempt failed',
-      )
-    })
-
-    it('should use default retry count and delay when not specified', async () => {
-      const mockFn = jest.fn().mockResolvedValue('success')
-
-      const result = await service['retryWithDelay'](mockFn)
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle zero retries correctly', async () => {
-      const error = new Error('Immediate failure')
-      const mockFn = jest.fn().mockRejectedValue(error)
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      await expect(service['retryWithDelay'](mockFn, 0, 1000)).rejects.toThrow(
-        'Immediate failure',
-      )
-
-      expect(mockFn).toHaveBeenCalledTimes(1)
-      expect(logMock).not.toHaveBeenCalled()
-    })
-
-    it('should handle different delay values correctly', async () => {
-      const mockFn = jest
-        .fn()
-        .mockRejectedValueOnce(new Error('First attempt failed'))
-        .mockResolvedValue('success')
-
-      jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const resultPromise = service['retryWithDelay'](mockFn, 2, 5000)
-
-      // Fast-forward through the delay
-      await jest.advanceTimersByTimeAsync(5000)
-
-      const result = await resultPromise
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(2)
-    })
-
-    it('should handle very small delay values', async () => {
-      const mockFn = jest
-        .fn()
-        .mockRejectedValueOnce(new Error('First attempt failed'))
-        .mockResolvedValue('success')
-
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const resultPromise = service['retryWithDelay'](mockFn, 2, 100)
-
-      // Fast-forward through the delay
-      await jest.advanceTimersByTimeAsync(100)
-
-      const result = await resultPromise
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(2)
-      expect(logMock).toHaveBeenCalledWith(
-        'Retry attempt failed. Retrying in 0.10 seconds. Remaining retries: 1',
-        expect.any(String),
-      )
-    })
-
-    it('should handle function that throws different types of errors', async () => {
-      const error1 = new TypeError('Type error')
-      const error2 = new ReferenceError('Reference error')
-      const mockFn = jest
-        .fn()
-        .mockRejectedValueOnce(error1)
-        .mockRejectedValueOnce(error2)
-        .mockResolvedValue('success')
-
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
-
-      // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
-
-      const result = await resultPromise
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(3)
-      expect(logMock).toHaveBeenCalledTimes(2)
-    })
-
-    it('should handle function that throws non-Error objects', async () => {
-      const mockFn = jest
-        .fn()
-        .mockRejectedValueOnce('String error')
-        .mockRejectedValueOnce({ message: 'Object error' })
-        .mockResolvedValue('success')
-
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
-
-      // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
-
-      const result = await resultPromise
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(3)
-      expect(logMock).toHaveBeenCalledTimes(2)
-    })
-
-    it('should handle function that throws null or undefined', async () => {
-      const mockFn = jest
-        .fn()
-        .mockRejectedValueOnce(null)
-        .mockRejectedValueOnce(null)
-        .mockResolvedValue('success')
-
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const resultPromise = service['retryWithDelay'](mockFn, 3, 1000)
-
-      // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
-
-      const result = await resultPromise
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(3)
-      expect(logMock).toHaveBeenCalledTimes(2)
-    })
-
-    it('should handle recursive retry calls correctly', async () => {
-      const mockFn = jest
-        .fn()
-        .mockRejectedValueOnce(new Error('First attempt failed'))
-        .mockRejectedValueOnce(new Error('Second attempt failed'))
-        .mockRejectedValueOnce(new Error('Third attempt failed'))
-        .mockResolvedValue('success')
-
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
-
-      const resultPromise = service['retryWithDelay'](mockFn, 4, 1000)
-
-      // Fast-forward through all delays
-      await jest.advanceTimersByTimeAsync(3000)
-
-      const result = await resultPromise
-
-      expect(result).toBe('success')
-      expect(mockFn).toHaveBeenCalledTimes(4)
-      expect(logMock).toHaveBeenCalledTimes(3)
     })
   })
 
@@ -951,6 +775,242 @@ describe('TasksService', () => {
       expect(importTaxesSpy).toHaveBeenCalledWith(newlyCreated, currentYear)
       expect(importTaxesSpy).toHaveBeenCalledTimes(1)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('resendBloomreachEvents', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+      jest.spyOn(service['logger'], 'log').mockImplementation(noop)
+      jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+    })
+
+    it('should not process anything when there are no payments', async () => {
+      jest
+        .spyOn(service['prismaService'].taxPayment, 'findMany')
+        .mockResolvedValue([])
+
+      const getUserDataAdminBatchSpy = jest.spyOn(
+        service['cityAccountSubservice'],
+        'getUserDataAdminBatch',
+      )
+      const trackPaymentInBloomreachSpy = jest.spyOn(
+        service['paymentService'],
+        'trackPaymentInBloomreach',
+      )
+
+      await service.resendBloomreachEvents()
+
+      expect(getUserDataAdminBatchSpy).not.toHaveBeenCalled()
+      expect(trackPaymentInBloomreachSpy).not.toHaveBeenCalled()
+    })
+
+    it('should successfully resend bloomreach events for all payments', async () => {
+      const mockPayments = [
+        {
+          id: 1,
+          status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: false,
+          tax: {
+            taxPayer: {
+              birthNumber: '123456/7890',
+            },
+          },
+        },
+        {
+          id: 2,
+          status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: false,
+          tax: {
+            taxPayer: {
+              birthNumber: '234567/8901',
+            },
+          },
+        },
+      ] as any
+
+      jest
+        .spyOn(service['prismaService'].taxPayment, 'findMany')
+        .mockResolvedValue(mockPayments)
+
+      const mockUserData = {
+        '123456/7890': {
+          externalId: 'external-id-1',
+        },
+        '234567/8901': {
+          externalId: 'external-id-2',
+        },
+      }
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue(mockUserData as any)
+
+      const trackPaymentInBloomreachSpy = jest.spyOn(
+        service['paymentService'],
+        'trackPaymentInBloomreach',
+      )
+
+      await service.resendBloomreachEvents()
+
+      expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
+      expect(trackPaymentInBloomreachSpy).toHaveBeenCalledWith(
+        mockPayments[0],
+        'external-id-1',
+      )
+      expect(trackPaymentInBloomreachSpy).toHaveBeenCalledWith(
+        mockPayments[1],
+        'external-id-2',
+      )
+
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        expect.stringContaining('2'),
+      )
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        expect.stringContaining('0'),
+      )
+    })
+
+    it('should handle payments without user data from city account', async () => {
+      const mockPayments = [
+        {
+          id: 1,
+          status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: false,
+          tax: {
+            taxPayer: {
+              birthNumber: '123456/7890',
+            },
+          },
+        },
+      ] as any
+
+      jest
+        .spyOn(service['prismaService'].taxPayment, 'findMany')
+        .mockResolvedValue(mockPayments)
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({} as any)
+
+      const trackPaymentInBloomreachSpy = jest
+        .spyOn(service['paymentService'], 'trackPaymentInBloomreach')
+        .mockResolvedValue()
+
+      await service.resendBloomreachEvents()
+
+      expect(trackPaymentInBloomreachSpy).toHaveBeenCalledWith(
+        mockPayments[0],
+        undefined,
+      )
+    })
+
+    it('should handle partial failures and log errors', async () => {
+      const mockPayments = [
+        {
+          id: 1,
+          status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: false,
+          tax: {
+            taxPayer: {
+              birthNumber: '123456/7890',
+            },
+          },
+        },
+        {
+          id: 2,
+          status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: false,
+          tax: {
+            taxPayer: {
+              birthNumber: '234567/8901',
+            },
+          },
+        },
+      ] as any
+
+      jest
+        .spyOn(service['prismaService'].taxPayment, 'findMany')
+        .mockResolvedValue(mockPayments)
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/7890': { externalId: 'external-id-1' },
+          '234567/8901': { externalId: 'external-id-2' },
+        } as any)
+
+      const error = new Error('Tracking failed')
+      const trackPaymentInBloomreachSpy = jest
+        .spyOn(service['paymentService'], 'trackPaymentInBloomreach')
+        .mockResolvedValueOnce()
+        .mockRejectedValueOnce(error)
+
+      await service.resendBloomreachEvents()
+
+      expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
+      expect(service['logger'].error).toHaveBeenCalledWith(error)
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        expect.stringContaining('1'),
+      )
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        expect.stringContaining('1'),
+      )
+    })
+
+    it('should handle all failures', async () => {
+      const mockPayments = [
+        {
+          id: 1,
+          status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: false,
+          tax: {
+            taxPayer: {
+              birthNumber: '123456/7890',
+            },
+          },
+        },
+        {
+          id: 2,
+          status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: false,
+          tax: {
+            taxPayer: {
+              birthNumber: '234567/8901',
+            },
+          },
+        },
+      ] as any
+
+      jest
+        .spyOn(service['prismaService'].taxPayment, 'findMany')
+        .mockResolvedValue(mockPayments)
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/7890': { externalId: 'external-id-1' },
+          '234567/8901': { externalId: 'external-id-2' },
+        } as any)
+
+      const error1 = new Error('Tracking failed 1')
+      const error2 = new Error('Tracking failed 2')
+      const trackPaymentInBloomreachSpy = jest
+        .spyOn(service['paymentService'], 'trackPaymentInBloomreach')
+        .mockRejectedValueOnce(error1)
+        .mockRejectedValueOnce(error2)
+
+      await service.resendBloomreachEvents()
+
+      expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
+      expect(service['logger'].error).toHaveBeenCalledWith(error1)
+      expect(service['logger'].error).toHaveBeenCalledWith(error2)
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        expect.stringContaining('0'),
+      )
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        expect.stringContaining('2'),
+      )
     })
   })
 })

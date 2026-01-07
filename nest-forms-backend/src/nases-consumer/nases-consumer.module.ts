@@ -32,6 +32,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
     UserInfoPipeModule,
     ConvertPdfModule,
     NasesModule,
+    GinisModule,
   ],
   providers: [
     NasesConsumerService,

@@ -1,9 +1,6 @@
 name: Validate and build resources with bratiska-cli
 on:
   workflow_call:
-permissions:
-  pull-requests: write
-  contents: read
 
 jobs:
   test-forms-shared:

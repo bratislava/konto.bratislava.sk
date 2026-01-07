@@ -23,3 +23,4 @@ jobs:
     needs: [dependabot-approval]
     if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
     uses: ./.github/workflows/validate-and-build.yml
+    permissions: write-all

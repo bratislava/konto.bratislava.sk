@@ -40676,40 +40676,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                   "type": "object",
                 },
               },
-              {
-                "if": {
-                  "properties": {
-                    "sposobPlatby": {
-                      "const": "sipo",
-                    },
-                  },
-                  "required": [
-                    "sposobPlatby",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "sipo": {
-                      "baOrder": 3,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "helptext": "SIPO číslo nájdete na platobnom doklade SIPO (šeku) alebo kontaktujte svoju poštu pre jeho správne nastavenie.",
-                          "inputType": "text",
-                          "size": "medium",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "title": "Zadajte číslo SIPO",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "sipo",
-                  ],
-                  "type": "object",
-                },
-              },
             ],
             "baOrder": 1,
             "baUiSchema": {
@@ -40733,10 +40699,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                         "value": "sepaInkaso",
                       },
                       {
-                        "label": "Poštovým peňažným poukazom na príslušný účet správcu poplatku - prostredníctvom SIPO",
-                        "value": "sipo",
-                      },
-                      {
                         "label": "Pri platbách do 300 EUR v hotovosti do pokladne správcu poplatku",
                         "value": "hotovost",
                       },
@@ -40749,7 +40711,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "enum": [
                   "bezhotovostnyPrevod",
                   "sepaInkaso",
-                  "sipo",
                   "hotovost",
                 ],
                 "title": "Spôsob platby",
@@ -88778,7 +88739,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                       "props": {
                         "links": [
                           {
-                            "href": "https://bratislavask.s3.bratislava.sk/upload/Tabulka_zivotne_minimum_2024_25970f264b.pdf",
+                            "href": "https://bratislavask.s3.bratislava.sk/upload/Tabulka_na_vypocet_Zivotneho_minima_2025_9d3178feea.pdf",
                             "title": "Overiť príjem",
                           },
                         ],

@@ -24,7 +24,7 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.946.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.948.0",
     "@nestjs-cognito/auth": "^2.5.1",
     "@nestjs/cli": "^11.0.14",
     "@nestjs/common": "^11.1.9",
@@ -63,7 +63,7 @@
     "@nestjs/testing": "^11.1.9",
     "@types/express": "^5.0.6",
     "@types/jest": "30.0.0",
-    "@types/lodash": "^4.17.20",
+    "@types/lodash": "^4.17.21",
     "@types/node": "^20.12.7",
     "@types/nodemailer": "^7.0.4",
     "@types/qrcode": "^1.5.6",

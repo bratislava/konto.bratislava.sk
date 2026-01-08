@@ -1,14 +1,13 @@
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
 import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
+import useSnackbar from 'frontend/hooks/useSnackbar'
+import { base64ToArrayBuffer, downloadBlob } from 'frontend/utils/general'
+import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
-
-import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
-import { base64ToArrayBuffer, downloadBlob } from '../../../../../frontend/utils/general'
-import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxSummaryDetailDto

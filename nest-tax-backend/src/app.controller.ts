@@ -13,6 +13,7 @@ export class AppController {
     description: 'Everything is working',
   })
   @Get('healthcheck')
+  // eslint-disable-next-line lodash-fp/prefer-constant
   health(): string {
     return 'OK'
   }

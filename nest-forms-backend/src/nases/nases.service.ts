@@ -18,7 +18,10 @@ import {
   versionCompareBumpDuringSend,
   versionCompareCanSendForm,
 } from 'forms-shared/versioning/version-compare'
-import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
+import {
+  UpvsCorporateBody,
+  UpvsNaturalPerson,
+} from 'openapi-clients/slovensko-sk'
 
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
@@ -80,7 +83,13 @@ export default class NasesService {
       'true'
   }
 
-  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | null> {
+  async getUpvsIdentity(
+    token: string,
+  ): Promise<UpvsNaturalPerson | UpvsCorporateBody | null> {
+    // there is a bug in the container and function `apiUpvsIdentityGet` below, according to 'openapi-clients/slovensko-sk' types
+    // returns information about UpvsNaturalPerson,
+    // in reality it returns information about UpvsCorporateBody as well
+    // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, typing can be erased
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },

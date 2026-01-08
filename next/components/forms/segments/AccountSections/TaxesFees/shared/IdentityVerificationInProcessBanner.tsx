@@ -1,10 +1,9 @@
 import ImageMestskeKontoSituacia from '@assets/images/mestske-konto-situacia.png'
+import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import AnnouncementBlock from '../IntroSection/Announcements/AnnouncementBlock'
-
-const TaxesFeesUserVerificationInProcess = () => {
+const IdentityVerificationInProcessBanner = () => {
   const { t } = useTranslation('account')
 
   return (
@@ -16,4 +15,4 @@ const TaxesFeesUserVerificationInProcess = () => {
   )
 }
 
-export default TaxesFeesUserVerificationInProcess
+export default IdentityVerificationInProcessBanner

@@ -1,10 +1,9 @@
 import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
+import MLinkNew from 'components/forms/simple-components/MLinkNew'
 import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import { ResponseTaxAdministratorDto } from 'openapi-clients/tax'
-
-import MLinkNew from '../../../simple-components/MLinkNew'
 
 type TaxesFeesTaxAdministratorCardProps = {
   beTaxAdministrator: ResponseTaxAdministratorDto | null

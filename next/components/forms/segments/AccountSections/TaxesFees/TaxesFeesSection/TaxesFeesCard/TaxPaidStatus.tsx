@@ -1,8 +1,7 @@
+import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
-
-import cn from '../../../../../frontend/cn'
 
 type TaxPaidStatusProps = {
   status: TaxStatusEnum

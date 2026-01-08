@@ -74,7 +74,6 @@ export class UpvsIdentityByUriService {
     // we collect birthNumbersWithSuccessfulUris so that we can easily filter those out and create db records marking a failed request for all the rest
     const birthNumbersWithSuccessfulUris = new Set<string>()
     for (const result of results) {
-      // validate the result format - for info only, continue either way
       try {
         if (!result.uri) continue
 

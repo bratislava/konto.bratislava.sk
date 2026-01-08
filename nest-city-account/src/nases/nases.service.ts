@@ -6,22 +6,21 @@ import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../user-verification/verification.errors.enum'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ClientsService from '../clients/clients.service'
-import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
+import { UpvsCorporateBody, UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
 
 @Injectable()
 export class NasesService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
     private clientsService: ClientsService
-  ) {
-    this.logger = new LineLoggerSubservice(NasesService.name)
-  }
+  ) {}
 
-  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | null> {
+  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
+    // there is a bug in the container and function `apiUpvsIdentityGet` below, according to 'openapi-clients/slovensko-sk' types
+    // returns information about UpvsNaturalPerson,
+    // in reality it returns information about UpvsCorporateBody as well
+    // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, typing can be erased
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
@@ -71,20 +70,13 @@ export class NasesService {
         }
       )
       .then((response) => {
-        if (response.status > 400) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
-            VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
-            JSON.stringify(response)
-          )
-        }
         return response.data
       })
       .catch((error) => {
-        throw this.throwerErrorGuard.BadRequestException(
+        throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          undefined,
+          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}`,
           error
         )
       })

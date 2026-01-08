@@ -63,7 +63,7 @@ model User {
   id                                   String                         @id @default(uuid()) @db.Uuid
   createdAt                            DateTime                       @default(now())
   updatedAt                            DateTime                       @updatedAt
-  registeredAt                         DateTime?                      
+  registeredAt                         DateTime?
   externalId                           String?                        @unique
   email                                String?                        @unique
   ifo                                  String?                        @unique
@@ -82,12 +82,32 @@ model User {
   taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
-  lastTaxDeliveryMethodsUpdateTry  DateTime                       @default(now())
+  lastTaxDeliveryMethodsUpdateTry      DateTime                       @default(now())
   cognitoTier                          CognitoUserAttributesTierEnum?
   userIdCardVerify                     UserIdCardVerify[]
   userLoginClients                     UserLoginClient[]
   isDeceased                           Boolean                        @default(false)
   markedDeceasedAt                     DateTime?
+  NotificationAgreement                NotificationAgreementHash[]
+}
+
+// Reused for both User and LegalPerson.
+// IMPORTANT: add a DB-level CHECK constraint to enforce exactly one of userId/legalPersonId is non-null.
+model NotificationAgreementHash {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  hash      String   @db.VarChar(64)
+
+  userId String? @db.Uuid
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  legalPersonId String?      @db.Uuid
+  legalPerson   LegalPerson? @relation(fields: [legalPersonId], references: [id], onDelete: Cascade)
+
+  @@unique([hash])
+  @@index([hash])
+  @@index([userId])
+  @@index([legalPersonId])
 }
 
 // In this table we store for one month the data used by a user to verify their account by ID card.
@@ -164,6 +184,8 @@ model LegalPerson {
   legalPersonIcoIdCardVerify         LegalPersonIcoIdCardVerify[]
   legalPersonLoginClients            LegalPersonLoginClient[]
 
+  NotificationAgreement NotificationAgreementHash[]
+
   @@unique([ico, birthNumber])
 }
 
@@ -202,7 +224,6 @@ model UserLoginClient {
   @@index([userId])
 }
 
-
 model LegalPersonLoginClient {
   id            String          @id @default(uuid()) @db.Uuid
   createdAt     DateTime        @default(now())
@@ -215,6 +236,7 @@ model LegalPersonLoginClient {
   @@unique([legalPersonId, loginClient])
   @@index([legalPersonId])
 }
+
 model Config {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -224,26 +246,26 @@ model Config {
 }
 
 model OAuth2Data {
-  id                         String   @id @default(uuid()) @db.Uuid
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Authorization request parameters
-  responseType               String   // 'code' for Authorization Code flow
-  clientId                   String
-  redirectUri                String
-  scope                      String?  // Space-delimited list of scopes
-  state                      String?  // CSRF protection token
-  codeChallenge              String?  // PKCE code challenge
-  codeChallengeMethod        String?  // PKCE code challenge method: 'S256' or 'plain'
+  responseType        String // 'code' for Authorization Code flow
+  clientId            String
+  redirectUri         String
+  scope               String? // Space-delimited list of scopes
+  state               String? // CSRF protection token
+  codeChallenge       String? // PKCE code challenge
+  codeChallengeMethod String? // PKCE code challenge method: 'S256' or 'plain'
 
   // Grant generated during authorization
   authorizationCode          String?   @unique
   authorizationCodeCreatedAt DateTime?
 
   // Encrypted (and base64-encoded) token values
-  accessTokenEnc             String?
-  accessTokenExpiresAt       DateTime?
-  idTokenEnc                 String?
-  refreshTokenEnc            String?
+  accessTokenEnc       String?
+  accessTokenExpiresAt DateTime?
+  idTokenEnc           String?
+  refreshTokenEnc      String?
 }

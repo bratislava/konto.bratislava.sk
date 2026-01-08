@@ -85,6 +85,33 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     responseData: string
     logData: Record<string, unknown>
   } {
+    // Prevent logging raw/binary payloads (e.g., PDF buffers)
+    if (Buffer.isBuffer(exitData)) {
+      const getFilenameFromContentDisposition = (headerValue: string): string | undefined => {
+        // Supports: filename="a.pdf", filename=a.pdf, filename*=UTF-8''a%20b.pdf
+        const matchStar = /filename\*\s*=\s*([^']*)''([^;]+)/i.exec(headerValue)
+        if (matchStar?.[2]) {
+          try {
+            return decodeURIComponent(matchStar[2].trim())
+          } catch {
+            return matchStar[2].trim()
+          }
+        }
+
+        const match = /filename\s*=\s*("?)([^";]+)\1/i.exec(headerValue)
+        return match?.[2]?.trim()
+      }
+
+      const contentType = response?.getHeader('content-type')?.toString() ?? ''
+      const contentDisposition = response?.getHeader('content-disposition')?.toString() ?? ''
+      const filename = getFilenameFromContentDisposition(contentDisposition)
+      return {
+        responseData: `{data: <Buffer length=${exitData.length} content-type="${contentType}">${filename ? `, filename="${filename}"` : ''}}`,
+        returnExitData: exitData,
+        logData: {},
+      }
+    }
+
     if (!response?.getHeader('content-type')?.toString().includes('application/json')) {
       return {
         responseData: <string>exitData,

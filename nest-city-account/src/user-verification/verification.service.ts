@@ -22,7 +22,7 @@ import {
 import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
+import { MailgunService } from '../mailgun/mailgun.service'
 import { RABBIT_MQ } from './constants'
 import { RabbitMessageDto } from './dtos/rabbit.dto'
 import {
@@ -38,6 +38,8 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { PdfConverterService } from '../bloomreach/pdf-converter/pdf-converter.service'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class VerificationService {
@@ -49,7 +51,7 @@ export class VerificationService {
     private nasesService: NasesService,
     private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private mailgunSubservice: MailgunSubservice,
+    private mailgunService: MailgunService,
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
@@ -136,7 +138,15 @@ export class VerificationService {
           data.msg.type
         )
 
-        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard)
+        const pdfConverterService = new PdfConverterService()
+
+        const bloomreachService = new BloomreachService(
+          cognitoSubservice,
+          throwerErrorGuard,
+          pdfConverterService,
+          new PrismaService(),
+          new ConfigService()
+        )
 
         await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {
@@ -210,7 +220,7 @@ export class VerificationService {
               JSON.stringify(data.msg.user)
             )
           } else {
-            await this.mailgunSubservice.sendEmail('2023-identity-check-successful', {
+            await this.mailgunService.sendEmail('2023-identity-check-successful', {
               to: email,
               variables: {
                 firstName: firstName ?? null,
@@ -277,7 +287,7 @@ export class VerificationService {
               JSON.stringify(data.msg.user)
             )
           } else {
-            await this.mailgunSubservice.sendEmail('2023-identity-check-rejected', {
+            await this.mailgunService.sendEmail('2023-identity-check-rejected', {
               to: email,
               variables: {
                 firstName: firstName ?? null,

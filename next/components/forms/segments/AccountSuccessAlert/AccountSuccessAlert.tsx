@@ -25,7 +25,7 @@ const AccountSuccessAlert = ({
   children,
 }: Props) => {
   return (
-    <div className="flex flex-col space-y-6" data-cy="success-alert">
+    <div className="flex flex-col gap-4 md:gap-6" data-cy="success-alert">
       <div className="mx-auto size-14 rounded-full bg-success-100 p-4">
         <div className="flex size-6 items-center justify-center">
           <CheckIcon className="size-6 text-success-700" />

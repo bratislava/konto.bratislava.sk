@@ -32,7 +32,7 @@ describe('A05 -', { testIsolation: false }, () => {
             .find('[data-cy="alert-container-content"]')
             .should(
               'contain',
-              'Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.',
+              'Vaša totožnosť zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.',
             )
           cy.get('[data-cy=alert-container-button]').click()
         })

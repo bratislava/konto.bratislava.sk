@@ -6,21 +6,11 @@ import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
 import { environment } from 'environment'
 import { Address } from 'frontend/dtos/accountDto'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
+import { formatZip } from 'frontend/utils/formatZip'
 import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment, useState } from 'react'
-
-const formatZip = (zip?: string) => {
-  if (!zip) return null
-
-  // Example: '84104' -> '841 04'
-  if (/^\d{5}$/g.test(zip)) {
-    return `${zip.slice(0, 3)} ${zip.slice(3)}`
-  }
-
-  return zip
-}
 
 const displayStrings = (strings: (string | undefined | null)[], separator: string) =>
   strings.filter(isDefined).join(separator)

@@ -18,6 +18,7 @@ import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
+import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
 type Props = {
@@ -29,6 +30,8 @@ type Props = {
  */
 
 const PaymentData = ({ paymentMethod }: Props) => {
+  const { t } = useTranslation('account')
+
   const {
     taxData,
     redirectToFullPaymentMutate,
@@ -38,11 +41,12 @@ const PaymentData = ({ paymentMethod }: Props) => {
     downloadQrCodeOneTimePayment,
     downloadQrCodeInstallmentPayment,
   } = useTaxFeeSection()
+
   const { userData } = useUser()
+
   const searchParams = useSearchParams()
   const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
-  const { t } = useTranslation('account')
   const qrCodeBase64oneTimePayment = `data:image/png;base64,${taxData.oneTimePayment.qrCode}`
   const qrCodeBase64InstallmentPayment = `data:image/png;base64,${taxData.installmentPayment.activeInstallment?.qrCode}`
   const hasMultipleInstallments = taxData.installmentPayment.isPossible
@@ -100,37 +104,45 @@ const PaymentData = ({ paymentMethod }: Props) => {
       )}
 
       <div className="text-h5">{t('taxes.payment_data.payment_methods_title')}</div>
-      <div className="px- rounded-lg border px-4 lg:px-6">
-        <div className="flex flex-col gap-4 py-4 lg:flex-row lg:py-6">
-          <div className="flex flex-row items-center justify-between gap-2 lg:grow">
-            <div className="flex flex-row items-center gap-2">
-              <PaymentHandIcon className="size-12" />
-              <div className="text-h5">{t('taxes.payment_data.card_payment_title')}</div>
-            </div>
-            <div className="flex flex-row items-center gap-2 lg:grow">
-              <div className="rounded-lg bg-gray-50 px-3 py-1">
-                <CreditCardIcon className="size-6" />
+      <div className="rounded-lg border px-4 lg:px-6">
+        {
+          // Temporarily hide pay-by-card option for KO, until we setup correct payment gateway
+          taxData.type !== TaxType.Ko && (
+            <>
+              <div className="flex flex-col gap-4 py-4 lg:flex-row lg:py-6">
+                <div className="flex flex-row items-center justify-between gap-2 lg:grow">
+                  <div className="flex flex-row items-center gap-2">
+                    <PaymentHandIcon className="size-12" />
+                    <div className="text-h5">{t('taxes.payment_data.card_payment_title')}</div>
+                  </div>
+                  <div className="flex flex-row items-center gap-2 lg:grow">
+                    <div className="rounded-lg bg-gray-50 px-3 py-1">
+                      <CreditCardIcon className="size-6" />
+                    </div>
+                    <ApplePayIcon className="size-12" />
+                    <GooglePayIcon className="size-12" />
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
+                  <span className="w-full text-h5 lg:w-auto">
+                    {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
+                  </span>
+                  <ButtonNew
+                    variant="black-solid"
+                    onPress={handleRedirectToPayment}
+                    isLoading={isLoading}
+                    isLoadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
+                    fullWidthMobile
+                  >
+                    {t('taxes.payment.to_pay')}
+                  </ButtonNew>
+                </div>
               </div>
-              <ApplePayIcon className="size-12" />
-              <GooglePayIcon className="size-12" />
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
-            <span className="w-full text-h5 lg:w-auto">
-              {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
-            </span>
-            <ButtonNew
-              variant="black-solid"
-              onPress={handleRedirectToPayment}
-              isLoading={isLoading}
-              isLoadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
-              fullWidthMobile
-            >
-              {t('taxes.payment.to_pay')}
-            </ButtonNew>
-          </div>
-        </div>
-        <HorizontalDivider />
+              <HorizontalDivider />
+            </>
+          )
+        }
+
         <div className="flex flex-col gap-6 py-6">
           <div className="flex w-full items-center gap-4">
             <QrCodeIcon className="size-8" />

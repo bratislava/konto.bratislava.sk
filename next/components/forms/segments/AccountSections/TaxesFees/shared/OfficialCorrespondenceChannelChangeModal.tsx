@@ -1,5 +1,5 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import TaxesChannelChangeEffectiveNextYearAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesDeliveryMethod/TaxesChannelChangeEffectiveNextYearAlert'
+import OfficialCorrespondenceChannelAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
@@ -113,7 +113,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
 
   return (
     <form
-      className="flex w-full flex-col space-y-4"
+      className="flex w-full flex-col gap-6"
       onSubmit={handleSubmit((data) => {
         return onSubmit({ data })
       })}
@@ -149,19 +149,21 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
         )}
       />
       {isSubscribed && (
-        <Controller
-          name="scrolledToBottom"
-          control={control}
-          render={({ field }) => (
-            <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <span className="text-p2-semibold">
+            {t('taxes.delivery_method_change_modal.delivery_method_true.agreement.title')}
+          </span>
+          <Controller
+            name="scrolledToBottom"
+            control={control}
+            render={({ field }) => (
               <Agreement
                 onScrollToBottom={() => field.onChange(true)}
                 agreementContent={agreementContent}
               />
-              <p className="text-p2">{t('taxes.delivery_method_change_modal.agreement_text')}</p>
-            </div>
-          )}
-        />
+            )}
+          />
+        </div>
       )}
       <ButtonNew
         className="min-w-full"
@@ -176,7 +178,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
   )
 }
 
-const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
+const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
   const { isSubscribed, changeSubscription, subType } = useUserSubscription({
     category: GDPRCategoryEnum.Taxes,
     type: GDPRTypeEnum.FormalCommunication,
@@ -212,29 +214,33 @@ const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps
       modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
       mobileFullScreen
     >
-      <Heading slot="title" className="mb-2 text-h3">
-        {t('taxes.delivery_method_change_modal.title')}
-      </Heading>
-      <AccountMarkdown
-        content={t('taxes.delivery_method_change_modal.description')}
-        variant="sm"
-        className="mb-4"
-      />
-      {isChannelChangeEffectiveNextYear && (
-        <div className="mb-4">
-          <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <Heading slot="title" className="text-h3">
+            {t('taxes.delivery_method_change_modal.title')}
+          </Heading>
+          <AccountMarkdown
+            content={t('taxes.delivery_method_change_modal.description')}
+            variant="sm"
+          />
         </div>
-      )}
-      <Form
-        defaultValues={{
-          isSubscribed: subType ? isSubscribed : undefined,
-          scrolledToBottom: false,
-        }}
-        onSubmit={handleSubmit}
-        agreementContent={accountCommunicationConsentText}
-      />
+        {isChannelChangeEffectiveNextYear && (
+          <OfficialCorrespondenceChannelAlert
+            variant="change-effective-next-year"
+            strapiTax={strapiTax}
+          />
+        )}
+        <Form
+          defaultValues={{
+            isSubscribed: subType ? isSubscribed : undefined,
+            scrolledToBottom: false,
+          }}
+          onSubmit={handleSubmit}
+          agreementContent={accountCommunicationConsentText}
+        />
+      </div>
     </Modal>
   )
 }
 
-export default TaxesFeesDeliveryMethodChangeModal
+export default OfficialCorrespondenceChannelChangeModal

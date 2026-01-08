@@ -1,18 +1,15 @@
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { ROUTES } from 'frontend/api/constants'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-type TaxesChannelChangeEffectiveNextYearAlertProps = {
+type Props = {
   strapiTax: TaxFragment
+  variant: 'change-effective-next-year'
 }
 
-const TaxesChannelChangeEffectiveNextYearAlert = ({
-  strapiTax: { channelChangeEffectiveNextYearTitle, channelChangeEffectiveNextYearText },
-}: TaxesChannelChangeEffectiveNextYearAlertProps) => {
-  const { t } = useTranslation('account')
+const OfficialCorrespondenceChannelAlert = ({ strapiTax }: Props) => {
+  const { channelChangeEffectiveNextYearTitle, channelChangeEffectiveNextYearText } = strapiTax
 
   if (!channelChangeEffectiveNextYearTitle && !channelChangeEffectiveNextYearText) {
     return null
@@ -32,14 +29,8 @@ const TaxesChannelChangeEffectiveNextYearAlert = ({
           ) : null}
         </>
       }
-      buttons={[
-        {
-          title: t('account_section_payment.effective_next_year_link_text'),
-          link: ROUTES.HELP,
-        },
-      ]}
     />
   )
 }
 
-export default TaxesChannelChangeEffectiveNextYearAlert
+export default OfficialCorrespondenceChannelAlert

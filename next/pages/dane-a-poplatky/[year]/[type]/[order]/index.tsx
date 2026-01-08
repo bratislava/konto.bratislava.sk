@@ -8,33 +8,44 @@ import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import TaxFeeSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeSection'
+import { StrapiTaxProvider } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
+import { TaxFeeRouteProps } from 'frontend/api/constants'
+import { prefetchUserQuery } from 'frontend/hooks/useUser'
+import { amplifyGetServerSideProps } from 'frontend/utils/amplifyServer'
 import { convertYearToNumber } from 'frontend/utils/general'
-import { ResponseRealEstateTaxSummaryDetailDto, TaxType } from 'openapi-clients/tax'
+import { slovakServerSideTranslations } from 'frontend/utils/slovakServerSideTranslations'
+import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 
-import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
-import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
-
-type AccountTaxesFeesPageProps = {
-  taxData: ResponseRealEstateTaxSummaryDetailDto
+type PageProps = {
+  taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }
 
-type Params = {
-  year: string
-}
+type Params = Record<keyof TaxFeeRouteProps, string>
 
-export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
+export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
   async ({ amplifyContextSpec, context, fetchAuthSession }) => {
-    const year = context.params?.year
+    // TODO Unify with same param logic from [year]/[type]/[order]/platba.tsx
+    if (!context.params) {
+      return { notFound: true }
+    }
+
+    const { year, type, order } = context.params
+
     const yearNumber = convertYearToNumber(year)
+
     if (!yearNumber) {
+      return { notFound: true }
+    }
+
+    const orderNumber = +order
+
+    if (!orderNumber) {
       return { notFound: true }
     }
 
@@ -42,7 +53,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
-        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, 1, TaxType.Dzn, {
+        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, orderNumber, type, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),
@@ -52,11 +63,6 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
       ])
 
       if (!strapiTax) {
-        return { notFound: true }
-      }
-
-      // TODO This is a temporary "fix" while solution for multiple tax types is not implemented.
-      if (taxData.type !== TaxType.Dzn) {
         return { notFound: true }
       }
 
@@ -95,7 +101,7 @@ const AccountTaxesFeesPage = ({
   strapiTax,
   dehydratedState,
   strapiTaxAdministrator,
-}: AccountTaxesFeesPageProps) => {
+}: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>

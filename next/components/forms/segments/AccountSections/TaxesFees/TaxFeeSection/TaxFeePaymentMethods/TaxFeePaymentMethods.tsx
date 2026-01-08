@@ -10,88 +10,97 @@ import {
 } from 'openapi-clients/tax'
 import React from 'react'
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20611-9839&t=u3JLgxW8MYc6kzxt-4
+ */
+
 const TaxFeePaymentMethods = () => {
-  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
 
+  const { taxData } = useTaxFeeSection()
+  const { paidStatus, oneTimePayment, installmentPayment, overallBalance } = taxData
+
+  const paymentPagePath = ROUTES.TAXES_AND_FEES_PAYMENT({
+    year: taxData.year,
+    type: taxData.type,
+    order: taxData.order,
+  })
+
   return (
-    <div className="flex w-full flex-col px-4 lg:px-0">
-      <div className="flex w-full border-t-2 border-gray-200 lg:hidden lg:border-t-0" />
-      <div className="flex w-full flex-col gap-4 pt-4 lg:pt-0">
-        <div className="text-h3">{t('tax_detail_section.tax_payment_methods')}</div>
-        <div className="flex w-full flex-col rounded-lg border-2 border-gray-200">
-          <TaxFeePaymentMethodsItem
-            title={
-              <Trans
-                ns="account"
-                i18nKey={
-                  taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid
-                    ? 'tax_detail_section.tax_payment_rest'
-                    : 'tax_detail_section.tax_payment_full'
-                }
-                components={{ strong: <strong className="font-semibold" /> }}
-              />
-            }
-            subtitle={
-              // only first installment is calculated, others are hardcoded so they will always be available for DzN,
-              // how date calculation works for PKO is not yet determined same in PaymentSchedule
-              taxData.oneTimePayment.dueDate
-                ? t('tax_detail_section.tax_payment_rest_subtitle', {
-                    date: formatDate(taxData.oneTimePayment.dueDate || ''),
-                  })
-                : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
-            }
-            amount={taxData.overallBalance}
-            buttonText={
-              taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid
-                ? t('taxes.payment.pay_rest')
-                : t('taxes.payment.pay_all')
-            }
-            buttonVariant="black-solid"
-            buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=zvysna-suma`}
-          />
-          {taxData.installmentPayment?.isPossible &&
-            taxData.installmentPayment.activeInstallment?.remainingAmount !== undefined && (
-              <TaxFeePaymentMethodsItem
-                title={
-                  <Trans
-                    ns="account"
-                    i18nKey="tax_detail_section.tax_payment_installment"
-                    components={{ strong: <strong className="font-semibold" /> }}
-                  />
-                }
-                subtitle={t('tax_detail_section.tax_payment_installment_subtitle', {
-                  date: formatDate(taxData.installmentPayment.dueDateLastPayment || ''),
-                })}
-                amount={taxData.installmentPayment.activeInstallment?.remainingAmount}
-                buttonText={t('taxes.payment.pay_installment')}
-                buttonVariant="black-outline"
-                buttonHref={`${ROUTES.TAXES_AND_FEES_PAYMENT(taxData.year)}?sposob-uhrady=splatky`}
-              />
-            )}
-          {!taxData.installmentPayment?.isPossible &&
-            taxData.installmentPayment?.reasonNotPossible ===
-              ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold && (
-              <div className="p-4 lg:p-6 lg:pt-0">
-                <Alert
-                  type="warning"
-                  fullWidth
-                  message={t('tax_detail_section.tax_payment_under_threshold_alert')}
+    <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">
+      <div className="text-h5">{t('tax_detail_section.tax_payment_methods')}</div>
+      <div className="flex w-full flex-col rounded-lg border-2 border-gray-200">
+        <TaxFeePaymentMethodsItem
+          title={
+            <Trans
+              ns="account"
+              i18nKey={
+                paidStatus === TaxPaidStatusEnum.PartiallyPaid
+                  ? 'tax_detail_section.tax_payment_rest'
+                  : 'tax_detail_section.tax_payment_full'
+              }
+              components={{ strong: <strong className="font-semibold" /> }}
+            />
+          }
+          subtitle={
+            // only first installment is calculated, others are hardcoded so they will always be available for DzN,
+            // how date calculation works for PKO is not yet determined same in PaymentSchedule
+            oneTimePayment.dueDate
+              ? t('tax_detail_section.tax_payment_rest_subtitle', {
+                  date: formatDate(oneTimePayment.dueDate || ''),
+                })
+              : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
+          }
+          amount={overallBalance}
+          buttonText={
+            paidStatus === TaxPaidStatusEnum.PartiallyPaid
+              ? t('taxes.payment.pay_rest')
+              : t('taxes.payment.pay_all')
+          }
+          buttonVariant="black-solid"
+          buttonHref={`${paymentPagePath}?sposob-uhrady=zvysna-suma`}
+        />
+        {installmentPayment?.isPossible &&
+          installmentPayment.activeInstallment?.remainingAmount !== undefined && (
+            <TaxFeePaymentMethodsItem
+              title={
+                <Trans
+                  ns="account"
+                  i18nKey="tax_detail_section.tax_payment_installment"
+                  components={{ strong: <strong className="font-semibold" /> }}
                 />
-              </div>
-            )}
-          {!taxData.installmentPayment?.isPossible &&
-            taxData.installmentPayment?.reasonNotPossible ===
-              ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.AfterDueDate && (
-              <div className="p-4 lg:p-6 lg:pt-0">
-                <Alert
-                  type="warning"
-                  fullWidth
-                  message={t('account_section_payment.tax_payment_year_over')}
-                />
-              </div>
-            )}
-        </div>
+              }
+              subtitle={t('tax_detail_section.tax_payment_installment_subtitle', {
+                date: formatDate(installmentPayment.dueDateLastPayment || ''),
+              })}
+              amount={installmentPayment.activeInstallment?.remainingAmount}
+              buttonVariant="black-outline"
+              buttonText={t('taxes.payment.pay_installment')}
+              buttonHref={`${paymentPagePath}?sposob-uhrady=splatky`}
+            />
+          )}
+        {!installmentPayment?.isPossible &&
+          installmentPayment?.reasonNotPossible ===
+            ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold && (
+            <div className="p-4 lg:p-6 lg:pt-0">
+              <Alert
+                type="warning"
+                fullWidth
+                message={t('tax_detail_section.tax_payment_under_threshold_alert')}
+              />
+            </div>
+          )}
+        {!installmentPayment?.isPossible &&
+          installmentPayment?.reasonNotPossible ===
+            ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.AfterDueDate && (
+            <div className="p-4 lg:p-6 lg:pt-0">
+              <Alert
+                type="warning"
+                fullWidth
+                message={t('account_section_payment.tax_payment_year_over')}
+              />
+            </div>
+          )}
       </div>
     </div>
   )

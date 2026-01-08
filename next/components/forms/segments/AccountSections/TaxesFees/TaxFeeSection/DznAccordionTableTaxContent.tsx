@@ -1,3 +1,7 @@
+import AccordionV2 from 'components/forms/simple-components/AccordionV2'
+import cn from 'frontend/cn'
+import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
+import { useHorizontalScrollFade } from 'frontend/utils/useHorizontalScrollFade'
 import { useTranslation } from 'next-i18next'
 import {
   ResponseApartmentTaxDetailDto,
@@ -5,11 +9,6 @@ import {
   ResponseGroundTaxDetailDto,
 } from 'openapi-clients/tax'
 import React, { useRef } from 'react'
-
-import cn from '../../../frontend/cn'
-import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
-import { useHorizontalScrollFade } from '../../../frontend/utils/useHorizontalScrollFade'
-import AccordionV2 from './AccordionV2'
 
 const tableHeaderData = {
   subject: <span>Predmet dane</span>,
@@ -108,7 +107,7 @@ const TableData = ({
 
   return (
     <tbody>
-      {data.map((taxDetail) => {
+      {data?.map((taxDetail) => {
         const title =
           dataType in translationMap && taxDetail.type in translationMap[dataType]
             ? translationMap[dataType][taxDetail.type]
@@ -180,8 +179,8 @@ const AccordionTableTaxContent = ({
   return (
     <AccordionV2
       title={
-        <div className="flex min-w-0 grow justify-between text-h4 font-semibold">
-          <h3>{title}</h3>
+        <div className="flex min-w-0 grow justify-between text-h5 font-semibold">
+          <h5>{title}</h5>
           <span>{secondTitle}</span>
         </div>
       }

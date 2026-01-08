@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import HorizontalDivider from 'components/forms/HorizontalDivider'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
@@ -7,11 +8,13 @@ import { Address } from 'frontend/dtos/accountDto'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { TaxType } from 'openapi-clients/tax'
+import { Fragment, useState } from 'react'
 
 const formatZip = (zip?: string) => {
   if (!zip) return null
 
+  // Example: '84104' -> '841 04'
   if (/^\d{5}$/g.test(zip)) {
     return `${zip.slice(0, 3)} ${zip.slice(3)}`
   }
@@ -22,10 +25,16 @@ const formatZip = (zip?: string) => {
 const displayStrings = (strings: (string | undefined | null)[], separator: string) =>
   strings.filter(isDefined).join(separator)
 
-const TaxFeeContactInformation = () => {
-  const { taxData } = useTaxFeeSection()
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20611-9191&m=dev
+ */
+
+const TaxFeeSubjectInformation = () => {
   const { t } = useTranslation('account')
+
+  const { taxData } = useTaxFeeSection()
   const { userAttributes } = useSsrAuth()
+
   const [parsedAddress, setParsedAddress] = useState(() => {
     try {
       return JSON.parse(userAttributes?.address ?? '{}') as Address
@@ -33,11 +42,18 @@ const TaxFeeContactInformation = () => {
       return {} as Address
     }
   })
-  const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
+
+  const [showCorrespondenceAddressModal, setShowCorrespondenceAddressModal] = useState(false)
+
+  const title = {
+    [TaxType.Dzn]: t('taxes.contact_information.personal_info.tax'),
+    [TaxType.Ko]: t('taxes.contact_information.personal_info.fee'),
+  }[taxData.type]
 
   const displayName =
     taxData.taxPayer?.name ??
     displayStrings([userAttributes?.given_name, userAttributes?.family_name], ' ')
+
   const displayPermanentAddress = displayStrings(
     [
       taxData.taxPayer?.permanentResidenceStreet,
@@ -46,47 +62,60 @@ const TaxFeeContactInformation = () => {
     ],
     ', ',
   )
+
   const displayCorrespondenceAddress = displayStrings(
     [parsedAddress?.street_address, formatZip(parsedAddress?.postal_code), parsedAddress?.locality],
     ', ',
   )
 
+  const taxFeeSubjectIdLabel = {
+    [TaxType.Dzn]: t('taxes.contact_information.taxpayer_id.dzn'),
+    [TaxType.Ko]: t('taxes.contact_information.taxpayer_id.ko'),
+  }[taxData.type]
+
+  const rows = [
+    {
+      label: t('taxes.contact_information.name_and_surname'),
+      value: displayName,
+    },
+    {
+      label: t('taxes.contact_information.permanent_address'),
+      value: displayPermanentAddress,
+    },
+    {
+      label: taxFeeSubjectIdLabel,
+      value: taxData.taxPayer?.externalId,
+    },
+  ]
+
   return (
     <>
+      {/* Temporarily hidden as this is not implemented on BE. */}
       {environment.featureToggles.taxReportCorrespondenceAddress && (
         <CorrespondenceAddressModal
           parsedAddress={parsedAddress}
-          isOpen={correspondenceAddressModalShow}
-          onOpenChange={setCorrespondenceAddressModalShow}
+          isOpen={showCorrespondenceAddressModal}
+          onOpenChange={setShowCorrespondenceAddressModal}
           onSuccess={(newAddress) => {
             setParsedAddress(newAddress)
-            setCorrespondenceAddressModalShow(false)
+            setShowCorrespondenceAddressModal(false)
           }}
         />
       )}
-      <div className="flex w-full flex-col items-start gap-2 px-4 lg:px-0">
-        <div className="text-h3">{t('taxes.contact_information.personal_info')}</div>
-        <div className="flex w-full flex-col rounded-lg border-2 border-gray-200 p-4">
-          <SummaryRow
-            size="small"
-            isEditable={false}
-            data={{
-              label: t('taxes.contact_information.name_and_surname'),
-              value: displayName,
-              schemaPath: '',
-              isError: false,
-            }}
-          />
-          <SummaryRow
-            size="small"
-            isEditable={false}
-            data={{
-              label: t('taxes.contact_information.permanent_address'),
-              value: displayPermanentAddress,
-              schemaPath: '',
-              isError: false,
-            }}
-          />
+      <div className="flex w-full flex-col items-start gap-4 px-4 lg:gap-6 lg:px-0">
+        <div className="text-h5">{title}</div>
+        <ul className="flex w-full flex-col rounded-lg border-2 border-gray-200 px-5 py-2 lg:px-6">
+          {rows.map((row, index) => {
+            return (
+              <Fragment key={index}>
+                {index > 0 && <HorizontalDivider asListItem />}
+                <li className="flex flex-col gap-2 py-3 lg:flex-row lg:gap-4 lg:py-4">
+                  <span className="text-p2-semibold">{row.label}</span>
+                  <span className="text-p2">{row.value}</span>
+                </li>
+              </Fragment>
+            )
+          })}
           {/* Temporarily hidden as this is not implemented on BE. */}
           {environment.featureToggles.taxReportCorrespondenceAddress && (
             <SummaryRow
@@ -97,24 +126,13 @@ const TaxFeeContactInformation = () => {
                 schemaPath: '',
                 isError: false,
               }}
-              onGoToStep={() => setCorrespondenceAddressModalShow(true)}
+              onGoToStep={() => setShowCorrespondenceAddressModal(true)}
             />
           )}
-          <SummaryRow
-            size="small"
-            isEditable={false}
-            hasBorder={false}
-            data={{
-              label: t('taxes.contact_information.taxpayer_id'),
-              value: taxData.taxPayer?.externalId,
-              schemaPath: '',
-              isError: false,
-            }}
-          />
-        </div>
+        </ul>
       </div>
     </>
   )
 }
 
-export default TaxFeeContactInformation
+export default TaxFeeSubjectInformation

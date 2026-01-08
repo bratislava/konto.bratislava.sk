@@ -39,7 +39,7 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
       return { notFound: true }
     }
 
-    const orderNumber = +order
+    const orderNumber = Number(order)
 
     if (!orderNumber) {
       return { notFound: true }

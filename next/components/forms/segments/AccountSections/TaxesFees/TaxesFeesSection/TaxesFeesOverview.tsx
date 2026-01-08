@@ -1,7 +1,7 @@
 import HorizontalDivider from 'components/forms/HorizontalDivider'
 import DznTaxFormAlert from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/DznTaxFormAlert'
-import TaxFeeRow from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesCard/TaxFeeRow'
 import TaxesFeesOverviewBanner from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesOverviewBanner'
+import TaxesFeesOverviewRow from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesOverviewRow'
 import { useTranslation } from 'next-i18next'
 import { TaxAvailabilityStatus, TaxType } from 'openapi-clients/tax'
 import { TaxesData } from 'pages/dane-a-poplatky'
@@ -37,7 +37,7 @@ const TaxesFeesOverview = ({ taxesData, taxType }: Props) => {
             <Fragment key={index}>
               {index > 0 && <HorizontalDivider asListItem />}
               <li>
-                <TaxFeeRow taxData={item} />
+                <TaxesFeesOverviewRow taxData={item} />
               </li>
             </Fragment>
           ))}

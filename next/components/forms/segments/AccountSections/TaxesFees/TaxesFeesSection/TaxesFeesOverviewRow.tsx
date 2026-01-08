@@ -1,22 +1,55 @@
 import { ChevronRightIcon } from '@assets/ui-icons'
-import TaxPaidStatus from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesCard/TaxPaidStatus'
 import MLinkNew from 'components/forms/simple-components/MLinkNew'
 import { ROUTES } from 'frontend/api/constants'
+import cn from 'frontend/cn'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { formatDate, isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
-type Props = {
+type TaxesFeesOverviewRowProps = {
   taxData: ResponseGetTaxesListBodyDto
+}
+
+const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
+  const { t } = useTranslation('account')
+
+  const title = {
+    [TaxStatusEnum.AwaitingProcessing]: t(
+      'account_section_payment.tax_card_status_waiting_for_processing',
+    ),
+    [TaxStatusEnum.NotPaid]: t('account_section_payment.tax_card_status_not_paid'),
+    [TaxStatusEnum.PartiallyPaid]: t('account_section_payment.tax_card_status_partially_paid'),
+    [TaxStatusEnum.Paid]: t('account_section_payment.tax_card_status_paid'),
+    [TaxStatusEnum.OverPaid]: t('account_section_payment.tax_card_status_overpaid'),
+  }[status]
+
+  return (
+    <div className="flex items-center gap-[6px]">
+      <span
+        className={cn('w-max text-p3-semibold lg:text-16-semibold', {
+          'text-negative-700': status === TaxStatusEnum.NotPaid,
+          'text-warning-700':
+            status === TaxStatusEnum.OverPaid || status === TaxStatusEnum.AwaitingProcessing,
+          'text-transport-700':
+            // partially paid should be blue color but we don't such color,
+            // colors not defined in design system, using what we have
+            status === TaxStatusEnum.PartiallyPaid,
+          'text-success-700': status === TaxStatusEnum.Paid,
+        })}
+      >
+        {title}
+      </span>
+    </div>
+  )
 }
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19579-923&m=dev
  */
 
-const TaxFeeRow = ({ taxData }: Props) => {
+const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
   const { t } = useTranslation('account')
   const { year, order, status, createdAt, amountToBePaid, type } = taxData
 
@@ -64,7 +97,7 @@ const TaxFeeRow = ({ taxData }: Props) => {
             <span className="mb-1 text-p3-semibold">
               {t('account_section_payment.tax_card_status')}
             </span>
-            <TaxPaidStatus status={status} />
+            <PaymentStatus status={status} />
           </div>
         </div>
         <div className="h-full w-16">
@@ -96,7 +129,7 @@ const TaxFeeRow = ({ taxData }: Props) => {
               {isDefined(amountToBePaid) && (
                 <span className="mx-3 size-1 rounded-full bg-gray-700" />
               )}
-              <TaxPaidStatus status={status} />
+              <PaymentStatus status={status} />
             </span>
           </div>
         </div>
@@ -110,4 +143,4 @@ const TaxFeeRow = ({ taxData }: Props) => {
   )
 }
 
-export default TaxFeeRow
+export default TaxesFeesOverviewRow

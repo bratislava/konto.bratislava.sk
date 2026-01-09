@@ -29,7 +29,7 @@ const exampleForm: ExampleForm = {
     sluzba: {
       miestoDodania: 'Stredná 10',
       druhOdpadu: 'Iné',
-      objemKontajnera: '11m3_8t',
+      objemKontajnera: '11m3_8t_hakovy_nosic',
       preferovanyDatumPristavenia: '2024-10-09',
       casPristavenia: '12:55',
       datumOdvozu: '2024-10-18',

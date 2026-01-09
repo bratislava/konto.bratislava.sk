@@ -5,7 +5,7 @@ import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-const TaxFormAlert = () => {
+const DznTaxFormAlert = () => {
   const { t } = useTranslation('account')
 
   return (
@@ -36,4 +36,4 @@ const TaxFormAlert = () => {
   )
 }
 
-export default TaxFormAlert
+export default DznTaxFormAlert

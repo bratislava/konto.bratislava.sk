@@ -946,6 +946,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1094,6 +1095,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1142,6 +1144,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1194,6 +1197,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2036,6 +2040,8 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -2088,6 +2094,8 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2177,6 +2185,8 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       if (rESULTTEXT !== undefined) {
         localVarQueryParameter['RESULTTEXT'] = rESULTTEXT
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2543,6 +2553,8 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
         localVarQueryParameter['type'] = type
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -2588,6 +2600,8 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
       if (type !== undefined) {
         localVarQueryParameter['type'] = type
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}

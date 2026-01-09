@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
-import { UpvsIdentity } from 'src/upvs-identity-by-uri/dtos/upvsSchema'
 import {
   UpvsIdentityByUriService,
   UpvsIdentityByUriServiceCreateManyParam,
@@ -39,6 +38,7 @@ import {
   removeLegalPersonDataFromDatabase,
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
+import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
@@ -619,7 +619,8 @@ export class AdminService {
       await this.physicalEntityService.update({
         id: success.physicalEntityId,
         uri: success.uri,
-        activeEdesk: (success.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
+        activeEdesk:
+          (success.data as ApiIamIdentitiesIdGet200Response)?.upvs?.edesk_status === 'deliverable',
       })
     }
 

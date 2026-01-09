@@ -52,6 +52,15 @@ const NumberWidgetRJSF = ({
     return undefined
   }
 
+  const getFormatOptions = () => {
+    // Ensure that no fraction digits can be entered to integer field
+    if (schema.type === 'integer' && !options.formatOptions?.maximumFractionDigits) {
+      return { ...options.formatOptions, maximumFractionDigits: 0 }
+    }
+
+    return options.formatOptions
+  }
+
   return (
     <WidgetWrapper id={id} options={options}>
       <NumberField
@@ -76,7 +85,7 @@ const NumberWidgetRJSF = ({
         displayOptionalLabel
         minValue={schema.minimum}
         maxValue={schema.maximum}
-        formatOptions={options.formatOptions}
+        formatOptions={getFormatOptions()}
         step={getStep()}
       />
     </WidgetWrapper>

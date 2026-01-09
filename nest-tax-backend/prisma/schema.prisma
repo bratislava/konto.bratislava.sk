@@ -31,6 +31,8 @@ model TaxPayer {
   permanentResidenceCity      String?
   readyToImportDZN            Boolean  @default(false)
   readyToImportKO             Boolean  @default(false)
+  lastUpdatedAtDZN            DateTime @default(now())
+  lastUpdatedAtKO             DateTime @default(now())
 
   taxes             Tax[]
   taxAdministrators TaxPayerTaxAdministrator[]
@@ -39,6 +41,8 @@ model TaxPayer {
   @@unique([uuid])
   @@index([readyToImportDZN])
   @@index([readyToImportKO])
+  @@index([lastUpdatedAtDZN])
+  @@index([lastUpdatedAtKO])
 }
 
 model Tax {
@@ -61,9 +65,9 @@ model Tax {
   /// [TaxDetailType]
   taxDetails                      Json
   lastCheckedPayments             DateTime             @default(now())
-  lastCheckedUpdates              DateTime             @default(now())
   deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
+  isCancelled                     Boolean              @default(false)
 
   @@unique([uuid])
   @@unique([taxPayerId, year, type, order])

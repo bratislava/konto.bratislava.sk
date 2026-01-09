@@ -36,7 +36,7 @@ const TaxFeePaymentMethods = () => {
             <Trans
               ns="account"
               i18nKey={
-                paidStatus === TaxPaidStatusEnum.PartiallyPaid
+                paidStatus === TaxStatusEnum.PartiallyPaid
                   ? 'tax_detail_section.tax_payment_rest'
                   : 'tax_detail_section.tax_payment_full'
               }
@@ -54,7 +54,7 @@ const TaxFeePaymentMethods = () => {
           }
           amount={overallBalance}
           buttonText={
-            paidStatus === TaxPaidStatusEnum.PartiallyPaid
+            paidStatus === TaxStatusEnum.PartiallyPaid
               ? t('taxes.payment.pay_rest')
               : t('taxes.payment.pay_all')
           }

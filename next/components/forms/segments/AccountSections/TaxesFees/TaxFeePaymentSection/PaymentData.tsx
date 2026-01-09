@@ -1,5 +1,6 @@
 import {
   ApplePayIcon,
+  ArrowRightIcon,
   CreditCardIcon,
   DownloadIcon,
   GooglePayIcon,
@@ -124,9 +125,13 @@ const PaymentData = ({ paymentMethod }: Props) => {
               />
             }
           />
-          <div className="text-h5">{t('taxes.payment_data.installments.title')}</div>
 
-          {hasMultipleInstallments && <PaymentSchedule />}
+          {hasMultipleInstallments && (
+            <div className="flex flex-col gap-3">
+              <span className="text-h5">{t('taxes.payment_data.installments.title')}</span>
+              <PaymentSchedule />
+            </div>
+          )}
         </>
       )}
 
@@ -159,6 +164,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                       variant="black-solid"
                       onPress={handleRedirectToPayment}
                       isLoading={isLoading}
+                      endIcon={<ArrowRightIcon />}
                       isLoadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
                       className="max-lg:w-full"
                     >

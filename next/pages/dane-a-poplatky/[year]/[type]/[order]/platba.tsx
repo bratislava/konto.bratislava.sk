@@ -2,10 +2,13 @@ import {
   getTaxAdministratorForUser,
   StrapiTaxAdministrator,
 } from '@backend/utils/strapi-tax-administrator'
+import { strapiClient } from '@clients/graphql-strapi'
+import { TaxFragment } from '@clients/graphql-strapi/api'
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import TaxFeePaymentSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeePaymentSection/TaxFeePaymentSection'
+import { StrapiTaxProvider } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
@@ -19,6 +22,7 @@ import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/
 type PageProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
+  strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }
 
@@ -48,18 +52,24 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }, strapiTaxAdministrator] = await Promise.all([
+      const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
         taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, orderNumber, type, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),
+        strapiClient.Tax().then((response) => response.tax?.data?.attributes),
         getTaxAdministratorForUser(amplifyContextSpec),
         prefetchUserQuery(queryClient, fetchAuthSession),
       ])
 
+      if (!strapiTax) {
+        return { notFound: true }
+      }
+
       return {
         props: {
           taxData,
+          strapiTax,
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
@@ -86,13 +96,20 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({ taxData, dehydratedState, strapiTaxAdministrator }: PageProps) => {
+const AccountTaxesFeesPage = ({
+  taxData,
+  dehydratedState,
+  strapiTax,
+  strapiTaxAdministrator,
+}: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
-          <TaxFeePaymentSection />
-        </TaxFeeSectionProvider>
+        <StrapiTaxProvider strapiTax={strapiTax}>
+          <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
+            <TaxFeePaymentSection />
+          </TaxFeeSectionProvider>
+        </StrapiTaxProvider>
       </AccountPageLayout>
     </HydrationBoundary>
   )

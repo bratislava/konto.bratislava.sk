@@ -1,5 +1,5 @@
 import { CrossIcon, EditIcon } from '@assets/ui-icons'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
 
 interface UserProfileDetailsButtonsProps {
@@ -9,58 +9,67 @@ interface UserProfileDetailsButtonsProps {
   onCancelEditing: () => void
 }
 
-const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
-  const { formId, isEditing, onChangeIsEditing, onCancelEditing } = props
+const UserProfileDetailsButtons = ({
+  formId,
+  isEditing,
+  onChangeIsEditing,
+  onCancelEditing,
+}: UserProfileDetailsButtonsProps) => {
   const { t } = useTranslation('account')
 
   return (
-    <div className="w-fit">
-      {
-        // first button is to fix bug with autofocus of button 'cancel edit'
-        isEditing ? (
-          <div className="flex flex-row items-center gap-5">
-            <Button className="hidden size-0" />
-            <Button
-              className="hidden h-full"
-              variant="plain-black"
-              size="sm"
-              text={t('profile_detail.stop_edit_button')}
-              onPress={onCancelEditing}
-            />
-            <Button
-              className="hidden md:block"
-              variant="black"
-              size="sm"
-              text={t('profile_detail.save_edit_button')}
-              type="submit"
-              form={formId}
-              data-cy="save-personal-information-button"
-            />
-            <CrossIcon
-              className="block h-6 w-6 cursor-pointer md:hidden"
-              onClick={onCancelEditing}
-            />
-          </div>
-        ) : (
-          <div className="w-fit">
-            <Button
-              variant="black"
-              startIcon={<EditIcon fill="white" className="size-6" />}
-              size="sm"
-              text={t('profile_detail.start_edit_button')}
-              className="hidden md:block"
-              onPress={() => onChangeIsEditing(true)}
-              data-cy="edit-personal-information-button"
-            />
+    // first button is to fix bug with autofocus of button 'cancel edit'
 
-            <EditIcon
-              className="block size-6 cursor-pointer md:hidden"
-              onClick={() => onChangeIsEditing(true)}
-              data-cy="edit-personal-information-button-mobile"
-            />
-          </div>
-        )
-      }
+    <div className="flex flex-row items-center gap-5">
+      {isEditing ? (
+        <>
+          {/* Cancel button */}
+          <Button className="max-md:hidden" variant="black-outline" onPress={onCancelEditing}>
+            {t('my_profile.profile_detail.discard_changes_button')}
+          </Button>
+          <Button
+            variant="icon-wrapped"
+            className="md:hidden"
+            icon={<CrossIcon />}
+            aria-label={t('my_profile.profile_detail.discard_changes_button')}
+            onPress={onCancelEditing}
+            size="large"
+          />
+
+          {/* Save button (desktop) */}
+          <Button
+            variant="black-solid"
+            className="max-md:hidden"
+            type="submit"
+            form={formId}
+            data-cy="save-personal-information-button"
+          >
+            {t('my_profile.profile_detail.save_changes_button')}
+          </Button>
+        </>
+      ) : (
+        <>
+          {/* Edit button */}
+          <Button
+            variant="black-solid"
+            className="max-md:hidden"
+            startIcon={<EditIcon />}
+            onPress={() => onChangeIsEditing(true)}
+            data-cy="edit-personal-information-button"
+          >
+            {t('my_profile.profile_detail.edit_button')}
+          </Button>
+          <Button
+            variant="icon-wrapped"
+            className="md:hidden"
+            icon={<EditIcon />}
+            aria-label={t('my_profile.profile_detail.edit_button')}
+            onPress={() => onChangeIsEditing(true)}
+            data-cy="edit-personal-information-button-mobile"
+            size="large"
+          />
+        </>
+      )}
     </div>
   )
 }

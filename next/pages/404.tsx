@@ -1,8 +1,6 @@
-import { ArrowRightIcon } from '@assets/ui-icons'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -11,7 +9,7 @@ import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSide
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
-      ...(await slovakServerSideTranslations(['common'])),
+      ...(await slovakServerSideTranslations()),
     },
   }
 }
@@ -31,9 +29,9 @@ const NotFoundPage = () => {
           <div className="max-w-xs pb-10 text-center text-p1 lg:text-left">
             {t('404.sorryNoResultsFound')}
           </div>
-          <Link href="/">
-            <Button text={t('404.toTheMainPage')} endIcon={<ArrowRightIcon className="size-6" />} />
-          </Link>
+          <Button href="/" variant="black-solid">
+            {t('404.toTheMainPage')}
+          </Button>
         </div>
       </div>
     </div>

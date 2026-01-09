@@ -1482,11 +1482,6 @@ export default schema(
                 description: 'Pre správne nastavenie budete kontaktovaný správcom daní.',
               },
               {
-                value: 'sipo',
-                label:
-                  'Poštovým peňažným poukazom na príslušný účet správcu poplatku - prostredníctvom SIPO',
-              },
-              {
                 value: 'hotovost',
                 label: 'Pri platbách do 300 EUR v hotovosti do pokladne správcu poplatku',
               },
@@ -1497,27 +1492,6 @@ export default schema(
         conditionalFields(createCondition([[['sposobPlatby'], { const: 'sepaInkaso' }]]), [
           input('iban', { type: 'ba-iban', title: 'Zadajte váš IBAN', required: true }, {}),
         ]),
-        conditionalFields(
-          createCondition([
-            [
-              ['sposobPlatby'],
-              {
-                const: 'sipo',
-              },
-            ],
-          ]),
-          [
-            input(
-              'sipo',
-              { type: 'text', title: 'Zadajte číslo SIPO', required: true },
-              {
-                helptext:
-                  'SIPO číslo nájdete na platobnom doklade SIPO (šeku) alebo kontaktujte svoju poštu pre jeho správne nastavenie.',
-                size: 'medium',
-              },
-            ),
-          ],
-        ),
       ],
     ),
     ...(

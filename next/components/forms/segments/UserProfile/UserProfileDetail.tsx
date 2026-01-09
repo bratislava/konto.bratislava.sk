@@ -46,26 +46,26 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   }
 
   const translationMap = {
-    success: t('profile_detail.success_alert'),
-    error: t('profile_detail.error_alert'),
+    success: t('my_profile.profile_detail.success_snackbar_message'),
+    error: t('my_profile.profile_detail.error_snackbar_message'),
   } satisfies Record<UserProfileDetailProps['alertType'], string>
 
   return (
     <div
       className={cn('flex flex-col bg-white pt-3 md:static md:z-0', {
-        'fixed inset-0 z-50': isEditing,
+        'fixed inset-0 top-(--main-scroll-top-margin) z-50': isEditing,
       })}
     >
       {!tierStatus.isIdentityVerified && (
         <div className="flex w-full items-center justify-center bg-white p-3 md:px-8 md:py-3">
           <div className="md:max-w-(--breakpoint-lg)">
             <Alert
-              title={t('verification_status_required')}
-              message={t('verification_status_required_alert')}
+              title={t('IdentityVerificationStatus.verification_status_required')}
+              message={t('IdentityVerificationStatus.verification_status_required_alert')}
               type="warning"
               buttons={[
                 {
-                  title: t('verification_url_text'),
+                  title: t('auth.verification_url_text'),
                   link: '/overenie-identity',
                 },
               ]}
@@ -76,8 +76,8 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
       )}
       <UserProfileSection>
         <UserProfileSectionHeader
-          title={t('profile_detail.title')}
-          text={t('profile_detail.text')}
+          title={t('my_profile.profile_detail.title')}
+          text={t('my_profile.profile_detail.text')}
           isEditing={isEditing}
           underline
           mainHeader

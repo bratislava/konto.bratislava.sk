@@ -7672,40 +7672,55 @@ exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kon
                 "ui:options": {
                   "enumMetadata": [
                     {
-                      "label": "objem: 7 m³ / nosnosť: do 3 t",
-                      "value": "7m3_3t",
+                      "label": "objem: 7 m³ / nosnosť: do 3 t / hákový nosič VKK",
+                      "value": "7m3_3t_hakovy_nosic",
                     },
                     {
-                      "label": "objem: 10 m³ / nosnosť: do 3 t",
-                      "value": "10m3_3t",
+                      "label": "objem: 10 m³ / nosnosť: do 3 t / hákový nosič VKK",
+                      "value": "10m3_3t_hakovy_nosic",
                     },
                     {
-                      "label": "objem: 11 m³ / nosnosť: do 8 t",
-                      "value": "11m3_8t",
+                      "label": "objem: 5 m³ / nosnosť: do 4 t / ramenový nosič VKK (vanička)",
+                      "value": "5m3_4t_ramenovy_nosic",
                     },
                     {
-                      "label": "objem: 16 m³ / nosnosť: do 8 t",
-                      "value": "16m3_8t",
+                      "label": "objem: 7 m³ / nosnosť: do 4 t / ramenový nosič VKK (vanička)",
+                      "value": "7m3_4t_ramenovy_nosic",
                     },
                     {
-                      "label": "objem: 27 m³ / nosnosť: do 8 t",
-                      "value": "27m3_8t",
+                      "label": "objem: 10 m³ / nosnosť: do 4 t / ramenový nosič VKK (vanička)",
+                      "value": "10m3_4t_ramenovy_nosic",
                     },
                     {
-                      "label": "objem: 30 m³ / nosnosť: do 8 t",
-                      "value": "30m3_8t",
+                      "label": "objem: 11 m³ / nosnosť: do 8 t / hákový nosič VKK",
+                      "value": "11m3_8t_hakovy_nosic",
+                    },
+                    {
+                      "label": "objem: 16 m³ / nosnosť: do 8 t / hákový nosič VKK",
+                      "value": "16m3_8t_hakovy_nosic",
+                    },
+                    {
+                      "label": "objem: 27 m³ / nosnosť: do 8 t / hákový nosič VKK",
+                      "value": "27m3_8t_hakovy_nosic",
+                    },
+                    {
+                      "label": "objem: 30 m³ / nosnosť: do 8 t / hákový nosič VKK",
+                      "value": "30m3_8t_hakovy_nosic",
                     },
                   ],
                 },
                 "ui:widget": "Select",
               },
               "enum": [
-                "7m3_3t",
-                "10m3_3t",
-                "11m3_8t",
-                "16m3_8t",
-                "27m3_8t",
-                "30m3_8t",
+                "7m3_3t_hakovy_nosic",
+                "10m3_3t_hakovy_nosic",
+                "5m3_4t_ramenovy_nosic",
+                "7m3_4t_ramenovy_nosic",
+                "10m3_4t_ramenovy_nosic",
+                "11m3_8t_hakovy_nosic",
+                "16m3_8t_hakovy_nosic",
+                "27m3_8t_hakovy_nosic",
+                "30m3_8t_hakovy_nosic",
               ],
               "title": "Objem kontajnera",
               "type": "string",
@@ -40676,40 +40691,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                   "type": "object",
                 },
               },
-              {
-                "if": {
-                  "properties": {
-                    "sposobPlatby": {
-                      "const": "sipo",
-                    },
-                  },
-                  "required": [
-                    "sposobPlatby",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "sipo": {
-                      "baOrder": 3,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "helptext": "SIPO číslo nájdete na platobnom doklade SIPO (šeku) alebo kontaktujte svoju poštu pre jeho správne nastavenie.",
-                          "inputType": "text",
-                          "size": "medium",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "title": "Zadajte číslo SIPO",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "sipo",
-                  ],
-                  "type": "object",
-                },
-              },
             ],
             "baOrder": 1,
             "baUiSchema": {
@@ -40733,10 +40714,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                         "value": "sepaInkaso",
                       },
                       {
-                        "label": "Poštovým peňažným poukazom na príslušný účet správcu poplatku - prostredníctvom SIPO",
-                        "value": "sipo",
-                      },
-                      {
                         "label": "Pri platbách do 300 EUR v hotovosti do pokladne správcu poplatku",
                         "value": "hotovost",
                       },
@@ -40749,7 +40726,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "enum": [
                   "bezhotovostnyPrevod",
                   "sepaInkaso",
-                  "sipo",
                   "hotovost",
                 ],
                 "title": "Spôsob platby",
@@ -88778,7 +88754,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                       "props": {
                         "links": [
                           {
-                            "href": "https://bratislavask.s3.bratislava.sk/upload/Tabulka_zivotne_minimum_2024_25970f264b.pdf",
+                            "href": "https://bratislavask.s3.bratislava.sk/upload/Tabulka_na_vypocet_Zivotneho_minima_2025_9d3178feea.pdf",
                             "title": "Overiť príjem",
                           },
                         ],

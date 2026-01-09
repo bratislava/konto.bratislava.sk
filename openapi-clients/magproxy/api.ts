@@ -33,205 +33,157 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-/**
- *
- * @export
- * @interface Activity
- */
 export interface Activity {
-  /**
-   *
-   * @type {boolean}
-   * @memberof Activity
-   */
   priznakAktualnehoZaznamu: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof Activity
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof Activity
-   */
   platnostDo: string
-  /**
-   *
-   * @type {string}
-   * @memberof Activity
-   */
   pozastavenieOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof Activity
-   */
   pozastavenieDo: string
-  /**
-   *
-   * @type {string}
-   * @memberof Activity
-   */
   kod: string
-  /**
-   *
-   * @type {string}
-   * @memberof Activity
-   */
   popis: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof Activity
-   */
   klasifikacia: CodelistDto
 }
-/**
- *
- * @export
- * @interface ActivityDto
- */
 export interface ActivityDto {
   /**
    * Predmet činnosti
-   * @type {string}
-   * @memberof ActivityDto
    */
   economicActivityDescription?: string
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof ActivityDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof ActivityDto
    */
   validTo?: string
   /**
    * Platnosť pozastavená od
-   * @type {string}
-   * @memberof ActivityDto
    */
   suspendedFrom?: string
   /**
    * Platnosť pozastavená do
-   * @type {string}
-   * @memberof ActivityDto
    */
   suspendedTo?: string
 }
-/**
- *
- * @export
- * @interface AddressDto
- */
+export interface AddressDetailDto {
+  /**
+   * Latitude of found address. Part of base response.
+   */
+  lat?: number | null
+  /**
+   * Longitude of found address. Part of base response.
+   */
+  long?: number | null
+  /**
+   * Hyperlink which can be used to get detailed response. Part of base response.
+   */
+  addressId?: string | null
+  /**
+   * Origin of data. Part of detailed response.
+   */
+  publisher?: string
+  /**
+   * Official name of country. Part of detailed response.
+   */
+  country?: string
+  /**
+   * Full address containing street, registration and orientation numbers, city, district and postal code. Part of detailed response.
+   */
+  fullAddress?: string | null
+  /**
+   * Official name of county. Part of detailed response.
+   */
+  county?: string | null
+  /**
+   * Official name of region. Part of detailed response.
+   */
+  region?: string
+  /**
+   * City with city part. Part of detailed response.
+   */
+  municipality?: string | null
+  /**
+   * Orientation number, may contain numbers and letters, unique within a single street. Part of detailed response.
+   */
+  orientationNumber?: string
+  /**
+   * Postal code. Part of detailed response.
+   */
+  postCode?: string
+  /**
+   * Registration number of a building, unique for building within a city. Part of detailed response.
+   */
+  registrationNumber?: string
+  /**
+   * Street name. Part of detailed response.
+   */
+  street?: string
+}
 export interface AddressDto {
   /**
    * Formátovaná adresa
-   * @type {string}
-   * @memberof AddressDto
    */
   formatedAddress?: string
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof AddressDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof AddressDto
    */
   validTo?: string
   /**
    * Ulica
-   * @type {string}
-   * @memberof AddressDto
    */
   street?: string
   /**
    * Súpisné číslo
-   * @type {number}
-   * @memberof AddressDto
    */
   regNumber?: number
   /**
    * Orientačné číslo
-   * @type {string}
-   * @memberof AddressDto
    */
   buildingNumber?: string
   /**
    * PSČ
-   * @type {Array<string>}
-   * @memberof AddressDto
    */
   postalCodes?: Array<string>
   /**
    * Municipality
-   * @type {CodeValueDto}
-   * @memberof AddressDto
    */
   municipality?: CodeValueDto
   /**
    * Country
-   * @type {CodeValueDto}
-   * @memberof AddressDto
    */
   country?: CodeValueDto
   /**
    * District
-   * @type {CodeValueDto}
-   * @memberof AddressDto
    */
   district?: CodeValueDto
   /**
    * Index domu resp. identifikátor adresy z Registra adries
-   * @type {string}
-   * @memberof AddressDto
    */
   buildingIndex?: string
 }
-/**
- *
- * @export
- * @interface BadRequestErrorDto
- */
 export interface BadRequestErrorDto {
   /**
    * Status code
-   * @type {number}
-   * @memberof BadRequestErrorDto
    */
   statusCode: number
   /**
    * State
-   * @type {string}
-   * @memberof BadRequestErrorDto
    */
   state: string
   /**
    * Error type
-   * @type {string}
-   * @memberof BadRequestErrorDto
    */
   type: string
   /**
    * Error name
-   * @type {string}
-   * @memberof BadRequestErrorDto
    */
   errorName: BadRequestErrorDtoErrorNameEnum
   /**
    * Additional info about error
-   * @type {object}
-   * @memberof BadRequestErrorDto
    */
   messsage?: object
 }
@@ -248,1130 +200,467 @@ export const BadRequestErrorDtoErrorNameEnum = {
 export type BadRequestErrorDtoErrorNameEnum =
   (typeof BadRequestErrorDtoErrorNameEnum)[keyof typeof BadRequestErrorDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface BankConnectionDto
- */
 export interface BankConnectionDto {
-  /**
-   *
-   * @type {string}
-   * @memberof BankConnectionDto
-   */
   menoBanky: string
-  /**
-   *
-   * @type {PhysicalPersonNameDto}
-   * @memberof BankConnectionDto
-   */
   menoFyzickejOsoby: PhysicalPersonNameDto
-  /**
-   *
-   * @type {string}
-   * @memberof BankConnectionDto
-   */
   plnyNazovPo: string
-  /**
-   *
-   * @type {DomesticBankDto}
-   * @memberof BankConnectionDto
-   */
   domaceBankoveSpojenie: DomesticBankDto
-  /**
-   *
-   * @type {ForeignBankDto}
-   * @memberof BankConnectionDto
-   */
   zahranicneBankoveSpojenie: ForeignBankDto
 }
-/**
- *
- * @export
- * @interface BirthDto
- */
 export interface BirthDto {
-  /**
-   *
-   * @type {string}
-   * @memberof BirthDto
-   */
   datumNarodenia: string
-  /**
-   *
-   * @type {string}
-   * @memberof BirthDto
-   */
   miestoNarodenia: string
 }
-/**
- *
- * @export
- * @interface CodeValueDto
- */
 export interface CodeValueDto {
   /**
    * Hodnota atribútu
-   * @type {string}
-   * @memberof CodeValueDto
    */
   value?: string
   /**
    * Kód hodnoty atribútu
-   * @type {string}
-   * @memberof CodeValueDto
    */
   code?: string
   /**
    * Kód číselníka
-   * @type {string}
-   * @memberof CodeValueDto
    */
   codelistCode?: string
 }
-/**
- *
- * @export
- * @interface CodelistDto
- */
 export interface CodelistDto {
-  /**
-   *
-   * @type {string}
-   * @memberof CodelistDto
-   */
   kodCiselnika: string
-  /**
-   *
-   * @type {string}
-   * @memberof CodelistDto
-   */
   kod: string
-  /**
-   *
-   * @type {string}
-   * @memberof CodelistDto
-   */
   nazov: string
 }
-/**
- *
- * @export
- * @interface CodelistWithHistory
- */
 export interface CodelistWithHistory {
-  /**
-   *
-   * @type {boolean}
-   * @memberof CodelistWithHistory
-   */
   priznakAktualnehoZaznamu: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof CodelistWithHistory
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof CodelistWithHistory
-   */
   platnostDo: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof CodelistWithHistory
-   */
   hodnota: CodelistDto
 }
-/**
- *
- * @export
- * @interface DcomKNSAddressDto
- */
 export interface DcomKNSAddressDto {
-  /**
-   *
-   * @type {number}
-   * @memberof DcomKNSAddressDto
-   */
   Id: number
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSAddressDto
-   */
   Street: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSAddressDto
-   */
   HouseNo: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSAddressDto
-   */
   Municipality: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSAddressDto
-   */
   Zip: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSAddressDto
-   */
   State: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSAddressDto
-   */
   ValidTo: string
 }
-/**
- *
- * @export
- * @interface DcomKNSubjectDto
- */
 export interface DcomKNSubjectDto {
-  /**
-   *
-   * @type {number}
-   * @memberof DcomKNSubjectDto
-   */
   Id: number
-  /**
-   *
-   * @type {number}
-   * @memberof DcomKNSubjectDto
-   */
   AddressId: number
-  /**
-   *
-   * @type {number}
-   * @memberof DcomKNSubjectDto
-   */
   No: number | null
-  /**
-   *
-   * @type {number}
-   * @memberof DcomKNSubjectDto
-   */
   BirthYear: number
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   Surname: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   FirstName: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   BirthSurname: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   Title: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   ValidTo: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   BirthDate: string
-  /**
-   *
-   * @type {number}
-   * @memberof DcomKNSubjectDto
-   */
   BirthNo: number | null
-  /**
-   *
-   * @type {number}
-   * @memberof DcomKNSubjectDto
-   */
   IdNo: number | null
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   FirstNameSearch: string
-  /**
-   *
-   * @type {string}
-   * @memberof DcomKNSubjectDto
-   */
   SurnameSearch: string
-  /**
-   *
-   * @type {DcomKNSAddressDto}
-   * @memberof DcomKNSubjectDto
-   */
   BirthSurnameSearch: DcomKNSAddressDto
 }
-/**
- *
- * @export
- * @interface DeathDto
- */
 export interface DeathDto {
-  /**
-   *
-   * @type {string}
-   * @memberof DeathDto
-   */
   datum: string
-  /**
-   *
-   * @type {string}
-   * @memberof DeathDto
-   */
   miesto: string
 }
-/**
- *
- * @export
- * @interface DeliveryAddressDto
- */
 export interface DeliveryAddressDto {
-  /**
-   *
-   * @type {string}
-   * @memberof DeliveryAddressDto
-   */
   psc: string
-  /**
-   *
-   * @type {string}
-   * @memberof DeliveryAddressDto
-   */
   pobox: string
-  /**
-   *
-   * @type {RecieverDto}
-   * @memberof DeliveryAddressDto
-   */
   prijemca: RecieverDto
 }
-/**
- *
- * @export
- * @interface DepositDto
- */
 export interface DepositDto {
-  /**
-   *
-   * @type {string}
-   * @memberof DepositDto
-   */
   typ: string
-  /**
-   *
-   * @type {string}
-   * @memberof DepositDto
-   */
   vyska: string
-  /**
-   *
-   * @type {string}
-   * @memberof DepositDto
-   */
   datumSplatnosti: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof DepositDto
-   */
   mena: CodelistDto
 }
-/**
- *
- * @export
- * @interface DomesticBankDto
- */
 export interface DomesticBankDto {
-  /**
-   *
-   * @type {string}
-   * @memberof DomesticBankDto
-   */
   formatovane: string
-  /**
-   *
-   * @type {string}
-   * @memberof DomesticBankDto
-   */
   predcislie: string
-  /**
-   *
-   * @type {string}
-   * @memberof DomesticBankDto
-   */
   cisloUctu: string
-  /**
-   *
-   * @type {string}
-   * @memberof DomesticBankDto
-   */
   kodBanky: string
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseDepositsInnerDto
- */
 export interface EntityIdGet200ResponseDepositsInnerDto {
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDepositsInnerDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDepositsInnerDto
    */
   validTo?: string
   /**
    * Person name
-   * @type {PersonNameDto}
-   * @memberof EntityIdGet200ResponseDepositsInnerDto
    */
   personName?: PersonNameDto
   /**
    * Názov zainteresovanej osoby (PO)
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDepositsInnerDto
    */
   fullName?: string
   /**
    * Typ vkladu
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDepositsInnerDto
    */
   type?: string
   /**
    * Výška vkladu
-   * @type {number}
-   * @memberof EntityIdGet200ResponseDepositsInnerDto
    */
   amount?: number
   /**
    * Currency
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseDepositsInnerDto
    */
   currency?: CodeValueDto
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseDto
- */
 export interface EntityIdGet200ResponseDto {
   /**
    * Jedinedinečný identifikátor záznamu
-   * @type {number}
-   * @memberof EntityIdGet200ResponseDto
    */
   id: number
   /**
    * Dátum poslednej aktualizácie údajov o PO v databáze, t.j. kedy začala byť aktuálna verzia záznamu dostupná cez toto API.
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDto
    */
   dbModificationDate?: string
   /**
    * IČO
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   identifiers: Array<TimedValueEntryDto>
   /**
    * Plný názov PO
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   fullNames?: Array<TimedValueEntryDto>
   /**
    * Alternatívny názov PO
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   alternativeNames?: Array<TimedValueEntryDto>
   /**
    * Adresa sídla PO
-   * @type {Array<AddressDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   addresses?: Array<AddressDto>
   /**
    * Dátum vzniku
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDto
    */
   establishment: string
   /**
    * Dátum zániku
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDto
    */
   termination?: string
   /**
    * Predmet činnosti
-   * @type {Array<ActivityDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   activities?: Array<ActivityDto>
   /**
    * Štatutárny orgán
-   * @type {Array<StatutaryBodyDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   statutoryBodies?: Array<StatutaryBodyDto>
   /**
    * Zainteresovaná osoba
-   * @type {Array<StakeholderSusrDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   stakeholders?: Array<StakeholderSusrDto>
   /**
    * Právny stav PO (číselník CL010108)
-   * @type {Array<TimedCodeValueEntryDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   legalStatuses?: Array<TimedCodeValueEntryDto>
   /**
    * Iné právne skutočnosti
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   otherLegalFacts?: Array<TimedValueEntryDto>
   /**
    * Oprávnenie konať v mene PO
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   authorizations?: Array<TimedValueEntryDto>
   /**
    * Základné imanie
-   * @type {Array<EntityIdGet200ResponseEquitiesInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   equities?: Array<EntityIdGet200ResponseEquitiesInnerDto>
   /**
    * Akcie
-   * @type {Array<EntityIdGet200ResponseSharesInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   shares?: Array<EntityIdGet200ResponseSharesInnerDto>
   /**
    * Vklady
-   * @type {Array<EntityIdGet200ResponseDepositsInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   deposits?: Array<EntityIdGet200ResponseDepositsInnerDto>
   /**
    * Source register
-   * @type {SearchGet200ResponseResultsInnerSourceRegisterDto}
-   * @memberof EntityIdGet200ResponseDto
    */
   sourceRegister?: SearchGet200ResponseResultsInnerSourceRegisterDto
   /**
    * Právny predchodca PO
-   * @type {Array<EntityIdGet200ResponsePredecessorsInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   predecessors?: Array<EntityIdGet200ResponsePredecessorsInnerDto>
   /**
    * Právny nástupca PO
-   * @type {Array<EntityIdGet200ResponsePredecessorsInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   successors?: Array<EntityIdGet200ResponsePredecessorsInnerDto>
   /**
    * Štatistické kódy
-   * @type {EntityIdGet200ResponseStatisticalCodesDto}
-   * @memberof EntityIdGet200ResponseDto
    */
   statisticalCodes?: EntityIdGet200ResponseStatisticalCodesDto
   /**
    * Základné údaje o konečnom užívateľovi výhod
-   * @type {Array<EntityIdGet200ResponseKuvPersonsInfoInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   kuvPersonsInfo?: Array<EntityIdGet200ResponseKuvPersonsInfoInnerDto>
   /**
    * Základné údaje o vrcholovom manažmente konečného užívateľa výhod
-   * @type {Array<EntityIdGet200ResponseTopManagementsInfoInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   topManagementsInfo?: Array<EntityIdGet200ResponseTopManagementsInfoInnerDto>
   /**
    * Údaje o organizačných zložkách
-   * @type {Array<EntityIdGet200ResponseOrganizationUnitsInnerDto>}
-   * @memberof EntityIdGet200ResponseDto
    */
   organizationUnits?: Array<EntityIdGet200ResponseOrganizationUnitsInnerDto>
   /**
    * Licenčné informácie
-   * @type {string}
-   * @memberof EntityIdGet200ResponseDto
    */
   license?: string
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseEquitiesInnerDto
- */
 export interface EntityIdGet200ResponseEquitiesInnerDto {
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof EntityIdGet200ResponseEquitiesInnerDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof EntityIdGet200ResponseEquitiesInnerDto
    */
   validTo?: string
   /**
    * Výška základného imania
-   * @type {number}
-   * @memberof EntityIdGet200ResponseEquitiesInnerDto
    */
   value?: number
   /**
    * Výška splateného imania
-   * @type {number}
-   * @memberof EntityIdGet200ResponseEquitiesInnerDto
    */
   valuePaid?: number
   /**
    * Schválená výška
-   * @type {number}
-   * @memberof EntityIdGet200ResponseEquitiesInnerDto
    */
   valueApproved?: number
   /**
    * Currency
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseEquitiesInnerDto
    */
   currency?: CodeValueDto
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseKuvPersonsInfoInnerDto
- */
 export interface EntityIdGet200ResponseKuvPersonsInfoInnerDto {
   /**
    * Person name
-   * @type {PersonNameDto}
-   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
    */
   personName?: PersonNameDto
   /**
    * Dátum narodenia
-   * @type {string}
-   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
    */
   birthDate?: string
   /**
    * Citizenship
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
    */
   citizenship?: CodeValueDto
   /**
    * Country
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
    */
   country?: CodeValueDto
   /**
    * Údaje o postavení konečného užívateľa výhod (číselník CL010430)
-   * @type {Array<TimedCodeValueEntryDto>}
-   * @memberof EntityIdGet200ResponseKuvPersonsInfoInnerDto
    */
   kuvInfo?: Array<TimedCodeValueEntryDto>
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseOrganizationUnitsInnerDto
- */
 export interface EntityIdGet200ResponseOrganizationUnitsInnerDto {
   /**
    * Type
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   type?: CodeValueDto
   /**
    * IČO
-   * @type {string}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   identifier?: string
   /**
    * Plný názov organizačnej zložky
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   fullNames?: Array<TimedValueEntryDto>
   /**
    * Adresa
-   * @type {Array<AddressDto>}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   addresses?: Array<AddressDto>
   /**
    * Dátum vzniku
-   * @type {string}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   establishment?: string
   /**
    * Dátum zániku
-   * @type {string}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   termination?: string
   /**
    * Zainteresovaná osoba
-   * @type {Array<StakeholderSusrDto>}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   stakeholders?: Array<StakeholderSusrDto>
   /**
    * Predmet činnosti
-   * @type {Array<ActivityDto>}
-   * @memberof EntityIdGet200ResponseOrganizationUnitsInnerDto
    */
   activities?: Array<ActivityDto>
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponsePredecessorsInnerDto
- */
 export interface EntityIdGet200ResponsePredecessorsInnerDto {
   /**
    * IČO
-   * @type {string}
-   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
    */
   identifier?: string
   /**
    * Názov
-   * @type {string}
-   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
    */
   fullName?: string
   /**
    * Adresa
-   * @type {AddressDto}
-   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
    */
   address?: AddressDto
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof EntityIdGet200ResponsePredecessorsInnerDto
    */
   validTo?: string
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseSharesInnerDto
- */
 export interface EntityIdGet200ResponseSharesInnerDto {
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   validTo?: string
   /**
    * Názov zainteresovanej osoby (PO)
-   * @type {string}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   fullName?: string
   /**
    * Person name
-   * @type {PersonNameDto}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   personName?: PersonNameDto
   /**
    * Share type
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   shareType?: CodeValueDto
   /**
    * Podoba akcie
-   * @type {string}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   shareForm?: string
   /**
    * Menovitá hodnota akcie
-   * @type {number}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   shareNominalValue?: number
   /**
    * Share currency
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   shareCurrency?: CodeValueDto
   /**
    * Množstvo akcií
-   * @type {number}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   amountOfFunds?: number
   /**
    * Prevoditelnosť akcií
-   * @type {string}
-   * @memberof EntityIdGet200ResponseSharesInnerDto
    */
   transferability?: string
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseStatisticalCodesDto
- */
 export interface EntityIdGet200ResponseStatisticalCodesDto {
   /**
    * Dátum aktualizácie štatistických kódov
-   * @type {string}
-   * @memberof EntityIdGet200ResponseStatisticalCodesDto
    */
   statCodesActualization?: string
   /**
    * Main activity
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseStatisticalCodesDto
    */
   mainActivity?: CodeValueDto
   /**
    * ESA2010
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseStatisticalCodesDto
    */
   esa2010?: CodeValueDto
 }
-/**
- *
- * @export
- * @interface EntityIdGet200ResponseTopManagementsInfoInnerDto
- */
 export interface EntityIdGet200ResponseTopManagementsInfoInnerDto {
   /**
    * Person name
-   * @type {PersonNameDto}
-   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
    */
   personName?: PersonNameDto
   /**
    * Dátum narodenia
-   * @type {string}
-   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
    */
   birthDate?: string
   /**
    * Citizenship
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
    */
   citizenship?: CodeValueDto
   /**
    * Country
-   * @type {CodeValueDto}
-   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
    */
   country?: CodeValueDto
   /**
    * Údaje o type vrcholového manažmentu (číselník CL010113)
-   * @type {Array<TimedCodeValueEntryDto>}
-   * @memberof EntityIdGet200ResponseTopManagementsInfoInnerDto
    */
   kuvInfo?: Array<TimedCodeValueEntryDto>
 }
-/**
- *
- * @export
- * @interface Equity
- */
 export interface Equity {
-  /**
-   *
-   * @type {boolean}
-   * @memberof Equity
-   */
   priznakAktualnehoZaznamu: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof Equity
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof Equity
-   */
   platnostDo: string
-  /**
-   *
-   * @type {string}
-   * @memberof Equity
-   */
   hodnota: string
-  /**
-   *
-   * @type {string}
-   * @memberof Equity
-   */
   splatene: string
-  /**
-   *
-   * @type {string}
-   * @memberof Equity
-   */
   schvalene: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof Equity
-   */
   mena: CodelistDto
 }
-/**
- *
- * @export
- * @interface FindOneByIcoFromApiResponse
- */
 export interface FindOneByIcoFromApiResponse {
   /**
    * Legal person
-   * @type {SearchGet200ResponseDto}
-   * @memberof FindOneByIcoFromApiResponse
    */
   legalPerson: SearchGet200ResponseDto
   /**
    * Legal person detail
-   * @type {EntityIdGet200ResponseDto}
-   * @memberof FindOneByIcoFromApiResponse
    */
   detail?: EntityIdGet200ResponseDto
 }
-/**
- *
- * @export
- * @interface ForeignBankDto
- */
 export interface ForeignBankDto {
-  /**
-   *
-   * @type {string}
-   * @memberof ForeignBankDto
-   */
   iban: string
-  /**
-   *
-   * @type {string}
-   * @memberof ForeignBankDto
-   */
   bic: string
 }
-/**
- *
- * @export
- * @interface HealthCheckResponseDto
- */
 export interface HealthCheckResponseDto {
-  /**
-   *
-   * @type {string}
-   * @memberof HealthCheckResponseDto
-   */
   response: string
 }
-/**
- *
- * @export
- * @interface IdDto
- */
 export interface IdDto {
-  /**
-   *
-   * @type {string}
-   * @memberof IdDto
-   */
   identifikator: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof IdDto
-   */
   typIdentifikatora: CodelistDto
 }
-/**
- *
- * @export
- * @interface IdWithHistory
- */
 export interface IdWithHistory {
-  /**
-   *
-   * @type {boolean}
-   * @memberof IdWithHistory
-   */
   priznakAktualnehoZaznamu: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof IdWithHistory
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof IdWithHistory
-   */
   platnostDo: string
-  /**
-   *
-   * @type {IdDto}
-   * @memberof IdWithHistory
-   */
   externeId: IdDto
 }
-/**
- *
- * @export
- * @interface LegalPersonDto
- */
 export interface LegalPersonDto {
-  /**
-   *
-   * @type {string}
-   * @memberof LegalPersonDto
-   */
   addMissingProps: string
 }
-/**
- *
- * @export
- * @interface NamesPropsDto
- */
 export interface NamesPropsDto {
-  /**
-   *
-   * @type {string}
-   * @memberof NamesPropsDto
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof NamesPropsDto
-   */
   platnostDo: string
-  /**
-   *
-   * @type {string}
-   * @memberof NamesPropsDto
-   */
   priznakAktualnehoZaznamu: string
-  /**
-   *
-   * @type {string}
-   * @memberof NamesPropsDto
-   */
   plnyNazov: string
 }
-/**
- *
- * @export
- * @interface NotFoundErrorDto
- */
 export interface NotFoundErrorDto {
   /**
    * Status code
-   * @type {number}
-   * @memberof NotFoundErrorDto
    */
   statusCode: number
   /**
    * State
-   * @type {string}
-   * @memberof NotFoundErrorDto
    */
   state: string
   /**
    * Error type
-   * @type {string}
-   * @memberof NotFoundErrorDto
    */
   type: string
   /**
    * Error name
-   * @type {string}
-   * @memberof NotFoundErrorDto
    */
   errorName: NotFoundErrorDtoErrorNameEnum
   /**
    * Requested object to be found
-   * @type {string}
-   * @memberof NotFoundErrorDto
    */
   detail: string
 }
@@ -1388,3320 +677,1932 @@ export const NotFoundErrorDtoErrorNameEnum = {
 export type NotFoundErrorDtoErrorNameEnum =
   (typeof NotFoundErrorDtoErrorNameEnum)[keyof typeof NotFoundErrorDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface OrganizationUnitDto
- */
 export interface OrganizationUnitDto {
-  /**
-   *
-   * @type {IdDto}
-   * @memberof OrganizationUnitDto
-   */
   externeId: IdDto
-  /**
-   *
-   * @type {string}
-   * @memberof OrganizationUnitDto
-   */
   datumVzniku: string
-  /**
-   *
-   * @type {string}
-   * @memberof OrganizationUnitDto
-   */
   datumZaniku: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof OrganizationUnitDto
-   */
   typ: CodelistDto
-  /**
-   *
-   * @type {Array<PhysicalAddress>}
-   * @memberof OrganizationUnitDto
-   */
   adresy: Array<PhysicalAddress>
-  /**
-   *
-   * @type {Array<Activity>}
-   * @memberof OrganizationUnitDto
-   */
   predmetyCinnosti: Array<Activity>
-  /**
-   *
-   * @type {Array<StakeholderDto>}
-   * @memberof OrganizationUnitDto
-   */
   zainteresovaneOsoby: Array<StakeholderDto>
 }
-/**
- *
- * @export
- * @interface PersonDto
- */
 export interface PersonDto {
-  /**
-   *
-   * @type {PhysicalPersonDto}
-   * @memberof PersonDto
-   */
   fyzickaOsoba: PhysicalPersonDto
-  /**
-   *
-   * @type {LegalPersonDto}
-   * @memberof PersonDto
-   */
   pravnickaOsoba: LegalPersonDto
 }
-/**
- *
- * @export
- * @interface PersonNameDto
- */
 export interface PersonNameDto {
   /**
    * Formatované meno
-   * @type {string}
-   * @memberof PersonNameDto
    */
   formatedName?: string
   /**
    * Meno
-   * @type {Array<string>}
-   * @memberof PersonNameDto
    */
   givenNames: Array<string>
   /**
    * Priezvisko
-   * @type {Array<string>}
-   * @memberof PersonNameDto
    */
   familyNames: Array<string>
   /**
    * Rodné priezvisko
-   * @type {Array<string>}
-   * @memberof PersonNameDto
    */
   givenFamilyNames?: Array<string>
   /**
    * Titul pred menom (číselníky CL000062 / TIT)
-   * @type {Array<CodeValueDto>}
-   * @memberof PersonNameDto
    */
   prefixes?: Array<CodeValueDto>
   /**
    * Titul za menom (číselníky CL000063 / TIT)
-   * @type {Array<CodeValueDto>}
-   * @memberof PersonNameDto
    */
   postfixes?: Array<CodeValueDto>
 }
-/**
- *
- * @export
- * @interface PhoneAddressDto
- */
 export interface PhoneAddressDto {
-  /**
-   *
-   * @type {string}
-   * @memberof PhoneAddressDto
-   */
   typ: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhoneAddressDto
-   */
   formatovanieCislo: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhoneAddressDto
-   */
   medzinarodnyKodKrajiny: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhoneAddressDto
-   */
   narodneCislo: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhoneAddressDto
-   */
   miestnaPredvolba: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhoneAddressDto
-   */
   cisloUcastnika: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhoneAddressDto
-   */
   klapka: string
 }
-/**
- *
- * @export
- * @interface PhysicalAddress
- */
 export interface PhysicalAddress {
-  /**
-   *
-   * @type {boolean}
-   * @memberof PhysicalAddress
-   */
   priznakAktualnehoZaznamu: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalAddress
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalAddress
-   */
   platnostDo: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalAddress
-   */
   formatovanaAdresa: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalAddress
-   */
   stat: CodelistDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalAddress
-   */
   obec: CodelistDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalAddress
-   */
   okres: CodelistDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalAddress
-   */
   castObce: CodelistDto
-  /**
-   *
-   * @type {Array<CodelistDto>}
-   * @memberof PhysicalAddress
-   */
   regiony: Array<CodelistDto>
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalAddress
-   */
   typAdresy: CodelistDto
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalAddress
-   */
   nazovUlice: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalAddress
-   */
   cisloDomu: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalAddress
-   */
   supisneCislo: string
-  /**
-   *
-   * @type {Array<DeliveryAddressDto>}
-   * @memberof PhysicalAddress
-   */
   dodacieAdresy: Array<DeliveryAddressDto>
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalAddress
-   */
   referenciaDoRegistraAdries: string
 }
-/**
- *
- * @export
- * @interface PhysicalPersonDto
- */
 export interface PhysicalPersonDto {
-  /**
-   *
-   * @type {PhysicalAddress}
-   * @memberof PhysicalPersonDto
-   */
   adresa: PhysicalAddress
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalPersonDto
-   */
   rodinnyStav: CodelistDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalPersonDto
-   */
   pohlavie: CodelistDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof PhysicalPersonDto
-   */
   statnaPrislusnost: CodelistDto
-  /**
-   *
-   * @type {BirthDto}
-   * @memberof PhysicalPersonDto
-   */
   narodenie: BirthDto
-  /**
-   *
-   * @type {DeathDto}
-   * @memberof PhysicalPersonDto
-   */
   umrtie: DeathDto
-  /**
-   *
-   * @type {Array<ValueWithHistory>}
-   * @memberof PhysicalPersonDto
-   */
   alternativneMena: Array<ValueWithHistory>
-  /**
-   *
-   * @type {Array<DeliveryAddressDto>}
-   * @memberof PhysicalPersonDto
-   */
   dodacieAdresy: Array<DeliveryAddressDto>
-  /**
-   *
-   * @type {PhysicalPersonNameDto}
-   * @memberof PhysicalPersonDto
-   */
   menoFyzickejOsoby: PhysicalPersonNameDto
-  /**
-   *
-   * @type {Array<IdDto>}
-   * @memberof PhysicalPersonDto
-   */
   externeIds: Array<IdDto>
 }
-/**
- *
- * @export
- * @interface PhysicalPersonNameDto
- */
 export interface PhysicalPersonNameDto {
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalPersonNameDto
-   */
   formatovaneMeno: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalPersonNameDto
-   */
   ineMeno: string
-  /**
-   *
-   * @type {string}
-   * @memberof PhysicalPersonNameDto
-   */
   legalneMeno: string
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof PhysicalPersonNameDto
-   */
   rodneMena: Array<string>
-  /**
-   *
-   * @type {SurnamePropsDto}
-   * @memberof PhysicalPersonNameDto
-   */
   priezviska: SurnamePropsDto
-  /**
-   *
-   * @type {SurnamePropsDto}
-   * @memberof PhysicalPersonNameDto
-   */
   rodnePriezviska: SurnamePropsDto
-  /**
-   *
-   * @type {TitlesPropsDto}
-   * @memberof PhysicalPersonNameDto
-   */
   tituly: TitlesPropsDto
 }
-/**
- *
- * @export
- * @interface PredecessorSuccessor
- */
 export interface PredecessorSuccessor {
-  /**
-   *
-   * @type {boolean}
-   * @memberof PredecessorSuccessor
-   */
   priznakAktualnehoZaznamu: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof PredecessorSuccessor
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof PredecessorSuccessor
-   */
   platnostDo: string
-  /**
-   *
-   * @type {string}
-   * @memberof PredecessorSuccessor
-   */
   plnyNazov: string
-  /**
-   *
-   * @type {IdDto}
-   * @memberof PredecessorSuccessor
-   */
   externeId: IdDto
-  /**
-   *
-   * @type {PhysicalAddress}
-   * @memberof PredecessorSuccessor
-   */
   adresa: PhysicalAddress
 }
-/**
- *
- * @export
- * @interface RecieverDto
- */
 export interface RecieverDto {
-  /**
-   *
-   * @type {string}
-   * @memberof RecieverDto
-   */
   dodatocneTexty: string
-  /**
-   *
-   * @type {string}
-   * @memberof RecieverDto
-   */
   menoOrganizacjnejJednotky: string
-  /**
-   *
-   * @type {string}
-   * @memberof RecieverDto
-   */
   nazovPo: string
-  /**
-   *
-   * @type {string}
-   * @memberof RecieverDto
-   */
   menoFyzickejOsoby: string
 }
-/**
- *
- * @export
- * @interface ResponseKNGetOwnersDto
- */
 export interface ResponseKNGetOwnersDto {
-  /**
-   *
-   * @type {Array<DcomKNSubjectDto>}
-   * @memberof ResponseKNGetOwnersDto
-   */
   data: Array<DcomKNSubjectDto>
 }
-/**
- *
- * @export
- * @interface ResponseKNGetPropertiesDto
- */
 export interface ResponseKNGetPropertiesDto {
   /**
    * Name of owner (from input data)
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesDto
    */
   firstName: string
   /**
    * Surname of owner (from input data)
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesDto
    */
   surname: string
   /**
    * Dtail about user - name, surname, birth surname, addres of permanent residence
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesDto
    */
   userDetail: string
   /**
    * ID of municipality
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesDto
    */
   municipalityId: number
   /**
    * Cadastral unit of participant permanent residence
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesDto
    */
   participantCadastralUnitId: number
   /**
    * Date of record
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesDto
    */
   validTo: string
   /**
    * Flats and other spaces - it is need to be added to non living parcels and hosues
-   * @type {Array<ResponseKNGetPropertiesSpaceRecordsDto>}
-   * @memberof ResponseKNGetPropertiesDto
    */
   spaceRecords: Array<ResponseKNGetPropertiesSpaceRecordsDto>
 }
-/**
- *
- * @export
- * @interface ResponseKNGetPropertiesSpaceRecordsDto
- */
 export interface ResponseKNGetPropertiesSpaceRecordsDto {
   /**
    * Id of ownership of property, unique identifier for flat and person
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsDto
    */
   ownershipId: number
   /**
    * Dtail about user - name, surname, birth surname, addres of permanent residence
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsDto
    */
   userDetail: string
   /**
    * ID of municipality
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsDto
    */
   municipalityId: number
   /**
    * Cadastral unit of participant permanent residence
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsDto
    */
   participantCadastralUnitId: number
   /**
    * Date of record
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsDto
    */
   validTo: string
   /**
    * Flats and other spaces detail - it is need to be added to non living parcels and hosues
-   * @type {Array<ResponseKNGetPropertiesSpaceRecordsSpacesDto>}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsDto
    */
   spaces: Array<ResponseKNGetPropertiesSpaceRecordsSpacesDto>
 }
-/**
- *
- * @export
- * @interface ResponseKNGetPropertiesSpaceRecordsSpacesDto
- */
 export interface ResponseKNGetPropertiesSpaceRecordsSpacesDto {
   /**
    * Id of the parcel / property / house / flat
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   id: number
   /**
    * Id of Entrance (vchod)
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   entranceId: number
   /**
    * Id of type of the parcel / property / house / flat
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   typeId: number
   /**
    * Register number of the house
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   houseNo: number
   /**
    * Address with address number
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   address: string
   /**
    * Number of floor, it can be also negative or zero
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   floorNo: number | null
   /**
    * Flat number, if it is constructuin of flats (residential) (bytovy priestor)
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   flatNo: number | null
   /**
    * If it is nonresidentail space
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   nonresidentialNo: number | null
   /**
    * If it is nonresidentail space
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   nonresidentialTypeId: number | null
   /**
    * If it is nonresidentail space
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   area: number | null
   /**
    * Id of construction
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   constructionId: number
   /**
    * Id of cadastral unit
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   cadastralUnitId: number
   /**
    * Name of cadastral unit
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   cadastralUnitName: string
   /**
    * Code of cadastral unit
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   cadastralUnitCode: number
   /**
    * Search of cadastral unit (without spaces and diacritics and capitals)
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   cadastralUnitSearch: string
   /**
    * Id of municipality
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   municipalityId: number
   /**
    * Name of municipality
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   municipalityName: string
   /**
    * Code of municipality
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   municipalityCode: number
   /**
    * Search of municipality (without spaces and diacritics and capitals)
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   municipalitySearch: string
   /**
    * Id of district
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   districtId: number
   /**
    * Name of district
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   districtName: string
   /**
    * Code of district
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   districtCode: number
   /**
    * Search of district (without spaces and diacritics and capitals)
-   * @type {string}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   districtSearch: string
   /**
    * Id of region
-   * @type {number}
-   * @memberof ResponseKNGetPropertiesSpaceRecordsSpacesDto
    */
   regionId: number
 }
-/**
- *
- * @export
- * @interface ResponseNEVBasicInfoPropsDto
- */
 export interface ResponseNEVBasicInfoPropsDto {
   /**
    * Id of vehicle (VI)
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   id: number
   /**
    * Id of vehicle (VI)
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   vozidloId: number
   /**
    * Date of first registration
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   datumPrvejEvidenie: string
   /**
    * Date of first registration Sr
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   datumPrvejEvidenieSr: string
   /**
    * Workplace of registration
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   pracoviskoPriradenia: string
   /**
    * Licence plate of vehicle
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   evidencneCislo: string
   /**
    * Vehicle identification number
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   vin: string
   /**
    * State of vehicle
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   stavVozidla: string
   /**
    * Type of change
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   druhZmeny: string
   /**
    * Timestamp of change
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   druhZmenyDatum: string
   /**
    * Year of production
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   rokVyroby: number
   /**
    * Individual import
-   * @type {boolean}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   individualnyDozvoz: boolean
   /**
    * Is vehicle blocked?
-   * @type {boolean}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   blokacia: boolean
   /**
    * Workplace Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   pracoviskoPriradeniaId: number
   /**
    * Vehicle status Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   stavVozidlaId: number
   /**
    * Is vehicle new?
-   * @type {boolean}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   noveVozidlo: boolean
   /**
    * Is vehicle in leasing?
-   * @type {boolean}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   leasing: boolean
   /**
    * Type if change Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   druhZmenyId: number
   /**
    * oev
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oev: string
   /**
    * tp
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tp: string
   /**
    * Validity to oe
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oePlatnostDokladu: string
   /**
    * oe
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oe: string
   /**
    * Previous ECV
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   predchadajucaEc: string
   /**
    * Tech code
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tecKod: string
   /**
    * Tech id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tecId: number
   /**
    * Workplace of unregistration
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   pracoviskoOdhlasenia: string
   /**
    * Workplace of unregistration Id
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   pracoviskoOdhlaseniaId: string
   /**
    * Release date
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oeDatumVydania: string
   /**
    * oev Release date
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oevDatumVydania: string
   /**
    * tp release date
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tpDatumVydania: string
   /**
    * tp Place of release
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tpMiestoVydania: string
   /**
    * oe Place of release
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oeMiestoVydania: string
   /**
    * ECV Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   evidencneCisloId: number
   /**
    * tp State Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tpStavId: number
   /**
    * oev State Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oevStavId: number
   /**
    * oe state Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oeStavId: number
   /**
    * State of tp
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tpStavNazov: string
   /**
    * State of oev
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oevStavNazov: string
   /**
    * State of oe
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   oeStavNazov: string
   /**
    * some Id
-   * @type {number}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tecPrednaId: number
   /**
    * some state
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tecZadnaStav: string
   /**
    * another state
-   * @type {string}
-   * @memberof ResponseNEVBasicInfoPropsDto
    */
   tecPrednaStav: string
 }
-/**
- *
- * @export
- * @interface ResponseNEVInsuranceContractPropsDto
- */
 export interface ResponseNEVInsuranceContractPropsDto {
   /**
    * Id
-   * @type {number}
-   * @memberof ResponseNEVInsuranceContractPropsDto
    */
   id: number
   /**
    * Vehicle id
-   * @type {number}
-   * @memberof ResponseNEVInsuranceContractPropsDto
    */
   vozidloId: number
   /**
    * Contract number
-   * @type {string}
-   * @memberof ResponseNEVInsuranceContractPropsDto
    */
   cisloZmluvy: string
   /**
    * Insurer
-   * @type {string}
-   * @memberof ResponseNEVInsuranceContractPropsDto
    */
   poistovatel: string
   /**
    * Onset date
-   * @type {string}
-   * @memberof ResponseNEVInsuranceContractPropsDto
    */
   datumZaciatku: string
   /**
    * Termination date
-   * @type {string}
-   * @memberof ResponseNEVInsuranceContractPropsDto
    */
   datumUkoncenia: string
 }
-/**
- *
- * @export
- * @interface ResponseNEVMainDto
- */
 export interface ResponseNEVMainDto {
   /**
    * Basic information
-   * @type {ResponseNEVBasicInfoPropsDto}
-   * @memberof ResponseNEVMainDto
    */
   zakladneInformacie: ResponseNEVBasicInfoPropsDto
   /**
    * Owner and holder
-   * @type {ResponseNEVOwnerAndHolderPropsDto}
-   * @memberof ResponseNEVMainDto
    */
   drzitelAVlastnik: ResponseNEVOwnerAndHolderPropsDto
   /**
    * Technical details
-   * @type {ResponseNEVTecDetailPropsDto}
-   * @memberof ResponseNEVMainDto
    */
   technickeUdaje: ResponseNEVTecDetailPropsDto
   /**
    * Insurance contract
-   * @type {ResponseNEVInsuranceContractPropsDto}
-   * @memberof ResponseNEVMainDto
    */
   poistnaZmluva: ResponseNEVInsuranceContractPropsDto
   /**
    * Document of processing
-   * @type {ResponseNEVProcessDocPropsDto}
-   * @memberof ResponseNEVMainDto
    */
   dokladOSpracovani: ResponseNEVProcessDocPropsDto
   /**
    * Origin check protocol
-   * @type {ResponseNEVOriginProtocolPropsDto}
-   * @memberof ResponseNEVMainDto
    */
   protokolKontrolyOriginality: ResponseNEVOriginProtocolPropsDto
   /**
    * Sport and historic vehicle license
-   * @type {ResponseNEVSportHistLicensePropsDto}
-   * @memberof ResponseNEVMainDto
    */
   preukazSportovehoAHistorickehoVozidla: ResponseNEVSportHistLicensePropsDto
   /**
    * Error message
-   * @type {ResponseNEVMessagePropsDto}
-   * @memberof ResponseNEVMainDto
    */
   sprava: ResponseNEVMessagePropsDto
 }
-/**
- *
- * @export
- * @interface ResponseNEVMessagePropsDto
- */
 export interface ResponseNEVMessagePropsDto {
   /**
    * Error number
-   * @type {string}
-   * @memberof ResponseNEVMessagePropsDto
    */
   cisloChyby: string
   /**
    * Error message
-   * @type {string}
-   * @memberof ResponseNEVMessagePropsDto
    */
   textChyby: string
 }
-/**
- *
- * @export
- * @interface ResponseNEVOriginProtocolPropsDto
- */
 export interface ResponseNEVOriginProtocolPropsDto {
   /**
    * Id
-   * @type {number}
-   * @memberof ResponseNEVOriginProtocolPropsDto
    */
   id: number
   /**
    * Vehicle id
-   * @type {number}
-   * @memberof ResponseNEVOriginProtocolPropsDto
    */
   vozidloId: number
   /**
    * Appraisal form number
-   * @type {string}
-   * @memberof ResponseNEVOriginProtocolPropsDto
    */
   cisloPosudku: string
   /**
    * Protocol code
-   * @type {string}
-   * @memberof ResponseNEVOriginProtocolPropsDto
    */
   kodProtokolu: string
   /**
    * Origin check - result
-   * @type {number}
-   * @memberof ResponseNEVOriginProtocolPropsDto
    */
   vysledokKontrolyOriginality: number
   /**
    * Number of check label
-   * @type {string}
-   * @memberof ResponseNEVOriginProtocolPropsDto
    */
   cisloKontrolnejNalepky: string
   /**
    * Date of check
-   * @type {string}
-   * @memberof ResponseNEVOriginProtocolPropsDto
    */
   kontrolaDatum: string
 }
-/**
- *
- * @export
- * @interface ResponseNEVOwnerAndHolderPropsDto
- */
 export interface ResponseNEVOwnerAndHolderPropsDto {
   /**
    * Vehicle id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vozidloId: number
   /**
    * Owner - type
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikTyp: string
   /**
    * Owner - Name
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikMeno: string
   /**
    * Owner - Surname
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikPriezvisko: string
   /**
    * Owner - Full name
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikNazov: string
   /**
    * Owner - Date of birth
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikDatumNarodenia: string
   /**
    * Owner - Business Id
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikIco: string
   /**
    * Owner - Birth number
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikRodneCislo: string
   /**
    * Owner - District
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikOkres: string
   /**
    * Owner - Municipality
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikObec: string
   /**
    * Owner - Street
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikUlica: string
   /**
    * Owner - Street number
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikOrientacneCislo: number
   /**
    * Owner - Register number
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikSupisneCislo: number
   /**
    * Owner - residence out of SR
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikPobytMimoSr: string
   /**
    * Owner - what is this?
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikMimoSrStat: string
   /**
    * Holder - type
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelTyp: string
   /**
    * Holder - name
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelMeno: string
   /**
    * Holder - surname
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelPriezvisko: string
   /**
    * Holder - full name
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelNazov: string
   /**
    * Holder - date of birth
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelDatumNarodenia: string
   /**
    * Holder - business id
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelIco: string
   /**
    * Holder - Birth number
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelRodneCislo: string
   /**
    * Holder - district
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelOkres: string
   /**
    * Holder - municipality
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelObec: string
   /**
    * Holder - street
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelUlica: string
   /**
    * Holder - street number
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelOrientacneCislo: number
   /**
    * Holder - register number
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelSupisneCislo: number
   /**
    * Owner - type id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikTypId: number
   /**
    * Owner - regob id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikRegobId: number
   /**
    * Owner - stay out of SR
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikPobytMimoSrId: string
   /**
    * Holder - type id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelTypId: number
   /**
    * Holder - regob id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelRegobId: number
   /**
    * Holder - type of stay id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelTypPobytuId: number
   /**
    * Holder - stay out of SR status
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelMimoSrStat: string
   /**
    * Holder - stay out of SR
-   * @type {string}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelPobytMimoSr: string
   /**
    * Owner - type of stay id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikTypPobytuId: number
   /**
    * Holder - nationality id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelStatnaPrislusnostId: number
   /**
    * Owner - nationality id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikStatnaPrislusnostId: number
   /**
    * Holder - door number id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelVchodDomuId: number
   /**
    * Owner - door number id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikVchodDomuId: number
   /**
    * Holder - disclosure level id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   drzitelStupenZverejneniaId: number
   /**
    * Owner - disclosure level id
-   * @type {number}
-   * @memberof ResponseNEVOwnerAndHolderPropsDto
    */
   vlastnikStupenZverejneniaId: number
 }
-/**
- *
- * @export
- * @interface ResponseNEVProcessDocPropsDto
- */
 export interface ResponseNEVProcessDocPropsDto {
   /**
    * Id
-   * @type {number}
-   * @memberof ResponseNEVProcessDocPropsDto
    */
   id: number
   /**
    * Vehicle id
-   * @type {number}
-   * @memberof ResponseNEVProcessDocPropsDto
    */
   vozidloId: number
   /**
    * Certificate of processing - date
-   * @type {string}
-   * @memberof ResponseNEVProcessDocPropsDto
    */
   dokladSpracovania: string
   /**
    * Certificate of processing - number
-   * @type {number}
-   * @memberof ResponseNEVProcessDocPropsDto
    */
   dokladSpracovaniaCislo: number
   /**
    * Certificate of processing - executor
-   * @type {string}
-   * @memberof ResponseNEVProcessDocPropsDto
    */
   dokladSpracovaniaVydal: string
 }
-/**
- *
- * @export
- * @interface ResponseNEVSportHistLicensePropsDto
- */
 export interface ResponseNEVSportHistLicensePropsDto {
   /**
    * Id
-   * @type {number}
-   * @memberof ResponseNEVSportHistLicensePropsDto
    */
   id: number
   /**
    * VehicleId
-   * @type {number}
-   * @memberof ResponseNEVSportHistLicensePropsDto
    */
   vozidloId: number
   /**
    * License date
-   * @type {string}
-   * @memberof ResponseNEVSportHistLicensePropsDto
    */
   preukazSportHistVozidlaDatum: string
   /**
    * License number
-   * @type {string}
-   * @memberof ResponseNEVSportHistLicensePropsDto
    */
   preukazSportHistVozidlaDatumCislo: string
   /**
    * License issued by
-   * @type {string}
-   * @memberof ResponseNEVSportHistLicensePropsDto
    */
   preukazSportHistVozidlaDatumVydal: string
 }
-/**
- *
- * @export
- * @interface ResponseNEVTecDetailPropsDto
- */
 export interface ResponseNEVTecDetailPropsDto {
   /**
    * Vehicle id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vozidloId: number
   /**
    * Vehicle type
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druh: string
   /**
    * Vehicle category
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   kategoria: string
   /**
    * Factory brand
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tovarenskaZnacka: string
   /**
    * Brand
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   znacka: string
   /**
    * Trade name
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   obchodnyNazov: string
   /**
    * Version
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   typVariantVerzia: string
   /**
    * Manufacturer
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vyrobcaVozidla: string
   /**
    * Ts number
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   cisloTs: string
   /**
    * Ts date
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   datumTs: string
   /**
    * Engine manufacturer
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vyrobcaMotora: string
   /**
    * Engine type
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   typMotora: string
   /**
    * Stroke
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   zdvih: number
   /**
    * Catalyst
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   katalyzator: string
   /**
    * Max power
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   maximalnyVykon: number
   /**
    * Operating speed
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   otacky: number
   /**
    * Fuel
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhPaliva: string
   /**
    * Power / weight
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vykonHmotnost: string
   /**
    * Gearbox
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   prevodovka: string
   /**
    * Number of gears
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   prevodovkaStupne: number
   /**
    * Bodywork type
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   karoseriaDruh: string
   /**
    * Colour
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   farba: string
   /**
    * Additional colour
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   doplnkovaFarba: string
   /**
    * Additional colour type
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   doplnkovaFarbaDruh: string
   /**
    * Bodywork manufacturer
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   karoseriaVyrobca: string
   /**
    * Bodywork number
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   karoseriaVyrobneCislo: string
   /**
    * Number of seats
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pocetSedenie: number
   /**
    * Number of emergency seats
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pocetNudzove: number
   /**
    * Number of standing places?
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pocetStatie: number
   /**
    * Number of sleeping seats
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pocetLozka: number
   /**
    * Roof load
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   zatazenieStrechy: number
   /**
    * Cistern capacity
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   objemCisterny: number
   /**
    * Tank capacity
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   objemNadrze: number
   /**
    * Length
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   dlzka: number
   /**
    * Width
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   sirka: number
   /**
    * Height
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vyska: number
   /**
    * Loading area length
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   loznaPlochaDlzka: number
   /**
    * Loading area width
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   loznaPlochaSirka: number
   /**
    * Weight
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostPrevadzkova: number
   /**
    * Max weight
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostPripustna: number
   /**
    * Max weight per axle 1
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostMaxNaprava1: number
   /**
    * Max weight per axle 2
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostMaxNaprava2: number
   /**
    * Max weight per axle 3
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostMaxNaprava3: number
   /**
    * Max weight per axle 4
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostMaxNaprava4: number
   /**
    * Weight of set
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostSupravy: number
   /**
    * Weight of towed vehicle with breaks
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostPvozidlaBrzd: number
   /**
    * Weight of towed vehicle without breaks
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hmotnostPvozidlaNebrzd: string
   /**
    * ABS
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   brzdaAbs: boolean
   /**
    * Break - something
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   brzdyEsEhk: string
   /**
    * Service break
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   brzdaPrevadzkova: boolean
   /**
    * Parking break
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   brzdaParkovacia: boolean
   /**
    * Lightening break
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   brzdaOdlahcovacia: boolean
   /**
    * Emergency break
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   brzdaNudzova: boolean
   /**
    * Number of axles
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pocetNaprav: number
   /**
    * Axle 1 propulsion
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pohonNaprava1: boolean
   /**
    * Axle 2 propulsion
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pohonNaprava2: boolean
   /**
    * Axle 3 propulsion
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pohonNaprava3: boolean
   /**
    * Axle 4 propulsion
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   pohonNaprava4: boolean
   /**
    * Wheelbase
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   razvor: number
   /**
    * Connecting device type
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   spajacieZariadenieTyp: string
   /**
    * Connecting device class
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   spajacieZariadenieTrieda: string
   /**
    * Connecting device H max weight
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   hzavesMaxHmotnost: number
   /**
    * Connecting device S max weight
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   szavesMaxHmotnost: number
   /**
    * Connecting device T max weight
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tocnicaMaxHmostnost: number
   /**
    * Noise - standing
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieZvukuStojace: number
   /**
    * Noise - driving
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieZvukuJazda: number
   /**
    * Emission of CO2
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaCo2: number
   /**
    * Emission of CO
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaCo: number
   /**
    * Emission of HC
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaHc: number
   /**
    * Emission of NOx
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaNox: number
   /**
    * Emission of HC + NOx
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaHcnox: number
   /**
    * Emission - particles
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaCastice: number
   /**
    * Absorption of emissions
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaAbsorbcia: number
   /**
    * Fuel consumption
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   spotrebaPaliva: number
   /**
    * Max speed
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   maxRychlost: number
   /**
    * Type of vehicle id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhId: number
   /**
    * Category id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   kategoriaId: number
   /**
    * Brand id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   znackaId: number
   /**
    * Manufacturer id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vyrobcaVozidlaId: number
   /**
    * Engine manufacturer id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vyrobcaMotoraId: number
   /**
    * Catalyst id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   katalyzatorId: number
   /**
    * Fuel id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhPalivaId: number
   /**
    * Gearbox id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   prevodovkaId: number
   /**
    * Bodywork id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   karoseriaDruhId: number
   /**
    * Bodywork manufacturer id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   karoseriaVyrobcaId: number
   /**
    * Colour id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   farbaId: number
   /**
    * Additional colour id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   doplnkovaFarbaId: number
   /**
    * Additional colour type id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   doplnkovaFarbaDruhId: number
   /**
    * Engine number
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   cisloMotora: string
   /**
    * Wheel type
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhKolies: string
   /**
    * Wheel type id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhKoliesId: number
   /**
    * Tires type - axle 1
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhPneuNaprava1: string
   /**
    * Tires type - axle 2
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhPneuNaprava2: string
   /**
    * Tires type - axle 3
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhPneuNaprava3: string
   /**
    * Tires type - axle 4
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhPneuNaprava4: string
   /**
    * Doubled axle 1
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   zdvojenaNaprava1: boolean
   /**
    * Doubled axle 2
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   zdvojenaNaprava2: boolean
   /**
    * Doubled axle 3
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   zdvojenaNaprava3: boolean
   /**
    * Doubled axle 4
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   zdvojenaNaprava4: boolean
   /**
    * Wheel rim - axle 1
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   rafikNaprava1: string
   /**
    * Wheel rim - axle 2
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   rafikNaprava2: string
   /**
    * Wheel rim - axle 3
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   rafikNaprava3: string
   /**
    * Wheel rim - axle 4
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   rafikNaprava4: string
   /**
    * Connecting device brand
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   spajacieZariadenieZnacka: string
   /**
    * Docking device certified brand
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   spajacieZariadenieSchvalZnacka: string
   /**
    * Noise
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieZvuku: string
   /**
    * Noise - operating speed
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieZvukuOtacky: number
   /**
    * Consumption
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotreba: string
   /**
    * Smoke emission
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaDymivost: string
   /**
    * Type certification number
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsCisloKonania: string
   /**
    * Type certification ZTO
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsCisloZto: string
   /**
    * Type certification date
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsDatumKonania: string
   /**
    * Type certification - place of issue
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsMiestoVydania: string
   /**
    * Type certification - date of issue
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsDatumVydania: string
   /**
    * Type certification - validity date
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsPlatnost: string
   /**
    * Type certification - proceeding number
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsCisloJednania: string
   /**
    * Type certification - number of extension certificate
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsNadstavbaCisloOsvedcenia: string
   /**
    * Type certification - extension proceeding number
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsNadstavbaCisloKonania: string
   /**
    * Type certification - extension proceeding date
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsNadstavbaDatumKonania: string
   /**
    * Type certification - extension place of issue
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsNadstavbaMiestoVydania: string
   /**
    * Type certification - extension date of issue
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsNadstavbaDatumVydania: string
   /**
    * Type certification - number of certificate
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   tsCisloOsvedcenia: string
   /**
    * Extra equipment
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   zvlastnaVybava: string
   /**
    * Additional information
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   duzText: string
   /**
    * VIN
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   vin: string
   /**
    * Date of change
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhZmenyDatum: string
   /**
    * Type of change
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   druhZmeny: string
   /**
    * Limiter
-   * @type {boolean}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   obmedzovac: boolean
   /**
    * Fuel consumption - city
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   spotrebaPalivaMesto: number
   /**
    * Fuel consumption - out of city
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   spotrebaPalivaMimoMesto: number
   /**
    * Wheel base 2
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   razvor2: number
   /**
    * Wheel base 3
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   razvor3: number
   /**
    * Smoke emission id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaDymivostId: number
   /**
    * Consumption id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieSpotrebaId: number
   /**
    * Noise id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   emisieZvukuId: number
   /**
    * CO unit measure id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaCoId: number
   /**
    * HC unit measure id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaHcId: number
   /**
    * NOx unit measure id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaNoxId: number
   /**
    * Particles unit measure id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaCasticeId: number
   /**
    * Breaks - noise id
-   * @type {number}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   brzdyEsEhkId: number
   /**
    * CO unit measure
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaCo: string
   /**
    * HC unit measure
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaHc: string
   /**
    * NOx unit measure
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaNox: string
   /**
    * Particles unit measure
-   * @type {string}
-   * @memberof ResponseNEVTecDetailPropsDto
    */
   mernaJednotkaCastice: string
 }
-/**
- *
- * @export
- * @interface ResponseNEVTkEkDto
- */
 export interface ResponseNEVTkEkDto {
   /**
    * Technical control
-   * @type {ResponseNEVTkEkPropsDto}
-   * @memberof ResponseNEVTkEkDto
    */
   technickaKontrola: ResponseNEVTkEkPropsDto
   /**
    * Emision control
-   * @type {ResponseNEVTkEkPropsDto}
-   * @memberof ResponseNEVTkEkDto
    */
   emisnaKontrola: ResponseNEVTkEkPropsDto
 }
-/**
- *
- * @export
- * @interface ResponseNEVTkEkPropsDto
- */
 export interface ResponseNEVTkEkPropsDto {
   /**
    * Is control valid or not?
-   * @type {boolean}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   platna: boolean
   /**
    * Date of control
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   datumVykonania: string
   /**
    * Date of validity to
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   datumPlatnosti: string
   /**
    * Number of control certificate
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   cisloOsvedcenia: string
   /**
    * Number of sticker
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   cisloNalepky: string
   /**
    * Number of protocol
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   cisloProtokolu: string
   /**
    * Result of control in text
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   vysledok: string
   /**
    * Type of control
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   druhKontroly: string
   /**
    * Result of control, is shown when you send not valid ID or there is another error
-   * @type {string}
-   * @memberof ResponseNEVTkEkPropsDto
    */
   resultTEKontrola?: string
 }
-/**
- *
- * @export
- * @interface ResponseRfoDocPropsDto
- */
+export interface ResponseRaAddressDto {
+  objectId: number
+  zaciatokPlatnosti: string
+  koniecPlatnosti: string
+  ucinnost: string
+  orientacneCislo: number
+  identifikatorAdresy: number
+  psc: string
+  adresnyBodZemepisnaSirka: number
+  adresnyBodZemepisnaDlzka: number
+  budovaObjectId: number
+  budova?: ResponseRaBuildingDto
+  ulicaObjectId: number
+  ulica?: ResponseRaStreetDto
+}
+export interface ResponseRaBuildingDto {
+  objectId: number
+  zaciatokPlatnosti: string
+  koniecPlatnosti: string
+  ucinnost: string
+  ucelKodCiselnika: number
+  ucelKodPolozky: number
+  ucelNazov: string
+  typKodCiselnika: number
+  typKodPolozky: number
+  typNazov: string
+  maByty: boolean
+  supisneCislo: number
+  obecObjectId: number
+  obec?: ResponseRaMunicipalityDto
+  castObceObjectId: number
+  castObce?: ResponseRaMunicipalityPartDto
+}
+export interface ResponseRaDistrictDto {
+  objectId: number
+  zaciatokPlatnosti: string
+  koniecPlatnosti: string
+  ucinnost: string
+  kodPolozky: string
+  kodCiselnika: string
+  nazov: string
+  krajObjectId: number
+  kraj?: ResponseRaRegionDto
+}
+export interface ResponseRaMunicipalityDto {
+  objectId: number
+  zaciatokPlatnosti: string
+  koniecPlatnosti: string
+  ucinnost: string
+  kodPolozky: string
+  kodCiselnika: string
+  nazov: string
+  statutObce: string
+  okresObjectId: number
+  okres?: ResponseRaDistrictDto
+}
+export interface ResponseRaMunicipalityPartDto {
+  objectId: number
+  zaciatokPlatnosti: string
+  koniecPlatnosti: string
+  ucinnost: string
+  kodPolozky: string
+  kodCiselnika: string
+  nazov: string
+  obecObjectId: number
+  obec?: ResponseRaMunicipalityDto
+}
+export interface ResponseRaRegionDto {
+  objectId: number
+  zaciatokPlatnosti: string
+  koniecPlatnosti: string
+  ucinnost: string
+  kodPolozky: string
+  kodCiselnika: string
+  nazov: string
+}
+export interface ResponseRaStreetDto {
+  objectId: number
+  zaciatokPlatnosti: string
+  koniecPlatnosti: string
+  ucinnost: string
+  nazov: string
+  obecObjectId: number
+  obec?: ResponseRaMunicipalityDto
+  castObceObjectIds: Array<number>
+  castiObce?: ResponseRaMunicipalityPartDto
+}
 export interface ResponseRfoDocPropsDto {
   /**
    * Document code
-   * @type {number}
-   * @memberof ResponseRfoDocPropsDto
    */
   druhDokladuKod: number
   /**
    * Document type
-   * @type {string}
-   * @memberof ResponseRfoDocPropsDto
    */
   druhDokladu: string
   /**
    * Document id
-   * @type {string}
-   * @memberof ResponseRfoDocPropsDto
    */
   jednoznacnyIdentifikator: string
   /**
    * In possesion
-   * @type {boolean}
-   * @memberof ResponseRfoDocPropsDto
    */
   udrzitela: boolean
 }
-/**
- *
- * @export
- * @interface ResponseRfoFamilyMemberPropsDto
- */
 export interface ResponseRfoFamilyMemberPropsDto {
   /**
    * Related person id
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   identifikatorVztahovejOsoby: string
   /**
    * Type of relationship - code
-   * @type {number}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   typRodinnehoVztahuKod: number
   /**
    * Type of relationship
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   typRodinnehoVztahu: string
   /**
    * Date of origin
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   datumVznikuVztahu: string
   /**
    * Marriage certificate - place of issue code
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   miestoVydaniaSobasnehoListuKod: string
   /**
    * Marriage certificate - place of issue
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   miestoVydaniaSobasnehoListu: string
   /**
    * Marriage certificate - place of issue out of country
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   miestoVydaniaSobasnehoListuMimoC: string
   /**
    * Related person relationship code
-   * @type {number}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   vztahRolaVztahovejOsobyKod: number
   /**
    * Related person relationship
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   vztahRolaVztahovejOsoby: string
   /**
    * Primary person relationship code
-   * @type {number}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   vztahRolaPrimarnejOsobyKod: number
   /**
    * Primary person relationship
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   vztahRolaPrimarnejOsoby: string
   /**
    * Marriage register code
-   * @type {number}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   sobasnaMatrikaKod: number
   /**
    * Marriage register
-   * @type {string}
-   * @memberof ResponseRfoFamilyMemberPropsDto
    */
   sobasnaMatrika: string
 }
-/**
- *
- * @export
- * @interface ResponseRfoFamilyNamePropsDto
- */
 export interface ResponseRfoFamilyNamePropsDto {
   /**
    * Family name
-   * @type {string}
-   * @memberof ResponseRfoFamilyNamePropsDto
    */
   rodnePriezvisko: string
   /**
    * Order - family name
-   * @type {number}
-   * @memberof ResponseRfoFamilyNamePropsDto
    */
   poradieRodnehoPriezviska: number
 }
-/**
- *
- * @export
- * @interface ResponseRfoForeignRegionsPropsDto
- */
 export interface ResponseRfoForeignRegionsPropsDto {
   /**
    * Region order number
-   * @type {number}
-   * @memberof ResponseRfoForeignRegionsPropsDto
    */
   poradoveCisloRegionu: number
   /**
    * Name of the region
-   * @type {string}
-   * @memberof ResponseRfoForeignRegionsPropsDto
    */
   nazovRegionu: string
 }
-/**
- *
- * @export
- * @interface ResponseRfoGivenNamePropsDto
- */
 export interface ResponseRfoGivenNamePropsDto {
   /**
    * Given name
-   * @type {string}
-   * @memberof ResponseRfoGivenNamePropsDto
    */
   meno: string
   /**
    * Order - name
-   * @type {number}
-   * @memberof ResponseRfoGivenNamePropsDto
    */
   poradieMena: number
 }
-/**
- *
- * @export
- * @interface ResponseRfoPersonDto
- */
 export interface ResponseRfoPersonDto {
   /**
    * Id
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   ifo: string
   /**
    *
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   identifikatorPravejOsoby: string
   /**
    * Birth number
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   rodneCislo: string
   /**
    * Date of birth
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   datumNarodenia: string
   /**
    * Place of birth - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   miestoNarodeniaKod: number
   /**
    * Place of birth
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   miestoNarodenia: string
   /**
    * Place of birth out of dial
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   miestoNarodeniaMimoCiselnika: string
   /**
    * Country of birth - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   statNarodeniaKod: number
   /**
    * Country of birth
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   statNarodenia: string
   /**
    * Sex - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   pohlavieOsobyKod: number
   /**
    * Sex
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   pohlavieOsoby: string
   /**
    * Marital status - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   rodinnyStavKod: number
   /**
    * Marital status
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   rodinnyStav: string
   /**
    * Birth register code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   rodnaMatrikaKod: number
   /**
    * Birth register
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   rodnaMatrika: string
   /**
    * Nationality - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   narodnostKod?: number
   /**
    * Nationality
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   narodnost: string
   /**
    * Date of death
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   datumUmrtia: string
   /**
    * Place of death - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   miestoUmrtiaKod: number
   /**
    * Place of death
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   miestoUmrtia: string
   /**
    * Place of death out of dial
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   miestoUmrtiaMimoCiselnika: string
   /**
    * Death register code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   umrtnaMatrikaKod: number
   /**
    * Death register
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   umrtnaMatrika: string
   /**
    * Country of death - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   statUmrtiaKod: number
   /**
    * Country of death
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   statUmrtia: string
   /**
    *
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   bifo: string
   /**
    * Status of person - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   typOsobyKod: number
   /**
    * Status of person
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   typOsoby: string
   /**
    * Region of birth - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   okresNarodeniaKod: number
   /**
    * Region of birth
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   okresNarodenia: string
   /**
    * Region of death - code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   okresUmrtiaKod: number
   /**
    * Region of death
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   okresUmrtia: string
   /**
    * Foreigner id
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   identifikatorCudzinca: string
   /**
    * Disclosure level code
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   stupenZverejneniaUdajovKod: number
   /**
    * Disclosure level
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   stupenZverejneniaUdajov: string
   /**
    * Year of birth
-   * @type {number}
-   * @memberof ResponseRfoPersonDto
    */
   rokNarodenia: number
   /**
    * Relationship termination date
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   datumUkonceniaVztahu: string
   /**
    * Cause of invalidity
-   * @type {string}
-   * @memberof ResponseRfoPersonDto
    */
   dovodNeplatnosti: string
   /**
    * Person of interest
-   * @type {boolean}
-   * @memberof ResponseRfoPersonDto
    */
   zaujmovaOsoba: boolean
   /**
    * Given names
-   * @type {Array<ResponseRfoGivenNamePropsDto>}
-   * @memberof ResponseRfoPersonDto
    */
   menaOsoby: Array<ResponseRfoGivenNamePropsDto>
   /**
    * Surnames
-   * @type {Array<ResponseRfoSurnamePropsDto>}
-   * @memberof ResponseRfoPersonDto
    */
   priezviskaOsoby: Array<ResponseRfoSurnamePropsDto>
   /**
    * Family names
-   * @type {Array<ResponseRfoFamilyNamePropsDto>}
-   * @memberof ResponseRfoPersonDto
    */
   rodnePriezviskaOsoby: Array<ResponseRfoFamilyNamePropsDto>
   /**
    * Family members
-   * @type {Array<ResponseRfoFamilyMemberPropsDto>}
-   * @memberof ResponseRfoPersonDto
    */
   rodinniPrislusnici: Array<ResponseRfoFamilyMemberPropsDto>
   /**
    * Stays
-   * @type {Array<ResponseRfoStayPropsDto>}
-   * @memberof ResponseRfoPersonDto
    */
   pobytyOsoby: Array<ResponseRfoStayPropsDto>
   /**
    * Documents
-   * @type {Array<ResponseRfoDocPropsDto>}
-   * @memberof ResponseRfoPersonDto
    */
   doklady: Array<ResponseRfoDocPropsDto>
 }
-/**
- *
- * @export
- * @interface ResponseRfoPersonListDto
- */
 export interface ResponseRfoPersonListDto {
   /**
    * list of persons with same birthNumber or query properties
-   * @type {Array<ResponseRfoPersonDto>}
-   * @memberof ResponseRfoPersonListDto
    */
   items: Array<ResponseRfoPersonDto>
 }
-/**
- *
- * @export
- * @interface ResponseRfoStayPropsDto
- */
 export interface ResponseRfoStayPropsDto {
   /**
    * Type of stay
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   typPobytu: number
   /**
    * Type of state out of dial
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   typPobytuMimoCiselnik: string
   /**
    * Stay register date
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   datumPrihlaseniaPobytu: string
   /**
    * Stay termination date
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   datumUkonceniaPobytu: string
   /**
    * Municipality
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   nazovObce: string
   /**
    * Register number
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   supisneCislo: number
   /**
    * District
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   nazovCastiObce: string
   /**
    * Region
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   nazovOkresu: string
   /**
    * Street
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   nazovUlice: string
   /**
    * Country - code
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   statMimoSr: number
   /**
    * Country
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   nazovStatu: string
   /**
    * Address out of SR
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   adresaMimoSr: string
   /**
    * Region out of SR
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   okresMimoSr: string
   /**
    * Municipality out of SR
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   obecMimoSr: string
   /**
    * District out of SR
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   castObceMimoSr: string
   /**
    * Street out of SR
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   ulicaMimoSr: string
   /**
    * Orientation number out of SR
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   orientacneCisloMimoSr: number
   /**
    * Register number out of SR
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   supisneCisloMimoSr: number
   /**
    * Location inside the building out of SR
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   urcenieMiestaVRamciBudovyMimoSr: string
   /**
    * Stay out of SR
-   * @type {boolean}
-   * @memberof ResponseRfoStayPropsDto
    */
   pobytMimoSr: boolean
   /**
    * Index of building
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   indexDomu: string
   /**
    * Location inside the building
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   urcenieMiestaVRamciBudovy: string
   /**
    * Address id from address register
-   * @type {string}
-   * @memberof ResponseRfoStayPropsDto
    */
   identifikatorAdresyRa: string
   /**
    * Doorway
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   vchodDomu: number
   /**
    * House
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   dom: number
   /**
    * Street
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   ulica: number
   /**
    * District
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   castObce: number
   /**
    * Municipality
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   obec: number
   /**
    * Region
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   okres: number
   /**
    * Orientation number
-   * @type {number}
-   * @memberof ResponseRfoStayPropsDto
    */
   orientacneCislo: number
   /**
    * Foreign regions
-   * @type {ResponseRfoForeignRegionsPropsDto}
-   * @memberof ResponseRfoStayPropsDto
    */
   regionyMimoSr: ResponseRfoForeignRegionsPropsDto
 }
-/**
- *
- * @export
- * @interface ResponseRfoSurnamePropsDto
- */
 export interface ResponseRfoSurnamePropsDto {
   /**
    * Surname
-   * @type {string}
-   * @memberof ResponseRfoSurnamePropsDto
    */
   priezvisko: string
   /**
    * Order - surname
-   * @type {number}
-   * @memberof ResponseRfoSurnamePropsDto
    */
   poradiePriezviska: number
 }
-/**
- *
- * @export
- * @interface ResponseRpoLegalPersonDto
- */
 export interface ResponseRpoLegalPersonDto {
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   ico?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   dic?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   icDph?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   ipo: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   datumVzniku?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   datumZaniku?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   technickyDatumZmenyZaznamu?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   datumCasVytvorenia?: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   datumCasZmeny: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   essa2010?: CodelistDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   skNaceHlavnaCinnost?: CodelistDto
-  /**
-   *
-   * @type {Array<CodelistWithHistory>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   pravneFormy?: Array<CodelistWithHistory>
-  /**
-   *
-   * @type {NamesPropsDto}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   mena?: NamesPropsDto
-  /**
-   *
-   * @type {Array<ValueWithHistory>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   alternativneMena?: Array<ValueWithHistory>
-  /**
-   *
-   * @type {Array<CodelistWithHistory>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   inePravneSkutocnosti?: Array<CodelistWithHistory>
-  /**
-   *
-   * @type {Array<CodelistWithHistory>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   pravneStavy?: Array<CodelistWithHistory>
-  /**
-   *
-   * @type {SourcePropsDto}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   zdroj?: SourcePropsDto
-  /**
-   *
-   * @type {Array<PhoneAddressDto>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   telefonneAdresy?: Array<PhoneAddressDto>
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   internetoveAdresy?: Array<string>
-  /**
-   *
-   * @type {Array<PhysicalAddress>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   adresy?: Array<PhysicalAddress>
-  /**
-   *
-   * @type {Array<IdWithHistory>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   externeIds?: Array<IdWithHistory>
-  /**
-   *
-   * @type {Array<StatutoryPropsDto>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   statutarneOrgany?: Array<StatutoryPropsDto>
-  /**
-   *
-   * @type {Array<StakeholderDto>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   zainteresovaneOsoby?: Array<StakeholderDto>
-  /**
-   *
-   * @type {Array<DepositDto>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   vklady?: Array<DepositDto>
-  /**
-   *
-   * @type {Array<ShareDto>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   akcie?: Array<ShareDto>
-  /**
-   *
-   * @type {Array<Activity>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   predmetyCinnosti?: Array<Activity>
-  /**
-   *
-   * @type {Array<PredecessorSuccessor>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   pravnyNastupcovia?: Array<PredecessorSuccessor>
-  /**
-   *
-   * @type {Array<PredecessorSuccessor>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   pravnyPredchodcovia?: Array<PredecessorSuccessor>
-  /**
-   *
-   * @type {Array<ValueWithHistory>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   opravneniaKonat?: Array<ValueWithHistory>
-  /**
-   *
-   * @type {Array<OrganizationUnitDto>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   organizacneJednotky?: Array<OrganizationUnitDto>
-  /**
-   *
-   * @type {Array<BankConnectionDto>}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   bankoveSpojenia?: Array<BankConnectionDto>
-  /**
-   *
-   * @type {Equity}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   zakladneImania?: Equity
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseRpoLegalPersonDto
-   */
   externeRpoId: string
 }
-/**
- *
- * @export
- * @interface ResponseRsdStateDto
- */
 export interface ResponseRsdStateDto {
   /**
    * Is found or not found
-   * @type {string}
-   * @memberof ResponseRsdStateDto
    */
   result: ResponseRsdStateDtoResultEnum
   /**
    * Is severally disabled from
-   * @type {string}
-   * @memberof ResponseRsdStateDto
    */
   disabledFrom?: string
   /**
    * Is accompanying person for severally disabled
-   * @type {boolean}
-   * @memberof ResponseRsdStateDto
    */
   accompanyingPerson: boolean
 }
@@ -4714,497 +2615,226 @@ export const ResponseRsdStateDtoResultEnum = {
 export type ResponseRsdStateDtoResultEnum =
   (typeof ResponseRsdStateDtoResultEnum)[keyof typeof ResponseRsdStateDtoResultEnum]
 
-/**
- *
- * @export
- * @interface SearchGet200ResponseDto
- */
 export interface SearchGet200ResponseDto {
   /**
    * Zoznam nájdených PO
-   * @type {Array<SearchGet200ResponseResultsInnerDto>}
-   * @memberof SearchGet200ResponseDto
    */
   results: Array<SearchGet200ResponseResultsInnerDto>
   /**
    * Licenčné informácie
-   * @type {string}
-   * @memberof SearchGet200ResponseDto
    */
   license?: string
 }
-/**
- *
- * @export
- * @interface SearchGet200ResponseResultsInnerDto
- */
 export interface SearchGet200ResponseResultsInnerDto {
   /**
    * Jedinedinečný identifikátor záznamu
-   * @type {number}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   id: number
   /**
    * IČO
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   identifiers: Array<TimedValueEntryDto>
   /**
    * Plný názov PO
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   fullNames: Array<TimedValueEntryDto>
   /**
    * Adresa sídla PO
-   * @type {Array<AddressDto>}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   addresses: Array<AddressDto>
   /**
    * Dátum vzniku
-   * @type {string}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   establishment?: string
   /**
    * Dátum zániku
-   * @type {string}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   termination?: string
   /**
    * Source register
-   * @type {SearchGet200ResponseResultsInnerSourceRegisterDto}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   sourceRegister?: SearchGet200ResponseResultsInnerSourceRegisterDto
   /**
    * Dátum poslednej aktualizácie údajov o PO v databáze, t.j. kedy začala byť aktuálna verzia záznamu dostupná cez toto API.
-   * @type {string}
-   * @memberof SearchGet200ResponseResultsInnerDto
    */
   dbModificationDate?: string
 }
-/**
- *
- * @export
- * @interface SearchGet200ResponseResultsInnerSourceRegisterDto
- */
 export interface SearchGet200ResponseResultsInnerSourceRegisterDto {
   /**
    * Value
-   * @type {CodeValueDto}
-   * @memberof SearchGet200ResponseResultsInnerSourceRegisterDto
    */
   value?: CodeValueDto
   /**
    * Registrátor / registrový úrad
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof SearchGet200ResponseResultsInnerSourceRegisterDto
    */
   registrationOffices?: Array<TimedValueEntryDto>
   /**
    * Registračné číslo
-   * @type {Array<TimedValueEntryDto>}
-   * @memberof SearchGet200ResponseResultsInnerSourceRegisterDto
    */
   registrationNumbers?: Array<TimedValueEntryDto>
 }
-/**
- *
- * @export
- * @interface ShareDto
- */
 export interface ShareDto {
-  /**
-   *
-   * @type {string}
-   * @memberof ShareDto
-   */
   podoba: string
-  /**
-   *
-   * @type {string}
-   * @memberof ShareDto
-   */
   forma: string
-  /**
-   *
-   * @type {string}
-   * @memberof ShareDto
-   */
   menovitaHodnota: string
-  /**
-   *
-   * @type {string}
-   * @memberof ShareDto
-   */
   mnozstvo: string
-  /**
-   *
-   * @type {string}
-   * @memberof ShareDto
-   */
   prevoditelnost: string
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof ShareDto
-   */
   mena: CodelistDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof ShareDto
-   */
   druh: CodelistDto
 }
-/**
- *
- * @export
- * @interface SourcePropsDto
- */
 export interface SourcePropsDto {
-  /**
-   *
-   * @type {number}
-   * @memberof SourcePropsDto
-   */
   zdrojovySystemId?: number
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof SourcePropsDto
-   */
   zdrojovyRegister?: CodelistDto
-  /**
-   *
-   * @type {string}
-   * @memberof SourcePropsDto
-   */
   registratori?: string
-  /**
-   *
-   * @type {string}
-   * @memberof SourcePropsDto
-   */
   registracneCisla?: string
 }
-/**
- *
- * @export
- * @interface StakeholderDto
- */
 export interface StakeholderDto {
-  /**
-   *
-   * @type {PersonDto}
-   * @memberof StakeholderDto
-   */
   osoba: PersonDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof StakeholderDto
-   */
   typ: CodelistDto
-  /**
-   *
-   * @type {Array<DepositDto>}
-   * @memberof StakeholderDto
-   */
   vklady: Array<DepositDto>
-  /**
-   *
-   * @type {Array<ShareDto>}
-   * @memberof StakeholderDto
-   */
   akcie: Array<ShareDto>
 }
-/**
- *
- * @export
- * @interface StakeholderSusrDto
- */
 export interface StakeholderSusrDto {
   /**
    * Stakeholder type
-   * @type {CodeValueDto}
-   * @memberof StakeholderSusrDto
    */
   stakeholderType?: CodeValueDto
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof StakeholderSusrDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof StakeholderSusrDto
    */
   validTo?: string
   /**
    * Adresa
-   * @type {AddressDto}
-   * @memberof StakeholderSusrDto
    */
   address?: AddressDto
   /**
    * Person name
-   * @type {PersonNameDto}
-   * @memberof StakeholderSusrDto
    */
   personName?: PersonNameDto
   /**
    * IČO (vypĺňa sa v prípade, ak je zainteresovaná osoba PO alebo organizačná zložka)
-   * @type {string}
-   * @memberof StakeholderSusrDto
    */
   identifier?: string
   /**
    * Plný názov PO (vypĺňa sa v prípade, ak je zainteresovaná osoba PO alebo organizačná zložka)
-   * @type {string}
-   * @memberof StakeholderSusrDto
    */
   fullName?: string
   /**
    * Dátum vzniku
-   * @type {string}
-   * @memberof StakeholderSusrDto
    */
   establishment?: string
   /**
    * Dátum zániku
-   * @type {string}
-   * @memberof StakeholderSusrDto
    */
   termination?: string
 }
-/**
- *
- * @export
- * @interface StatutaryBodyDto
- */
 export interface StatutaryBodyDto {
   /**
    * Stakeholder type
-   * @type {CodeValueDto}
-   * @memberof StatutaryBodyDto
    */
   stakeholderType?: CodeValueDto
   /**
    * Statutary body member
-   * @type {CodeValueDto}
-   * @memberof StatutaryBodyDto
    */
   statutoryBodyMember?: CodeValueDto
   /**
    * Platnosť od
-   * @type {string}
-   * @memberof StatutaryBodyDto
    */
   validFrom?: string
   /**
    * Platnosť do
-   * @type {string}
-   * @memberof StatutaryBodyDto
    */
   validTo?: string
   /**
    * Adresa
-   * @type {AddressDto}
-   * @memberof StatutaryBodyDto
    */
   address?: AddressDto
   /**
    * Person name
-   * @type {PersonNameDto}
-   * @memberof StatutaryBodyDto
    */
   personName?: PersonNameDto
   /**
    * IČO (vypĺňa sa v prípade, ak je štatutár PO alebo organizačná zložka)
-   * @type {string}
-   * @memberof StatutaryBodyDto
    */
   identifier?: string
   /**
    * Plný názov PO (vypĺňa sa v prípade, ak je štatutár PO alebo organizačná zložka)
-   * @type {string}
-   * @memberof StatutaryBodyDto
    */
   fullName?: string
   /**
    * Dátum vzniku
-   * @type {string}
-   * @memberof StatutaryBodyDto
    */
   establishment?: string
   /**
    * Dátum zániku
-   * @type {string}
-   * @memberof StatutaryBodyDto
    */
   termination?: string
 }
-/**
- *
- * @export
- * @interface StatutoryPropsDto
- */
 export interface StatutoryPropsDto {
-  /**
-   *
-   * @type {PersonDto}
-   * @memberof StatutoryPropsDto
-   */
   osoba: PersonDto
-  /**
-   *
-   * @type {CodelistDto}
-   * @memberof StatutoryPropsDto
-   */
   typ: CodelistDto
 }
-/**
- *
- * @export
- * @interface SurnamePropsDto
- */
 export interface SurnamePropsDto {
-  /**
-   *
-   * @type {string}
-   * @memberof SurnamePropsDto
-   */
   priezvisko: string
-  /**
-   *
-   * @type {boolean}
-   * @memberof SurnamePropsDto
-   */
   priznakPrimarnehoPriezviska: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof SurnamePropsDto
-   */
   prefix: string
 }
-/**
- *
- * @export
- * @interface TimedCodeValueEntryDto
- */
 export interface TimedCodeValueEntryDto {
   /**
    * Hodnota s kódom
-   * @type {CodeValueDto}
-   * @memberof TimedCodeValueEntryDto
    */
   value?: CodeValueDto
   /**
    * Platnosť hodnoty od
-   * @type {string}
-   * @memberof TimedCodeValueEntryDto
    */
   validFrom?: string
   /**
    * Platnosť hodnoty do
-   * @type {string}
-   * @memberof TimedCodeValueEntryDto
    */
   validTo?: string
 }
-/**
- *
- * @export
- * @interface TimedValueEntryDto
- */
 export interface TimedValueEntryDto {
   /**
    * Hodnota
-   * @type {string}
-   * @memberof TimedValueEntryDto
    */
   value?: string
   /**
    * Platnosť hodnoty od
-   * @type {string}
-   * @memberof TimedValueEntryDto
    */
   validFrom?: string
   /**
    * Platnosť hodnoty do
-   * @type {string}
-   * @memberof TimedValueEntryDto
    */
   validTo?: string
 }
-/**
- *
- * @export
- * @interface TitlesPropsDto
- */
 export interface TitlesPropsDto {
-  /**
-   *
-   * @type {string}
-   * @memberof TitlesPropsDto
-   */
   typ: string
-  /**
-   *
-   * @type {string}
-   * @memberof TitlesPropsDto
-   */
   titul: string
-  /**
-   *
-   * @type {string}
-   * @memberof TitlesPropsDto
-   */
   pozicia: string
 }
-/**
- *
- * @export
- * @interface UnprocessableEntityErrorDto
- */
 export interface UnprocessableEntityErrorDto {
   /**
    * Status code
-   * @type {object}
-   * @memberof UnprocessableEntityErrorDto
    */
   statusCode: object
   /**
    *
-   * @type {string}
-   * @memberof UnprocessableEntityErrorDto
    */
   state: string
   /**
    * Error name
-   * @type {string}
-   * @memberof UnprocessableEntityErrorDto
    */
   errorName: UnprocessableEntityErrorDtoErrorNameEnum
   /**
    *
-   * @type {string}
-   * @memberof UnprocessableEntityErrorDto
    */
   type: string
   /**
    * Additional info
-   * @type {object}
-   * @memberof UnprocessableEntityErrorDto
    */
   message: object
 }
@@ -5221,41 +2851,15 @@ export const UnprocessableEntityErrorDtoErrorNameEnum = {
 export type UnprocessableEntityErrorDtoErrorNameEnum =
   (typeof UnprocessableEntityErrorDtoErrorNameEnum)[keyof typeof UnprocessableEntityErrorDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface ValueWithHistory
- */
 export interface ValueWithHistory {
-  /**
-   *
-   * @type {boolean}
-   * @memberof ValueWithHistory
-   */
   priznakAktualnehoZaznamu: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof ValueWithHistory
-   */
   platnostOd: string
-  /**
-   *
-   * @type {string}
-   * @memberof ValueWithHistory
-   */
   platnostDo: string
-  /**
-   *
-   * @type {string}
-   * @memberof ValueWithHistory
-   */
   hodnota: string
 }
 
 /**
  * AdminApi - axios parameter creator
- * @export
  */
 export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -5293,6 +2897,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
 
       localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5313,7 +2918,6 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
 
 /**
  * AdminApi - functional programming interface
- * @export
  */
 export const AdminApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
@@ -5349,7 +2953,6 @@ export const AdminApiFp = function (configuration?: Configuration) {
 
 /**
  * AdminApi - factory interface
- * @export
  */
 export const AdminApiFactory = function (
   configuration?: Configuration,
@@ -5378,9 +2981,6 @@ export const AdminApiFactory = function (
 
 /**
  * AdminApi - object-oriented interface
- * @export
- * @class AdminApi
- * @extends {BaseAPI}
  */
 export class AdminApi extends BaseAPI {
   /**
@@ -5389,7 +2989,6 @@ export class AdminApi extends BaseAPI {
    * @param {Array<any>} [files] Required array of file/files with RPO (zip) data inside
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminControllerInsertOrUpdateDataInRpo(
     files?: Array<any>,
@@ -5403,7 +3002,6 @@ export class AdminApi extends BaseAPI {
 
 /**
  * DefaultApi - axios parameter creator
- * @export
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -5426,6 +3024,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -5444,7 +3044,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 
 /**
  * DefaultApi - functional programming interface
- * @export
  */
 export const DefaultApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
@@ -5475,7 +3074,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
 
 /**
  * DefaultApi - factory interface
- * @export
  */
 export const DefaultApiFactory = function (
   configuration?: Configuration,
@@ -5498,9 +3096,6 @@ export const DefaultApiFactory = function (
 
 /**
  * DefaultApi - object-oriented interface
- * @export
- * @class DefaultApi
- * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
   /**
@@ -5508,7 +3103,6 @@ export class DefaultApi extends BaseAPI {
    * @summary Healthcheck
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public appControllerHealth(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
@@ -5519,7 +3113,6 @@ export class DefaultApi extends BaseAPI {
 
 /**
  * DeveloperApi - axios parameter creator
- * @export
  */
 export const DeveloperApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -5565,6 +3158,7 @@ export const DeveloperApiAxiosParamCreator = function (configuration?: Configura
       }
 
       localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5585,7 +3179,6 @@ export const DeveloperApiAxiosParamCreator = function (configuration?: Configura
 
 /**
  * DeveloperApi - functional programming interface
- * @export
  */
 export const DeveloperApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DeveloperApiAxiosParamCreator(configuration)
@@ -5623,7 +3216,6 @@ export const DeveloperApiFp = function (configuration?: Configuration) {
 
 /**
  * DeveloperApi - factory interface
- * @export
  */
 export const DeveloperApiFactory = function (
   configuration?: Configuration,
@@ -5654,9 +3246,6 @@ export const DeveloperApiFactory = function (
 
 /**
  * DeveloperApi - object-oriented interface
- * @export
- * @class DeveloperApi
- * @extends {BaseAPI}
  */
 export class DeveloperApi extends BaseAPI {
   /**
@@ -5666,7 +3255,6 @@ export class DeveloperApi extends BaseAPI {
    * @param {Array<any>} [files] Required array of file/files with RPO/ RFO/ RA data inside
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DeveloperApi
    */
   public developerControllerPushRpoExchangeData(
     data?: object,
@@ -5681,7 +3269,6 @@ export class DeveloperApi extends BaseAPI {
 
 /**
  * KNKatasterNehnutenostApi - axios parameter creator
- * @export
  */
 export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -5724,6 +3311,8 @@ export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration
       if (query !== undefined) {
         localVarQueryParameter['query'] = query
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5786,6 +3375,8 @@ export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration
       if (registerNumber !== undefined) {
         localVarQueryParameter['registerNumber'] = registerNumber
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5857,6 +3448,8 @@ export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration
         localVarQueryParameter['dateOfBirth'] = dateOfBirth
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -5875,7 +3468,6 @@ export const KNKatasterNehnutenostApiAxiosParamCreator = function (configuration
 
 /**
  * KNKatasterNehnutenostApi - functional programming interface
- * @export
  */
 export const KNKatasterNehnutenostApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = KNKatasterNehnutenostApiAxiosParamCreator(configuration)
@@ -5988,7 +3580,6 @@ export const KNKatasterNehnutenostApiFp = function (configuration?: Configuratio
 
 /**
  * KNKatasterNehnutenostApi - factory interface
- * @export
  */
 export const KNKatasterNehnutenostApiFactory = function (
   configuration?: Configuration,
@@ -6058,9 +3649,6 @@ export const KNKatasterNehnutenostApiFactory = function (
 
 /**
  * KNKatasterNehnutenostApi - object-oriented interface
- * @export
- * @class KNKatasterNehnutenostApi
- * @extends {BaseAPI}
  */
 export class KNKatasterNehnutenostApi extends BaseAPI {
   /**
@@ -6069,7 +3657,6 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
    * @param {string} query query of general call to \&quot;kataster\&quot; in base64, for example \&quot;&amp;$filter&#x3D;Municipality/Code%20eq%20&lt;kodeObce&gt;\&quot; is in base64 \&quot;JiRmaWx0ZXI9TXVuaWNpcGFsaXR5L0NvZGUlMjBlcSUyMDxrb2RlT2JjZT4&#x3D;\&quot;
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof KNKatasterNehnutenostApi
    */
   public knControllerGeneralAgenda(
     urlPath: string,
@@ -6089,7 +3676,6 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
    * @param {string} registerNumber Register Number - Súpisné číslo
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof KNKatasterNehnutenostApi
    */
   public knControllerGetOwner(
     districName: string,
@@ -6111,7 +3697,6 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
    * @param {string} dateOfBirth Date of birth. (yyyy-mm-dd)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof KNKatasterNehnutenostApi
    */
   public knControllerGetProperties(
     municipalityName: string,
@@ -6128,7 +3713,6 @@ export class KNKatasterNehnutenostApi extends BaseAPI {
 
 /**
  * NEVNrodnEvidenciaVozidielApi - axios parameter creator
- * @export
  */
 export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -6162,6 +3746,8 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6208,6 +3794,8 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6252,6 +3840,8 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6298,6 +3888,8 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6342,6 +3934,8 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6388,6 +3982,8 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6406,7 +4002,6 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
 
 /**
  * NEVNrodnEvidenciaVozidielApi - functional programming interface
- * @export
  */
 export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = NEVNrodnEvidenciaVozidielApiAxiosParamCreator(configuration)
@@ -6581,7 +4176,6 @@ export const NEVNrodnEvidenciaVozidielApiFp = function (configuration?: Configur
 
 /**
  * NEVNrodnEvidenciaVozidielApi - factory interface
- * @export
  */
 export const NEVNrodnEvidenciaVozidielApiFactory = function (
   configuration?: Configuration,
@@ -6685,9 +4279,6 @@ export const NEVNrodnEvidenciaVozidielApiFactory = function (
 
 /**
  * NEVNrodnEvidenciaVozidielApi - object-oriented interface
- * @export
- * @class NEVNrodnEvidenciaVozidielApi
- * @extends {BaseAPI}
  */
 export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
   /**
@@ -6696,7 +4287,6 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    * @param {string} id
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NEVNrodnEvidenciaVozidielApi
    */
   public nevControllerTechnicalEmisionControl(id: string, options?: RawAxiosRequestConfig) {
     return NEVNrodnEvidenciaVozidielApiFp(this.configuration)
@@ -6710,7 +4300,6 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    * @param {string} ecv
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NEVNrodnEvidenciaVozidielApi
    */
   public nevControllerVehicleByECV(ecv: string, options?: RawAxiosRequestConfig) {
     return NEVNrodnEvidenciaVozidielApiFp(this.configuration)
@@ -6724,7 +4313,6 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    * @param {string} birthNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NEVNrodnEvidenciaVozidielApi
    */
   public nevControllerVehicleByHolderBirthNumber(
     birthNumber: string,
@@ -6741,7 +4329,6 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    * @param {string} ico
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NEVNrodnEvidenciaVozidielApi
    */
   public nevControllerVehicleByHolderICO(ico: string, options?: RawAxiosRequestConfig) {
     return NEVNrodnEvidenciaVozidielApiFp(this.configuration)
@@ -6755,7 +4342,6 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    * @param {string} birthNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NEVNrodnEvidenciaVozidielApi
    */
   public nevControllerVehicleByOwnerBirthNumber(
     birthNumber: string,
@@ -6772,7 +4358,6 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
    * @param {string} ico
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof NEVNrodnEvidenciaVozidielApi
    */
   public nevControllerVehicleByOwnerICO(ico: string, options?: RawAxiosRequestConfig) {
     return NEVNrodnEvidenciaVozidielApiFp(this.configuration)
@@ -6782,8 +4367,1632 @@ export class NEVNrodnEvidenciaVozidielApi extends BaseAPI {
 }
 
 /**
+ * RARegisterAdriesApi - axios parameter creator
+ */
+export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Find address by id
+     * @param {string} identifikatorAdresy
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindAddress: async (
+      identifikatorAdresy: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'identifikatorAdresy' is not null or undefined
+      assertParamExists('raControllerFindAddress', 'identifikatorAdresy', identifikatorAdresy)
+      const localVarPath = `/ra/adresy/identifikatorAdresy/{identifikatorAdresy}`.replace(
+        `{${'identifikatorAdresy'}}`,
+        encodeURIComponent(String(identifikatorAdresy)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find district by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindDistricByCode: async (
+      kodPolozky: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'kodPolozky' is not null or undefined
+      assertParamExists('raControllerFindDistricByCode', 'kodPolozky', kodPolozky)
+      const localVarPath = `/ra/okresy/kodPolozky/{kodPolozky}`.replace(
+        `{${'kodPolozky'}}`,
+        encodeURIComponent(String(kodPolozky)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find district by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindDistrictByName: async (
+      nazov: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'nazov' is not null or undefined
+      assertParamExists('raControllerFindDistrictByName', 'nazov', nazov)
+      const localVarPath = `/ra/okresy/nazov/{nazov}`.replace(
+        `{${'nazov'}}`,
+        encodeURIComponent(String(nazov)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find municiaplity by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindMunicipalityByCode: async (
+      kodPolozky: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'kodPolozky' is not null or undefined
+      assertParamExists('raControllerFindMunicipalityByCode', 'kodPolozky', kodPolozky)
+      const localVarPath = `/ra/obce/kodPolozky/{kodPolozky}`.replace(
+        `{${'kodPolozky'}}`,
+        encodeURIComponent(String(kodPolozky)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find municipality by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindMunicipalityByName: async (
+      nazov: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'nazov' is not null or undefined
+      assertParamExists('raControllerFindMunicipalityByName', 'nazov', nazov)
+      const localVarPath = `/ra/obce/nazov/{nazov}`.replace(
+        `{${'nazov'}}`,
+        encodeURIComponent(String(nazov)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find municiaplity part by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindMunicipalityPartByName: async (
+      nazov: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'nazov' is not null or undefined
+      assertParamExists('raControllerFindMunicipalityPartByName', 'nazov', nazov)
+      const localVarPath = `/ra/castObce/nazov/{nazov}`.replace(
+        `{${'nazov'}}`,
+        encodeURIComponent(String(nazov)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find region by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindRegionByCode: async (
+      kodPolozky: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'kodPolozky' is not null or undefined
+      assertParamExists('raControllerFindRegionByCode', 'kodPolozky', kodPolozky)
+      const localVarPath = `/ra/kraje/kodPolozky/{kodPolozky}`.replace(
+        `{${'kodPolozky'}}`,
+        encodeURIComponent(String(kodPolozky)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find region by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindRegionByName: async (
+      nazov: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'nazov' is not null or undefined
+      assertParamExists('raControllerFindRegionByName', 'nazov', nazov)
+      const localVarPath = `/ra/kraje/nazov/{nazov}`.replace(
+        `{${'nazov'}}`,
+        encodeURIComponent(String(nazov)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Find street by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindStreetByName: async (
+      nazov: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'nazov' is not null or undefined
+      assertParamExists('raControllerFindStreetByName', 'nazov', nazov)
+      const localVarPath = `/ra/ulice/nazov/{nazov}`.replace(
+        `{${'nazov'}}`,
+        encodeURIComponent(String(nazov)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Find addresses using text filter. Optionally, change number of returned records or set flag for detailed response. If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+     * @summary Find addresses from MINV RA API.
+     * @param {string} text Address search filter.
+     * @param {number} [size] Maximum number of returned records.
+     * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerGetAddressList: async (
+      text: string,
+      size?: number,
+      getDetail?: boolean,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'text' is not null or undefined
+      assertParamExists('raControllerGetAddressList', 'text', text)
+      const localVarPath = `/ra/address`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (size !== undefined) {
+        localVarQueryParameter['size'] = size
+      }
+
+      if (getDetail !== undefined) {
+        localVarQueryParameter['getDetail'] = getDetail
+      }
+
+      if (text !== undefined) {
+        localVarQueryParameter['text'] = text
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Find addresses from area given by point and radius. Optionally, change number of returned records or set flag for detailed response.If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+     * @summary Find addresses from MINV RA API using GPS location.
+     * @param {number} lat Latitude.
+     * @param {number} lon Longitude.
+     * @param {number} [size] Maximum number of returned records.
+     * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+     * @param {number} [tolerance] Radius of circle in meters with center at [lon, lat] coordinates.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerGetAddressListFromPoint: async (
+      lat: number,
+      lon: number,
+      size?: number,
+      getDetail?: boolean,
+      tolerance?: number,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'lat' is not null or undefined
+      assertParamExists('raControllerGetAddressListFromPoint', 'lat', lat)
+      // verify required parameter 'lon' is not null or undefined
+      assertParamExists('raControllerGetAddressListFromPoint', 'lon', lon)
+      const localVarPath = `/ra/address-from-point`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (size !== undefined) {
+        localVarQueryParameter['size'] = size
+      }
+
+      if (getDetail !== undefined) {
+        localVarQueryParameter['getDetail'] = getDetail
+      }
+
+      if (lat !== undefined) {
+        localVarQueryParameter['lat'] = lat
+      }
+
+      if (lon !== undefined) {
+        localVarQueryParameter['lon'] = lon
+      }
+
+      if (tolerance !== undefined) {
+        localVarQueryParameter['tolerance'] = tolerance
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Load all districts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadDistricts: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/ra/okresy`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Load all municipalities
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadMunicipalities: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/ra/obce`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Load all municipality parts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadMunicipalityParts: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/ra/castObce`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Load all regions
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadRegions: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/ra/kraje`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * RARegisterAdriesApi - functional programming interface
+ */
+export const RARegisterAdriesApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = RARegisterAdriesApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Find address by id
+     * @param {string} identifikatorAdresy
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindAddress(
+      identifikatorAdresy: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaAddressDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindAddress(
+        identifikatorAdresy,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindAddress']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find district by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindDistricByCode(
+      kodPolozky: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaDistrictDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindDistricByCode(
+        kodPolozky,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindDistricByCode']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find district by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindDistrictByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaDistrictDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindDistrictByName(
+        nazov,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindDistrictByName']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find municiaplity by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindMunicipalityByCode(
+      kodPolozky: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaMunicipalityDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindMunicipalityByCode(
+        kodPolozky,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindMunicipalityByCode']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find municipality by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindMunicipalityByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaMunicipalityDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindMunicipalityByName(
+        nazov,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindMunicipalityByName']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find municiaplity part by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindMunicipalityPartByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaMunicipalityPartDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.raControllerFindMunicipalityPartByName(nazov, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindMunicipalityPartByName']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find region by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindRegionByCode(
+      kodPolozky: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaRegionDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindRegionByCode(
+        kodPolozky,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindRegionByCode']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find region by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindRegionByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaRegionDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindRegionByName(
+        nazov,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindRegionByName']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Find street by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerFindStreetByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRaStreetDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerFindStreetByName(
+        nazov,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerFindStreetByName']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Find addresses using text filter. Optionally, change number of returned records or set flag for detailed response. If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+     * @summary Find addresses from MINV RA API.
+     * @param {string} text Address search filter.
+     * @param {number} [size] Maximum number of returned records.
+     * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerGetAddressList(
+      text: string,
+      size?: number,
+      getDetail?: boolean,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AddressDetailDto>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerGetAddressList(
+        text,
+        size,
+        getDetail,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerGetAddressList']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Find addresses from area given by point and radius. Optionally, change number of returned records or set flag for detailed response.If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+     * @summary Find addresses from MINV RA API using GPS location.
+     * @param {number} lat Latitude.
+     * @param {number} lon Longitude.
+     * @param {number} [size] Maximum number of returned records.
+     * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+     * @param {number} [tolerance] Radius of circle in meters with center at [lon, lat] coordinates.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerGetAddressListFromPoint(
+      lat: number,
+      lon: number,
+      size?: number,
+      getDetail?: boolean,
+      tolerance?: number,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AddressDetailDto>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerGetAddressListFromPoint(
+        lat,
+        lon,
+        size,
+        getDetail,
+        tolerance,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerGetAddressListFromPoint']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Load all districts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerLoadDistricts(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ResponseRaDistrictDto>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerLoadDistricts(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerLoadDistricts']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Load all municipalities
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerLoadMunicipalities(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ResponseRaMunicipalityDto>>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.raControllerLoadMunicipalities(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerLoadMunicipalities']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Load all municipality parts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerLoadMunicipalityParts(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<Array<ResponseRaMunicipalityPartDto>>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.raControllerLoadMunicipalityParts(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerLoadMunicipalityParts']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Load all regions
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async raControllerLoadRegions(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ResponseRaRegionDto>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.raControllerLoadRegions(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RARegisterAdriesApi.raControllerLoadRegions']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * RARegisterAdriesApi - factory interface
+ */
+export const RARegisterAdriesApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = RARegisterAdriesApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Find address by id
+     * @param {string} identifikatorAdresy
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindAddress(
+      identifikatorAdresy: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaAddressDto> {
+      return localVarFp
+        .raControllerFindAddress(identifikatorAdresy, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find district by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindDistricByCode(
+      kodPolozky: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaDistrictDto> {
+      return localVarFp
+        .raControllerFindDistricByCode(kodPolozky, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find district by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindDistrictByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaDistrictDto> {
+      return localVarFp
+        .raControllerFindDistrictByName(nazov, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find municiaplity by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindMunicipalityByCode(
+      kodPolozky: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaMunicipalityDto> {
+      return localVarFp
+        .raControllerFindMunicipalityByCode(kodPolozky, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find municipality by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindMunicipalityByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaMunicipalityDto> {
+      return localVarFp
+        .raControllerFindMunicipalityByName(nazov, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find municiaplity part by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindMunicipalityPartByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaMunicipalityPartDto> {
+      return localVarFp
+        .raControllerFindMunicipalityPartByName(nazov, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find region by code value
+     * @param {string} kodPolozky
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindRegionByCode(
+      kodPolozky: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaRegionDto> {
+      return localVarFp
+        .raControllerFindRegionByCode(kodPolozky, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find region by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindRegionByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaRegionDto> {
+      return localVarFp
+        .raControllerFindRegionByName(nazov, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Find street by name
+     * @param {string} nazov
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerFindStreetByName(
+      nazov: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseRaStreetDto> {
+      return localVarFp
+        .raControllerFindStreetByName(nazov, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Find addresses using text filter. Optionally, change number of returned records or set flag for detailed response. If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+     * @summary Find addresses from MINV RA API.
+     * @param {string} text Address search filter.
+     * @param {number} [size] Maximum number of returned records.
+     * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerGetAddressList(
+      text: string,
+      size?: number,
+      getDetail?: boolean,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<AddressDetailDto>> {
+      return localVarFp
+        .raControllerGetAddressList(text, size, getDetail, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Find addresses from area given by point and radius. Optionally, change number of returned records or set flag for detailed response.If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+     * @summary Find addresses from MINV RA API using GPS location.
+     * @param {number} lat Latitude.
+     * @param {number} lon Longitude.
+     * @param {number} [size] Maximum number of returned records.
+     * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+     * @param {number} [tolerance] Radius of circle in meters with center at [lon, lat] coordinates.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerGetAddressListFromPoint(
+      lat: number,
+      lon: number,
+      size?: number,
+      getDetail?: boolean,
+      tolerance?: number,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<AddressDetailDto>> {
+      return localVarFp
+        .raControllerGetAddressListFromPoint(lat, lon, size, getDetail, tolerance, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Load all districts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadDistricts(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<ResponseRaDistrictDto>> {
+      return localVarFp
+        .raControllerLoadDistricts(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Load all municipalities
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadMunicipalities(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<ResponseRaMunicipalityDto>> {
+      return localVarFp
+        .raControllerLoadMunicipalities(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Load all municipality parts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadMunicipalityParts(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<ResponseRaMunicipalityPartDto>> {
+      return localVarFp
+        .raControllerLoadMunicipalityParts(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Load all regions
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    raControllerLoadRegions(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<ResponseRaRegionDto>> {
+      return localVarFp.raControllerLoadRegions(options).then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * RARegisterAdriesApi - object-oriented interface
+ */
+export class RARegisterAdriesApi extends BaseAPI {
+  /**
+   *
+   * @summary Find address by id
+   * @param {string} identifikatorAdresy
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindAddress(identifikatorAdresy: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindAddress(identifikatorAdresy, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find district by code value
+   * @param {string} kodPolozky
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindDistricByCode(kodPolozky: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindDistricByCode(kodPolozky, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find district by name
+   * @param {string} nazov
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindDistrictByName(nazov: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindDistrictByName(nazov, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find municiaplity by code value
+   * @param {string} kodPolozky
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindMunicipalityByCode(kodPolozky: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindMunicipalityByCode(kodPolozky, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find municipality by name
+   * @param {string} nazov
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindMunicipalityByName(nazov: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindMunicipalityByName(nazov, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find municiaplity part by name
+   * @param {string} nazov
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindMunicipalityPartByName(nazov: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindMunicipalityPartByName(nazov, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find region by code value
+   * @param {string} kodPolozky
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindRegionByCode(kodPolozky: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindRegionByCode(kodPolozky, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find region by name
+   * @param {string} nazov
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindRegionByName(nazov: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindRegionByName(nazov, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Find street by name
+   * @param {string} nazov
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerFindStreetByName(nazov: string, options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerFindStreetByName(nazov, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Find addresses using text filter. Optionally, change number of returned records or set flag for detailed response. If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+   * @summary Find addresses from MINV RA API.
+   * @param {string} text Address search filter.
+   * @param {number} [size] Maximum number of returned records.
+   * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerGetAddressList(
+    text: string,
+    size?: number,
+    getDetail?: boolean,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerGetAddressList(text, size, getDetail, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Find addresses from area given by point and radius. Optionally, change number of returned records or set flag for detailed response.If `getDetail` flag is set to `true` and service is unable to get address details, an error is thrown.
+   * @summary Find addresses from MINV RA API using GPS location.
+   * @param {number} lat Latitude.
+   * @param {number} lon Longitude.
+   * @param {number} [size] Maximum number of returned records.
+   * @param {boolean} [getDetail] Controls if detailed information containing data such as postal code are returned.
+   * @param {number} [tolerance] Radius of circle in meters with center at [lon, lat] coordinates.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerGetAddressListFromPoint(
+    lat: number,
+    lon: number,
+    size?: number,
+    getDetail?: boolean,
+    tolerance?: number,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerGetAddressListFromPoint(lat, lon, size, getDetail, tolerance, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Load all districts
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerLoadDistricts(options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerLoadDistricts(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Load all municipalities
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerLoadMunicipalities(options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerLoadMunicipalities(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Load all municipality parts
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerLoadMunicipalityParts(options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerLoadMunicipalityParts(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Load all regions
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public raControllerLoadRegions(options?: RawAxiosRequestConfig) {
+    return RARegisterAdriesApiFp(this.configuration)
+      .raControllerLoadRegions(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * RFORegisterFyzickchOsbApi - axios parameter creator
- * @export
  */
 export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -6818,6 +6027,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6876,6 +6087,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
         localVarQueryParameter['updateInDatabase'] = updateInDatabase
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6929,6 +6142,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       if (updateInDatabase !== undefined) {
         localVarQueryParameter['updateInDatabase'] = updateInDatabase
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6997,6 +6212,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       if (datumNarodenia !== undefined) {
         localVarQueryParameter['datumNarodenia'] = datumNarodenia
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -7070,6 +6287,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
         localVarQueryParameter['rodnePriezvisko'] = rodnePriezvisko
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -7114,6 +6333,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -7160,6 +6381,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -7205,6 +6428,8 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -7223,7 +6448,6 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
 
 /**
  * RFORegisterFyzickchOsbApi - functional programming interface
- * @export
  */
 export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = RFORegisterFyzickchOsbApiAxiosParamCreator(configuration)
@@ -7489,7 +6713,6 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
 
 /**
  * RFORegisterFyzickchOsbApi - factory interface
- * @export
  */
 export const RFORegisterFyzickchOsbApiFactory = function (
   configuration?: Configuration,
@@ -7659,9 +6882,6 @@ export const RFORegisterFyzickchOsbApiFactory = function (
 
 /**
  * RFORegisterFyzickchOsbApi - object-oriented interface
- * @export
- * @class RFORegisterFyzickchOsbApi
- * @extends {BaseAPI}
  */
 export class RFORegisterFyzickchOsbApi extends BaseAPI {
   /**
@@ -7670,7 +6890,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {string} rodneCislo
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerGetList(rodneCislo: string, options?: RawAxiosRequestConfig) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
@@ -7686,7 +6905,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {RfoControllerGetOneUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerGetOne(
     rodneCislo: string,
@@ -7707,7 +6925,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {RfoControllerGetOneByIfoUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerGetOneByIfo(
     ifo: string,
@@ -7729,7 +6946,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {Array<string>} [rodnePriezvisko] Birth Second name of the person
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerGetOneByListOfNames(
     meno: Array<string>,
@@ -7754,7 +6970,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {string} [rodnePriezvisko]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerGetOneByName(
     meno: string,
@@ -7784,7 +6999,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {string} rodneCislo
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerGetOneDcom(rodneCislo: string, options?: RawAxiosRequestConfig) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
@@ -7798,7 +7012,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {string} ifo
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerMark(ifo: string, options?: RawAxiosRequestConfig) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
@@ -7812,7 +7025,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {string} ifo
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RFORegisterFyzickchOsbApi
    */
   public rfoControllerUnMark(ifo: string, options?: RawAxiosRequestConfig) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
@@ -7821,54 +7033,36 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
   }
 }
 
-/**
- * @export
- */
 export const RfoControllerGetOneGetFromDatabaseEnum = {
   True: 'true',
   False: 'false',
 } as const
 export type RfoControllerGetOneGetFromDatabaseEnum =
   (typeof RfoControllerGetOneGetFromDatabaseEnum)[keyof typeof RfoControllerGetOneGetFromDatabaseEnum]
-/**
- * @export
- */
 export const RfoControllerGetOneUpdateInDatabaseEnum = {
   True: 'true',
   False: 'false',
 } as const
 export type RfoControllerGetOneUpdateInDatabaseEnum =
   (typeof RfoControllerGetOneUpdateInDatabaseEnum)[keyof typeof RfoControllerGetOneUpdateInDatabaseEnum]
-/**
- * @export
- */
 export const RfoControllerGetOneByIfoGetFromDatabaseEnum = {
   True: 'true',
   False: 'false',
 } as const
 export type RfoControllerGetOneByIfoGetFromDatabaseEnum =
   (typeof RfoControllerGetOneByIfoGetFromDatabaseEnum)[keyof typeof RfoControllerGetOneByIfoGetFromDatabaseEnum]
-/**
- * @export
- */
 export const RfoControllerGetOneByIfoUpdateInDatabaseEnum = {
   True: 'true',
   False: 'false',
 } as const
 export type RfoControllerGetOneByIfoUpdateInDatabaseEnum =
   (typeof RfoControllerGetOneByIfoUpdateInDatabaseEnum)[keyof typeof RfoControllerGetOneByIfoUpdateInDatabaseEnum]
-/**
- * @export
- */
 export const RfoControllerGetOneByNameGetFromDatabaseEnum = {
   True: 'true',
   False: 'false',
 } as const
 export type RfoControllerGetOneByNameGetFromDatabaseEnum =
   (typeof RfoControllerGetOneByNameGetFromDatabaseEnum)[keyof typeof RfoControllerGetOneByNameGetFromDatabaseEnum]
-/**
- * @export
- */
 export const RfoControllerGetOneByNameUpdateInDatabaseEnum = {
   True: 'true',
   False: 'false',
@@ -7878,7 +7072,6 @@ export type RfoControllerGetOneByNameUpdateInDatabaseEnum =
 
 /**
  * RPORegisterPrvnickchOsbApi - axios parameter creator
- * @export
  */
 export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -7916,6 +7109,8 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
       if (fullName !== undefined) {
         localVarQueryParameter['fullName'] = fullName
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -7960,6 +7155,8 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -8002,6 +7199,8 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -8048,6 +7247,8 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -8097,6 +7298,8 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
         localVarQueryParameter['returnDetail'] = returnDetail
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -8142,6 +7345,8 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -8185,6 +7390,8 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -8203,7 +7410,6 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
 
 /**
  * RPORegisterPrvnickchOsbApi - functional programming interface
- * @export
  */
 export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = RPORegisterPrvnickchOsbApiAxiosParamCreator(configuration)
@@ -8430,7 +7636,6 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
 
 /**
  * RPORegisterPrvnickchOsbApi - factory interface
- * @export
  */
 export const RPORegisterPrvnickchOsbApiFactory = function (
   configuration?: Configuration,
@@ -8555,9 +7760,6 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
 
 /**
  * RPORegisterPrvnickchOsbApi - object-oriented interface
- * @export
- * @class RPORegisterPrvnickchOsbApi
- * @extends {BaseAPI}
  */
 export class RPORegisterPrvnickchOsbApi extends BaseAPI {
   /**
@@ -8566,7 +7768,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @param {string} fullName FULLTEXT search, for more info please refer to: https://susrrpo.docs.apiary.io/#/reference/0/vyhladavanie-po
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RPORegisterPrvnickchOsbApi
    */
   public rpoControllerFindLegalPersonsByFullNameFromApi(
     fullName: string,
@@ -8584,7 +7785,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof RPORegisterPrvnickchOsbApi
    */
   public rpoControllerGetLegalPerson(ico: string, options?: RawAxiosRequestConfig) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
@@ -8599,7 +7799,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof RPORegisterPrvnickchOsbApi
    */
   public rpoControllerGetLegalPersonBase(ico: string, options?: RawAxiosRequestConfig) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
@@ -8614,7 +7813,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof RPORegisterPrvnickchOsbApi
    */
   public rpoControllerGetLegalPersonBase_1(ico: string, options?: RawAxiosRequestConfig) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
@@ -8629,7 +7827,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @param {boolean} [returnDetail] If false, response won\&#39;t include detail of the legal person. Default: true
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RPORegisterPrvnickchOsbApi
    */
   public rpoControllerGetLegalPersonByIcoFromApi(
     ico: string,
@@ -8647,7 +7844,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @param {number} id
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RPORegisterPrvnickchOsbApi
    */
   public rpoControllerGetLegalPersonDetailFromAPI(id: number, options?: RawAxiosRequestConfig) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
@@ -8662,7 +7858,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof RPORegisterPrvnickchOsbApi
    */
   public rpoControllerGetLegalPerson_2(ico: string, options?: RawAxiosRequestConfig) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
@@ -8673,7 +7868,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
 
 /**
  * RSDRegisterSocilnychDvokApi - axios parameter creator
- * @export
  */
 export const RSDRegisterSocilnychDvokApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -8779,6 +7973,8 @@ export const RSDRegisterSocilnychDvokApiAxiosParamCreator = function (
         localVarQueryParameter['toDate'] = toDate
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -8797,7 +7993,6 @@ export const RSDRegisterSocilnychDvokApiAxiosParamCreator = function (
 
 /**
  * RSDRegisterSocilnychDvokApi - functional programming interface
- * @export
  */
 export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = RSDRegisterSocilnychDvokApiAxiosParamCreator(configuration)
@@ -8871,7 +8066,6 @@ export const RSDRegisterSocilnychDvokApiFp = function (configuration?: Configura
 
 /**
  * RSDRegisterSocilnychDvokApi - factory interface
- * @export
  */
 export const RSDRegisterSocilnychDvokApiFactory = function (
   configuration?: Configuration,
@@ -8920,9 +8114,6 @@ export const RSDRegisterSocilnychDvokApiFactory = function (
 
 /**
  * RSDRegisterSocilnychDvokApi - object-oriented interface
- * @export
- * @class RSDRegisterSocilnychDvokApi
- * @extends {BaseAPI}
  */
 export class RSDRegisterSocilnychDvokApi extends BaseAPI {
   /**
@@ -8931,7 +8122,6 @@ export class RSDRegisterSocilnychDvokApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof RSDRegisterSocilnychDvokApi
    */
   public rsdControllerContributions(options?: RawAxiosRequestConfig) {
     return RSDRegisterSocilnychDvokApiFp(this.configuration)
@@ -8949,7 +8139,6 @@ export class RSDRegisterSocilnychDvokApi extends BaseAPI {
    * @param {string} [birthNumber] Birth number in format without slash
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RSDRegisterSocilnychDvokApi
    */
   public rsdControllerState(
     firstName: string,

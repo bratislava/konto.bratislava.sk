@@ -1,13 +1,13 @@
 import { updatePassword } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import PasswordChangeForm from 'components/forms/segments/PasswordChangeForm/PasswordChangeForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
+import PasswordChangeForm from '../components/forms/auth-forms/PasswordChangeForm'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
@@ -82,8 +82,8 @@ const PasswordChangePage = () => {
       <AccountContainer ref={accountContainerRef}>
         {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
           <AccountSuccessAlert
-            title={t('password_change_success_title')}
-            confirmLabel={t('account_continue_link')}
+            title={t('auth.password_change_success_title')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={onConfirm}
           />
         ) : (

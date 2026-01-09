@@ -2,7 +2,7 @@ import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
+import { NASES_TOKEN_QUERY_KEY } from '../../frontend/utils/metadataStorage'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { useFormContext } from './useFormContext'
@@ -30,7 +30,7 @@ const useInitialModal = () => {
   const router = useRouter()
 
   // If the form has been sent via eID we don't want to display the initial warning modals.
-  const hasFormSendEidToken = router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
+  const hasFormSendEidToken = router.query[NASES_TOKEN_QUERY_KEY]
   if (hasFormSendEidToken) {
     return null
   }

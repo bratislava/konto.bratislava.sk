@@ -21,9 +21,10 @@ export const useSsrAuth = () => {
       accountType === AccountType.PravnickaOsoba,
     tierStatus: {
       tier,
-      isIdentityVerified: tier === Tier.IDENTITY_CARD || tier === Tier.EID,
       isIdentityVerificationNotYetAttempted: !tier || tier === Tier.NEW,
       isInQueue: tier === Tier.QUEUE_IDENTITY_CARD,
+      isNotVerifiedIdentityCard: tier === Tier.NOT_VERIFIED_IDENTITY_CARD,
+      isIdentityVerified: tier === Tier.IDENTITY_CARD || tier === Tier.EID,
     },
   }
 }

@@ -79,7 +79,7 @@ export const StatusBar = () => {
           <Button
             className="h-fit shrink-0"
             icon={<CrossIcon />}
-            aria-label={t('ariaCloseStatusBar') ?? ''}
+            aria-label={t('StatusBar.aria.close') ?? ''}
             onPress={handleDismiss}
           />
         </div>

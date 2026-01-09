@@ -1,6 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@assets/ui-icons'
 import { createCalendar } from '@internationalized/date'
-import Button from 'components/forms/simple-components/Button'
 import { useRef } from 'react'
 import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
@@ -37,6 +36,8 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
     target: undefined,
   }
 
+  // FIXME Translations
+  // TODO Translations
   return (
     <div
       {...calendarProps}
@@ -59,9 +60,13 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
         />
       </div>
       <CalendarGrid state={state} />
-      <div className="flex items-center justify-between border-t-2 border-gray-700 px-4 py-3">
-        <Button onPress={onReset} text="Resetovať" variant="plain-black" size="sm" />
-        <Button onPress={onConfirm} text="Potvrdiť" variant="black" size="sm" />
+      <div className="flex items-stretch justify-between border-t-2 border-gray-700 px-4 py-3">
+        <ButtonNew onPress={onReset} variant="black-plain" size="small">
+          Resetovať
+        </ButtonNew>
+        <ButtonNew onPress={onConfirm} variant="black-solid" size="small">
+          Potvrdiť
+        </ButtonNew>
       </div>
     </div>
   )

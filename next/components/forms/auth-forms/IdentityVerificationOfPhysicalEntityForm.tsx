@@ -12,7 +12,7 @@ import { isBrowser } from '../../../frontend/utils/general'
 import logger from '../../../frontend/utils/logger'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import Button from '../simple-components/Button'
+import Button from '../simple-components/ButtonNew'
 import InputField from '../widget-components/InputField/InputField'
 
 export interface IdentityVerificationOfPhysicalEntityFormData {
@@ -151,20 +151,17 @@ const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) =>
           </>
         )}
       />
+      <Button variant="black-solid" fullWidth type="submit" isLoading={isSubmitting}>
+        {t('auth.identity_verification.fo.init.submit_button_text')}
+      </Button>
       <Button
-        className="min-w-full"
-        type="submit"
-        text={t('auth.identity_verification.fo.init.submit_button_text')}
-        variant="black"
-        loading={isSubmitting}
-      />
-      <Button
-        variant="plain-black"
-        className="min-w-full"
+        variant="black-plain"
+        fullWidth
         onPress={() => redirect()}
-        text={t('auth.identity_verification.common.skip_verification_button_text')}
         endIcon={<ArrowRightIcon />}
-      />
+      >
+        {t('auth.identity_verification.common.skip_verification_button_text')}
+      </Button>
     </form>
   )
 }

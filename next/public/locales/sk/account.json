@@ -482,6 +482,7 @@
   "unused.tax_created": "Vytvorená",
   "unused.tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "unused.tax_paid": "Uhradená",
+  "Upload.aria.download": "Stiahnuť",
   "Upload.aria.removeFile": "Odstrániť súbor",
   "Upload.errors.invalid_file_type": "Nepodporovaný formát súboru, podporované formáty: {{supportedFormats}}.",
   "Upload.errors.large_file": "Súbor je príliš veľký, maximálna veľkosť {{maxFileSize}}.",

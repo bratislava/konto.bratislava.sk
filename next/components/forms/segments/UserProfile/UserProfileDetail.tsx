@@ -53,7 +53,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   return (
     <div
       className={cn('flex flex-col bg-white pt-3 md:static md:z-0', {
-        'fixed inset-0 z-50': isEditing,
+        'fixed inset-0 top-(--main-scroll-top-margin) z-50': isEditing,
       })}
     >
       {!tierStatus.isIdentityVerified && (

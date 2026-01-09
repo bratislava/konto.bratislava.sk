@@ -7,9 +7,13 @@ import React from 'react'
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import { useTaxFeeSection } from '../segments/AccountSections/TaxesFees/useTaxFeeSection'
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19579-6510&m=dev
+ */
+
 const PaymentSchedule = () => {
-  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
+  const { taxData } = useTaxFeeSection()
 
   return (
     <div className="flex w-full flex-col rounded-lg border-2 border-gray-200 px-4 py-2 lg:px-6">

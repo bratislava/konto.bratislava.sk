@@ -43,11 +43,16 @@ const TaxFeePaymentSection = () => {
     }
   }
 
-  // TODO this is duplicated in TaxFeeSection.tsx
-  const pageBreadcrumbTitle = {
-    [TaxType.Dzn]: t('account_section_payment.tax_detail.tax'),
-    [TaxType.Ko]: t('account_section_payment.tax_detail.fee'),
+  const detailPageTitle = {
+    [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),
+    [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year, order: taxData.order }),
   }[taxData.type]
+
+  const detailPagePath = ROUTES.TAXES_AND_FEES_DETAIL({
+    year: taxData.year,
+    type: taxData.type,
+    order: taxData.order,
+  })
 
   return (
     <div className="flex flex-col">
@@ -55,18 +60,8 @@ const TaxFeePaymentSection = () => {
         title={getTitle()}
         breadcrumbs={[
           { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
-          {
-            title: pageBreadcrumbTitle,
-            path: ROUTES.TAXES_AND_FEES_DETAIL({
-              year: taxData.year,
-              type: taxData.type,
-              order: taxData.order,
-            }),
-          },
-          {
-            title: getTitle(),
-            path: null,
-          },
+          { title: detailPageTitle, path: detailPagePath },
+          { title: getTitle(), path: null },
         ]}
       />
       <div className="m-auto w-full max-w-(--breakpoint-lg) py-6 lg:py-12">

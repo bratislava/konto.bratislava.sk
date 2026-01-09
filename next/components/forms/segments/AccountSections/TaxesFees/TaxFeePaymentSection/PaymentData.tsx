@@ -18,7 +18,7 @@ import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
-import React from 'react'
+import React, { Fragment } from 'react'
 
 type Props = {
   paymentMethod: PaymentMethodType
@@ -80,6 +80,34 @@ const PaymentData = ({ paymentMethod }: Props) => {
       ? qrCodeBase64InstallmentPayment
       : qrCodeBase64oneTimePayment
 
+  const bankPaymentInfoRows = [
+    {
+      label: t('taxes.payment_data.bank_info.slovenska_sporitelna'),
+      value: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban'),
+      clipboardCopyValue: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban'),
+    },
+    {
+      label: t('taxes.payment_data.bank_info.csob'),
+      value: t('taxes.payment_data.bank_info.csob_iban'),
+      clipboardCopyValue: t('taxes.payment_data.bank_info.csob_iban'),
+    },
+    {
+      label: t('taxes.payment_data.variable_symbol'),
+      value: variableSymbol,
+      clipboardCopyValue: variableSymbol,
+    },
+    {
+      label: t('taxes.payment_data.sum'),
+      value: amountToPay ? <FormatCurrencyFromCents value={amountToPay} /> : null,
+      clipboardCopyValue: amountToPay ? (amountToPay / 100).toFixed(2) : null,
+    },
+    {
+      label: t('taxes.payment_data.beneficiary_name'),
+      value: t('taxes.payment_data.beneficiary_name_value'),
+      clipboardCopyValue: t('taxes.payment_data.beneficiary_name_value'),
+    },
+  ]
+
   return (
     <div className="flex w-full flex-col gap-6">
       {paymentMethodParam === PaymentMethod.Installments && (
@@ -102,142 +130,102 @@ const PaymentData = ({ paymentMethod }: Props) => {
         </>
       )}
 
-      <div className="text-h5">{t('taxes.payment_data.payment_methods_title')}</div>
-      <div className="rounded-lg border px-4 lg:px-6">
-        {
-          // Temporarily hide pay-by-card option for KO, until we setup correct payment gateway
-          taxData.type !== TaxType.Ko && (
-            <>
-              <div className="flex flex-col gap-4 py-4 lg:flex-row lg:py-6">
-                <div className="flex flex-row items-center justify-between gap-2 lg:grow">
-                  <div className="flex flex-row items-center gap-2">
-                    <PaymentHandIcon className="size-12" />
-                    <div className="text-h5">{t('taxes.payment_data.card_payment_title')}</div>
-                  </div>
-                  <div className="flex flex-row items-center gap-2 lg:grow">
-                    <div className="rounded-lg bg-gray-50 px-3 py-1">
-                      <CreditCardIcon className="size-6" />
+      <div className="flex flex-col gap-2 lg:gap-4">
+        <div className="text-h5">{t('taxes.payment_data.payment_methods_title')}</div>
+        <div className="rounded-lg border px-4 lg:px-6">
+          {
+            // Temporarily hide pay-by-card option for KO, until we setup correct payment gateway
+            taxData.type !== TaxType.Ko && (
+              <>
+                <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
+                    <div className="flex flex-row-reverse items-center justify-between gap-4 lg:flex-row lg:justify-start">
+                      <PaymentHandIcon className="size-8 lg:size-12" />
+                      <span className="text-h5">{t('taxes.payment_data.card_payment_title')}</span>
                     </div>
-                    <ApplePayIcon className="size-12" />
-                    <GooglePayIcon className="size-12" />
+                    <div className="flex flex-row items-center gap-1.5 lg:gap-3">
+                      <div className="rounded-lg bg-background-passive-primary px-3 py-1">
+                        <CreditCardIcon className="size-5" />
+                      </div>
+                      <ApplePayIcon className="size-12" />
+                      <GooglePayIcon className="size-12" />
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
-                  <span className="w-full text-h5 lg:w-auto">
-                    {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
-                  </span>
-                  <ButtonNew
-                    variant="black-solid"
-                    onPress={handleRedirectToPayment}
-                    isLoading={isLoading}
-                    isLoadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
-                    fullWidthMobile
-                  >
-                    {t('taxes.payment.to_pay')}
-                  </ButtonNew>
-                </div>
-              </div>
-              <HorizontalDivider />
-            </>
-          )
-        }
-
-        <div className="flex flex-col gap-6 py-6">
-          <div className="flex w-full items-center gap-4">
-            <QrCodeIcon className="size-8" />
-            <span className="text-h4">
-              {t('taxes.payment_data.qr_code_and_bank_transfer_title')}
-            </span>
-          </div>
-          <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-4">
-            <div className="flex w-full gap-5 rounded-lg border-0 border-gray-200 p-0 md:border md:px-4 md:py-5 lg:px-6">
-              <div className="flex w-full flex-col justify-between">
-                <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                  <span className="text-p2">
-                    {t('taxes.payment_data.bank_info.slovenska_sporitelna')}
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="grow text-16-semibold">
-                      {t('taxes.payment_data.bank_info.slovenska_sporitelna_iban')}
-                    </span>
-                    <span className="size-6 cursor-pointer">
-                      <ClipboardCopy
-                        copyText={t('taxes.payment_data.bank_info.slovenska_sporitelna_iban')}
-                      />
-                    </span>
-                  </span>
-                </div>
-                <HorizontalDivider />
-                <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                  <span className="text-p2">{t('taxes.payment_data.bank_info.csob')}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="grow text-16-semibold">
-                      {t('taxes.payment_data.bank_info.csob_iban')}
-                    </span>
-                    <span className="size-6 cursor-pointer">
-                      <ClipboardCopy copyText={t('taxes.payment_data.bank_info.csob_iban')} />
-                    </span>
-                  </span>
-                </div>
-                <HorizontalDivider />
-                <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                  <span className="text-p2">{t('taxes.payment_data.variable_symbol')}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="grow text-16-semibold">{variableSymbol}</span>
-                    <span className="size-6 cursor-pointer">
-                      {variableSymbol && <ClipboardCopy copyText={variableSymbol} />}
-                    </span>
-                  </span>
-                </div>
-                <HorizontalDivider />
-                <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                  <span className="text-p2">{t('taxes.payment_data.sum')}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="grow text-16-semibold">
+                  <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
+                    <span className="w-full text-h5 lg:w-auto">
                       {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
                     </span>
-                    <span className="size-6 cursor-pointer">
-                      {amountToPay && <ClipboardCopy copyText={(amountToPay / 100).toFixed(2)} />}
-                    </span>
-                  </span>
-                </div>
-                <HorizontalDivider />
-                <div className="isolate flex flex-col justify-between gap-1 self-stretch py-3 lg:flex-row lg:py-0">
-                  <span className="text-p2">{t('taxes.payment_data.beneficiary_name')}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="grow text-16-semibold">
-                      {t('taxes.payment_data.beneficiary_name_value')}
-                    </span>
-                    <span className="size-6 cursor-pointer">
-                      <ClipboardCopy copyText={t('taxes.payment_data.beneficiary_name_value')} />
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="flex grow flex-col gap-4 self-stretch rounded-lg border-gray-200 p-0 lg:flex-row lg:border lg:p-6">
-              <div className="flex w-full grow flex-col items-start justify-between gap-2 self-stretch">
-                <div className="flex flex-col items-start gap-2">
-                  <div className="text-h4">{t('taxes.payment_data.qr_code')}</div>
-                  <div className="text-16">
-                    {t('taxes.payment_data.use_your_banking_app_to_load')}
+                    <ButtonNew
+                      variant="black-solid"
+                      onPress={handleRedirectToPayment}
+                      isLoading={isLoading}
+                      isLoadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
+                      className="max-lg:w-full"
+                    >
+                      {t('taxes.payment.to_pay')}
+                    </ButtonNew>
                   </div>
                 </div>
-                <ButtonNew
-                  startIcon={<DownloadIcon className="size-5" />}
-                  variant="black-outline"
-                  size="small"
-                  className="block min-w-full lg:w-auto"
-                  onPress={handleDownloadQrCode}
-                >
-                  {t('taxes.payment_data.download_qr_code')}
-                </ButtonNew>
+                <HorizontalDivider />
+              </>
+            )
+          }
+
+          <div className="flex flex-col gap-4 py-4 lg:gap-6 lg:py-6">
+            <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
+              <div className="flex w-full flex-row-reverse items-center justify-between gap-5 lg:flex-row lg:justify-start">
+                <QrCodeIcon className="size-8 lg:size-12" />
+                <span className="text-h5">
+                  {t('taxes.payment_data.qr_code_and_bank_transfer_title')}
+                </span>
               </div>
-              <img
-                className="flex aspect-square max-h-max max-w-full items-center justify-center"
-                src={qrCodeImageSrc}
-                alt="QR code"
-              />
+              <span className="text-h5 max-lg:w-full">
+                {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
+              </span>
+            </div>
+            <div className="flex w-full flex-col gap-6 lg:flex-row lg:gap-4">
+              <ul className="flex w-full flex-col rounded-lg border px-4 py-2 lg:px-6">
+                {bankPaymentInfoRows.map((row, index) => {
+                  return (
+                    <Fragment key={index}>
+                      {index > 0 && <HorizontalDivider />}
+                      {/* TODO consider separating this row into a component */}
+                      <div className="flex gap-3 self-stretch py-3 lg:gap-4 lg:py-4">
+                        <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                          <span className="text-p2-semibold">{row.label}</span>
+                          <span className="text-p2">{row.value}</span>
+                        </div>
+                        <span className="size-6">
+                          {row.clipboardCopyValue ? (
+                            <ClipboardCopy copyText={row.clipboardCopyValue} />
+                          ) : null}
+                        </span>
+                      </div>
+                    </Fragment>
+                  )
+                })}
+              </ul>
+              <div className="flex max-w-120 flex-col gap-4 self-stretch rounded-lg border p-4 lg:flex-row">
+                <div className="flex w-full grow flex-col items-start justify-between gap-4">
+                  <div className="flex flex-col items-start gap-2">
+                    <div className="text-h6">{t('taxes.payment_data.qr_code')}</div>
+                    <div className="text-16">
+                      {t('taxes.payment_data.use_your_banking_app_to_load')}
+                    </div>
+                  </div>
+                  <ButtonNew
+                    startIcon={<DownloadIcon />}
+                    variant="black-outline"
+                    className="text-nowrap max-lg:w-full"
+                    onPress={handleDownloadQrCode}
+                  >
+                    {t('taxes.payment_data.download_qr_code')}
+                  </ButtonNew>
+                </div>
+                <div className="flex h-full flex-col justify-center lg:w-100">
+                  <img className="aspect-square w-full" src={qrCodeImageSrc} alt="QR code" />{' '}
+                </div>
+              </div>
             </div>
           </div>
         </div>

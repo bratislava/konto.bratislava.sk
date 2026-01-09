@@ -51,11 +51,12 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
 
 const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
   const { t } = useTranslation('account')
+
   const { year, order, status, createdAt, amountToBePaid, type } = taxData
 
   const title = {
     [TaxType.Dzn]: t('account_section_payment.tax_card_title.dzn', { year }),
-    [TaxType.Ko]: t('account_section_payment.tax_card_title.ko', { year }),
+    [TaxType.Ko]: t('account_section_payment.tax_card_title.ko', { year, order }),
   }[type]
 
   const href = ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })

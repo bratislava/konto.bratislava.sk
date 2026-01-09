@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 
 type Props = {
-  variant: 'lookingFor' | 'noResults'
+  variant: 'looking-for' | 'no-results'
   taxType: TaxType
 }
 
@@ -35,8 +35,8 @@ const TaxesFeesOverviewBanner = ({ variant, taxType }: Props) => {
   }[taxType]
 
   const content = {
-    lookingFor: `<h4>${titleLookingFor}</h4>${textLookingFor}`,
-    noResults: `<h4>${titleNoResults}</h4>${textNoResults}`,
+    'looking-for': `<h4>${titleLookingFor}</h4>${textLookingFor}`,
+    'no-results': `<h4>${titleNoResults}</h4>${textNoResults}`,
   }[variant]
 
   return <AnnouncementBlock announcementContent={content} imageSrc={ImageMestskeKontoSituacia} />

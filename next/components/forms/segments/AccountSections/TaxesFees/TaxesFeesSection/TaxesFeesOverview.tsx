@@ -28,9 +28,9 @@ const TaxesFeesOverview = ({ taxesData, taxType }: Props) => {
     <div className="flex flex-col gap-4">
       <h2 className="text-h5-semibold">{title}</h2>
       {taxesData?.availabilityStatus === TaxAvailabilityStatus.LookingForYourTax ? (
-        <TaxesFeesOverviewBanner taxType={taxType} variant="lookingFor" />
+        <TaxesFeesOverviewBanner taxType={taxType} variant="looking-for" />
       ) : taxesData?.availabilityStatus === TaxAvailabilityStatus.TaxNotOnRecord ? (
-        <TaxesFeesOverviewBanner taxType={taxType} variant="noResults" />
+        <TaxesFeesOverviewBanner taxType={taxType} variant="no-results" />
       ) : taxesData?.availabilityStatus === TaxAvailabilityStatus.Available ? (
         <ul className="flex flex-col rounded-lg border border-gray-200 px-4 lg:px-6">
           {taxesData.items.map((item, index) => (

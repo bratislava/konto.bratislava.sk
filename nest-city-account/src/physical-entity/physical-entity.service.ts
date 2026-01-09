@@ -140,7 +140,7 @@ export class PhysicalEntityService {
       })
     )
 
-    this.logger.log(`Successfully verified uri.`, upvsResult)
+    this.logger.log(`Successfully verified uri.`, upvsResult.success[0]?.uri)
     return { updatedEntities, upvsResult }
   }
 

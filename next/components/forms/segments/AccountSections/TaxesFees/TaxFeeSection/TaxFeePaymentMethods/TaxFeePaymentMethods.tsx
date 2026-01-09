@@ -7,6 +7,7 @@ import { Trans, useTranslation } from 'next-i18next'
 import {
   ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
   TaxPaidStatusEnum,
+  TaxType,
 } from 'openapi-clients/tax'
 import React from 'react'
 
@@ -81,7 +82,8 @@ const TaxFeePaymentMethods = () => {
           )}
         {!installmentPayment?.isPossible &&
           installmentPayment?.reasonNotPossible ===
-            ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold && (
+            ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold &&
+          taxData.type === TaxType.Dzn && (
             <div className="p-4 lg:p-6 lg:pt-0">
               <Alert
                 type="warning"

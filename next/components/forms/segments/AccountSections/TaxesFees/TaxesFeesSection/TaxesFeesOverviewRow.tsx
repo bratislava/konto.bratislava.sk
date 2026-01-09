@@ -29,14 +29,14 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
     <div className="flex items-center gap-[6px]">
       <span
         className={cn('w-max text-p3-semibold lg:text-16-semibold', {
-          'text-negative-700': status === TaxStatusEnum.NotPaid,
-          'text-warning-700':
-            status === TaxStatusEnum.OverPaid || status === TaxStatusEnum.AwaitingProcessing,
-          'text-transport-700':
+          'text-content-error-default': status === TaxStatusEnum.NotPaid,
+          'text-content-warning-default':
             // partially paid should be blue color but we don't such color,
             // colors not defined in design system, using what we have
+            status === TaxStatusEnum.OverPaid ||
+            status === TaxStatusEnum.AwaitingProcessing ||
             status === TaxStatusEnum.PartiallyPaid,
-          'text-success-700': status === TaxStatusEnum.Paid,
+          'text-content-success-default': status === TaxStatusEnum.Paid,
         })}
       >
         {title}
@@ -51,11 +51,12 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
 
 const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
   const { t } = useTranslation('account')
+
   const { year, order, status, createdAt, amountToBePaid, type } = taxData
 
   const title = {
     [TaxType.Dzn]: t('account_section_payment.tax_card_title.dzn', { year }),
-    [TaxType.Ko]: t('account_section_payment.tax_card_title.ko', { year }),
+    [TaxType.Ko]: t('account_section_payment.tax_card_title.ko', { year, order }),
   }[type]
 
   const href = ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })

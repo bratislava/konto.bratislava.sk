@@ -1,4 +1,3 @@
-import Alert from 'components/forms/info-components/Alert'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import IdentityVerificationBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
@@ -25,7 +24,7 @@ const TaxFeePaymentSection = () => {
   const isSinglePayment = taxData.overallAmount === taxData.overallBalance
 
   const { tierStatus } = useSsrAuth()
-  const { isIdentityVerified, isIdentityVerificationNotYetAttempted } = tierStatus
+  const { isIdentityVerified, isInQueue } = tierStatus
   const { showChannelNeededBanner } = useOfficialCorrespondenceChannel()
 
   const getTitle = () => {
@@ -43,11 +42,16 @@ const TaxFeePaymentSection = () => {
     }
   }
 
-  // TODO this is duplicated in TaxFeeSection.tsx
-  const pageBreadcrumbTitle = {
-    [TaxType.Dzn]: t('account_section_payment.tax_detail.tax'),
-    [TaxType.Ko]: t('account_section_payment.tax_detail.fee'),
+  const detailPageTitle = {
+    [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),
+    [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year, order: taxData.order }),
   }[taxData.type]
+
+  const detailPagePath = ROUTES.TAXES_AND_FEES_DETAIL({
+    year: taxData.year,
+    type: taxData.type,
+    order: taxData.order,
+  })
 
   return (
     <div className="flex flex-col">
@@ -55,39 +59,22 @@ const TaxFeePaymentSection = () => {
         title={getTitle()}
         breadcrumbs={[
           { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
-          {
-            title: pageBreadcrumbTitle,
-            path: ROUTES.TAXES_AND_FEES_DETAIL({
-              year: taxData.year,
-              type: taxData.type,
-              order: taxData.order,
-            }),
-          },
-          {
-            title: getTitle(),
-            path: null,
-          },
+          { title: detailPageTitle, path: detailPagePath },
+          { title: getTitle(), path: null },
         ]}
       />
-      <div className="m-auto w-full max-w-(--breakpoint-lg) py-6 lg:py-12">
-        <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
-          {isIdentityVerificationNotYetAttempted || showChannelNeededBanner ? (
-            <div className="flex flex-col gap-6">
-              <Alert
-                type="warning"
-                fullWidth
-                message={t('taxes.payment_data.payment_method_access_prompt')}
-              />
-              {isIdentityVerified ? (
-                <OfficialCorrespondenceChannelNeededBanner />
-              ) : (
-                <IdentityVerificationBanner variant="verification-needed" />
-              )}
-            </div>
+      <div className="m-auto w-full max-w-(--breakpoint-lg) px-4 py-6 lg:px-0 lg:py-12">
+        {isIdentityVerified ? (
+          showChannelNeededBanner ? (
+            <OfficialCorrespondenceChannelNeededBanner />
           ) : (
             <PaymentData paymentMethod={paymentMethodParam} />
-          )}
-        </div>
+          )
+        ) : isInQueue ? (
+          <IdentityVerificationBanner variant="verification-in-process" />
+        ) : (
+          <IdentityVerificationBanner variant="verification-needed" />
+        )}
       </div>
     </div>
   )

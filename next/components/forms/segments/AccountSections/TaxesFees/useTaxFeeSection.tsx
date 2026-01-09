@@ -7,7 +7,7 @@ import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
-import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
+import React, { createContext, PropsWithChildren, useContext } from 'react'
 
 type TaxFeeSectionProviderProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
@@ -15,13 +15,11 @@ type TaxFeeSectionProviderProps = {
 }
 
 const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProviderProps) => {
-  const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
-    useState(false)
-
+  const { t } = useTranslation('account')
   const router = useRouter()
+
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
-  const { t } = useTranslation('account')
 
   const { mutate: redirectToFullPaymentMutate, isPending: redirectToFullPaymentIsPending } =
     useMutation({
@@ -80,7 +78,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     const arrayBuffer = base64ToArrayBuffer(taxData.oneTimePayment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),
-      'QR-dan-z-nehnutelnosti-zvysna-suma.png',
+      `QR-${taxData.type}-${taxData.year}-${taxData.order}-zvysna-suma.png`,
     )
   }
   const downloadQrCodeInstallmentPayment = async () => {
@@ -88,7 +86,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     const arrayBuffer = base64ToArrayBuffer(taxData.installmentPayment.activeInstallment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),
-      'QR-dan-z-nehnutelnosti-splatka.png',
+      `QR-${taxData.type}-${taxData.year}-${taxData.order}-splatka.png`,
     )
   }
 
@@ -100,8 +98,6 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     redirectToInstallmentPaymentIsPending,
     downloadQrCodeOneTimePayment,
     downloadQrCodeInstallmentPayment,
-    officialCorrespondenceChannelModalOpen,
-    setOfficialCorrespondenceChannelModalOpen,
     strapiTaxAdministrator,
   }
 }

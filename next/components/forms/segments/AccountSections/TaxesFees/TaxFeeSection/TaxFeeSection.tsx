@@ -21,16 +21,8 @@ const TaxFeeSection = () => {
   const { taxData, strapiTaxAdministrator } = useTaxFeeSection()
 
   const pageTitle = {
-    // TODO order missing in title maybe
-    // TODO this text is also in TaxesFeesCard, consider unifying
     [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),
-    [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year }),
-  }[taxData.type]
-
-  // TODO this is duplicated in TaxFeePaymentSection.tsx
-  const pageBreadcrumbTitle = {
-    [TaxType.Dzn]: t('account_section_payment.tax_detail.tax'),
-    [TaxType.Ko]: t('account_section_payment.tax_detail.fee'),
+    [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year, order: taxData.order }),
   }[taxData.type]
 
   const paymentSuccessMessage = {
@@ -40,7 +32,7 @@ const TaxFeeSection = () => {
 
   const breadcrumbs = [
     { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
-    { title: pageBreadcrumbTitle, path: null },
+    { title: pageTitle, path: null },
   ]
 
   const isTaxFeeSuccessfullyPaid =

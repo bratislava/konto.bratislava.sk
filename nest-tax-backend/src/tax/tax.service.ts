@@ -27,7 +27,6 @@ import {
 import {
   checkTaxDateInclusion,
   getExistingTaxStatus,
-  getTaxStatus,
 } from './utils/helpers/tax.helper'
 import {
   getTaxDetailPure,
@@ -111,6 +110,7 @@ export class TaxService {
         year: true,
         type: true,
         order: true,
+        isCancelled: true,
       },
     })
     const currentTime = dayjs().tz('Europe/Bratislava')
@@ -141,7 +141,7 @@ export class TaxService {
       taxes.map(async (tax) => {
         const paid = await this.getAmountAlreadyPaidByTaxId(tax.id)
         const amountToBePaid = tax.amount - paid
-        const status = getExistingTaxStatus(tax.amount, paid)
+        const status = getExistingTaxStatus(tax.amount, paid, tax.isCancelled)
         return {
           createdAt: tax.createdAt,
           year: tax.year,
@@ -322,9 +322,10 @@ export class TaxService {
       permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
       externalId: tax.taxPayer.externalId,
     }
-    const paidStatus = getTaxStatus(
+    const paidStatus = getExistingTaxStatus(
       detailWithoutQrCode.overallAmount,
       detailWithoutQrCode.overallPaid,
+      tax.isCancelled,
     )
 
     return {
@@ -354,6 +355,13 @@ export class TaxService {
       order,
     )
 
+    if (tax.isCancelled) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        'Cancelled tax cannot be paid.',
+      )
+    }
+
     return getTaxDetailPureForOneTimeGenerator({
       taxId: tax.id,
       overallAmount: tax.amount,
@@ -376,6 +384,13 @@ export class TaxService {
       taxType,
       order,
     )
+
+    if (tax.isCancelled) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        'Cancelled tax cannot be paid.',
+      )
+    }
 
     return getTaxDetailPureForInstallmentGenerator({
       taxType,

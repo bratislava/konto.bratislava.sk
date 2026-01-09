@@ -3,6 +3,7 @@ import { NorisCommunalWasteTax } from '../../../types/noris.types'
 // Test data 1: Complete data with all fields populated - multiple containers for one person
 export const testCommunalWasteTax1: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030151-36/78/219197',
@@ -51,6 +52,7 @@ export const testCommunalWasteTax1: NorisCommunalWasteTax = {
 
 export const testCommunalWasteTax2: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030151-36/78/219197',
@@ -99,6 +101,7 @@ export const testCommunalWasteTax2: NorisCommunalWasteTax = {
 
 export const testCommunalWasteTax3: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_822,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030150-36/78/219197',
@@ -147,6 +150,7 @@ export const testCommunalWasteTax3: NorisCommunalWasteTax = {
 
 export const testCommunalWasteTax4: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_824,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030152-36/78/219197',
@@ -196,6 +200,7 @@ export const testCommunalWasteTax4: NorisCommunalWasteTax = {
 // Test data 5: Minimal data with some null values
 export const testCommunalWasteTax5: NorisCommunalWasteTax = {
   cislo_poradace: 98_765,
+  stav_dokladu: 'Z',
   cislo_subjektu: 234_567_890,
   adresa_tp_sidlo: null,
   cislo_konania: null,
@@ -244,6 +249,7 @@ export const testCommunalWasteTax5: NorisCommunalWasteTax = {
 // Test data 6: Different container type and payment structure
 export const testCommunalWasteTax6: NorisCommunalWasteTax = {
   cislo_poradace: 54_321,
+  stav_dokladu: 'Z',
   cislo_subjektu: 345_678_901,
   adresa_tp_sidlo: 'Druhá ulica,Mesto Test,54321',
   cislo_konania: '5/26/028734-45/22/836299',

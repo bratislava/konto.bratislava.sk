@@ -185,6 +185,20 @@ describe('NorisValidatorSubservice', () => {
             uhrazeno: 448.66,
           })
         })
+
+        it('should pass for cancelled tax as well', () => {
+          const result = service.validateNorisData(
+            NorisCommunalWasteTaxSchema,
+            {
+              ...testCommunalWasteTax1,
+              stav_dokladu: 'S',
+            },
+          )
+          expect(result).toEqual({
+            ...testCommunalWasteTax1,
+            stav_dokladu: 'S',
+          })
+        })
       })
 
       describe('invalid', () => {
@@ -227,6 +241,15 @@ describe('NorisValidatorSubservice', () => {
             expect(response[ErrorSymbols.alert]).toBe(1)
             expect(response.message).toContain('variabilny_symbol')
           }
+        })
+
+        it('should throw for invalid stav_dokladu', () => {
+          expect(() => {
+            service.validateNorisData(NorisCommunalWasteTaxSchema, {
+              ...testCommunalWasteTax1,
+              stav_dokladu: 'invalid',
+            })
+          }).toThrow(HttpException)
         })
       })
     })

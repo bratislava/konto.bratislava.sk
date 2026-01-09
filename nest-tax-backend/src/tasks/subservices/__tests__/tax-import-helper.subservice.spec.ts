@@ -6,6 +6,7 @@ import prismaMock from '../../../../test/singleton'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import TaxImportHelperSubservice from '../tax-import-helper.subservice'
@@ -456,6 +457,10 @@ describe('TaxImportHelperSubservice', () => {
   })
 
   describe('importTaxes', () => {
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(
+      TaxType.DZN,
+    )
+
     it('should import taxes and clear readyToImport flags', async () => {
       const taxType = TaxType.DZN
       const birthNumbers = ['123456/7890', '987654/3210']
@@ -493,7 +498,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['987654/3210'] },
         },
         data: {
-          updatedAt: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -597,7 +602,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['111111/2222'] },
         },
         data: {
-          updatedAt: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -628,7 +633,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['123456/7890', '987654/3210'] },
         },
         data: {
-          updatedAt: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -660,13 +665,17 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['123456/7890', '987654/3210'] },
         },
         data: {
-          updatedAt: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
   })
 
   describe('prepareTaxes', () => {
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(
+      TaxType.DZN,
+    )
+
     it('should prepare taxes and mark as ready to import', async () => {
       const taxType = TaxType.DZN
       const birthNumbers = ['123456/7890', '987654/3210']
@@ -696,7 +705,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          updatedAt: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -750,7 +759,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          updatedAt: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })

@@ -2,6 +2,7 @@
 export const queryPayersFromNoris = `
 SELECT
     subjekt_doklad.cislo_poradace,
+    lcs.dane21_doklad.stav_dokladu as stav_dokladu,
     lcs.dane21_doklad.cislo_subjektu,
     subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
     subjekt_doklad.reference_subjektu cislo_konania , 
@@ -559,6 +560,7 @@ export const getBirthNumbersForSubjects = `
 export const getCommunalWasteTaxesFromNoris = `
     SELECT 
         subjekt_doklad.cislo_poradace,
+        doklad.stav_dokladu as stav_dokladu,
         doklad.cislo_subjektu,
         subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
         subjekt_doklad.reference_subjektu cislo_konania,
@@ -777,7 +779,6 @@ export const getCommunalWasteTaxesFromNoris = `
         doklad.pohladavka IS NOT NULL AND 
         lcs.dane21_druh_dokladu.typ_dokladu = 'V'AND
         lcs.dane21_druh_dokladu.typ_dane = '4' AND
-        doklad.stav_dokladu<>'s' AND
         doklad.rok_podkladu = @year AND
         (nadoba.objem IS NOT NULL AND nadoba.pocet_nadob IS NOT NULL AND nadoba.pocet_odvozov IS NOT NULL AND nadoba.sadzba_mena IS NOT NULL AND nadoba.suma_uhrada_mena IS NOT NULL AND nadoba.druh_nadoby IS NOT NULL)
 `

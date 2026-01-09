@@ -6,7 +6,7 @@ import { formatDate } from 'frontend/utils/general'
 import { Trans, useTranslation } from 'next-i18next'
 import {
   ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
-  TaxPaidStatusEnum,
+  TaxStatusEnum,
   TaxType,
 } from 'openapi-clients/tax'
 import React from 'react'

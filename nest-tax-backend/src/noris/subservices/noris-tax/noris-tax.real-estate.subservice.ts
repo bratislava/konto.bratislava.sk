@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
-import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -51,33 +50,6 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
 
   protected getTaxType(): typeof TaxType.DZN {
     return TaxType.DZN
-  }
-
-  private async updateExistingTaxRecord(
-    taxDefinition: ReturnType<typeof this.getTaxDefinition>,
-    norisItem: NorisRealEstateTax,
-    taxId: number,
-    year: number,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
-  ): Promise<void> {
-    await this.prismaService.$transaction(async (tx) => {
-      await tx.taxInstallment.deleteMany({
-        where: {
-          taxId,
-        },
-      })
-
-      const userFromCityAccount =
-        userDataFromCityAccount[norisItem.ICO_RC] || null
-
-      await this.insertTaxDataToDatabase(
-        taxDefinition,
-        norisItem,
-        year,
-        tx,
-        userFromCityAccount,
-      )
-    })
   }
 
   protected async getTaxDataByYearAndBirthNumber(
@@ -147,6 +119,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     const taxesExist = await this.prismaService.tax.findMany({
       select: {
         id: true,
+        isCancelled: true,
         taxPayer: {
           select: {
             birthNumber: true,
@@ -180,7 +153,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
           await this.updateExistingTaxRecord(
             taxDefinition,
             norisItem,
-            taxExists.id,
+            taxExists,
             year,
             userDataFromCityAccount,
           )

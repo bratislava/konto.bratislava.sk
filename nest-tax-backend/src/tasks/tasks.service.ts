@@ -44,7 +44,7 @@ const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 export class TasksService {
   private readonly logger: Logger
 
-  private lastTaxType: TaxType = TaxType.DZN
+  private lastLoadedTaxType: TaxType = TaxType.DZN
 
   private lastUpdateTaxType: TaxType = TaxType.KO
 
@@ -204,7 +204,7 @@ export class TasksService {
 
   private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
     const currentYear = new Date().getFullYear()
-    const { lastUpdatedAtFieldName } = getTaxDefinitionByType(taxType)
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
 
     const taxPayers = await this.prismaService.taxPayer.findMany({
       select: {
@@ -220,7 +220,7 @@ export class TasksService {
         },
       },
       orderBy: {
-        [lastUpdatedAtFieldName]: 'asc',
+        [lastUpdatedAtDatabaseFieldName]: 'asc',
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
     })
@@ -251,7 +251,7 @@ export class TasksService {
         },
       },
       data: {
-        [lastUpdatedAtFieldName]: new Date(),
+        [lastUpdatedAtDatabaseFieldName]: new Date(),
       },
     })
   }
@@ -446,14 +446,14 @@ export class TasksService {
   @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
-    this.lastTaxType =
-      this.lastTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+    this.lastLoadedTaxType =
+      this.lastLoadedTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
 
     this.logger.log(
-      `Starting LoadTaxForUsers task for TaxType: ${this.lastTaxType}`,
+      `Starting LoadTaxForUsers task for TaxType: ${this.lastLoadedTaxType}`,
     )
 
-    await this.loadTaxDataForUserByTaxType(this.lastTaxType)
+    await this.loadTaxDataForUserByTaxType(this.lastLoadedTaxType)
   }
 
   private async loadTaxDataForUserByTaxType(taxType: TaxType) {

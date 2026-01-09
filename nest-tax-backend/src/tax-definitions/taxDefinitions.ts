@@ -27,8 +27,8 @@ export const taxDefinitions: TaxDefinitionsMap = {
     mapNorisToTaxDetailData: mapNorisToRealEstateDatabaseDetail,
     generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
     createTestingTaxMock: createTestingRealEstateTaxMock,
-    readyToImportFieldName: 'readyToImportDZN',
-    lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
+    readyToImportDatabaseFieldName: 'readyToImportDZN',
+    lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtDZN',
   },
   [TaxType.KO]: {
     type: TaxType.KO,
@@ -43,7 +43,7 @@ export const taxDefinitions: TaxDefinitionsMap = {
     mapNorisToTaxDetailData: mapNorisToCommunalWasteDatabaseDetail,
     generateItemizedTaxDetail: generateItemizedCommunalWasteTaxDetail,
     createTestingTaxMock: createTestingCommunalWasteTaxMock,
-    readyToImportFieldName: 'readyToImportKO',
-    lastUpdatedAtFieldName: 'lastUpdatedAtKO',
+    readyToImportDatabaseFieldName: 'readyToImportKO',
+    lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtKO',
   },
 }

@@ -495,8 +495,8 @@ describe('TasksService', () => {
     const currentYear = new Date().getFullYear()
 
     beforeEach(() => {
-      // Reset the lastTaxType to a known state before each test
-      service['lastTaxType'] = TaxType.KO
+      // Reset the lastLoadedTaxType to a known state before each test
+      service['lastLoadedTaxType'] = TaxType.KO
     })
 
     it('should alternate between DZN and KO on subsequent calls', async () => {
@@ -518,7 +518,7 @@ describe('TasksService', () => {
           newlyCreated: [],
         })
 
-      // First call should use DZN (because lastTaxType starts as KO)
+      // First call should use DZN (because lastLoadedTaxType starts as KO)
       await service.loadTaxesForUsers()
       expect(
         mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,

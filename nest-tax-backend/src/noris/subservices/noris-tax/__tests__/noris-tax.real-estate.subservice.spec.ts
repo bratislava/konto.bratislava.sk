@@ -769,8 +769,8 @@ describe('NorisTaxRealEstateSubservice', () => {
       const mockTaxDefinitionForInsert: TaxDefinition<typeof TaxType.DZN> = {
         type: TaxType.DZN,
         isUnique: true,
-        readyToImportFieldName: 'readyToImportDZN',
-        lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
+        readyToImportDatabaseFieldName: 'readyToImportDZN',
+        lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
         installmentDueDates: {
@@ -886,8 +886,8 @@ describe('NorisTaxRealEstateSubservice', () => {
       const mockTaxDefinitionForProcess: TaxDefinition<typeof TaxType.DZN> = {
         type: TaxType.DZN,
         isUnique: true,
-        readyToImportFieldName: 'readyToImportDZN',
-        lastUpdatedAtFieldName: 'lastUpdatedAtDZN',
+        readyToImportDatabaseFieldName: 'readyToImportDZN',
+        lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
         installmentDueDates: {

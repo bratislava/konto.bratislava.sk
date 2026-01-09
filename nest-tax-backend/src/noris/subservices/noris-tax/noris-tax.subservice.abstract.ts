@@ -1,4 +1,4 @@
-import { Prisma, TaxType } from '@prisma/client'
+import { Prisma, Tax, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -56,6 +56,60 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    * Must be implemented by subclasses.
    */
   protected abstract getTaxType(): TTaxType
+
+  private async trackCancelledTax(
+    tax: TaxWithTaxPayer,
+    year: number,
+    userFromCityAccount: ResponseUserByBirthNumberDto,
+  ) {
+    const bloomreachTracker = await this.bloomreachService.trackEventTax(
+      {
+        amount: 0,
+        year,
+        delivery_method: tax.deliveryMethod,
+        taxType: this.getTaxType(),
+        order: tax.order!,
+      },
+      userFromCityAccount.externalId ?? undefined,
+    )
+    if (!bloomreachTracker) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+      )
+    }
+  }
+
+  protected async updateExistingTaxRecord(
+    taxDefinition: ReturnType<typeof this.getTaxDefinition>,
+    norisItem: TaxTypeToNorisData[TTaxType],
+    existingTax: Pick<Tax, 'id' | 'isCancelled'>,
+    year: number,
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+  ): Promise<void> {
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.taxInstallment.deleteMany({
+        where: {
+          taxId: existingTax.id,
+        },
+      })
+
+      const userFromCityAccount =
+        userDataFromCityAccount[norisItem.ICO_RC] || null
+
+      const tax = await this.insertTaxDataToDatabase(
+        taxDefinition,
+        norisItem,
+        year,
+        tx,
+        userFromCityAccount,
+      )
+
+      if (tax.isCancelled && !existingTax.isCancelled) {
+        await this.trackCancelledTax(tax, year, userFromCityAccount)
+      }
+    })
+  }
 
   /**
    * Gets the tax data from Noris for given birth numbers and year.
@@ -146,7 +200,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          [taxDefinition.readyToImportFieldName]: true,
+          [taxDefinition.readyToImportDatabaseFieldName]: true,
         },
       })
       return { birthNumbers }

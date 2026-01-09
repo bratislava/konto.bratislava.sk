@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { Tax, TaxType } from '@prisma/client'
+import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
-import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -12,7 +11,6 @@ import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.su
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
-import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   NorisBaseTaxSchema,
@@ -182,60 +180,6 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     })
 
     return result
-  }
-
-  private async trackCancelledTax(
-    tax: TaxWithTaxPayer,
-    year: number,
-    userFromCityAccount: ResponseUserByBirthNumberDto,
-  ) {
-    const bloomreachTracker = await this.bloomreachService.trackEventTax(
-      {
-        amount: 0,
-        year,
-        delivery_method: tax.deliveryMethod,
-        taxType: this.getTaxType(),
-        order: tax.order!,
-      },
-      userFromCityAccount.externalId ?? undefined,
-    )
-    if (!bloomreachTracker) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
-      )
-    }
-  }
-
-  private async updateExistingTaxRecord(
-    taxDefinition: ReturnType<typeof this.getTaxDefinition>,
-    norisItem: NorisCommunalWasteTaxGrouped,
-    existingTax: Pick<Tax, 'id' | 'isCancelled'>,
-    year: number,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
-  ): Promise<void> {
-    await this.prismaService.$transaction(async (tx) => {
-      await tx.taxInstallment.deleteMany({
-        where: {
-          taxId: existingTax.id,
-        },
-      })
-
-      const userFromCityAccount =
-        userDataFromCityAccount[norisItem.ICO_RC] || null
-
-      const tax = await this.insertTaxDataToDatabase(
-        taxDefinition,
-        norisItem,
-        year,
-        tx,
-        userFromCityAccount,
-      )
-
-      if (tax.isCancelled && !existingTax.isCancelled) {
-        await this.trackCancelledTax(tax, year, userFromCityAccount)
-      }
-    })
   }
 
   async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(

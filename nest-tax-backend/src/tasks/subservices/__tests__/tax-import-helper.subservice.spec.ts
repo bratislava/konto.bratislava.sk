@@ -457,7 +457,9 @@ describe('TaxImportHelperSubservice', () => {
   })
 
   describe('importTaxes', () => {
-    const { lastUpdatedAtFieldName } = getTaxDefinitionByType(TaxType.DZN)
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(
+      TaxType.DZN,
+    )
 
     it('should import taxes and clear readyToImport flags', async () => {
       const taxType = TaxType.DZN
@@ -496,7 +498,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['987654/3210'] },
         },
         data: {
-          [lastUpdatedAtFieldName]: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -600,7 +602,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['111111/2222'] },
         },
         data: {
-          [lastUpdatedAtFieldName]: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -631,7 +633,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['123456/7890', '987654/3210'] },
         },
         data: {
-          [lastUpdatedAtFieldName]: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -663,14 +665,16 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: ['123456/7890', '987654/3210'] },
         },
         data: {
-          [lastUpdatedAtFieldName]: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
   })
 
   describe('prepareTaxes', () => {
-    const { lastUpdatedAtFieldName } = getTaxDefinitionByType(TaxType.DZN)
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(
+      TaxType.DZN,
+    )
 
     it('should prepare taxes and mark as ready to import', async () => {
       const taxType = TaxType.DZN
@@ -701,7 +705,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          [lastUpdatedAtFieldName]: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })
@@ -755,7 +759,7 @@ describe('TaxImportHelperSubservice', () => {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          [lastUpdatedAtFieldName]: expect.any(Date),
+          [lastUpdatedAtDatabaseFieldName]: expect.any(Date),
         },
       })
     })

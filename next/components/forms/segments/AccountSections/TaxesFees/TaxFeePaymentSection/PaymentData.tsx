@@ -9,7 +9,6 @@ import {
 import HorizontalDivider from 'components/forms/HorizontalDivider'
 import Alert from 'components/forms/info-components/Alert'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import Button from 'components/forms/simple-components/Button'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import ClipboardCopy from 'components/forms/simple-components/ClipboardCopy'
 import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
@@ -224,14 +223,15 @@ const PaymentData = ({ paymentMethod }: Props) => {
                     {t('taxes.payment_data.use_your_banking_app_to_load')}
                   </div>
                 </div>
-                <Button
+                <ButtonNew
                   startIcon={<DownloadIcon className="size-5" />}
                   variant="black-outline"
-                  text={t('taxes.payment_data.download_qr_code')}
-                  size="sm"
+                  size="small"
                   className="block min-w-full lg:w-auto"
                   onPress={handleDownloadQrCode}
-                />
+                >
+                  {t('taxes.payment_data.download_qr_code')}
+                </ButtonNew>
               </div>
               <img
                 className="flex aspect-square max-h-max max-w-full items-center justify-center"

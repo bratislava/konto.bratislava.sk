@@ -23,7 +23,6 @@ export type TimePickerProps = FieldWrapperProps & {
   readOnly?: boolean
 }
 
-// TODO: Picker popup is not working properly, so it is commented out. It's up to discussion if we really need it.
 const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   (
     {
@@ -92,30 +91,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             displayOptionalLabel={displayOptionalLabel}
           />
         </div>
-        {/* {state?.isOpen && ( */}
-        {/*  <OverlayProvider> */}
-        {/*    <Popover */}
-        {/*      // {...dialogProps} */}
-        {/*      shouldCloseOnBlur={false} */}
-        {/*      isOpen={state?.isOpen} */}
-        {/*      onClose={closeFailedHandler} */}
-        {/*    > */}
-        {/*      <TimeSelector */}
-        {/*        setHour={setHour} */}
-        {/*        hour={hour} */}
-        {/*        setMinute={setMinute} */}
-        {/*        minute={minute} */}
-        {/*        onReset={resetCloseHandler} */}
-        {/*        onSubmit={closeSuccessHandler} */}
-        {/*        onChange={onChange} */}
-        {/*        value={value} */}
-        {/*        minValue={minValue} */}
-        {/*        maxValue={maxValue} */}
-        {/*        setIsInputEdited={setIsInputEdited} */}
-        {/*      /> */}
-        {/*    </Popover> */}
-        {/*  </OverlayProvider> */}
-        {/* )} */}
       </div>
     )
   },

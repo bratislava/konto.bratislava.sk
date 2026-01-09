@@ -1,4 +1,4 @@
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { baPhoneNumberRegex } from 'forms-shared/form-utils/ajvFormats'
 import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
@@ -222,22 +222,9 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
         <div className="flex flex-col justify-end pt-1">
-          <Button
-            variant="black"
-            size="lg"
-            text={t('my_profile.profile_detail.email_button')}
-            className="hidden md:block"
-            onPress={onEmailChange}
-            data-cy="change-email-button"
-          />
-          <Button
-            variant="black"
-            size="sm"
-            text={t('my_profile.profile_detail.email_button')}
-            className="block md:hidden"
-            onPress={onEmailChange}
-            data-cy="change-email-button-mobile"
-          />
+          <Button variant="black-solid" onPress={onEmailChange} data-cy="change-email-button">
+            {t('my_profile.profile_detail.email_button')}
+          </Button>
         </div>
       </div>
       <div className="gap flex flex-row flex-wrap gap-x-6">
@@ -303,16 +290,18 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
       </div>
-      <div className={cn('py-2', 'md:hidden')}>
+
+      {/* Save button (mobile) */}
+      <div className="py-2 md:hidden">
         <Button
-          variant="black"
-          size="sm"
-          text={t('my_profile.profile_detail.save_changes_button')}
+          variant="black-solid"
           type="submit"
           form={formId}
-          className="w-full"
+          fullWidthMobile
           data-cy="save-personal-information-button-mobile"
-        />
+        >
+          {t('my_profile.profile_detail.save_changes_button')}
+        </Button>
       </div>
     </form>
   )

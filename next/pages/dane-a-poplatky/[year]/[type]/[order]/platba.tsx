@@ -22,7 +22,7 @@ import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/
 type PageProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment
+  strapiTax: TaxFragment | null | undefined
   dehydratedState: DehydratedState
 }
 
@@ -61,10 +61,6 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
         getTaxAdministratorForUser(amplifyContextSpec),
         prefetchUserQuery(queryClient, fetchAuthSession),
       ])
-
-      if (!strapiTax) {
-        return { notFound: true }
-      }
 
       return {
         props: {

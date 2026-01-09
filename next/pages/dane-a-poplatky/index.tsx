@@ -26,7 +26,7 @@ export type TaxesData = ResponseGetTaxesListDto
 export type AccountTaxesFeesPageProps = {
   taxesData: Record<TaxType, TaxesData | null>
   strapiTaxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment
+  strapiTax: TaxFragment | null | undefined
   dehydratedState: DehydratedState
 }
 
@@ -76,10 +76,6 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
         accountType === AccountType.PravnickaOsoba
       )
         return { notFound: true }
-
-      if (!strapiTax) {
-        return { notFound: true }
-      }
 
       return {
         props: {

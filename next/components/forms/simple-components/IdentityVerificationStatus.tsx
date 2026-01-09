@@ -1,4 +1,4 @@
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { ROUTES } from 'frontend/api/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -36,16 +36,17 @@ const IdentityVerificationStatus = () => {
           </span>
         </div>
         <Button
-          className="hidden lg:flex"
-          size="sm"
+          variant="black-plain"
+          className="max-lg:hidden"
+          size="small"
           onPress={() =>
             optionalFormRedirectsContext
               ? optionalFormRedirectsContext.verifyIdentity()
               : router.push(ROUTES.IDENTITY_VERIFICATION)
           }
-          variant="plain-black"
-          text={t('auth.verification_url_text')}
-        />
+        >
+          {t('auth.verification_url_text')}
+        </Button>
       </div>
     )
 

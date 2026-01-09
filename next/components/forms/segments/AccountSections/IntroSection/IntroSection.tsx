@@ -5,7 +5,7 @@ import {
 } from '@clients/graphql-strapi/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
@@ -59,28 +59,17 @@ const IntroSection = ({
           />
           <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
           <div className="flex flex-col gap-6 py-6 lg:py-16">
-            <div className="flex w-full items-center justify-between px-4 lg:px-0">
+            <div className="flex w-full flex-col gap-2 px-4 md:flex-row md:items-center md:justify-between lg:px-0">
               <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
-              <Button
-                size="sm"
-                className="hidden pt-4 pl-4 sm:flex"
-                label={t('account_section_intro.all_services')}
-                variant="link-category"
-                href={ROUTES.MUNICIPAL_SERVICES}
-              />
+              <Button variant="black-link" href={ROUTES.MUNICIPAL_SERVICES}>
+                {t('account_section_intro.all_services')}
+              </Button>
             </div>
             <div className="scrollbar-hide flex gap-3 overflow-x-scroll px-4 lg:gap-8 lg:px-0">
               {servicesByPersonType.map((service) => (
                 <MunicipalServiceCard key={service.id} service={service} />
               ))}
             </div>
-            <Button
-              size="sm"
-              className="flex pt-4 pl-4 sm:hidden"
-              label={t('account_section_intro.all_services')}
-              variant="link-category"
-              href={ROUTES.MUNICIPAL_SERVICES}
-            />
           </div>
         </div>
         <div className="bg-gray-50 py-0 lg:py-16">

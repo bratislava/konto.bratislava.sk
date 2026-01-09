@@ -505,6 +505,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       expect(prismaMock.tax.findMany).toHaveBeenCalledWith({
         select: {
           id: true,
+          isCancelled: true,
           taxPayer: {
             select: {
               birthNumber: true,

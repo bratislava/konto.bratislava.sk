@@ -11,8 +11,7 @@ import IdentityVerificationNeededBanner from 'components/forms/segments/AccountS
 import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import Button from 'components/forms/simple-components/Button'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/ButtonNew'
 import ClipboardCopy from 'components/forms/simple-components/ClipboardCopy'
 import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
@@ -97,7 +96,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
           <span className="w-full text-h5 lg:w-auto">
             {sum && <FormatCurrencyFromCents value={sum} />}
           </span>
-          <ButtonNew
+          <Button
             variant="black-solid"
             onPress={() =>
               paymentMethod === PaymentMethod.Installments
@@ -113,7 +112,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
             fullWidthMobile
           >
             {t('taxes.payment.to_pay')}
-          </ButtonNew>
+          </Button>
         </div>
       </div>
       <div className="flex flex-col gap-6 rounded-lg border-2 border-solid border-gray-200 p-6">
@@ -196,17 +195,18 @@ const Details = ({ paymentMethod }: DetailsProps) => {
                 </div>
               </div>
               <Button
-                startIcon={<DownloadIcon className="size-5" />}
                 variant="black-outline"
-                text={t('taxes.payment_data.download_qr_code')}
-                size="sm"
-                className="block min-w-full lg:w-auto"
+                startIcon={<DownloadIcon />}
+                size="small"
+                fullWidthMobile
                 onPress={
                   paymentMethod === PaymentMethod.Installments
                     ? downloadQrCodeInstallmentPayment
                     : downloadQrCodeOneTimePayment
                 }
-              />
+              >
+                {t('taxes.payment_data.download_qr_code')}
+              </Button>
             </div>
             <img
               className="flex aspect-square max-h-max max-w-full items-center justify-center"

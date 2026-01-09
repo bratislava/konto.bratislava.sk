@@ -10,7 +10,6 @@ import AccordionShowCase from '../components/styleguide/showcases/AccordionShowC
 import AlertShowCase from '../components/styleguide/showcases/AlertShowCase'
 import BannerShowCase from '../components/styleguide/showcases/BannerShowCase'
 import ButtonNewShowCase from '../components/styleguide/showcases/ButtonNewShowCase'
-import ButtonShowCase from '../components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '../components/styleguide/showcases/CheckboxGroupedShowCase'
 import FieldHeaderShowCase from '../components/styleguide/showcases/FieldHeaderShowCase'
 import IconShowCase from '../components/styleguide/showcases/IconShowCase'
@@ -49,7 +48,6 @@ const Styleguide = () => {
         <TooltipShowCase />
         <FieldHeaderShowCase />
         <ButtonNewShowCase />
-        <ButtonShowCase />
         <SpinnerShowCase />
         <InputFieldShowCase />
         <DatePickerShowCase />

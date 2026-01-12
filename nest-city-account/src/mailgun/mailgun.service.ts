@@ -1,23 +1,22 @@
 import { Injectable } from '@nestjs/common'
 import formData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { Interfaces } from 'mailgun.js/definitions'
+import { Interfaces, MailgunMessageData } from 'mailgun.js/definitions'
+import { MailgunTemplateFactory, MailgunTemplates } from './dto/mailgun-template.factory'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { MAILGUN } from '../user-verification/constants'
 
 const mailgun = new Mailgun(formData)
 
-import { MailgunTemplates } from '../global-dtos/mailgun.dto'
-import { LineLoggerSubservice } from './line-logger.subservice'
-import { MAILGUN } from '../../user-verification/constants'
-
 @Injectable()
-export class MailgunSubservice {
+export class MailgunService {
   private mg: Interfaces.IMailgunClient
 
   private readonly config
 
   private readonly logger: LineLoggerSubservice
 
-  constructor() {
+  constructor(private readonly templateFactory: MailgunTemplateFactory) {
     // TODO temporarily uses dummy token which always passes
     if (!process.env.MAILGUN_API_KEY || !process.env.DEFAULT_MAILGUN_DOMAIN) {
       throw new Error('MailgunSubservice ENV vars are not set.')
@@ -31,7 +30,7 @@ export class MailgunSubservice {
       key: process.env.MAILGUN_API_KEY,
       url: MAILGUN.API_URL,
     })
-    this.logger = new LineLoggerSubservice(MailgunSubservice.name)
+    this.logger = new LineLoggerSubservice(MailgunService.name)
     this.logger.log('Successfully initialized Mailgun')
   }
 
@@ -39,21 +38,27 @@ export class MailgunSubservice {
   // otherwise only prints warnings to console
   // we can use the logs to resend failed mails manually
   // TODO consider storing failed email options in DB / or an email scheduler
-  async sendEmail<T extends keyof typeof MailgunTemplates>(
+  async sendEmail<T extends keyof MailgunTemplates>(
     templateKey: T,
-    options: Parameters<(typeof MailgunTemplates)[T]>[0]
+    options: Parameters<MailgunTemplates[T]>[0]
   ) {
     try {
       this.logger.log(
-        'About to send email with template',
+        'About to send an email with template',
         templateKey,
         'and options',
         JSON.stringify(options)
       )
-      const response = await this.mg.messages.create(
-        this.config.defaultMailgunDomain,
-        MailgunTemplates[templateKey](options)
-      )
+
+      // Use the injected factory instance to get the correct method
+
+      const factoryMethod = this.templateFactory[templateKey] as (
+        args: Parameters<MailgunTemplates[T]>[0]
+      ) => Promise<MailgunMessageData>
+
+      const messageData = await factoryMethod.call(this.templateFactory, options)
+
+      const response = await this.mg.messages.create(this.config.defaultMailgunDomain, messageData)
       this.logger.log('Mailgun response', response)
     } catch (error) {
       this.logger.error(

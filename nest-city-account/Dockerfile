@@ -6,7 +6,7 @@ ENV NODE_ENV=production
 
 FROM base AS app-base
 RUN apk update \
- && apk add tini \
+ && apk add tini qpdf\
  && rm -rf /var/cache/apk/* \
  && mkdir -p /home/node/app \
  && chown -R node:node /home/node/app
@@ -19,6 +19,7 @@ WORKDIR /build
 COPY package.json package-lock.json prisma ./
 RUN npm ci --include=dev --frozen-lockfile \
  && npx prisma generate
+RUN npx playwright install chromium --with-deps
 
 FROM build-base AS build
 COPY --from=openapi-clients /app/ /openapi-clients/

@@ -23,6 +23,9 @@ import {
   DeliveryMethodErrorsEnum,
   DeliveryMethodErrorsResponseEnum,
 } from '../utils/guards/dtos/delivery-method.error'
+import { MailgunService } from '../mailgun/mailgun.service'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
@@ -39,7 +42,10 @@ export class TasksService {
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxSubservice: TaxSubservice,
-    private readonly physicalEntityService: PhysicalEntityService
+    private readonly physicalEntityService: PhysicalEntityService,
+    private readonly mailgunService: MailgunService,
+    private readonly cognitoSubsevice: CognitoSubservice,
+    private readonly pdfGeneratorService: PdfGeneratorService
   ) {
     this.logger = new LineLoggerSubservice(TasksService.name)
   }
@@ -376,5 +382,90 @@ export class TasksService {
     }
 
     this.logger.log(`Completed lockDeliveryMethods task. Total processed: ${processedCount} users`)
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @HandleErrors('Cron')
+  async sendDailyDeliveryMethodSummaries() {
+    const yesterdayStart = new Date()
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1)
+    yesterdayStart.setHours(0, 0, 0, 0)
+
+    const yesterdayEnd = new Date()
+    yesterdayEnd.setDate(yesterdayEnd.getDate() - 1)
+    yesterdayEnd.setHours(23, 59, 59, 999)
+
+    this.logger.log(`Processing delivery method summaries for: ${yesterdayStart.toDateString()}`)
+
+    const latestChanges = await this.prismaService.userGdprData.findMany({
+      where: {
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+        subType: GDPRSubTypeEnum.subscribe,
+        createdAt: {
+          gte: yesterdayStart,
+          lte: yesterdayEnd,
+        },
+      },
+      distinct: ['userId'],
+      orderBy: {
+        createdAt: 'desc', // Get newest first
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+            externalId: true,
+            birthNumber: true,
+          },
+        },
+      },
+    })
+
+    for (const change of latestChanges) {
+      const { user, userId } = change
+
+      if (!user.email || !user.externalId || !user.birthNumber) {
+        this.logger.warn(`Skipping user ${userId}: Missing email, externalId or birth number.`)
+        continue
+      }
+
+      const previousState = await this.prismaService.userGdprData.findFirst({
+        where: {
+          userId,
+          category: GDPRCategoryEnum.TAXES,
+          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+          createdAt: { lt: yesterdayStart },
+        },
+        orderBy: { createdAt: 'desc' },
+      })
+
+      if (previousState?.subType === GDPRSubTypeEnum.subscribe) {
+        this.logger.log(`Skipping user ${userId}: Already subscribed in previous state.`)
+        continue
+      }
+
+      try {
+        const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
+
+        const firstName = cognitoData.given_name
+        const fullName = `${cognitoData.given_name ?? ''} ${cognitoData.family_name ?? ''}`.trim()
+
+        const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
+          'delivery-method-set-to-notification',
+          'oznamenie.pdf',
+          { email: user.email, name: fullName, birthNumber: user.birthNumber },
+          user.birthNumber
+        )
+
+        await this.mailgunService.sendEmail('2025-delivery-method-changed-notify', {
+          to: user.email,
+          variables: { firstName: firstName ?? null },
+          attachment: pdfFile,
+        })
+      } catch (err) {
+        this.logger.error(err)
+      }
+    }
   }
 }

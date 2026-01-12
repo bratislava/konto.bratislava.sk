@@ -87,9 +87,9 @@ const FormContentInner = () => {
   )
 }
 
-const FormContent = () => {
+const FormContent = ({ nonce }: { nonce?: string }) => {
   return (
-    <FormProviders>
+    <FormProviders nonce={nonce}>
       <FormContentInner />
     </FormProviders>
   )

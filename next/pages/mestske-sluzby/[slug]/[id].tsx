@@ -35,6 +35,8 @@ type Params = {
 
 export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & GlobalAppProps, Params>(
   async ({ context, fetchAuthSession, isSignedIn }) => {
+    const nonce = context.req.headers['x-nonce'] as string | undefined // TODO type
+
     if (!context.params) {
       return { notFound: true }
     }
@@ -80,6 +82,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
 
       return {
         props: {
+          nonce,
           formServerContext: {
             formDefinition: makeClientFormDefinition(serverFormDefinition),
             formId,

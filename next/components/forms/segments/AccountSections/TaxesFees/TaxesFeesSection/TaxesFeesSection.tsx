@@ -63,9 +63,9 @@ const TaxesFeesSection = () => {
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-4 p-4 lg:gap-8 lg:px-0 lg:py-12">
         {(isIdentityVerificationNotYetAttempted || showChannelNeededBanner) &&
           (isIdentityVerified ? (
-            <IdentityVerificationNeededBanner />
-          ) : (
             <OfficialCorrespondenceChannelNeededBanner />
+          ) : (
+            <IdentityVerificationNeededBanner />
           ))}
         {isInQueue && <IdentityVerificationInProcessBanner />}
         {isIdentityVerified && !showChannelNeededBanner && (

@@ -159,7 +159,13 @@ export const mapNorisToCommunalWasteDatabaseDetail = (
 ): CommunalWasteTaxDetail => {
   return {
     type: TaxType.KO,
-    addresses: data.addresses,
+    addresses: data.addresses.map((address) => ({
+      addressDetail: address.addressDetail,
+      containers: address.containers.map((container) => ({
+        ...container,
+        poplatok: convertCurrencyToInt(container.poplatok.toString()),
+      })),
+    })),
   }
 }
 

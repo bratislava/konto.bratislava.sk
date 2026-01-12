@@ -12,6 +12,7 @@ import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { PrismaService } from '../prisma/prisma.service'
 import { decryptData, encryptData } from '../utils/crypto'
+import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
 import * as jwt from 'jsonwebtoken'
 import { createHash, randomBytes } from 'node:crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -99,17 +100,13 @@ export class OAuth2Service {
    */
   async storeTokensForAuthRequest(
     authRequestId: string,
-    accessToken: string,
-    idToken: string | undefined,
+    clientId: string,
     refreshToken: string
   ): Promise<void> {
     this.logger.debug('Storing tokens for authorization request', {
       authRequestId: authRequestId,
-      hasAccessToken: !!accessToken,
-      hasIdToken: !!idToken,
+      clientId: clientId,
       hasRefreshToken: !!refreshToken,
-      accessTokenLength: accessToken?.length || 0,
-      idTokenLength: idToken?.length || 0,
       refreshTokenLength: refreshToken?.length || 0,
     })
 
@@ -128,20 +125,43 @@ export class OAuth2Service {
       )
     }
 
+    let refreshed: { accessToken?: string; idToken?: string }
+    try {
+      refreshed = await this.cognitoSubservice.refreshTokens(refreshToken, clientId)
+    } catch (error) {
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: failed to process tokens',
+        undefined,
+        'Failed to refresh tokens via Cognito',
+        { error, authRequestId }
+      )
+    }
+
+    if (!refreshed.accessToken) {
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: failed to process tokens',
+        undefined,
+        'No access token returned from Cognito refresh',
+        { authRequestId, hasRefreshToken: !!refreshToken }
+      )
+    }
+
     // Extract expiration from JWT access token; if not present, assume 1 hour
     const accessTokenExpiresAt =
-      this.extractJwtExpiration(accessToken) ?? new Date(Date.now() + 60 * 60 * 1000)
+      this.extractJwtExpiration(refreshed.accessToken) ?? new Date(Date.now() + 60 * 60 * 1000)
 
     // Encrypt tokens; encryptData can fail if CRYPTO_SECRET_KEY is not set
     let accessTokenEnc: string
     let idTokenEnc: string | null = null
     let refreshTokenEnc: string
     try {
-      accessTokenEnc = encryptData(accessToken)
-      if (idToken) {
-        idTokenEnc = encryptData(idToken)
+      accessTokenEnc = encryptData(serializeTokenData(refreshed.accessToken, clientId))
+      if (refreshed.idToken) {
+        idTokenEnc = encryptData(serializeTokenData(refreshed.idToken, clientId))
       }
-      refreshTokenEnc = encryptData(refreshToken)
+      refreshTokenEnc = encryptData(serializeTokenData(refreshToken, clientId))
     } catch (error) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
@@ -195,12 +215,7 @@ export class OAuth2Service {
       )
     }
     const redirectUrl = new URL(oAuth2LoginUrl)
-    redirectUrl.searchParams.set('client_id', request.client_id)
     redirectUrl.searchParams.set('payload', authRequestId)
-    redirectUrl.searchParams.set('redirect_uri', request.redirect_uri)
-    if (request.state) {
-      redirectUrl.searchParams.set('state', request.state)
-    }
     return redirectUrl.toString()
   }
 
@@ -508,9 +523,9 @@ export class OAuth2Service {
       )
     }
 
-    let refreshTokenPlain: string
+    let refreshTokenData: TokenData
     try {
-      refreshTokenPlain = decryptData(request.refresh_token)
+      refreshTokenData = deserializeTokenData(decryptData(request.refresh_token))
     } catch (error) {
       throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -521,9 +536,19 @@ export class OAuth2Service {
       )
     }
 
+    if (refreshTokenData.clientId !== clientId) {
+      throw this.oAuth2ErrorThrower.tokenException(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: invalid refresh token',
+        undefined,
+        'Refresh token client_id mismatch',
+        { clientId, refreshTokenClientId: refreshTokenData.clientId }
+      )
+    }
+
     let refreshed: { accessToken?: string; idToken?: string }
     try {
-      refreshed = await this.cognitoSubservice.refreshTokens(refreshTokenPlain, clientId)
+      refreshed = await this.cognitoSubservice.refreshTokens(refreshTokenData.token, clientId)
     } catch (error) {
       throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -540,24 +565,18 @@ export class OAuth2Service {
         'Invalid grant: unable to refresh access token',
         undefined,
         'No access token returned from Cognito refresh',
-        { clientId, hasRefreshToken: !!refreshTokenPlain }
+        { clientId, hasRefreshToken: !!refreshTokenData.token }
       )
     }
 
     // Compute expires_in from JWT exp (default 3600 if missing)
-    let expiresIn = 3600
-    try {
-      const decoded = jwt.decode(refreshed.accessToken) as { exp?: number } | null
-      if (typeof decoded?.exp === 'number') {
-        const secondsUntilExp = Math.max(0, decoded.exp - Math.floor(Date.now() / 1000))
-        expiresIn = secondsUntilExp
-      }
-    } catch (_) {
-      // keep default
-    }
+    const expDate = this.extractJwtExpiration(refreshed.accessToken)
+    const expiresIn = expDate
+      ? Math.max(0, Math.floor((expDate.getTime() - Date.now()) / 1000))
+      : 3600
     let accessTokenEnc: string
     try {
-      accessTokenEnc = encryptData(refreshed.accessToken)
+      accessTokenEnc = encryptData(serializeTokenData(refreshed.accessToken, clientId))
     } catch (error) {
       throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,

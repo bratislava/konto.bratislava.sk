@@ -10,10 +10,7 @@ import { useOAuthParams } from '../hooks/useOAuthParams'
 import { clearOAuthSessionStorage } from './amplifyClient'
 import logger from './logger'
 import {
-  clientIdQueryParam,
-  payloadQueryParam,
-  redirectUriQueryParam,
-  stateQueryParam,
+  payloadQueryParam
 } from './queryParamRedirect'
 
 export const getOAuthClientInfo = (clientId: string) =>
@@ -31,7 +28,7 @@ export const getOAuthClientInfo = (clientId: string) =>
   )[clientId] ?? null
 
 const useGetContext = () => {
-  const { clientId, payload, redirectUri, state } = useOAuthParams()
+  const { clientId, payload } = useOAuthParams()
 
   // TODO OAuth: Discuss what should be considered as oauth login, now we check only if clientId exists in url params
   const isOAuthLogin = !!clientId
@@ -46,27 +43,16 @@ const useGetContext = () => {
     if (payload) {
       parsedUrl.searchParams.set(payloadQueryParam, payload)
     }
-    if (clientId) {
-      parsedUrl.searchParams.set(clientIdQueryParam, clientId)
-    }
-    if (redirectUri) {
-      parsedUrl.searchParams.set(redirectUriQueryParam, redirectUri)
-    }
-    if (state) {
-      parsedUrl.searchParams.set(stateQueryParam, state)
-    }
     return parsedUrl
   }
 
   const handlePostOAuthTokens = async () => {
-    const { accessToken, idToken, refreshToken } =
+    const { refreshToken } =
       (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
 
-    const access_token = accessToken?.toString()
-    const id_token = idToken?.toString()
     const refresh_token = refreshToken
 
-    if (!access_token || !refresh_token || !payload) {
+    if (!refresh_token || !payload) {
       logger.error(
         `[AUTH] Missing access_token or refresh_token or payload in handlePostOAuthTokens`,
       )
@@ -77,13 +63,8 @@ const useGetContext = () => {
     try {
       await cityAccountClient.oAuth2ControllerStoreTokens(
         {
-          access_token,
-          id_token,
           refresh_token,
           payload,
-          client_id: clientId ?? undefined,
-          redirect_uri: redirectUri ?? undefined,
-          state: state ?? undefined,
         },
         { authStrategy: false },
       )

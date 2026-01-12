@@ -977,14 +977,6 @@ export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
 
 export interface StoreTokensRequestDto {
   /**
-   * Access token from user authentication (e.g., from Cognito)
-   */
-  access_token: string
-  /**
-   * ID token from user authentication
-   */
-  id_token?: string
-  /**
    * Refresh token from user authentication
    */
   refresh_token: string
@@ -992,18 +984,6 @@ export interface StoreTokensRequestDto {
    * UUID of the authorization request stored in the database
    */
   payload: string
-  /**
-   * Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-   */
-  client_id?: string
-  /**
-   * Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-   */
-  redirect_uri?: string
-  /**
-   * Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
-   */
-  state?: string
 }
 export interface TokenRequestDto {
   /**
@@ -3146,17 +3126,11 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
      * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerContinueComplete: async (
       payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'payload' is not null or undefined
@@ -3177,18 +3151,6 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
         localVarQueryParameter['payload'] = payload
       }
 
-      if (clientId !== undefined) {
-        localVarQueryParameter['client_id'] = clientId
-      }
-
-      if (redirectUri !== undefined) {
-        localVarQueryParameter['redirect_uri'] = redirectUri
-      }
-
-      if (state !== undefined) {
-        localVarQueryParameter['state'] = state
-      }
-
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -3206,17 +3168,11 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
      * Get client information (name and title) by client_id from authorization request for frontend display.
      * @summary OAuth2 Client Info Endpoint
      * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerInfo: async (
       payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'payload' is not null or undefined
@@ -3235,18 +3191,6 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
 
       if (payload !== undefined) {
         localVarQueryParameter['payload'] = payload
-      }
-
-      if (clientId !== undefined) {
-        localVarQueryParameter['client_id'] = clientId
-      }
-
-      if (redirectUri !== undefined) {
-        localVarQueryParameter['redirect_uri'] = redirectUri
-      }
-
-      if (state !== undefined) {
-        localVarQueryParameter['state'] = state
       }
 
       localVarHeaderParameter['Accept'] = 'application/json'
@@ -3421,24 +3365,15 @@ export const OAuth2ApiFp = function (configuration?: Configuration) {
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
      * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async oAuth2ControllerContinueComplete(
       payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerContinueComplete(
         payload,
-        clientId,
-        redirectUri,
-        state,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3458,24 +3393,15 @@ export const OAuth2ApiFp = function (configuration?: Configuration) {
      * Get client information (name and title) by client_id from authorization request for frontend display.
      * @summary OAuth2 Client Info Endpoint
      * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async oAuth2ControllerInfo(
       payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientInfoResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerInfo(
         payload,
-        clientId,
-        redirectUri,
-        state,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3595,42 +3521,30 @@ export const OAuth2ApiFactory = function (
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
      * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerContinueComplete(
       payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .oAuth2ControllerContinueComplete(payload, clientId, redirectUri, state, options)
+        .oAuth2ControllerContinueComplete(payload, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Get client information (name and title) by client_id from authorization request for frontend display.
      * @summary OAuth2 Client Info Endpoint
      * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerInfo(
       payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClientInfoResponseDto> {
       return localVarFp
-        .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
+        .oAuth2ControllerInfo(payload, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -3711,21 +3625,12 @@ export class OAuth2Api extends BaseAPI {
    * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
    * @summary OAuth2 Continue Endpoint
    * @param {string} payload UUID of the authorization request stored in the database
-   * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-   * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-   * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public oAuth2ControllerContinueComplete(
-    payload: string,
-    clientId?: string,
-    redirectUri?: string,
-    state?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
+  public oAuth2ControllerContinueComplete(payload: string, options?: RawAxiosRequestConfig) {
     return OAuth2ApiFp(this.configuration)
-      .oAuth2ControllerContinueComplete(payload, clientId, redirectUri, state, options)
+      .oAuth2ControllerContinueComplete(payload, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -3733,21 +3638,12 @@ export class OAuth2Api extends BaseAPI {
    * Get client information (name and title) by client_id from authorization request for frontend display.
    * @summary OAuth2 Client Info Endpoint
    * @param {string} payload UUID of the authorization request stored in the database
-   * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-   * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-   * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public oAuth2ControllerInfo(
-    payload: string,
-    clientId?: string,
-    redirectUri?: string,
-    state?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
+  public oAuth2ControllerInfo(payload: string, options?: RawAxiosRequestConfig) {
     return OAuth2ApiFp(this.configuration)
-      .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
+      .oAuth2ControllerInfo(payload, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

@@ -156,22 +156,6 @@ export class TokenRequestDto {
  */
 export class StoreTokensRequestDto {
   @ApiProperty({
-    description: 'Access token from user authentication (e.g., from Cognito)',
-    example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
-  })
-  @IsNotEmpty()
-  @IsString()
-  access_token!: string
-
-  @ApiPropertyOptional({
-    description: 'ID token from user authentication',
-    example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
-  })
-  @IsOptional()
-  @IsString()
-  id_token?: string
-
-  @ApiProperty({
     description: 'Refresh token from user authentication',
     example: 'def50200f3b2a7b4e8b1c...',
   })
@@ -186,34 +170,6 @@ export class StoreTokensRequestDto {
   @IsNotEmpty()
   @IsUUID()
   payload!: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request',
-    example: EXAMPLE_CLIENT_ID,
-  })
-  @IsOptional()
-  @IsString()
-  client_id?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request',
-    example: 'https://your-app.com/callback',
-  })
-  @IsOptional()
-  @IsString()
-  redirect_uri?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749',
-    example: 'xK8F2j9pL3mN7qR',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  state?: string
 }
 
 /**
@@ -228,34 +184,6 @@ class AuthorizationPayloadRequestDto {
   @IsNotEmpty()
   @IsUUID()
   payload!: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request',
-    example: EXAMPLE_CLIENT_ID,
-  })
-  @IsOptional()
-  @IsString()
-  client_id?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request',
-    example: 'https://your-app.com/callback',
-  })
-  @IsOptional()
-  @IsString()
-  redirect_uri?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749',
-    example: 'xK8F2j9pL3mN7qR',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  state?: string
 }
 
 /**

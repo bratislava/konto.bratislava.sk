@@ -7,7 +7,6 @@ import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
 import { AuthorizationPayloadGuard } from './guards/authorization-payload.guard'
 import { OAuth2AccessGuard } from './guards/oauth2-access.guard'
-import { EncryptedJwtStrategy } from './strategies/encrypted-jwt.strategy'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -31,7 +30,6 @@ import { OAuth2ErrorThrower } from './oauth2-error.thrower'
     AuthorizationRequestGuard,
     TokenRequestGuard,
     AuthorizationPayloadGuard,
-    EncryptedJwtStrategy,
     OAuth2AccessGuard,
     OAuth2ExceptionFilter,
     TokenRequestValidationPipe,

@@ -114,14 +114,13 @@ export class OAuth2Controller {
     this.logger.debug('Store tokens request received', {
       client_id: authorizationRequest.client_id,
       payload: body.payload,
-      hasTokens: !!(body.access_token && body.refresh_token),
+      hasRefreshToken: !!body.refresh_token,
     })
 
     // Service stores tokens for the authorization request ID
     await this.oauth2Service.storeTokensForAuthRequest(
       body.payload,
-      body.access_token,
-      body.id_token,
+      authorizationRequest.client_id,
       body.refresh_token
     )
   }
@@ -218,8 +217,8 @@ export class OAuth2Controller {
 
     // Normalize client credentials: extract from validated credentials in request (set by TokenRequestGuard)
     const request = req as RequestWithClientCredentials
-    if (request.oauth2ClientId && request.oauth2ClientSecret) {
-      body.client_id = request.oauth2ClientId
+    if (request.tokenClientId && request.oauth2ClientSecret) {
+      body.client_id = request.tokenClientId
       body.client_secret = request.oauth2ClientSecret
     }
 

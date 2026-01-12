@@ -7,8 +7,7 @@ import {
   setVerifyEidMetadata,
 } from 'frontend/utils/metadataStorage'
 import { useRouter } from 'next/router'
-import { useRef, useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import { useEffect, useRef, useState } from 'react'
 
 import { environment } from '../../environment'
 import { useRefreshServerSideProps } from '../../frontend/hooks/useRefreshServerSideProps'
@@ -89,7 +88,7 @@ export const useVerifyEid = () => {
 
   // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
-  useEffectOnce(() => {
+  useEffect(() => {
     if (effectOnceRan.current) {
       return
     }
@@ -104,7 +103,9 @@ export const useVerifyEid = () => {
 
       verifyWithEid()
     }
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const loginWithEid = () => {
     setVerificationStatus(VerificationStatus.REDIRECTING)

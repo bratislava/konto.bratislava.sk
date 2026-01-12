@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { useRef } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import { useEffect, useRef } from 'react'
 
 import { STEP_QUERY_PARAM_KEY } from '../../components/forms/useFormCurrentStepIndex'
 import { ROUTES } from '../../frontend/api/constants'
@@ -22,7 +21,7 @@ const NasesLoginPage = () => {
 
   // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
-  useEffectOnce(() => {
+  useEffect(() => {
     if (effectOnceRan.current) {
       return
     }
@@ -72,7 +71,9 @@ const NasesLoginPage = () => {
         ROUTES.IDENTITY_VERIFICATION,
       )
     }
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return null
 }

@@ -242,9 +242,9 @@ const PaymentData = () => {
             message={t('taxes.payment_data.payment_method_access_prompt')}
           />
           {isIdentityVerified ? (
-            <IdentityVerificationNeededBanner />
-          ) : (
             <OfficialCorrespondenceChannelNeededBanner />
+          ) : (
+            <IdentityVerificationNeededBanner />
           )}
         </div>
       ) : (

@@ -454,7 +454,12 @@ export class TasksService {
         const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
           'delivery-method-set-to-notification',
           'oznamenie.pdf',
-          { email: user.email, name: fullName, birthNumber: user.birthNumber },
+          {
+            email: user.email,
+            name: fullName,
+            birthNumber: user.birthNumber,
+            date: new Date().toLocaleDateString('sk'),
+          },
           user.birthNumber
         )
 

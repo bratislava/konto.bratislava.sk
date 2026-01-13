@@ -298,6 +298,55 @@ export class TasksService {
     )
   }
 
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+  @HandleErrors('CronError')
+  async deleteOldOAuth2Data(): Promise<void> {
+    const oneMonthAgo = new Date(new Date().setMonth(new Date().getMonth() - 1))
+
+    const oldRecords = await this.prismaService.oAuth2Data.findMany({
+      where: {
+        OR: [
+          {
+            authorizationCodeCreatedAt: {
+              not: null,
+              lt: oneMonthAgo,
+            },
+          },
+          {
+            authorizationCodeCreatedAt: null,
+            createdAt: {
+              lt: oneMonthAgo,
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        authorizationCode: true,
+      },
+    })
+
+    if (oldRecords.length === 0) {
+      return
+    }
+
+    for (const record of oldRecords) {
+      this.logger.log(
+        `Deleting old oAuth2 record with id: ${record.id} and authorization code: ${record.authorizationCode}`
+      )
+    }
+
+    await this.prismaService.oAuth2Data.deleteMany({
+      where: {
+        id: {
+          in: oldRecords.map((record) => record.id),
+        },
+      },
+    })
+
+    this.logger.log(`Deleted ${oldRecords.length} old oAuth2 records.`)
+  }
+
   @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`)
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, Prisma, UpvsIdentityByUri } from '@prisma/client'
+import { PhysicalEntity, Prisma } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 
@@ -22,7 +22,7 @@ export type UpdateFromRFOResult = {
   physicalEntity: PhysicalEntity
   rfoData: RfoIdentityList | null
   upvsInput?: { uri: string; physicalEntityId: string }
-  upvsResult?: UpvsIdentityByUri
+  upvsResult?: ApiIamIdentitiesIdGet200Response
 }
 
 @Injectable()
@@ -126,11 +126,7 @@ export class PhysicalEntityService {
       return {
         id: item.physicalEntityId ?? undefined,
         uri: item.uri,
-        activeEdesk:
-          // TODO: add zod validation or validation of the data directly in database
-          // as is in nest-forms-backend with prisma-json-types-generator
-          // https://github.com/bratislava/private-konto.bratislava.sk/issues/1109
-          (item.data as ApiIamIdentitiesIdGet200Response)?.upvs?.edesk_status === 'deliverable',
+        activeEdesk: item.data.upvs?.edesk_status === 'deliverable',
       }
     })
 

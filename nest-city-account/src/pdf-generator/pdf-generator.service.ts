@@ -86,8 +86,7 @@ export class PdfGeneratorService {
     try {
       writeFileSync(tempInputPath, pdfBuffer)
 
-      return await new Promise((resolve, reject) => {
-        // Arguments: input is the temp file, output is '-' (stdout)
+      return await new Promise<Buffer>((resolve, reject) => {
         const args = ['--encrypt', password, password, '256', '--', tempInputPath, '-']
 
         const child = spawn('qpdf', args)
@@ -98,7 +97,6 @@ export class PdfGeneratorService {
         child.stderr.on('data', (chunk) => stderrChunks.push(chunk))
 
         child.on('error', (err) => {
-          if (existsSync(tempInputPath)) unlinkSync(tempInputPath)
           this.logger.error(`Failed to start qpdf process: ${err.message}`)
           reject(
             this.throwerErrorGuard.InternalServerErrorException(
@@ -111,8 +109,6 @@ export class PdfGeneratorService {
         })
 
         child.on('close', (code) => {
-          if (existsSync(tempInputPath)) unlinkSync(tempInputPath)
-
           if (code === 0) {
             resolve(Buffer.concat(stdoutChunks))
           } else {
@@ -128,7 +124,9 @@ export class PdfGeneratorService {
         })
       })
     } catch (error) {
-      if (existsSync(tempInputPath)) unlinkSync(tempInputPath)
+      if (existsSync(tempInputPath)) {
+        unlinkSync(tempInputPath)
+      }
 
       if (error instanceof Error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -139,6 +137,10 @@ export class PdfGeneratorService {
         )
       }
       throw error
+    } finally {
+      if (existsSync(tempInputPath)) {
+        unlinkSync(tempInputPath)
+      }
     }
   }
 }

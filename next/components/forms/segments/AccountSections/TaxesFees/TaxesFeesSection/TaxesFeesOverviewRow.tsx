@@ -23,6 +23,7 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
     [TaxStatusEnum.PartiallyPaid]: t('account_section_payment.tax_card_status_partially_paid'),
     [TaxStatusEnum.Paid]: t('account_section_payment.tax_card_status_paid'),
     [TaxStatusEnum.OverPaid]: t('account_section_payment.tax_card_status_overpaid'),
+    [TaxStatusEnum.Cancelled]: t('account_section_payment.tax_card_status_cancelled'),
   }[status]
 
   return (
@@ -33,10 +34,10 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
           'text-content-warning-default':
             // partially paid should be blue color but we don't such color,
             // colors not defined in design system, using what we have
-            status === TaxStatusEnum.OverPaid ||
-            status === TaxStatusEnum.AwaitingProcessing ||
-            status === TaxStatusEnum.PartiallyPaid,
-          'text-content-success-default': status === TaxStatusEnum.Paid,
+
+            status === TaxStatusEnum.AwaitingProcessing || status === TaxStatusEnum.PartiallyPaid,
+          'text-content-success-default':
+            status === TaxStatusEnum.OverPaid || status === TaxStatusEnum.Paid,
         })}
       >
         {title}

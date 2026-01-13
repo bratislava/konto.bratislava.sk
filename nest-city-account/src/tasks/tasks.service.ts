@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { DateTime } from 'luxon'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
@@ -252,7 +253,7 @@ export class TasksService {
   @Cron(CronExpression.EVERY_5_MINUTES)
   @HandleErrors('CronError')
   async cleanupExpiredAuthorizationCodes(): Promise<void> {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+    const fiveMinutesAgo = DateTime.now().minus({ minutes: 5 }).toJSDate()
 
     const expiredRecords = await this.prismaService.oAuth2Data.findMany({
       where: {
@@ -301,7 +302,7 @@ export class TasksService {
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
   @HandleErrors('CronError')
   async deleteOldOAuth2Data(): Promise<void> {
-    const oneMonthAgo = new Date(new Date().setMonth(new Date().getMonth() - 1))
+    const oneMonthAgo = DateTime.now().minus({ months: 1 }).toJSDate()
 
     const oldRecords = await this.prismaService.oAuth2Data.findMany({
       where: {

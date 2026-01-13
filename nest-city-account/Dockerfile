@@ -2,6 +2,8 @@ ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:20.9-alpine AS base
 
+RUN npx playwright install-deps chromium
+
 ENV NODE_ENV=production
 
 FROM base AS app-base
@@ -19,7 +21,6 @@ WORKDIR /build
 COPY package.json package-lock.json prisma ./
 RUN npm ci --include=dev --frozen-lockfile \
  && npx prisma generate
-RUN npx playwright install chromium --with-deps
 
 FROM build-base AS build
 COPY --from=openapi-clients /app/ /openapi-clients/
@@ -53,6 +54,10 @@ COPY --chown=node:node --from=openapi-clients /app/ /home/node/openapi-clients
 WORKDIR /home/node/app
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
+
+RUN npx playwright install chromium
+RUN npm prune --production
+
 COPY --chown=node:node --from=build /build/dist ./dist
 COPY --chown=node:node --from=build /build/prisma ./prisma
 COPY --chown=node:node nest-cli.json ./nest-cli.json

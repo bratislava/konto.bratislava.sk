@@ -38,7 +38,6 @@ import {
   removeLegalPersonDataFromDatabase,
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
-import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
@@ -534,7 +533,13 @@ export class AdminService {
   async validateEdeskWithUriFromCognito(offset: number) {
     const physicalEntitiesWithoutUriVerificationAttempts =
       await this.prismaService.physicalEntity.findMany({
-        where: { userId: { not: null }, uri: null, UpvsIdentityByUri: { none: {} } },
+        where: {
+          userId: { not: null },
+          uri: null,
+          activeEdeskUpdatedAt: null,
+          activeEdeskUpdateFailCount: 0,
+          activeEdeskUpdateFailedAt: null,
+        },
         take: 100,
         skip: offset,
       })
@@ -619,8 +624,7 @@ export class AdminService {
       await this.physicalEntityService.update({
         id: success.physicalEntityId,
         uri: success.uri,
-        activeEdesk:
-          (success.data as ApiIamIdentitiesIdGet200Response)?.upvs?.edesk_status === 'deliverable',
+        activeEdesk: success.data.upvs?.edesk_status === 'deliverable',
       })
     }
 

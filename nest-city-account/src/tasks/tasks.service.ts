@@ -249,6 +249,52 @@ export class TasksService {
     })
   }
 
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  @HandleErrors('CronError')
+  async cleanupExpiredAuthorizationCodes(): Promise<void> {
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+
+    const expiredRecords = await this.prismaService.oAuth2Data.findMany({
+      where: {
+        authorizationCodeCreatedAt: {
+          not: null,
+          lt: fiveMinutesAgo,
+        },
+      },
+      select: {
+        id: true,
+        authorizationCode: true,
+      },
+    })
+
+    if (expiredRecords.length === 0) {
+      return
+    }
+
+    for (const record of expiredRecords) {
+      this.logger.warn(
+        `Cleaning up expired oAuth2 tokens for authorization code: ${record.authorizationCode}`
+      )
+    }
+
+    await this.prismaService.oAuth2Data.updateMany({
+      where: {
+        id: {
+          in: expiredRecords.map((record) => record.id),
+        },
+      },
+      data: {
+        accessTokenEnc: null,
+        idTokenEnc: null,
+        refreshTokenEnc: null,
+      },
+    })
+
+    this.logger.debug(
+      `Cleaned up expired authorization codes for ${expiredRecords.length} oAuth2 records.`
+    )
+  }
+
   @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`)
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {

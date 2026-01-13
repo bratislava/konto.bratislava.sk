@@ -33,7 +33,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
       </h2>
       <div
         className={cn(
-          'flex w-full items-center justify-between gap-4 rounded-lg border-2 border-gray-200 p-5 lg:p-5',
+          'flex w-full flex-1 justify-between gap-4 rounded-lg border-2 border-gray-200 p-5 lg:p-5',
         )}
       >
         <div className="flex w-full items-start justify-between gap-4">

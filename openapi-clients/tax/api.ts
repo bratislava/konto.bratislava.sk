@@ -68,6 +68,45 @@ export const InstallmentPaidStatusEnum = {
 export type InstallmentPaidStatusEnum =
   (typeof InstallmentPaidStatusEnum)[keyof typeof InstallmentPaidStatusEnum]
 
+export interface PaymentControllerPaymentResponse302Response {
+  /**
+   * Redirect URL with status query parameter. Status values are defined in PaymentRedirectStateEnum.
+   */
+  url?: string
+}
+export interface PaymentRedirectResponseDto {
+  /**
+   * Payment redirect status
+   */
+  status: PaymentRedirectStateEnum
+  /**
+   * Type of tax
+   */
+  taxType?: TaxType
+  /**
+   * Year of the tax
+   */
+  year?: number
+  /**
+   * Order of the tax
+   */
+  order?: number
+}
+
+/**
+ * Payment redirect status
+ */
+
+export const PaymentRedirectStateEnum = {
+  FailedToVerify: 'failed-to-verify',
+  PaymentAlreadyPaid: 'payment-already-paid',
+  PaymentFailed: 'payment-failed',
+  PaymentSuccess: 'payment-success',
+} as const
+
+export type PaymentRedirectStateEnum =
+  (typeof PaymentRedirectStateEnum)[keyof typeof PaymentRedirectStateEnum]
+
 /**
  * Type of apartment
  */

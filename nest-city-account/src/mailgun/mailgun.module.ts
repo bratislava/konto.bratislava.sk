@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 import { MailgunService } from './mailgun.service'
-import { MailgunTemplateFactory } from './dto/mailgun-template.factory'
+import { MailgunMessageBuilder } from './mailgun-message-builder'
 
 @Module({
-  providers: [MailgunService, MailgunTemplateFactory],
+  providers: [MailgunService, MailgunMessageBuilder],
   exports: [MailgunService],
 })
 export class MailgunModule {}

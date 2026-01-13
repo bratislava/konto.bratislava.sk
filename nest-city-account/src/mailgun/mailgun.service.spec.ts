@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunService } from './mailgun.service'
-import { MailgunTemplateFactory } from './dto/mailgun-template.factory'
+import { MailgunMessageBuilder } from './mailgun-message-builder'
 import { PdfGeneratorModule } from '../pdf-generator/pdf-generator.module'
 
 describe('MailgunService', () => {
@@ -16,7 +16,7 @@ describe('MailgunService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [MailgunService, MailgunTemplateFactory],
+      providers: [MailgunService, MailgunMessageBuilder],
       imports: [PdfGeneratorModule],
     }).compile()
 

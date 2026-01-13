@@ -1,4 +1,4 @@
-import { MAILGUN } from '../../user-verification/constants'
+import { MAILGUN } from '../user-verification/constants'
 import { MailgunMessageData } from 'mailgun.js/definitions'
 import { Injectable } from '@nestjs/common'
 
@@ -37,7 +37,7 @@ interface DeliveryMethodChangedToNotifyMailgunParams extends BaseMailgunParams {
 }
 
 @Injectable()
-export class MailgunTemplateFactory {
+export class MailgunMessageBuilder {
   async '2023-registration-successful'({
     to,
     variables,
@@ -91,5 +91,5 @@ export class MailgunTemplateFactory {
 }
 
 export type MailgunTemplates = {
-  [K in keyof MailgunTemplateFactory]: MailgunTemplateFactory[K]
+  [K in keyof MailgunMessageBuilder]: MailgunMessageBuilder[K]
 }

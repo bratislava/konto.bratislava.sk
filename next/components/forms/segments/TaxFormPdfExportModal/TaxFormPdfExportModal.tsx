@@ -2,7 +2,6 @@ import { CheckIcon } from '@assets/ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { mergeProps } from 'react-aria'
-import { Button as AriaButton } from 'react-aria-components'
 
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import ButtonNew from '../../simple-components/ButtonNew'
@@ -110,7 +109,7 @@ const SuccessContent = () => {
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
-              <div className="rounded-t-lg bg-main-100 p-4 md:px-6 md:py-5">
+              <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
                 <h4 className="text-h4">{t('tax_form_pdf_export_modal.account_create')}</h4>
                 <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
                   {advantages.map((item, index) => (
@@ -123,13 +122,15 @@ const SuccessContent = () => {
                   ))}
                 </ul>
               </div>
-              <div className="rounded-b-lg bg-main-100 px-4 pb-4 md:px-0 md:pb-0">
-                <AriaButton
-                  className="flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center text-p1-semibold leading-6 text-gray-0 hover:bg-main-600 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
+              <div className="rounded-b-lg bg-gray-100 px-4 pb-4 lg:px-0 lg:pb-0">
+                <ButtonNew
+                  variant="black-solid"
+                  fullWidth
+                  className="rounded-lg px-5 py-2 text-p1-semibold leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}
-                </AriaButton>
+                </ButtonNew>
               </div>
             </div>
           </>

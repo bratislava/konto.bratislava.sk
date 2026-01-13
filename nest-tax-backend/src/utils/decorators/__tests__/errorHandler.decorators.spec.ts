@@ -1,3 +1,5 @@
+import noop from 'lodash/noop'
+
 import { ErrorsEnum } from '../../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../guards/errors.guard'
 import HandleErrors from '../errorHandler.decorator'
@@ -6,7 +8,7 @@ describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
 
   beforeEach(async () => {
-    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(() => {})
+    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(noop)
   })
 
   afterEach(() => {

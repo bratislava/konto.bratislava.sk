@@ -18,11 +18,9 @@ import {
 } from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button as ReactAriaButton } from 'react-aria-components'
 
 import cn from '../../../../frontend/cn'
-import Button from '../../simple-components/Button'
-import ButtonNew from '../../simple-components/ButtonNew'
+import Button from '../../simple-components/ButtonNew'
 import PrettyBytes from '../../simple-components/PrettyBytes'
 import ProgressBar from '../../simple-components/ProgressBar'
 
@@ -129,10 +127,14 @@ const UploadFileCard = ({
             <div className="flex grow flex-col">
               <h3 className="font-semibold break-all text-gray-800">{fileInfo.fileName}</h3>
               <div className="flex gap-2">
+                {/* TODO Translations - download aria label size and format */}
                 {isDownloadable && (
-                  <ReactAriaButton onPress={onFileDownload}>
-                    <DownloadIcon />
-                  </ReactAriaButton>
+                  <Button
+                    variant="icon-wrapped-negative-margin"
+                    icon={<DownloadIcon />}
+                    aria-label={t('Upload.aria.download')}
+                    onPress={onFileDownload}
+                  />
                 )}
                 {fileInfo.fileSize != null && (
                   <span>
@@ -150,11 +152,11 @@ const UploadFileCard = ({
 
             <div className="shrink-0 grow-0">
               {/* TODO unified styling */}
-              <ButtonNew
-                variant="unstyled"
+              <Button
+                variant="icon-wrapped-negative-margin"
                 icon={<CrossInCircleIcon />}
                 aria-label={t('Upload.aria.removeFile')}
-                className={cn('relative -mr-2', {
+                className={cn('relative', {
                   'hover:bg-negative-200 focus:bg-negative-300': isErrorStatus,
                   'hover:bg-success-200 focus:bg-success-300': isDoneStatus,
                 })}
@@ -176,13 +178,14 @@ const UploadFileCard = ({
 
           {'canRetry' in fileInfo.status && fileInfo.status.canRetry && (
             <Button
-              variant="link-black"
+              variant="black-link"
               onPress={onFileRetry}
-              text={t('Upload.retry')}
-              size="sm"
+              size="small"
               className="font-semibold"
-              disabled={disabled}
-            />
+              isDisabled={disabled}
+            >
+              {t('Upload.retry')}
+            </Button>
           )}
         </div>
       )}

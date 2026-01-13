@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import slugify from 'slugify'
 
 import cn from '../../frontend/cn'
-import MLink from '../forms/simple-components/MLink'
+import MLink from '../forms/simple-components/MLinkNew'
 
 type WrapperProps = {
   title?: string

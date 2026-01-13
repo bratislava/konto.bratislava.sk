@@ -7,12 +7,12 @@ import {
   QrCodeIcon,
 } from '@assets/ui-icons'
 import Alert from 'components/forms/info-components/Alert'
+import IdentityVerificationInProcessBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationInProcessBanner'
 import IdentityVerificationNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationNeededBanner'
 import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import Button from 'components/forms/simple-components/Button'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/ButtonNew'
 import ClipboardCopy from 'components/forms/simple-components/ClipboardCopy'
 import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
@@ -97,7 +97,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
           <span className="w-full text-h5 lg:w-auto">
             {sum && <FormatCurrencyFromCents value={sum} />}
           </span>
-          <ButtonNew
+          <Button
             variant="black-solid"
             onPress={() =>
               paymentMethod === PaymentMethod.Installments
@@ -113,7 +113,7 @@ const Details = ({ paymentMethod }: DetailsProps) => {
             fullWidthMobile
           >
             {t('taxes.payment.to_pay')}
-          </ButtonNew>
+          </Button>
         </div>
       </div>
       <div className="flex flex-col gap-6 rounded-lg border-2 border-solid border-gray-200 p-6">
@@ -196,17 +196,18 @@ const Details = ({ paymentMethod }: DetailsProps) => {
                 </div>
               </div>
               <Button
-                startIcon={<DownloadIcon className="size-5" />}
                 variant="black-outline"
-                text={t('taxes.payment_data.download_qr_code')}
-                size="sm"
-                className="block min-w-full lg:w-auto"
+                startIcon={<DownloadIcon />}
+                size="small"
+                fullWidthMobile
                 onPress={
                   paymentMethod === PaymentMethod.Installments
                     ? downloadQrCodeInstallmentPayment
                     : downloadQrCodeOneTimePayment
                 }
-              />
+              >
+                {t('taxes.payment_data.download_qr_code')}
+              </Button>
             </div>
             <img
               className="flex aspect-square max-h-max max-w-full items-center justify-center"
@@ -225,31 +226,26 @@ const Details = ({ paymentMethod }: DetailsProps) => {
 }
 
 const PaymentData = () => {
-  const { t } = useTranslation('account')
   const { tierStatus } = useSsrAuth()
-  const { isIdentityVerified, isIdentityVerificationNotYetAttempted } = tierStatus
+  const { isIdentityVerified, isInQueue } = tierStatus
   const { showChannelNeededBanner } = useOfficialCorrespondenceChannel()
   const searchParams = useSearchParams()
   const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
-      {isIdentityVerificationNotYetAttempted || showChannelNeededBanner ? (
-        <div className="flex flex-col gap-6">
-          <Alert
-            type="warning"
-            fullWidth
-            message={t('taxes.payment_data.payment_method_access_prompt')}
-          />
-          {isIdentityVerified ? (
-            <IdentityVerificationNeededBanner />
-          ) : (
-            <OfficialCorrespondenceChannelNeededBanner />
-          )}
-        </div>
-      ) : (
-        <Details paymentMethod={paymentMethodParam} />
-      )}
+      {!isIdentityVerified &&
+        (isInQueue ? (
+          <IdentityVerificationInProcessBanner />
+        ) : (
+          <IdentityVerificationNeededBanner />
+        ))}
+      {isIdentityVerified &&
+        (showChannelNeededBanner ? (
+          <OfficialCorrespondenceChannelNeededBanner />
+        ) : (
+          <Details paymentMethod={paymentMethodParam} />
+        ))}
     </div>
   )
 }

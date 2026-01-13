@@ -2458,13 +2458,13 @@ exports[`getSummaryJson > oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom
           "displayValues": [
             {
               "type": "String",
-              "value": "objem: 11 m³ / nosnosť: do 8 t",
+              "value": "objem: 11 m³ / nosnosť: do 8 t / hákový nosič VKK",
             },
           ],
           "id": "root_sluzba_objemKontajnera",
           "label": "Objem kontajnera",
           "type": "Field",
-          "value": "11m3_8t",
+          "value": "11m3_8t_hakovy_nosic",
         },
         {
           "displayValues": [

@@ -10,7 +10,7 @@ import {
   VerificationErrorsResponseEnum,
 } from '../user-verification/verification.errors.enum'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { ApiIamIdentitiesIdGet200Response } from '../../../openapi-clients/slovensko-sk'
+import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 export type UpvsIdentityByUriServiceCreateManyParam = {
   physicalEntityId?: string

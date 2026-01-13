@@ -535,7 +535,13 @@ export class AdminService {
   async validateEdeskWithUriFromCognito(offset: number) {
     const physicalEntitiesWithoutUriVerificationAttempts =
       await this.prismaService.physicalEntity.findMany({
-        where: { userId: { not: null }, uri: null, UpvsIdentityByUri: { none: {} } },
+        where: {
+          userId: { not: null },
+          uri: null,
+          activeEdeskUpdatedAt: null,
+          activeEdeskUpdateFailCount: 0,
+          activeEdeskUpdateFailedAt: null,
+        },
         take: 100,
         skip: offset,
       })

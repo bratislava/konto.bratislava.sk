@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunService } from './mailgun.service'
-import { MailgunMessageBuilder } from './mailgun-message-builder'
-import { PdfGeneratorModule } from '../pdf-generator/pdf-generator.module'
+import { MailgunMessageBuilder } from './mailgun-message.builder'
 
 describe('MailgunService', () => {
   let service: MailgunService
@@ -17,7 +16,6 @@ describe('MailgunService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [MailgunService, MailgunMessageBuilder],
-      imports: [PdfGeneratorModule],
     }).compile()
 
     service = module.get<MailgunService>(MailgunService)

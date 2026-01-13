@@ -3,12 +3,12 @@ import { Browser, chromium } from 'playwright'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { PdfTemplateKeys, pdfTemplates, PdfTemplateVariables } from './templates/pdf-templates'
 import { spawn } from 'node:child_process'
-import { writeFileSync, existsSync, unlinkSync } from 'node:fs'
+import { existsSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { v4 as uuidv4 } from 'uuid'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class PdfGeneratorService {
@@ -25,7 +25,7 @@ export class PdfGeneratorService {
     templateName: T,
     filename: string,
     templateVariables: PdfTemplateVariables<T>,
-    password?: string
+    password: string
   ): Promise<{ data: Buffer; filename: string; contentType: string }> {
     let browser: Browser | null = null
 
@@ -55,25 +55,23 @@ export class PdfGeneratorService {
       await browser.close()
       browser = null
 
-      if (password) {
-        return {
-          data: await this.addPasswordToPdf(pdfBuffer, password),
-          filename,
-          contentType: 'application/pdf',
-        }
-      }
-
       return {
-        data: pdfBuffer,
+        data: await this.addPasswordToPdf(pdfBuffer, password),
         filename,
         contentType: 'application/pdf',
       }
     } catch (error) {
       if (browser) {
         await browser.close()
+        browser = null
       }
-      this.logger.error(`Error generating PDF from Mailgun template: ${error}`)
-      throw error
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+        'Error generating PDF from Mailgun template',
+        error
+      )
     }
   }
 
@@ -124,10 +122,6 @@ export class PdfGeneratorService {
         })
       })
     } catch (error) {
-      if (existsSync(tempInputPath)) {
-        unlinkSync(tempInputPath)
-      }
-
       if (error instanceof Error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import formData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { Interfaces, MailgunMessageData } from 'mailgun.js/definitions'
-import { MailgunMessageBuilder, MailgunTemplates } from './mailgun-message-builder'
+import { MailgunMessageBuilder, MailgunTemplates } from './mailgun-message.builder'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MAILGUN } from '../user-verification/constants'
 
@@ -16,7 +16,7 @@ export class MailgunService {
 
   private readonly logger: LineLoggerSubservice
 
-  constructor(private readonly templateFactory: MailgunMessageBuilder) {
+  constructor(private readonly mailgunMessageBuilder: MailgunMessageBuilder) {
     // TODO temporarily uses dummy token which always passes
     if (!process.env.MAILGUN_API_KEY || !process.env.DEFAULT_MAILGUN_DOMAIN) {
       throw new Error('MailgunSubservice ENV vars are not set.')
@@ -52,11 +52,9 @@ export class MailgunService {
 
       // Use the injected factory instance to get the correct method
 
-      const factoryMethod = this.templateFactory[templateKey] as (
-        args: Parameters<MailgunTemplates[T]>[0]
-      ) => Promise<MailgunMessageData>
+      const factoryMethod = this.mailgunMessageBuilder[templateKey]
 
-      const messageData = await factoryMethod.call(this.templateFactory, options)
+      const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options)
 
       const response = await this.mg.messages.create(this.config.defaultMailgunDomain, messageData)
       this.logger.log('Mailgun response', response)

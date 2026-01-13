@@ -2,7 +2,6 @@ import { CheckIcon, CrossIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import cn from 'frontend/cn'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
 import ButtonNew from '../../../simple-components/ButtonNew'
 
 type ThankYouCardBase = {
@@ -84,7 +83,7 @@ const ThankYouCard = ({
               </ButtonNew>
             ) : null}
             {secondButtonTitle ? (
-              <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
+              <ButtonNew href={secondButtonLink} variant="black-outline" fullWidth>
                 {secondButtonTitle}
               </ButtonNew>
             ) : null}

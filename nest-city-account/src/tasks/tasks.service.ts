@@ -260,6 +260,9 @@ export class TasksService {
           not: null,
           lt: fiveMinutesAgo,
         },
+        refreshTokenEnc: {
+          not: null,
+        },
       },
       select: {
         id: true,

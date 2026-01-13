@@ -1,11 +1,9 @@
 import { MailIcon, SettingsIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import OfficialCorrespondenceChannelAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
-import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
@@ -45,15 +43,7 @@ const OfficialCorrespondenceChannelInformation = () => {
             <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
               <MailIcon className="size-6" />
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-p1-semibold">{channelLabel}</span>
-              <AccountMarkdown
-                variant="sm"
-                content={`${t('taxes.communication_channel.info.youCanChangeChannelOnThisPage', {
-                  url: ROUTES.TAXES_AND_FEES,
-                })} ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
-              />
-            </div>
+            <span className="text-p1-semibold">{channelLabel}</span>
           </div>
           {canUserChangeChannel && (
             <>

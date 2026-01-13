@@ -39,7 +39,6 @@ import {
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
 import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
-import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'

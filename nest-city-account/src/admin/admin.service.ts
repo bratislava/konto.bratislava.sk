@@ -626,8 +626,7 @@ export class AdminService {
       await this.physicalEntityService.update({
         id: success.physicalEntityId,
         uri: success.uri,
-        activeEdesk:
-          (success.data as ApiIamIdentitiesIdGet200Response)?.upvs?.edesk_status === 'deliverable',
+        activeEdesk: success.data.upvs?.edesk_status === 'deliverable',
       })
     }
 

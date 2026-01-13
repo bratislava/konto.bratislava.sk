@@ -2,7 +2,10 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../test/singleton'
 import { PrismaService } from '../prisma/prisma.service'
-import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import {
+  UpvsCreateManyResult,
+  UpvsIdentityByUriService,
+} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PhysicalEntityService } from './physical-entity.service'
 import { RfoIdentityList } from '../rfo-by-birthnumber/dtos/rfoSchema'
@@ -119,15 +122,12 @@ describe('PhysicalEntityService', () => {
     ]
 
     it('should successfully update a PhysicalEntity with UPVS success result', async () => {
-      const mockUpvsResult = {
+      const mockUpvsResult: UpvsCreateManyResult = {
         success: [
           {
             physicalEntityId: 'mock-entity-id',
             uri: 'mock-uri',
             data: { upvs: { edesk_status: 'deliverable' } },
-            id: 'mock-id',
-            createdAt: new Date(),
-            updatedAt: new Date(),
           },
         ],
         failed: [],
@@ -159,23 +159,17 @@ describe('PhysicalEntityService', () => {
     })
 
     it('should return multiple when UPVS success results are returned', async () => {
-      const mockUpvsResult = {
+      const mockUpvsResult: UpvsCreateManyResult = {
         success: [
           {
             physicalEntityId: 'id1',
             uri: 'uri1',
-            id: 'mock-id1',
             data: { upvs: { edesk_status: 'deliverable' } },
-            createdAt: new Date(),
-            updatedAt: new Date(),
           },
           {
             physicalEntityId: 'id2',
             uri: 'uri2',
-            id: 'mock-id2',
             data: { upvs: { edesk_status: 'deliverable' } },
-            createdAt: new Date(),
-            updatedAt: new Date(),
           },
         ],
         failed: [],
@@ -335,25 +329,22 @@ describe('PhysicalEntityService', () => {
         .mockResolvedValue({
           success: [
             {
-              id: 'abcdefgh',
-              createdAt: new Date(),
-              updatedAt: new Date(),
               physicalEntityId: mockEntityID,
               uri: 'forcefullyTypedResult.uri',
               data: {
-                ids: mockString,
+                ids: [],
                 uri: 'forcefullyTypedResult.uri',
                 en: mockString,
-                type: mockString,
-                status: mockString,
+                type: 'natural_person',
+                status: 'verified',
                 name: mockString,
                 suffix: mockString,
-                various_ids: mockString,
-                upvs: mockString,
-                natural_person: mockString,
-                addresses: mockString,
-                emails: mockString,
-                phones: mockString,
+                various_ids: [],
+                upvs: {},
+                natural_person: {},
+                addresses: [],
+                emails: [],
+                phones: [],
               },
             },
           ],
@@ -499,9 +490,6 @@ describe('PhysicalEntityService', () => {
             {
               uri: 'mock-uri',
               physicalEntityId: mockEntityID,
-              id: 'mock-id',
-              createdAt: new Date(),
-              updatedAt: new Date(),
               data: {},
             },
           ],

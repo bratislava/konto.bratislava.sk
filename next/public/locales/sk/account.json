@@ -413,7 +413,6 @@
   "taxes.payment_data.card_payment_title": "Platba kartou",
   "taxes.payment_data.download_qr_code": "Stiahnuť QR kód",
   "taxes.payment_data.installments.title": "Rozpis splátok",
-  "taxes.payment_data.payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností Vám sprístupníme platobné metódy.",
   "taxes.payment_data.payment_methods_title": "Platobné metódy",
   "taxes.payment_data.qr_code": "QR kód",
   "taxes.payment_data.qr_code_and_bank_transfer_title": "QR kód alebo bankový prevod",

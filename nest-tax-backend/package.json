@@ -64,7 +64,7 @@
     "@types/express": "^5.0.6",
     "@types/jest": "30.0.0",
     "@types/lodash": "^4.17.23",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.19.28",
     "@types/nodemailer": "^7.0.4",
     "@types/qrcode": "^1.5.6",
     "@types/ssh2-sftp-client": "^9.0.5",
@@ -134,5 +134,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "volta": {
+    "node": "20.19.6",
+    "npm": "10.9.3"
   }
 }

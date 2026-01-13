@@ -9,7 +9,8 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import { toLogfmt } from '../../utils/logging'
 import { OAuth2ErrorMetadata, OAuth2Exception } from '../oauth2.exception'
-import { RequestWithAuthorizationPayload } from 'src/oauth2/guards/authorization-payload.guard'
+import { RequestWithAuthorizationPayload } from '../guards/authorization-payload.guard'
+import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 
 const USER_AGENT = 'user-agent'
 
@@ -30,6 +31,8 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
   private readonly logger = new LineLoggerSubservice(OAuth2ExceptionFilter.name)
 
   private readonly throwerErrorGuard = new ThrowerErrorGuard()
+
+  constructor(private readonly oauth2ClientSubservice: OAuth2ClientSubservice) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
@@ -120,20 +123,26 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const requestWithPayload = request as RequestWithAuthorizationPayload
     let redirectUri = requestWithPayload.authorizationPayload?.redirect_uri
     let state = requestWithPayload.authorizationPayload?.state
+    const clientId = request.query.client_id as string | undefined
 
-    if (!redirectUri) {
-      redirectUri = request.query.redirect_uri as string | undefined
+    // Always validate redirect_uri from query against allowed URIs to prevent open redirector vulnerability
+    if (!redirectUri && clientId) {
+      const queryRedirectUri = request.query.redirect_uri as string | undefined
+      if (queryRedirectUri) {
+        const client = this.oauth2ClientSubservice.findClientById(clientId)
+        if (client?.isRedirectUriAllowed(queryRedirectUri)) {
+          redirectUri = queryRedirectUri
+          state = request.query.state as string | undefined
+        }
+      }
     }
-    if (!state) {
-      state = request.query.state as string | undefined
-    }
+
+    // Extract or construct OAuth2 error response
+    const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
     // RFC 6749 Section 4.1.2.1: If redirect_uri is invalid/missing, return error directly
     // (do not redirect to prevent open redirector vulnerability)
     if (!redirectUri) {
-      // Extract or construct OAuth2 error response
-      const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
-
       response.status(status).json(errorResponse)
       return {
         method: request.method,
@@ -150,9 +159,6 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         responseData: errorResponse,
       }
     }
-
-    // Extract or construct OAuth2 error response
-    const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
     // RFC 6749 Section 4.1.2.1: state is REQUIRED if present in request
     if (state) {

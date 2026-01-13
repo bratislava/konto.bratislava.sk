@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import formData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { Interfaces, MailgunMessageData } from 'mailgun.js/definitions'
+import { Interfaces } from 'mailgun.js/definitions'
 import { MailgunMessageBuilder, MailgunTemplates } from './mailgun-message.builder'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MAILGUN } from '../user-verification/constants'

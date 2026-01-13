@@ -277,7 +277,7 @@ export class TasksService {
 
     for (const record of expiredRecords) {
       this.logger.warn(
-        `Cleaning up expired oAuth2 tokens for authorization code: ${record.authorizationCode}`
+        `Cleaning up expired oAuth2 tokens with id: ${record.id} and authorization code: ${record.authorizationCode}`
       )
     }
 
@@ -331,11 +331,8 @@ export class TasksService {
       return
     }
 
-    for (const record of oldRecords) {
-      this.logger.log(
-        `Deleting old oAuth2 record with id: ${record.id} and authorization code: ${record.authorizationCode}`
-      )
-    }
+    const recordsInfo = oldRecords.map((r) => `${r.id}/${r.authorizationCode}`).join(', ')
+    this.logger.log(`Deleting ${oldRecords.length} old oAuth2 records: ${recordsInfo}`)
 
     await this.prismaService.oAuth2Data.deleteMany({
       where: {
@@ -344,8 +341,6 @@ export class TasksService {
         },
       },
     })
-
-    this.logger.log(`Deleted ${oldRecords.length} old oAuth2 records.`)
   }
 
   @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`)

@@ -247,7 +247,7 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}&paymentType=${tax?.tax.type}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}&taxType=${tax?.tax.type}&year=${year}&order=${tax?.tax.order}`
       }
 
       const payment = await this.prisma.taxPayment.findUnique({
@@ -264,11 +264,11 @@ export class PaymentService {
       })
 
       if (!payment) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${tax?.tax.type}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&taxType=${tax?.tax.type}&year=${year}&order=${tax?.tax.order}`
       }
 
       if (payment.status === PaymentStatus.SUCCESS) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&paymentType=${tax?.tax.type}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&taxType=${tax?.tax.type}&year=${year}&order=${tax?.tax.order}`
       }
 
       // TODO: when user has taxPayment with status SUCCESS,
@@ -282,7 +282,7 @@ export class PaymentService {
             source: 'CARD',
           },
         })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${tax?.tax.type}&year=${year}`
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&taxType=${tax?.tax.type}&year=${year}&order=${tax?.tax.order}`
       }
 
       const taxPayment = await this.prisma.taxPayment.update({
@@ -316,7 +316,7 @@ export class PaymentService {
         user?.externalId ?? undefined,
       )
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${tax?.tax.type}&year=${year}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&taxType=${tax?.tax.type}&year=${year}&order=${tax?.tax.order}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

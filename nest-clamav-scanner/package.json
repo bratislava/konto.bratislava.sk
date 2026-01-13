@@ -91,10 +91,6 @@
   "overrides": {
     "glob": "^11.0.1"
   },
-  "volta": {
-    "node": "22.14.0",
-    "npm": "11.1.0"
-  },
   "jest": {
     "moduleFileExtensions": [
       "js",
@@ -114,5 +110,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "volta": {
+    "node": "22.14.0",
+    "npm": "11.1.0"
   }
 }

@@ -16,7 +16,6 @@ import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'
 import { Controller } from 'react-hook-form'
-import { useEffectOnce } from 'usehooks-ts'
 
 type AgreementProps = {
   onScrollToBottom: () => void
@@ -38,9 +37,11 @@ const Agreement = ({ onScrollToBottom, agreementContent }: AgreementProps) => {
     }
   }
 
-  useEffectOnce(() => {
+  useEffect(() => {
     checkScroll()
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div

@@ -10,7 +10,7 @@ type ThankYouCardBase = {
   firstButtonTitle?: string
   secondButtonTitle?: string
   content?: string
-  feedbackLink?: string
+  feedbackLink?: string | null
   feedbackTitle?: string
   firstButtonLink?: string
   secondButtonLink?: string

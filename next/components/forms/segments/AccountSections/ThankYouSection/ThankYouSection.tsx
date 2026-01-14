@@ -60,7 +60,7 @@ const useGetPaymentQueryParams = (router: NextRouter) => {
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
 
-  const { paymentSuccessFeedbackLink } = useStrapiTax()
+  const { feedbackLinkDzn, feedbackLinkKo } = useStrapiTax()
 
   const router = useRouter()
   const { status, type, year, order } = useGetPaymentQueryParams(router)
@@ -102,16 +102,15 @@ const ThankYouSection = () => {
     [year, type, order],
   )
 
-  // TODO get this link from strapi
-  const feedbackLink = useMemo(
-    () =>
-      type === TaxType.Dzn && paymentSuccessFeedbackLink
-        ? paymentSuccessFeedbackLink
-        : type === TaxType.Ko
-          ? 'https://bravo.staffino.com/bratislava/id=WWKwRgu2'
-          : undefined,
-    [type, paymentSuccessFeedbackLink],
-  )
+  const feedbackLink = useMemo(() => {
+    if (type === TaxType.Dzn) {
+      return feedbackLinkDzn
+    }
+    if (type === TaxType.Ko) {
+      return feedbackLinkKo
+    }
+    return null
+  }, [type, feedbackLinkDzn, feedbackLinkKo])
 
   return (
     <div className="bg-gray-0 pt-16 lg:bg-gray-50 lg:pt-8">

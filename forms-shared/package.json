@@ -106,16 +106,16 @@
     "tailwindcss": "4.1.11",
     "tmp-promise": "^3.0.3",
     "ts-node": "^10.9.2",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "unzipper": "^0.12.3",
     "vitest": "4.0.15"
   },
   "engines": {
-    "node": ">=20.9.x",
-    "npm": ">=10.7.x"
+    "node": ">=20.19.x",
+    "npm": ">=10.9.x"
   },
   "volta": {
-    "node": "20.9.0",
-    "npm": "10.7.0"
+    "node": "20.19.6",
+    "npm": "10.9.3"
   }
 }

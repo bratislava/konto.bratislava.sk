@@ -1,6 +1,8 @@
 -- User Gdpr Data fix
 -- 1.find users with only null values in marketing esbs consent
 -- 2.for users from step above change oldest null value to subscribe
+BEGIN;
+
 WITH
 	FILTERED AS (
 		SELECT
@@ -157,3 +159,5 @@ FROM
 WHERE
 	"legalPersonId" IS NULL
 	AND "registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
+
+COMMIT;

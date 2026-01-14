@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Config, UpvsIdentityByUri } from '@prisma/client'
+import { Config } from '@prisma/client'
 import { AdminService } from 'src/admin/admin.service'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import * as z from 'zod'
@@ -15,6 +15,7 @@ import {
   EDESK_COGNITO_CONFIG_DB_KEY,
   EDESK_RFO_CONFIG_DB_KEY,
 } from '../utils/constants'
+import { UpvsIdentityByUriSuccessType } from '../../upvs-identity-by-uri/upvs-identity-by-uri.service'
 
 const ValidateEdeskConfigValueSchema = z.object({
   active: z.boolean(),
@@ -36,6 +37,11 @@ export class AdminCronSubservice {
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
+  /**
+   * @deprecated ⚠️This is older code. New implementation is available in the Tasks Service.
+   * Please validate thoroughly before use as it may no longer function as intended.
+   * Ensure you definitely want to use this legacy logic over the new service.
+   */
   @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('Cron Error')
   async validateEdeskFromCognitoData(): Promise<void> {
@@ -60,7 +66,7 @@ export class AdminCronSubservice {
     const result = await this.adminService.validateEdeskWithUriFromCognito(config.offset)
     const validatedUsers = result.validatedUsers
     const mappingFn = (
-      upvsResult: UpvsIdentityByUri | { physicalEntityId?: string; uri: string }
+      upvsResult: UpvsIdentityByUriSuccessType | { physicalEntityId?: string; uri: string }
     ) => `uri: ${upvsResult.uri} physicalEntityId: ${upvsResult.physicalEntityId}`
     const successData = result.entities.success.map(mappingFn)
     const failedData = result.entities.failed.map(mappingFn)
@@ -73,7 +79,14 @@ export class AdminCronSubservice {
       // if failed data exists, there were less than 10 - we need to move the offset past the users for whom we can't construct the correct uris
       const physicalEntitiesWithoutUriVerificationAttemptsCount =
         await this.prismaService.physicalEntity.count({
-          where: { userId: { not: null }, uri: null, UpvsIdentityByUri: { none: {} } },
+          where: {
+            userId: { not: null },
+            uri: null,
+            activeEdesk: null,
+            activeEdeskUpdatedAt: null,
+            activeEdeskUpdateFailedAt: null,
+            activeEdeskUpdateFailCount: 0,
+          },
         })
       const currentOffset = config.offset
       const newOffset = (currentOffset + 90) % physicalEntitiesWithoutUriVerificationAttemptsCount
@@ -94,6 +107,11 @@ export class AdminCronSubservice {
     }
   }
 
+  /**
+   * @deprecated ⚠️This is older code. New implementation is available in the Tasks Service.
+   * Please validate thoroughly before use as it may no longer function as intended.
+   * Ensure you definitely want to use this legacy logic over the new service.
+   */
   @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('Cron Error')
   async validateEdeskFromRfoData(): Promise<void> {

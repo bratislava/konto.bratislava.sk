@@ -119,7 +119,6 @@ export class UserFixtureFactory {
       if (params.accountType === UserVerifyStateTypeEnum.Fo) {
         return {
           ...base,
-          wasVerifiedBeforeTaxDeadline: false,
           officialCorrespondenceChannel:
             UserOfficialCorrespondenceChannelEnum.Postal,
           showEmailCommunicationBanner: false,

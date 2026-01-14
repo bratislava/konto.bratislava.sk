@@ -127,7 +127,10 @@ export class OAuth2Service {
 
     let refreshed: { accessToken?: string; idToken?: string }
     try {
-      refreshed = await this.cognitoSubservice.refreshTokens(refreshToken, clientId)
+      refreshed = await this.cognitoSubservice.refreshTokens(
+        refreshToken,
+        this.configService.getOrThrow<string>('AWS_COGNITO_CLIENT_ID')
+      )
     } catch (error) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
@@ -549,7 +552,10 @@ export class OAuth2Service {
 
     let refreshed: { accessToken?: string; idToken?: string }
     try {
-      refreshed = await this.cognitoSubservice.refreshTokens(refreshTokenData.token, clientId)
+      refreshed = await this.cognitoSubservice.refreshTokens(
+        refreshTokenData.token,
+        this.configService.getOrThrow<string>('AWS_COGNITO_CLIENT_ID')
+      )
     } catch (error) {
       throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_GRANT,

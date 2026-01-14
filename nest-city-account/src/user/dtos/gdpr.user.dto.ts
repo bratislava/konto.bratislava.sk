@@ -98,13 +98,6 @@ export class ResponseUserDataBasicDto {
 
   @ApiProperty({
     description:
-      'True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.',
-    default: true,
-  })
-  wasVerifiedBeforeTaxDeadline!: boolean
-
-  @ApiProperty({
-    description:
       'Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.',
     default: true,
   })

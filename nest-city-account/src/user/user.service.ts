@@ -61,7 +61,6 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
@@ -115,7 +114,6 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
@@ -127,7 +125,6 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: false, // TODO add this for legal persons
       officialCorrespondenceChannel: null,
       gdprData: getGdprData,
       showEmailCommunicationBanner: false, // TODO add this for legal persons
@@ -162,7 +159,6 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
@@ -247,7 +243,6 @@ export class UserService {
         )
       return {
         ...user,
-        wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
         officialCorrespondenceChannel,
         showEmailCommunicationBanner,
       }

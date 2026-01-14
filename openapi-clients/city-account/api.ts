@@ -816,10 +816,6 @@ export interface ResponseUserDataBasicDto {
    */
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
   /**
-   * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
-   */
-  wasVerifiedBeforeTaxDeadline: boolean
-  /**
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
    */
   showEmailCommunicationBanner: boolean
@@ -854,10 +850,6 @@ export interface ResponseUserDataDto {
    * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
    */
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
-  /**
-   * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
-   */
-  wasVerifiedBeforeTaxDeadline: boolean
   /**
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
    */

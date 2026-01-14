@@ -6,8 +6,7 @@ export const useOfficialCorrespondenceChannel = () => {
 
   if (
     !('officialCorrespondenceChannel' in userData) ||
-    !('showEmailCommunicationBanner' in userData) ||
-    !('wasVerifiedBeforeTaxDeadline' in userData)
+    !('showEmailCommunicationBanner' in userData)
   ) {
     throw new Error('This hook must be only used when the user is a physical person.')
   }
@@ -15,16 +14,13 @@ export const useOfficialCorrespondenceChannel = () => {
   const {
     officialCorrespondenceChannel,
     showEmailCommunicationBanner,
-    wasVerifiedBeforeTaxDeadline,
   } = userData
 
   // TODO: this logic is only considering user that recently verified their birth number, but it should be considering user that was verified before
   // TODO: Move this logic to BE
   // https://github.com/bratislava/private-konto.bratislava.sk/issues/1029
 
-  const isChannelChangeEffectiveNextYear =
-    !wasVerifiedBeforeTaxDeadline &&
-    officialCorrespondenceChannel === UserOfficialCorrespondenceChannelEnum.Email
+  const isChannelChangeEffectiveNextYear = UserOfficialCorrespondenceChannelEnum.Email
 
   const channelEffectiveInCurrentYear = isChannelChangeEffectiveNextYear
     ? UserOfficialCorrespondenceChannelEnum.Postal

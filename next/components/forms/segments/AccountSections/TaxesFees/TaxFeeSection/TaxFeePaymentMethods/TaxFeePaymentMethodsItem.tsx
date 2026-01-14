@@ -36,7 +36,7 @@ const TaxFeePaymentMethodsItem = ({
           // fixed width is wanted, however size doesn't match figma,
           // ButtonNew has to be implemented as part of design system then we can adjust size,
           // othervise text will be split into two lines
-          className="whitespace-nowrap lg:w-55"
+          className="lg:w-55"
         >
           {buttonText}
         </ButtonNew>

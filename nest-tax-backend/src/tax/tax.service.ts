@@ -140,8 +140,9 @@ export class TaxService {
     const items: ResponseGetTaxesListBodyDto[] = await Promise.all(
       taxes.map(async (tax) => {
         const paid = await this.getAmountAlreadyPaidByTaxId(tax.id)
-        const amountToBePaid = tax.amount - paid
         const status = getExistingTaxStatus(tax.amount, paid, tax.isCancelled)
+        const amountToBePaid =
+          status === TaxStatusEnum.CANCELLED ? undefined : tax.amount - paid
         return {
           createdAt: tax.createdAt,
           year: tax.year,

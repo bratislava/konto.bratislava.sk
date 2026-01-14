@@ -78,7 +78,7 @@ model User {
   physicalEntity                       PhysicalEntity?
   lastTaxDeliveryMethodsUpdateYear     Int?
   taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
-  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery
+  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery
   taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.

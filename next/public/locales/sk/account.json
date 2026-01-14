@@ -414,6 +414,7 @@
   "taxes.delivery_method_change_modal.delivery_method_label": "Spôsob informovania",
   "taxes.delivery_method_change_modal.delivery_method_true.description": "Papierové rozhodnutie poštou vám už chodiť nebude. Všetky informácie o platbách dane z nehnuteľností nájdete vo svojom Bratislavskom konte.",
   "taxes.delivery_method_change_modal.delivery_method_true.title": "Oznámenie v Bratislavskom konte",
+  "taxes.delivery_method_change_modal.delivery_method_true.usage_percentage": "Využíva už 76% používateľov",
   "taxes.delivery_method_change_modal.delivery_method_true.agreement.title": "Súhlas so zasielaním oznámenia",
   "taxes.delivery_method_change_modal.description": "Vyberte si spôsob informovania o výške daní a poplatkov a potvrďte svoj súhlas. Spôsob informovania si môžete neskôr zmeniť v Bratislavskom konte.",
   "taxes.delivery_method_change_modal.error_snackbar_message": "Nepodarilo sa zmeniť spôsob doručovania.",

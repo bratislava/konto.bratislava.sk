@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import IframeResizer from '@iframe-resizer/react'
 import { useQueryState } from 'nuqs'
-import React from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import React, { useEffect } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import SelectField from './widget-components/SelectField/SelectField'
@@ -22,12 +21,14 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
     defaultValue: embeddedForms[0].slug,
     clearOnDefault: false,
   })
-  useEffectOnce(() => {
+  useEffect(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)
     // https://github.com/47ng/nuqs/issues/405
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     setSelectedSlug(selectedSlug, { history: 'replace' })
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const options = embeddedForms.map(({ title, slug }) => ({
     label: title,

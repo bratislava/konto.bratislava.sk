@@ -819,6 +819,10 @@ export interface ResponseUserDataBasicDto {
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
    */
   showEmailCommunicationBanner: boolean
+  /**
+   * True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.
+   */
+  changedDeliveryMethodAfterDeadline: boolean
 }
 
 export interface ResponseUserDataDto {
@@ -854,6 +858,10 @@ export interface ResponseUserDataDto {
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
    */
   showEmailCommunicationBanner: boolean
+  /**
+   * True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.
+   */
+  changedDeliveryMethodAfterDeadline: boolean
   /**
    * Subscription Data in array
    */

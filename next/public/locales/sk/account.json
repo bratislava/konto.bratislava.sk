@@ -466,7 +466,7 @@
   "thank_you.result.payment_already_paid.title": "Platba už bola vykonaná",
   "thank_you.result.payment_failed.content": "Opakujte platbu alebo to skúste neskôr.<br />V prípade problémov nás kontaktujte.",
   "thank_you.result.payment_failed.title": "Platba zlyhala",
-  "thank_you.result.payment_success.content": "Ďakujeme za vašu platbu. Stav platby si môžete skontrolovať v sekcii Dane a poplatky v Bratislavskom konte.",
+  "thank_you.result.payment_success.content": "Ďakujeme za vašu platbu. Stav platby si môžete skontrolovať na stránke Dane a poplatky v Bratislavskom konte.",
   "thank_you.result.payment_success.title": "Platba prebehla úspešne",
   "thank_you.subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
   "Tooltip.aria.tooltip": "Tooltip",

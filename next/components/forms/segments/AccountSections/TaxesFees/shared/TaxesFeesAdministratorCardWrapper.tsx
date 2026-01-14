@@ -23,6 +23,8 @@ const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorD
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29864&t=tNzWj4dunEH6eCGu-4
+ *
+ * TODO unify with OfficialCorrespondenceChannelCardWrapper
  */
 
 const TaxesFeesAdministratorCardWrapper = ({
@@ -53,7 +55,7 @@ const TaxesFeesAdministratorCardWrapper = ({
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-h5-semibold">{cardTitle}</h2>
-      <div className="flex w-full flex-1 items-start justify-between gap-4 rounded-lg border border-gray-200 px-4 py-3 lg:p-5">
+      <div className="flex w-full grow items-start justify-between gap-4 rounded-lg border px-4 py-3 lg:p-5">
         <div className="flex flex-col gap-3">
           <p className="text-p1-semibold">{taxAdministrator.name}</p>
           <div className="flex flex-col flex-wrap gap-x-4 gap-y-2 self-stretch break-all lg:flex-row lg:items-center">

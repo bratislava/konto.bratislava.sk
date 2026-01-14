@@ -8,6 +8,8 @@ import { useEffect, useMemo } from 'react'
 import logger from '../../../../../frontend/utils/logger'
 import { useStrapiTax } from '../TaxesFees/useStrapiTax'
 
+// TODO use the nuqs library to get query params
+// example: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/sections/ArticlesSection/ArticlesAll/useArticlesFilters.tsx
 const useGetPaymentQueryParams = (router: NextRouter) => {
   // query params are passed from nest-tax-backend/src/payment/payment.service.ts
   // we expect status, taxType, order, year

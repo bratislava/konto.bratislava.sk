@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
+// TODO unify with TaxesFeesAdministratorCardWrapper
 const OfficialCorrespondenceChannelCardWrapper = () => {
   const { t } = useTranslation('account')
   const { channel, canUserChangeChannel } = useOfficialCorrespondenceChannel()
@@ -23,18 +24,16 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
   }[channel]
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <h2 className="text-h5-semibold">
-        {/* TODO: current behaviour is confusing, but it is requested by Zdenko,
+        {/* TODO current behaviour is confusing, but it is requested by Zdenko,
             it is showing currently set delivery method, not the one for the year of this tax.
             IMHO if this is currently set delivery method, it should be shown in grey area
             or if it's for the year of this tax, it should be shown with same year as in title? */}
         {t('taxes.communication_channel.info_title', { year: new Date().getFullYear() })}
       </h2>
       <div
-        className={cn(
-          'flex w-full flex-1 justify-between gap-4 rounded-lg border-2 border-gray-200 p-5 lg:p-5',
-        )}
+        className={cn('flex w-full grow justify-between gap-4 rounded-lg border px-4 py-3 lg:p-5')}
       >
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col">

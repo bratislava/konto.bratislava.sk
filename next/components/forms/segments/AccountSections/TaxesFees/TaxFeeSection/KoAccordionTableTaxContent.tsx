@@ -62,9 +62,7 @@ const TableRows = ({ data }: TableDataProps) => {
             <TableCell>{`${containerVolume} L`}</TableCell>
             <TableCell>{`${containerCount} ks`}</TableCell>
             <TableCell>{numberOfDisposals}</TableCell>
-            <TableCell>
-              <FormatCurrencyFromCents value={unitRate} />
-            </TableCell>
+            <TableCell>{unitRate}</TableCell>
             <TableCell>
               <FormatCurrencyFromCents value={fee} />
             </TableCell>

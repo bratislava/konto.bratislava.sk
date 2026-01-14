@@ -16,6 +16,7 @@ import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
 import { useUser } from 'frontend/hooks/useUser'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
+import { isDefined } from 'frontend/utils/general'
 import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
@@ -82,16 +83,27 @@ const PaymentData = ({ paymentMethod }: Props) => {
       : qrCodeBase64oneTimePayment
 
   const bankPaymentInfoRows = [
-    {
-      label: t('taxes.payment_data.bank_info.slovenska_sporitelna'),
-      value: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban'),
-      clipboardCopyValue: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban'),
-    },
-    {
-      label: t('taxes.payment_data.bank_info.csob'),
-      value: t('taxes.payment_data.bank_info.csob_iban'),
-      clipboardCopyValue: t('taxes.payment_data.bank_info.csob_iban'),
-    },
+    taxData.type === TaxType.Dzn
+      ? {
+          label: t('taxes.payment_data.bank_info.slovenska_sporitelna_title'),
+          value: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban.dzn'),
+          clipboardCopyValue: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban.dzn'),
+        }
+      : null,
+    taxData.type === TaxType.Dzn
+      ? {
+          label: t('taxes.payment_data.bank_info.csob_title'),
+          value: t('taxes.payment_data.bank_info.csob_iban.dzn'),
+          clipboardCopyValue: t('taxes.payment_data.bank_info.csob_iban.dzn'),
+        }
+      : null,
+    taxData.type === TaxType.Ko
+      ? {
+          label: t('taxes.payment_data.bank_info.csob_title'),
+          value: t('taxes.payment_data.bank_info.csob_iban.ko'),
+          clipboardCopyValue: t('taxes.payment_data.bank_info.csob_iban.ko'),
+        }
+      : null,
     {
       label: t('taxes.payment_data.variable_symbol'),
       value: variableSymbol,
@@ -107,7 +119,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
       value: t('taxes.payment_data.beneficiary_name_value'),
       clipboardCopyValue: t('taxes.payment_data.beneficiary_name_value'),
     },
-  ]
+  ].filter(isDefined)
 
   return (
     <div className="flex w-full flex-col gap-6">

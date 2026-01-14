@@ -19,7 +19,7 @@ const TaxesFeesOverviewBanner = ({ variant, taxType }: Props) => {
 
   const textLookingFor = {
     [TaxType.Dzn]: t('account_section_payment.searching_card_text.dzn'),
-    [TaxType.Ko]: '', // todo
+    [TaxType.Ko]: t('account_section_payment.searching_card_text.ko'),
   }[taxType]
 
   const titleNoResults = {

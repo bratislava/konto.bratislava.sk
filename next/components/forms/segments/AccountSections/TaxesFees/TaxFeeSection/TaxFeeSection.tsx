@@ -14,10 +14,13 @@ import React from 'react'
 
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1608&t=fznV5maoQK8a2irI-4
+ *
+ * TODO Design for cancelled taxfee is not yet ready, update when availible
  */
 
 const TaxFeeSection = () => {
   const { t } = useTranslation('account')
+
   const { taxData, strapiTaxAdministrator } = useTaxFeeSection()
 
   const pageTitle = {
@@ -30,6 +33,11 @@ const TaxFeeSection = () => {
     [TaxType.Ko]: t('account_section_payment.payment_successful.ko'),
   }[taxData.type]
 
+  const paymentCancelledMessage = {
+    [TaxType.Dzn]: t('account_section_payment.payment_cancelled.dzn'),
+    [TaxType.Ko]: t('account_section_payment.payment_cancelled.ko'),
+  }[taxData.type]
+
   const breadcrumbs = [
     { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
     { title: pageTitle, path: null },
@@ -37,15 +45,21 @@ const TaxFeeSection = () => {
 
   const isTaxFeeSuccessfullyPaid =
     taxData.paidStatus === TaxStatusEnum.Paid || taxData.paidStatus === TaxStatusEnum.OverPaid
+  const isTaxFeeCancelled = taxData.paidStatus === TaxStatusEnum.Cancelled
+
+  const showPaymentMethods = !isTaxFeeSuccessfullyPaid && !isTaxFeeCancelled
 
   const showTaxFeePaidAlert = isTaxFeeSuccessfullyPaid
-  const showPaymentMethods = !isTaxFeeSuccessfullyPaid
+  const showTaxFeeCancelledAlert = isTaxFeeCancelled
 
   return (
     <div className="flex flex-col">
       <TaxFeeSectionHeader title={pageTitle} breadcrumbs={breadcrumbs} />
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-10 lg:py-10">
         {showTaxFeePaidAlert && <Alert type="success" fullWidth message={paymentSuccessMessage} />}
+        {showTaxFeeCancelledAlert && (
+          <Alert type="info" fullWidth message={paymentCancelledMessage} />
+        )}
         <ResponsiveCarousel
           controlsVariant="side"
           desktop={2}

@@ -41,9 +41,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
     ...(Object.keys(matchHeader).includes(dataType)
       ? (matchHeader[dataType] as
           | typeof matchHeader.GROUND
-          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
           | typeof matchHeader.CONSTRUCTION
-          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
           | typeof matchHeader.APARTMENT)
       : matchHeader.APARTMENT),
   ]
@@ -128,8 +126,6 @@ const TableData = ({
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
-            {/* Buggy detection */}
-            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>

@@ -16,15 +16,13 @@ const AnnouncementBlockStrapi = ({ announcement, reversed }: AnnouncementBlockSt
 
   const { title, description, buttonText, href, image } = announcement.attributes
 
-  const announcementContent = `## ${title}
-
-${description}`
+  const announcementContent = [`### ${title}`, description].join('\n\n')
 
   const buttons: AnchorProps[] = [
     {
       children: buttonText,
       href,
-      variant: 'category-solid',
+      variant: 'black-solid',
       endIcon: <ArrowRightIcon className="size-6" />,
     },
   ]
@@ -32,7 +30,7 @@ ${description}`
   return (
     <AnnouncementBlock
       announcementContent={announcementContent}
-      imageSrc={image?.data?.attributes?.url ?? undefined}
+      imageSrc={image?.data?.attributes?.url}
       buttons={buttons}
       reversed={reversed}
       reversedMobile

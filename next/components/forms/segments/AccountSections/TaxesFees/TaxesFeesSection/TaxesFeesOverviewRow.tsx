@@ -87,7 +87,7 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
             <span className="mb-1 text-p3-semibold">
               {t('account_section_payment.tax_card_amount')}
             </span>
-            {amountToBePaid === undefined ? (
+            {amountToBePaid === undefined || status === TaxStatusEnum.Cancelled ? (
               <span>-</span>
             ) : (
               <span>

@@ -1,34 +1,75 @@
+import { DateTime } from 'luxon'
 import { getTaxDeadlineDate } from '../tax-deadline'
+
+const TIMEZONE = 'Europe/Bratislava'
+
+const mockGetOrThrow = jest.fn((key: string): string => {
+  if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '04'
+  if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
+  throw new Error(`Unknown config key: ${key}`)
+})
 
 jest.mock('@nestjs/config', () => ({
   ConfigService: jest.fn().mockImplementation(() => ({
-    getOrThrow: jest.fn((key: string) => {
-      if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '04'
-      if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
-      throw new Error(`Unknown config key: ${key}`)
-    }),
+    getOrThrow: mockGetOrThrow,
   })),
 }))
 
 describe('tax-deadline', () => {
   describe('each date to 1st of April should be before deadline, each date from it should be after', () => {
-    const year = new Date().getFullYear()
+    const year = DateTime.now().setZone(TIMEZONE).year
     const afterDeadline = [
-      new Date(
-        `${year}-${process.env.MUNICIPAL_TAX_LOCK_MONTH}-${process.env.MUNICIPAL_TAX_LOCK_DAY} 00:00:10+02:00`
-      ),
-      new Date(
-        `${year}-${process.env.MUNICIPAL_TAX_LOCK_MONTH}-${process.env.MUNICIPAL_TAX_LOCK_DAY} 00:00:00+02:00`
-      ),
-      new Date(
-        `${year}-${process.env.MUNICIPAL_TAX_LOCK_MONTH}-${process.env.MUNICIPAL_TAX_LOCK_DAY} 10:00:00+02:00`
-      ),
-      new Date(`${year}-12-10 13:22:00+02:00`),
+      DateTime.fromObject(
+        {
+          year,
+          month: 4,
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 10,
+        },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        {
+          year,
+          month: 4,
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 0,
+        },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        {
+          year,
+          month: 4,
+          day: 1,
+          hour: 10,
+          minute: 0,
+          second: 0,
+        },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 12, day: 10, hour: 13, minute: 22, second: 0 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
     ]
     const beforeDeadline = [
-      new Date(`${year}-03-31 00:00:10+02:00`),
-      new Date(`${year}-03-31 23:59:59+02:00`),
-      new Date(`${year}-01-04 10:00:00+02:00`),
+      DateTime.fromObject(
+        { year, month: 3, day: 31, hour: 0, minute: 0, second: 10 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 3, day: 31, hour: 23, minute: 59, second: 59 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 1, day: 4, hour: 10, minute: 0, second: 0 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
     ]
     afterDeadline.forEach((date) => {
       it(`${date} should be after deadline`, () => {
@@ -43,33 +84,83 @@ describe('tax-deadline', () => {
   })
 
   describe('when deadline is 1st of February, each date to 1st of February should be before deadline, each date from it should be after', () => {
-    jest.mock('@nestjs/config', () => ({
-      ConfigService: jest.fn().mockImplementation(() => ({
-        getOrThrow: jest.fn((key: string) => {
-          if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '02'
-          if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
-          throw new Error(`Unknown config key: ${key}`)
-        }),
-      })),
-    }))
+    beforeEach(() => {
+      mockGetOrThrow.mockImplementation((key: string): string => {
+        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '02'
+        if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
+        throw new Error(`Unknown config key: ${key}`)
+      })
+    })
 
-    const year = new Date().getFullYear()
+    afterEach(() => {
+      mockGetOrThrow.mockImplementation((key: string): string => {
+        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '04'
+        if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
+        throw new Error(`Unknown config key: ${key}`)
+      })
+    })
+
+    const year = DateTime.now().setZone(TIMEZONE).year
     const afterDeadline = [
-      new Date(
-        `${year}-${process.env.MUNICIPAL_TAX_LOCK_MONTH}-${process.env.MUNICIPAL_TAX_LOCK_DAY} 00:00:10+02:00`
-      ),
-      new Date(
-        `${year}-${process.env.MUNICIPAL_TAX_LOCK_MONTH}-${process.env.MUNICIPAL_TAX_LOCK_DAY} 00:00:00+02:00`
-      ),
-      new Date(
-        `${year}-${process.env.MUNICIPAL_TAX_LOCK_MONTH}-${process.env.MUNICIPAL_TAX_LOCK_DAY} 10:00:00+02:00`
-      ),
-      new Date(`${year}-12-10 13:22:00+02:00`),
+      DateTime.fromObject(
+        {
+          year,
+          month: 2,
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 10,
+        },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        {
+          year,
+          month: 2,
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 0,
+        },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        {
+          year,
+          month: 2,
+          day: 1,
+          hour: 10,
+          minute: 0,
+          second: 0,
+        },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 12, day: 10, hour: 13, minute: 22, second: 0 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 2, day: 1, hour: 0, minute: 0, second: 1 },
+        { zone: 'America/New_York' }
+      ).toJSDate(),
     ]
     const beforeDeadline = [
-      new Date(`${year}-01-31 00:00:10+02:00`),
-      new Date(`${year}-01-31 23:59:59+02:00`),
-      new Date(`${year}-02-01 10:00:00+02:00`),
+      DateTime.fromObject(
+        { year, month: 1, day: 31, hour: 0, minute: 0, second: 10 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 1, day: 31, hour: 23, minute: 59, second: 59 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 1, day: 2, hour: 10, minute: 0, second: 0 },
+        { zone: TIMEZONE }
+      ).toJSDate(),
+      DateTime.fromObject(
+        { year, month: 2, day: 1, hour: 0, minute: 0, second: 1 },
+        { zone: 'Asia/Tokyo' }
+      ).toJSDate(),
     ]
     afterDeadline.forEach((date) => {
       it(`${date} should be after deadline`, () => {

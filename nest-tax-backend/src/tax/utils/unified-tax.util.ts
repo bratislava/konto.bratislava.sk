@@ -330,6 +330,7 @@ const calculateInstallmentPaymentDetails = (options: {
     fourth?: string
   }
   numberOfInstallments: number
+  iban: string
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
@@ -345,6 +346,7 @@ const calculateInstallmentPaymentDetails = (options: {
     variableSymbol,
     specificSymbol,
     numberOfInstallments,
+    iban,
   } = options
 
   // Calculate due dates for all installments
@@ -451,6 +453,7 @@ const calculateInstallmentPaymentDetails = (options: {
       variableSymbol,
       specificSymbol,
       paymentNote,
+      iban,
     },
   }
 
@@ -468,6 +471,7 @@ const calculateOneTimePaymentDetails = (options: {
   dueDate?: Date
   variableSymbol: string
   specificSymbol: string
+  iban: string
 }): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
   const {
     overallPaid,
@@ -475,6 +479,7 @@ const calculateOneTimePaymentDetails = (options: {
     dueDate,
     variableSymbol,
     specificSymbol,
+    iban,
   } = options
   if (overallBalance <= 0) {
     return {
@@ -498,6 +503,7 @@ const calculateOneTimePaymentDetails = (options: {
         overallPaid > 0
           ? QrPaymentNoteEnum.QR_remainingAmount
           : QrPaymentNoteEnum.QR_oneTimePay,
+      iban,
     },
     variableSymbol,
   }
@@ -532,15 +538,16 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
   const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
   const dueDate = calculateDueDate(dateOfValidityDayjs)
 
+  const taxDefinition = getTaxDefinitionByType(type)
+
   const oneTimePayment = calculateOneTimePaymentDetails({
     overallPaid,
     overallBalance,
     dueDate: dueDate?.toDate(),
     variableSymbol,
     specificSymbol,
+    iban: taxDefinition.iban,
   })
-
-  const taxDefinition = getTaxDefinitionByType(type)
 
   const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,
@@ -554,6 +561,7 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     variableSymbol,
     specificSymbol,
     numberOfInstallments: taxDefinition.numberOfInstallments,
+    iban: taxDefinition.iban,
   })
 
   const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
@@ -638,6 +646,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     paymentCalendarThreshold,
     installmentDueDates,
     numberOfInstallments,
+    iban,
   } = getTaxDefinitionByType(taxType)
 
   let overallPaid = 0
@@ -662,6 +671,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     specificSymbol,
     installmentDueDates,
     numberOfInstallments,
+    iban,
   })
 
   // Check if installment payment is possible

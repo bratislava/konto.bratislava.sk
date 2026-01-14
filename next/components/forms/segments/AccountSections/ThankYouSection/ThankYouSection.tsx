@@ -102,6 +102,17 @@ const ThankYouSection = () => {
     [year, type, order],
   )
 
+  // TODO get this link from strapi
+  const feedbackLink = useMemo(
+    () =>
+      type === TaxType.Dzn && paymentSuccessFeedbackLink
+        ? paymentSuccessFeedbackLink
+        : type === TaxType.Ko
+          ? 'https://bravo.staffino.com/bratislava/id=WWKwRgu2'
+          : undefined,
+    [type, paymentSuccessFeedbackLink],
+  )
+
   return (
     <div className="bg-gray-0 pt-16 lg:bg-gray-50 lg:pt-8">
       {isSuccessfullyPaid ? (
@@ -110,7 +121,7 @@ const ThankYouSection = () => {
           title={statusToTranslationPath[status].title}
           content={`<span className='text-p2'>${statusToTranslationPath[status].content}</span>`}
           firstButtonTitle={t('thank_you.button_to_formular_text')}
-          feedbackLink={paymentSuccessFeedbackLink ?? undefined}
+          feedbackLink={feedbackLink}
           secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}
           secondButtonLink={ROUTES.TAXES_AND_FEES}
         />

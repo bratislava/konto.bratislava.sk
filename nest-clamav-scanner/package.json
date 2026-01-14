@@ -111,6 +111,10 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
+  "engines": {
+    "node": ">=22.14.x",
+    "npm": ">=11.1.x"
+  },
   "volta": {
     "node": "22.14.0",
     "npm": "11.1.0"

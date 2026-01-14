@@ -142,6 +142,10 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.2"
   },
+  "engines": {
+    "node": ">=20.19.x",
+    "npm": ">=10.9.x"
+  },
   "volta": {
     "node": "20.19.6",
     "npm": "10.9.3"

@@ -90,6 +90,9 @@ export type TaxDefinition<TTaxType extends TaxType> = {
 
   lastUpdatedAtDatabaseFieldName: string
 
+  /** IBAN of the beneficiary */
+  iban: string
+
   /** Maps Noris tax data into detailed tax items. */
   mapNorisToTaxDetailData: (
     data: TaxTypeToNorisData[TTaxType],

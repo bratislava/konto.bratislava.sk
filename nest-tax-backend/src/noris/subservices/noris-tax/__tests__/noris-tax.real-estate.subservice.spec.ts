@@ -780,6 +780,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
+        iban: 'SK3175000000000025747653',
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([
           {
             type: AreaTypesEnum.GROUND,
@@ -897,6 +898,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
+        iban: 'SK3175000000000025747653',
         mapNorisToTaxDetailData: jest.fn().mockReturnValue([
           {
             type: AreaTypesEnum.GROUND,

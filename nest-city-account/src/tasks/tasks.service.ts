@@ -503,7 +503,7 @@ export class TasksService {
       )
     }
     const active = EmailConfigSchema.parse(configDbResult).active
-    if (active) {
+    if (!active) {
       return
     }
 

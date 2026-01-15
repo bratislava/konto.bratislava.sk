@@ -16,4 +16,10 @@ describe('PdfGeneratorService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined()
   })
+
+  /**
+   * TODO: Implement snapshot testing for generated PDFs.
+   * This requires migrating the project to ESM (EcmaScript Modules) or using a
+   * dynamic import for 'pdf-to-img', as it no longer supports CommonJS.
+   */
 })

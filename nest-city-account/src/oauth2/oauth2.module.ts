@@ -5,7 +5,7 @@ import { OAuth2Controller } from './oauth2.controller'
 import { OAuth2Service } from './oauth2.service'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { TokenRequestGuard } from './guards/token-request.guard'
-import { AuthorizationPayloadGuard } from './guards/authorization-payload.guard'
+import { AuthRequestIdGuard } from './guards/auth-request-id.guard'
 import { OAuth2AccessGuard } from './guards/oauth2-access.guard'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
@@ -29,7 +29,7 @@ import { OAuth2ErrorThrower } from './oauth2-error.thrower'
     OAuth2ValidationSubservice,
     AuthorizationRequestGuard,
     TokenRequestGuard,
-    AuthorizationPayloadGuard,
+    AuthRequestIdGuard,
     OAuth2AccessGuard,
     OAuth2ExceptionFilter,
     TokenRequestValidationPipe,

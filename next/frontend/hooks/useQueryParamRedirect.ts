@@ -7,14 +7,12 @@ import { useCallback, useMemo } from 'react'
 
 import { ROUTES } from '../api/constants'
 import {
-  clientIdQueryParam,
+  authRequestIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
   isHomeRedirect,
-  payloadQueryParam,
+  isOAuthQueryParam,
   redirectQueryParam,
-  redirectUriQueryParam,
-  stateQueryParam,
 } from '../utils/queryParamRedirect'
 import { useOAuthParams } from './useOAuthParams'
 
@@ -22,7 +20,7 @@ export const useQueryParamRedirect = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const { clientId, payload, redirectUri, state } = useOAuthParams()
+  const { isOAuth, authRequestId } = useOAuthParams()
 
   const safeRedirect = useMemo(() => {
     const param = searchParams.get(redirectQueryParam)
@@ -36,12 +34,10 @@ export const useQueryParamRedirect = () => {
   const getRedirectQueryParams = useCallback(() => {
     return {
       ...(!isHomeRedirect(safeRedirect) && { [redirectQueryParam]: safeRedirect.url }),
-      ...(clientId && { [clientIdQueryParam]: clientId }),
-      ...(payload && { [payloadQueryParam]: payload }),
-      ...(redirectUri && { [redirectUriQueryParam]: redirectUri }),
-      ...(state && { [stateQueryParam]: state }),
+      ...(isOAuth && { [isOAuthQueryParam]: isOAuth }),
+      ...(authRequestId && { [authRequestIdQueryParam]: authRequestId }),
     }
-  }, [clientId, payload, redirectUri, safeRedirect, state])
+  }, [isOAuth, authRequestId, safeRedirect])
 
   /**
    * If redirect param exists in the current URL the function appends it to the next route. Should be only used for

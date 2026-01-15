@@ -201,7 +201,7 @@ export class OAuth2Service {
    *
    * @param request - Authorization request DTO with all parameters
    * @param authRequestId - ID of the stored authorization request
-   * @returns Redirect URL to frontend with client_id, payload, redirect_uri, and state parameters
+   * @returns Redirect URL to frontend with authRequestId and isOAuth flag
    */
   buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
     const oAuth2LoginUrl = this.configService.get<string>('OAUTH2_LOGIN_URL')
@@ -218,7 +218,7 @@ export class OAuth2Service {
       )
     }
     const redirectUrl = new URL(oAuth2LoginUrl)
-    redirectUrl.searchParams.set('payload', authRequestId)
+    redirectUrl.searchParams.set('authRequestId', authRequestId)
     redirectUrl.searchParams.set('isOAuth', 'true')
     return redirectUrl.toString()
   }

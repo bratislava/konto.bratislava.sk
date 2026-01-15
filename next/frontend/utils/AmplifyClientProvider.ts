@@ -8,14 +8,14 @@ import { PropsWithChildren } from 'react'
 import { clearOAuthSessionStorage } from './amplifyClient'
 import { amplifyConfig, amplifyLibraryOptions, createAmplifyConfig } from './amplifyConfig'
 import { isBrowser } from './general'
-import { clientIdQueryParam } from './queryParamRedirect'
+// FIXME import { clientIdQueryParam } from './queryParamRedirect'
 
 Amplify.configure(amplifyConfig, amplifyLibraryOptions)
 
 // Reconfigure Amplify on client-side for oauth flow. This results to hydration error, that we ignore.
 if (isBrowser()) {
-  const searchParams = new URLSearchParams(window.location.search)
-  const clientId = searchParams.get(clientIdQueryParam)
+  // FIXME const searchParams = new URLSearchParams(window.location.search)
+  const clientId = '' // searchParams.get(clientIdQueryParam) //FIXME fetch a clientId somehow
 
   if (clientId) {
     Amplify.configure(createAmplifyConfig({ clientId }), amplifyLibraryOptions)

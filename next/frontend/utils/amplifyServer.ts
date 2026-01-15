@@ -11,9 +11,9 @@ import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import { AmplifyServerContextSpec } from './amplifyTypes'
 import {
-  clientIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
+  isOAuthQueryParam,
   redirectQueryParam,
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
@@ -97,10 +97,10 @@ export const amplifyGetServerSideProps = <
         }
 
         const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
-        // TODO OAuth: Double-check if this condition (checking if clientId exists) is enough
+        // TODO OAuth: Double-check if this condition (checking if isOAuth is true) is enough
         // Since fetchAuthSessionFn runs on server, it returns info about non-oauth sign-in flow, that we should ignore for oauth sign-in flow
         const shouldRedirectNotSignedOut =
-          options?.requiresSignOut && isSignedIn && !context.query[clientIdQueryParam]
+          options?.requiresSignOut && isSignedIn && !context.query[isOAuthQueryParam]
 
         if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
           if (options?.redirectQueryParam) {

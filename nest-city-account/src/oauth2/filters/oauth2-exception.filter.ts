@@ -9,7 +9,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import { toLogfmt } from '../../utils/logging'
 import { OAuth2ErrorMetadata, OAuth2Exception } from '../oauth2.exception'
-import { RequestWithAuthorizationPayload } from '../guards/authorization-payload.guard'
+import { RequestWithAuthorizationData } from '../guards/auth-request-id.guard'
 import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 
 const USER_AGENT = 'user-agent'
@@ -91,7 +91,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     status: number,
     exceptionResponse: string | object
   ) {
-    const requestWithPayload = request as RequestWithAuthorizationPayload
+    const requestWithAuthData = request as RequestWithAuthorizationData
     const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
     response.status(status).json(errorResponse)
@@ -102,7 +102,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       userAgent: request.get(USER_AGENT) || '',
       requestBody: request.body,
       queryParams: request.query,
-      authorizationPayload: requestWithPayload.authorizationPayload ?? '<NO PAYLOAD>',
+      authRequestData: requestWithAuthData.authorizationRequestData ?? '<NO REQUEST>',
       ip: request.ip ?? '<NO IP>',
       error: errorResponse.error,
       message: 'Internal function failed, sending redirect error.',
@@ -120,9 +120,9 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     status: number,
     exceptionResponse: string | object
   ) {
-    const requestWithPayload = request as RequestWithAuthorizationPayload
-    let redirectUri = requestWithPayload.authorizationPayload?.redirect_uri
-    let state = requestWithPayload.authorizationPayload?.state
+    const requestWithAuthData = request as RequestWithAuthorizationData
+    let redirectUri = requestWithAuthData.authorizationRequestData?.redirect_uri
+    let state = requestWithAuthData.authorizationRequestData?.state
     const clientId = request.query.client_id as string | undefined
 
     // Always validate redirect_uri from query against allowed URIs to prevent open redirector vulnerability
@@ -151,7 +151,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         userAgent: request.get(USER_AGENT) || '',
         requestBody: request.body,
         queryParams: request.query,
-        authorizationPayload: requestWithPayload.authorizationPayload ?? '<NO PAYLOAD>',
+        authRequestData: requestWithAuthData.authorizationRequestData ?? '<NO REQUEST>',
         ip: request.ip ?? '<NO IP>',
         error: exceptionResponse,
         message: 'Authorization error without redirect_uri, returning direct error',
@@ -187,7 +187,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       userAgent: request.get(USER_AGENT) || '',
       requestBody: request.body,
       queryParams: request.query,
-      authorizationPayload: requestWithPayload.authorizationPayload ?? '<NO PAYLOAD>',
+      authRequestData: requestWithAuthData.authorizationRequestData ?? '<NO REQUEST>',
       ip: request.ip ?? '<NO IP>',
       error: errorResponse.error,
       message: 'Authorization failed, sending redirect error.',

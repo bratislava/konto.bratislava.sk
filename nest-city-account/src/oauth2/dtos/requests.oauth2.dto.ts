@@ -161,7 +161,7 @@ export class StoreTokensRequestDto {
   })
   @IsNotEmpty()
   @IsString()
-  refresh_token!: string
+  refreshToken!: string
 
   @ApiProperty({
     description: 'UUID of the authorization request stored in the database',
@@ -169,34 +169,33 @@ export class StoreTokensRequestDto {
   })
   @IsNotEmpty()
   @IsUUID()
-  payload!: string
+  authRequestId!: string
 }
 
 /**
- * Base request DTO for endpoints that use authorization request payload
- * Contains the payload UUID and optional fallback parameters
+ * Base request DTO for endpoints that use authorization request ID
  */
-class AuthorizationPayloadRequestDto {
+class AuthorizationIdRequestDto {
   @ApiProperty({
     description: 'UUID of the authorization request stored in the database',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
   @IsNotEmpty()
   @IsUUID()
-  payload!: string
+  authRequestId!: string
 }
 
 /**
  * Request DTO for OAuth2 Continue Endpoint (GET)
  * Called by frontend to complete authorization flow after tokens are stored via POST /oauth2/store
  */
-export class ContinueRequestDto extends AuthorizationPayloadRequestDto {}
+export class ContinueRequestDto extends AuthorizationIdRequestDto {}
 
 /**
  * Request DTO for OAuth2 Client Info Endpoint (GET)
- * Returns client information by client_id from authorization request
+ * Returns client information by authorization request id
  */
-export class ClientInfoRequestDto extends AuthorizationPayloadRequestDto {}
+export class ClientInfoRequestDto extends AuthorizationIdRequestDto {}
 
 /**
  * Request DTO for Token Refresh Endpoint

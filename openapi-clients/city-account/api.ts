@@ -41,13 +41,13 @@ export interface ChangeEmailRequestDto {
 }
 export interface ClientInfoResponseDto {
   /**
+   * Client ID of the oAuth2 client
+   */
+  clientId: string
+  /**
    * Human-readable name for the client (prefix from OAUTH2_CLIENT_LIST)
    */
-  name: string
-  /**
-   * Human-readable title for the client (for frontend display)
-   */
-  title?: string
+  clientName: string
 }
 export interface CognitoGetUserData {
   /**
@@ -979,11 +979,11 @@ export interface StoreTokensRequestDto {
   /**
    * Refresh token from user authentication
    */
-  refresh_token: string
+  refreshToken: string
   /**
    * UUID of the authorization request stored in the database
    */
-  payload: string
+  authRequestId: string
 }
 export interface TokenRequestDto {
   /**
@@ -3125,16 +3125,16 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerContinueComplete: async (
-      payload: string,
+      authRequestId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'payload' is not null or undefined
-      assertParamExists('oAuth2ControllerContinueComplete', 'payload', payload)
+      // verify required parameter 'authRequestId' is not null or undefined
+      assertParamExists('oAuth2ControllerContinueComplete', 'authRequestId', authRequestId)
       const localVarPath = `/oauth2/continue`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3147,8 +3147,8 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      if (payload !== undefined) {
-        localVarQueryParameter['payload'] = payload
+      if (authRequestId !== undefined) {
+        localVarQueryParameter['authRequestId'] = authRequestId
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -3165,18 +3165,18 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       }
     },
     /**
-     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * Get client information (client id and client name) by authorization request id.
      * @summary OAuth2 Client Info Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerInfo: async (
-      payload: string,
+      authRequestId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'payload' is not null or undefined
-      assertParamExists('oAuth2ControllerInfo', 'payload', payload)
+      // verify required parameter 'authRequestId' is not null or undefined
+      assertParamExists('oAuth2ControllerInfo', 'authRequestId', authRequestId)
       const localVarPath = `/oauth2/info`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3189,8 +3189,8 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      if (payload !== undefined) {
-        localVarQueryParameter['payload'] = payload
+      if (authRequestId !== undefined) {
+        localVarQueryParameter['authRequestId'] = authRequestId
       }
 
       localVarHeaderParameter['Accept'] = 'application/json'
@@ -3364,16 +3364,16 @@ export const OAuth2ApiFp = function (configuration?: Configuration) {
     /**
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async oAuth2ControllerContinueComplete(
-      payload: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerContinueComplete(
-        payload,
+        authRequestId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3390,18 +3390,18 @@ export const OAuth2ApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * Get client information (client id and client name) by authorization request id.
      * @summary OAuth2 Client Info Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async oAuth2ControllerInfo(
-      payload: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientInfoResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerInfo(
-        payload,
+        authRequestId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3520,31 +3520,31 @@ export const OAuth2ApiFactory = function (
     /**
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerContinueComplete(
-      payload: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .oAuth2ControllerContinueComplete(payload, options)
+        .oAuth2ControllerContinueComplete(authRequestId, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * Get client information (client id and client name) by authorization request id.
      * @summary OAuth2 Client Info Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerInfo(
-      payload: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClientInfoResponseDto> {
       return localVarFp
-        .oAuth2ControllerInfo(payload, options)
+        .oAuth2ControllerInfo(authRequestId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -3624,26 +3624,26 @@ export class OAuth2Api extends BaseAPI {
   /**
    * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
    * @summary OAuth2 Continue Endpoint
-   * @param {string} payload UUID of the authorization request stored in the database
+   * @param {string} authRequestId UUID of the authorization request stored in the database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public oAuth2ControllerContinueComplete(payload: string, options?: RawAxiosRequestConfig) {
+  public oAuth2ControllerContinueComplete(authRequestId: string, options?: RawAxiosRequestConfig) {
     return OAuth2ApiFp(this.configuration)
-      .oAuth2ControllerContinueComplete(payload, options)
+      .oAuth2ControllerContinueComplete(authRequestId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Get client information (name and title) by client_id from authorization request for frontend display.
+   * Get client information (client id and client name) by authorization request id.
    * @summary OAuth2 Client Info Endpoint
-   * @param {string} payload UUID of the authorization request stored in the database
+   * @param {string} authRequestId UUID of the authorization request stored in the database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public oAuth2ControllerInfo(payload: string, options?: RawAxiosRequestConfig) {
+  public oAuth2ControllerInfo(authRequestId: string, options?: RawAxiosRequestConfig) {
     return OAuth2ApiFp(this.configuration)
-      .oAuth2ControllerInfo(payload, options)
+      .oAuth2ControllerInfo(authRequestId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

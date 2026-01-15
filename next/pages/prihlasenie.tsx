@@ -45,7 +45,7 @@ const LoginPage = () => {
 
   const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
 
-  // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
+  // TODO OAuth: Show error when attempting to use oauth login, but with missing params (authRequestId, isOAuth)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)

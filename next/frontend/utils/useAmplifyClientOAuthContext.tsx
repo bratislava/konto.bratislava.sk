@@ -10,7 +10,7 @@ import { useOAuthParams } from '../hooks/useOAuthParams'
 import { clearOAuthSessionStorage } from './amplifyClient'
 import logger from './logger'
 import {
-  payloadQueryParam
+  authRequestIdQueryParam
 } from './queryParamRedirect'
 
 export const getOAuthClientInfo = (clientId: string) =>
@@ -28,10 +28,9 @@ export const getOAuthClientInfo = (clientId: string) =>
   )[clientId] ?? null
 
 const useGetContext = () => {
-  const { clientId, payload } = useOAuthParams()
+  const { isOAuth, authRequestId } = useOAuthParams()
 
-  // TODO OAuth: Discuss what should be considered as oauth login, now we check only if clientId exists in url params
-  const isOAuthLogin = !!clientId
+  const isOAuthLogin = isOAuth
 
   const currentClientId = Amplify.getConfig().Auth?.Cognito.userPoolClientId
 
@@ -40,8 +39,8 @@ const useGetContext = () => {
   // TODO OAuth: We cannot use GET request due to some cors policy issues. This workaround works, but there may also be a better solution.
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
-    if (payload) {
-      parsedUrl.searchParams.set(payloadQueryParam, payload)
+    if (authRequestId) {
+      parsedUrl.searchParams.set(authRequestIdQueryParam, authRequestId)
     }
     return parsedUrl
   }
@@ -50,11 +49,9 @@ const useGetContext = () => {
     const { refreshToken } =
       (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
 
-    const refresh_token = refreshToken
-
-    if (!refresh_token || !payload) {
+    if (!refreshToken || !authRequestId) {
       logger.error(
-        `[AUTH] Missing access_token or refresh_token or payload in handlePostOAuthTokens`,
+        `[AUTH] Missing access_token or refreshToken or authRequestId in handlePostOAuthTokens`,
       )
       // TODO OAuth: handle error
       return
@@ -63,8 +60,8 @@ const useGetContext = () => {
     try {
       await cityAccountClient.oAuth2ControllerStoreTokens(
         {
-          refresh_token,
-          payload,
+          refreshToken,
+          authRequestId,
         },
         { authStrategy: false },
       )

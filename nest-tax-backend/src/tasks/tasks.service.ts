@@ -205,7 +205,7 @@ export class TasksService {
   private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
     // ⚠️⚠️⚠️
     // const currentYear = new Date().getFullYear()
-    const currentYear = 2025 // TODO: remove this after testing, this can only get to production
+    const currentYear = 2025 // TODO: remove this after testing, this should NOT get to production
     // ⚠️⚠️⚠️
 
     const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)

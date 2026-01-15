@@ -144,7 +144,13 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
               variant="boxed"
               description={t('taxes.delivery_method_change_modal.delivery_method_true.description')}
             >
-              {t('taxes.delivery_method_change_modal.delivery_method_true.title')}
+              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                <span>{t('taxes.delivery_method_change_modal.delivery_method_true.title')}</span>
+                {/* TODO unify with Tag component */}
+                <span className="rounded-sm bg-background-success-soft-default px-2 py-0.5 text-p3 text-content-success-default">
+                  {t('taxes.delivery_method_change_modal.delivery_method_true.usage_percentage')}
+                </span>
+              </div>
             </Radio>
           </RadioGroup>
         )}
@@ -178,6 +184,10 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
     </form>
   )
 }
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20612-3394&m=dev
+ */
 
 const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
   const { isSubscribed, changeSubscription, subType } = useUserSubscription({

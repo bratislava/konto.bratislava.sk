@@ -25,12 +25,13 @@ const MunicipalServicesSectionHeader = ({
           label=""
           className="max-w-none pr-4 xs:max-w-[400px]"
           value={selectorValue}
-          onChange={(val) => {
-            if (!val) return
-            setSelectorValue(val)
+          onChange={(value) => {
+            if (!value) return
+            setSelectorValue(value)
             setCurrentPage(1)
           }}
           options={enumOptions}
+          displayOptionalLabel={false}
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { baPhoneNumberRegex } from 'forms-shared/form-utils/ajvFormats'
 import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
@@ -27,18 +27,21 @@ const foSchema = {
     given_name: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:given_name_required' },
+      errorMessage: { minLength: 'account:auth.fields.given_name_required' },
     },
     family_name: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:family_name_required' },
+      errorMessage: { minLength: 'account:auth.fields.family_name_required' },
     },
     email: {
       type: 'string',
       minLength: 1,
       format: 'email',
-      errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.email_required',
+        format: 'account:auth.fields.email_format',
+      },
     },
     phone_number: {
       type: 'string',
@@ -52,7 +55,7 @@ const foSchema = {
     postal_code: {
       type: 'string',
       format: 'postalCode',
-      errorMessage: { format: 'account:postal_code_format' },
+      errorMessage: { format: 'account:auth.fields.postal_code_format' },
     },
   },
   required: ['email', 'given_name', 'family_name'],
@@ -68,7 +71,10 @@ const poSchema = {
       type: 'string',
       minLength: 1,
       format: 'email',
-      errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
+      errorMessage: {
+        minLength: 'account:auth.fields.email_required',
+        format: 'account:auth.fields.email_format',
+      },
     },
     phone_number: {
       type: 'string',
@@ -82,7 +88,7 @@ const poSchema = {
     postal_code: {
       type: 'string',
       format: 'postalCode',
-      errorMessage: { format: 'account:postal_code_format' },
+      errorMessage: { format: 'account:auth.fields.postal_code_format' },
     },
   },
   required: ['email'],
@@ -135,7 +141,10 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       return onSubmit(newUserData)
     }
 
-    return setError('phone_number', { type: 'manual', message: 'account:phone_number_format' })
+    return setError('phone_number', {
+      type: 'manual',
+      message: 'account:auth.fields.phone_number_format',
+    })
   }
 
   return (
@@ -154,7 +163,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               render={({ field }) => (
                 <InputField
                   capitalize
-                  label={t('profile_detail.business_name')}
+                  label={t('my_profile.profile_detail.business_name')}
                   {...field}
                   errorMessage={errors.given_name}
                 />
@@ -171,7 +180,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
                   <InputField
                     required
                     capitalize
-                    label={t('profile_detail.given_name')}
+                    label={t('my_profile.profile_detail.given_name')}
                     {...field}
                     errorMessage={errors.given_name}
                   />
@@ -186,7 +195,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
                   <InputField
                     required
                     capitalize
-                    label={t('profile_detail.family_name')}
+                    label={t('my_profile.profile_detail.family_name')}
                     {...field}
                     errorMessage={errors.family_name}
                   />
@@ -204,7 +213,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             render={({ field }) => (
               <InputField
                 disabled
-                label={t('profile_detail.email')}
+                label={t('my_profile.profile_detail.email')}
                 autoComplete="username"
                 {...field}
                 errorMessage={errors.email}
@@ -213,22 +222,9 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
         <div className="flex flex-col justify-end pt-1">
-          <Button
-            variant="black"
-            size="lg"
-            text={t('profile_detail.email_button')}
-            className="hidden md:block"
-            onPress={onEmailChange}
-            data-cy="change-email-button"
-          />
-          <Button
-            variant="black"
-            size="sm"
-            text={t('profile_detail.email_button')}
-            className="block md:hidden"
-            onPress={onEmailChange}
-            data-cy="change-email-button-mobile"
-          />
+          <Button variant="black-solid" onPress={onEmailChange} data-cy="change-email-button">
+            {t('my_profile.profile_detail.email_button')}
+          </Button>
         </div>
       </div>
       <div className="gap flex flex-row flex-wrap gap-x-6">
@@ -238,26 +234,26 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             control={control}
             render={({ field }) => (
               <InputField
-                label={t('profile_detail.phone_number')}
+                label={t('my_profile.profile_detail.phone_number')}
                 {...field}
-                placeholder={t('profile_detail.phone_number_placeholder')}
+                placeholder={t('my_profile.profile_detail.phone_number_placeholder')}
                 errorMessage={errors.phone_number}
               />
             )}
           />
         </div>
         <div className="invisible h-0 w-full grow md:w-fit">
-          <InputField label={t('profile_detail.phone_number')} />
+          <InputField label={t('my_profile.profile_detail.phone_number')} />
         </div>
       </div>
       <div className="h-0 w-full border-b-2 border-gray-200" />
-      <h5 className="text-h5">{t('profile_detail.address')}</h5>
+      <h5 className="text-h5">{t('my_profile.profile_detail.address')}</h5>
       <Controller
         name="street_address"
         control={control}
         render={({ field }) => (
           <InputField
-            label={t('profile_detail.street')}
+            label={t('my_profile.profile_detail.street')}
             capitalize
             {...field}
             errorMessage={errors.street_address}
@@ -271,7 +267,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             control={control}
             render={({ field }) => (
               <InputField
-                label={t('profile_detail.city')}
+                label={t('my_profile.profile_detail.city')}
                 capitalize
                 {...field}
                 errorMessage={errors.city}
@@ -285,8 +281,8 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             control={control}
             render={({ field }) => (
               <InputField
-                tooltip={t('profile_detail.postal_code_tooltip')}
-                label={t('profile_detail.postal_code')}
+                tooltip={t('my_profile.profile_detail.postal_code_tooltip')}
+                label={t('my_profile.profile_detail.postal_code')}
                 {...field}
                 errorMessage={errors.postal_code}
               />
@@ -294,16 +290,18 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
       </div>
-      <div className={cn('py-2', 'md:hidden')}>
+
+      {/* Save button (mobile) */}
+      <div className="py-2 md:hidden">
         <Button
-          variant="black"
-          size="sm"
-          text={t('profile_detail.save_edit_button')}
+          variant="black-solid"
           type="submit"
           form={formId}
-          className="w-full"
+          fullWidthMobile
           data-cy="save-personal-information-button-mobile"
-        />
+        >
+          {t('my_profile.profile_detail.save_changes_button')}
+        </Button>
       </div>
     </form>
   )

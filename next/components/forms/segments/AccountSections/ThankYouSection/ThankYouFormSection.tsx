@@ -1,7 +1,7 @@
 import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
@@ -22,7 +22,7 @@ const useThankYouFormSection = () => {
     return {
       title: t('thank_you.form_submit_tax.title'),
       firstButtonTitle: t('thank_you.button_to_formular_text_2'),
-      secondButtonTitle: t('thank_you.button_to_profil_text'),
+      secondButtonTitle: t('thank_you.button_to_profile_text'),
       content: t('thank_you.form_submit_tax.content'),
       feedbackLink,
       feedbackTitle: t('thank_you.form_submit_tax.feedbackTitle'),
@@ -42,7 +42,7 @@ const useThankYouFormSection = () => {
   return {
     title: t('thank_you.form_submit.title'),
     firstButtonTitle: t('thank_you.button_to_formular_text_2'),
-    secondButtonTitle: t('thank_you.button_to_profil_text'),
+    secondButtonTitle: t('thank_you.button_to_profile_text'),
     content: [
       t('thank_you.form_submit.content_generic'),
       isSignedIn ? ` ${t('thank_you.form_submit.content_signed_in')}` : '',
@@ -93,18 +93,12 @@ const ThankYouFormSection = () => {
               />
             </span>
             <div className="mt-4 flex flex-col gap-3 md:mt-6">
-              <Button
-                label={t('thank_you.button_faq_text')}
-                href={ROUTES.HELP}
-                variant="link-black"
-                size="sm"
-              />
-              <Button
-                label={t('thank_you.button_privacy_text')}
-                href="https://bratislava.sk/ochrana-osobnych-udajov"
-                variant="link-black"
-                size="sm"
-              />
+              <Button variant="black-link" href={ROUTES.HELP}>
+                {t('thank_you.button_faq_text')}
+              </Button>
+              <Button variant="black-link" href="https://bratislava.sk/ochrana-osobnych-udajov">
+                {t('thank_you.button_privacy_text')}
+              </Button>
             </div>
           </div>
         ) : null}

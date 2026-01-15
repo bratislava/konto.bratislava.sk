@@ -7,11 +7,11 @@ import React, {
   createContext,
   PropsWithChildren,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react'
-import { useIsFirstRender } from 'usehooks-ts'
 
 import {
   getEvaluatedStepsSchemas,
@@ -40,7 +40,12 @@ const useGetContext = () => {
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   const validatorRegistry = useFormValidatorRegistry()
   // eslint-disable-next-line testing-library/render-result-naming-convention
-  const isFirst = useIsFirstRender()
+
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    isFirstRender.current = false
+  }, [])
 
   const stepsSchemas = useMemo(
     () => getEvaluatedStepsSchemas(schema, formData, validatorRegistry),
@@ -119,7 +124,7 @@ const useGetContext = () => {
 
     setFormData(pickedPropertiesData)
     // Initially the form triggers onChange with the initial data, which is not a change, so we don't want to activate leave protection.
-    if (!isFirst) {
+    if (!isFirstRender.current) {
       turnOnLeaveProtection()
     }
   }

@@ -76,7 +76,7 @@
     "@types/json-schema": "7.0.15",
     "@types/json-schema-merge-allof": "^0.6.5",
     "@types/lodash": "^4.17.21",
-    "@types/node": "^24.3.3",
+    "@types/node": "^22.19.6",
     "@types/object-hash": "^3.0.6",
     "@types/prompts": "^2.4.9",
     "@types/react": "19.1.12",
@@ -101,21 +101,21 @@
     "postcss": "8.5.6",
     "prettier": "^3.6.2",
     "prompts": "^2.4.2",
-    "rimraf": "^6.0.1",
+    "rimraf": "^6.1.2",
     "string-to-template-literal": "^3.0.0",
     "tailwindcss": "4.1.11",
     "tmp-promise": "^3.0.3",
     "ts-node": "^10.9.2",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "unzipper": "^0.12.3",
     "vitest": "4.0.15"
   },
   "engines": {
-    "node": ">=20.9.x",
-    "npm": ">=10.7.x"
+    "node": ">=22.21.x",
+    "npm": ">=10.9.x"
   },
   "volta": {
-    "node": "20.9.0",
-    "npm": "10.7.0"
+    "node": "22.21.1",
+    "npm": "10.9.4"
   }
 }

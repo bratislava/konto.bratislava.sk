@@ -15,6 +15,7 @@ export const devFormDefinitions: FormDefinition[] = [
     pospVersion: '',
     publisher: '',
     termsAndConditions: generalTermsAndConditions,
+    ginisDocumentTypeId: '',
     ginisAssignment: {
       ginisNodeId: '',
       ginisFunctionId: '',

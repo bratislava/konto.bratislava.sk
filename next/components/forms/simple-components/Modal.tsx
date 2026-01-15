@@ -103,7 +103,7 @@ const Modal = ({
                     data-cy="close-modal"
                   >
                     <CrossIcon className="size-6" aria-hidden />
-                    <span className="sr-only">{t('modal_close_aria')}</span>
+                    <span className="sr-only">{t('Modal.aria.close')}</span>
                   </AriaButton>
                 )}
                 {children}

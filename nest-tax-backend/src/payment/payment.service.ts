@@ -12,11 +12,13 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { PaymentTypeEnum } from '../tax/dtos/response.tax.dto'
 import { TaxService } from '../tax/tax.service'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxYear } from '../utils/types/types.prisma'
+import { RetryService } from '../utils-module/retry.service'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
@@ -34,6 +36,7 @@ export class PaymentService {
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxService: TaxService,
+    private readonly retryService: RetryService,
   ) {}
 
   private async getTaxPaymentByTaxId(
@@ -75,7 +78,12 @@ export class PaymentService {
     try {
       orderId = Date.now().toString()
       payment = await this.prisma.taxPayment.create({
-        data: { orderId, amount: options.amount, taxId: options.taxId },
+        data: {
+          orderId,
+          amount: options.amount,
+          taxId: options.taxId,
+          bloomreachEventSent: false,
+        },
       })
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -142,6 +150,49 @@ export class PaymentService {
     )
 
     return this.getPaymentUrlInternal(generator)
+  }
+
+  /**
+   * Tracks the payment in Bloomreach and updates the tax payment bloomreachEventSent flag.
+   * This is to prevent missing payments in Bloomreach in case of some failure in the tracking process.
+   *
+   * Note that we first set the flag to true in the transaction, and then send the event. The reason is that
+   * if the event fails, the transaction will be rolled back, and the flag will not be set.
+   * If the event succeeds, the flag will be set to true.
+   *
+   * @param taxPayment - Tax payment to track in Bloomreach
+   * @param externalId - External ID of the user
+   */
+  async trackPaymentInBloomreach(
+    taxPayment: TaxPaymentWithTaxYear,
+    externalId?: string,
+  ) {
+    await this.prisma.$transaction(async (tx) => {
+      await tx.taxPayment.update({
+        where: { id: taxPayment.id },
+        data: { bloomreachEventSent: true },
+      })
+
+      if (!externalId) {
+        return
+      }
+
+      const result = await this.bloomreachService.trackEventTaxPayment(
+        {
+          amount: taxPayment.amount,
+          payment_source: taxPayment.source ?? TaxPaymentSource.BANK_ACCOUNT,
+          year: taxPayment.tax.year,
+          suppress_email: false,
+        },
+        externalId,
+      )
+      if (!result) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to track payment in Bloomreach.',
+        )
+      }
+    })
   }
 
   async processPaymentResponse({
@@ -225,37 +276,34 @@ export class PaymentService {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
       }
 
-      await this.prisma.$transaction(async (tx) => {
-        const taxPayment = await tx.taxPayment.update({
-          where: { orderId: ORDERNUMBER },
-          data: {
-            status: PaymentStatus.SUCCESS,
-            source: 'CARD',
-          },
-          include: {
-            tax: {
-              select: {
-                year: true,
-              },
+      const taxPayment = await this.prisma.taxPayment.update({
+        where: { orderId: ORDERNUMBER },
+        data: {
+          status: PaymentStatus.SUCCESS,
+          source: 'CARD',
+        },
+        include: {
+          tax: {
+            select: {
+              year: true,
             },
           },
-        })
-
-        const user = await this.cityAccountSubservice.getUserDataAdmin(
-          payment.tax.taxPayer.birthNumber,
-        )
-        if (user?.externalId) {
-          await this.bloomreachService.trackEventTaxPayment(
-            {
-              amount: taxPayment.amount,
-              payment_source: TaxPaymentSource.CARD,
-              year: taxPayment.tax.year,
-              suppress_email: false,
-            },
-            user.externalId,
-          )
-        }
+        },
       })
+
+      const user = await this.retryService.retryWithDelay(
+        () =>
+          this.cityAccountSubservice.getUserDataAdmin(
+            payment.tax.taxPayer.birthNumber,
+          ),
+        'getUserDataAdmin',
+        3,
+        1000, // 1 second delay, 3 retries
+      )
+      await this.trackPaymentInBloomreach(
+        taxPayment,
+        user?.externalId ?? undefined,
+      )
 
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&paymentType=${PaymentTypeEnum.DZN}&year=${year}`
     } catch (error) {

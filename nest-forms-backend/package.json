@@ -31,16 +31,16 @@
     "@aws-sdk/client-cognito-identity": "^3.888.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.888.0",
     "@aws-sdk/client-sts": "^3.888.0",
-    "@bratislava/ginis-sdk": "^2.1.0",
-    "@golevelup/nestjs-rabbitmq": "6.0.2",
+    "@bratislava/ginis-sdk": "^2.1.2",
+    "@golevelup/nestjs-rabbitmq": "6.1.0",
     "@nestjs/bull": "11.0.4",
-    "@nestjs/common": "11.1.9",
+    "@nestjs/common": "11.1.11",
     "@nestjs/config": "4.0.2",
-    "@nestjs/core": "11.1.9",
+    "@nestjs/core": "11.1.11",
     "@nestjs/passport": "11.0.5",
-    "@nestjs/platform-express": "11.1.9",
-    "@nestjs/schedule": "6.0.1",
-    "@nestjs/swagger": "11.2.3",
+    "@nestjs/platform-express": "11.1.11",
+    "@nestjs/schedule": "6.1.0",
+    "@nestjs/swagger": "11.2.4",
     "@prisma/client": "6.15.0",
     "@rjsf/utils": "5.24.9",
     "amqplib": "^0.10.9",
@@ -49,7 +49,7 @@
     "bull": "4.16.5",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.2",
-    "content-disposition": "^1.0.0",
+    "content-disposition": "^1.0.1",
     "forms-shared": "file:../forms-shared",
     "handlebars": "^4.7.8",
     "jsonwebtoken": "9.0.2",
@@ -77,12 +77,12 @@
     "@golevelup/ts-jest": "^0.7.0",
     "@nestjs/cli": "11.0.14",
     "@nestjs/schematics": "11.0.9",
-    "@nestjs/testing": "11.1.9",
+    "@nestjs/testing": "11.1.11",
     "@ngneat/falso": "^8.0.2",
-    "@testcontainers/postgresql": "^11.7.1",
+    "@testcontainers/postgresql": "^11.10.0",
     "@types/amqplib": "^0.10.8",
     "@types/content-disposition": "^0.5.9",
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "@types/jest": "30.0.0",
     "@types/lodash": "4.17.20",
     "@types/mime-types": "^3.0.1",
@@ -142,8 +142,12 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.2"
   },
+  "engines": {
+    "node": ">=20.19.x",
+    "npm": ">=10.9.x"
+  },
   "volta": {
-    "node": "20.9.0",
-    "npm": "10.7.0"
+    "node": "20.19.6",
+    "npm": "10.9.3"
   }
 }

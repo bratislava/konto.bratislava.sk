@@ -1,25 +1,30 @@
 import { Injectable } from '@nestjs/common'
-import { UpvsIdentityByUri } from '@prisma/client'
 import _ from 'lodash'
 import { NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { parseBirthNumberFromUri } from '../utils/upvs'
-import { UpvsIdentity, UpvsIdentitySchema } from './dtos/upvsSchema'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../user-verification/verification.errors.enum'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 export type UpvsIdentityByUriServiceCreateManyParam = {
   physicalEntityId?: string
   uri: string
 }[]
 
+export type UpvsIdentityByUriSuccessType = {
+  physicalEntityId: string | null
+  uri: string
+  data: ApiIamIdentitiesIdGet200Response
+}
+
 export type UpvsCreateManyResult = {
-  success: UpvsIdentityByUri[]
+  success: UpvsIdentityByUriSuccessType[]
   failed: { physicalEntityId?: string; uri: string }[]
 }
 
@@ -71,23 +76,14 @@ export class UpvsIdentityByUriService {
     }
 
     // for each db write we collect the written object into result that we return
-    const resultDataSuccess: UpvsIdentityByUri[] = []
+    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = []
     // we collect birthNumbersWithSuccessfulUris so that we can easily filter those out and create db records marking a failed request for all the rest
     const birthNumbersWithSuccessfulUris = new Set<string>()
     for (const result of results) {
-      // validate the result format - for info only, continue either way
-      const parsedResult = UpvsIdentitySchema.safeParse(result)
-      if (!parsedResult.success) {
-        this.logger.error(
-          'Failed to parse result from nases. Will still attempt to save the data, and continue if we fail. Result JSON: ',
-          JSON.stringify(result)
-        )
-      }
       try {
-        const forcefullyTypedResult = result as UpvsIdentity
-        if (!forcefullyTypedResult.uri) continue
+        if (!result.uri) continue
 
-        const parsedBirthNumber = parseBirthNumberFromUri(forcefullyTypedResult.uri)
+        const parsedBirthNumber = parseBirthNumberFromUri(result.uri)
         if (parsedBirthNumber === null) continue
 
         const physicalEntityIds = _.uniq(
@@ -106,15 +102,11 @@ export class UpvsIdentityByUriService {
           // if we have a match, we ignore all the variants of the uris provided and save only the result with the return uri
           // IMPORTANT NOTE - this uri might be different from any in the inputs - i.e. when the surename changes, the old uri still matches
           // if matching back to the requested uris, use birthNumbers as guides
-          resultDataSuccess.push(
-            await this.prismaService.upvsIdentityByUri.create({
-              data: {
-                physicalEntityId: successfulPhysicalEntityId,
-                uri: forcefullyTypedResult.uri,
-                data: forcefullyTypedResult,
-              },
-            })
-          )
+          resultDataSuccess.push({
+            physicalEntityId: successfulPhysicalEntityId,
+            uri: result.uri,
+            data: result,
+          })
         }
       } catch (error) {
         this.logger.error('Failed to save data. Will continue to next result. Error: ', error)

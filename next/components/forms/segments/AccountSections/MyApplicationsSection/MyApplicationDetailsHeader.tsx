@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
 import { formsClient } from '@clients/forms'
-import Button from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/ButtonNew'
 import FormatDate from 'components/forms/simple-components/FormatDate'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
@@ -79,11 +79,13 @@ const MyApplicationDetailsHeader = ({
               <div className="flex w-full items-center justify-between">
                 <h1 className="text-h1">{subject}</h1>
                 <Button
-                  className="hidden md:flex"
-                  startIcon={<DownloadIcon className="size-6" />}
-                  text={t('download_pdf')}
+                  variant="black-solid"
+                  className="max-md:hidden"
+                  startIcon={<DownloadIcon />}
                   onPress={exportPdf}
-                />
+                >
+                  {t('my_application.details.download_pdf')}
+                </Button>
               </div>
             </div>
             <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
@@ -111,12 +113,14 @@ const MyApplicationDetailsHeader = ({
               </div>
             </div>
             <Button
+              variant="black-solid"
               fullWidth
-              className="flex md:hidden"
-              startIcon={<DownloadIcon className="size-6" />}
-              text={t('download_pdf')}
+              className="md:hidden"
+              startIcon={<DownloadIcon />}
               onPress={exportPdf}
-            />
+            >
+              {t('my_application.details.download_pdf')}
+            </Button>
           </div>
         </div>
       </div>

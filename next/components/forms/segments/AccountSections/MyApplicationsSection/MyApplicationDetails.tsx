@@ -60,7 +60,12 @@ const MyApplicationDetails = ({
                 isError: false,
               }}
             />
-            <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
+            <SummaryRowSimple
+              size="small"
+              isEditable={false}
+              label={t('account_section_applications.details.application_details.contact')}
+              isError={false}
+            >
               <p>
                 {ginisData?.ownerPhone ? (
                   <a className="underline underline-offset-4" href={`tel:${ginisData.ownerPhone}`}>

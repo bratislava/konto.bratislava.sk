@@ -25,7 +25,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       buttonsAlign="center"
       buttons={[
         <ButtonNew className="grow" variant="black-solid" onPress={() => verifyIdentity()}>
-          {t('verification_url_text')}
+          {t('auth.verification_url_text')}
         </ButtonNew>,
         <ButtonNew
           className="grow"

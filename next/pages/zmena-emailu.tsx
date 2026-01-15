@@ -8,14 +8,14 @@ import {
 } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import EmailChangeForm from 'components/forms/segments/EmailChangeForm/EmailChangeForm'
-import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
+import EmailChangeForm from '../components/forms/auth-forms/EmailChangeForm'
+import EmailVerificationForm from '../components/forms/auth-forms/EmailVerificationForm'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
@@ -199,10 +199,10 @@ const EmailChangePage = () => {
           />
         ) : (
           <AccountSuccessAlert
-            title={t('email_change_success_title')}
-            confirmLabel={t('account_continue_link')}
+            title={t('auth.email_change_success_title')}
+            confirmLabel={t('auth.continue_to_account')}
             onConfirm={onConfirm}
-            description={t('email_change_success_description', { email: lastEmail })}
+            description={t('auth.email_change_success_description', { email: lastEmail })}
           />
         )}
       </AccountContainer>

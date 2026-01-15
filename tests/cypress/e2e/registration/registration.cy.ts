@@ -90,7 +90,7 @@ describe('RF01 -', { testIsolation: false }, () => {
               cy.get('[data-cy=change-email-button]').click()
             } else {
               cy.get('[data-cy=edit-personal-information-button-mobile]').click()
-              cy.get('[data-cy=change-email-button-mobile]').click()
+              cy.get('[data-cy=change-email-button]').click()
             }
             cy.url().should('include', '/zmena-emailu')
             cy.dataCy('change-email-form').then((form) => {

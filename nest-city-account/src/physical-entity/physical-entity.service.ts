@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, Prisma, UpvsIdentityByUri } from '@prisma/client'
+import { PhysicalEntity, Prisma } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 
 import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
-import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
 import {
   UpvsCreateManyResult,
   UpvsIdentityByUriService,
@@ -15,6 +14,7 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
+import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { VerificationReturnType } from '../user-verification/types'
 
 // In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
@@ -23,7 +23,7 @@ export type UpdateFromRFOResult = {
   physicalEntity: PhysicalEntity
   rfoData: RfoIdentityList | null
   upvsInput?: { uri: string; physicalEntityId: string }
-  upvsResult?: UpvsIdentityByUri
+  upvsResult?: ApiIamIdentitiesIdGet200Response
 }
 
 @Injectable()
@@ -127,7 +127,7 @@ export class PhysicalEntityService {
       return {
         id: item.physicalEntityId ?? undefined,
         uri: item.uri,
-        activeEdesk: (item.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
+        activeEdesk: item.data.upvs?.edesk_status === 'deliverable',
       }
     })
 

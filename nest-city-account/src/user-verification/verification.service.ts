@@ -6,7 +6,7 @@ import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { encryptData } from '../utils/crypto'
-import { createUserJwtToken } from '../utils/eid'
+import TokenSubservice from './utils/subservice/token.subservice'
 import {
   CognitoGetUserData,
   CognitoUserAccountTypesEnum,
@@ -37,6 +37,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { VerificationReturnType } from './types'
+import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
 
 @Injectable()
 export class VerificationService {
@@ -51,7 +52,8 @@ export class VerificationService {
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
-    private readonly bloomreachService: BloomreachService
+    private readonly bloomreachService: BloomreachService,
+    private readonly tokenSubservice: TokenSubservice
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -303,8 +305,9 @@ export class VerificationService {
     user: CognitoGetUserData,
     oboToken: string
   ): Promise<ResponseVerificationDto> {
-    const jwtToken = createUserJwtToken(oboToken)
+    const jwtToken = this.tokenSubservice.createUserJwtToken(oboToken)
     try {
+      // we do this only to verify that the token is valid, we don't need the result
       await this.nasesService.getUpvsIdentity(jwtToken)
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -320,10 +323,38 @@ export class VerificationService {
     const payload = JSON.parse(payloadBuffer.toString())
     const type = payload.sub.split(':')[0]
 
-    if (type === 'rc') {
-      let birthNumber: string = payload.sub.split('_')[0].split('/').at(-1)
-      birthNumber = birthNumber.replaceAll('/', '')
+    const birthNumber = extractBirthNumberFromUri(payload.actor.sub)
+    if (!birthNumber) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.VERIFY_EID_ERROR,
+        VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        'Failed to retrieve birth number from URI'
+      )
+    }
 
+    if (
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+        CognitoUserAccountTypesEnum.PHYSICAL_ENTITY &&
+      type !== 'rc'
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.VERIFY_EID_ERROR,
+        VerificationErrorsResponseEnum.BIRTH_NUMBER_NOT_PROVIDED
+      )
+    }
+    if (
+      (user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+        user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+          CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY) &&
+      type !== 'ico'
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.VERIFY_EID_ERROR,
+        VerificationErrorsResponseEnum.ICO_NOT_PROVIDED
+      )
+    }
+
+    if (type === 'rc') {
       const response = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
         user,
         null,
@@ -340,9 +371,14 @@ export class VerificationService {
     }
 
     if (type === 'ico') {
-      const ico = payload.sub.split('/').at(-1)
-      let birthNumber: string = payload.actor.sub.split('_')[0].split('/').at(-1)
-      birthNumber = birthNumber.replaceAll('/', '')
+      const ico = extractIcoFromUri(payload.sub)
+      if (!ico) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.VERIFY_EID_ERROR,
+          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          'Failed to retrieve ico from URI'
+        )
+      }
       const response = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
         user,
         ico,

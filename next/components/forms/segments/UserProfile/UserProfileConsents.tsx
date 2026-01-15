@@ -5,7 +5,6 @@ import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../frontend/hooks/useUser'
 import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
-import UserProfileSectionHeader from './UserProfileSectionHeader'
 
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
@@ -17,39 +16,37 @@ const UserProfileConsents = () => {
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
-  const handleOnChangeConsent = async (value: boolean) => {
+  const handleOnChangeConsent = async (newValue: boolean) => {
     if (subscriptionChangePending) {
       return
     }
 
-    await changeSubscription(value, {
+    await changeSubscription(newValue, {
       onSuccess: () => {
-        openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+        openSnackbarSuccess(
+          newValue
+            ? t('my_profile.consents.success_on_snackbar_message')
+            : t('my_profile.consents.success_off_snackbar_message'),
+          3000,
+        )
       },
       onError: () => {
-        openSnackbarError(t('profile_detail.error_alert'))
+        openSnackbarError(t('my_profile.consents.error_snackbar_message'))
       },
     })
   }
 
   return (
     <UserProfileSection>
-      <UserProfileSectionHeader
-        title={t('consents.title')}
-        text={t('consents.text')}
-        underline
-        isMobileColumn
-      />
       <div className="px-4 md:px-8">
         <UserConsent
           consent={{
             id: 'receive_information',
-            title: t('consents.receive_information.title'),
-            text: t('consents.receive_information.text'),
+            title: t('my_profile.consents.receive_information.title'),
+            text: t('my_profile.consents.receive_information.text'),
             isDisabled: subscriptionChangePending,
             isSelected: isSubscribed,
           }}
-          isLast
           onChange={handleOnChangeConsent}
         />
       </div>

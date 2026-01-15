@@ -21,8 +21,9 @@ export enum VerificationErrorsEnum {
 }
 
 export enum VerificationErrorsResponseEnum {
-  ICO_NOT_PROVIDED = 'Ico for verification was not provided',
+  ICO_NOT_PROVIDED = 'Unable to verify LEGAL_ENTITY or SELF_EMPLOYED_ENTITY, ico not provided',
   IFO_NOT_PROVIDED = 'Ifo for verification was not provided',
+  BIRTH_NUMBER_NOT_PROVIDED = 'Unable to verify PHYSICAL_ENTITY, birth number (rc) not provided',
   BIRTHNUMBER_IFO_DUPLICITY = 'Duplicity of birth number. This user is already registered with a different account.',
   VERIFY_EID_ERROR = 'Failed to verify user with eid.',
   UNEXPECTED_UPVS_RESPONSE = 'Unexpected UPVS response.',

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { DateTime } from 'luxon'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
@@ -67,7 +68,7 @@ export class TasksService {
     })
   }
 
-  @Cron(`*/5 * 2-30 ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`) // Every 5 minutes in April, starting from 2nd.
+  @Cron(`*/5 * 2-31 ${process.env.MUNICIPAL_TAX_LOCK_MONTH}-12 *`) // Every 5 minutes from MUNICIPAL_TAX_LOCK_MONTH (February), starting from 2nd.
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()
@@ -246,6 +247,99 @@ export class TasksService {
     this.logger.error('Entities that failed to update at least 7 times in a row: ', {
       entities: entitiesFailedToUpdate,
       alert: 1,
+    })
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  @HandleErrors('CronError')
+  async cleanupExpiredAuthorizationCodes(): Promise<void> {
+    const fiveMinutesAgo = DateTime.now().minus({ minutes: 5 }).toJSDate()
+
+    const expiredRecords = await this.prismaService.oAuth2Data.findMany({
+      where: {
+        authorizationCodeCreatedAt: {
+          not: null,
+          lt: fiveMinutesAgo,
+        },
+        refreshTokenEnc: {
+          not: null,
+        },
+      },
+      select: {
+        id: true,
+        authorizationCode: true,
+      },
+    })
+
+    if (expiredRecords.length === 0) {
+      return
+    }
+
+    for (const record of expiredRecords) {
+      this.logger.warn(
+        `Cleaning up expired oAuth2 tokens with id: ${record.id} and authorization code: ${record.authorizationCode}`
+      )
+    }
+
+    await this.prismaService.oAuth2Data.updateMany({
+      where: {
+        id: {
+          in: expiredRecords.map((record) => record.id),
+        },
+      },
+      data: {
+        accessTokenEnc: null,
+        idTokenEnc: null,
+        refreshTokenEnc: null,
+      },
+    })
+
+    this.logger.debug(
+      `Cleaned up expired authorization codes for ${expiredRecords.length} oAuth2 records.`
+    )
+  }
+
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+  @HandleErrors('CronError')
+  async deleteOldOAuth2Data(): Promise<void> {
+    const oneMonthAgo = DateTime.now().minus({ months: 1 }).toJSDate()
+
+    const oldRecords = await this.prismaService.oAuth2Data.findMany({
+      where: {
+        OR: [
+          {
+            authorizationCodeCreatedAt: {
+              not: null,
+              lt: oneMonthAgo,
+            },
+          },
+          {
+            authorizationCodeCreatedAt: null,
+            createdAt: {
+              lt: oneMonthAgo,
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        authorizationCode: true,
+      },
+    })
+
+    if (oldRecords.length === 0) {
+      return
+    }
+
+    const recordsInfo = oldRecords.map((r) => `${r.id}/${r.authorizationCode}`).join(', ')
+    this.logger.log(`Deleting ${oldRecords.length} old oAuth2 records: ${recordsInfo}`)
+
+    await this.prismaService.oAuth2Data.deleteMany({
+      where: {
+        id: {
+          in: oldRecords.map((record) => record.id),
+        },
+      },
     })
   }
 

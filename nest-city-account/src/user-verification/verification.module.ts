@@ -15,6 +15,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { VerificationController } from './verification.controller'
 import { VerificationService } from './verification.service'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
+import TokenSubservice from 'src/user-verification/utils/subservice/token.subservice'
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
     VerificationSubservice,
     MailgunSubservice,
     ThrowerErrorGuard,
+    TokenSubservice,
   ],
   exports: [VerificationService],
   controllers: [VerificationController],

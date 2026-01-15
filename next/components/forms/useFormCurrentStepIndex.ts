@@ -1,6 +1,5 @@
 import { createParser, useQueryState } from 'nuqs'
-import { useMemo, useRef } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { isDefined } from '../../frontend/utils/general'
 import { FormStepIndex, FormStepperStep } from './types/Steps'
@@ -55,12 +54,14 @@ export const useFormCurrentStepIndex = (stepperData: FormStepperStep[]) => {
 
   const [currentStepIndex, setCurrentStepIndex] = useQueryState(STEP_QUERY_PARAM_KEY, parser)
 
-  useEffectOnce(() => {
+  useEffect(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)
     // https://github.com/47ng/nuqs/issues/405
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     setCurrentStepIndex(currentStepIndex, { history: 'replace' })
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return { currentStepIndex, setCurrentStepIndex }
 }

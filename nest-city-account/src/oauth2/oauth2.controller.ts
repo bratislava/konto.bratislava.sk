@@ -229,8 +229,7 @@ export class OAuth2Controller {
   @UseGuards(AuthorizationPayloadGuard)
   @ApiOperation({
     summary: 'OAuth2 Client Info Endpoint',
-    description:
-      'Get client information (name and title) by client_id from authorization request for frontend display.',
+    description: 'Get client information (client id and client name) by authorization request id.',
   })
   @ApiResponse({
     status: 200,

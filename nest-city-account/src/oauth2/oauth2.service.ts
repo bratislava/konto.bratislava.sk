@@ -218,7 +218,6 @@ export class OAuth2Service {
       )
     }
     const redirectUrl = new URL(oAuth2LoginUrl)
-    redirectUrl.searchParams.set('client_id', request.client_id)
     redirectUrl.searchParams.set('payload', authRequestId)
     return redirectUrl.toString()
   }
@@ -604,10 +603,10 @@ export class OAuth2Service {
   }
 
   /**
-   * Get client information (name and title) by client ID
+   * Get client information (id and name) by client ID
    *
    * @param clientId - The client identifier
-   * @returns Client information with name and title
+   * @returns Client information with id and name
    * @throws OAuth2AuthorizationException if client is not found
    */
   getClientInfo(clientId: string): ClientInfoResponseDto {
@@ -620,8 +619,8 @@ export class OAuth2Service {
     }
 
     return {
-      name: client.name,
-      title: client.title,
+      clientId: client.id,
+      clientName: client.name,
     }
   }
 }

@@ -17,6 +17,18 @@ describe('PdfGeneratorService', () => {
     expect(service).toBeDefined()
   })
 
+  it('should generate a PDF buffer without throwing an error', async () => {
+    const result = await service.generateFromTemplate(
+      'delivery-method-set-to-notification',
+      'test.pdf',
+      { name: 'test', birthNumber: 'test', email: 'test', date: 'test' },
+      'test'
+    )
+
+    expect(result).toBeDefined()
+    expect(result.data.length).toBeGreaterThan(0)
+  }, 30000)
+
   /**
    * TODO: Implement snapshot testing for generated PDFs.
    * This requires migrating the project to ESM (EcmaScript Modules) or using a

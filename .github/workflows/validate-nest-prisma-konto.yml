@@ -45,6 +45,11 @@ jobs:
         with:
           node-version: ${{ inputs.node }}
 
+      - name: Install system dependencies (qpdf)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qpdf
+
       - name: Build forms-shared
         working-directory: forms-shared
         run: |
@@ -64,6 +69,10 @@ jobs:
           pwd
           npm ci
           npx prisma generate
+
+      - name: Install Playwright Chromium
+        working-directory: ${{ inputs.directory }}
+        run: npx playwright install chromium --with-deps
 
       - name: Run unit tests
         working-directory: ${{ inputs.directory }}

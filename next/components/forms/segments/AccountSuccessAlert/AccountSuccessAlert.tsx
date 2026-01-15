@@ -10,6 +10,7 @@ interface Props {
   onConfirm: () => void
   confirmIsLoading?: boolean
   onCancel?: () => void
+  cancelIsLoading?: boolean
   cancelLabel?: string
   children?: ReactNode
 }
@@ -21,6 +22,7 @@ const AccountSuccessAlert = ({
   confirmIsLoading,
   description,
   onCancel,
+  cancelIsLoading,
   cancelLabel,
   children,
 }: Props) => {
@@ -51,6 +53,7 @@ const AccountSuccessAlert = ({
           onPress={onCancel}
           fullWidth
           endIcon={<ArrowRightIcon className="size-6" />}
+          isLoading={cancelIsLoading}
           data-cy="back-button"
         >
           {cancelLabel}

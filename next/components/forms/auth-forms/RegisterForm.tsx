@@ -122,7 +122,7 @@ const schema = {
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const { t } = useTranslation('account')
 
-  const { currentClientId, clientInfo } = useAmplifyClientOAuthContext()
+  const { clientInfo } = useAmplifyClientOAuthContext()
 
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
@@ -171,8 +171,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           'custom:account_type': data.account_type,
           // Add client id and name only for registrations that happened through oauth
           ...(clientInfo && {
-            'custom:origin_client_id': currentClientId,
-            'custom:origin_client_name': clientInfo.name,
+            'custom:origin_client_id': clientInfo.clientId,
+            'custom:origin_client_name': clientInfo.clientName,
           }),
         }
         // force rerender on submit - captcha is valid only for single submit

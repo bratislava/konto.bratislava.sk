@@ -23,7 +23,6 @@ import { removeAllCookiesAndClearLocalStorage } from '../frontend/utils/amplifyC
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
-import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -112,29 +111,27 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
 
       <AmplifyClientProvider>
         <NuqsAdapter>
-          <AmplifyClientOAuthProvider>
-            <I18nProvider locale="sk-SK">
-              <QueryClientProvider client={queryClient}>
-                <SnackbarProvider>
-                  <PlausibleProvider
-                    domain={
-                      isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
-                    }
-                    taggedEvents
-                    // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                    // trackLocalhost
-                  >
-                    <NavMenuContextProvider>
-                      {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
-                      <div id="root">
-                        <Component {...pageProps} />
-                      </div>
-                    </NavMenuContextProvider>
-                  </PlausibleProvider>
-                </SnackbarProvider>
-              </QueryClientProvider>
-            </I18nProvider>
-          </AmplifyClientOAuthProvider>
+          <I18nProvider locale="sk-SK">
+            <QueryClientProvider client={queryClient}>
+              <SnackbarProvider>
+                <PlausibleProvider
+                  domain={
+                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
+                  }
+                  taggedEvents
+                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                  // trackLocalhost
+                >
+                  <NavMenuContextProvider>
+                    {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
+                    <div id="root">
+                      <Component {...pageProps} />
+                    </div>
+                  </NavMenuContextProvider>
+                </PlausibleProvider>
+              </SnackbarProvider>
+            </QueryClientProvider>
+          </I18nProvider>
         </NuqsAdapter>
       </AmplifyClientProvider>
     </>

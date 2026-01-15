@@ -6,6 +6,7 @@ import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
+import { ClientInfoResponseDto } from 'openapi-clients/city-account'
 import { useRef, useState } from 'react'
 
 import LoginForm from '../components/forms/auth-forms/LoginForm'
@@ -19,13 +20,20 @@ import {
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '../frontend/utils/useAmplifyClientOAuthContext'
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async ({ context }) => {
+    const clientInfo = await fetchClientInfo(context.query)
+
     return {
       props: {
+        clientInfo,
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -35,17 +43,19 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 
-// TODO OAuth: Show partially filled form (username) for oauth instead of redirecting
-const LoginPage = () => {
+export type AuthPageCommonProps = {
+  clientInfo: ClientInfoResponseDto | null
+}
+
+const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
   const router = useRouter()
   const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
-
-  // TODO OAuth: Show error when attempting to use oauth login, but with missing params (authRequestId, isOAuth)
+  const { isOAuthLogin, redirectToOAuthContinueUrl, handleOAuthLogin } =
+    useOAuthGetContext(clientInfo)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -66,10 +76,7 @@ const LoginPage = () => {
           logger.info(`[AUTH] Proceeding to OAuth login`)
           await handleOAuthLogin()
 
-          logger.info(`[AUTH] Calling Continue endpoint`)
-          // TODO OAuth: handle errors
-          await router.push(getOAuthContinueUrl())
-
+          redirectToOAuthContinueUrl()
           return
         }
 
@@ -142,13 +149,15 @@ const LoginPage = () => {
   }
 
   return (
-    <LoginRegisterLayout backButtonHidden>
-      <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
-        <LoginForm onSubmit={onLogin} error={loginError} />
-        <HorizontalDivider />
-        <AccountLink variant="registration" />
-      </AccountContainer>
-    </LoginRegisterLayout>
+    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+      <LoginRegisterLayout backButtonHidden>
+        <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
+          <LoginForm onSubmit={onLogin} error={loginError} />
+          <HorizontalDivider />
+          <AccountLink variant="registration" />
+        </AccountContainer>
+      </LoginRegisterLayout>
+    </AmplifyClientOAuthProvider>
   )
 }
 

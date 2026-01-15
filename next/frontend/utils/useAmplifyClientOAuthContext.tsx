@@ -1,42 +1,27 @@
 'use client'
 
 import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
-import { Amplify } from 'aws-amplify'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
+import { useRouter } from 'next/router'
+import {
+  ClientInfoResponseDto,
+  UpsertUserRecordClientRequestDtoLoginClientEnum,
+} from 'openapi-clients/city-account'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { environment } from '../../environment'
 import { useOAuthParams } from '../hooks/useOAuthParams'
-import { clearOAuthSessionStorage } from './amplifyClient'
+import { GENERIC_ERROR_MESSAGE } from './errors'
 import logger from './logger'
-import {
-  authRequestIdQueryParam
-} from './queryParamRedirect'
+import { authRequestIdQueryParam } from './queryParamRedirect'
 
-export const getOAuthClientInfo = (clientId: string) =>
-  (
-    ({
-      '3ei88tn1gkvhfqpfckkd6plopr': {
-        name: 'PAAS_MPA',
-        title: 'PAAS',
-      },
-      '536t828sp4o7gsn3cmg3fbks5i': {
-        name: 'DPB',
-        title: 'start.dpb.sk',
-      },
-    }) satisfies Record<string, { name: LoginClientEnum; title: string }>
-  )[clientId] ?? null
+export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => {
+  const { authRequestId } = useOAuthParams()
+  const router = useRouter()
 
-const useGetContext = () => {
-  const { isOAuth, authRequestId } = useOAuthParams()
+  const isOAuthLogin = !!clientInfo
 
-  const isOAuthLogin = isOAuth
-
-  const currentClientId = Amplify.getConfig().Auth?.Cognito.userPoolClientId
-
-  const clientInfo = currentClientId ? getOAuthClientInfo(currentClientId) : null
-
-  // TODO OAuth: We cannot use GET request due to some cors policy issues. This workaround works, but there may also be a better solution.
+  // We cannot use GET request due to some cors policy issues. This workaround works, but there may also be a better solution.
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
     if (authRequestId) {
@@ -45,15 +30,18 @@ const useGetContext = () => {
     return parsedUrl
   }
 
+  const redirectToOAuthContinueUrl = () => {
+    logger.info(`[AUTH] Calling Continue endpoint`)
+    router
+      .push(getOAuthContinueUrl())
+      .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+  }
+
   const handlePostOAuthTokens = async () => {
-    const { refreshToken } =
-      (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
+    const { refreshToken } = (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
 
     if (!refreshToken || !authRequestId) {
-      logger.error(
-        `[AUTH] Missing access_token or refreshToken or authRequestId in handlePostOAuthTokens`,
-      )
-      // TODO OAuth: handle error
+      logger.error(`[AUTH] Missing refreshToken or authRequestId in handlePostOAuthTokens`)
       return
     }
 
@@ -78,31 +66,33 @@ const useGetContext = () => {
     // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
     // there might be some cases where user is not there yet.
     await cityAccountClient.userControllerUpsertUserAndRecordClient(
-      // TODO OAuth: Handle missing clientInfo.name
-      { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
+      {
+        loginClient:
+          (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+          LoginClientEnum.CityAccount,
+      },
       { authStrategy: 'authOnly' },
     )
-
-    logger.info(`[AUTH] Clearing session`)
-    clearOAuthSessionStorage()
   }
 
   return {
     isOAuthLogin,
-    currentClientId,
     clientInfo,
-    getOAuthContinueUrl,
+    redirectToOAuthContinueUrl,
     handleOAuthLogin,
   }
 }
 
 export const AmplifyClientOAuthContext = createContext<
-  ReturnType<typeof useGetContext> | undefined
+  ReturnType<typeof useOAuthGetContext> | undefined
 >(undefined)
 
 // https://docs.amplify.aws/nextjs/build-a-backend/server-side-rendering/#configure-amplify-library-for-client-side-usage
-export const AmplifyClientOAuthProvider = ({ children }: PropsWithChildren) => {
-  const context = useGetContext()
+export const AmplifyClientOAuthProvider = ({
+  clientInfo,
+  children,
+}: PropsWithChildren<{ clientInfo: ClientInfoResponseDto | null }>) => {
+  const context = useOAuthGetContext(clientInfo)
 
   return (
     <AmplifyClientOAuthContext.Provider value={context}>

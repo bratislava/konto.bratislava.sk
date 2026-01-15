@@ -39,7 +39,10 @@ type SupportedStatus =
  * This provider is responsible for loading the signer scripts and detecting whether the user's has installed all the
  * necessary parts for the signer to work.
  */
-export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
+export const FormSignerLoaderProvider = ({
+  children,
+  nonce,
+}: PropsWithChildren<{ nonce?: string }>) => {
   const { isSigned, isReadonly } = useFormContext()
   const [loadingStatuses, setLoadingStatuses] = useState({
     config: LoadedStatus.False,
@@ -136,6 +139,7 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
       <Fragment key={retryTimestamp}>
         <Script
           src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/config.js')}
+          nonce={nonce}
           strategy="lazyOnload"
           onLoad={() => updateLoadingStatus('config', LoadedStatus.True)}
           onError={() => updateLoadingStatus('config', LoadedStatus.Error)}
@@ -144,6 +148,7 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
         {loadingStatuses.config === LoadedStatus.True && (
           <Script
             src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dCommon.min.js')}
+            nonce={nonce}
             strategy="lazyOnload"
             onLoad={() => updateLoadingStatus('common', LoadedStatus.True)}
             onError={() => updateLoadingStatus('common', LoadedStatus.Error)}
@@ -153,6 +158,7 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
           loadingStatuses.common === LoadedStatus.True && (
             <Script
               src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dSigXadesBp.min.js')}
+              nonce={nonce}
               strategy="lazyOnload"
               onLoad={() => updateLoadingStatus('signer', LoadedStatus.True)}
               onError={() => updateLoadingStatus('signer', LoadedStatus.Error)}

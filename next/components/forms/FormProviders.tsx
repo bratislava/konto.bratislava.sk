@@ -13,13 +13,13 @@ import { FormSendProvider } from './useFormSend'
 import { FormStateProvider } from './useFormState'
 import { FormValidatorRegistryProvider } from './useFormValidatorRegistry'
 
-const FormProviders = ({ children }: PropsWithChildren) => {
+const FormProviders = ({ children, nonce }: PropsWithChildren<{ nonce?: string }>) => {
   return (
     <FormValidatorRegistryProvider>
       <FormFileUploadProvider>
         <FormLeaveProtectionProvider>
           <FormModalsProvider>
-            <FormSignerLoaderProvider>
+            <FormSignerLoaderProvider nonce={nonce}>
               <FormDataProvider>
                 <FormStateProvider>
                   <FormSignatureProvider>

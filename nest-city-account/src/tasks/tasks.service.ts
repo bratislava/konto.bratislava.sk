@@ -26,6 +26,7 @@ import {
 import { MailgunService } from '../mailgun/mailgun.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
+import { z } from 'zod'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
@@ -33,6 +34,12 @@ const LOCK_DELIVERY_METHODS_BATCH = 100
 const BATCH_DELAY_MS = 1000
 
 const EDESK_UPDATE_LOOK_BACK_HOURS = 96
+
+const DELIVERY_METHOD_EMAIL_KEY = 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES'
+
+const EmailConfigSchema = z.object({
+  active: z.boolean(),
+})
 
 @Injectable()
 export class TasksService {
@@ -387,6 +394,25 @@ export class TasksService {
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron')
   async sendDailyDeliveryMethodSummaries() {
+    const configDbResult = await this.prismaService.config.findFirst({
+      where: {
+        key: DELIVERY_METHOD_EMAIL_KEY,
+      },
+      select: {
+        value: true,
+      },
+    })
+    if (!configDbResult) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`
+      )
+    }
+    const active = EmailConfigSchema.parse(configDbResult).active
+    if (active) {
+      return
+    }
+
     const yesterdayStart = new Date()
     yesterdayStart.setDate(yesterdayStart.getDate() - 1)
     yesterdayStart.setHours(0, 0, 0, 0)

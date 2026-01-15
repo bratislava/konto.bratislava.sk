@@ -31,7 +31,9 @@
     "key-spacing": ["error", { "afterColon": true }],
     "comma-spacing": ["error", { "before": false, "after": true }],
     "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
-    "prefer-arrow-callback": "error"
+    "prefer-arrow-callback": "error",
+    "no-return-await": "off",
+    "@typescript-eslint/return-await": ["error", "error-handling-correctness-only"]
   },
   "ignorePatterns": [
     "src/generated-clients/**/*"

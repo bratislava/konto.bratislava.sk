@@ -14,10 +14,9 @@ import { useRouter } from 'next/router'
 import { appWithTranslation } from 'next-i18next'
 import PlausibleProvider from 'next-plausible'
 import { NuqsAdapter } from 'nuqs/adapters/next/pages'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
-import { useEffectOnce } from 'usehooks-ts'
 
 import { environment } from '../environment'
 import { removeAllCookiesAndClearLocalStorage } from '../frontend/utils/amplifyClient'
@@ -47,7 +46,7 @@ const amplifyCookiesRemovedSessionStorageKey = 'amplifyCookiesRemoved'
 const AmplifyCookiesReset = () => {
   const router = useRouter()
 
-  useEffectOnce(() => {
+  useEffect(() => {
     if (sessionStorage.getItem(amplifyCookiesRemovedSessionStorageKey)) {
       throw new Error(
         '[AUTH] Tried to remove Amplify cookies more than once, infinite loop detected.',
@@ -59,7 +58,9 @@ const AmplifyCookiesReset = () => {
       logger.info(`[AUTH] Reloading page after cookie cleanup`)
       router.reload()
     }
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return null
 }
@@ -69,12 +70,14 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
   const allowCookies = !pageProps.appProps?.externallyEmbedded
   const amplifyResetCookies = pageProps.appProps?.amplifyResetCookies
 
-  useEffectOnce(() => {
+  useEffect(() => {
     if (!amplifyResetCookies && sessionStorage.getItem(amplifyCookiesRemovedSessionStorageKey)) {
       logger.info(`[AUTH] Resetting Amplify cookies removal flag in session storage`)
       sessionStorage.removeItem(amplifyCookiesRemovedSessionStorageKey)
     }
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (amplifyResetCookies) {
     return <AmplifyCookiesReset />
@@ -122,7 +125,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                     // trackLocalhost
                   >
                     <NavMenuContextProvider>
-                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                      {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
                       <div id="root">
                         <Component {...pageProps} />
                       </div>

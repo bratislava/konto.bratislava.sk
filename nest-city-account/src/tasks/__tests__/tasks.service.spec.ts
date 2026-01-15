@@ -44,7 +44,7 @@ describe('TasksService', () => {
   beforeAll(() => {
     process.env = {
       ...process.env,
-      MUNICIPAL_TAX_LOCK_MONTH: '04',
+      MUNICIPAL_TAX_LOCK_MONTH: '02',
       MUNICIPAL_TAX_LOCK_DAY: '01',
     }
   })

@@ -63,7 +63,7 @@ model User {
   id                                   String                         @id @default(uuid()) @db.Uuid
   createdAt                            DateTime                       @default(now())
   updatedAt                            DateTime                       @updatedAt
-  registeredAt                         DateTime?                      
+  registeredAt                         DateTime?
   externalId                           String?                        @unique
   email                                String?                        @unique
   ifo                                  String?                        @unique
@@ -78,11 +78,11 @@ model User {
   physicalEntity                       PhysicalEntity?
   lastTaxDeliveryMethodsUpdateYear     Int?
   taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
-  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (April 1st) - used for actual delivery
+  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery
   taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
-  lastTaxDeliveryMethodsUpdateTry  DateTime                       @default(now())
+  lastTaxDeliveryMethodsUpdateTry      DateTime                       @default(now())
   cognitoTier                          CognitoUserAttributesTierEnum?
   userIdCardVerify                     UserIdCardVerify[]
   userLoginClients                     UserLoginClient[]
@@ -118,32 +118,18 @@ model LegalPersonIcoIdCardVerify {
 // consolidates data from magproxy / NASES
 // a physicalEntity record may or may not be linked to exactly one User record, and vice versa
 model PhysicalEntity {
-  id                         String              @id @default(uuid()) @db.Uuid
-  createdAt                  DateTime            @default(now())
-  updatedAt                  DateTime            @updatedAt
-  user                       User?               @relation(fields: [userId], references: [id])
-  userId                     String?             @unique @db.Uuid
-  uri                        String?             @unique
-  ifo                        String?             @unique
+  id                         String    @id @default(uuid()) @db.Uuid
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  user                       User?     @relation(fields: [userId], references: [id])
+  userId                     String?   @unique @db.Uuid
+  uri                        String?   @unique
+  ifo                        String?   @unique
   birthNumber                String?
   activeEdesk                Boolean?
   activeEdeskUpdatedAt       DateTime?
   activeEdeskUpdateFailedAt  DateTime?
-  activeEdeskUpdateFailCount Int                 @default(0)
-  UpvsIdentityByUri          UpvsIdentityByUri[]
-}
-
-// stores (filtered) requests from nases
-model UpvsIdentityByUri {
-  id               String          @id @default(uuid()) @db.Uuid
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  uri              String
-  data             Json?
-  // optionally link to physical entity for which we're doing the query
-  PhysicalEntity   PhysicalEntity? @relation(fields: [physicalEntityId], references: [id])
-  physicalEntityId String?         @db.Uuid
-  // TODO once we have legal entities add ids for those
+  activeEdeskUpdateFailCount Int       @default(0)
 }
 
 model LegalPerson {
@@ -202,7 +188,6 @@ model UserLoginClient {
   @@index([userId])
 }
 
-
 model LegalPersonLoginClient {
   id            String          @id @default(uuid()) @db.Uuid
   createdAt     DateTime        @default(now())
@@ -215,6 +200,7 @@ model LegalPersonLoginClient {
   @@unique([legalPersonId, loginClient])
   @@index([legalPersonId])
 }
+
 model Config {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -224,26 +210,26 @@ model Config {
 }
 
 model OAuth2Data {
-  id                         String   @id @default(uuid()) @db.Uuid
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Authorization request parameters
-  responseType               String   // 'code' for Authorization Code flow
-  clientId                   String
-  redirectUri                String
-  scope                      String?  // Space-delimited list of scopes
-  state                      String?  // CSRF protection token
-  codeChallenge              String?  // PKCE code challenge
-  codeChallengeMethod        String?  // PKCE code challenge method: 'S256' or 'plain'
+  responseType        String // 'code' for Authorization Code flow
+  clientId            String
+  redirectUri         String
+  scope               String? // Space-delimited list of scopes
+  state               String? // CSRF protection token
+  codeChallenge       String? // PKCE code challenge
+  codeChallengeMethod String? // PKCE code challenge method: 'S256' or 'plain'
 
   // Grant generated during authorization
   authorizationCode          String?   @unique
   authorizationCodeCreatedAt DateTime?
 
   // Encrypted (and base64-encoded) token values
-  accessTokenEnc             String?
-  accessTokenExpiresAt       DateTime?
-  idTokenEnc                 String?
-  refreshTokenEnc            String?
+  accessTokenEnc       String?
+  accessTokenExpiresAt DateTime?
+  idTokenEnc           String?
+  refreshTokenEnc      String?
 }

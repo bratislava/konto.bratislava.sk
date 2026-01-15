@@ -203,7 +203,11 @@ export class TasksService {
   }
 
   private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
-    const currentYear = new Date().getFullYear()
+    // ⚠️⚠️⚠️
+    // const currentYear = new Date().getFullYear()
+    const currentYear = 2025 // TODO: remove this after testing, this should NOT get to production
+    // ⚠️⚠️⚠️
+
     const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
 
     const taxPayers = await this.prismaService.taxPayer.findMany({

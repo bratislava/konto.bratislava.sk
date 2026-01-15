@@ -219,6 +219,7 @@ export class OAuth2Service {
     }
     const redirectUrl = new URL(oAuth2LoginUrl)
     redirectUrl.searchParams.set('payload', authRequestId)
+    redirectUrl.searchParams.set('isOAuth', 'true')
     return redirectUrl.toString()
   }
 

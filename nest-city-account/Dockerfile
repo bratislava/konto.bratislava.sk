@@ -2,7 +2,18 @@ ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:20.9-alpine AS base
 
-RUN npx playwright install-deps chromium
+# Install Chromium and dependencies via apk
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont
+
+
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 ENV NODE_ENV=production
 
@@ -54,10 +65,6 @@ COPY --chown=node:node --from=openapi-clients /app/ /home/node/openapi-clients
 WORKDIR /home/node/app
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
-
-RUN npx playwright install chromium
-RUN npm prune --production
-
 COPY --chown=node:node --from=build /build/dist ./dist
 COPY --chown=node:node --from=build /build/prisma ./prisma
 COPY --chown=node:node nest-cli.json ./nest-cli.json

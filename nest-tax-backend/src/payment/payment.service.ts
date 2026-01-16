@@ -25,9 +25,18 @@ import {
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+
+interface GpWebpayProcessingStrategy {
+  dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
+  shouldAlert: boolean
+  feState: PaymentRedirectStateEnum
+}
 
 @Injectable()
 export class PaymentService {
+  private readonly logger = new LineLoggerSubservice('PaymentService')
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly gpWebpaySubservice: GpWebpaySubservice,
@@ -217,19 +226,6 @@ export class PaymentService {
     if (!ORDERNUMBER) {
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
-    const taxPaymentWithTax = await this.prisma.taxPayment.findUnique({
-      where: { orderId: ORDERNUMBER },
-      include: { tax: { include: { taxPayer: true } } },
-    })
-
-    const year = taxPaymentWithTax?.tax.year
-
-    if (
-      taxPaymentWithTax &&
-      taxPaymentWithTax.status === PaymentStatus.SUCCESS
-    ) {
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}&paymentType=${taxPaymentWithTax?.tax.type}&year=${year}`
-    }
 
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
@@ -248,43 +244,83 @@ export class PaymentService {
           )
         )
       ) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}&taxType=${taxPaymentWithTax?.tax.type}&year=${year}&order=${taxPaymentWithTax?.tax.order}`
+        // We failed to verify this payment. If we have any side effects here, they can be triggered
+        // by just guessing the ORDERNUMBER we generate as a timestamp.
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
       }
+
+      const taxPaymentWithTax = await this.prisma.taxPayment.findUnique({
+        where: { orderId: ORDERNUMBER },
+        include: { tax: { include: { taxPayer: true } } },
+      })
 
       if (!taxPaymentWithTax) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&taxType=${taxPaymentWithTax?.tax.type}&year=${year}&order=${taxPaymentWithTax?.tax.order}`
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.BAD_REQUEST_ERROR, // TODO replace with payment enum
+            'We received valid a payment response for payment we do not have in our database.', // TODO make this a ResponseEnum
+          ),
+        )
+        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
       }
 
-      // TODO: when user has taxPayment with status SUCCESS,
-      // it will be updated to FAIL in case of retry payment and failing payment
-      // https://github.com/bratislava/private-konto.bratislava.sk/issues/1030
-      if (!(Number(PRCODE) === 0 && Number(SRCODE) === 0)) {
-        await this.prisma.taxPayment.update({
+      const strategy = this.getProcessingStrategy(PRCODE, SRCODE)
+      const currentStatus = taxPaymentWithTax.status
+      const year = taxPaymentWithTax.tax.year
+      const redirectBase = `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${taxPaymentWithTax.tax.type}&year=${year}&order=${taxPaymentWithTax.tax.order}`
+
+      if (strategy.shouldAlert) {
+        console.warn({
+          message: 'A problematic payment response was detected.',
+          PRCODE,
+          SRCODE,
+          ORDERNUMBER,
+          alert: 1,
+        })
+      }
+
+      let nextStatus: PaymentStatus | undefined
+      switch (strategy.dbStatus) {
+        case 'SUCCESS':
+          nextStatus = PaymentStatus.SUCCESS
+          break
+        case 'NEW_TO_FAILED':
+          nextStatus =
+            currentStatus === PaymentStatus.NEW ? PaymentStatus.FAIL : undefined
+          break
+      }
+      let taxPayment: Prisma.TaxPaymentGetPayload<{
+        include: { tax: { select: { year: true; type: true; order: true } } }
+      }> | null
+      if (nextStatus) {
+        taxPayment = await this.prisma.taxPayment.update({
           where: { orderId: ORDERNUMBER },
           data: {
-            status: PaymentStatus.FAIL,
-            source: 'CARD',
+            status: nextStatus,
+            source: TaxPaymentSource.CARD,
           },
-        })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}&taxType=${taxPaymentWithTax?.tax.type}&year=${year}&order=${taxPaymentWithTax?.tax.order}`
-      }
-
-      const taxPayment = await this.prisma.taxPayment.update({
-        where: { orderId: ORDERNUMBER },
-        data: {
-          status: PaymentStatus.SUCCESS,
-          source: TaxPaymentSource.CARD,
-        },
-        include: {
-          tax: {
-            select: {
-              year: true,
-              type: true,
-              order: true,
+          include: {
+            tax: {
+              select: {
+                year: true,
+                type: true,
+                order: true,
+              },
             },
           },
-        },
-      })
+        })
+        if (!taxPayment) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'TODO',
+            ),
+          )
+          return redirectBase
+        }
+      } else {
+        taxPayment = taxPaymentWithTax
+      }
 
       const user = await this.retryService.retryWithDelay(
         () =>
@@ -309,6 +345,60 @@ export class PaymentService {
         undefined,
         error,
       )
+    }
+  }
+
+  private getProcessingStrategy(
+    prCode: string,
+    srCode: string,
+  ): GpWebpayProcessingStrategy {
+    const pr = Number(prCode)
+    const sr = Number(srCode)
+
+    // PR 0: Success
+    if (pr === 0) {
+      return {
+        dbStatus: 'SUCCESS',
+        shouldAlert: false,
+        feState: PaymentRedirectStateEnum.PAYMENT_SUCCESS,
+      }
+    }
+
+    // PR 14 or 152: Already Paid / Duplicate
+    if (pr === 14 || pr === 152) {
+      return {
+        dbStatus: 'KEEP_CURRENT',
+        shouldAlert: false,
+        feState: PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID,
+      }
+    }
+
+    // PR 31: Security / Digest mismatch
+    if (pr === 31) {
+      return {
+        dbStatus: 'KEEP_CURRENT',
+        shouldAlert: true,
+        feState: PaymentRedirectStateEnum.FAILED_TO_VERIFY,
+      }
+    }
+
+    // Technical alerts for PR codes 1-7 (Invalid request), 11 (Unknown merchant), 15-27 (Technical/Connection), 1000 (Gateway problem)
+    const technicalAlertPrCodes = [
+      1, 2, 3, 4, 5, 6, 7, 11, 15, 16, 17, 18, 20, 25, 26, 27, 1000,
+    ]
+    if (technicalAlertPrCodes.includes(pr)) {
+      return {
+        dbStatus: pr <= 27 ? 'NEW_TO_FAILED' : 'KEEP_CURRENT',
+        shouldAlert: true,
+        feState: PaymentRedirectStateEnum.PAYMENT_FAILED,
+      }
+    }
+
+    // All other failures (PR 28, 30, 32, 35, 38, 40, 46, 50, 82-85, 500+, SR codes)
+    return {
+      dbStatus: 'NEW_TO_FAILED',
+      shouldAlert: false,
+      feState: PaymentRedirectStateEnum.PAYMENT_FAILED,
     }
   }
 }

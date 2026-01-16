@@ -17,7 +17,10 @@ import * as jwt from 'jsonwebtoken'
 import { createHash, randomBytes } from 'node:crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
-import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
+import {
+  OAuth2ClientAllowedScopes,
+  OAuth2ClientSubservice,
+} from './subservices/oauth2-client.subservice'
 import { ClientInfoResponseDto } from './dtos/responses.oauth2.dto'
 
 @Injectable()
@@ -220,6 +223,12 @@ export class OAuth2Service {
     const redirectUrl = new URL(oAuth2LoginUrl)
     redirectUrl.searchParams.set('authRequestId', authRequestId)
     redirectUrl.searchParams.set('isOAuth', 'true')
+    if (
+      request.scope &&
+      request.scope.split(' ').includes(OAuth2ClientAllowedScopes.IDENTITY_VERIFIED)
+    ) {
+      redirectUrl.searchParams.set('isIdentityVerificationRequired', 'true')
+    }
     return redirectUrl.toString()
   }
 

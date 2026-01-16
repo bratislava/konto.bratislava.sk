@@ -10,6 +10,10 @@ export enum OAuth2ClientName {
   DPB = 'DPB',
 }
 
+export enum OAuth2ClientAllowedScopes {
+  IDENTITY_VERIFIED = 'identity:verified',
+}
+
 /**
  * OAuth2 Client Configuration
  *
@@ -32,7 +36,8 @@ export enum OAuth2ClientName {
  * OAUTH2_DPB_CLIENT_ID=dpb-client-id
  * OAUTH2_DPB_CLIENT_SECRET=dpb-secret-key
  * OAUTH2_DPB_ALLOWED_URIS=https://dpb.example.com/callback
- * OAUTH2_DPB_TITLE=DPB Application
+ * OAUTH2_DPB_ALLOWED_SCOPES=identity:verified
+OAUTH2_DPB_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
  * ```
  *
  * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID
@@ -98,8 +103,11 @@ export class OAuth2Client {
    * @returns True if all requested scopes are allowed
    */
   areAllScopesAllowed(requestedScope: string): boolean {
+    if (!requestedScope || requestedScope.length === 0) {
+      return true // No scopes requested
+    }
     if (!this.allowedScopes || this.allowedScopes.length === 0) {
-      return true // No restrictions
+      return false // No scopes allowed
     }
 
     const requestedScopes = requestedScope.split(' ').filter((s) => s.length > 0)
@@ -114,7 +122,7 @@ export class OAuth2Client {
    */
   isGrantTypeAllowed(grantType: string): boolean {
     if (!this.allowedGrantTypes || this.allowedGrantTypes.length === 0) {
-      return true // No restrictions
+      return false // No grant types allowed
     }
 
     return this.allowedGrantTypes.includes(grantType)

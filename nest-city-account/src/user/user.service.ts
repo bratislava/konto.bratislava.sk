@@ -11,7 +11,6 @@ import {
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
-import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   ResponseLegalPersonDataDto,
@@ -22,7 +21,7 @@ import {
   UserContactAndIdInfoResponseDto,
 } from './dtos/user-contact-info.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
-import { GDPRSubTypeEnum } from '@prisma/client'
+import { DeliveryMethodEnum, GDPRSubTypeEnum } from '@prisma/client'
 import {
   CognitoGetUserData,
   CognitoUserAccountTypesEnum,
@@ -41,12 +40,22 @@ export class UserService {
     private cognitoSubservice: CognitoSubservice
   ) {}
 
-  private verificationDeadline(verificationDate: Date | null): boolean {
-    const verificationDeadlineDate = getTaxDeadlineDate()
-    if (verificationDate === null) {
+  private changedDeliveryMethodAfterDeadline(user: {
+    taxDeliveryMethodAtLockDate: DeliveryMethodEnum | null
+    taxDeliveryMethod: DeliveryMethodEnum | null
+  }): boolean {
+    if (user.taxDeliveryMethodAtLockDate === null) {
       return false
     }
-    return verificationDate < verificationDeadlineDate
+
+    if (
+      user.taxDeliveryMethodAtLockDate !== user.taxDeliveryMethod &&
+      user.taxDeliveryMethodAtLockDate !== DeliveryMethodEnum.EDESK
+    ) {
+      return true
+    }
+
+    return false
   }
 
   async getOrCreateUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
@@ -61,10 +70,10 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
+      changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
     }
   }
 
@@ -115,10 +124,10 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
+      changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
     }
   }
 
@@ -127,10 +136,10 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: false, // TODO add this for legal persons
       officialCorrespondenceChannel: null,
       gdprData: getGdprData,
       showEmailCommunicationBanner: false, // TODO add this for legal persons
+      changedDeliveryMethodAfterDeadline: false,
     }
   }
 
@@ -162,10 +171,10 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
+      changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
     }
   }
 
@@ -247,9 +256,9 @@ export class UserService {
         )
       return {
         ...user,
-        wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
         officialCorrespondenceChannel,
         showEmailCommunicationBanner,
+        changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
       }
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(

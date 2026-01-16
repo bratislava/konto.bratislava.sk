@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,10 +31,15 @@ import {
 } from '../utils/guards/dtos/error.dto'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import {
+  PaymentRedirectResponseDto,
+  PaymentRedirectStateEnum,
+} from './dtos/redirect.payent.dto'
 import { ResponseGetPaymentUrlDto } from './dtos/requests.payment.dto'
 import { PaymentService } from './payment.service'
 
 @ApiTags('payment')
+@ApiExtraModels(PaymentRedirectResponseDto)
 @Controller('payment')
 export class PaymentController {
   private readonly logger: LineLoggerSubservice
@@ -134,7 +140,19 @@ export class PaymentController {
 
   @ApiResponse({
     status: 302,
-    description: 'Redirect to Frontend response',
+    description:
+      'Redirect to Frontend with status query parameter. The redirect URL will contain query parameters documented in PaymentRedirectResponseDto.',
+    schema: {
+      type: 'object',
+      properties: {
+        url: {
+          type: 'string',
+          description:
+            'Redirect URL with status query parameter. Status values are defined in PaymentRedirectStateEnum.',
+          example: `https://frontend.bratislava.sk?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&taxType=DZN&year=2024@order=1`,
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 422,

@@ -1,4 +1,5 @@
-import { Prisma, TaxType } from '@prisma/client'
+import { Prisma, Tax, TaxType } from '@prisma/client'
+import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
@@ -18,7 +19,6 @@ import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
-import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   convertCurrencyToInt,
   mapNorisToDatabaseBaseTax,
@@ -57,6 +57,60 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    */
   protected abstract getTaxType(): TTaxType
 
+  private async trackCancelledTax(
+    tax: TaxWithTaxPayer,
+    year: number,
+    userFromCityAccount: ResponseUserByBirthNumberDto,
+  ) {
+    const bloomreachTracker = await this.bloomreachService.trackEventTax(
+      {
+        amount: 0,
+        year,
+        delivery_method: tax.deliveryMethod,
+        taxType: this.getTaxType(),
+        order: tax.order!,
+      },
+      userFromCityAccount.externalId ?? undefined,
+    )
+    if (!bloomreachTracker) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+      )
+    }
+  }
+
+  protected async updateExistingTaxRecord(
+    taxDefinition: ReturnType<typeof this.getTaxDefinition>,
+    norisItem: TaxTypeToNorisData[TTaxType],
+    existingTax: Pick<Tax, 'id' | 'isCancelled'>,
+    year: number,
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+  ): Promise<void> {
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.taxInstallment.deleteMany({
+        where: {
+          taxId: existingTax.id,
+        },
+      })
+
+      const userFromCityAccount =
+        userDataFromCityAccount[norisItem.ICO_RC] || null
+
+      const tax = await this.insertTaxDataToDatabase(
+        taxDefinition,
+        norisItem,
+        year,
+        tx,
+        userFromCityAccount,
+      )
+
+      if (tax.isCancelled && !existingTax.isCancelled) {
+        await this.trackCancelledTax(tax, year, userFromCityAccount)
+      }
+    })
+  }
+
   /**
    * Gets the tax data from Noris for given birth numbers and year.
    *
@@ -69,7 +123,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     birthNumbers: string[],
   ): Promise<TaxTypeToNorisData[TTaxType][]>
 
-  private async filterNorisDataNotInDatabase(
+  protected async filterNorisDataNotInDatabase(
     norisData: TaxTypeToNorisData[TTaxType][],
     year: number,
   ): Promise<TaxTypeToNorisData[TTaxType][]> {
@@ -146,7 +200,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          [taxDefinition.readyToImportFieldName]: true,
+          [taxDefinition.readyToImportDatabaseFieldName]: true,
         },
       })
       return { birthNumbers }
@@ -157,19 +211,27 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       ? undefined
       : await this.getBatchSizeLimit()
 
-    // Limit the number of records to process in this batch
-    const recordsToProcess =
-      batchSizeLimit === undefined
-        ? norisDataNotInDatabase
-        : norisDataNotInDatabase.slice(0, batchSizeLimit)
-
-    if (
-      batchSizeLimit !== undefined &&
-      norisDataNotInDatabase.length > batchSizeLimit
-    ) {
-      this.logger.log(
-        `Limiting batch processing to ${batchSizeLimit} records out of ${norisDataNotInDatabase.length} available`,
+    // Limit the number of unique tax payers to process in this batch
+    // All taxes for the first x unique tax payers will be included
+    let recordsToProcess: TaxTypeToNorisData[TTaxType][]
+    if (batchSizeLimit === undefined) {
+      recordsToProcess = norisDataNotInDatabase
+    } else {
+      const taxesByTaxPayer = groupBy(norisDataNotInDatabase, 'ICO_RC')
+      const uniqueTaxPayers = Object.keys(taxesByTaxPayer).slice(
+        0,
+        batchSizeLimit,
       )
+      recordsToProcess = uniqueTaxPayers.flatMap(
+        (birthNumber) => taxesByTaxPayer[birthNumber],
+      )
+
+      const uniqueTaxPayersCount = Object.keys(taxesByTaxPayer).length
+      if (uniqueTaxPayersCount > batchSizeLimit) {
+        this.logger.log(
+          `Limiting batch processing to ${batchSizeLimit} unique tax payers (${recordsToProcess.length} taxes) out of ${uniqueTaxPayersCount} unique tax payers (${norisDataNotInDatabase.length} taxes) available`,
+        )
+      }
     }
 
     const userDataFromCityAccount =
@@ -206,119 +268,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    * @param birthNumbers - Birth numbers of the tax payers to update
    * @returns Number of records that were updated
    */
-  async getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+  abstract getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
     year: number,
     birthNumbers: string[],
-  ): Promise<{ updated: number }> {
-    let norisData: TaxTypeToNorisData[TTaxType][]
-    try {
-      norisData = await this.getTaxDataByYearAndBirthNumber(year, birthNumbers)
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        undefined,
-        error,
-      )
-    }
-    let count = 0
-
-    const taxDefinition = this.getTaxDefinition()
-
-    const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
-        norisData.map((norisRecord) => norisRecord.ICO_RC),
-      )
-
-    // Query existing taxes - use birthNumber for unique taxes, variableSymbol for non-unique
-    const selectQuery = taxDefinition.isUnique
-      ? {
-          id: true,
-          taxPayer: {
-            select: {
-              birthNumber: true,
-            },
-          },
-        }
-      : {
-          id: true,
-          variableSymbol: true,
-        }
-
-    const whereCondition = taxDefinition.isUnique
-      ? {
-          taxPayer: {
-            birthNumber: {
-              in: norisData.map((norisRecord) => norisRecord.ICO_RC),
-            },
-          },
-        }
-      : {
-          variableSymbol: {
-            in: norisData.map((norisRecord) => norisRecord.variabilny_symbol),
-          },
-        }
-
-    const taxesExist = await this.prismaService.tax.findMany({
-      select: selectQuery,
-      where: { ...whereCondition, year, type: taxDefinition.type },
-    })
-    const taxIdentifierToTax = new Map(
-      taxDefinition.isUnique
-        ? taxesExist.map((tax) => [tax.taxPayer.birthNumber, tax])
-        : taxesExist.map((tax) => [tax.variableSymbol, tax]),
-    )
-
-    await Promise.all(
-      norisData.map(async (norisItem) =>
-        this.concurrencyLimit(async () => {
-          const taxIdentifier = taxDefinition.isUnique
-            ? norisItem.ICO_RC
-            : norisItem.variabilny_symbol
-          const taxExists = taxIdentifierToTax.get(taxIdentifier)
-          if (!taxExists) {
-            return
-          }
-          try {
-            await this.prismaService.$transaction(async (tx) => {
-              await tx.taxInstallment.deleteMany({
-                where: {
-                  taxId: taxExists.id,
-                },
-              })
-
-              const userFromCityAccount =
-                userDataFromCityAccount[norisItem.ICO_RC] || null
-
-              const tax = await this.insertTaxDataToDatabase(
-                taxDefinition,
-                norisItem,
-                year,
-                tx,
-                userFromCityAccount,
-              )
-              if (tax) {
-                count += 1
-              }
-            })
-          } catch (error) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Failed to update tax in database.',
-                undefined,
-                undefined,
-                error,
-              ),
-            )
-          }
-        }),
-      ),
-    )
-
-    return { updated: count }
-  }
+  ): Promise<{ updated: number }>
 
   /**
    * Gets the tax data from Noris and processes it by inserting into the database.
@@ -359,14 +312,14 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       const batchSizeLimit = parseInt(config.TAX_IMPORT_BATCH_SIZE, 10)
       if (Number.isNaN(batchSizeLimit) || batchSizeLimit < 0) {
         this.logger.warn(
-          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax records`,
+          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax payers`,
         )
         return undefined
       }
       return batchSizeLimit
     } catch (error) {
       this.logger.warn(
-        'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax records',
+        'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax payers',
       )
       return undefined
     }
@@ -499,9 +452,13 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           userFromCityAccount,
         )
 
+        const amountToTrack = tax.isCancelled
+          ? 0
+          : convertCurrencyToInt(norisItem.dan_spolu)
+
         const bloomreachTracker = await this.bloomreachService.trackEventTax(
           {
-            amount: convertCurrencyToInt(norisItem.dan_spolu),
+            amount: amountToTrack,
             year,
             delivery_method:
               userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,

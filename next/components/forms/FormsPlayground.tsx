@@ -9,8 +9,7 @@ import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultForm
 import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useTranslation } from 'next-i18next'
 import { useQueryState } from 'nuqs'
-import React, { ContextType, createRef, useMemo, useRef, useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import React, { ContextType, createRef, useEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import useSnackbar from '../../frontend/hooks/useSnackbar'
@@ -114,12 +113,14 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const forceReset = () => setFormInstanceIndex((prev) => prev + 1)
 
   const [slug, setSlug] = useQueryState('slug', { defaultValue: allForms[0].slug })
-  useEffectOnce(() => {
+  useEffect(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)
     // https://github.com/47ng/nuqs/issues/405
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     setSlug(slug, { history: 'replace' })
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [selectedExampleName, setSelectedExampleName] = useState<string>('')
   const [files, setFiles] = useState<Record<string, FileInfo>>({})

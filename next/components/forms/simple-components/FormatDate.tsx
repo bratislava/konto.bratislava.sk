@@ -25,7 +25,7 @@ export const formatDate = (isoString: string, locale = 'sk', format: CDateFormat
 }
 
 const FormatDate = ({ children, format = 'default' }: Props) => {
-  const { i18n } = useTranslation()
+  const { i18n } = useTranslation('account')
   const locale = i18n.language
 
   return <>{formatDate(children, locale, format)}</>

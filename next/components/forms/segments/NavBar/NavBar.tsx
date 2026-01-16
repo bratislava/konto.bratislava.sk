@@ -1,7 +1,6 @@
 import { ChevronDownSmallIcon, ProfileIcon } from '@assets/ui-icons'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import Button from 'components/forms/simple-components/Button'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import MenuDropdown, {
   MenuItemBase,
@@ -106,8 +105,8 @@ export const NavBar = ({
       <div
         id="desktop-navbar"
         className={cn(
-          className,
           'sticky top-0 left-0 z-40 hidden w-full items-center bg-white text-p2 shadow-default lg:block',
+          className,
         )}
         ref={desktopNavbarRef}
       >
@@ -128,7 +127,7 @@ export const NavBar = ({
               <MenuDropdown
                 setIsOpen={setIsMenuOpen}
                 buttonTrigger={
-                  <ButtonNew
+                  <Button
                     variant="unstyled"
                     data-cy="account-button"
                     className="flex items-center gap-4 font-semibold text-font/75"
@@ -142,33 +141,30 @@ export const NavBar = ({
                         }`}
                       />
                     </div>
-                  </ButtonNew>
+                  </Button>
                 }
                 itemVariant="header"
                 items={menuItems}
               />
             ) : (
-              <div className="flex items-center gap-x-6 font-semibold text-font/75">
+              <div className="flex items-center gap-6">
+                <Button variant="black-plain" size="small" onPress={login} data-cy="login-button">
+                  {t('menu_links.login')}
+                </Button>
                 <Button
-                  className="whitespace-nowrap lg:flex"
-                  size="sm"
-                  onPress={login}
-                  variant="plain-black"
-                  text={t('menu_login_link')}
-                  data-cy="login-button"
-                />
-                <Button
+                  variant="black-solid"
                   onPress={register}
-                  variant="negative"
-                  text={t('menu_register_link')}
-                  size="sm"
+                  size="small"
                   data-cy="register-button"
-                />
+                >
+                  {t('menu_links.register')}
+                </Button>
               </div>
             )}
           </nav>
         </div>
-        {/* Header bottom navigation */}
+
+        {/* NavBar menu */}
         {sectionsList && !hiddenHeaderNav && (
           <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between border-t border-gray-200 lg:flex">
             <NavigationMenu.Root
@@ -194,7 +190,7 @@ export const NavBar = ({
                           )}
                         >
                           {sectionItem.icon}
-                          <span className="ml-3">{t(sectionItem?.title)}</span>
+                          <span className="ml-3">{sectionItem.title}</span>
                         </div>
                       </NextLink>
                     </NavigationMenu.Link>

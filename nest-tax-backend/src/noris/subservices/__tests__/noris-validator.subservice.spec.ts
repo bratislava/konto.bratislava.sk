@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import noop from 'lodash/noop'
 
 import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
@@ -184,6 +185,20 @@ describe('NorisValidatorSubservice', () => {
             uhrazeno: 448.66,
           })
         })
+
+        it('should pass for cancelled tax as well', () => {
+          const result = service.validateNorisData(
+            NorisCommunalWasteTaxSchema,
+            {
+              ...testCommunalWasteTax1,
+              stav_dokladu: 'S',
+            },
+          )
+          expect(result).toEqual({
+            ...testCommunalWasteTax1,
+            stav_dokladu: 'S',
+          })
+        })
       })
 
       describe('invalid', () => {
@@ -227,6 +242,15 @@ describe('NorisValidatorSubservice', () => {
             expect(response.message).toContain('variabilny_symbol')
           }
         })
+
+        it('should throw for invalid stav_dokladu', () => {
+          expect(() => {
+            service.validateNorisData(NorisCommunalWasteTaxSchema, {
+              ...testCommunalWasteTax1,
+              stav_dokladu: 'invalid',
+            })
+          }).toThrow(HttpException)
+        })
       })
     })
   })
@@ -235,7 +259,7 @@ describe('NorisValidatorSubservice', () => {
     it('should validate all payments, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
       const result = service.validateNorisData(NorisTaxPaymentSchema, [
         testPaymentValid,
         testPaymentStringUhrazeno,
@@ -262,7 +286,7 @@ describe('NorisValidatorSubservice', () => {
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
       const result = service.validateNorisData(
         NorisRealEstateTaxSchema,
         allNorisRealEstateTaxes,
@@ -294,7 +318,7 @@ describe('NorisValidatorSubservice', () => {
     it('should validate all communal waste taxes, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
       const result = service.validateNorisData(
         NorisCommunalWasteTaxSchema,
         allNorisCommunalWasteTaxes,

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import axios from 'axios'
 import * as crypto from 'node:crypto'
 import { v1 as uuidv1 } from 'uuid'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -7,32 +6,26 @@ import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../user-verification/verification.errors.enum'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import ClientsService from '../clients/clients.service'
+import { UpvsCorporateBody, UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
 
 @Injectable()
 export class NasesService {
-  private readonly logger: LineLoggerSubservice
+  constructor(
+    private throwerErrorGuard: ThrowerErrorGuard,
+    private clientsService: ClientsService
+  ) {}
 
-  constructor(private throwerErrorGuard: ThrowerErrorGuard) {
-    this.logger = new LineLoggerSubservice(NasesService.name)
-  }
-
-  async getUpvsIdentity(token: string) {
-    await axios
-      .get(`${process.env.SLOVENSKO_SK_CONTAINER_URI}/api/upvs/identity`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
+    // there is a bug in the container and function `apiUpvsIdentityGet` below, according to 'openapi-clients/slovensko-sk' types
+    // returns information about UpvsNaturalPerson,
+    // in reality it returns information about UpvsCorporateBody as well
+    // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, typing can be erased
+    const result = await this.clientsService.slovenskoSkApi
+      .apiUpvsIdentityGet({
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-        if (response.data.statusCode !== 200) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
-            VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
-            JSON.stringify(response.data)
-          )
-        }
-      })
+      .then((response) => response.data)
       .catch((error) => {
         throw this.throwerErrorGuard.BadRequestException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
@@ -41,6 +34,7 @@ export class NasesService {
           error
         )
       })
+    return result
   }
 
   // copied from nest-forms-backend
@@ -66,28 +60,26 @@ export class NasesService {
 
   async searchUpvsIdentitiesByUri(uris: string[]) {
     const jwt = this.createTechnicalAccountJwtToken()
-    const response = await axios
-      .post(
-        `${process.env.SLOVENSKO_SK_CONTAINER_URI}/api/iam/identities/search`,
-        JSON.stringify({ uris }),
+    const result = await this.clientsService.slovenskoSkApi
+      .apiIamIdentitiesSearchPost(
         {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-            'Content-Type': 'application/json',
-          },
+          uris,
+        },
+        {
+          headers: { Authorization: `Bearer ${jwt}`, 'Content-Type': 'application/json' },
         }
       )
-      .catch((error) => {
-        this.logger.error(error)
-        throw error
+      .then((response) => {
+        return response.data
       })
-    if (response.status > 400) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
-        VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
-        JSON.stringify(response)
-      )
-    }
-    return response.data
+      .catch((error) => {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.VERIFY_EID_ERROR,
+          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}`,
+          error
+        )
+      })
+    return result
   }
 }

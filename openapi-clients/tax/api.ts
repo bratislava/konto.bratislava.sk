@@ -68,6 +68,45 @@ export const InstallmentPaidStatusEnum = {
 export type InstallmentPaidStatusEnum =
   (typeof InstallmentPaidStatusEnum)[keyof typeof InstallmentPaidStatusEnum]
 
+export interface PaymentControllerPaymentResponse302Response {
+  /**
+   * Redirect URL with status query parameter. Status values are defined in PaymentRedirectStateEnum.
+   */
+  url?: string
+}
+export interface PaymentRedirectResponseDto {
+  /**
+   * Payment redirect status
+   */
+  status: PaymentRedirectStateEnum
+  /**
+   * Type of tax
+   */
+  taxType?: TaxType
+  /**
+   * Year of the tax
+   */
+  year?: number
+  /**
+   * Order of the tax
+   */
+  order?: number
+}
+
+/**
+ * Payment redirect status
+ */
+
+export const PaymentRedirectStateEnum = {
+  FailedToVerify: 'failed-to-verify',
+  PaymentAlreadyPaid: 'payment-already-paid',
+  PaymentFailed: 'payment-failed',
+  PaymentSuccess: 'payment-success',
+} as const
+
+export type PaymentRedirectStateEnum =
+  (typeof PaymentRedirectStateEnum)[keyof typeof PaymentRedirectStateEnum]
+
 /**
  * Type of apartment
  */
@@ -131,6 +170,10 @@ export interface RequestAdminCreateTestingTaxNorisData {
    * Date of tax ruling (dátum právoplatnosti)
    */
   dateTaxRuling: string | null
+  /**
+   * Indicates if tax is cancelled
+   */
+  isCancelled: boolean
 }
 
 export const RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum = {
@@ -344,7 +387,7 @@ export interface ResponseCommunalWasteTaxSummaryDetailDto {
   /**
    * Payment status
    */
-  paidStatus: TaxPaidStatusEnum
+  paidStatus: TaxStatusEnum
   /**
    * Year of tax
    */
@@ -645,7 +688,7 @@ export interface ResponseRealEstateTaxSummaryDetailDto {
   /**
    * Payment status
    */
-  paidStatus: TaxPaidStatusEnum
+  paidStatus: TaxStatusEnum
   /**
    * Year of tax
    */
@@ -759,25 +802,13 @@ export type TaxControllerV2GetTaxDetailByYearV2200Response =
  * Payment status
  */
 
-export const TaxPaidStatusEnum = {
-  NotPaid: 'NOT_PAID',
-  PartiallyPaid: 'PARTIALLY_PAID',
-  Paid: 'PAID',
-  OverPaid: 'OVER_PAID',
-} as const
-
-export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
-
-/**
- * Type of paid status
- */
-
 export const TaxStatusEnum = {
   NotPaid: 'NOT_PAID',
   PartiallyPaid: 'PARTIALLY_PAID',
   Paid: 'PAID',
   OverPaid: 'OVER_PAID',
   AwaitingProcessing: 'AWAITING_PROCESSING',
+  Cancelled: 'CANCELLED',
 } as const
 
 export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum]
@@ -954,6 +985,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1102,6 +1134,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1150,6 +1183,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1202,6 +1236,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2044,6 +2079,8 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -2096,6 +2133,8 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2185,6 +2224,8 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       if (rESULTTEXT !== undefined) {
         localVarQueryParameter['RESULTTEXT'] = rESULTTEXT
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2551,6 +2592,8 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
         localVarQueryParameter['type'] = type
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -2596,6 +2639,8 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
       if (type !== undefined) {
         localVarQueryParameter['type'] = type
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}

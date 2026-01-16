@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import { PaymentStatus, TaxType } from '@prisma/client'
+import noop from 'lodash/noop'
 
 import {
   RealEstateTaxAreaType,
@@ -127,6 +128,7 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
       variableSymbol: '1234567890',
       specificSymbol: '2025200000',
       paymentNote: QrPaymentNoteEnum.QR_oneTimePay,
+      iban: 'SK3175000000000025747653',
     },
     variableSymbol: '1234567890',
   },
@@ -164,6 +166,7 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
         variableSymbol: '1234567890',
         specificSymbol: '2025200000',
         paymentNote: QrPaymentNoteEnum.QR_firstInstallment,
+        iban: 'SK3175000000000025747653',
       },
     },
   },
@@ -418,7 +421,7 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-01-21 21:00'),
           })
 
-          const expected = createExpectedOutput(() => {})
+          const expected = createExpectedOutput(noop)
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -792,6 +795,7 @@ describe('UnifiedTaxUtil', () => {
           variableSymbol: '1234567890',
           specificSymbol: '2025200000',
           paymentNote: QrPaymentNoteEnum.QR_oneTimePay,
+          iban: 'SK3175000000000025747653',
         },
         variableSymbol: '1234567890',
       },
@@ -836,6 +840,7 @@ describe('UnifiedTaxUtil', () => {
             variableSymbol: '1234567890',
             specificSymbol: '2025200000',
             paymentNote: QrPaymentNoteEnum.QR_firstInstallment,
+            iban: 'SK3175000000000025747653',
           },
         },
       },

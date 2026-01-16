@@ -86,7 +86,12 @@ export type TaxDefinition<TTaxType extends TaxType> = {
   /** Threshold for allowing installment payments (splátková hranica) in eurocents */
   paymentCalendarThreshold: number
 
-  readyToImportFieldName: string
+  readyToImportDatabaseFieldName: string
+
+  lastUpdatedAtDatabaseFieldName: string
+
+  /** IBAN of the beneficiary */
+  iban: string
 
   /** Maps Noris tax data into detailed tax items. */
   mapNorisToTaxDetailData: (

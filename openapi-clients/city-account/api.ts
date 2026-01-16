@@ -143,6 +143,19 @@ export const CognitoGetUserDataUserStatusEnum = {
 export type CognitoGetUserDataUserStatusEnum =
   (typeof CognitoGetUserDataUserStatusEnum)[keyof typeof CognitoGetUserDataUserStatusEnum]
 
+/**
+ * Account type from Cognito
+ */
+
+export const ContactAndIdInfoTypeEnum = {
+  Fo: 'fo',
+  Po: 'po',
+  FoP: 'fo-p',
+} as const
+
+export type ContactAndIdInfoTypeEnum =
+  (typeof ContactAndIdInfoTypeEnum)[keyof typeof ContactAndIdInfoTypeEnum]
+
 export interface DeactivateAccountResponseDto {
   /**
    * Marks if the operation has been successful
@@ -275,6 +288,29 @@ export interface GetUserDataByBirthNumbersBatchResponseDto {
    */
   users: { [key: string]: ResponseUserByBirthNumberDto }
 }
+export interface LegalPersonContactAndIdInfoResponseDto {
+  /**
+   * External ID from Cognito
+   */
+  externalId: string
+  /**
+   * Account type from Cognito
+   */
+  accountType: ContactAndIdInfoTypeEnum
+  /**
+   * Email address
+   */
+  email?: string
+  /**
+   * Company name
+   */
+  name?: string
+  /**
+   * ICO (Company identification number)
+   */
+  ico?: string
+}
+
 export interface ManuallyVerifyUserRequestDto {
   /**
    * userBirthNumber
@@ -1043,6 +1079,33 @@ export const UpsertUserRecordClientRequestDtoLoginClientEnum = {
 export type UpsertUserRecordClientRequestDtoLoginClientEnum =
   (typeof UpsertUserRecordClientRequestDtoLoginClientEnum)[keyof typeof UpsertUserRecordClientRequestDtoLoginClientEnum]
 
+export interface UserContactAndIdInfoResponseDto {
+  /**
+   * External ID from Cognito
+   */
+  externalId: string
+  /**
+   * Account type from Cognito
+   */
+  accountType: ContactAndIdInfoTypeEnum
+  /**
+   * Email address
+   */
+  email?: string
+  /**
+   * First name
+   */
+  firstName?: string
+  /**
+   * Last name
+   */
+  lastName?: string
+  /**
+   * Birth number
+   */
+  birthNumber?: string
+}
+
 /**
  * @type UserControllerChangeEmail200Response
  */
@@ -1056,6 +1119,14 @@ export type UserControllerChangeEmail200Response =
 export type UserControllerGetOrCreateUser200Response =
   | ResponseLegalPersonDataDto
   | ResponseUserDataDto
+
+/**
+ * @type UserIntegrationControllerGetContactAndIdInfoByExternalId200Response
+ */
+export type UserIntegrationControllerGetContactAndIdInfoByExternalId200Response =
+  | ({ accountType: 'fo' } & UserContactAndIdInfoResponseDto)
+  | ({ accountType: 'fo-p' } & LegalPersonContactAndIdInfoResponseDto)
+  | ({ accountType: 'po' } & LegalPersonContactAndIdInfoResponseDto)
 
 /**
  * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
@@ -1215,6 +1286,8 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       // authentication apiKey required
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -1258,6 +1331,8 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
 
       // authentication apiKey required
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1305,6 +1380,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1356,6 +1432,8 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         localVarQueryParameter['birthNumber'] = birthNumber
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -1402,6 +1480,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1452,6 +1531,8 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       // authentication apiKey required
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -1498,6 +1579,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1587,6 +1669,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1639,6 +1722,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1681,6 +1765,8 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
 
       // authentication apiKey required
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -1735,6 +1821,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2532,6 +2619,8 @@ export const AppApiAxiosParamCreator = function (configuration?: Configuration) 
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -2647,6 +2736,8 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -2759,6 +2850,8 @@ export const DPBApiAxiosParamCreator = function (configuration?: Configuration) 
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2919,6 +3012,8 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
         localVarQueryParameter['code_challenge_method'] = codeChallengeMethod
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -3039,6 +3134,8 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
         localVarQueryParameter['state'] = state
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -3131,6 +3228,7 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarQueryParameter = {} as any
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3585,6 +3683,156 @@ export type OAuth2ControllerAuthorizeCodeChallengeMethodEnum =
   (typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum)[keyof typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum]
 
 /**
+ * UserIntegrationApi - axios parameter creator
+ */
+export const UserIntegrationApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Returns contact and ID information for user or legal person based on external ID. This endpoint requires API key authentication.
+     * @summary Get user contact and ID information by external ID
+     * @param {string} externalId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userIntegrationControllerGetContactAndIdInfoByExternalId: async (
+      externalId: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'externalId' is not null or undefined
+      assertParamExists(
+        'userIntegrationControllerGetContactAndIdInfoByExternalId',
+        'externalId',
+        externalId,
+      )
+      const localVarPath = `/user-integration/contact-and-id-info/{externalId}`.replace(
+        `{${'externalId'}}`,
+        encodeURIComponent(String(externalId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * UserIntegrationApi - functional programming interface
+ */
+export const UserIntegrationApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = UserIntegrationApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Returns contact and ID information for user or legal person based on external ID. This endpoint requires API key authentication.
+     * @summary Get user contact and ID information by external ID
+     * @param {string} externalId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userIntegrationControllerGetContactAndIdInfoByExternalId(
+      externalId: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.userIntegrationControllerGetContactAndIdInfoByExternalId(
+          externalId,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'UserIntegrationApi.userIntegrationControllerGetContactAndIdInfoByExternalId'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * UserIntegrationApi - factory interface
+ */
+export const UserIntegrationApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = UserIntegrationApiFp(configuration)
+  return {
+    /**
+     * Returns contact and ID information for user or legal person based on external ID. This endpoint requires API key authentication.
+     * @summary Get user contact and ID information by external ID
+     * @param {string} externalId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userIntegrationControllerGetContactAndIdInfoByExternalId(
+      externalId: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response> {
+      return localVarFp
+        .userIntegrationControllerGetContactAndIdInfoByExternalId(externalId, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * UserIntegrationApi - object-oriented interface
+ */
+export class UserIntegrationApi extends BaseAPI {
+  /**
+   * Returns contact and ID information for user or legal person based on external ID. This endpoint requires API key authentication.
+   * @summary Get user contact and ID information by external ID
+   * @param {string} externalId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public userIntegrationControllerGetContactAndIdInfoByExternalId(
+    externalId: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return UserIntegrationApiFp(this.configuration)
+      .userIntegrationControllerGetContactAndIdInfoByExternalId(externalId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * UserVerificationsApi - axios parameter creator
  */
 export const UserVerificationsApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -3623,6 +3871,7 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3676,6 +3925,7 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3729,6 +3979,7 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4013,6 +4264,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4057,6 +4309,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -4093,6 +4347,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4141,6 +4397,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4194,6 +4451,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4261,6 +4519,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
         localVarQueryParameter['category'] = category
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -4322,6 +4582,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
         localVarQueryParameter['category'] = category
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -4359,6 +4621,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4407,6 +4671,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}

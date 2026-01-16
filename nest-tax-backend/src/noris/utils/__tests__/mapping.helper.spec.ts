@@ -1,14 +1,20 @@
 /* eslint-disable no-secrets/no-secrets */
+import { TaxType } from '@prisma/client'
+
 import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
 import {
   AreaTypesEnum,
   DeliveryMethod,
   DeliveryMethodNoris,
 } from '../../types/noris.enums'
-import { NorisRealEstateTax } from '../../types/noris.types'
+import {
+  NorisCommunalWasteTaxGrouped,
+  NorisRealEstateTax,
+} from '../../types/noris.types'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,
+  mapNorisToCommunalWasteDatabaseDetail,
   mapNorisToRealEstateDatabaseDetail,
   mapNorisToTaxAdministratorData,
   mapNorisToTaxInstallmentsData,
@@ -445,6 +451,423 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     expect(types).toContain(`${AreaTypesEnum.CONSTRUCTION}-A`)
     expect(types).toContain(`${AreaTypesEnum.CONSTRUCTION}-B`)
     expect(types).toContain(`${AreaTypesEnum.CONSTRUCTION}-jH`)
+  })
+})
+
+describe('mapNorisToCommunalWasteDatabaseDetail', () => {
+  it('should map single address with single container correctly', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Hlavná ulica',
+            orientationNumber: '22',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 224.33,
+              druh_nadoby: 'N12',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.type).toBe(TaxType.KO)
+    expect(result.addresses).toHaveLength(1)
+    expect(result.addresses[0].addressDetail).toEqual({
+      street: 'Hlavná ulica',
+      orientationNumber: '22',
+    })
+    expect(result.addresses[0].containers).toHaveLength(1)
+    expect(result.addresses[0].containers[0]).toEqual({
+      objem_nadoby: 120,
+      pocet_nadob: 1,
+      pocet_odvozov: 52,
+      sadzba: 4.314,
+      poplatok: 22_433,
+      druh_nadoby: 'N12',
+    })
+  })
+
+  it('should convert poplatok from number to integer correctly', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Test Street',
+            orientationNumber: '1',
+          },
+          containers: [
+            {
+              objem_nadoby: 240,
+              pocet_nadob: 1,
+              pocet_odvozov: 26,
+              sadzba: 5.5,
+              poplatok: 300,
+              druh_nadoby: 'N24',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses[0].containers[0].poplatok).toBe(30_000)
+    expect(typeof result.addresses[0].containers[0].poplatok).toBe('number')
+  })
+
+  it('should handle poplatok with decimal values correctly', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Test Street',
+            orientationNumber: '2',
+          },
+          containers: [
+            {
+              objem_nadoby: 60,
+              pocet_nadob: 1,
+              pocet_odvozov: 104,
+              sadzba: 2.5,
+              poplatok: 150.5,
+              druh_nadoby: 'N6',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses[0].containers[0].poplatok).toBe(15_050)
+  })
+
+  it('should handle multiple containers at same address', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Hlavná ulica',
+            orientationNumber: '22',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 224.33,
+              druh_nadoby: 'N12',
+            },
+            {
+              objem_nadoby: 240,
+              pocet_nadob: 1,
+              pocet_odvozov: 26,
+              sadzba: 5.5,
+              poplatok: 500,
+              druh_nadoby: 'N24',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses).toHaveLength(1)
+    expect(result.addresses[0].containers).toHaveLength(2)
+    expect(result.addresses[0].containers[0].poplatok).toBe(22_433)
+    expect(result.addresses[0].containers[1].poplatok).toBe(50_000)
+    expect(result.addresses[0].containers[0].druh_nadoby).toBe('N12')
+    expect(result.addresses[0].containers[1].druh_nadoby).toBe('N24')
+  })
+
+  it('should handle multiple addresses correctly', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Hlavná ulica',
+            orientationNumber: '22',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 224.33,
+              druh_nadoby: 'N12',
+            },
+          ],
+        },
+        {
+          addressDetail: {
+            street: 'Druhá ulica',
+            orientationNumber: '51',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 224.33,
+              druh_nadoby: 'N12',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses).toHaveLength(2)
+    expect(result.addresses[0].addressDetail.street).toBe('Hlavná ulica')
+    expect(result.addresses[1].addressDetail.street).toBe('Druhá ulica')
+    expect(result.addresses[0].addressDetail.orientationNumber).toBe('22')
+    expect(result.addresses[1].addressDetail.orientationNumber).toBe('51')
+  })
+
+  it('should handle null address fields correctly', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: null,
+            orientationNumber: null,
+          },
+          containers: [
+            {
+              objem_nadoby: 240,
+              pocet_nadob: 1,
+              pocet_odvozov: 26,
+              sadzba: 5.5,
+              poplatok: 300,
+              druh_nadoby: 'N24',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses[0].addressDetail.street).toBeNull()
+    expect(result.addresses[0].addressDetail.orientationNumber).toBeNull()
+    expect(result.addresses[0].containers[0].poplatok).toBe(30_000)
+  })
+
+  it('should preserve all container properties except poplatok conversion', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Test Street',
+            orientationNumber: '10',
+          },
+          containers: [
+            {
+              objem_nadoby: 60,
+              pocet_nadob: 2,
+              pocet_odvozov: 104,
+              sadzba: 2.5,
+              poplatok: 150.5,
+              druh_nadoby: 'N6',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    const container = result.addresses[0].containers[0]
+    expect(container.objem_nadoby).toBe(60)
+    expect(container.pocet_nadob).toBe(2)
+    expect(container.pocet_odvozov).toBe(104)
+    expect(container.sadzba).toBe(2.5)
+    expect(container.druh_nadoby).toBe('N6')
+    expect(container.poplatok).toBe(15_050)
+  })
+
+  it('should handle empty containers array', () => {
+    const mockData = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Test Street',
+            orientationNumber: '1',
+          },
+          containers: [],
+        },
+      ],
+    } as unknown as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses).toHaveLength(1)
+    expect(result.addresses[0].containers).toHaveLength(0)
+  })
+
+  it('should handle empty addresses array', () => {
+    const mockData = {
+      addresses: [],
+    } as unknown as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.type).toBe(TaxType.KO)
+    expect(result.addresses).toHaveLength(0)
+  })
+
+  it('should handle complex scenario with multiple addresses and multiple containers', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Hlavná ulica',
+            orientationNumber: '22',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 224.33,
+              druh_nadoby: 'N12',
+            },
+            {
+              objem_nadoby: 240,
+              pocet_nadob: 1,
+              pocet_odvozov: 26,
+              sadzba: 5.5,
+              poplatok: 500,
+              druh_nadoby: 'N24',
+            },
+          ],
+        },
+        {
+          addressDetail: {
+            street: 'Druhá ulica',
+            orientationNumber: '51',
+          },
+          containers: [
+            {
+              objem_nadoby: 60,
+              pocet_nadob: 1,
+              pocet_odvozov: 104,
+              sadzba: 2.5,
+              poplatok: 150.5,
+              druh_nadoby: 'N6',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.type).toBe(TaxType.KO)
+    expect(result.addresses).toHaveLength(2)
+    expect(result.addresses[0].containers).toHaveLength(2)
+    expect(result.addresses[1].containers).toHaveLength(1)
+
+    expect(result.addresses[0].containers[0].poplatok).toBe(22_433)
+    expect(result.addresses[0].containers[1].poplatok).toBe(50_000)
+
+    expect(result.addresses[1].containers[0].poplatok).toBe(15_050)
+  })
+
+  it('should handle poplatok with zero value', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Test Street',
+            orientationNumber: '1',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 0,
+              druh_nadoby: 'N12',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses[0].containers[0].poplatok).toBe(0)
+  })
+
+  it('should handle poplatok with very small decimal values', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Test Street',
+            orientationNumber: '1',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 0.01,
+              druh_nadoby: 'N12',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses[0].containers[0].poplatok).toBe(1)
+  })
+
+  it('should handle poplatok with large values', () => {
+    const mockData: NorisCommunalWasteTaxGrouped = {
+      addresses: [
+        {
+          addressDetail: {
+            street: 'Test Street',
+            orientationNumber: '1',
+          },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 9999.99,
+              druh_nadoby: 'N12',
+            },
+          ],
+        },
+      ],
+    } as NorisCommunalWasteTaxGrouped
+
+    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
+
+    expect(result.addresses[0].containers[0].poplatok).toBe(999_999)
   })
 })
 

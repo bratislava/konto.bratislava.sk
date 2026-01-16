@@ -119,13 +119,22 @@ const excludedFileExtensions = new Set([
 ])
 
 /**
+ * Custom MIME type to extension mappings for types not present in the mime-types library.
+ * These are electronic signature container formats (ASiC).
+ */
+const customMimeExtensions: Record<string, string[]> = {
+  'application/vnd.etsi.asic-e+zip': ['asice', 'sce'],
+  'application/vnd.etsi.asic-s+zip': ['asics', 'scs'],
+}
+
+/**
  * File extensions mapped from MIME types except of the excluded file extensions.
  * The list must be filtered first, as some mimetypes (e.g. application/x-zip-compressed) supported
  * by BE are not present in this library, however are duplicates of other mimetypes (e.g. application/zip).
  */
 const supportedFileExtensions = flatten(
   environment.formsMimetypes
-    .map((format) => extensions[format])
+    .map((format) => extensions[format] ?? customMimeExtensions[format])
     .filter(isDefined)
     .map((extensionsList) => extensionsList.map((ext) => `.${ext}`)),
 ).filter((extension) => !excludedFileExtensions.has(extension))

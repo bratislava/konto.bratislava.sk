@@ -1,6 +1,6 @@
 ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
-FROM node:20.10-alpine AS base
+FROM node:20.19-alpine AS base
 
 ENV NODE_ENV=production
 

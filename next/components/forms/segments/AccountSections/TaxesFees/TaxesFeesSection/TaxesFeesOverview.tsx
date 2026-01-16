@@ -1,0 +1,51 @@
+import HorizontalDivider from 'components/forms/HorizontalDivider'
+import DznTaxFormAlert from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/DznTaxFormAlert'
+import TaxesFeesOverviewBanner from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesOverviewBanner'
+import TaxesFeesOverviewRow from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesOverviewRow'
+import { useTranslation } from 'next-i18next'
+import { TaxAvailabilityStatus, TaxType } from 'openapi-clients/tax'
+import { TaxesData } from 'pages/dane-a-poplatky'
+import { Fragment } from 'react'
+
+type Props = {
+  taxType: TaxType
+  taxesData: TaxesData | null
+}
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19579-6275&m=dev
+ */
+
+const TaxesFeesOverview = ({ taxesData, taxType }: Props) => {
+  const { t } = useTranslation('account')
+
+  const title = {
+    [TaxType.Dzn]: t('account_section_payment.tax_overview_title.tax'),
+    [TaxType.Ko]: t('account_section_payment.tax_overview_title.fee'),
+  }[taxType]
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="text-h5-semibold">{title}</h2>
+      {taxesData?.availabilityStatus === TaxAvailabilityStatus.LookingForYourTax ? (
+        <TaxesFeesOverviewBanner taxType={taxType} variant="looking-for" />
+      ) : taxesData?.availabilityStatus === TaxAvailabilityStatus.TaxNotOnRecord ? (
+        <TaxesFeesOverviewBanner taxType={taxType} variant="no-results" />
+      ) : taxesData?.availabilityStatus === TaxAvailabilityStatus.Available ? (
+        <ul className="flex flex-col rounded-lg border border-gray-200 px-4 lg:px-6">
+          {taxesData.items.map((item, index) => (
+            <Fragment key={index}>
+              {index > 0 && <HorizontalDivider asListItem />}
+              <li>
+                <TaxesFeesOverviewRow taxData={item} />
+              </li>
+            </Fragment>
+          ))}
+        </ul>
+      ) : null}
+      {taxType === TaxType.Dzn && <DznTaxFormAlert />}
+    </div>
+  )
+}
+
+export default TaxesFeesOverview

@@ -12,4 +12,5 @@ export interface QrCodeGeneratorDto {
   variableSymbol: string
   specificSymbol: string
   paymentNote?: QrPaymentNoteEnum
+  iban: string
 }

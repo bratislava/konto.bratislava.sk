@@ -713,6 +713,7 @@ describe('NorisPaymentSubservice', () => {
           specificSymbol: '9876543210',
           taxId: 1,
           status: PaymentStatus.SUCCESS,
+          bloomreachEventSent: true,
         },
       })
       expect(trackEventTaxPaymentMock).toHaveBeenCalledWith(

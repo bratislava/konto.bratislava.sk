@@ -1,43 +1,18 @@
-import { ArrowRightIcon, CheckIcon } from '@assets/ui-icons'
+import { CheckIcon } from '@assets/ui-icons'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button as AriaButton } from 'react-aria-components'
 
 import ButtonNew from '../../simple-components/ButtonNew'
 import Modal, { ModalProps } from '../../simple-components/Modal'
 import { useFormContext } from '../../useFormContext'
+import AccountLink from '../AccountLink/AccountLink'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 export enum RegistrationModalType {
   Initial = 'Initial',
   NotAuthenticatedConceptSave = 'NotAuthenticatedConceptSave',
   NotAuthenticatedSubmitForm = 'NotAuthenticatedSubmitForm',
-}
-type ButtonWithSubtextProps = {
-  text: string
-  subtext: string
-  onPress: () => void
-}
-
-const ButtonWithSubtext = ({ text, subtext, onPress }: ButtonWithSubtextProps) => {
-  return (
-    <ButtonNew
-      variant="black-outline"
-      className="justify-start p-4 md:justify-center md:px-4 md:py-3"
-      endIcon={<ArrowRightIcon className="hidden size-6 md:block" />}
-      onPress={onPress}
-      fullWidth
-    >
-      <div className="flex flex-col gap-2 text-left md:text-center">
-        <div className="md:hidden">{text}</div>
-        <div className="inline-flex gap-2 text-main-700 md:text-gray-700">
-          {subtext}
-          <ArrowRightIcon className="block size-6 md:hidden" />
-        </div>
-      </div>
-    </ButtonNew>
-  )
 }
 
 type RegistrationModalBase = {
@@ -129,6 +104,13 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       }
     : { title: null, subtitle: null }
 
+  // TODO Translations: bodyList is "an array", make sure it's correctly used:
+  //   "registration_modal.body_list.0": "Nájdite všetky služby mesta na jednom mieste",
+  //   "registration_modal.body_list.1": "Sledujte aktuálny stav podaných žiadostí a čo sa s nimi deje v čase",
+  //   "registration_modal.body_list.2": "Majte prehľad o daniach a poplatkoch",
+  //   "registration_modal.body_list.3": "Využívajte dôveryhodné digitálne služby pod hlavičkou hlavného mesta",
+  //   "registration_modal.body_list.4": "Uložte si žiadosti a vráťte sa k nim kedykoľvek budete chcieť",
+  //
   const bodyListTranslation = t('registration_modal.body_list', { returnObjects: true })
   const bodyList = Array.isArray(bodyListTranslation) ? (bodyListTranslation as string[]) : []
 
@@ -147,42 +129,36 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         {title && <h3 className="text-h2 lg:text-h3">{title}</h3>}
         {subtitle && <AccountMarkdown className="text-p1" content={subtitle} />}
       </div>
-      <div className="flex flex-col">
-        <div className="rounded-t-lg bg-main-100 p-4 md:px-6 md:py-5">
-          <h4 className="text-h4">{t('registration_modal.body_title')}</h4>
-          <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
-            {bodyList.map((item, i) => (
-              <li key={i} className="flex items-center gap-4">
-                <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
-                  <CheckIcon className="size-7" />
-                </span>
-                <p className="text-p3 md:text-p1">{item}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="rounded-b-lg bg-main-100 px-4 pb-4 md:px-0 md:pb-0">
-          {/* Use ButtonNew */}
-          <AriaButton
-            onPress={() => register()}
-            className="flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center text-p1-semibold leading-6 text-gray-0 hover:bg-main-600 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
-            data-cy="registration-modal-button"
-          >
-            {t('registration_modal.body_action')}
-          </AriaButton>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col">
+          <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
+            <h4 className="text-h4">{t('registration_modal.body_title')}</h4>
+            <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
+              {bodyList.map((item, i) => (
+                <li key={i} className="flex items-center gap-4">
+                  <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
+                    <CheckIcon className="size-7" />
+                  </span>
+                  <p className="text-p3 md:text-p1">{item}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-b-lg bg-gray-100 px-4 pb-4 md:px-0 md:pb-0">
+            <ButtonNew
+              variant="black-solid"
+              fullWidth
+              onPress={() => register()}
+              className="rounded-lg px-5 py-2 text-p1-semibold leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
+              data-cy="registration-modal-button"
+            >
+              {t('registration_modal.body_action')}
+            </ButtonNew>
+          </div>
         </div>
 
-        <div className="mt-3 flex flex-col gap-1 md:mt-6 md:flex-row md:items-center md:justify-between md:gap-0">
-          <span className="text-p1-semibold">{t('registration_modal.body_login_description')}</span>
-          {/* Use ButtonNew */}
-          <AriaButton
-            onPress={() => login()}
-            className="text-left text-p1 text-main-700 underline hover:text-main-600 md:text-center"
-          >
-            {t('registration_modal.body_login_link')}
-          </AriaButton>
-        </div>
+        <AccountLink variant="login" />
       </div>
       {(type === RegistrationModalType.Initial ||
         type === RegistrationModalType.NotAuthenticatedSubmitForm) && (
@@ -196,17 +172,13 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             {type === RegistrationModalType.Initial && (
               <>
                 {eidSendPossible ? (
-                  <ButtonWithSubtext
-                    text={t('registration_modal.buttons_initial_continue_eid_title')}
-                    subtext={t('registration_modal.buttons_initial_continue_eid')}
-                    onPress={close}
-                  />
+                  <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                    {t('registration_modal.buttons_initial_continue_eid')}
+                  </ButtonNew>
                 ) : null}
-                <ButtonWithSubtext
-                  text={t('registration_modal.buttons_initial_skip_title')}
-                  subtext={t('registration_modal.buttons_initial_skip')}
-                  onPress={close}
-                />
+                <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                  {t('registration_modal.buttons_initial_skip')}
+                </ButtonNew>
               </>
             )}
             {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
@@ -214,12 +186,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
                 <ButtonNew variant="black-outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_back')}
                 </ButtonNew>
-                <ButtonNew
-                  variant="black-outline"
-                  endIcon={<ArrowRightIcon className="size-6" />}
-                  onPress={close}
-                  fullWidth
-                >
+                <ButtonNew variant="black-outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_send')}
                 </ButtonNew>
               </>

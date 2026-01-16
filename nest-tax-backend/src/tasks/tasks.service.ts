@@ -8,18 +8,21 @@ import {
   TaxType,
 } from '@prisma/client'
 import dayjs from 'dayjs'
+import pLimit from 'p-limit'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
 import { NorisTaxPayment } from '../noris/types/noris.types'
+import { PaymentService } from '../payment/payment.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
@@ -28,9 +31,10 @@ import {
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
+import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
+import { RetryService } from '../utils-module/retry.service'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 
@@ -40,7 +44,9 @@ const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 export class TasksService {
   private readonly logger: Logger
 
-  private lastTaxType: TaxType = TaxType.DZN
+  private lastLoadedTaxType: TaxType = TaxType.DZN
+
+  private lastUpdateTaxType: TaxType = TaxType.KO
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -53,6 +59,8 @@ export class TasksService {
     private readonly taxImportHelperSubservice: TaxImportHelperSubservice,
     private readonly norisService: NorisService,
     private readonly configService: ConfigService,
+    private readonly retryService: RetryService,
+    private readonly paymentService: PaymentService,
   ) {
     this.logger = new Logger('TasksService')
     // Check if the required environment variable is set
@@ -174,9 +182,9 @@ export class TasksService {
     )
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
-  async updateRealEstateTaxesFromNoris() {
+  async updateTaxesFromNoris() {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
     if (
@@ -188,51 +196,66 @@ export class TasksService {
       return
     }
 
-    const currentYear = new Date().getFullYear()
-    const taxes = await this.prismaService.tax.findMany({
+    this.lastUpdateTaxType =
+      this.lastUpdateTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+
+    await this.updateTaxesFromNorisByTaxType(this.lastUpdateTaxType)
+  }
+
+  private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
+    // ⚠️⚠️⚠️
+    // const currentYear = new Date().getFullYear()
+    const currentYear = 2025 // TODO: remove this after testing, this should NOT get to production
+    // ⚠️⚠️⚠️
+
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
+
+    const taxPayers = await this.prismaService.taxPayer.findMany({
       select: {
         id: true,
-        taxPayer: {
-          select: {
-            birthNumber: true,
+        birthNumber: true,
+      },
+      where: {
+        taxes: {
+          some: {
+            year: currentYear,
+            type: taxType,
           },
         },
       },
-      where: {
-        year: currentYear,
-        type: TaxType.DZN,
+      orderBy: {
+        [lastUpdatedAtDatabaseFieldName]: 'asc',
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
-      orderBy: {
-        lastCheckedUpdates: 'asc',
-      },
     })
 
-    if (taxes.length === 0) {
+    if (taxPayers.length === 0) {
       return
     }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris with ids: ${taxes.map((t) => t.id).join(', ')}`,
+      `TasksService: Updating taxes from Noris for tax payers with birth numbers: ${taxPayers.map((t) => t.birthNumber).join(', ')}, tax type: ${taxType}, current year: ${currentYear}`,
     )
 
     const { updated } =
       await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-        TaxType.DZN,
+        taxType,
         currentYear,
-        taxes.map((t) => t.taxPayer.birthNumber),
+        taxPayers.map((t) => t.birthNumber),
       )
 
-    this.logger.log(`TasksService: Updated ${updated} DZN taxes from Noris`)
+    this.logger.log(
+      `TasksService: Updated ${updated} ${taxType} taxes from Noris`,
+    )
 
-    await this.prismaService.tax.updateMany({
+    await this.prismaService.taxPayer.updateMany({
       where: {
         id: {
-          in: taxes.map((t) => t.id),
+          in: taxPayers.map((t) => t.id),
         },
       },
       data: {
-        lastCheckedUpdates: new Date(),
+        [lastUpdatedAtDatabaseFieldName]: new Date(),
       },
     })
   }
@@ -277,6 +300,7 @@ export class TasksService {
       },
       where: {
         bloomreachUnpaidTaxReminderSent: false,
+        isCancelled: false,
         taxPayments: {
           none: {
             status: PaymentStatus.SUCCESS,
@@ -426,14 +450,14 @@ export class TasksService {
   @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
-    this.lastTaxType =
-      this.lastTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+    this.lastLoadedTaxType =
+      this.lastLoadedTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
 
     this.logger.log(
-      `Starting LoadTaxForUsers task for TaxType: ${this.lastTaxType}`,
+      `Starting LoadTaxForUsers task for TaxType: ${this.lastLoadedTaxType}`,
     )
 
-    await this.loadTaxDataForUserByTaxType(this.lastTaxType)
+    await this.loadTaxDataForUserByTaxType(this.lastLoadedTaxType)
   }
 
   private async loadTaxDataForUserByTaxType(taxType: TaxType) {
@@ -497,28 +521,6 @@ export class TasksService {
     }
   }
 
-  private async retryWithDelay<T>(
-    fn: () => Promise<T>,
-    retries = 3,
-    delayMs = 5 * 60 * 1000, // 5 minutes
-  ): Promise<T> {
-    try {
-      return await fn()
-    } catch (error) {
-      if (retries <= 0) {
-        throw error
-      }
-      this.logger.warn(
-        `Retry attempt failed. Retrying in ${(delayMs / 1000).toFixed(2)} seconds. Remaining retries: ${retries - 1}`,
-        toLogfmt(error),
-      )
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, delayMs)
-      })
-      return this.retryWithDelay(fn, retries - 1, delayMs)
-    }
-  }
-
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async loadOverpaymentsFromNoris() {
@@ -561,11 +563,11 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      result = await this.retryWithDelay(async () => {
+      result = await this.retryService.retryWithDelay(async () => {
         return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
           data,
         )
-      })
+      }, 'updateOverpaymentsDataFromNorisByDateRange')
 
       // Success: reset lookback days to default
       await this.configSubservice.resetOverpaymentsLookbackDays()
@@ -583,5 +585,67 @@ export class TasksService {
         error,
       )
     }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async resendBloomreachEvents() {
+    this.logger.log('Starting resendBloomreachEvents task')
+    const payments = await this.prismaService.taxPayment.findMany({
+      where: {
+        status: PaymentStatus.SUCCESS,
+        bloomreachEventSent: false,
+      },
+      include: {
+        tax: {
+          include: {
+            taxPayer: true,
+          },
+        },
+      },
+    })
+
+    if (payments.length === 0) {
+      this.logger.log('No payments to resend bloomreach events for')
+      return
+    }
+
+    const concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+    const concurrencyLimit = pLimit(concurrency)
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        payments.map((payment) => payment.tax.taxPayer.birthNumber),
+      )
+
+    const trackPaymentWithConcurrencyLimit = async (
+      payment: TaxPaymentWithTaxAndTaxPayer,
+    ): Promise<boolean> => {
+      try {
+        await concurrencyLimit(async () => {
+          const userFromCityAccount =
+            userDataFromCityAccount[payment.tax.taxPayer.birthNumber] || null
+          await this.paymentService.trackPaymentInBloomreach(
+            payment,
+            userFromCityAccount?.externalId ?? undefined,
+          )
+        })
+        return true
+      } catch (error) {
+        // Throwing would cause the whole task to fail, so we just log the error
+        this.logger.error(error)
+        return false
+      }
+    }
+
+    const results = await Promise.all(
+      payments.map(async (payment) => {
+        const success = await trackPaymentWithConcurrencyLimit(payment)
+        return success
+      }),
+    )
+
+    this.logger.log(
+      `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events.`,
+    )
   }
 }

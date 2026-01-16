@@ -9,31 +9,33 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
+import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
+import { TaxesFeesSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
 import { AccountType } from 'frontend/dtos/accountDto'
 import { ResponseGetTaxesListDto, TaxType } from 'openapi-clients/tax'
 
-import TaxesFeesSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
-import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
-import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeesSection'
+import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import AccountPageLayout from '../../components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
-type AccountTaxesFeesPageProps = {
-  taxesData: ResponseGetTaxesListDto | null
+export type TaxesData = ResponseGetTaxesListDto
+
+export type AccountTaxesFeesPageProps = {
+  taxesData: Record<TaxType, TaxesData | null>
   strapiTaxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment
+  strapiTax: TaxFragment | null | undefined
   dehydratedState: DehydratedState
 }
 
 /**
  * BE returns 403 if users identity is not verified, it should return a flag instead
  */
-const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
+const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>, taxType: TaxType) => {
   try {
-    const { data } = await taxClient.taxControllerV2GetTaxesListV2(TaxType.Dzn, {
+    const { data } = await taxClient.taxControllerV2GetTaxesListV2(taxType, {
       authStrategy: 'authOnly',
       getSsrAuthSession,
     })
@@ -42,7 +44,7 @@ const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
     if (
       isAxiosError(error) &&
       error.response?.status === 403 &&
-      // TODO: This should be replace with a proper error code (which is not returned)
+      // TODO: This should be replaced with a proper error code (which is not returned)
       error.response?.data?.message === 'Forbidden tier'
     ) {
       return null
@@ -56,15 +58,17 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [taxesData, strapiTaxAdministrator, strapiTax, accountType] = await Promise.all([
-        getTaxes(fetchAuthSession),
-        getTaxAdministratorForUser(amplifyContextSpec),
-        strapiClient.Tax().then((response) => response.tax?.data?.attributes),
-        fetchUserAttributes(amplifyContextSpec).then(
-          (response) => response?.['custom:account_type'],
-        ),
-        prefetchUserQuery(queryClient, fetchAuthSession),
-      ])
+      const [taxesDataDzn, taxesDataKo, strapiTaxAdministrator, strapiTax, accountType] =
+        await Promise.all([
+          getTaxes(fetchAuthSession, TaxType.Dzn),
+          getTaxes(fetchAuthSession, TaxType.Ko),
+          getTaxAdministratorForUser(amplifyContextSpec),
+          strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+          fetchUserAttributes(amplifyContextSpec).then(
+            (response) => response?.['custom:account_type'],
+          ),
+          prefetchUserQuery(queryClient, fetchAuthSession),
+        ])
 
       // Hide taxes and fees section for legal entities
       if (
@@ -73,13 +77,9 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
       )
         return { notFound: true }
 
-      if (!strapiTax) {
-        return { notFound: true }
-      }
-
       return {
         props: {
-          taxesData,
+          taxesData: { [TaxType.Dzn]: taxesDataDzn, [TaxType.Ko]: taxesDataKo },
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           strapiTax,
@@ -108,12 +108,12 @@ const AccountTaxesFeesPage = ({
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxFeesSectionProvider
+          <TaxesFeesSectionProvider
             taxesData={taxesData}
             strapiTaxAdministrator={strapiTaxAdministrator}
           >
             <TaxesFeesSection />
-          </TaxFeesSectionProvider>
+          </TaxesFeesSectionProvider>
         </StrapiTaxProvider>
       </AccountPageLayout>
     </HydrationBoundary>

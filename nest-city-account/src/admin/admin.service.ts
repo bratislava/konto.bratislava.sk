@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
-import { UpvsIdentity } from 'src/upvs-identity-by-uri/dtos/upvsSchema'
 import {
   UpvsIdentityByUriService,
   UpvsIdentityByUriServiceCreateManyParam,
@@ -534,7 +533,13 @@ export class AdminService {
   async validateEdeskWithUriFromCognito(offset: number) {
     const physicalEntitiesWithoutUriVerificationAttempts =
       await this.prismaService.physicalEntity.findMany({
-        where: { userId: { not: null }, uri: null, UpvsIdentityByUri: { none: {} } },
+        where: {
+          userId: { not: null },
+          uri: null,
+          activeEdeskUpdatedAt: null,
+          activeEdeskUpdateFailCount: 0,
+          activeEdeskUpdateFailedAt: null,
+        },
         take: 100,
         skip: offset,
       })
@@ -619,7 +624,7 @@ export class AdminService {
       await this.physicalEntityService.update({
         id: success.physicalEntityId,
         uri: success.uri,
-        activeEdesk: (success.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
+        activeEdesk: success.data.upvs?.edesk_status === 'deliverable',
       })
     }
 

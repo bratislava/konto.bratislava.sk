@@ -11,7 +11,6 @@ import { QrCodeGeneratorDto } from './dtos/qrcode.dto'
 export class QrCodeSubservice {
   constructor(private readonly configService: ConfigService) {
     // Check if the required environment variables are set
-    this.configService.getOrThrow<string>('PAYMENT_QR_IBAN')
     this.configService.getOrThrow<string>('PAYMENT_QR_BENEFICIARY_NAME')
   }
 
@@ -22,9 +21,7 @@ export class QrCodeSubservice {
         {
           type: PaymentOptions.PaymentOrder,
           amount: qrCodeData.amount / 100,
-          bankAccounts: [
-            { iban: this.configService.getOrThrow<string>('PAYMENT_QR_IBAN') },
-          ],
+          bankAccounts: [{ iban: qrCodeData.iban }],
           beneficiary: {
             name: this.configService.getOrThrow<string>(
               'PAYMENT_QR_BENEFICIARY_NAME',

@@ -3,7 +3,7 @@ import { TaxFragment } from '@clients/graphql-strapi/api'
 import ThankYouSection from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 
-import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
+import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
@@ -24,7 +24,7 @@ export const getServerSideProps = amplifyGetServerSideProps(async () => {
 
 const AccountThankYouPage = ({ strapiTax }: { strapiTax: TaxFragment }) => {
   return (
-    <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+    <AccountPageLayout hiddenHeaderNav className="lg:bg-gray-50">
       <StrapiTaxProvider strapiTax={strapiTax}>
         <ThankYouSection />
       </StrapiTaxProvider>

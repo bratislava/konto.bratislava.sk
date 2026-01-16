@@ -1,107 +1,140 @@
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import { ROUTES } from 'frontend/api/constants'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
 import logger from '../../../../../frontend/utils/logger'
-import { useStrapiTax } from '../TaxesFeesSection/useStrapiTax'
+import { useStrapiTax } from '../TaxesFees/useStrapiTax'
 
-export const PaymentStatusOptions = {
-  FAILED_TO_VERIFY: 'failed-to-verify',
-  ALREADY_PAID: 'payment-already-paid',
-  FAILED: 'payment-failed',
-  SUCCESS: 'payment-success',
-}
-
-export enum PaymentTypeEnum {
-  DZN = 'DzN',
-}
-
-const statusToTranslationPath = {
-  [PaymentStatusOptions.FAILED_TO_VERIFY]: {
-    title: 'thank_you.result.failed_to_verify.title',
-    content: 'thank_you.result.failed_to_verify.content',
-  },
-  [PaymentStatusOptions.ALREADY_PAID]: {
-    title: 'thank_you.result.payment_already_paid.title',
-    content: 'thank_you.result.payment_already_paid.content',
-  },
-  [PaymentStatusOptions.FAILED]: {
-    title: 'thank_you.result.payment_failed.title',
-    content: 'thank_you.result.payment_failed.content',
-  },
-  [PaymentStatusOptions.SUCCESS]: {
-    title: 'thank_you.result.payment_success.title',
-    content: 'thank_you.result.payment_success.content',
-  },
-}
-
-const getTaxDetailLink = (year?: string, paymentType?: PaymentTypeEnum) => {
-  if (year && paymentType === PaymentTypeEnum.DZN) {
-    return ROUTES.TAXES_AND_FEES_YEAR(Number(year))
-  }
-  return ROUTES.TAXES_AND_FEES
-}
-
-const ThankYouSection = () => {
-  const { t } = useTranslation('account')
-  const router = useRouter()
-  const { paymentSuccessFeedbackLink } = useStrapiTax()
+// TODO use the nuqs library to get query params
+// example: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/sections/ArticlesSection/ArticlesAll/useArticlesFilters.tsx
+const useGetPaymentQueryParams = (router: NextRouter) => {
+  // query params are passed from nest-tax-backend/src/payment/payment.service.ts
+  // we expect status, taxType, order, year
 
   const status = useMemo(
     () =>
       typeof router.query.status === 'string' &&
-      Object.values(PaymentStatusOptions).includes(router.query.status)
-        ? router.query.status
-        : PaymentStatusOptions.FAILED_TO_VERIFY,
+      Object.values(PaymentRedirectStateEnum).includes(
+        router.query.status as PaymentRedirectStateEnum,
+      )
+        ? (router.query.status as PaymentRedirectStateEnum)
+        : PaymentRedirectStateEnum.FailedToVerify,
     [router.query.status],
   )
 
-  const paymentType = useMemo(
+  const type = useMemo(
     () =>
-      typeof router.query.paymentType === 'string' &&
-      Object.values(PaymentTypeEnum).includes(router.query.paymentType as PaymentTypeEnum) // test how this behaves when string is not a valid PaymentTypeEnum
-        ? (router.query.paymentType as PaymentTypeEnum)
+      typeof router.query.taxType === 'string' &&
+      Object.values(TaxType).includes(router.query.taxType as TaxType)
+        ? (router.query.taxType as TaxType)
         : undefined,
-    [router.query.paymentType],
+    [router.query.taxType],
   )
+
+  const order = useMemo(
+    () =>
+      typeof router.query.order === 'string' && !Number.isNaN(Number(router.query.order))
+        ? Number(router.query.order)
+        : undefined,
+    [router.query.order],
+  )
+
   const year = useMemo(
-    () => (typeof router.query.year === 'string' ? router.query.year : undefined),
+    () =>
+      typeof router.query.year === 'string' && !Number.isNaN(Number(router.query.year))
+        ? Number(router.query.year)
+        : undefined,
     [router.query.year],
   )
-  const success =
-    status === PaymentStatusOptions.SUCCESS || status === PaymentStatusOptions.ALREADY_PAID
+
+  return { status, type, order, year }
+}
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20618-3635&t=29s2lbVQdpQg3sQU-4
+ */
+
+const ThankYouSection = () => {
+  const { t } = useTranslation('account')
+
+  const { feedbackLinkDzn, feedbackLinkKo } = useStrapiTax()
+
+  const router = useRouter()
+  const { status, type, year, order } = useGetPaymentQueryParams(router)
+
   useEffect(() => {
-    if (status === PaymentStatusOptions.FAILED_TO_VERIFY) {
+    if (status === PaymentRedirectStateEnum.FailedToVerify) {
       logger.error('Failed to verify payment', router.query)
     }
   }, [router.query, status])
 
+  const statusToTranslationPath = {
+    [PaymentRedirectStateEnum.FailedToVerify]: {
+      title: t('thank_you.result.failed_to_verify.title'),
+      content: t('thank_you.result.failed_to_verify.content'),
+    },
+    [PaymentRedirectStateEnum.PaymentFailed]: {
+      title: t('thank_you.result.payment_failed.title'),
+      content: t('thank_you.result.payment_failed.content'),
+    },
+    [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
+      title: t('thank_you.result.payment_already_paid.title'),
+      content: t('thank_you.result.payment_already_paid.content'),
+    },
+    [PaymentRedirectStateEnum.PaymentSuccess]: {
+      title: t('thank_you.result.payment_success.title'),
+      content: t('thank_you.result.payment_success.content'),
+    },
+  }
+
+  const isSuccessfullyPaid =
+    status === PaymentRedirectStateEnum.PaymentSuccess ||
+    status === PaymentRedirectStateEnum.PaymentAlreadyPaid
+
+  const taxDetailLink = useMemo(
+    () =>
+      year && type && order
+        ? ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })
+        : ROUTES.TAXES_AND_FEES,
+    [year, type, order],
+  )
+
+  const feedbackLink = useMemo(() => {
+    if (type === TaxType.Dzn) {
+      return feedbackLinkDzn
+    }
+    if (type === TaxType.Ko) {
+      return feedbackLinkKo
+    }
+    return null
+  }, [type, feedbackLinkDzn, feedbackLinkKo])
+
   return (
-    <div className="flex flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-8">
-      <div className="flex flex-col">
-        {success ? (
-          <ThankYouCard
-            success={success}
-            title={t(statusToTranslationPath[status].title)}
-            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
-            firstButtonTitle={t('thank_you.button_to_formular_text')}
-            secondButtonTitle={t('thank_you.button_to_tax_detail_text')}
-            secondButtonLink={getTaxDetailLink(year, paymentType)}
-            feedbackLink={paymentSuccessFeedbackLink ?? undefined}
-          />
-        ) : (
-          <ThankYouCard
-            success={success}
-            title={t(statusToTranslationPath[status].title)}
-            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
-            firstButtonTitle={t('thank_you.button_restart_text')}
-            firstButtonLink={getTaxDetailLink(year, paymentType)}
-            secondButtonTitle={t('thank_you.button_cancel_text')}
-          />
-        )}
-      </div>
+    <div className="bg-gray-0 pt-16 lg:bg-gray-50 lg:pt-8">
+      {isSuccessfullyPaid ? (
+        <ThankYouCard
+          success={isSuccessfullyPaid}
+          title={statusToTranslationPath[status].title}
+          content={`<span className='text-p2'>${statusToTranslationPath[status].content}</span>`}
+          firstButtonTitle={t('thank_you.button_to_formular_text')}
+          feedbackLink={feedbackLink}
+          secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}
+          secondButtonLink={ROUTES.TAXES_AND_FEES}
+        />
+      ) : (
+        <ThankYouCard
+          success={isSuccessfullyPaid}
+          title={statusToTranslationPath[status].title}
+          content={`<span className='text-p2'>${statusToTranslationPath[status].content}</span>`}
+          firstButtonTitle={t('thank_you.button_restart_text')}
+          firstButtonLink={taxDetailLink}
+          secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}
+          secondButtonLink={ROUTES.TAXES_AND_FEES}
+        />
+      )}
     </div>
   )
 }

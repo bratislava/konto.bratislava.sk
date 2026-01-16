@@ -76,10 +76,9 @@ SELECT
 FROM
 	"User"
 	LEFT JOIN "UserGdprData" ON "User"."id" = "UserGdprData"."userId"
-WHERE
-	WHERE
-	"UserGdprData"."type" = 'MARKETING'
+	AND "UserGdprData"."type" = 'MARKETING'
 	AND "UserGdprData"."category" = 'ESBS'
+WHERE
 	AND "UserGdprData"."userId" IS NULL
 	AND "User"."registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
 
@@ -159,10 +158,10 @@ SELECT
 FROM
 	"LegalPerson"
 	LEFT JOIN "LegalPersonGdprData" ON "LegalPerson"."id" = "LegalPersonGdprData"."legalPersonId"
-WHERE
-	"LegalPersonGdprData"."type" = 'MARKETING'
+	AND "LegalPersonGdprData"."type" = 'MARKETING'
 	AND "LegalPersonGdprData"."category" = 'ESBS'
-	AND "LegalPersonGdprData"."legalPersonId" IS NULL
+WHERE
+	"LegalPersonGdprData"."legalPersonId" IS NULL
 	AND "LegalPerson"."registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
 
 COMMIT;

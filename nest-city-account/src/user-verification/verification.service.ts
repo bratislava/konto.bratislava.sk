@@ -21,7 +21,7 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
+import { MailgunService } from '../mailgun/mailgun.service'
 import { RABBIT_MQ } from './constants'
 import { RabbitMessageDto } from './dtos/rabbit.dto'
 import {
@@ -48,7 +48,7 @@ export class VerificationService {
     private databaseSubservice: DatabaseSubserviceUser,
     private nasesService: NasesService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private mailgunSubservice: MailgunSubservice,
+    private mailgunService: MailgunService,
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
@@ -207,7 +207,7 @@ export class VerificationService {
             JSON.stringify(data.msg.user)
           )
         } else {
-          await this.mailgunSubservice.sendEmail('2023-identity-check-successful', {
+          await this.mailgunService.sendEmail('2023-identity-check-successful', {
             to: email,
             variables: {
               firstName: firstName ?? null,
@@ -262,7 +262,7 @@ export class VerificationService {
             JSON.stringify(data.msg.user)
           )
         } else {
-          await this.mailgunSubservice.sendEmail('2023-identity-check-rejected', {
+          await this.mailgunService.sendEmail('2023-identity-check-rejected', {
             to: email,
             variables: {
               firstName: firstName ?? null,

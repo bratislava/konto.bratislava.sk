@@ -158,7 +158,9 @@ export class PhysicalEntityService {
     return { uri, physicalEntityId: entity.id }
   }
 
-  async createFromBirthNumber(birthNumber: string): Promise<VerificationReturnType<RfoIdentityList>> {
+  async createFromBirthNumber(
+    birthNumber: string
+  ): Promise<VerificationReturnType<RfoIdentityList>> {
     // Creates PhysicalEntity record before user is verified / created. The new record does not have
     // userID set.
 

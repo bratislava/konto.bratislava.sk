@@ -29,7 +29,7 @@ export enum VerificationErrorsResponseEnum {
   UNEXPECTED_UPVS_RESPONSE = 'Unexpected UPVS response.',
   INVALID_CAPTCHA = 'Invalid captcha token. Please try again. If the problem persists and you are not robot, please contact support.',
   DATABASE_ERROR = 'Error to write or update or read from/to database',
-  BIRTH_NUMBER_NOT_EXISTS = 'Birth number does not exists in registry.'
+  BIRTH_NUMBER_NOT_EXISTS = 'Birth number does not exists in registry.',
 }
 
 export enum SendToQueueErrorsEnum {

@@ -20,7 +20,7 @@ export function CatchDatabaseError() {
         if (!this.throwerErrorGuard) {
           throw new Error(
             `CatchDatabaseError decorator requires the class to have a 'throwerErrorGuard' property. ` +
-            `Please ensure ${target.constructor.name} implements IHasThrowerErrorGuard.`
+              `Please ensure ${target.constructor.name} implements IHasThrowerErrorGuard.`
           )
         }
         throw this.throwerErrorGuard.UnprocessableEntityException(

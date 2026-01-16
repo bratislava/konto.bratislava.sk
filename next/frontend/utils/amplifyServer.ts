@@ -10,10 +10,13 @@ import type { GlobalAppProps } from '../../pages/_app'
 import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import { AmplifyServerContextSpec } from './amplifyTypes'
+import { isDefined } from './general'
 import {
-  clientIdQueryParam,
+  authRequestIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
+  isIdentityVerificationRequiredQueryParam,
+  isOAuthQueryParam,
   redirectQueryParam,
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
@@ -54,6 +57,7 @@ export const amplifyGetServerSideProps = <
     requiresSignOut?: boolean
     skipSsrAuthContext?: boolean
     redirectQueryParam?: boolean
+    redirectOAuthParams?: boolean
   },
 ) => {
   const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
@@ -97,15 +101,42 @@ export const amplifyGetServerSideProps = <
         }
 
         const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
-        // TODO OAuth: Double-check if this condition (checking if clientId exists) is enough
-        // Since fetchAuthSessionFn runs on server, it returns info about non-oauth sign-in flow, that we should ignore for oauth sign-in flow
-        const shouldRedirectNotSignedOut =
-          options?.requiresSignOut && isSignedIn && !context.query[clientIdQueryParam]
+        const shouldRedirectNotSignedOut = options?.requiresSignOut && isSignedIn
 
         if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
           if (options?.redirectQueryParam) {
             const safeRedirect = getSafeRedirect(context.query[redirectQueryParam])
             const destination = await getRedirectUrl(safeRedirect, fetchAuthSessionFn)
+
+            return {
+              redirect: {
+                destination,
+                permanent: false,
+              },
+            }
+          }
+
+          if (options?.redirectOAuthParams) {
+            // TODO rewrite in cleaner way
+            const params = context.query
+              ? [
+                  context.query[isOAuthQueryParam]
+                    ? `${isOAuthQueryParam}=${context.query[isOAuthQueryParam]}`
+                    : undefined,
+                  context.query[authRequestIdQueryParam]
+                    ? `${authRequestIdQueryParam}=${context.query[authRequestIdQueryParam]}`
+                    : undefined,
+                  context.query[isIdentityVerificationRequiredQueryParam]
+                    ? `${isIdentityVerificationRequiredQueryParam}=${context.query[isIdentityVerificationRequiredQueryParam]}`
+                    : undefined,
+                ]
+                  .filter(isDefined)
+                  .join('&')
+              : ''
+
+            const destination = shouldRedirectNotSignedIn
+              ? `${ROUTES.LOGIN}?${params}`
+              : ROUTES.HOME
 
             return {
               redirect: {

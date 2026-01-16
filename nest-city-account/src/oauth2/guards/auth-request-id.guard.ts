@@ -9,22 +9,22 @@ import {
 import { OAuth2AuthorizationErrorCode } from '../oauth2.error.enum'
 import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
 
-export interface RequestWithAuthorizationPayload extends Request {
-  authorizationPayload?: AuthorizationRequestDto
+export interface RequestWithAuthorizationData extends Request {
+  authorizationRequestData?: AuthorizationRequestDto
 }
 
 /**
- * Guard for OAuth2 endpoints that use authorization request payload
- * Validates authorization request ID (payload) and loads authorization request parameters from database
+ * Guard for OAuth2 endpoints that use authorization request ID
+ * Validates authorization request ID and loads authorization request parameters from database
  * Uses the same validation logic as AuthorizationRequestGuard via OAuth2ValidationSubservice
  *
  * Used for: /oauth2/store, /oauth2/continue
  *
- * The payload is an authorization request ID that references stored authorization request parameters in the database.
+ * The authRequestId references stored authorization request parameters in the database.
  * This prevents tampering since parameters are not included in the request.
  */
 @Injectable()
-export class AuthorizationPayloadGuard implements CanActivate {
+export class AuthRequestIdGuard implements CanActivate {
   constructor(
     private readonly oauth2Service: OAuth2Service,
     private readonly validationSubservice: OAuth2ValidationSubservice,
@@ -32,29 +32,29 @@ export class AuthorizationPayloadGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<RequestWithAuthorizationPayload>()
+    const request = context.switchToHttp().getRequest<RequestWithAuthorizationData>()
 
-    // Support both POST (body.payload) and GET (query.payload)
-    const authRequestId = request.body?.payload || request.query?.payload
+    // Support both POST (body.authRequestId) and GET (query.authRequestId)
+    const authRequestId = request.body?.authRequestId || request.query?.authRequestId
     if (!authRequestId || typeof authRequestId !== 'string') {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization server error: missing payload',
+        'Authorization server error: missing authRequestId',
         undefined,
-        'Missing or invalid payload parameter',
+        'Missing or invalid authRequestId parameter',
         {
-          hasBodyPayload: !!request.body?.payload,
-          hasQueryPayload: !!request.query?.payload,
-          payloadType: typeof authRequestId,
+          hasBodyAuthRequestId: !!request.body?.authRequestId,
+          hasQueryAuthRequestId: !!request.query?.authRequestId,
+          authRequestIdType: typeof authRequestId,
           method: request.method,
         }
       )
     }
 
     // Load authorization request from database using UUID
-    let authorizationRequest: AuthorizationRequestDto | undefined
+    let authRequestData: AuthorizationRequestDto | undefined
     try {
-      authorizationRequest = await this.oauth2Service.loadAuthorizationRequest(authRequestId)
+      authRequestData = await this.oauth2Service.loadAuthorizationRequest(authRequestId)
     } catch (error) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
@@ -65,24 +65,24 @@ export class AuthorizationPayloadGuard implements CanActivate {
       )
     }
 
-    if (!authorizationRequest) {
+    if (!authRequestData) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
         'Authorization server error: authorization request not found or expired',
         undefined,
-        'Authorization request not found for payload',
+        'Authorization request not found for authRequestId',
         { authRequestId, method: request.method }
       )
     }
 
     const params: AuthorizationParams = {
-      responseType: authorizationRequest?.response_type,
-      clientId: authorizationRequest?.client_id,
-      redirectUri: authorizationRequest?.redirect_uri,
-      scope: authorizationRequest?.scope,
-      state: authorizationRequest?.state,
-      codeChallenge: authorizationRequest?.code_challenge,
-      codeChallengeMethod: authorizationRequest?.code_challenge_method,
+      responseType: authRequestData?.response_type,
+      clientId: authRequestData?.client_id,
+      redirectUri: authRequestData?.redirect_uri,
+      scope: authRequestData?.scope,
+      state: authRequestData?.state,
+      codeChallenge: authRequestData?.code_challenge,
+      codeChallengeMethod: authRequestData?.code_challenge_method,
     }
 
     try {
@@ -92,13 +92,13 @@ export class AuthorizationPayloadGuard implements CanActivate {
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
         'Authorization server error: authorization request parameters are corrupted',
         undefined,
-        'Invalid authorization request from payload',
+        'Invalid authorization request from authRequestId',
         { authRequestId, method: request.method }
       )
     }
 
     // Attach validated authorization request to request for controller/service
-    request.authorizationPayload = authorizationRequest
+    request.authorizationRequestData = authRequestData
 
     return true
   }

@@ -10,6 +10,10 @@ export enum OAuth2ClientName {
   DPB = 'DPB',
 }
 
+export enum OAuth2ClientAllowedScopes {
+  IDENTITY_VERIFIED = 'identity:verified',
+}
+
 /**
  * OAuth2 Client Configuration
  *
@@ -32,13 +36,14 @@ export enum OAuth2ClientName {
  * OAUTH2_DPB_CLIENT_ID=dpb-client-id
  * OAUTH2_DPB_CLIENT_SECRET=dpb-secret-key
  * OAUTH2_DPB_ALLOWED_URIS=https://dpb.example.com/callback
- * OAUTH2_DPB_TITLE=DPB Application
+ * OAUTH2_DPB_ALLOWED_SCOPES=identity:verified
+OAUTH2_DPB_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
  * ```
  *
  * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID
  * @optional - OAUTH2_{PREFIX}_CLIENT_SECRET
  * @required - OAUTH2_{PREFIX}_ALLOWED_URIS (at least one redirect URI required)
- * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE, TITLE
+ * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE
  */
 
 export class OAuth2Client {
@@ -63,9 +68,6 @@ export class OAuth2Client {
   /** Whether this client requires PKCE */
   readonly requiresPkce: boolean
 
-  /** Human-readable title for the client (for frontend display) */
-  readonly title?: string
-
   constructor(config: {
     id: string
     secret?: string
@@ -74,7 +76,6 @@ export class OAuth2Client {
     allowedScopes?: string[]
     allowedGrantTypes?: string[]
     requiresPkce: boolean
-    title?: string
   }) {
     this.id = config.id
     this.secret = config.secret
@@ -83,7 +84,6 @@ export class OAuth2Client {
     this.allowedScopes = config.allowedScopes
     this.allowedGrantTypes = config.allowedGrantTypes
     this.requiresPkce = config.requiresPkce
-    this.title = config.title
   }
 
   /**
@@ -103,8 +103,11 @@ export class OAuth2Client {
    * @returns True if all requested scopes are allowed
    */
   areAllScopesAllowed(requestedScope: string): boolean {
+    if (!requestedScope || requestedScope.length === 0) {
+      return true // No scopes requested
+    }
     if (!this.allowedScopes || this.allowedScopes.length === 0) {
-      return true // No restrictions
+      return false // No scopes allowed
     }
 
     const requestedScopes = requestedScope.split(' ').filter((s) => s.length > 0)
@@ -119,7 +122,7 @@ export class OAuth2Client {
    */
   isGrantTypeAllowed(grantType: string): boolean {
     if (!this.allowedGrantTypes || this.allowedGrantTypes.length === 0) {
-      return true // No restrictions
+      return false // No grant types allowed
     }
 
     return this.allowedGrantTypes.includes(grantType)
@@ -214,9 +217,6 @@ export class OAuth2ClientSubservice {
       // Default to true if not specified
       const requiresPkce = process.env[`OAUTH2_${name}_REQUIRES_PKCE`] !== 'false'
 
-      // Optional title for frontend display
-      const title = process.env[`OAUTH2_${name}_TITLE`]
-
       const client = new OAuth2Client({
         id: clientId,
         secret: clientSecret,
@@ -225,7 +225,6 @@ export class OAuth2ClientSubservice {
         allowedScopes,
         allowedGrantTypes,
         requiresPkce,
-        title,
       })
 
       clients.push(client)

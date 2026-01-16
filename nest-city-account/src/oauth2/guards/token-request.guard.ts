@@ -3,7 +3,7 @@ import { Request } from 'express'
 import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
 
 export interface RequestWithClientCredentials extends Request {
-  oauth2ClientId?: string
+  tokenClientId?: string
   oauth2ClientSecret?: string
 }
 
@@ -33,7 +33,7 @@ export class TokenRequestGuard implements CanActivate {
     })
 
     // Attach validated client credentials to request for controller/service
-    request.oauth2ClientId = clientId
+    request.tokenClientId = clientId
     request.oauth2ClientSecret = clientSecret
 
     return true

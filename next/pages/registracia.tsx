@@ -92,7 +92,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, redirectToOAuthContinueUrl, handleOAuthLogin } =
+  const { isOAuthLogin, redirectToOAuthContinueUrl, handleOAuthLogin, clientTitle } =
     useOAuthGetContext(clientInfo)
 
   const { t } = useTranslation('account')
@@ -307,9 +307,8 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
 
     if (isOAuthLogin) {
       return {
-        // TODO OAuth: Add client title to continue button
-        confirmLabel: t('auth.continue_to_account'),
-        onConfirm: async () => {
+        confirmLabel: t('auth.oauth_page.confirm_label', { clientTitle }),
+        onConfirm: () => {
           redirectToOAuthContinueUrl()
         },
       }
@@ -333,6 +332,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
       onConfirm: () => redirect(),
     }
   }, [
+    clientTitle,
     getRouteWithRedirect,
     isOAuthLogin,
     redirect,

@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query'
+import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { prefetchUserQuery } from '../frontend/hooks/useUser'
 import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
@@ -17,6 +18,10 @@ import {
 } from '../frontend/utils/useAmplifyClientOAuthContext'
 import { AuthPageCommonProps } from './prihlasenie'
 
+type PageProps = AuthPageCommonProps & {
+  dehydratedState: DehydratedState
+}
+
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context, fetchAuthSession }) => {
     const queryClient = new QueryClient()
@@ -27,6 +32,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
     return {
       props: {
         clientInfo,
+        dehydratedState: dehydrate(queryClient),
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -34,12 +40,16 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true, redirectOAuthParams: true },
 )
 
-const OAuthPage = ({ clientInfo }: AuthPageCommonProps) => {
+const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   const { t } = useTranslation('account')
   const { signOut } = useSignOut()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { redirectToOAuthContinueUrl, handleOAuthLogin } = useOAuthGetContext(clientInfo)
+  const { userAttributes } = useSsrAuth()
+  const { email } = userAttributes ?? {}
+
+  const { redirectToOAuthContinueUrl, handleOAuthLogin, clientTitle } =
+    useOAuthGetContext(clientInfo)
 
   const continueHandler = async () => {
     await handleOAuthLogin()
@@ -59,22 +69,24 @@ const OAuthPage = ({ clientInfo }: AuthPageCommonProps) => {
   }
 
   return (
-    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout backButtonHidden>
-        <AccountContainer>
-          <AccountSuccessAlert
-            title={t('auth.oauth_page.title')}
-            description={t('auth.oauth_page.description')}
-            confirmLabel={t('auth.oauth_page.confirm_label')}
-            onConfirm={continueHandler}
-            confirmIsLoading={isLoading}
-            cancelLabel={t('auth.oauth_page.cancel_label')}
-            onCancel={logoutHandler}
-            cancelIsLoading={isLoading}
-          />
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </AmplifyClientOAuthProvider>
+    <HydrationBoundary state={dehydratedState}>
+      <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+        <LoginRegisterLayout backButtonHidden>
+          <AccountContainer>
+            <AccountSuccessAlert
+              title={t('auth.oauth_page.title')}
+              description={t('auth.oauth_page.description', { email })}
+              confirmLabel={t('auth.oauth_page.confirm_label', { clientTitle })}
+              onConfirm={continueHandler}
+              confirmIsLoading={isLoading}
+              cancelLabel={t('auth.oauth_page.cancel_label')}
+              onCancel={logoutHandler}
+              cancelIsLoading={isLoading}
+            />
+          </AccountContainer>
+        </LoginRegisterLayout>
+      </AmplifyClientOAuthProvider>
+    </HydrationBoundary>
   )
 }
 

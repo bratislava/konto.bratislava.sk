@@ -75,9 +75,17 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
     )
   }
 
+  const clientTitle = clientInfo?.clientName
+    ? {
+        DPB: 'DPB',
+        PAAS_MPA: 'PAAS',
+      }[clientInfo.clientName]
+    : undefined
+
   return {
     isOAuthLogin,
     clientInfo,
+    clientTitle,
     redirectToOAuthContinueUrl,
     handleOAuthLogin,
   }

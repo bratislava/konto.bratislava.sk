@@ -42,6 +42,7 @@ const LogoutPage = () => {
     <LoginRegisterLayout backButtonHidden>
       <AccountContainer>
         <AccountSuccessAlert
+          variant="logout"
           title={t('auth.logout_page.title')}
           description={t('auth.logout_page.description')}
           confirmLabel={t('auth.logout_page.confirm_label')}

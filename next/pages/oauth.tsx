@@ -86,6 +86,7 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
         <LoginRegisterLayout backButtonHidden>
           <AccountContainer>
             <AccountSuccessAlert
+              variant="info"
               title={t('auth.oauth_page.title')}
               {...(shouldRedirectToIdentityVerification
                 ? {

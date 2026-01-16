@@ -1,7 +1,9 @@
-import { ArrowRightIcon, CheckIcon } from '@assets/ui-icons'
+import { ArrowRightIcon, CheckIcon, InfoIcon, LogoutIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/ButtonNew'
 import { ReactNode } from 'react'
+
+import cn from '../../../../frontend/cn'
 
 interface Props {
   title: string
@@ -13,6 +15,7 @@ interface Props {
   cancelIsLoading?: boolean
   cancelLabel?: string
   children?: ReactNode
+  variant?: 'success' | 'info' | 'logout'
 }
 
 const AccountSuccessAlert = ({
@@ -25,13 +28,25 @@ const AccountSuccessAlert = ({
   cancelIsLoading,
   cancelLabel,
   children,
+  variant = 'success',
 }: Props) => {
   return (
     <div className="flex flex-col gap-4 md:gap-6" data-cy="success-alert">
-      <div className="mx-auto size-14 rounded-full bg-success-100 p-4">
-        <div className="flex size-6 items-center justify-center">
-          <CheckIcon className="size-6 text-success-700" />
-        </div>
+      {/* TODO This variant and "avatar" icon can serve for future refactor. I added it temporarily here, because I needed them for auth flows.  */}
+      <div
+        className={cn('mx-auto items-center justify-center rounded-full p-4 lg:p-5', {
+          'bg-background-success-soft-default text-content-success-default': variant === 'success',
+          'bg-background-passive-secondary text-content-passive-secondary':
+            variant === 'info' || variant === 'logout',
+        })}
+      >
+        {variant === 'info' ? (
+          <InfoIcon className="size-6 shrink-0 lg:size-8" />
+        ) : variant === 'logout' ? (
+          <LogoutIcon className="size-6 shrink-0 lg:size-8" />
+        ) : (
+          <CheckIcon className="size-6 shrink-0 lg:size-8" />
+        )}
       </div>
       <h1 className="text-center text-h3">{title}</h1>
       {description && (

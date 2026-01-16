@@ -77,8 +77,11 @@ FROM
 	"User"
 	LEFT JOIN "UserGdprData" ON "User"."id" = "UserGdprData"."userId"
 WHERE
-	"userId" IS NULL
-	AND "registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
+	WHERE
+	"UserGdprData"."type" = 'MARKETING'
+	AND "UserGdprData"."category" = 'ESBS'
+	AND "UserGdprData"."userId" IS NULL
+	AND "User"."registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
 
 -- LegalPerson Gdpr Data fix
 -- 1.find users with only null values in marketing esbs consent
@@ -157,7 +160,9 @@ FROM
 	"LegalPerson"
 	LEFT JOIN "LegalPersonGdprData" ON "LegalPerson"."id" = "LegalPersonGdprData"."legalPersonId"
 WHERE
-	"legalPersonId" IS NULL
-	AND "registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
+	"LegalPersonGdprData"."type" = 'MARKETING'
+	AND "LegalPersonGdprData"."category" = 'ESBS'
+	AND "LegalPersonGdprData"."legalPersonId" IS NULL
+	AND "LegalPerson"."registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
 
 COMMIT;

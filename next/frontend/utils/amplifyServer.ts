@@ -10,10 +10,12 @@ import type { GlobalAppProps } from '../../pages/_app'
 import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import { AmplifyServerContextSpec } from './amplifyTypes'
+import { isDefined } from './general'
 import {
   authRequestIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
+  isIdentityVerificationRequiredQueryParam,
   isOAuthQueryParam,
   redirectQueryParam,
   removeRedirectQueryParamFromUrl,
@@ -115,8 +117,25 @@ export const amplifyGetServerSideProps = <
           }
 
           if (options?.redirectOAuthParams) {
+            // TODO rewrite in cleaner way
+            const params = context.query
+              ? [
+                  context.query[isOAuthQueryParam]
+                    ? `${isOAuthQueryParam}=${context.query[isOAuthQueryParam]}`
+                    : undefined,
+                  context.query[authRequestIdQueryParam]
+                    ? `${authRequestIdQueryParam}=${context.query[authRequestIdQueryParam]}`
+                    : undefined,
+                  context.query[isIdentityVerificationRequiredQueryParam]
+                    ? `${isIdentityVerificationRequiredQueryParam}=${context.query[isIdentityVerificationRequiredQueryParam]}`
+                    : undefined,
+                ]
+                  .filter(isDefined)
+                  .join('&')
+              : ''
+
             const destination = shouldRedirectNotSignedIn
-              ? `${ROUTES.LOGIN}?${isOAuthQueryParam}=${context.query?.[isOAuthQueryParam]}&${authRequestIdQueryParam}=${context.query?.[authRequestIdQueryParam]}`
+              ? `${ROUTES.LOGIN}?${params}`
               : ROUTES.HOME
 
             return {

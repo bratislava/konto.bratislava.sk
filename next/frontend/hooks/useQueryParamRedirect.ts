@@ -11,6 +11,7 @@ import {
   getRedirectUrl,
   getSafeRedirect,
   isHomeRedirect,
+  isIdentityVerificationRequiredQueryParam,
   isOAuthQueryParam,
   redirectQueryParam,
 } from '../utils/queryParamRedirect'
@@ -20,7 +21,7 @@ export const useQueryParamRedirect = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const { isOAuth, authRequestId } = useOAuthParams()
+  const { isOAuth, authRequestId, isIdentityVerificationRequired } = useOAuthParams()
 
   const safeRedirect = useMemo(() => {
     const param = searchParams.get(redirectQueryParam)
@@ -36,8 +37,11 @@ export const useQueryParamRedirect = () => {
       ...(!isHomeRedirect(safeRedirect) && { [redirectQueryParam]: safeRedirect.url }),
       ...(isOAuth && { [isOAuthQueryParam]: isOAuth }),
       ...(authRequestId && { [authRequestIdQueryParam]: authRequestId }),
+      ...(isIdentityVerificationRequired && {
+        [isIdentityVerificationRequiredQueryParam]: isIdentityVerificationRequired,
+      }),
     }
-  }, [isOAuth, authRequestId, safeRedirect])
+  }, [safeRedirect, isOAuth, authRequestId, isIdentityVerificationRequired])
 
   /**
    * If redirect param exists in the current URL the function appends it to the next route. Should be only used for

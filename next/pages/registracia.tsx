@@ -92,8 +92,13 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, redirectToOAuthContinueUrl, handleOAuthLogin, clientTitle } =
-    useOAuthGetContext(clientInfo)
+  const {
+    isOAuthLogin,
+    redirectToOAuthContinueUrl,
+    handleOAuthLogin,
+    clientTitle,
+    isIdentityVerificationRequired,
+  } = useOAuthGetContext(clientInfo)
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -307,7 +312,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
 
     if (isOAuthLogin) {
       return {
-        confirmLabel: t('auth.oauth_page.confirm_label', { clientTitle }),
+        confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
         onConfirm: () => {
           redirectToOAuthContinueUrl()
         },
@@ -315,17 +320,17 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
     }
 
     // TODO OAuth: identity verification
-    // const redirectToIdentityVerificationAfterOAuthLogin = TODO
-    //
-    // if (redirectToIdentityVerificationAfterOAuthLogin) {
-    //   return {
-    //     confirmLabel: t('auth.continue_to_account'),
-    //     onConfirm: () =>
-    //       router
-    //         .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
-    //         .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
-    //   }
-    // }
+    const redirectToIdentityVerificationAfterOAuthLogin = isIdentityVerificationRequired
+
+    if (redirectToIdentityVerificationAfterOAuthLogin) {
+      return {
+        confirmLabel: t('auth.continue_to_account'),
+        onConfirm: () =>
+          router
+            .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
+            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
+      }
+    }
 
     return {
       confirmLabel: t('auth.continue_to_account'),
@@ -334,6 +339,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
   }, [
     clientTitle,
     getRouteWithRedirect,
+    isIdentityVerificationRequired,
     isOAuthLogin,
     redirect,
     redirectToOAuthContinueUrl,

@@ -54,8 +54,12 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, redirectToOAuthContinueUrl, handleOAuthLogin } =
-    useOAuthGetContext(clientInfo)
+  const {
+    isOAuthLogin,
+    redirectToOAuthContinueUrl,
+    handleOAuthLogin,
+    isIdentityVerificationRequired,
+  } = useOAuthGetContext(clientInfo)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -76,7 +80,13 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
           logger.info(`[AUTH] Proceeding to OAuth login`)
           await handleOAuthLogin()
 
+          if (isIdentityVerificationRequired) {
+            router.push(getRouteWithRedirect(ROUTES.OAUTH))
+            return
+          }
+
           redirectToOAuthContinueUrl()
+
           return
         }
 

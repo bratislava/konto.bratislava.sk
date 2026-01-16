@@ -16,7 +16,7 @@ import logger from './logger'
 import { authRequestIdQueryParam } from './queryParamRedirect'
 
 export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => {
-  const { authRequestId } = useOAuthParams()
+  const { authRequestId, isIdentityVerificationRequired } = useOAuthParams()
   const router = useRouter()
 
   const isOAuthLogin = !!clientInfo
@@ -88,6 +88,7 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
     clientTitle,
     redirectToOAuthContinueUrl,
     handleOAuthLogin,
+    isIdentityVerificationRequired: !!isIdentityVerificationRequired,
   }
 }
 

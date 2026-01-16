@@ -12,6 +12,7 @@ export enum SafeRedirectType {
 export const redirectQueryParam = 'from'
 export const isOAuthQueryParam = 'isOAuth'
 export const authRequestIdQueryParam = 'authRequestId'
+export const isIdentityVerificationRequiredQueryParam = 'isIdentityVerificationRequired'
 
 export type SafeRedirect = {
   url: string

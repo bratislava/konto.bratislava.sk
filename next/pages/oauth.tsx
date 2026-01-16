@@ -2,10 +2,13 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import { router } from 'next/client'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { ROUTES } from '../frontend/api/constants'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { prefetchUserQuery } from '../frontend/hooks/useUser'
 import { useSignOut } from '../frontend/utils/amplifyClient'
@@ -45,11 +48,20 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   const { signOut } = useSignOut()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { userAttributes } = useSsrAuth()
+  const { userAttributes, tierStatus } = useSsrAuth()
   const { email } = userAttributes ?? {}
 
-  const { redirectToOAuthContinueUrl, handleOAuthLogin, clientTitle } =
-    useOAuthGetContext(clientInfo)
+  const { getRouteWithRedirect } = useQueryParamRedirect()
+
+  const {
+    redirectToOAuthContinueUrl,
+    handleOAuthLogin,
+    clientTitle,
+    isIdentityVerificationRequired,
+  } = useOAuthGetContext(clientInfo)
+
+  const shouldRedirectToIdentityVerification =
+    isIdentityVerificationRequired && !tierStatus.isIdentityVerified
 
   const continueHandler = async () => {
     await handleOAuthLogin()
@@ -75,9 +87,18 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
           <AccountContainer>
             <AccountSuccessAlert
               title={t('auth.oauth_page.title')}
-              description={t('auth.oauth_page.description', { email })}
-              confirmLabel={t('auth.oauth_page.confirm_label', { clientTitle })}
-              onConfirm={continueHandler}
+              {...(shouldRedirectToIdentityVerification
+                ? {
+                    description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
+                    confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+                    onConfirm: () =>
+                      router.push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION)),
+                  }
+                : {
+                    description: t('auth.oauth_page.description', { email }),
+                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                    onConfirm: () => continueHandler(),
+                  })}
               confirmIsLoading={isLoading}
               cancelLabel={t('auth.oauth_page.cancel_label')}
               onCancel={logoutHandler}

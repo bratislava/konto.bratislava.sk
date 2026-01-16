@@ -8,7 +8,11 @@ import AccountVerificationPendingAlert from '../forms/segments/AccountVerificati
 import Button from '../forms/simple-components/ButtonNew'
 import { useVerifyEid, VerificationStatus } from './useVerifyEid'
 
-const LegalPersonVerificationPageContent = () => {
+type Props = {
+  showSkipButton?: boolean
+}
+
+const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) => {
   const { t } = useTranslation('account')
   const { redirect } = useQueryParamRedirect()
 
@@ -55,9 +59,11 @@ const LegalPersonVerificationPageContent = () => {
       >
         {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
       </Button>
-      <Button variant="black-plain" fullWidth onPress={() => redirect()}>
-        {t('auth.identity_verification.common.skip_verification_button_text')}
-      </Button>
+      {showSkipButton ? (
+        <Button variant="black-plain" fullWidth onPress={() => redirect()}>
+          {t('auth.identity_verification.common.skip_verification_button_text')}
+        </Button>
+      ) : null}
     </div>
   )
 }

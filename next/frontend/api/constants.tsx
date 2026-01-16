@@ -5,6 +5,7 @@ export const ROUTES = {
   LOGIN: '/prihlasenie',
   LOGOUT: '/odhlasenie',
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
+  OAUTH: '/oauth',
   PASSWORD_CHANGE: '/zmena-hesla',
   HELP: '/pomoc',
   TAXES_AND_FEES: '/dane-a-poplatky',

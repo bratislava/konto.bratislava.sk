@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { MagproxyService } from '../magproxy.service'
 import ClientsService from '../../clients/clients.service'
 import { createMock } from '@golevelup/ts-jest'
@@ -26,7 +26,6 @@ describe('MagproxyService', () => {
       providers: [
         MagproxyService,
         ThrowerErrorGuard,
-        ErrorMessengerGuard,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
     }).compile()

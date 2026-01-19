@@ -4,10 +4,9 @@ import { Module } from '@nestjs/common'
 import { MagproxyModule } from 'src/magproxy/magproxy.module'
 import { NasesModule } from '../nases/nases.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
 import { TurnstileSubservice } from '../utils/subservices/turnstile.subservice'
 import { RABBIT_MQ } from './constants'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
@@ -15,6 +14,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { VerificationController } from './verification.controller'
 import { VerificationService } from './verification.service'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
+import { MailgunModule } from '../mailgun/mailgun.module'
 import TokenSubservice from 'src/user-verification/utils/subservice/token.subservice'
 
 @Module({
@@ -37,6 +37,7 @@ import TokenSubservice from 'src/user-verification/utils/subservice/token.subser
     MagproxyModule,
     PhysicalEntityModule,
     BloomreachModule,
+    MailgunModule,
   ],
   providers: [
     VerificationService,
@@ -44,9 +45,7 @@ import TokenSubservice from 'src/user-verification/utils/subservice/token.subser
     CognitoSubservice,
     TurnstileSubservice,
     VerificationSubservice,
-    MailgunSubservice,
     ThrowerErrorGuard,
-    ErrorMessengerGuard,
     TokenSubservice,
   ],
   exports: [VerificationService],

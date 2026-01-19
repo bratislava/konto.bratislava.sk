@@ -63,7 +63,9 @@ export default class OloMailerService implements Mailer {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         MailgunErrorsEnum.SEND_OLO_MAIL_ERROR,
-        `${MailgunErrorsResponseEnum.SEND_OLO_MAIL_ERROR}: ${(error as Error).message}`,
+        MailgunErrorsResponseEnum.SEND_OLO_MAIL_ERROR,
+        undefined,
+        error,
       )
     }
   }

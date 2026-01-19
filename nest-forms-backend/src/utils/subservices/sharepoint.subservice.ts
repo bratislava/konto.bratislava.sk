@@ -187,7 +187,8 @@ export default class SharepointSubservice {
     ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         SharepointErrorsEnum.SHAREPOINT_DATA_NOT_PROVIDED,
-        `${SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED} Form id: ${form.id}.`,
+        SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED,
+        { formId: form.id },
       )
     }
 

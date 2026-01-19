@@ -293,11 +293,7 @@ export default class FilesHelper {
         this.throwerErrorGuard.InternalServerErrorException(
           FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
           FilesErrorsResponseEnum.FILE_SCANNING_SERVICE_ERROR,
-          undefined,
-          {
-            formId,
-            errorFiles,
-          } as any,
+          { formId, errorFiles },
         ),
       )
       return false

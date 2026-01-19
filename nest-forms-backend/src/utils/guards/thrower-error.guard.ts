@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import alertReporting from '../constants/error.alerts'
-import { toLogfmt } from '../logging'
 import {
   CustomErrorEnums,
   ErrorSymbols,

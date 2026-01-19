@@ -62,7 +62,8 @@ export default class WebhookSubservice {
     if (!isWebhookFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         WebhookErrorsEnum.NOT_WEBHOOK_FORM,
-        `${WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM} Form id: ${form.id}.`,
+        WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
+        { formId: form.id },
       )
     }
 

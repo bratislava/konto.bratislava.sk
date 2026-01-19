@@ -579,6 +579,7 @@ export default class NasesService {
         error: FormError.NASES_SEND_ERROR,
       })
 
+      // TODO do we want to return all this to the user?
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
         `${NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES} Received form id: ${

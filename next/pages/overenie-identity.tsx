@@ -147,7 +147,9 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
                   }
                 : {
                     confirmLabel: t('auth.continue_to_account'),
-                    onConfirm: () => redirect(),
+                    onConfirm: () => {
+                      redirect()
+                    },
                     description:
                       lastRc && lastIdCard
                         ? t('auth.identity_verification.fo.pending.content', {
@@ -177,7 +179,9 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
                   }
                 : {
                     confirmLabel: t('auth.continue_to_account'),
-                    onConfirm: () => redirect(),
+                    onConfirm: () => {
+                      redirect()
+                    },
                   })}
             />
           )}

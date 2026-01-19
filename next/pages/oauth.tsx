@@ -92,13 +92,16 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
                 ? {
                     description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
                     confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
-                    onConfirm: () =>
-                      router.push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION)),
+                    onConfirm: () => {
+                      router.push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
+                    },
                   }
                 : {
                     description: t('auth.oauth_page.description', { email }),
                     confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                    onConfirm: () => continueHandler(),
+                    onConfirm: () => {
+                      continueHandler()
+                    },
                   })}
               confirmIsLoading={isLoading}
               cancelLabel={t('auth.oauth_page.cancel_label')}

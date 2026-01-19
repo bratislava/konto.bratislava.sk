@@ -284,10 +284,11 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
     if (registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) {
       return {
         confirmLabel: t('auth.register_success_go_to_login'),
-        onConfirm: () =>
+        onConfirm: () => {
           router
             .push(getRouteWithRedirect(ROUTES.LOGIN))
-            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
+            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+        },
       }
     }
 
@@ -325,16 +326,19 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
     if (redirectToIdentityVerificationAfterOAuthLogin) {
       return {
         confirmLabel: t('auth.continue_to_account'),
-        onConfirm: () =>
+        onConfirm: () => {
           router
             .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
-            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
+            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+        },
       }
     }
 
     return {
       confirmLabel: t('auth.continue_to_account'),
-      onConfirm: () => redirect(),
+      onConfirm: () => {
+        redirect()
+      },
     }
   }, [
     clientTitle,

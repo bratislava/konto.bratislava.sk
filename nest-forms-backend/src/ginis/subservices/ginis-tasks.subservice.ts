@@ -6,9 +6,8 @@ import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefini
 
 import PrismaService from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
   GinisTaskErrorEnum,
   GinisTaskErrorResponseEnum,
@@ -32,6 +31,7 @@ export default class GinisTasksSubservice {
     private readonly prisma: PrismaService,
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('GinisTasksSubservice')
   }
@@ -50,10 +50,13 @@ export default class GinisTasksSubservice {
         return docDetail['Wfl-dokument']['Stav-dokumentu']
       })
     } catch (error) {
-      alertError(
-        GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
-        this.logger,
-        `${GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR} Document ID: ${ginisDocumentId}.`,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR,
+          { ginisDocumentId },
+          error,
+        ),
       )
       return
     }
@@ -77,9 +80,12 @@ export default class GinisTasksSubservice {
         },
       })
     } else if (!GINIS_PROCESSING_DOCUMENT_STATES.has(docState)) {
-      alertError(
-        `Unknown GINIS Document state received: ${docState} for submission ${ginisDocumentId}.`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          'Unknown GINIS Document state received.',
+          { docState, ginisDocumentId },
+        ),
       )
     }
   }

@@ -14,14 +14,13 @@ import {
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import WebhookDto from './dtos/webhook.dto'
 import {
   WebhookErrorsEnum,
   WebhookErrorsResponseEnum,
 } from './dtos/webhook.errors.enum'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 
 @Injectable()
 export default class WebhookSubservice {
@@ -108,10 +107,13 @@ export default class WebhookSubservice {
         },
       })
     } catch (error) {
-      alertError(
-        `Setting form state with id ${formId} to FINISHED failed.`,
-        this.logger,
-        JSON.stringify(error),
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Setting form state with id ${formId} to FINISHED failed`,
+          undefined,
+          error,
+        ),
       )
     }
   }

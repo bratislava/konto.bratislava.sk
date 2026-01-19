@@ -30,7 +30,7 @@ import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
 } from './dtos/sharepoint.errors.enum'
-import alertError, { LineLoggerSubservice } from './line-logger.subservice'
+import { LineLoggerSubservice } from './line-logger.subservice'
 
 @Injectable()
 @Processor('sharepoint')
@@ -73,10 +73,13 @@ export default class SharepointSubservice {
         },
       })
       .catch((error) => {
-        alertError(
-          `Setting form error with id ${job.data.formId} to POWERAPPS_SEND_ERROR failed.`,
-          this.logger,
-          JSON.stringify(error),
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            SharepointErrorsEnum.GENERAL_ERROR,
+            `Setting form error with id ${job.data.formId} to POWERAPPS_SEND_ERROR failed.`,
+            undefined,
+            error,
+          ),
         )
       })
   }

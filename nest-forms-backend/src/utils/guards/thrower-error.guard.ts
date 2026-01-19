@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import alertReporting from '../constants/error.alerts'
+import { toLogfmt } from '../logging'
 import {
   CustomErrorEnums,
   ErrorSymbols,
@@ -12,7 +13,7 @@ export default class ThrowerErrorGuard {
   NotAcceptableException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -28,7 +29,7 @@ export default class ThrowerErrorGuard {
   GoneException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -44,7 +45,7 @@ export default class ThrowerErrorGuard {
   PayloadTooLargeException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -60,7 +61,7 @@ export default class ThrowerErrorGuard {
   InternalServerErrorException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -76,7 +77,7 @@ export default class ThrowerErrorGuard {
   ForbiddenException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -92,7 +93,7 @@ export default class ThrowerErrorGuard {
   UnprocessableEntityException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -108,7 +109,7 @@ export default class ThrowerErrorGuard {
   NotFoundException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -124,7 +125,7 @@ export default class ThrowerErrorGuard {
   BadRequestException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -140,7 +141,7 @@ export default class ThrowerErrorGuard {
   UnauthorizedException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: Error | unknown,
   ): HttpException {
     return this.LoggingHttpException(
@@ -158,7 +159,7 @@ export default class ThrowerErrorGuard {
     status: string,
     errorsEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     errorCause?: unknown,
   ): HttpException {
     const response: ResponseErrorInternalDto =

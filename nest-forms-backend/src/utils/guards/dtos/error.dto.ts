@@ -10,6 +10,7 @@ import { SignerErrorsEnum } from '../../../signer/signer.errors.enum'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import { MailgunErrorsEnum } from '../../global-enums/mailgun.errors.enum'
 import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.enum'
+import { StatusErrorsEnum } from '../../../status/errors/status.errors.enum'
 
 export type CustomErrorEnums =
   | ErrorsEnum
@@ -24,6 +25,7 @@ export type CustomErrorEnums =
   | ScannerClientErrorsEnum
   | ConvertErrorsEnum
   | SignerErrorsEnum
+  | StatusErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')
@@ -66,7 +68,7 @@ export class ResponseErrorInternalDto {
 
   [ErrorSymbols.console]?: string;
 
-  [ErrorSymbols.errorCause]?: string;
+  [ErrorSymbols.errorCause]?: string | Record<string, undefined>;
 
   [ErrorSymbols.causedByMessage]?: string;
 

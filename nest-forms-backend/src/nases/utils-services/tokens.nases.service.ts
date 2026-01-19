@@ -34,9 +34,7 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesSendResponse } from '../dtos/responses.dto'
 import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
@@ -591,10 +589,13 @@ export default class NasesUtilsService {
       })
       .then((response) => response.data.length > 0)
       .catch((error) => {
-        alertError(
-          'Error when checking if message is in eDesk',
-          this.logger,
-          error,
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            NasesErrorsEnum.SEND_TO_NASES_ERROR,
+            'Error when checking if message is in eDesk',
+            undefined,
+            error,
+          ),
         )
         return false
       })

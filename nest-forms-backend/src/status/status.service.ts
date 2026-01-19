@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common'
 
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { ServiceRunningDto } from './dtos/status.dto'
+import {
+  StatusErrorsEnum,
+  StatusResponseEnum,
+} from './errors/status.errors.enum'
 
 @Injectable()
 export default class StatusService {
@@ -16,6 +19,7 @@ export default class StatusService {
     private minioClientSubservice: MinioClientSubservice,
     private readonly prismaService: PrismaService,
     private readonly scannerClientService: ScannerClientService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('StatusService')
   }
@@ -28,7 +32,14 @@ export default class StatusService {
         running: result,
       }
     } catch (error) {
-      alertError('Prisma is not running.', this.logger, error)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          StatusErrorsEnum.PRISMA_NOT_RUNNING,
+          StatusResponseEnum.PRISMA_NOT_RUNNING,
+          undefined,
+          error,
+        ),
+      )
       return {
         running: false,
       }
@@ -44,7 +55,14 @@ export default class StatusService {
         running: true,
       }
     } catch (error) {
-      alertError('Scanner is not running.', this.logger, error)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          StatusErrorsEnum.SCANNER_NOT_RUNNING,
+          StatusResponseEnum.SCANNER_NOT_RUNNING,
+          undefined,
+          error,
+        ),
+      )
       return {
         running: false,
       }
@@ -60,7 +78,14 @@ export default class StatusService {
         running: true,
       }
     } catch (error) {
-      alertError('Minio is not running.', this.logger, error)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          StatusErrorsEnum.MINIO_NOT_RUNNING,
+          StatusResponseEnum.MINIO_NOT_RUNNING,
+          undefined,
+          error,
+        ),
+      )
       return {
         running: false,
       }

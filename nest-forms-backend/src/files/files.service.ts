@@ -451,7 +451,6 @@ export default class FilesService {
         error: FormError.UNABLE_TO_SCAN_FILES,
       }
 
-      // TODO is this not a duplicate logging from files.helper.ts:280 checkErrorFiles?
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,

@@ -77,7 +77,9 @@ describe('FilesService', () => {
       service['filesHelper'].checkInfectedFiles = jest
         .fn()
         .mockResolvedValue(false)
-      service['filesHelper'].checkErrorFiles = jest.fn().mockResolvedValue(true)
+      service['filesHelper'].formHasErrorFiles = jest
+        .fn()
+        .mockResolvedValue(true)
 
       const result = await service.areFormAttachmentsReady('1')
       expect(result.filesReady).toBeFalsy()
@@ -88,7 +90,7 @@ describe('FilesService', () => {
       service['filesHelper'].checkInfectedFiles = jest
         .fn()
         .mockResolvedValue(false)
-      service['filesHelper'].checkErrorFiles = jest
+      service['filesHelper'].formHasErrorFiles = jest
         .fn()
         .mockResolvedValue(false)
 

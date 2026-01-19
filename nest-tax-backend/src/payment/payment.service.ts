@@ -20,6 +20,7 @@ import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxInfo } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
 import {
+  CustomErrorNorisTypesResponseEnum,
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
 } from './dtos/error.dto'
@@ -249,7 +250,9 @@ export class PaymentService {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
       }
 
-      const taxPaymentWithTax = await this.prisma.taxPayment.findUnique({
+      const taxPaymentWithTax: Prisma.TaxPaymentGetPayload<{
+        include: { tax: { include: { taxPayer: true } } }
+      }> | null = await this.prisma.taxPayment.findUnique({
         where: { orderId: ORDERNUMBER },
         include: { tax: { include: { taxPayer: true } } },
       })
@@ -289,9 +292,11 @@ export class PaymentService {
             currentStatus === PaymentStatus.NEW ? PaymentStatus.FAIL : undefined
           break
       }
+
       let taxPayment: Prisma.TaxPaymentGetPayload<{
         include: { tax: { select: { year: true; type: true; order: true } } }
       }> | null
+
       if (nextStatus) {
         taxPayment = await this.prisma.taxPayment.update({
           where: { orderId: ORDERNUMBER },
@@ -312,8 +317,10 @@ export class PaymentService {
         if (!taxPayment) {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'TODO',
+              CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+              CustomErrorNorisTypesResponseEnum.DATABASE_ERROR,
+              undefined,
+              'Database did not return an update TaxPayment after nextStatus was set.',
             ),
           )
           return redirectBase

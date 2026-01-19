@@ -10,3 +10,7 @@ export enum CustomErrorPaymentTypesEnum {
   CREATE_PAYMENT_URL = 'CREATE_PAYMENT_URL',
   QR_CODE_NOT_FOUND = 'QR_CODE_NOT_FOUND',
 }
+
+export enum CustomErrorNorisTypesResponseEnum {
+  DATABASE_ERROR = 'A database error has occurred while processing payment request.',
+}

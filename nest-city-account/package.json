@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.888.0",
-    "@golevelup/nestjs-rabbitmq": "^6.0.2",
+    "@golevelup/nestjs-rabbitmq": "^7.1.1",
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.9",
@@ -52,6 +52,7 @@
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.1",
+    "playwright": "^1.57.0",
     "rodnecislo": "^1.6.0",
     "uuid": "^11.1.0",
     "zod": "^4.1.13"
@@ -64,7 +65,7 @@
     "@types/amqplib": "^0.10.8",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.21",
-    "@types/node": "^20.9.0",
+    "@types/node": "^20.19.28",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^10.0.0",
@@ -111,7 +112,12 @@
       "<rootDir>/../test/singleton.ts"
     ]
   },
+  "engines": {
+    "node": ">=20.19.x",
+    "npm": ">=10.9.x"
+  },
   "volta": {
-    "node": "20.18.2"
+    "node": "20.19.6",
+    "npm": "10.9.3"
   }
 }

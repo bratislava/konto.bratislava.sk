@@ -1,12 +1,25 @@
 ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
-FROM node:20.9-alpine AS base
+FROM node:20.19-alpine AS base
+
+# Install Chromium and dependencies via apk
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont
+
+
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 ENV NODE_ENV=production
 
 FROM base AS app-base
 RUN apk update \
- && apk add tini \
+ && apk add tini qpdf\
  && rm -rf /var/cache/apk/* \
  && mkdir -p /home/node/app \
  && chown -R node:node /home/node/app

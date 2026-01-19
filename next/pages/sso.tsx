@@ -1,6 +1,6 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
-import { useEffectOnce } from 'usehooks-ts'
+import { useEffect } from 'react'
 
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import {
@@ -30,7 +30,7 @@ export const getServerSideProps = amplifyGetServerSideProps<SSOPageProps>(
 const SSOPage = ({ accessToken }: SSOPageProps) => {
   const { t } = useTranslation('account')
 
-  useEffectOnce(() => {
+  useEffect(() => {
     if (accessToken) {
       postMessageToApprovedDomains({
         type: PostMessageTypes.ACCESS_TOKEN,
@@ -41,7 +41,9 @@ const SSOPage = ({ accessToken }: SSOPageProps) => {
         type: PostMessageTypes.UNAUTHORIZED,
       })
     }
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return <AccountMarkdown content={t('sso_page.sso_placeholder')} />
 }

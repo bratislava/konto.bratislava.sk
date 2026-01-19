@@ -10,6 +10,9 @@ import { TasksService } from '../tasks.service'
 import { DeliveryMethodEnum, GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
 import { DeliveryMethodNoris } from '../../utils/types/tax.types'
 import { AxiosResponse } from 'axios'
+import { MailgunService } from '../../mailgun/mailgun.service'
+import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
+import { PdfGeneratorService } from '../../pdf-generator/pdf-generator.service'
 
 jest.mock('../../utils/decorators/errorHandler.decorators', () => {
   return jest.fn(() => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
@@ -41,7 +44,7 @@ describe('TasksService', () => {
   beforeAll(() => {
     process.env = {
       ...process.env,
-      MUNICIPAL_TAX_LOCK_MONTH: '04',
+      MUNICIPAL_TAX_LOCK_MONTH: '02',
       MUNICIPAL_TAX_LOCK_DAY: '01',
     }
   })
@@ -53,7 +56,10 @@ describe('TasksService', () => {
         { provide: PrismaService, useValue: prismaMock },
         { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
-        ThrowerErrorGuard,
+        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        { provide: MailgunService, useValue: createMock<MailgunService>() },
+        { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
+        { provide: PdfGeneratorService, useValue: createMock<PdfGeneratorService>() },
       ],
     }).compile()
 

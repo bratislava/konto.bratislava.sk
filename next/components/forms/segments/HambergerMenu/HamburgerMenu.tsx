@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ComponentProps, forwardRef } from 'react'
-import { useEventListener, useLockedBody } from 'usehooks-ts'
+import { useEventListener, useScrollLock } from 'usehooks-ts'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import cn from '../../../../frontend/cn'
@@ -57,7 +57,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
 
 export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) => {
   const router = useRouter()
-  const { menuValue, setMenuValue, setMobileMenuOpen, isMobileMenuOpen } = useNavMenuContext()
+  const { menuValue, setMenuValue, setMobileMenuOpen } = useNavMenuContext()
   const { t } = useTranslation('account')
 
   useEventListener('keydown', (event) => {
@@ -66,8 +66,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
     }
   })
 
-  // used to lock body with overflow: hidden when mobile menu is open, look for div with id="root" in _app.tsx
-  useLockedBody(isMobileMenuOpen, 'root')
+  useScrollLock()
 
   return (
     <div

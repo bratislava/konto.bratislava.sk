@@ -13,7 +13,6 @@ import React, {
   useEffect,
   useRef,
 } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
 
 import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
@@ -218,7 +217,7 @@ const useGetContext = () => {
 
   // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
-  useEffectOnce(() => {
+  useEffect(() => {
     if (effectOnceRan.current) {
       return
     }
@@ -234,7 +233,9 @@ const useGetContext = () => {
       setEidSendingModal(true)
       sendFormEidMutate({})
     }
-  })
+    // Rewritten from useEffectOnce
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const submitDisabled = useCallback(
     () => isFormSubmitDisabled(getValidatedSummary(), isValidSignature()),

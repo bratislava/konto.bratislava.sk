@@ -24,16 +24,16 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.948.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.967.0",
     "@nestjs-cognito/auth": "^2.5.1",
     "@nestjs/cli": "^11.0.14",
-    "@nestjs/common": "^11.1.9",
+    "@nestjs/common": "^11.1.11",
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "^11.1.9",
+    "@nestjs/core": "^11.1.11",
     "@nestjs/passport": "^11.0.5",
-    "@nestjs/platform-express": "^11.1.9",
+    "@nestjs/platform-express": "^11.1.11",
     "@nestjs/schedule": "^6.1.0",
-    "@nestjs/swagger": "^11.2.3",
+    "@nestjs/swagger": "^11.2.4",
     "@prisma/client": "6.17.1",
     "@types/mssql": "^9.1.8",
     "axios": "^1.13.2",
@@ -46,7 +46,7 @@
     "express": "^5.2.1",
     "form-urlencoded": "^6.1.6",
     "lodash": "^4.17.21",
-    "mssql": "^12.1.0",
+    "mssql": "^12.2.0",
     "nodemailer": "^7.0.11",
     "openapi-clients": "file:../openapi-clients",
     "p-limit": "3.1.0",
@@ -60,11 +60,11 @@
     "@darraghor/eslint-plugin-nestjs-typed": "5.1.4",
     "@golevelup/ts-jest": "^1.1.1",
     "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.1.9",
+    "@nestjs/testing": "^11.1.11",
     "@types/express": "^5.0.6",
     "@types/jest": "30.0.0",
-    "@types/lodash": "^4.17.21",
-    "@types/node": "^20.12.7",
+    "@types/lodash": "^4.17.23",
+    "@types/node": "^20.19.28",
     "@types/nodemailer": "^7.0.4",
     "@types/qrcode": "^1.5.6",
     "@types/ssh2-sftp-client": "^9.0.5",
@@ -110,7 +110,7 @@
     "prettier": "^3.5.2",
     "prisma": "6.17.1",
     "source-map-support": "^0.5.21",
-    "supertest": "^7.1.4",
+    "supertest": "^7.2.2",
     "ts-jest": "^29.4.5",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
@@ -133,5 +133,13 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": ">=20.19.x",
+    "npm": ">=10.9.x"
+  },
+  "volta": {
+    "node": "20.19.6",
+    "npm": "10.9.3"
   }
 }

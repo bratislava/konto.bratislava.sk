@@ -1,10 +1,10 @@
 import { PhoneIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
 import cn from '../../../frontend/cn'
-import Button from './Button'
 
 type BannerBase = {
   title: string
@@ -27,8 +27,6 @@ const Banner = ({
   onPress,
   className,
 }: BannerBase) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   return (
     <div
       className={cn(
@@ -41,33 +39,22 @@ const Banner = ({
           <h2 className="text-h1 lg:text-h2">{title}</h2>
           <AccountMarkdown content={content} variant="sm" className="text-p2 text-gray-200" />
         </div>
-        <div className="flex flex-col items-center gap-4 lg:flex-row">
+        <div className="flex flex-col gap-4 lg:flex-row">
           <Button
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             href={href}
-            className="hidden rounded-lg no-underline lg:flex"
-            variant="category"
-            text={buttonText}
-            label={buttonText}
-            hrefIconHidden
-            hrefLabelCenter
+            variant="black-solid"
             onPress={onPress}
-          />
-          <Button
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            href={href}
-            className="flex rounded-lg no-underline lg:hidden"
-            size="sm"
-            variant="category"
-            text={buttonText}
-            label={buttonText}
-            hrefIconHidden
-            hrefLabelCenter
-            fullWidth
-            onPress={onPress}
-          />
+            fullWidthMobile
+            // TODO use solid-inverted variant when implemented
+            className={cn(
+              'border-background-active-primary-inverted-default bg-background-active-primary-inverted-default text-content-active-primary-default',
+              'data-pressed:border-background-active-primary-inverted-pressed data-pressed:bg-background-active-primary-inverted-pressed',
+              'data-hovered:border-background-active-primary-inverted-hover data-hovered:bg-background-active-primary-inverted-hover',
+              'ring-white ring-offset-border-active-primary-default',
+            )}
+          >
+            {buttonText}
+          </Button>
           {mobileNumber && (
             <div className="flex items-center gap-2 px-3 py-2 text-gray-0">
               <PhoneIcon />

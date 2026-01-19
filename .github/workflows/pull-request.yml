@@ -1,0 +1,30 @@
+name: Validate and build resources with bratiska-cli
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  dependabot-approval:
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    environment: dependabot
+    steps:
+      - name: Wait for approval
+        run: echo "Approved to run CI for Dependabot PR"
+
+  validate-and-build:
+    if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
+    needs: [dependabot-approval]
+    uses: ./.github/workflows/validate-and-build.yml
+    secrets:
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+    permissions:
+      pull-requests: write
+      contents: read

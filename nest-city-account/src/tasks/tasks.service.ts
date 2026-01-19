@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { DateTime } from 'luxon'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
@@ -23,6 +24,10 @@ import {
   DeliveryMethodErrorsEnum,
   DeliveryMethodErrorsResponseEnum,
 } from '../utils/guards/dtos/delivery-method.error'
+import { MailgunService } from '../mailgun/mailgun.service'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
+import { z } from 'zod'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
@@ -30,6 +35,12 @@ const LOCK_DELIVERY_METHODS_BATCH = 100
 const BATCH_DELAY_MS = 1000
 
 const EDESK_UPDATE_LOOK_BACK_HOURS = 96
+
+const DELIVERY_METHOD_EMAIL_KEY = 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES'
+
+const EmailConfigSchema = z.object({
+  active: z.boolean(),
+})
 
 @Injectable()
 export class TasksService {
@@ -39,7 +50,10 @@ export class TasksService {
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxSubservice: TaxSubservice,
-    private readonly physicalEntityService: PhysicalEntityService
+    private readonly physicalEntityService: PhysicalEntityService,
+    private readonly mailgunService: MailgunService,
+    private readonly cognitoSubsevice: CognitoSubservice,
+    private readonly pdfGeneratorService: PdfGeneratorService
   ) {
     this.logger = new LineLoggerSubservice(TasksService.name)
   }
@@ -67,7 +81,7 @@ export class TasksService {
     })
   }
 
-  @Cron(`*/5 * 2-30 ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`) // Every 5 minutes in April, starting from 2nd.
+  @Cron(`*/5 * 2-31 ${process.env.MUNICIPAL_TAX_LOCK_MONTH}-12 *`) // Every 5 minutes from MUNICIPAL_TAX_LOCK_MONTH (February), starting from 2nd.
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()
@@ -249,6 +263,99 @@ export class TasksService {
     })
   }
 
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  @HandleErrors('CronError')
+  async cleanupExpiredAuthorizationCodes(): Promise<void> {
+    const fiveMinutesAgo = DateTime.now().minus({ minutes: 5 }).toJSDate()
+
+    const expiredRecords = await this.prismaService.oAuth2Data.findMany({
+      where: {
+        authorizationCodeCreatedAt: {
+          not: null,
+          lt: fiveMinutesAgo,
+        },
+        refreshTokenEnc: {
+          not: null,
+        },
+      },
+      select: {
+        id: true,
+        authorizationCode: true,
+      },
+    })
+
+    if (expiredRecords.length === 0) {
+      return
+    }
+
+    for (const record of expiredRecords) {
+      this.logger.warn(
+        `Cleaning up expired oAuth2 tokens with id: ${record.id} and authorization code: ${record.authorizationCode}`
+      )
+    }
+
+    await this.prismaService.oAuth2Data.updateMany({
+      where: {
+        id: {
+          in: expiredRecords.map((record) => record.id),
+        },
+      },
+      data: {
+        accessTokenEnc: null,
+        idTokenEnc: null,
+        refreshTokenEnc: null,
+      },
+    })
+
+    this.logger.debug(
+      `Cleaned up expired authorization codes for ${expiredRecords.length} oAuth2 records.`
+    )
+  }
+
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+  @HandleErrors('CronError')
+  async deleteOldOAuth2Data(): Promise<void> {
+    const oneMonthAgo = DateTime.now().minus({ months: 1 }).toJSDate()
+
+    const oldRecords = await this.prismaService.oAuth2Data.findMany({
+      where: {
+        OR: [
+          {
+            authorizationCodeCreatedAt: {
+              not: null,
+              lt: oneMonthAgo,
+            },
+          },
+          {
+            authorizationCodeCreatedAt: null,
+            createdAt: {
+              lt: oneMonthAgo,
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        authorizationCode: true,
+      },
+    })
+
+    if (oldRecords.length === 0) {
+      return
+    }
+
+    const recordsInfo = oldRecords.map((r) => `${r.id}/${r.authorizationCode}`).join(', ')
+    this.logger.log(`Deleting ${oldRecords.length} old oAuth2 records: ${recordsInfo}`)
+
+    await this.prismaService.oAuth2Data.deleteMany({
+      where: {
+        id: {
+          in: oldRecords.map((record) => record.id),
+        },
+      },
+    })
+  }
+
   @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`)
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {
@@ -376,5 +483,114 @@ export class TasksService {
     }
 
     this.logger.log(`Completed lockDeliveryMethods task. Total processed: ${processedCount} users`)
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @HandleErrors('Cron')
+  async sendDailyDeliveryMethodSummaries() {
+    const configDbResult = await this.prismaService.config.findFirst({
+      where: {
+        key: DELIVERY_METHOD_EMAIL_KEY,
+      },
+      select: {
+        value: true,
+      },
+    })
+    if (!configDbResult) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`
+      )
+    }
+    const active = EmailConfigSchema.parse(configDbResult).active
+    if (!active) {
+      return
+    }
+
+    const yesterdayStart = new Date()
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1)
+    yesterdayStart.setHours(0, 0, 0, 0)
+
+    const yesterdayEnd = new Date()
+    yesterdayEnd.setDate(yesterdayEnd.getDate() - 1)
+    yesterdayEnd.setHours(23, 59, 59, 999)
+
+    this.logger.log(`Processing delivery method summaries for: ${yesterdayStart.toDateString()}`)
+
+    const latestChanges = await this.prismaService.userGdprData.findMany({
+      where: {
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+        subType: GDPRSubTypeEnum.subscribe,
+        createdAt: {
+          gte: yesterdayStart,
+          lte: yesterdayEnd,
+        },
+      },
+      distinct: ['userId'],
+      orderBy: {
+        createdAt: 'desc', // Get newest first
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+            externalId: true,
+            birthNumber: true,
+          },
+        },
+      },
+    })
+
+    for (const change of latestChanges) {
+      const { user, userId } = change
+
+      if (!user.email || !user.externalId || !user.birthNumber) {
+        this.logger.warn(`Skipping user ${userId}: Missing email, externalId or birth number.`)
+        continue
+      }
+
+      const previousState = await this.prismaService.userGdprData.findFirst({
+        where: {
+          userId,
+          category: GDPRCategoryEnum.TAXES,
+          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+          createdAt: { lt: yesterdayStart },
+        },
+        orderBy: { createdAt: 'desc' },
+      })
+
+      if (previousState?.subType === GDPRSubTypeEnum.subscribe) {
+        this.logger.log(`Skipping user ${userId}: Already subscribed in previous state.`)
+        continue
+      }
+
+      try {
+        const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
+
+        const firstName = cognitoData.given_name
+        const fullName = `${cognitoData.given_name ?? ''} ${cognitoData.family_name ?? ''}`.trim()
+
+        const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
+          'delivery-method-set-to-notification',
+          'oznamenie.pdf',
+          {
+            email: user.email,
+            name: fullName,
+            birthNumber: user.birthNumber,
+            date: new Date().toLocaleDateString('sk'),
+          },
+          user.birthNumber
+        )
+
+        await this.mailgunService.sendEmail('2025-delivery-method-changed-notify', {
+          to: user.email,
+          variables: { firstName: firstName ?? null },
+          attachment: pdfFile,
+        })
+      } catch (err) {
+        this.logger.error(err)
+      }
+    }
   }
 }

@@ -260,8 +260,10 @@ export class PaymentService {
       if (!taxPaymentWithTax) {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.BAD_REQUEST_ERROR, // TODO replace with payment enum
-            'We received valid a payment response for payment we do not have in our database.', // TODO make this a ResponseEnum
+            CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+            CustomErrorNorisTypesResponseEnum.TAX_NOT_FOUND,
+            undefined,
+            'We received valid a payment response for payment we do not have in our database.',
           ),
         )
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`

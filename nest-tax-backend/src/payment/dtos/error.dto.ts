@@ -13,4 +13,5 @@ export enum CustomErrorPaymentTypesEnum {
 
 export enum CustomErrorNorisTypesResponseEnum {
   DATABASE_ERROR = 'A database error has occurred while processing payment request.',
+  TAX_NOT_FOUND = 'Tax was not found in the database',
 }

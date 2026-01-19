@@ -110,6 +110,36 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     }
   }
 
+  private extractRedirectUriAndStateFromQuery(request: Request): {
+    redirectUri: string | undefined
+    state: string | undefined
+  } {
+    const clientId = request.query.client_id
+
+    if (!clientId || typeof clientId !== 'string') {
+      return { redirectUri: undefined, state: undefined }
+    }
+
+    const queryRedirectUri = request.query.redirect_uri
+
+    if (!queryRedirectUri || typeof queryRedirectUri !== 'string') {
+      return { redirectUri: undefined, state: undefined }
+    }
+
+    // Always validate redirect_uri from query against allowed URIs to prevent open redirector vulnerability
+    const client = this.oauth2ClientSubservice.findClientById(clientId)
+    if (!client?.isRedirectUriAllowed(queryRedirectUri)) {
+      return { redirectUri: undefined, state: undefined }
+    }
+
+    let queryState: string | undefined = undefined
+    if (request.query.state && typeof request.query.state === 'string') {
+      queryState = request.query.state
+    }
+
+    return { redirectUri: queryRedirectUri, state: queryState }
+  }
+
   /**
    * Handle authorization endpoint errors per RFC 6749 Section 4.1.2.1
    * Redirects to client's redirect_uri with error parameters using 303 per RFC 9700
@@ -123,18 +153,12 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const requestWithAuthData = request as RequestWithAuthorizationData
     let redirectUri = requestWithAuthData.authorizationRequestData?.redirect_uri
     let state = requestWithAuthData.authorizationRequestData?.state
-    const clientId = request.query.client_id as string | undefined
 
     // Always validate redirect_uri from query against allowed URIs to prevent open redirector vulnerability
-    if (!redirectUri && clientId) {
-      const queryRedirectUri = request.query.redirect_uri as string | undefined
-      if (queryRedirectUri) {
-        const client = this.oauth2ClientSubservice.findClientById(clientId)
-        if (client?.isRedirectUriAllowed(queryRedirectUri)) {
-          redirectUri = queryRedirectUri
-          state = request.query.state as string | undefined
-        }
-      }
+    if (!redirectUri) {
+      const queryRedirectUriAndState = this.extractRedirectUriAndStateFromQuery(request)
+      redirectUri = queryRedirectUriAndState.redirectUri
+      state = queryRedirectUriAndState.state
     }
 
     // Extract or construct OAuth2 error response
@@ -382,24 +406,23 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     redirectUri: string,
     errorResponse: OAuth2AuthorizationErrorDto
   ): string {
-    const params = new URLSearchParams()
+    const url = new URL(redirectUri)
 
-    params.append('error', errorResponse.error)
+    url.searchParams.set('error', errorResponse.error)
 
     if (errorResponse.error_description) {
-      params.append('error_description', errorResponse.error_description)
+      url.searchParams.set('error_description', errorResponse.error_description)
     }
 
     if (errorResponse.state) {
-      params.append('state', errorResponse.state)
+      url.searchParams.set('state', errorResponse.state)
     }
 
     if (errorResponse.error_uri) {
-      params.append('error_uri', errorResponse.error_uri)
+      url.searchParams.set('error_uri', errorResponse.error_uri)
     }
 
-    const separator = redirectUri.includes('?') ? '&' : '?'
-    return `${redirectUri}${separator}${params.toString()}`
+    return url.toString()
   }
 
   /**

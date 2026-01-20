@@ -86,7 +86,6 @@ describe('testing-tax-mock', () => {
         2024,
       )
 
-      expect(result.specificky_symbol).toBe('2024100000')
       expect(result.variabilny_symbol).toBe(mockNorisData.variableSymbol)
       expect(result.uhrazeno).toBe(mockNorisData.alreadyPaid)
     })
@@ -310,7 +309,6 @@ describe('testing-tax-mock', () => {
         2024,
       )
 
-      expect(result.specificky_symbol).toBe('2024100000')
       expect(result.variabilny_symbol).toBe(mockNorisData.variableSymbol)
       expect(result.uhrazeno).toBe(mockNorisData.alreadyPaid)
     })

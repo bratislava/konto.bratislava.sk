@@ -10,7 +10,6 @@ export enum QrPaymentNoteEnum {
 export interface QrCodeGeneratorDto {
   amount: number
   variableSymbol: string
-  specificSymbol: string
   paymentNote?: QrPaymentNoteEnum
   iban: string
 }

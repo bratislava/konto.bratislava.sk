@@ -36,7 +36,6 @@ export const createTestingRealEstateTaxMock = (
     stav_dokladu: norisData.isCancelled ? 'S' : 'Z',
 
     // payment data
-    specificky_symbol: '2024100000',
     variabilny_symbol: norisData.variableSymbol,
     uhrazeno: norisData.alreadyPaid,
     // existing tax administrator data to not overwrite
@@ -164,7 +163,6 @@ export const createTestingCommunalWasteTaxMock = (
     datum_platnosti: norisData.dateTaxRuling,
 
     // payment data
-    specificky_symbol: '2024100000',
     variabilny_symbol: norisData.variableSymbol,
     uhrazeno: norisData.alreadyPaid,
 

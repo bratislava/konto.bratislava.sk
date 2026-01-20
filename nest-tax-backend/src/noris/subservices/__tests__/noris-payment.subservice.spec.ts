@@ -136,14 +136,12 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 500,
           uhrazeno: 1500,
-          specificky_symbol: '9876543210',
         },
         {
           variabilny_symbol: '0987654321',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 300,
           uhrazeno: 2300,
-          specificky_symbol: '1234567890',
         },
       ]
 
@@ -207,7 +205,6 @@ describe('NorisPaymentSubservice', () => {
               id: 1,
               amount: 150_000,
               source: 'BANK_ACCOUNT',
-              specificSymbol: '9876543210',
               taxId: 1,
               status: PaymentStatus.SUCCESS,
             }),
@@ -278,14 +275,12 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 0,
           uhrazeno: 1000,
-          specificky_symbol: '1111111111',
         },
         {
           variabilny_symbol: '2222222222',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 500,
           uhrazeno: 2500,
-          specificky_symbol: '2222222222',
         },
       ]
 
@@ -358,7 +353,6 @@ describe('NorisPaymentSubservice', () => {
               id: 2,
               amount: 100_000,
               source: 'BANK_ACCOUNT',
-              specificSymbol: '2222222222',
               taxId: 2,
               status: PaymentStatus.SUCCESS,
             }),
@@ -392,7 +386,6 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 500,
           uhrazeno_overpayment: 200,
           uhrazeno: 700,
-          specificky_symbol: '3333333333',
         },
       ]
 
@@ -442,7 +435,6 @@ describe('NorisPaymentSubservice', () => {
               id: 3,
               amount: 70_000,
               source: 'BANK_ACCOUNT',
-              specificSymbol: '3333333333',
               taxId: 3,
               status: PaymentStatus.SUCCESS,
             }),
@@ -486,14 +478,12 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 0,
           uhrazeno: 1000,
-          specificky_symbol: '9999999999',
         },
         {
           variabilny_symbol: '8888888888',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 500,
           uhrazeno: 2500,
-          specificky_symbol: '8888888888',
         },
       ]
 
@@ -581,7 +571,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        specificky_symbol: '9876543210',
       }
 
       const taxesDataByVsMap = new Map<string, TaxWithTaxPayer>()
@@ -600,7 +589,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -646,7 +634,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1500,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -675,7 +662,6 @@ describe('NorisPaymentSubservice', () => {
         id: 1,
         amount: 50_000,
         source: 'BANK_ACCOUNT',
-        specificSymbol: '9876543210',
         taxId: 1,
         status: PaymentStatus.SUCCESS,
       }
@@ -710,7 +696,6 @@ describe('NorisPaymentSubservice', () => {
         data: {
           amount: 50_000,
           source: 'BANK_ACCOUNT',
-          specificSymbol: '9876543210',
           taxId: 1,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: true,
@@ -731,7 +716,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -753,7 +737,6 @@ describe('NorisPaymentSubservice', () => {
         id: 1,
         amount: 1000,
         source: 'BANK_ACCOUNT',
-        specificSymbol: '9876543210',
         taxId: 1,
         status: PaymentStatus.SUCCESS,
       }
@@ -785,7 +768,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -814,7 +796,6 @@ describe('NorisPaymentSubservice', () => {
         id: 1,
         amount: 1000,
         source: 'BANK_ACCOUNT',
-        specificSymbol: '9876543210',
         taxId: 1,
         status: PaymentStatus.SUCCESS,
       }
@@ -851,7 +832,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -873,7 +853,6 @@ describe('NorisPaymentSubservice', () => {
         id: 1,
         amount: 1000,
         source: 'BANK_ACCOUNT',
-        specificSymbol: '9876543210',
         taxId: 1,
         status: PaymentStatus.SUCCESS,
       }
@@ -910,7 +889,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -960,7 +938,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1500.5,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -982,7 +959,6 @@ describe('NorisPaymentSubservice', () => {
         id: 1,
         amount: 150_050,
         source: 'BANK_ACCOUNT',
-        specificSymbol: '9876543210',
         taxId: 1,
         status: PaymentStatus.SUCCESS,
       }
@@ -1014,7 +990,6 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        specificky_symbol: '9876543210',
       }
 
       const mockTaxData: TaxWithTaxPayer = {

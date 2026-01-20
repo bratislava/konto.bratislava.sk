@@ -110,7 +110,6 @@ const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
       },
     ],
   },
-  specificSymbol: '2025200000',
   taxPayments: [{ amount: 123, status: PaymentStatus.NEW }],
 }
 
@@ -126,7 +125,6 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
     qrCode: {
       amount: 6600,
       variableSymbol: '1234567890',
-      specificSymbol: '2025200000',
       paymentNote: QrPaymentNoteEnum.QR_oneTimePay,
       iban: 'SK3175000000000025747653',
     },
@@ -164,7 +162,6 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
       qrCode: {
         amount: 2200,
         variableSymbol: '1234567890',
-        specificSymbol: '2025200000',
         paymentNote: QrPaymentNoteEnum.QR_firstInstallment,
         iban: 'SK3175000000000025747653',
       },
@@ -777,7 +774,6 @@ describe('UnifiedTaxUtil', () => {
           },
         ],
       },
-      specificSymbol: '2025200000',
       taxPayments: [],
     }
 
@@ -793,7 +789,6 @@ describe('UnifiedTaxUtil', () => {
         qrCode: {
           amount: 8000,
           variableSymbol: '1234567890',
-          specificSymbol: '2025200000',
           paymentNote: QrPaymentNoteEnum.QR_oneTimePay,
           iban: 'SK3175000000000025747653',
         },
@@ -838,7 +833,6 @@ describe('UnifiedTaxUtil', () => {
           qrCode: {
             amount: 2000,
             variableSymbol: '1234567890',
-            specificSymbol: '2025200000',
             paymentNote: QrPaymentNoteEnum.QR_firstInstallment,
             iban: 'SK3175000000000025747653',
           },
@@ -1320,7 +1314,6 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     variableSymbol: string
     dateOfValidity: Date | null
     installments: { order: number; amount: number }[]
-    specificSymbol: string
     taxPayments: {
       amount: number
       status: PaymentStatus
@@ -1338,7 +1331,6 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       { order: 2, amount: 2200 },
       { order: 3, amount: 2200 },
     ],
-    specificSymbol: '2025200000',
     taxPayments: [],
   }
 

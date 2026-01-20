@@ -48,7 +48,6 @@ export type GetTaxDetailPureOptions<TTaxType extends TaxType> = {
   dateOfValidity: Date | null // dátum právoplatnosti
   installments: { order: number; amount: number }[]
   taxDetails: TaxTypeToTaxDetail[TTaxType]
-  specificSymbol: string
   taxPayments: {
     amount: number
     status: PaymentStatus

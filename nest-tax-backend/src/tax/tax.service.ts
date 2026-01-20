@@ -34,8 +34,6 @@ import {
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
 
-export const specificSymbol = '2025200000'
-
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -280,7 +278,7 @@ export class TaxService {
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
       taxDetails: tax.taxDetails,
-      specificSymbol,
+
       taxPayments: tax.taxPayments,
     })
 
@@ -401,7 +399,7 @@ export class TaxService {
       variableSymbol: tax.variableSymbol,
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
-      specificSymbol,
+
       taxPayments: tax.taxPayments,
     })
   }

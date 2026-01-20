@@ -84,7 +84,6 @@ model TaxPayment {
   tax                 Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
   status              PaymentStatus     @default(NEW)
   amount              Int
-  specificSymbol      String?
   source              TaxPaymentSource?
   bloomreachEventSent Boolean
 

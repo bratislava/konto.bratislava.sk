@@ -29,7 +29,6 @@ export class QrCodeSubservice {
           },
           currencyCode: 'EUR',
           variableSymbol: qrCodeData.variableSymbol,
-          specificSymbol: qrCodeData.specificSymbol,
           paymentNote: qrCodeData.paymentNote || 'QR_WEB', // TODO we want to delete QR_WEB eventually
         },
       ],

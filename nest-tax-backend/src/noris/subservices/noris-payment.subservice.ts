@@ -311,7 +311,6 @@ export class NorisPaymentSubservice {
           data: {
             amount: difference,
             source: 'BANK_ACCOUNT',
-            specificSymbol: norisPayment.specificky_symbol,
             taxId: taxData.id,
             status: PaymentStatus.SUCCESS,
             bloomreachEventSent: true,

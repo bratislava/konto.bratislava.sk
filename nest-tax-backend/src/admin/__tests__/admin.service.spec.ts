@@ -78,7 +78,6 @@ describe('AdminService', () => {
           {
             variabilny_symbol: 'mock-1',
             uhrazeno: 1,
-            specificky_symbol: 'mock-1',
           },
         ])
 
@@ -88,7 +87,6 @@ describe('AdminService', () => {
           {
             variabilny_symbol: 'mock-2',
             uhrazeno: 1,
-            specificky_symbol: 'mock-2',
           },
         ])
 
@@ -105,7 +103,6 @@ describe('AdminService', () => {
         {
           variabilny_symbol: 'mock-1',
           uhrazeno: 1,
-          specificky_symbol: 'mock-1',
         },
       ])
     })
@@ -125,7 +122,6 @@ describe('AdminService', () => {
           {
             variabilny_symbol: 'mock-1',
             uhrazeno: 1,
-            specificky_symbol: 'mock-1',
           },
         ])
 
@@ -135,7 +131,6 @@ describe('AdminService', () => {
           {
             variabilny_symbol: 'mock-2',
             uhrazeno: 1,
-            specificky_symbol: 'mock-2',
           },
         ])
 
@@ -152,7 +147,6 @@ describe('AdminService', () => {
         {
           variabilny_symbol: 'mock-2',
           uhrazeno: 1,
-          specificky_symbol: 'mock-2',
         },
       ])
     })

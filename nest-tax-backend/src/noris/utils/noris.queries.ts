@@ -160,11 +160,9 @@ SELECT
    (case 
         when  lcs.dane21_doklad.datum_spl4 is not null  then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl4 , 2)
         else  ''
-    end  ) SPL4_4, 
+    end  ) SPL4_4
 
    /* --------- Texty splátok výmeru end ----------------------------*/
-   
-    lcs.dane21_doklad.specificky_symbol
 FROM 
     lcs.dane21_doklad  
 
@@ -425,8 +423,7 @@ const basePaymentsQuery = `
         (case 
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
-        ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
-        dane21_doklad.specificky_symbol specificky_symbol
+        ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno
     FROM lcs.dane21_doklad as dane21_doklad
     JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
         ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
@@ -491,8 +488,7 @@ export const queryOverpaymentsFromNorisByDateRange = `
       (case 
           when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
           else 0 end 
-      ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
-      dane21_doklad.specificky_symbol specificky_symbol
+      ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno
   FROM lcs.dane21_doklad as dane21_doklad
   JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
       ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
@@ -522,7 +518,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
       AND (lcs.dane21_priznanie.podnikatel = 'N' OR lcs.pko21_poplatok.podnikatel = 'N')
   GROUP BY 
       dane21_doklad.variabilny_symbol,
-      dane21_doklad.specificky_symbol,
       view_doklad_saldo.uhrazeno,
       dane21_druh_dokladu.generovat_pohladavku
   HAVING 
@@ -566,7 +561,6 @@ export const getCommunalWasteTaxesFromNoris = `
         subjekt_doklad.reference_subjektu cislo_konania,
         doklad.datum_platnosti,
         doklad.variabilny_symbol,
-        doklad.specificky_symbol,
         poplatok.rok rok,
         lcs.fn21_dec2string( dsum.dan_spolu_nezaokr , 2) as dan_spolu, 
         (case 

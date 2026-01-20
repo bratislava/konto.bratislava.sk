@@ -92,7 +92,6 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   SPL4_3: '37,96',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: '1234567890',
   uhrazeno: 113.9,
 }
 
@@ -185,7 +184,6 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   SPL4_3: '',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: null,
   uhrazeno: 250.5,
 }
 
@@ -281,7 +279,6 @@ export const testRealEstateTax3 = {
   SPL4_3: '150,25',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: '9876543210',
   uhrazeno: '450.75',
 }
 

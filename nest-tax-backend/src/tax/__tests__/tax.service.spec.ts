@@ -1563,7 +1563,6 @@ describe('TaxService', () => {
         variableSymbol: 'VS123',
         dateOfValidity: new Date('2023-01-01'),
         installments: mockInstallmentTaxData.taxInstallments,
-        specificSymbol: expect.any(String),
         taxPayments: mockInstallmentTaxData.taxPayments,
       })
       expect(result).toEqual(mockPaymentGeneratorDto)

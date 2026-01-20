@@ -141,7 +141,6 @@ describe('NorisTaxRealEstateSubservice', () => {
       SPL4_3: '3',
       TXTSPL4_4: 'Test spl 4.4',
       SPL4_4: '4',
-      specificky_symbol: '2024100000',
       uhrazeno: 0,
     },
   ]

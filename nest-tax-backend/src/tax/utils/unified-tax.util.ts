@@ -323,7 +323,6 @@ const calculateInstallmentPaymentDetails = (options: {
   dueDate?: Dayjs
   installments: { order: number; amount: number }[]
   variableSymbol: string
-  specificSymbol: any
   installmentDueDates: {
     second: string
     third: string
@@ -344,7 +343,6 @@ const calculateInstallmentPaymentDetails = (options: {
     dueDate,
     installments,
     variableSymbol,
-    specificSymbol,
     numberOfInstallments,
     iban,
   } = options
@@ -451,7 +449,6 @@ const calculateInstallmentPaymentDetails = (options: {
     qrCode: {
       amount: active.remainingAmount,
       variableSymbol,
-      specificSymbol,
       paymentNote,
       iban,
     },
@@ -470,17 +467,9 @@ const calculateOneTimePaymentDetails = (options: {
   overallBalance: number
   dueDate?: Date
   variableSymbol: string
-  specificSymbol: string
   iban: string
 }): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
-  const {
-    overallPaid,
-    overallBalance,
-    dueDate,
-    variableSymbol,
-    specificSymbol,
-    iban,
-  } = options
+  const { overallPaid, overallBalance, dueDate, variableSymbol, iban } = options
   if (overallBalance <= 0) {
     return {
       isPossible: false,
@@ -498,7 +487,6 @@ const calculateOneTimePaymentDetails = (options: {
     qrCode: {
       amount: overallBalance,
       variableSymbol,
-      specificSymbol,
       paymentNote:
         overallPaid > 0
           ? QrPaymentNoteEnum.QR_remainingAmount
@@ -522,7 +510,6 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     dateOfValidity,
     installments,
     taxDetails,
-    specificSymbol,
     taxPayments,
   } = options
 
@@ -545,7 +532,6 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     overallBalance,
     dueDate: dueDate?.toDate(),
     variableSymbol,
-    specificSymbol,
     iban: taxDefinition.iban,
   })
 
@@ -559,7 +545,6 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     dueDate,
     installments,
     variableSymbol,
-    specificSymbol,
     numberOfInstallments: taxDefinition.numberOfInstallments,
     iban: taxDefinition.iban,
   })
@@ -624,7 +609,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   variableSymbol: string
   dateOfValidity: Date | null
   installments: { order: number; amount: number }[]
-  specificSymbol: string
   taxPayments: {
     amount: number
     status: PaymentStatus
@@ -639,7 +623,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     variableSymbol,
     dateOfValidity,
     installments,
-    specificSymbol,
     taxPayments,
   } = options
   const {
@@ -668,7 +651,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     dueDate,
     installments,
     variableSymbol,
-    specificSymbol,
     installmentDueDates,
     numberOfInstallments,
     iban,

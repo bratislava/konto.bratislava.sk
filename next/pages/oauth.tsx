@@ -2,7 +2,7 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { router } from 'next/client'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -44,6 +44,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
+  const router = useRouter()
   const { t } = useTranslation('account')
   const { signOut } = useSignOut()
   const [isLoading, setIsLoading] = useState(false)

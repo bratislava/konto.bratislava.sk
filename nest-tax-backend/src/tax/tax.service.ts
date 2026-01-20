@@ -278,7 +278,6 @@ export class TaxService {
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
       taxDetails: tax.taxDetails,
-
       taxPayments: tax.taxPayments,
     })
 
@@ -399,7 +398,6 @@ export class TaxService {
       variableSymbol: tax.variableSymbol,
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
-
       taxPayments: tax.taxPayments,
     })
   }

@@ -48,6 +48,9 @@ export class BloomreachService {
         'FEATURE_TOGGLE_SEND_BLOOMREACH_EVENTS',
       ) !== 'true'
     ) {
+      this.logger.debug(
+        `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}. Object content: ${JSON.stringify(data)}`,
+      )
       return true
     }
     const eventResponse = await fetch(

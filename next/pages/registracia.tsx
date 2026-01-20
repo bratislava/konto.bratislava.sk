@@ -312,24 +312,22 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
     }
 
     if (isOAuthLogin) {
+      if (isIdentityVerificationRequired) {
+        return {
+          description: `${t('auth.register_success_description', { email: lastEmail })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
+          confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+          onConfirm: () => {
+            router
+              .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
+              .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+          },
+        }
+      }
+
       return {
         confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
         onConfirm: () => {
           redirectToOAuthContinueUrl()
-        },
-      }
-    }
-
-    // TODO OAuth: identity verification
-    const redirectToIdentityVerificationAfterOAuthLogin = isIdentityVerificationRequired
-
-    if (redirectToIdentityVerificationAfterOAuthLogin) {
-      return {
-        confirmLabel: t('auth.continue_to_account'),
-        onConfirm: () => {
-          router
-            .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
-            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
         },
       }
     }
@@ -345,6 +343,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
     getRouteWithRedirect,
     isIdentityVerificationRequired,
     isOAuthLogin,
+    lastEmail,
     redirect,
     redirectToOAuthContinueUrl,
     registrationStatus,

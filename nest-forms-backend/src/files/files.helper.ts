@@ -277,7 +277,7 @@ export default class FilesHelper {
     return false
   }
 
-  async checkErrorFiles(formId: string): Promise<boolean> {
+  async areErrorFilesInForm(formId: string): Promise<boolean> {
     const errorFiles: Array<Files> = await this.prisma.files.findMany({
       where: {
         formId,
@@ -296,7 +296,7 @@ export default class FilesHelper {
           { formId, errorFiles },
         ),
       )
-      return false
+      return true
     }
     return false
   }

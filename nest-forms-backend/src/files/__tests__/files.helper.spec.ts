@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
+import { Files, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -111,6 +111,55 @@ describe('FilesHelper', () => {
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} test-slug`,
       )
+    })
+  })
+
+  describe('areErrorFilesInForm', () => {
+    beforeEach(() => {
+      jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+    })
+
+    afterEach(() => {
+      jest.spyOn(service['logger'], 'error').mockRestore()
+    })
+
+    it('should return true when there are error files', async () => {
+      const mockErrorFiles: Files[] = [
+        {
+          id: 'file-1',
+        } as Files,
+      ]
+
+      prismaMock.files.findMany.mockResolvedValue(mockErrorFiles)
+
+      const result = await service.areErrorFilesInForm('test-form-id')
+
+      expect(result).toBe(true)
+    })
+
+    it('should return true when there are multiple error files', async () => {
+      const mockErrorFiles: Files[] = [
+        {
+          id: 'file-1',
+        } as Files,
+        {
+          id: 'file-2',
+        } as Files,
+      ]
+
+      prismaMock.files.findMany.mockResolvedValue(mockErrorFiles)
+
+      const result = await service.areErrorFilesInForm('test-form-id')
+
+      expect(result).toBe(true)
+    })
+
+    it('should return false when there are no error files', async () => {
+      prismaMock.files.findMany.mockResolvedValue([])
+
+      const result = await service.areErrorFilesInForm('test-form-id')
+
+      expect(result).toBe(false)
     })
   })
 })

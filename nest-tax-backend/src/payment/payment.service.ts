@@ -17,6 +17,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxPaymentWithTaxInfo } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
 import {
@@ -26,7 +27,6 @@ import {
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 interface GpWebpayProcessingStrategy {
   dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
@@ -269,13 +269,13 @@ export class PaymentService {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
       }
 
-      const strategy = this.getProcessingStrategy(PRCODE, SRCODE)
+      const strategy = this.getProcessingStrategy(PRCODE)
       const currentStatus = taxPaymentWithTax.status
-      const year = taxPaymentWithTax.tax.year
+      const { year } = taxPaymentWithTax.tax
       const redirectBase = `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${taxPaymentWithTax.tax.type}&year=${year}&order=${taxPaymentWithTax.tax.order}`
 
       if (strategy.shouldAlert) {
-        console.warn({
+        this.logger.warn({
           message: 'A problematic payment response was detected.',
           PRCODE,
           SRCODE,
@@ -289,9 +289,13 @@ export class PaymentService {
         case 'SUCCESS':
           nextStatus = PaymentStatus.SUCCESS
           break
+
         case 'NEW_TO_FAILED':
           nextStatus =
             currentStatus === PaymentStatus.NEW ? PaymentStatus.FAIL : undefined
+          break
+
+        default:
           break
       }
 
@@ -357,12 +361,8 @@ export class PaymentService {
     }
   }
 
-  private getProcessingStrategy(
-    prCode: string,
-    srCode: string,
-  ): GpWebpayProcessingStrategy {
+  private getProcessingStrategy(prCode: string): GpWebpayProcessingStrategy {
     const pr = Number(prCode)
-    const sr = Number(srCode)
 
     // PR 0: Success
     if (pr === 0) {

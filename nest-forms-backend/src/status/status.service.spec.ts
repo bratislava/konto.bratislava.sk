@@ -4,6 +4,7 @@ import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import StatusService from './status.service'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 
 jest.mock('../prisma/prisma.service')
 jest.mock('../utils/subservices/minio-client.subservice')
@@ -21,6 +22,7 @@ describe('StatusService', () => {
         MinioClientSubservice,
         PrismaService,
         ScannerClientService,
+        ThrowerErrorGuard,
       ],
     }).compile()
 

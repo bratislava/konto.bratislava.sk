@@ -360,12 +360,13 @@ describe('NasesCronSubservice', () => {
         '../../../utils/subservices/line-logger.subservice',
       ).default
       const logSpy = jest.spyOn(service['logger'], 'log')
+      const errorSpy = jest.spyOn(service['logger'], 'error')
 
       const result = await service.validateFormRegistrations()
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(3)
       expect(logSpy).not.toHaveBeenCalled()
-      expect(alertErrorMock).toHaveBeenCalled()
+      expect(errorSpy).toHaveBeenCalled()
 
       expect(result['not-published']).toHaveLength(1)
       expect(result['valid']).toHaveLength(2)

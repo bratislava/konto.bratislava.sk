@@ -66,11 +66,11 @@ export class ResponseErrorInternalDto {
 
   [ErrorSymbols.alert]?: number;
 
-  [ErrorSymbols.console]?: string;
+  [ErrorSymbols.console]?: string | Record<string, unknown>;
 
-  [ErrorSymbols.errorCause]?: string | Record<string, undefined>;
+  [ErrorSymbols.errorCause]?: string;
 
   [ErrorSymbols.causedByMessage]?: string;
 
-  [ErrorSymbols.causedByConsole]?: string
+  [ErrorSymbols.causedByConsole]?: string | Record<string, unknown>
 }

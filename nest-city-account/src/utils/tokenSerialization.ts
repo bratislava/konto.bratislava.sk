@@ -9,9 +9,13 @@ export type TokenData = z.infer<typeof TokenDataSchema>
 
 /**
  * Serializes token and clientId into a JSON string.
+ * Validates that both token and clientId are non-empty strings.
+ *
+ * @throws ZodError if validation fails
  */
 export const serializeTokenData = (token: string, clientId: string): string => {
-  return JSON.stringify({ token, clientId })
+  const data = TokenDataSchema.parse({ token, clientId })
+  return JSON.stringify(data)
 }
 
 /**

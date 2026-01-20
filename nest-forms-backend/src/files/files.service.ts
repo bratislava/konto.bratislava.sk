@@ -445,7 +445,7 @@ export default class FilesService {
     }
 
     // if there are files in error state notify developers, and set form to error state
-    if (await this.filesHelper.formHasErrorFiles(formId)) {
+    if (await this.filesHelper.areErrorFilesInForm(formId)) {
       const result = {
         filesReady: false,
         requeue: false,

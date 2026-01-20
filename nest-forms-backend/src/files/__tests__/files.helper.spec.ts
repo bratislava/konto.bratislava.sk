@@ -114,7 +114,7 @@ describe('FilesHelper', () => {
     })
   })
 
-  describe('formHasErrorFiles', () => {
+  describe('areErrorFilesInForm', () => {
     beforeEach(() => {
       jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
     })
@@ -132,7 +132,7 @@ describe('FilesHelper', () => {
 
       prismaMock.files.findMany.mockResolvedValue(mockErrorFiles)
 
-      const result = await service.formHasErrorFiles('test-form-id')
+      const result = await service.areErrorFilesInForm('test-form-id')
 
       expect(result).toBe(true)
     })
@@ -149,7 +149,7 @@ describe('FilesHelper', () => {
 
       prismaMock.files.findMany.mockResolvedValue(mockErrorFiles)
 
-      const result = await service.formHasErrorFiles('test-form-id')
+      const result = await service.areErrorFilesInForm('test-form-id')
 
       expect(result).toBe(true)
     })
@@ -157,7 +157,7 @@ describe('FilesHelper', () => {
     it('should return false when there are no error files', async () => {
       prismaMock.files.findMany.mockResolvedValue([])
 
-      const result = await service.formHasErrorFiles('test-form-id')
+      const result = await service.areErrorFilesInForm('test-form-id')
 
       expect(result).toBe(false)
     })

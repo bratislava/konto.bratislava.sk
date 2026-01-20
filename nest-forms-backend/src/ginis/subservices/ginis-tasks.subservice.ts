@@ -6,8 +6,8 @@ import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefini
 
 import PrismaService from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import {
   GinisTaskErrorEnum,
   GinisTaskErrorResponseEnum,

@@ -3,8 +3,6 @@ import { Prisma, PrismaClient } from '@prisma/client'
 
 import { escapeForLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 
 @Injectable()
 export default class PrismaService

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { ServiceRunningDto } from './dtos/status.dto'
 import {

@@ -9,9 +9,9 @@ import {
   FilesErrorsEnum,
   FilesErrorsResponseEnum,
 } from '../../files/files.errors.enum'
+import { ErrorsEnum } from '../global-enums/errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
-import { ErrorsEnum } from '../global-enums/errors.enum'
 
 interface UploadedObjectInfo {
   etag: string

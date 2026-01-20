@@ -16,6 +16,10 @@ import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtract
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FormsService from '../forms/forms.service'
 import GinisService from '../ginis/ginis.service'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../nases/nases.errors.enum'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ } from '../utils/constants'
@@ -30,10 +34,6 @@ import {
 } from './nases-consumer.dto'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../nases/nases.errors.enum'
 
 @Injectable()
 export default class NasesConsumerService {

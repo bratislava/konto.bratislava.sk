@@ -13,6 +13,7 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import WebhookDto from './dtos/webhook.dto'
@@ -20,7 +21,6 @@ import {
   WebhookErrorsEnum,
   WebhookErrorsResponseEnum,
 } from './dtos/webhook.errors.enum'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 
 @Injectable()
 export default class WebhookSubservice {

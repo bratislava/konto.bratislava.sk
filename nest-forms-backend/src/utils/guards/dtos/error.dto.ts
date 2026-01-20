@@ -7,10 +7,10 @@ import { EmailFormsErrorsEnum } from '../../../nases-consumer/subservices/dtos/e
 import { WebhookErrorsEnum } from '../../../nases-consumer/subservices/dtos/webhook.errors.enum'
 import { ScannerClientErrorsEnum } from '../../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../../signer/signer.errors.enum'
+import { StatusErrorsEnum } from '../../../status/errors/status.errors.enum'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import { MailgunErrorsEnum } from '../../global-enums/mailgun.errors.enum'
 import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.enum'
-import { StatusErrorsEnum } from '../../../status/errors/status.errors.enum'
 
 export type CustomErrorEnums =
   | ErrorsEnum

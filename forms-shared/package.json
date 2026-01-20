@@ -60,7 +60,7 @@
     "rodnecislo": "^1.6.0",
     "semver": "^7.7.2",
     "traverse": "^0.6.11",
-    "ts-pattern": "^5.8.0",
+    "ts-pattern": "^5.9.0",
     "uuid": "^11.1.0",
     "xml2js": "^0.6.2"
   },

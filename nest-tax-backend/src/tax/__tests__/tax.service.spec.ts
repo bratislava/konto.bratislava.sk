@@ -639,6 +639,69 @@ describe('TaxService', () => {
       expect(result.items).toHaveLength(2)
       expect(result.items[0].status).toBe(TaxStatusEnum.PARTIALLY_PAID)
       expect(result.items[1].status).toBe(TaxStatusEnum.CANCELLED)
+      expect(result.items[1].amountToBePaid).toBeUndefined()
+      expect(result.taxAdministrator).toEqual(
+        mockTaxPayer.taxAdministrators[0].taxAdministrator,
+      )
+    })
+
+    it('should return undefined amountToBePaid when tax is cancelled, regardless of amount and paid values', async () => {
+      // Set outside inclusion period to prevent current year tax addition
+      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+
+      const mockTaxes = [
+        {
+          id: 1,
+          createdAt: new Date('2023-01-01T10:00:00.000Z'),
+          amount: 1000,
+          year: 2023,
+          type: TaxType.DZN,
+          order: 1,
+          isCancelled: true, // Cancelled tax
+        },
+        {
+          id: 2,
+          createdAt: new Date('2022-01-01T10:00:00.000Z'),
+          amount: 500,
+          year: 2022,
+          type: TaxType.DZN,
+          order: 1,
+          isCancelled: true, // Another cancelled tax
+        },
+      ]
+
+      const mockTaxPayer = createMockTaxPayer({
+        createdAt: new Date('2025-01-01T10:00:00.000Z'),
+        updatedAt: new Date('2025-01-01T10:00:02.000Z'),
+      })
+
+      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
+      prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
+
+      // Mock getAmountAlreadyPaidByTaxId - even if there are payments, amountToBePaid should be undefined
+      jest
+        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
+        .mockResolvedValueOnce(300) // For tax id 1 - partially paid but cancelled
+        .mockResolvedValueOnce(500) // For tax id 2 - fully paid but cancelled
+
+      const result = await service.getListOfTaxesByBirthnumberAndType(
+        '123456/789',
+        TaxType.DZN,
+      )
+
+      expect(result.availabilityStatus).toBe(TaxAvailabilityStatus.AVAILABLE)
+      expect(result.items).toHaveLength(2)
+
+      // First cancelled tax - should have undefined amountToBePaid even though it was partially paid
+      expect(result.items[0].status).toBe(TaxStatusEnum.CANCELLED)
+      expect(result.items[0].amountToBePaid).toBeUndefined()
+      expect(result.items[0].year).toBe(2023)
+
+      // Second cancelled tax - should have undefined amountToBePaid even though it was fully paid
+      expect(result.items[1].status).toBe(TaxStatusEnum.CANCELLED)
+      expect(result.items[1].amountToBePaid).toBeUndefined()
+      expect(result.items[1].year).toBe(2022)
+
       expect(result.taxAdministrator).toEqual(
         mockTaxPayer.taxAdministrators[0].taxAdministrator,
       )

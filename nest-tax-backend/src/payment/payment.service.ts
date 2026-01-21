@@ -263,7 +263,7 @@ export class PaymentService {
             CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
             CustomErrorNorisTypesResponseEnum.TAX_NOT_FOUND,
             undefined,
-            'We received valid a payment response for payment we do not have in our database.',
+            `We received a valid payment response for payment we do not have in our database. ORDERNUMBER: ${ORDERNUMBER}`,
           ),
         )
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
@@ -271,8 +271,8 @@ export class PaymentService {
 
       const strategy = this.getProcessingStrategy(PRCODE)
       const currentStatus = taxPaymentWithTax.status
-      const { year } = taxPaymentWithTax.tax
-      const redirectBase = `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${taxPaymentWithTax.tax.type}&year=${year}&order=${taxPaymentWithTax.tax.order}`
+      const { year, order, type } = taxPaymentWithTax.tax
+      const redirectBase = `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
 
       if (strategy.shouldAlert) {
         this.logger.warn({
@@ -326,7 +326,7 @@ export class PaymentService {
               CustomErrorPaymentTypesEnum.DATABASE_ERROR,
               CustomErrorNorisTypesResponseEnum.DATABASE_ERROR,
               undefined,
-              'Database did not return an update TaxPayment after nextStatus was set.',
+              `Database did not return an update TaxPayment after nextStatus was set. ORDERID: ${ORDERNUMBER}, STATUS: ${nextStatus}`,
             ),
           )
           return redirectBase
@@ -349,7 +349,7 @@ export class PaymentService {
         user?.externalId ?? undefined,
       )
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&taxType=${taxPaymentWithTax?.tax.type}&year=${year}&order=${taxPaymentWithTax?.tax.order}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${taxPaymentWithTax?.tax.type}&year=${year}&order=${taxPaymentWithTax?.tax.order}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

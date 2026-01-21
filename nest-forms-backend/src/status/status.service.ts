@@ -27,9 +27,9 @@ export default class StatusService {
   // function which checks if prisma is running
   public async isPrismaRunning(): Promise<ServiceRunningDto> {
     try {
-      const result = await this.prismaService.isRunning()
+      await this.prismaService.isRunning()
       return {
-        running: result,
+        running: true,
       }
     } catch (error) {
       this.logger.error(

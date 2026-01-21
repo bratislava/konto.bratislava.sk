@@ -45,9 +45,8 @@ export default class PrismaService
   }
 
   // async function which checks if prisma database is running
-  public async isRunning(): Promise<boolean> {
+  public async isRunning() {
     await this.$queryRaw`SELECT 1`
-    return true
   }
 
   async enableShutdownHooks(app: INestApplication): Promise<void> {

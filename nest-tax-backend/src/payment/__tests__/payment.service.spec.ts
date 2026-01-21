@@ -46,7 +46,8 @@ describe('PaymentService', () => {
         {
           provide: ConfigService,
           useValue: createMock<ConfigService>(),
-        },GpWebpaySubservice,
+        },
+        GpWebpaySubservice,
         {
           provide: CityAccountSubservice,
           useValue: createMock<CityAccountSubservice>(),
@@ -295,13 +296,9 @@ describe('PaymentService', () => {
       process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND = redirectUrl
 
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-      console.log('TEST1')
-      // Ensure the mock is explicitly returning null and not a rejected promise or a proxy
       jest.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue(null)
-      console.log('TEST2')
 
       const result = await service.processPaymentResponse(mockQuery)
-      console.log(result)
       expect(result).toBe(
         `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,
       )

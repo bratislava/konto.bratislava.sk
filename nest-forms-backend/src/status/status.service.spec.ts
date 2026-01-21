@@ -18,6 +18,7 @@ describe('StatusService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        // TODO we want to mock most of these
         StatusService,
         MinioClientSubservice,
         PrismaService,

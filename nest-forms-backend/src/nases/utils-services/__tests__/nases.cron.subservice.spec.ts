@@ -356,9 +356,6 @@ describe('NasesCronSubservice', () => {
         configurable: true,
       })
 
-      const alertErrorMock = jest.requireMock(
-        '../../../utils/subservices/line-logger.subservice',
-      ).default
       const logSpy = jest.spyOn(service['logger'], 'log')
       const errorSpy = jest.spyOn(service['logger'], 'error')
 

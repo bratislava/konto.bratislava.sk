@@ -112,7 +112,7 @@ export default class WebhookSubservice {
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Setting form state to FINISHED failed`,
-          {formId},
+          { formId },
           error,
         ),
       )

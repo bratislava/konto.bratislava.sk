@@ -99,6 +99,60 @@ export class VerificationSubservice {
     }
   }
 
+  private validatePersonName(
+    rfoData: RfoIdentityListElement,
+    firstName: string | undefined,
+    lastName: string | undefined
+  ) {
+    if (!firstName || !lastName) {
+      return false
+    }
+
+    const stripDiacritics = (str: string): string =>
+      str.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+
+    const normalize = (str: string): string => stripDiacritics(str).trim().toLowerCase()
+
+    const normalizedFirstName = normalize(firstName)
+    const normalizedLastName = normalize(lastName)
+
+    if (!normalizedFirstName || !normalizedLastName) {
+      return false
+    }
+
+    const mena = rfoData.menaOsoby
+    if (!mena) {
+      return false
+    }
+
+    const rfoFirstName = mena.find((name) => {
+      return name.poradieMena === 1
+    })?.meno
+
+    const rfoLastName = rfoData.menaOsoby
+      ?.sort((a, b) => {
+        return (a.poradieMena || 0) - (b.poradieMena || 0)
+      })
+      .at(-1)
+
+    if (
+      !rfoFirstName ||
+      !rfoLastName ||
+      !rfoLastName.meno ||
+      !rfoLastName.poradieMena ||
+      rfoLastName.poradieMena === 0
+    ) {
+      return false
+    }
+
+    const rfoFirstNameNormalized = normalize(rfoFirstName)
+    const rfoLastNameNormalized = normalize(rfoLastName.meno)
+
+    return (
+      rfoFirstNameNormalized === normalizedFirstName && rfoLastNameNormalized === normalizedLastName
+    )
+  }
+
   /**
    * Verifies the identity card of a user.
    *
@@ -137,6 +191,11 @@ export class VerificationSubservice {
       // If the check fails, increment counter
       if (!rfoDataSingle.rodneCislo) {
         birthNumberNotExistCounter += 1
+        continue
+      }
+
+      // For physical person, require Cognito given_name + family_name match to RFO
+      if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
         continue
       }
 

@@ -502,7 +502,7 @@ export class TasksService {
         `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`
       )
     }
-    const active = EmailConfigSchema.parse(configDbResult).active
+    const active = EmailConfigSchema.parse(configDbResult.value).active
     if (!active) {
       return
     }

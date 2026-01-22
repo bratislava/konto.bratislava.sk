@@ -8,6 +8,9 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { DeliveryMethodEnum } from '@prisma/client'
 import prismaMock from '../../test/singleton'
+import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+
+jest.mock('../utils/constants/tax-deadline')
 
 describe('UserService', () => {
   let service: UserService
@@ -47,7 +50,12 @@ describe('UserService', () => {
   })
 
   describe('changedDeliveryMethodAfterDeadline', () => {
+    const mockGetTaxDeadlineDate = getTaxDeadlineDate as jest.MockedFunction<
+      typeof getTaxDeadlineDate
+    >
+
     beforeEach(() => {
+      mockGetTaxDeadlineDate.mockReturnValue(new Date('2026-03-01'))
       jest.useFakeTimers().setSystemTime(new Date('2026-10-01')) // After the tax deadline
     })
 

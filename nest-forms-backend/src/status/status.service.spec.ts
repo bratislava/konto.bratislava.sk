@@ -40,7 +40,9 @@ describe('StatusService', () => {
 
   describe('isPrismaRunning', () => {
     it('should return true', async () => {
-      service['prismaService'].isRunning = jest.fn().mockResolvedValue()
+      service['prismaService'].isRunning = jest
+        .fn()
+        .mockImplementation(() => {})
       const result = await service.isPrismaRunning()
       expect(result).toEqual({
         running: true,

@@ -39,32 +39,33 @@ WHERE
 -- for every person, that at this point don't any marketing consent,
 -- add subscribe at a date of registering of account to cognito
 INSERT INTO
-	"UserGdprData" (
-		"id",
-		"createdAt",
-		"updatedAt",
-		"userId",
-		"type",
-		"category",
-		"subType"
-	)
+  "UserGdprData" (
+    "id",
+    "createdAt",
+    "updatedAt",
+    "userId",
+    "type",
+    "category",
+    "subType"
+  )
 SELECT
-	GEN_RANDOM_UUID(),
-	"registeredAt",
-	CURRENT_TIMESTAMP,
-	"User"."id",
-	'MARKETING',
-	'ESBS',
-	'subscribe'
+  GEN_RANDOM_UUID(),
+  "registeredAt",
+  current_timestamp,
+  "User"."id",
+  'MARKETING',
+  'ESBS',
+  'subscribe'
 FROM
-	"User"
-	LEFT JOIN "UserGdprData" ON "User"."id" = "UserGdprData"."userId"
-	AND "UserGdprData"."type" = 'MARKETING'
-	AND "UserGdprData"."category" = 'ESBS'
+  "User"
+  LEFT JOIN "UserGdprData" ON "User"."id" = "UserGdprData"."userId"
+  AND "UserGdprData"."type" = 'MARKETING'
+  AND "UserGdprData"."category" = 'ESBS'
 WHERE
-	"UserGdprData"."userId" IS NULL
-	AND "User"."registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
+  "UserGdprData"."userId" IS NULL
+  AND "User"."registeredAt" IS NOT NULL;
 
+-- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
 -- LegalPerson Gdpr Data fix
 -- 1.find users with only null values in marketing esbs consent
 -- 2.for users from step above, change oldest null value to subscribe
@@ -104,37 +105,38 @@ WHERE
 -- remove unnecessary null values
 DELETE FROM "LegalPersonGdprData"
 WHERE
-	"type" = 'MARKETING'
-	AND "category" = 'ESBS'
-	AND "subType" IS NULL;
+  "type" = 'MARKETING'
+  AND "category" = 'ESBS'
+  AND "subType" IS NULL;
 
 -- for every person, that at this point don't any marketing consent,
 -- add subscribe at a date of registering of account to cognito
 INSERT INTO
-	"LegalPersonGdprData" (
-		"id",
-		"createdAt",
-		"updatedAt",
-		"legalPersonId",
-		"type",
-		"category",
-		"subType"
-	)
+  "LegalPersonGdprData" (
+    "id",
+    "createdAt",
+    "updatedAt",
+    "legalPersonId",
+    "type",
+    "category",
+    "subType"
+  )
 SELECT
-	GEN_RANDOM_UUID(),
-	"registeredAt",
-	CURRENT_TIMESTAMP,
-	"LegalPerson"."id",
-	'MARKETING',
-	'ESBS',
-	'subscribe'
+  GEN_RANDOM_UUID(),
+  "registeredAt",
+  current_timestamp,
+  "LegalPerson"."id",
+  'MARKETING',
+  'ESBS',
+  'subscribe'
 FROM
-	"LegalPerson"
-	LEFT JOIN "LegalPersonGdprData" ON "LegalPerson"."id" = "LegalPersonGdprData"."legalPersonId"
-	AND "LegalPersonGdprData"."type" = 'MARKETING'
-	AND "LegalPersonGdprData"."category" = 'ESBS'
+  "LegalPerson"
+  LEFT JOIN "LegalPersonGdprData" ON "LegalPerson"."id" = "LegalPersonGdprData"."legalPersonId"
+  AND "LegalPersonGdprData"."type" = 'MARKETING'
+  AND "LegalPersonGdprData"."category" = 'ESBS'
 WHERE
-	"LegalPersonGdprData"."legalPersonId" IS NULL
-	AND "LegalPerson"."registeredAt" IS NOT NULL; -- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
+  "LegalPersonGdprData"."legalPersonId" IS NULL
+  AND "LegalPerson"."registeredAt" IS NOT NULL;
 
+-- only users with "registeredAt" is real physical entity, all others are for legacy reason of verifying LegalPerson
 COMMIT;

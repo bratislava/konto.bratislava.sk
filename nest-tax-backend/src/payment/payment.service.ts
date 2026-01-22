@@ -364,6 +364,7 @@ export class PaymentService {
   private getProcessingStrategy(prCode: string): GpWebpayProcessingStrategy {
     const pr = Number(prCode)
 
+    // https://www.gpwebpay.cz/downloads/GP_webpay_HTTP_EN.pdf
     // PR 0: Success
     if (pr === 0) {
       return {

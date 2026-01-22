@@ -31,7 +31,9 @@ const TaxesFeesOverviewBanner = ({ variant, taxType }: Props) => {
     [TaxType.Dzn]: t('account_section_payment.error_card_content.text.dzn', {
       url: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
     }),
-    [TaxType.Ko]: '', // todo
+    [TaxType.Ko]: t('account_section_payment.error_card_content.text.ko', {
+      url: ROUTES.MUNICIPAL_SERVICES_FORM('oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady'),
+    }),
   }[taxType]
 
   const content = {

@@ -1,4 +1,4 @@
-import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
+import ThankYouCard, { ThankYouCardBase } from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import { ROUTES } from 'frontend/api/constants'
 import { NextRouter, useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -17,9 +17,9 @@ const useGetPaymentQueryParams = (router: NextRouter) => {
   const status = useMemo(
     () =>
       typeof router.query.status === 'string' &&
-      Object.values(PaymentRedirectStateEnum).includes(
-        router.query.status as PaymentRedirectStateEnum,
-      )
+        Object.values(PaymentRedirectStateEnum).includes(
+          router.query.status as PaymentRedirectStateEnum,
+        )
         ? (router.query.status as PaymentRedirectStateEnum)
         : PaymentRedirectStateEnum.FailedToVerify,
     [router.query.status],
@@ -28,7 +28,7 @@ const useGetPaymentQueryParams = (router: NextRouter) => {
   const type = useMemo(
     () =>
       typeof router.query.taxType === 'string' &&
-      Object.values(TaxType).includes(router.query.taxType as TaxType)
+        Object.values(TaxType).includes(router.query.taxType as TaxType)
         ? (router.query.taxType as TaxType)
         : undefined,
     [router.query.taxType],
@@ -71,36 +71,10 @@ const ThankYouSection = () => {
     }
   }, [router.query, status])
 
-  const statusToTranslationPath = {
-    [PaymentRedirectStateEnum.FailedToVerify]: {
-      title: t('thank_you.result.failed_to_verify.title'),
-      content: t('thank_you.result.failed_to_verify.content'),
-    },
-    [PaymentRedirectStateEnum.PaymentFailed]: {
-      title: t('thank_you.result.payment_failed.title'),
-      content: t('thank_you.result.payment_failed.content'),
-    },
-    [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
-      title: t('thank_you.result.payment_already_paid.title'),
-      content: t('thank_you.result.payment_already_paid.content'),
-    },
-    [PaymentRedirectStateEnum.PaymentSuccess]: {
-      title: t('thank_you.result.payment_success.title'),
-      content: t('thank_you.result.payment_success.content'),
-    },
-  }
-
-  const isSuccessfullyPaid =
-    status === PaymentRedirectStateEnum.PaymentSuccess ||
-    status === PaymentRedirectStateEnum.PaymentAlreadyPaid
-
-  const taxDetailLink = useMemo(
-    () =>
-      year && type && order
-        ? ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })
-        : ROUTES.TAXES_AND_FEES,
-    [year, type, order],
-  )
+  const taxDetailLink =
+    year && type && order
+      ? ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })
+      : ROUTES.TAXES_AND_FEES
 
   const feedbackLink = useMemo(() => {
     if (type === TaxType.Dzn) {
@@ -112,29 +86,48 @@ const ThankYouSection = () => {
     return null
   }, [type, feedbackLinkDzn, feedbackLinkKo])
 
+  const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouCardBase> = {
+    [PaymentRedirectStateEnum.PaymentSuccess]: {
+      success: true,
+      title: t('thank_you.result.payment_success.title'),
+      content: t('thank_you.result.payment_success.content'),
+      firstButtonTitle: t('thank_you.button_to_formular_text'),
+      firstButtonLink: feedbackLink ?? "#",
+    },
+    [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
+      success: true,
+      title: t('thank_you.result.payment_already_paid.title'),
+      content: t('thank_you.result.payment_success.content'),
+    },
+    [PaymentRedirectStateEnum.FailedToVerify]: {
+      success: false,
+      title: t('thank_you.result.failed_to_verify.title'),
+      content: t('thank_you.result.payment_failed.content'),
+      firstButtonTitle: t('thank_you.button_restart_text'),
+      firstButtonLink: taxDetailLink,
+    },
+    [PaymentRedirectStateEnum.PaymentFailed]: {
+      success: false,
+      title: t('thank_you.result.payment_failed.title'),
+      content: t('thank_you.result.payment_failed.content'),
+      firstButtonTitle: t('thank_you.button_restart_text'),
+      firstButtonLink: taxDetailLink,
+    },
+  }
+
+  const cardProps = cardPropsMap[status]
+
   return (
     <div className="bg-gray-0 pt-16 lg:bg-gray-50 lg:pt-8">
-      {isSuccessfullyPaid ? (
-        <ThankYouCard
-          success={isSuccessfullyPaid}
-          title={statusToTranslationPath[status].title}
-          content={`<span className='text-p2'>${statusToTranslationPath[status].content}</span>`}
-          firstButtonTitle={t('thank_you.button_to_formular_text')}
-          feedbackLink={feedbackLink}
-          secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}
-          secondButtonLink={ROUTES.TAXES_AND_FEES}
-        />
-      ) : (
-        <ThankYouCard
-          success={isSuccessfullyPaid}
-          title={statusToTranslationPath[status].title}
-          content={`<span className='text-p2'>${statusToTranslationPath[status].content}</span>`}
-          firstButtonTitle={t('thank_you.button_restart_text')}
-          firstButtonLink={taxDetailLink}
-          secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}
-          secondButtonLink={ROUTES.TAXES_AND_FEES}
-        />
-      )}
+      <ThankYouCard
+        success={cardProps.success}
+        title={cardProps.title}
+        content={`<span className='text-p2'>${cardProps.content}</span>`}
+        firstButtonTitle={cardProps.firstButtonTitle}
+        firstButtonLink={cardProps.firstButtonLink}
+        secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}
+        secondButtonLink={ROUTES.TAXES_AND_FEES}
+      />
     </div>
   )
 }

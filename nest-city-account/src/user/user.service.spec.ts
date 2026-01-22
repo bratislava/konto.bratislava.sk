@@ -47,16 +47,33 @@ describe('UserService', () => {
   })
 
   describe('changedDeliveryMethodAfterDeadline', () => {
-    it('should return false when user has no delivery method set at lock data', () => {
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(new Date('2026-10-01')) // After the tax deadline
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    it('should return false when now is before the tax deadline', () => {
+      jest.useFakeTimers().setSystemTime(new Date('2026-01-01'))
+      const result = service['changedDeliveryMethodAfterDeadline']({
+        taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
+        taxDeliveryMethod: DeliveryMethodEnum.POSTAL,
+      })
+      expect(result).toBe(false)
+    })
+    
+    it('should return true when user has no delivery method set at lock data, but selected different delivery method', () => {
       const user = {
         taxDeliveryMethodAtLockDate: null,
         taxDeliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
       }
       const result = service['changedDeliveryMethodAfterDeadline'](user)
-      expect(result).toBe(false)
+      expect(result).toBe(true)
     })
 
-    ;[DeliveryMethodEnum.CITY_ACCOUNT, DeliveryMethodEnum.POSTAL].forEach((deliveryMethod) => {
+    ;[DeliveryMethodEnum.CITY_ACCOUNT, DeliveryMethodEnum.POSTAL, null].forEach((deliveryMethod) => {
       it(`should return false when user has the same delivery method set at lock data: ${deliveryMethod}`, () => {
         const user = {
           taxDeliveryMethodAtLockDate: deliveryMethod,

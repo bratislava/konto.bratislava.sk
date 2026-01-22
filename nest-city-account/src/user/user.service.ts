@@ -29,6 +29,7 @@ import {
 } from '../utils/global-dtos/cognito.dto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LoginClientEnum } from '@prisma/client'
+import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 
 @Injectable()
 export class UserService {
@@ -44,7 +45,10 @@ export class UserService {
     taxDeliveryMethodAtLockDate: DeliveryMethodEnum | null
     taxDeliveryMethod: DeliveryMethodEnum | null
   }): boolean {
-    if (user.taxDeliveryMethodAtLockDate === null) {
+    const now = new Date()
+    const deadline = getTaxDeadlineDate()
+
+    if (now < deadline) {
       return false
     }
 

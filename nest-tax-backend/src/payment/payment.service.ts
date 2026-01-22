@@ -349,7 +349,7 @@ export class PaymentService {
         user?.externalId ?? undefined,
       )
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${taxPaymentWithTax?.tax.type}&year=${year}&order=${taxPaymentWithTax?.tax.order}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

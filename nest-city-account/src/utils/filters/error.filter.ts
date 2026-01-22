@@ -8,6 +8,12 @@ import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 @Catch(Error)
 export class ErrorFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost): void {
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(ErrorFilter.name)
+      logger.error(exception)
+      throw exception
+    }
+
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
@@ -34,6 +40,12 @@ export class ErrorFilter implements ExceptionFilter {
 @Catch(TypeError)
 export class TypeErrorFilter implements ExceptionFilter {
   catch(exception: TypeError, host: ArgumentsHost) {
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(ErrorFilter.name)
+      logger.error(exception)
+      throw exception
+    }
+
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
@@ -58,6 +70,12 @@ export class TypeErrorFilter implements ExceptionFilter {
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(ErrorFilter.name)
+      logger.error(exception)
+      throw exception
+    }
+
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const status = exception.getStatus()

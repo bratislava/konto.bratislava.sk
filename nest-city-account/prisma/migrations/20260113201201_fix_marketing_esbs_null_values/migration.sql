@@ -36,6 +36,13 @@ FROM
 WHERE
   ugd."id" = filtered."id";
 
+-- remove unnecessary null values
+DELETE FROM "UserGdprData"
+WHERE
+  "type" = 'MARKETING'
+  AND "category" = 'ESBS'
+  AND "subType" IS NULL;
+
 -- for every person, that at this point don't any marketing consent,
 -- add subscribe at a date of registering of account to cognito
 INSERT INTO

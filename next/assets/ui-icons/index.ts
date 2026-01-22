@@ -1,3 +1,7 @@
+/**
+ * Figma: https://www.figma.com/design/lmi5bRuoosgzeOhnmg4Zkk/DS--Icons?node-id=0-1&p=f&m=dev
+ */
+
 export { default as ApplePayIcon } from './apple-pay.svg'
 export { default as ChevronLeftIcon } from './chevron-dolava.svg'
 export { default as ChevronDownIcon } from './chevron-dole.svg'
@@ -57,6 +61,7 @@ export { default as ArrowRightIcon } from './sipka-doprava.svg'
 export { default as ArrowUpIcon } from './sipka-hore.svg'
 export { default as ConnectionIcon } from './sipky-spojenie.svg'
 export { default as ScanningIcon } from './skenovanie.svg'
+export { default as EyeHiddenIcon } from './skryt.svg'
 export { default as DownloadIcon } from './stiahnut.svg'
 export { default as PhoneIcon } from './telefon.svg'
 export { default as EllipsisIcon } from './tri-bodky.svg'

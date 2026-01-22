@@ -13,7 +13,6 @@ import PasswordField from '../widget-components/PasswordField/PasswordField'
 interface Data {
   verificationCode: string
   password: string
-  passwordConfirmation: string
 }
 
 interface Props {
@@ -46,15 +45,8 @@ const schema = {
         format: 'account:auth.fields.password_format',
       },
     },
-    passwordConfirmation: {
-      const: {
-        $data: '1/password',
-      },
-      type: 'string',
-      errorMessage: { const: 'account:auth.fields.password_confirmation_required' },
-    },
   },
-  required: ['verificationCode', 'password', 'passwordConfirmation'],
+  required: ['verificationCode', 'password'],
 }
 
 const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }: Props) => {
@@ -67,7 +59,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
     formState: { isSubmitting },
   } = useHookForm<Data>({
     schema,
-    defaultValues: { verificationCode: '', password: '', passwordConfirmation: '' },
+    defaultValues: { verificationCode: '', password: '' },
   })
 
   const [cnt, setCnt] = useState(60)
@@ -138,28 +130,6 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
             helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
-          />
-        )}
-      />
-      <Controller
-        name="passwordConfirmation"
-        control={control}
-        render={({ field }) => (
-          <PasswordField
-            required
-            autoComplete="new-password"
-            label={
-              fromMigration
-                ? t('auth.fields.password_confirmation_label')
-                : t('auth.fields.new_password_confirmation_label')
-            }
-            placeholder={
-              fromMigration
-                ? t('auth.fields.password_confirmation_placeholder')
-                : t('auth.fields.new_password_confirmation_placeholder')
-            }
-            {...field}
-            errorMessage={errors.passwordConfirmation}
           />
         )}
       />

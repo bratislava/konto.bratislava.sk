@@ -72,7 +72,20 @@ export function objToLogfmt(obj: object): string {
     ...separatedValues.responseMessage,
   }
   return Object.entries(objAll)
-    .map(([key, value]) => {
+    .flatMap(([key, value]) => {
+      if (key === 'console' && typeof value === 'object' && value !== null) {
+        return Object.entries(value).map(([subKey, subValue]) => {
+          let formattedSubValue: unknown = subValue
+          if (typeof formattedSubValue === 'object') {
+            formattedSubValue = JSON.stringify(formattedSubValue)
+          }
+          if (typeof formattedSubValue === 'string') {
+            formattedSubValue = escapeForLogfmt(formattedSubValue)
+          }
+          return `${subKey}="${formattedSubValue}"`
+        })
+      }
+
       let formattedValue: unknown = value
       if (typeof formattedValue === 'object') {
         formattedValue = JSON.stringify(formattedValue)

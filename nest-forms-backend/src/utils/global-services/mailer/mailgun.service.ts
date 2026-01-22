@@ -8,7 +8,6 @@ import { IMailgunClient } from 'mailgun.js/Interfaces'
 import PrismaService from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import { toLogfmt } from '../../logging'
 import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
 import { MAILGUN_CONFIG } from './mailgun.constants'
@@ -92,14 +91,14 @@ export default class MailgunService implements Mailer {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Mailgun message was not sent to email.`,
-          toLogfmt({
+          {
             formId: data.data.formId,
             emailFrom,
             emailTo: data.to,
             subject,
             mailgunResponse,
             filenames: attachments?.map((attachment) => attachment.filename),
-          }),
+          },
         )
       }
     } catch (error) {
@@ -107,13 +106,13 @@ export default class MailgunService implements Mailer {
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'ERROR to send mailgun message',
-          toLogfmt({
+          {
             formId: data.data.formId,
             emailFrom,
             emailTo: data.to,
             subject,
             filenames: attachments?.map((attachment) => attachment.filename),
-          }),
+          },
           error,
         ),
       )

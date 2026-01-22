@@ -114,8 +114,7 @@ export class MagproxyService {
 
     if (!result.success) {
       this.logger.error(
-        `${INCORRECT_RFO_DATA_ERROR} - if we got an array it will be used normally, but the validation schema may need an update`,
-        JSON.stringify(data)
+        `${INCORRECT_RFO_DATA_ERROR} - if we got an array it will be used normally, but the validation schema may need an update (data omitted)`
       )
       if (!Array.isArray(data)) {
         this.logger.error('Invalid data received (expected array), aborting.')

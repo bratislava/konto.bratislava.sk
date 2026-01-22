@@ -14,9 +14,12 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import GinisService from '../ginis/ginis.service'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../nases/nases.errors.enum'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ } from '../utils/constants'
@@ -24,9 +27,7 @@ import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
@@ -83,26 +84,35 @@ export default class NasesConsumerService {
 
     const form = await this.formsService.getUniqueForm(data.formId)
     if (form === null) {
-      alertError(
-        `ERROR onQueueConsumption: NotFoundException - Form with id ${data.formId} not found.`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.BadRequestException(
+          NasesErrorsEnum.FORM_NOT_FOUND,
+          NasesErrorsResponseEnum.FORM_NOT_FOUND,
+          { formId: data.formId },
+        ),
       )
       return new Nack(false)
     }
 
     if (form.archived) {
-      alertError(
-        `ERROR onQueueConsumption: NotFoundException - Form with id ${data.formId} is archived.`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.BadRequestException(
+          NasesErrorsEnum.FORM_ARCHIVED,
+          NasesErrorsResponseEnum.FORM_ARCHIVED,
+          { formId: data.formId },
+        ),
       )
       return new Nack(false)
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      alertError(
-        `ERROR onQueueConsumption: NotFoundException - ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}.`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+          { formDefinitionSug: form.formDefinitionSlug },
+        ),
       )
       return new Nack(false)
     }
@@ -123,9 +133,12 @@ export default class NasesConsumerService {
 
     // this filters out tax forms, as they should always be sent with eID and never fall under the nases-consumer queue
     if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
-      alertError(
-        `ERROR onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} In the nases-consumer queue only generic Slovensko.sk forms can be processed. Form id: ${form.id}.`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          { formId: form.id },
+        ),
       )
       return new Nack(false)
     }
@@ -253,9 +266,17 @@ export default class NasesConsumerService {
         delay,
       )
     } else {
-      alertError(
-        `Max tries reached for formId: ${formId}. Last error state: ${error}. Next form state: ${FormState.ERROR} error: ${FormError.RABBITMQ_MAX_TRIES}`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.MAX_TRIES_REACHED,
+          NasesErrorsResponseEnum.MAX_TRIES_REACHED,
+          {
+            formId,
+            lastErrorState: error,
+            nextErrorState: FormState.ERROR,
+            error: FormError.RABBITMQ_MAX_TRIES,
+          },
+        ),
       )
       await this.formsService.updateForm(formId, {
         state: FormState.ERROR,
@@ -277,10 +298,13 @@ export default class NasesConsumerService {
       )
       return new Nack(false)
     } catch (error) {
-      alertError(
-        `Sending email of form ${form.id} has failed.`,
-        this.logger,
-        (error as Error).message,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.SENDING_EMAIL_FAILED,
+          NasesErrorsResponseEnum.SENDING_EMAIL_FAILED,
+          { formId: form.id },
+          error,
+        ),
       )
 
       await this.prismaService.forms
@@ -293,10 +317,13 @@ export default class NasesConsumerService {
           },
         })
         .catch((error_) => {
-          alertError(
-            `Setting form error with id ${form.id} to EMAIL_SEND_ERROR failed.`,
-            this.logger,
-            JSON.stringify(error_),
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              NasesErrorsEnum.DATABASE_ERROR,
+              'Setting form error to EMAIL_SEND_ERROR failed.',
+              { formId: form.id },
+              error_,
+            ),
           )
         })
       const requeueEmail = await this.nackTrueWithWait(20_000)
@@ -309,10 +336,13 @@ export default class NasesConsumerService {
       await this.webhookSubservice.sendWebhook(form.id)
       return new Nack(false)
     } catch (error) {
-      alertError(
-        `Sending webhook of form ${form.id} has failed.`,
-        this.logger,
-        (error as Error).message,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.WEBHOOK_ERROR,
+          NasesErrorsResponseEnum.WEBHOOK_ERROR,
+          { formId: form.id },
+          error,
+        ),
       )
 
       await this.prismaService.forms
@@ -325,10 +355,13 @@ export default class NasesConsumerService {
           },
         })
         .catch((error_) => {
-          alertError(
-            `Setting form error with id ${form.id} to WEBHOOK_SEND_ERROR failed.`,
-            this.logger,
-            JSON.stringify(error_),
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              NasesErrorsEnum.DATABASE_ERROR,
+              `Setting form error to WEBHOOK_SEND_ERROR failed.`,
+              { formId: form.id },
+              error_,
+            ),
           )
         })
       const requeueEmail = await this.nackTrueWithWait(20_000)

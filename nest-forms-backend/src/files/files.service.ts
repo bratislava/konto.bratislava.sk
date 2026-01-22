@@ -20,9 +20,7 @@ import { FormAccessService } from '../forms-v2/services/form-access.service'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import {
   BufferedFileDto,
@@ -452,10 +450,14 @@ export default class FilesService {
         state: FormState.ERROR,
         error: FormError.UNABLE_TO_SCAN_FILES,
       }
-      alertError(
-        `Form with id ${formId} has files in error state. Setting form to ERROR state with error: ${FormError.UNABLE_TO_SCAN_FILES}.`,
-        this.logger,
-        JSON.stringify(result),
+
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          `Form has files in error state. Setting form to ERROR state with error: ${FormError.UNABLE_TO_SCAN_FILES}.`,
+          { formId },
+          result,
+        ),
       )
       return result
     }

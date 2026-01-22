@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import StatusService from './status.service'
 
@@ -17,10 +18,12 @@ describe('StatusService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        // TODO we want to mock most of these
         StatusService,
         MinioClientSubservice,
         PrismaService,
         ScannerClientService,
+        ThrowerErrorGuard,
       ],
     }).compile()
 
@@ -37,7 +40,9 @@ describe('StatusService', () => {
 
   describe('isPrismaRunning', () => {
     it('should return true', async () => {
-      service['prismaService'].isRunning = jest.fn().mockResolvedValue(true)
+      service['prismaService'].isRunning = jest
+        .fn()
+        .mockImplementation(() => {})
       const result = await service.isPrismaRunning()
       expect(result).toEqual({
         running: true,
@@ -45,7 +50,9 @@ describe('StatusService', () => {
     })
 
     it('should return false', async () => {
-      service['prismaService'].isRunning = jest.fn().mockResolvedValue(false)
+      service['prismaService'].isRunning = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('Query error.'))
       const result = await service.isPrismaRunning()
       expect(result).toEqual({
         running: false,

@@ -13,10 +13,9 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import WebhookDto from './dtos/webhook.dto'
 import {
   WebhookErrorsEnum,
@@ -63,7 +62,8 @@ export default class WebhookSubservice {
     if (!isWebhookFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         WebhookErrorsEnum.NOT_WEBHOOK_FORM,
-        `${WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM} Form id: ${form.id}.`,
+        WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
+        { formId: form.id },
       )
     }
 
@@ -108,10 +108,13 @@ export default class WebhookSubservice {
         },
       })
     } catch (error) {
-      alertError(
-        `Setting form state with id ${formId} to FINISHED failed.`,
-        this.logger,
-        JSON.stringify(error),
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Setting form state to FINISHED failed`,
+          { formId },
+          error,
+        ),
       )
     }
   }

@@ -9,8 +9,9 @@ import {
   FilesErrorsEnum,
   FilesErrorsResponseEnum,
 } from '../../files/files.errors.enum'
+import { ErrorsEnum } from '../global-enums/errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import alertError, { LineLoggerSubservice } from './line-logger.subservice'
+import { LineLoggerSubservice } from './line-logger.subservice'
 
 interface UploadedObjectInfo {
   etag: string
@@ -102,10 +103,13 @@ export default class MinioClientSubservice {
         0,
       )
     } catch (error) {
-      alertError(
-        `Error creating folder ${path} in bucket ${bucket}.`,
-        this.logger,
-        error,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Error creating folder in bucket.`,
+          { path, bucket },
+          error,
+        ),
       )
       return false
     }
@@ -120,7 +124,14 @@ export default class MinioClientSubservice {
     try {
       return await this.minioService.client.removeObject(bucket, path)
     } catch (error) {
-      alertError('Error while deleting a folder in minio', this.logger, error)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Error while deleting a folder in minio',
+          undefined,
+          error,
+        ),
+      )
       return false
     }
   }

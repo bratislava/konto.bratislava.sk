@@ -7,6 +7,7 @@ import { EmailFormsErrorsEnum } from '../../../nases-consumer/subservices/dtos/e
 import { WebhookErrorsEnum } from '../../../nases-consumer/subservices/dtos/webhook.errors.enum'
 import { ScannerClientErrorsEnum } from '../../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../../signer/signer.errors.enum'
+import { StatusErrorsEnum } from '../../../status/errors/status.errors.enum'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import { MailgunErrorsEnum } from '../../global-enums/mailgun.errors.enum'
 import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.enum'
@@ -24,6 +25,7 @@ export type CustomErrorEnums =
   | ScannerClientErrorsEnum
   | ConvertErrorsEnum
   | SignerErrorsEnum
+  | StatusErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')
@@ -64,11 +66,11 @@ export class ResponseErrorInternalDto {
 
   [ErrorSymbols.alert]?: number;
 
-  [ErrorSymbols.console]?: string;
+  [ErrorSymbols.console]?: string | Record<string, unknown>;
 
   [ErrorSymbols.errorCause]?: string;
 
   [ErrorSymbols.causedByMessage]?: string;
 
-  [ErrorSymbols.causedByConsole]?: string
+  [ErrorSymbols.causedByConsole]?: string | Record<string, unknown>
 }

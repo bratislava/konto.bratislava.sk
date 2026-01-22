@@ -26,9 +26,7 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
@@ -291,15 +289,12 @@ export default class FilesHelper {
 
     if (errorFiles.length > 0) {
       // here we should send notification to user and to our notification service
-      alertError(
-        'There was an error with files scanning service.',
-        this.logger,
-        JSON.stringify({
-          type: 'There was an error with files scanning service.',
-          formId,
-          error: FormError.UNABLE_TO_SCAN_FILES,
-          errorFiles,
-        }),
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          FilesErrorsResponseEnum.FILE_SCANNING_SERVICE_ERROR,
+          { formId, errorFiles },
+        ),
       )
       return true
     }

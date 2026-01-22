@@ -2,9 +2,7 @@ import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common'
 import { Prisma, PrismaClient } from '@prisma/client'
 
 import { escapeForLogfmt } from '../utils/logging'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class PrismaService
@@ -47,14 +45,8 @@ export default class PrismaService
   }
 
   // async function which checks if prisma database is running
-  public async isRunning(): Promise<boolean> {
-    try {
-      await this.$queryRaw`SELECT 1`
-      return true
-    } catch (error) {
-      alertError('Prisma is not running.', this.logger, error)
-      return false
-    }
+  public async isRunning() {
+    await this.$queryRaw`SELECT 1`
   }
 
   async enableShutdownHooks(app: INestApplication): Promise<void> {

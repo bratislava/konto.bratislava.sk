@@ -5,9 +5,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 
 import { ServiceRunningDto } from '../status/dtos/status.dto'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import PostScanFileResponseDto, { GetScanFileDto } from './scanner-client.dto'
 import {
   ScannerClientErrorsEnum,
@@ -39,7 +37,14 @@ export default class ScannerClientService {
       )
       return response.status === 200
     } catch (error) {
-      alertError('ScannerClientService.health error', this.logger, error)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
+          'ScannerClientService.health error',
+          undefined,
+          error,
+        ),
+      )
       return false
     }
   }

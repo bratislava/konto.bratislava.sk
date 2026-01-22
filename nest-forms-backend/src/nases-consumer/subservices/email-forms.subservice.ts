@@ -31,9 +31,7 @@ import { Mailer } from '../../utils/global-services/mailer/mailer.interface'
 import MailgunService from '../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,
@@ -236,10 +234,13 @@ export default class EmailFormsSubservice {
         attachments,
       })
     } catch (error) {
-      alertError(
-        `Sending confirmation email to ${userEmail} for form ${form.id} failed.`,
-        this.logger,
-        JSON.stringify(error),
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Error while sending confirmation email.',
+          { userEmail, formId: form.id },
+          error,
+        ),
       )
     }
   }
@@ -259,10 +260,13 @@ export default class EmailFormsSubservice {
         },
       })
       .catch((error) => {
-        alertError(
-          `Setting form state with id ${form.id} to FINISHED failed.`,
-          this.logger,
-          JSON.stringify(error),
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Setting form state to FINISHED failed.',
+            { formId: form.id },
+            error,
+          ),
         )
       })
   }

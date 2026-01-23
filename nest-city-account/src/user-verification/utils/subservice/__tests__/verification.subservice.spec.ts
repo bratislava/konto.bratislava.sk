@@ -198,7 +198,9 @@ describe('VerificationSubservice', () => {
       } as unknown as RfoIdentityListElement
 
       expect(service['validatePersonName'](rfoData, 'Ján Peter', 'Novák Horváth')).toBe(true)
-      expect(service['validatePersonName'](rfoData, '  jan   PETER  ', '  NOVAK   horvath  ')).toBe(true)
+      expect(service['validatePersonName'](rfoData, '  jan   PETER  ', '  NOVAK   horvath  ')).toBe(
+        true
+      )
     })
 
     it('should return false if any provided name part is missing in RFO (multi-name input)', () => {
@@ -256,7 +258,9 @@ describe('VerificationSubservice', () => {
 
     it('should ignore empty/non-string entries in RFO name arrays', () => {
       const rfoData = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         menaOsoby: [{ meno: '' }, { meno: '   ' }, { meno: 'Ján' }, { meno: undefined as any }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         priezviskaOsoby: [{ meno: 'Novák' }, { meno: null as any }],
       } as unknown as RfoIdentityListElement
 

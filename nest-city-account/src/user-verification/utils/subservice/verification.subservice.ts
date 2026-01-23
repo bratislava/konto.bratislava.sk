@@ -201,7 +201,9 @@ export class VerificationSubservice {
 
       // For physical person, require Cognito given_name + family_name match to RFO
       if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
-        this.logger.warn('We refused validation based on names not matching.', {cognitoID: user.sub})
+        this.logger.warn('We refused validation based on names not matching.', {
+          cognitoID: user.sub,
+        })
         continue
       }
 

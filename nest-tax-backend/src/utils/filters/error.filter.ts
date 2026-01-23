@@ -15,7 +15,7 @@ import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 export class ErrorFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost): void {
     if (host.getType() !== 'http') {
-      const logger = new LineLoggerSubservice(ErrorFilter.name + " non HTTP")
+      const logger = new LineLoggerSubservice(ErrorFilter.name + ' non HTTP')
       logger.error(exception)
       throw exception
     }
@@ -45,7 +45,7 @@ export class ErrorFilter implements ExceptionFilter {
 export class TypeErrorFilter implements ExceptionFilter {
   catch(exception: TypeError, host: ArgumentsHost) {
     if (host.getType() !== 'http') {
-      const logger = new LineLoggerSubservice(ErrorFilter.name  + " non HTTP")
+      const logger = new LineLoggerSubservice(ErrorFilter.name  + ' non HTTP')
       logger.error(exception)
       throw exception
     }
@@ -75,7 +75,7 @@ export class TypeErrorFilter implements ExceptionFilter {
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
     if (host.getType() !== 'http') {
-      const logger = new LineLoggerSubservice(ErrorFilter.name + " non HTTP")
+      const logger = new LineLoggerSubservice(ErrorFilter.name + ' non HTTP')
       logger.error(exception)
       throw exception
     }

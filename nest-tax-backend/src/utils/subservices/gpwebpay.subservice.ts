@@ -63,7 +63,7 @@ export class GpWebpaySubservice {
     const signature = signer.sign(
       {
         key,
-        passphrase: process.env.PAYGATE_PASSPHRASE,
+        passphrase: this.configService.getOrThrow<string>('PAYGATE_PASSPHRASE'),
       },
       'base64',
     )

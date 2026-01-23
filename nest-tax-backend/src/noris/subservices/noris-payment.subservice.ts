@@ -30,12 +30,13 @@ import {
 } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisValidatorSubservice } from './noris-validator.subservice'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class NorisPaymentSubservice {
   private readonly logger: Logger = new Logger('NorisService')
 
-  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+  private readonly concurrency = Number(this.configService.getOrThrow<string>('DB_CONCURRENCY') ?? 10)
 
   private readonly concurrencyLimit = pLimit(this.concurrency)
 
@@ -46,6 +47,7 @@ export class NorisPaymentSubservice {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
+    private readonly configService: ConfigService,
   ) {}
 
   async getPaymentDataFromNoris(

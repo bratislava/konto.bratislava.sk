@@ -27,9 +27,10 @@ import {
   mapNorisToTaxPayerData,
 } from '../../utils/mapping.helper'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
+import { ConfigService } from '@nestjs/config'
 
 export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
-  protected readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+  protected readonly concurrency = Number(this.configService.getOrThrow<string>('DB_CONCURRENCY') ?? 10)
 
   protected readonly concurrencyLimit = pLimit(this.concurrency)
 
@@ -42,6 +43,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly logger: LineLoggerSubservice,
     protected readonly cityAccountSubservice: CityAccountSubservice,
     protected readonly paymentSubservice: NorisPaymentSubservice,
+    protected readonly configService: ConfigService,
   ) {}
 
   /**

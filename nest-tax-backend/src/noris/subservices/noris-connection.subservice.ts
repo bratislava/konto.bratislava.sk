@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { config, connect, ConnectionPool } from 'mssql'
 
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 @Injectable()
@@ -11,17 +10,10 @@ export class NorisConnectionSubservice {
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    if (
-      !process.env.MSSQL_HOST ||
-      !process.env.MSSQL_DB ||
-      !process.env.MSSQL_USERNAME ||
-      !process.env.MSSQL_PASSWORD
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Missing one of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
-      )
-    }
+    this.configService.getOrThrow<string>('MSSQL_HOST') ||
+    this.configService.getOrThrow<string>('MSSQL_DB') ||
+    this.configService.getOrThrow<string>('MSSQL_USERNAME') ||
+    this.configService.getOrThrow<string>('MSSQL_PASSWORD')
   }
 
   private async createConnection(

@@ -609,7 +609,7 @@ export class TasksService {
       return
     }
 
-    const concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+    const concurrency = Number(this.configService.getOrThrow<string>('DB_CONCURRENCY') ?? 10)
     const concurrencyLimit = pLimit(concurrency)
 
     const userDataFromCityAccount =

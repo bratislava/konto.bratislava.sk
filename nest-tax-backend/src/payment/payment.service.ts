@@ -225,7 +225,7 @@ export class PaymentService {
     RESULTTEXT,
   }: PaymentResponseQueryDto): Promise<string> {
     if (!ORDERNUMBER) {
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+      return `${this.configService.getOrThrow<string>('PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND')}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
 
     try {
@@ -240,14 +240,14 @@ export class PaymentService {
         !(
           this.gpWebpaySubservice.verifyData(dataToVerify, DIGEST) &&
           this.gpWebpaySubservice.verifyData(
-            `${dataToVerify}|${process.env.PAYGATE_MERCHANT_NUMBER}`,
+            `${dataToVerify}|${this.configService.getOrThrow<string>('PAYGATE_MERCHANT_NUMBER')}`,
             DIGEST1,
           )
         )
       ) {
         // We failed to verify this payment. If we have any side effects here, they can be triggered
         // by just guessing the ORDERNUMBER we generate as a timestamp.
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+        return `${this.configService.getOrThrow<string>('PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND')}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
       }
 
       const taxPaymentWithTax: Prisma.TaxPaymentGetPayload<{
@@ -266,13 +266,13 @@ export class PaymentService {
             `We received a valid payment response for payment we do not have in our database. ORDERNUMBER: ${ORDERNUMBER}`,
           ),
         )
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
+        return `${this.configService.getOrThrow<string>('PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND')}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
       }
 
       const strategy = this.getProcessingStrategy(PRCODE)
       const currentStatus = taxPaymentWithTax.status
       const { year, order, type } = taxPaymentWithTax.tax
-      const redirectBase = `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
+      const redirectBase = `${this.configService.getOrThrow<string>('PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND')}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
 
       if (strategy.shouldAlert) {
         this.logger.warn({
@@ -349,7 +349,7 @@ export class PaymentService {
         user?.externalId ?? undefined,
       )
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
+      return `${this.configService.getOrThrow<string>('PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND')}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

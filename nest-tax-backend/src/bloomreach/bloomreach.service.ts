@@ -16,7 +16,7 @@ export class BloomreachService {
   private readonly logger: LineLoggerSubservice
 
   private readonly bloomreachCredentials = Buffer.from(
-    `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
+    `${this.configService.getOrThrow<string>('BLOOMREACH_API_KEY')}:${this.configService.getOrThrow<string>('BLOOMREACH_API_SECRET')}`,
     'binary',
   ).toString('base64')
 
@@ -24,17 +24,11 @@ export class BloomreachService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configService: ConfigService,
   ) {
-    if (
-      !process.env.BLOOMREACH_API_URL ||
-      !process.env.BLOOMREACH_API_KEY ||
-      !process.env.BLOOMREACH_API_SECRET ||
-      !process.env.BLOOMREACH_PROJECT_TOKEN
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Missing on of pricing api envs: BLOOMREACH_API_URL, BLOOMREACH_API_KEY, BLOOMREACH_API_SECRET, BLOOMREACH_PROJECT_TOKEN.',
-      )
-    }
+    this.configService.getOrThrow<string>('BLOOMREACH_API_URL') ||
+    this.configService.getOrThrow<string>('BLOOMREACH_API_KEY') ||
+    this.configService.getOrThrow<string>('BLOOMREACH_API_SECRET') ||
+    this.configService.getOrThrow<string>('BLOOMREACH_PROJECT_TOKEN')
+
     this.logger = new LineLoggerSubservice(BloomreachService.name)
   }
 
@@ -54,7 +48,7 @@ export class BloomreachService {
       return true
     }
     const eventResponse = await fetch(
-      `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
+      `${this.configService.getOrThrow<string>('BLOOMREACH_API_URL')}/track/v2/projects/${this.configService.getOrThrow<string>('BLOOMREACH_PROJECT_TOKEN')}/customers/events`,
       {
         method: 'POST',
         body: JSON.stringify({

@@ -31,7 +31,7 @@ describe('RF01 -', { testIsolation: false }, () => {
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 6)
+            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 5)
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })

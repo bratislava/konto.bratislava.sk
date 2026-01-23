@@ -41,10 +41,7 @@ export class UserService {
     private cognitoSubservice: CognitoSubservice
   ) {}
 
-  private changedDeliveryMethodAfterDeadline(user: {
-    taxDeliveryMethodAtLockDate: DeliveryMethodEnum | null
-    taxDeliveryMethod: DeliveryMethodEnum | null
-  }): boolean {
+  private async changedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {
     const now = new Date()
     const deadline = getTaxDeadlineDate()
 
@@ -52,10 +49,13 @@ export class UserService {
       return false
     }
 
-    if (
-      user.taxDeliveryMethodAtLockDate !== user.taxDeliveryMethod &&
-      user.taxDeliveryMethodAtLockDate !== DeliveryMethodEnum.EDESK
-    ) {
+    const { active, locked } = await this.databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
+
+    if (active?.deliveryMethod === DeliveryMethodEnum.EDESK) {
+      return false
+    }
+
+    if (active?.deliveryMethod !== locked?.deliveryMethod) {
       return true
     }
 
@@ -77,7 +77,7 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
+      changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
     }
   }
 
@@ -131,7 +131,7 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
+      changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
     }
   }
 
@@ -178,7 +178,7 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
+      changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
     }
   }
 
@@ -262,7 +262,7 @@ export class UserService {
         ...user,
         officialCorrespondenceChannel,
         showEmailCommunicationBanner,
-        changedDeliveryMethodAfterDeadline: this.changedDeliveryMethodAfterDeadline(user),
+        changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
       }
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(

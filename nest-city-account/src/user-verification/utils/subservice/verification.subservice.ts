@@ -99,6 +99,14 @@ export class VerificationSubservice {
     }
   }
 
+  /**
+   * Validates the first and last name of a person against a provided RFO identity data structure.
+   *
+   * @param {RfoIdentityListElement} rfoData - The RFO identity data containing first and last names to compare against.
+   * @param {string | undefined} firstName - The first name of the person to validate.
+   * @param {string | undefined} lastName - The last name of the person to validate.
+   * @return {boolean} Returns true if the provided first and last name match entries in the RFO identity data, otherwise false.
+   */
   private validatePersonName(
     rfoData: RfoIdentityListElement,
     firstName: string | undefined,
@@ -120,37 +128,21 @@ export class VerificationSubservice {
       return false
     }
 
-    const mena = rfoData.menaOsoby
-    if (!mena) {
+    const rfoFirstNames = (rfoData.menaOsoby ?? [])
+      .map((x) => x.meno)
+      .filter((x) : x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalize)
+
+    const rfoLastNames = (rfoData.priezviskaOsoby ?? [])
+      .map((x) => x.meno)
+      .filter((x) : x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalize)
+
+    if (rfoFirstNames.length === 0 || rfoLastNames.length === 0) {
       return false
     }
 
-    const rfoFirstName = mena.find((name) => {
-      return name.poradieMena === 1
-    })?.meno
-
-    const rfoLastName = rfoData.menaOsoby
-      ?.sort((a, b) => {
-        return (a.poradieMena || 0) - (b.poradieMena || 0)
-      })
-      .at(-1)
-
-    if (
-      !rfoFirstName ||
-      !rfoLastName ||
-      !rfoLastName.meno ||
-      !rfoLastName.poradieMena ||
-      rfoLastName.poradieMena === 0
-    ) {
-      return false
-    }
-
-    const rfoFirstNameNormalized = normalize(rfoFirstName)
-    const rfoLastNameNormalized = normalize(rfoLastName.meno)
-
-    return (
-      rfoFirstNameNormalized === normalizedFirstName && rfoLastNameNormalized === normalizedLastName
-    )
+    return rfoLastNames.includes(normalizedFirstName) && rfoLastNames.includes(normalizedLastName)
   }
 
   /**

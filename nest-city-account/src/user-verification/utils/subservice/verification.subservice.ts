@@ -121,10 +121,15 @@ export class VerificationSubservice {
 
     const normalize = (str: string): string => stripDiacritics(str).trim().toLowerCase()
 
-    const normalizedFirstName = normalize(firstName)
-    const normalizedLastName = normalize(lastName)
+    const splitToParts = (str: string): string[] =>
+      normalize(str)
+        .split(/\s+/g) // handles multiple spaces + leading/trailing spaces after trim()
+        .filter(Boolean)
 
-    if (!normalizedFirstName || !normalizedLastName) {
+    const normalizedFirstNames = splitToParts(firstName)
+    const normalizedLastNames = splitToParts(lastName)
+
+    if (normalizedFirstNames.length === 0 || normalizedLastNames.length === 0) {
       return false
     }
 
@@ -142,7 +147,10 @@ export class VerificationSubservice {
       return false
     }
 
-    return rfoLastNames.includes(normalizedFirstName) && rfoLastNames.includes(normalizedLastName)
+    const firstOk = normalizedFirstNames.every((name) => rfoFirstNames.includes(name))
+    const lastOk = normalizedLastNames.every((name) => rfoLastNames.includes(name))
+
+    return firstOk && lastOk
   }
 
   /**

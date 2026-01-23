@@ -130,12 +130,12 @@ export class VerificationSubservice {
 
     const rfoFirstNames = (rfoData.menaOsoby ?? [])
       .map((x) => x.meno)
-      .filter((x) : x is string => typeof x === 'string' && x.trim().length > 0)
+      .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
       .map(normalize)
 
     const rfoLastNames = (rfoData.priezviskaOsoby ?? [])
       .map((x) => x.meno)
-      .filter((x) : x is string => typeof x === 'string' && x.trim().length > 0)
+      .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
       .map(normalize)
 
     if (rfoFirstNames.length === 0 || rfoLastNames.length === 0) {

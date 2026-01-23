@@ -186,13 +186,14 @@ export class VerificationSubservice {
         continue
       }
 
-      // For physical person, require Cognito given_name + family_name match to RFO
-      if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
+      const identityCardCheckResult = this.checkIdentityCard(rfoDataSingle, data.identityCard)
+      if (!identityCardCheckResult.success) {
         continue
       }
 
-      const identityCardCheckResult = this.checkIdentityCard(rfoDataSingle, data.identityCard)
-      if (!identityCardCheckResult.success) {
+      // For physical person, require Cognito given_name + family_name match to RFO
+      if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
+        this.logger.warn('We refused validation based on names not matching.', {cognitoID: user.sub})
         continue
       }
 

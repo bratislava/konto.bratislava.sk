@@ -187,7 +187,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
-  const { isChannelChangeEffectiveNextYear } = useOfficialCorrespondenceChannel()
+  const { hasChangedDeliveryMethodAfterDeadline } = useOfficialCorrespondenceChannel()
 
   const strapiTax = useStrapiTax()
   const { accountCommunicationConsentText } = strapiTax
@@ -221,7 +221,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps
         variant="sm"
         className="mb-4"
       />
-      {isChannelChangeEffectiveNextYear && (
+      {hasChangedDeliveryMethodAfterDeadline && (
         <div className="mb-4">
           <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
         </div>

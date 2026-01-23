@@ -51,7 +51,7 @@ describe('UserService', () => {
     jest.clearAllMocks()
   })
 
-  describe('changedDeliveryMethodAfterDeadline', () => {
+  describe('hasChangedDeliveryMethodAfterDeadline', () => {
     const mockGetTaxDeadlineDate = getTaxDeadlineDate as jest.MockedFunction<
       typeof getTaxDeadlineDate
     >
@@ -69,7 +69,7 @@ describe('UserService', () => {
 
     it('should return false when now is before the tax deadline', async () => {
       jest.useFakeTimers().setSystemTime(new Date('2026-01-01'))
-      const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(false)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).not.toHaveBeenCalled()
     })
@@ -79,7 +79,7 @@ describe('UserService', () => {
         active: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
         locked: undefined,
       })
-      const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
     })
@@ -90,7 +90,7 @@ describe('UserService', () => {
           active: { deliveryMethod },
           locked: { deliveryMethod },
         })
-        const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+        const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
         expect(result).toBe(false)
         expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
       })
@@ -100,7 +100,7 @@ describe('UserService', () => {
           active: { deliveryMethod: DeliveryMethodEnum.EDESK },
           locked: { deliveryMethod },
         })
-        const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+        const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
         expect(result).toBe(false)
         expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
       })
@@ -111,7 +111,7 @@ describe('UserService', () => {
         active: undefined,
         locked: undefined,
       })
-      const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(false)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
     })
@@ -121,7 +121,7 @@ describe('UserService', () => {
         active: { deliveryMethod: DeliveryMethodEnum.EDESK },
         locked: undefined,
       })
-      const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(false)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
     })
@@ -131,7 +131,7 @@ describe('UserService', () => {
         active: { deliveryMethod: DeliveryMethodEnum.POSTAL },
         locked: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
       })
-      const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
     })
@@ -141,7 +141,7 @@ describe('UserService', () => {
         active: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
         locked: { deliveryMethod: DeliveryMethodEnum.POSTAL },
       })
-      const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
     })
@@ -151,7 +151,7 @@ describe('UserService', () => {
         active: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
         locked: undefined,
       })
-      const result = await service['changedDeliveryMethodAfterDeadline'](userId)
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
     })

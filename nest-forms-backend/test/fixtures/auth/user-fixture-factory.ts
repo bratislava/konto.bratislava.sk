@@ -115,7 +115,7 @@ export class UserFixtureFactory {
         email,
         birthNumber: null,
         gdprData: [],
-        changedDeliveryMethodAfterDeadline: false,
+        hasChangedDeliveryMethodAfterDeadline: false,
       }
       if (params.accountType === UserVerifyStateTypeEnum.Fo) {
         return {

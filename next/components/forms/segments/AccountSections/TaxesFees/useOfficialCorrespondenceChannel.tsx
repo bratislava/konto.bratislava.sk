@@ -7,7 +7,7 @@ export const useOfficialCorrespondenceChannel = () => {
   if (
     !('officialCorrespondenceChannel' in userData) ||
     !('showEmailCommunicationBanner' in userData) ||
-    !('changedDeliveryMethodAfterDeadline' in userData)
+    !('hasChangedDeliveryMethodAfterDeadline' in userData)
   ) {
     throw new Error('This hook must be only used when the user is a physical person.')
   }
@@ -15,11 +15,10 @@ export const useOfficialCorrespondenceChannel = () => {
   const {
     officialCorrespondenceChannel,
     showEmailCommunicationBanner,
-    changedDeliveryMethodAfterDeadline,
+    hasChangedDeliveryMethodAfterDeadline,
   } = userData
 
-  const isChannelChangeEffectiveNextYear = changedDeliveryMethodAfterDeadline
-  const channelEffectiveInCurrentYear = isChannelChangeEffectiveNextYear
+  const channelEffectiveInCurrentYear = hasChangedDeliveryMethodAfterDeadline
     ? UserOfficialCorrespondenceChannelEnum.Postal
     : officialCorrespondenceChannel
 
@@ -29,7 +28,7 @@ export const useOfficialCorrespondenceChannel = () => {
   return {
     channel: officialCorrespondenceChannel,
     channelEffectiveInCurrentYear,
-    isChannelChangeEffectiveNextYear,
+    hasChangedDeliveryMethodAfterDeadline,
     canUserChangeChannel,
     showChannelNeededBanner: showEmailCommunicationBanner,
   }

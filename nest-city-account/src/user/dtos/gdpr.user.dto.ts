@@ -108,7 +108,7 @@ export class ResponseUserDataBasicDto {
       'True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.',
     default: false,
   })
-  changedDeliveryMethodAfterDeadline!: boolean
+  hasChangedDeliveryMethodAfterDeadline!: boolean
 }
 
 export class ResponseUserDataDto extends ResponseUserDataBasicDto {

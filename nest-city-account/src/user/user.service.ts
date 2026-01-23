@@ -41,7 +41,7 @@ export class UserService {
     private cognitoSubservice: CognitoSubservice
   ) {}
 
-  private async changedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {
+  private async hasChangedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {
     const now = new Date()
     const deadline = getTaxDeadlineDate()
 
@@ -51,6 +51,8 @@ export class UserService {
 
     const { active, locked } = await this.databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
 
+    // If EDESK is activated after the deadline, the information is sent directly to Noris.
+    // We are legally required to communicate with residents via EDESK once it is active.
     if (active?.deliveryMethod === DeliveryMethodEnum.EDESK) {
       return false
     }
@@ -77,7 +79,7 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
     }
   }
 
@@ -131,7 +133,7 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
     }
   }
 
@@ -143,7 +145,7 @@ export class UserService {
       officialCorrespondenceChannel: null,
       gdprData: getGdprData,
       showEmailCommunicationBanner: false, // TODO add this for legal persons
-      changedDeliveryMethodAfterDeadline: false,
+      hasChangedDeliveryMethodAfterDeadline: false,
     }
   }
 
@@ -178,7 +180,7 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
     }
   }
 
@@ -262,7 +264,7 @@ export class UserService {
         ...user,
         officialCorrespondenceChannel,
         showEmailCommunicationBanner,
-        changedDeliveryMethodAfterDeadline: await this.changedDeliveryMethodAfterDeadline(user.id),
+        hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
       }
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(

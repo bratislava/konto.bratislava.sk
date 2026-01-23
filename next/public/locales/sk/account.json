@@ -153,8 +153,6 @@
   "auth.fields.password_label": "Heslo",
   "auth.fields.password_placeholder": "Heslo",
   "auth.fields.password_required": "Heslo je povinné",
-  "auth.fields.password_eyeButton_show": "Zobraziť heslo",
-  "auth.fields.password_eyeButton_hide": "Skryť heslo",
   "auth.fields.phone_number_format": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
   "auth.fields.po_label": "Právnická osoba",
   "auth.fields.postal_code_format": "PSČ musí obsahovať práve 5 číslic",

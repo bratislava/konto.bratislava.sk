@@ -37,7 +37,7 @@
     "@openapitools/openapi-generator-cli": "^2.27.0",
     "@types/app-root-dir": "^0.1.4",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.19.27",
+    "@types/node": "^25.0.10",
     "app-root-dir": "^1.0.2",
     "axios": "^1.13.2",
     "camelcase": "^9.0.0",

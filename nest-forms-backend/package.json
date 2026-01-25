@@ -55,7 +55,7 @@
     "jsonwebtoken": "9.0.2",
     "jwks-rsa": "^3.2.0",
     "lodash": "4.17.21",
-    "mailgun.js": "^11.1.0",
+    "mailgun.js": "^12.7.0",
     "mime-types": "3.0.2",
     "nestjs-minio-client": "^2.2.0",
     "nodemailer": "7.0.6",

@@ -13,6 +13,10 @@ type IdentityVerificationModalProps = {
   accountType: AccountType | undefined
 } & ModalProps
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13868-15366&t=nvTJpHb34NMAiOw5-4
+ */
+
 const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificationModalProps) => {
   const { t } = useTranslation('account')
   const { verifyIdentity } = useFormRedirects()

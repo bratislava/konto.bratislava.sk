@@ -20,6 +20,10 @@ export type MunicipalServicesSectionProps = {
   categoriesLegalPerson: MunicipalServiceCategoryEntityFragment[]
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-94617
+ */
+
 const MunicipalServicesSection = ({
   services,
   categories,

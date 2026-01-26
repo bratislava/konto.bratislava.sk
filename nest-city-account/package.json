@@ -35,7 +35,7 @@
     "@nestjs/schedule": "^6.1.0",
     "@nestjs/swagger": "^11.2.5",
     "@prisma/client": "6.17.1",
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "amqplib": "^0.10.9",
     "axios": "^1.13.2",
     "cf-turnstile": "^1.0.8",

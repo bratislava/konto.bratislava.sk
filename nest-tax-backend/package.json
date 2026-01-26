@@ -35,7 +35,7 @@
     "@nestjs/schedule": "^6.1.0",
     "@nestjs/swagger": "^11.2.5",
     "@prisma/client": "6.17.1",
-    "@types/mssql": "^9.1.8",
+    "@types/mssql": "^9.1.9",
     "axios": "^1.13.2",
     "bysquare": "2.1.0",
     "class-transformer": "^0.5.1",

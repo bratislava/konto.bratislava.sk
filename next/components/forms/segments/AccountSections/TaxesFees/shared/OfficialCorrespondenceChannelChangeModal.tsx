@@ -199,7 +199,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
-  const { isChannelChangeEffectiveNextYear } = useOfficialCorrespondenceChannel()
+  const { hasChangedDeliveryMethodAfterDeadline } = useOfficialCorrespondenceChannel()
 
   const strapiTax = useStrapiTax()
   const { accountCommunicationConsentText } = strapiTax
@@ -235,7 +235,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
             variant="sm"
           />
         </div>
-        {isChannelChangeEffectiveNextYear && (
+        {hasChangedDeliveryMethodAfterDeadline && (
           <OfficialCorrespondenceChannelAlert
             variant="change-effective-next-year"
             strapiTax={strapiTax}

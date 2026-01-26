@@ -31,7 +31,7 @@ describe('RF01 -', { testIsolation: false }, () => {
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 6)
+            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 5)
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
@@ -49,8 +49,6 @@ describe('RF01 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[data-cy=input-family_name]', form)).type(this.fileData.family_name)
 
             cy.wrap(Cypress.$('[data-cy=input-password]', form)).type(password)
-
-            cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form)).type(password)
           })
         })
 
@@ -111,9 +109,6 @@ describe('RF01 -', { testIsolation: false }, () => {
             cy.dataCy('change-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-oldPassword]', form)).clear().type(password)
               cy.wrap(Cypress.$('[data-cy=input-password]', form)).clear().type(password)
-              cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form))
-                .clear()
-                .type(password)
               cy.get('[data-cy=change-password-submit]').click()
             })
           })

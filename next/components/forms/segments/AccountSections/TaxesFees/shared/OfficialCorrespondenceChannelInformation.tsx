@@ -16,7 +16,7 @@ const OfficialCorrespondenceChannelInformation = () => {
   const { t } = useTranslation('account')
 
   const strapiTax = useStrapiTax()
-  const { channel, canUserChangeChannel, isChannelChangeEffectiveNextYear } =
+  const { channel, canUserChangeChannel, hasChangedDeliveryMethodAfterDeadline } =
     useOfficialCorrespondenceChannel()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -68,7 +68,7 @@ const OfficialCorrespondenceChannelInformation = () => {
           )}
         </div>
 
-        {isChannelChangeEffectiveNextYear && (
+        {hasChangedDeliveryMethodAfterDeadline && (
           <OfficialCorrespondenceChannelAlert
             variant="change-effective-next-year"
             strapiTax={strapiTax}

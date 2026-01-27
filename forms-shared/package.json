@@ -91,7 +91,7 @@
     "archiver": "^7.0.1",
     "classnames": "^2.5.1",
     "cross-env": "^10.0.0",
-    "glob": "^11.0.3",
+    "glob": "^13.0.0",
     "inquirer": "^12.9.4",
     "jest-image-snapshot": "^6.5.1",
     "libxml2-wasm": "0.6.0",

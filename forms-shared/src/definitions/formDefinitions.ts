@@ -610,7 +610,7 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: webhookShowcase,
     sendPolicy: FormSendPolicy.NotAuthenticated,
-    webhookUrl: 'http://nest-forms-backend.dev.bratislava.sk/webhook',
+    webhookUrl: 'https://nest-forms-backend.dev.bratislava.sk/webhook',
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
   },

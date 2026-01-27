@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from 'vitest'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
-import { filterConsole } from '../../test-utils/filterConsole'
+import { filterSharedLogger } from '../../test-utils/filterSharedLogger'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { input } from '../../src/generator/functions/input'
@@ -9,11 +9,10 @@ import { object } from '../../src/generator/object'
 
 describe('omitExtraData', () => {
   beforeEach(() => {
-    filterConsole(
-      'warn',
-      (message) =>
-        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
-    )
+    filterSharedLogger({
+      severity: 'WARN',
+      messageIncludes: 'could not merge subschemas in allOf',
+    })
   })
 
   test('should omit extra data for simple schema', () => {

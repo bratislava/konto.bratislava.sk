@@ -1,6 +1,6 @@
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
-import { filterConsole } from '../../test-utils/filterConsole'
+import { filterSharedLogger } from '../../test-utils/filterSharedLogger'
 import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
@@ -24,11 +24,10 @@ describe('Form definitions', () => {
       })
 
       test('default form state should match snapshot', () => {
-        filterConsole(
-          'warn',
-          (message) =>
-            typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
-        )
+        filterSharedLogger({
+          severity: 'WARN',
+          messageIncludes: 'could not merge subschemas in allOf',
+        })
 
         expect(
           baGetDefaultFormState(formDefinition.schema, {}, testValidatorRegistry),

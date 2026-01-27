@@ -1,6 +1,6 @@
 import { describe, test } from 'vitest'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { filterConsole } from '../../test-utils/filterConsole'
+import { filterSharedLogger } from '../../test-utils/filterSharedLogger'
 import { renderSummaryPdf } from '../../src/summary-pdf/renderSummaryPdf'
 import { launchPlaywrightTest } from '../../test-utils/launchPlaywright'
 import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
@@ -15,14 +15,11 @@ describe('getSummaryJson', () => {
     test(
       `${exampleForm.name} summary PDF should match snapshot`,
       async () => {
-        filterConsole(
-          'error',
-          (message) =>
-            typeof message === 'string' &&
-            message.includes(
-              'Support for defaultProps will be removed from function components in a future major release.',
-            ),
-        )
+        filterSharedLogger({
+          severity: 'ERROR',
+          messageIncludes:
+            'Support for defaultProps will be removed from function components in a future major release.',
+        })
 
         const formSummary = getFormSummary({
           formDefinition,

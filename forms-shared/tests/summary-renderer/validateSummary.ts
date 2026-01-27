@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from 'vitest'
 import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { FileStatusType } from '../../src/form-files/fileStatus'
-import { filterConsole } from '../../test-utils/filterConsole'
+import { filterSharedLogger } from '../../test-utils/filterSharedLogger'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { input } from '../../src/generator/functions/input'
 import { fileUpload } from '../../src/generator/functions/fileUpload'
@@ -11,11 +11,7 @@ import { checkPathForErrors } from '../../src/summary-renderer/checkPathForError
 
 describe('validateSummary', () => {
   beforeEach(() => {
-    filterConsole(
-      'warn',
-      (message) =>
-        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
-    )
+    filterSharedLogger({ severity: 'WARN', messageIncludes: 'could not merge subschemas in allOf' })
   })
 
   describe('Simple validation', () => {

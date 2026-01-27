@@ -625,5 +625,6 @@ export const formDefinitions: FormDefinition[] = [
     sendPolicy: FormSendPolicy.NotAuthenticated,
     webhookUrl: 'http://nest-forms-backend.dev.bratislava.sk/webhook',
     termsAndConditions: generalTermsAndConditions,
+    exampleFormNotRequired: true,
   },
 ]

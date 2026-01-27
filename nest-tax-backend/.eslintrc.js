@@ -57,6 +57,15 @@ module.exports = {
     'sonarjs/no-useless-catch': 'off',
     'no-useless-catch': 'warn',
     '@darraghor/nestjs-typed/api-property-returning-array-should-set-array': 'off',
+
+    // Turning some lodash rules off
+    'lodash/prefer-noop': 'off',
+    "jest/expect-expect": [
+      "warn",
+      {
+        "assertFunctionNames": ["expect", "expectEqualAsJsonStringsWithDates"]
+      }
+    ]
   },
   ignorePatterns: [
     '*.config.*',

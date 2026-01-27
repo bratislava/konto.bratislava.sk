@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - pko2025-dev # TODO - remove this after testing
 
   push:
     tags:

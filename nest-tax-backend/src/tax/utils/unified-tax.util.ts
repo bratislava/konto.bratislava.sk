@@ -1,14 +1,18 @@
-import { PaymentStatus, TaxDetail } from '@prisma/client'
+import { PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import {
-  QrCodeGeneratorDto,
-  QrPaymentNoteEnum,
-} from '../../utils/subservices/dtos/qrcode.dto'
+  GetTaxDetailPureOptions,
+  GetTaxDetailPureResponse,
+  ReplaceQrCodeWithGeneratorDto,
+  TaxTypeToResponseDetailItemizedDto,
+} from '../../tax-definitions/taxDefinitionsTypes'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -22,16 +26,10 @@ import {
   ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
-import { generateItemizedTaxDetail } from './helpers/tax.helper'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
-
-type ReplaceQrCodeWithGeneratorDto<T extends object> = {
-  [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
-}
 
 const bratislavaTimeZone = 'Europe/Bratislava'
 
@@ -39,6 +37,7 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   1: QrPaymentNoteEnum.QR_firstInstallment,
   2: QrPaymentNoteEnum.QR_secondInstallment,
   3: QrPaymentNoteEnum.QR_thirdInstallment,
+  4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
 export const stateHolidays = [
@@ -159,8 +158,6 @@ export const stateHolidays = [
   },
 ]
 
-const secondPaymentDueDate = '09-01'
-const thirdPaymentDueDate = '11-01'
 const dueDateOffset = 21
 
 const isStateHoliday = (date: Dayjs): boolean => {
@@ -211,20 +208,25 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
  * Calculates installment payment amounts and their statuses based on overall paid amount.
  *
  * IMPORTANT: The sum of all installments should always equal the total tax amount.
- * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd).
+ * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd, then 4th).
  */
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
+  numberOfInstallments: number,
 ) => {
-  if (installments.length !== 3) {
+  if (installments.length !== numberOfInstallments) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
     )
   }
 
-  const amounts = [1, 2, 3].map((order) => {
+  const installmentOrders = Array.from(
+    { length: numberOfInstallments },
+    (_, i) => i + 1,
+  )
+  const amounts = installmentOrders.map((order) => {
     const installment = installments.find((item) => item.order === order)
     if (!installment) {
       throw new ThrowerErrorGuard().InternalServerErrorException(
@@ -268,51 +270,48 @@ const calculateInstallmentAmounts = (
  * Each installment is independent and pays one after another.
  */
 const calculateInstallmentStatus = (
-  dueDate: dayjs.Dayjs | undefined,
   today: Date,
-  dueDateSecondPayment: dayjs.Dayjs,
   installmentAmounts: {
     toPay: number
     paid: number
     total: number
     status: InstallmentPaidStatusEnum
   }[],
-) => {
-  const dueDateFirstInstallmentInFuture = !dueDate || dueDate > dayjs(today)
-  const dueDateSecondInstallmentInFuture = dueDateSecondPayment > dayjs(today)
-  const isFirstInstallmentLate =
-    !dueDateFirstInstallmentInFuture &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
-  const isSecondInstallmentLate =
-    !dueDateSecondInstallmentInFuture &&
-    installmentAmounts[1].status !== InstallmentPaidStatusEnum.PAID &&
-    installmentAmounts[1].status !== InstallmentPaidStatusEnum.OVER_PAID
+  installmentDueDates: [
+    dayjs.Dayjs | undefined,
+    dayjs.Dayjs,
+    dayjs.Dayjs,
+    ...dayjs.Dayjs[],
+  ],
+): {
+  status: InstallmentPaidStatusEnum
+  remainingAmount: number
+}[] => {
+  const installmentCount = installmentAmounts.length
+  const result: {
+    status: InstallmentPaidStatusEnum
+    remainingAmount: number
+  }[] = []
 
-  // First installment status logic
-  const firstInstallmentStatus = isFirstInstallmentLate
-    ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
-    : installmentAmounts[0].status
-  const firstInstallmentRemainingAmount = installmentAmounts[0].toPay
+  for (let i = 0; i < installmentCount; i += 1) {
+    const installmentDueDate = installmentDueDates[i]
+    // If due date is undefined, we can't determine if it's late, so use the original status
+    const isDueDateInFuture =
+      installmentDueDate !== undefined && installmentDueDate > dayjs(today)
+    const isLateInstallment =
+      !isDueDateInFuture &&
+      installmentAmounts[i].status !== InstallmentPaidStatusEnum.PAID &&
+      installmentAmounts[i].status !== InstallmentPaidStatusEnum.OVER_PAID
 
-  // Second installment status logic
-  const secondInstallmentStatus = isSecondInstallmentLate
-    ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
-    : installmentAmounts[1].status
-  const secondInstallmentRemainingAmount = installmentAmounts[1].toPay
-
-  // Third installment status logic
-  const thirdInstallmentStatus = installmentAmounts[2].status
-  const thirdInstallmentRemainingAmount = installmentAmounts[2].toPay
-
-  return {
-    firstInstallmentStatus,
-    firstInstallmentRemainingAmount,
-    secondInstallmentStatus,
-    secondInstallmentRemainingAmount,
-    thirdInstallmentStatus,
-    thirdInstallmentRemainingAmount,
+    result.push({
+      status: isLateInstallment
+        ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
+        : installmentAmounts[i].status,
+      remainingAmount: installmentAmounts[i].toPay,
+    })
   }
+
+  return result
 }
 
 const calculateInstallmentPaymentDetails = (options: {
@@ -324,7 +323,13 @@ const calculateInstallmentPaymentDetails = (options: {
   dueDate?: Dayjs
   installments: { order: number; amount: number }[]
   variableSymbol: string
-  specificSymbol: any
+  installmentDueDates: {
+    second: string
+    third: string
+    fourth?: string
+  }
+  numberOfInstallments: number
+  iban: string
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
@@ -333,36 +338,59 @@ const calculateInstallmentPaymentDetails = (options: {
     overallPaid,
     today,
     taxYear,
+    installmentDueDates,
     paymentCalendarThreshold,
     dueDate,
     installments,
     variableSymbol,
-    specificSymbol,
+    numberOfInstallments,
+    iban,
   } = options
 
-  // Midnight start of the next day
-  const dueDateSecondPayment = dayjs.tz(
-    `${taxYear}-${secondPaymentDueDate}`,
-    bratislavaTimeZone,
-  )
-  const dueDateThirdPayment = dayjs.tz(
-    `${taxYear}-${thirdPaymentDueDate}`,
-    bratislavaTimeZone,
-  )
+  // Calculate due dates for all installments
+  // First installment due date is calculated from dateOfValidity (may be undefined)
+  const parseInstallmentDueDate = (dateString: string): Dayjs =>
+    dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
+
+  const installmentDueDatesParsed: [
+    dayjs.Dayjs | undefined,
+    dayjs.Dayjs,
+    dayjs.Dayjs,
+    ...dayjs.Dayjs[],
+  ] = [
+    // First installment due date is calculated from dateOfValidity
+    dueDate,
+    // Second installment:
+    parseInstallmentDueDate(installmentDueDates.second),
+    // Third installment:
+    parseInstallmentDueDate(installmentDueDates.third),
+    // Fourth installment (if exists):
+    ...(installmentDueDates.fourth
+      ? [parseInstallmentDueDate(installmentDueDates.fourth)]
+      : []),
+  ]
+
+  const dueDateLastPayment = installmentDueDatesParsed.at(-1)
+  if (!dueDateLastPayment) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    )
+  }
 
   if (overallAmount - overallPaid <= 0) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-      dueDateLastPayment: dueDateThirdPayment.toDate(),
+      dueDateLastPayment: dueDateLastPayment.toDate(),
     }
   }
 
-  if (dayjs(today) > dueDateThirdPayment) {
+  if (dayjs(today) > dueDateLastPayment) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
-      dueDateLastPayment: dueDateThirdPayment.toDate(),
+      dueDateLastPayment: dueDateLastPayment.toDate(),
     }
   }
 
@@ -377,45 +405,23 @@ const calculateInstallmentPaymentDetails = (options: {
   const installmentAmounts = calculateInstallmentAmounts(
     installments,
     overallPaid,
+    numberOfInstallments,
   )
 
-  const {
-    firstInstallmentStatus,
-    firstInstallmentRemainingAmount,
-    secondInstallmentStatus,
-    secondInstallmentRemainingAmount,
-    thirdInstallmentStatus,
-    thirdInstallmentRemainingAmount,
-  } = calculateInstallmentStatus(
-    dueDate,
+  const installmentStatuses = calculateInstallmentStatus(
     today,
-    dueDateSecondPayment,
     installmentAmounts,
+    installmentDueDatesParsed,
   )
 
-  const installmentDetails: ResponseInstallmentItemDto[] = [
-    {
-      installmentNumber: 1,
-      dueDate: dueDate?.toDate(),
-      status: firstInstallmentStatus,
-      remainingAmount: firstInstallmentRemainingAmount,
-      totalInstallmentAmount: installmentAmounts[0].total,
-    },
-    {
-      installmentNumber: 2,
-      dueDate: dueDateSecondPayment.toDate(),
-      status: secondInstallmentStatus,
-      remainingAmount: secondInstallmentRemainingAmount,
-      totalInstallmentAmount: installmentAmounts[1].total,
-    },
-    {
-      installmentNumber: 3,
-      dueDate: dueDateThirdPayment.toDate(),
-      status: thirdInstallmentStatus,
-      remainingAmount: thirdInstallmentRemainingAmount,
-      totalInstallmentAmount: installmentAmounts[2].total,
-    },
-  ]
+  const installmentDetails: ResponseInstallmentItemDto[] =
+    installmentStatuses.map((statusInfo, index) => ({
+      installmentNumber: index + 1,
+      dueDate: installmentDueDatesParsed[index]?.toDate(),
+      status: statusInfo.status,
+      remainingAmount: statusInfo.remainingAmount,
+      totalInstallmentAmount: installmentAmounts[index].total,
+    }))
 
   const active = installmentDetails.find(
     (installment) =>
@@ -435,7 +441,7 @@ const calculateInstallmentPaymentDetails = (options: {
 
   const paymentNote =
     INSTALLMENT_TO_QR_NOTE[active.installmentNumber] ??
-    QrPaymentNoteEnum.QR_thirdInstallment
+    QrPaymentNoteEnum.QR_fourthInstallment
 
   const activeInstallment = {
     remainingAmount: active.remainingAmount,
@@ -443,14 +449,14 @@ const calculateInstallmentPaymentDetails = (options: {
     qrCode: {
       amount: active.remainingAmount,
       variableSymbol,
-      specificSymbol,
       paymentNote,
+      iban,
     },
   }
 
   return {
     isPossible: true,
-    dueDateLastPayment: dueDateThirdPayment.toDate(),
+    dueDateLastPayment: dueDateLastPayment.toDate(),
     installments: installmentDetails,
     activeInstallment,
   }
@@ -461,15 +467,9 @@ const calculateOneTimePaymentDetails = (options: {
   overallBalance: number
   dueDate?: Date
   variableSymbol: string
-  specificSymbol: string
+  iban: string
 }): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
-  const {
-    overallPaid,
-    overallBalance,
-    dueDate,
-    variableSymbol,
-    specificSymbol,
-  } = options
+  const { overallPaid, overallBalance, dueDate, variableSymbol, iban } = options
   if (overallBalance <= 0) {
     return {
       isPossible: false,
@@ -487,35 +487,21 @@ const calculateOneTimePaymentDetails = (options: {
     qrCode: {
       amount: overallBalance,
       variableSymbol,
-      specificSymbol,
       paymentNote:
         overallPaid > 0
           ? QrPaymentNoteEnum.QR_remainingAmount
           : QrPaymentNoteEnum.QR_oneTimePay,
+      iban,
     },
     variableSymbol,
   }
 }
 
-export const getTaxDetailPure = (options: {
-  taxYear: number // daňový rok
-  today: Date // aktuálny dátum
-  overallAmount: number // suma na zaplatenie
-  paymentCalendarThreshold: number // splátková hranica (66 Eur)
-  variableSymbol: string
-  dateOfValidity: Date | null // dátum právoplatnosti
-  installments: { order: number; amount: number }[]
-  taxDetails: TaxDetail[]
-  taxConstructions: number
-  taxFlat: number
-  taxLand: number
-  specificSymbol: string
-  taxPayments: {
-    amount: number
-    status: PaymentStatus
-  }[]
-}) => {
+export const getTaxDetailPure = <TTaxType extends TaxType>(
+  options: GetTaxDetailPureOptions<TTaxType>,
+): GetTaxDetailPureResponse<TTaxType> => {
   const {
+    type,
     taxYear,
     today,
     overallAmount,
@@ -524,10 +510,6 @@ export const getTaxDetailPure = (options: {
     dateOfValidity,
     installments,
     taxDetails,
-    taxConstructions,
-    taxFlat,
-    taxLand,
-    specificSymbol,
     taxPayments,
   } = options
 
@@ -543,12 +525,14 @@ export const getTaxDetailPure = (options: {
   const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
   const dueDate = calculateDueDate(dateOfValidityDayjs)
 
+  const taxDefinition = getTaxDefinitionByType(type)
+
   const oneTimePayment = calculateOneTimePaymentDetails({
     overallPaid,
     overallBalance,
     dueDate: dueDate?.toDate(),
     variableSymbol,
-    specificSymbol,
+    iban: taxDefinition.iban,
   })
 
   const installmentPayment = calculateInstallmentPaymentDetails({
@@ -556,19 +540,17 @@ export const getTaxDetailPure = (options: {
     overallPaid,
     today,
     taxYear,
+    installmentDueDates: taxDefinition.installmentDueDates,
     paymentCalendarThreshold,
     dueDate,
     installments,
     variableSymbol,
-    specificSymbol,
+    numberOfInstallments: taxDefinition.numberOfInstallments,
+    iban: taxDefinition.iban,
   })
 
-  const itemizedDetail: ResponseTaxDetailItemizedDto = {
-    apartmentTotalAmount: taxFlat,
-    groundTotalAmount: taxLand,
-    constructionTotalAmount: taxConstructions,
-    ...generateItemizedTaxDetail(taxDetails),
-  }
+  const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
+    taxDefinition.generateItemizedTaxDetail(taxDetails)
 
   return {
     overallPaid,
@@ -579,9 +561,10 @@ export const getTaxDetailPure = (options: {
     itemizedDetail,
   }
 }
+
 export const getTaxDetailPureForOneTimeGenerator = (options: {
   taxId: number
-  overallAmount: number // suma na zaplatenie
+  overallAmount: number
   taxPayments: {
     amount: number
     status: PaymentStatus
@@ -618,57 +601,68 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
 }
 
 export const getTaxDetailPureForInstallmentGenerator = (options: {
+  taxType: TaxType
   taxId: number
   taxYear: number
   today: Date
   overallAmount: number
-  paymentCalendarThreshold: number
   variableSymbol: string
   dateOfValidity: Date | null
   installments: { order: number; amount: number }[]
-  specificSymbol: string
   taxPayments: {
     amount: number
     status: PaymentStatus
   }[]
 }): PaymentGateURLGeneratorDto => {
   const {
+    taxType,
     taxId,
     taxYear,
     today,
     overallAmount,
-    paymentCalendarThreshold,
     variableSymbol,
     dateOfValidity,
     installments,
-    specificSymbol,
     taxPayments,
   } = options
-
-  // Reuse the existing tax detail calculation
-  const taxDetail = getTaxDetailPure({
-    taxYear,
-    today,
-    overallAmount,
+  const {
     paymentCalendarThreshold,
-    variableSymbol,
-    dateOfValidity,
+    installmentDueDates,
+    numberOfInstallments,
+    iban,
+  } = getTaxDefinitionByType(taxType)
+
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
+    }
+  })
+
+  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  const dueDate = calculateDueDate(dateOfValidityDayjs)
+
+  const installmentPayment = calculateInstallmentPaymentDetails({
+    overallAmount,
+    overallPaid,
+    today,
+    taxYear,
+    paymentCalendarThreshold,
+    dueDate,
     installments,
-    taxDetails: [], // Not needed for payment generation
-    taxConstructions: 0, // Not needed for payment generation
-    taxFlat: 0, // Not needed for payment generation
-    taxLand: 0, // Not needed for payment generation
-    specificSymbol,
-    taxPayments,
+    variableSymbol,
+    installmentDueDates,
+    numberOfInstallments,
+    iban,
   })
 
   // Check if installment payment is possible
   if (
-    !taxDetail.installmentPayment.isPossible ||
-    !taxDetail.installmentPayment.activeInstallment ||
-    !taxDetail.installmentPayment.installments
+    !installmentPayment.isPossible ||
+    !installmentPayment.activeInstallment ||
+    !installmentPayment.installments
   ) {
-    switch (taxDetail.installmentPayment.reasonNotPossible) {
+    switch (installmentPayment.reasonNotPossible) {
       case InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.ALREADY_PAID,
@@ -696,7 +690,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   }
 
   // Find the active installment details
-  const activeInstallmentInfo = taxDetail.installmentPayment.installments.find(
+  const activeInstallmentInfo = installmentPayment.installments.find(
     (installment) =>
       installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
       installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,

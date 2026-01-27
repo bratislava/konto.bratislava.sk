@@ -3,8 +3,13 @@ import { Expression, Parser } from 'expr-eval'
 import { clone } from 'lodash'
 
 import { parseRatio } from '../form-utils/ajvFormats'
+import { SharedLogger } from '../utils/sharedLogger'
 
-export function getFormCalculatorExpression(formula: string, logError = false) {
+export function getFormCalculatorExpression(
+  formula: string,
+  logError = false,
+  logger: SharedLogger,
+) {
   const parser = new Parser()
 
   // Ratio (e.g. "5/13") is a string that needs to be evaluated.
@@ -33,7 +38,7 @@ export function getFormCalculatorExpression(formula: string, logError = false) {
     return parser.parse(formula)
   } catch (error) {
     if (logError) {
-      console.log('Error in getFormCalculatorExpression', error)
+      logger.log('Error in getFormCalculatorExpression', error)
     }
     return null
   }
@@ -43,6 +48,7 @@ export function calculateFormCalculatorExpression(
   expression: Expression | null,
   data: GenericObjectType,
   logError = false,
+  logger: SharedLogger,
 ) {
   try {
     // It is not in the documentation, but `expr-eval` mutates the original data!
@@ -56,7 +62,7 @@ export function calculateFormCalculatorExpression(
     return evaluated as number
   } catch (error) {
     if (logError) {
-      console.log('Error in calculateFormCalculatorExpression', error)
+      logger.log('Error in calculateFormCalculatorExpression', error)
     }
     return null
   }
@@ -67,6 +73,7 @@ export function calculateFormCalculatorFormula(
   data: GenericObjectType,
   logError = false,
 ) {
-  const expression = getFormCalculatorExpression(formula, logError)
-  return calculateFormCalculatorExpression(expression, data, logError)
+  const logger = new SharedLogger('calculators.ts')
+  const expression = getFormCalculatorExpression(formula, logError, logger)
+  return calculateFormCalculatorExpression(expression, data, logError, logger)
 }

@@ -1,10 +1,7 @@
 import { ProfileIcon } from '@assets/ui-icons'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-
-export const Avatar = () => {
-  const { userAttributes } = useSsrAuth()
-
+const UserAvatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) => {
   return (
     <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
       <div className="flex size-6 items-center justify-center font-semibold text-main-700">
@@ -20,4 +17,4 @@ export const Avatar = () => {
   )
 }
 
-export default Avatar
+export default UserAvatar

@@ -1,9 +1,11 @@
+import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
@@ -54,23 +56,26 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
 
   const { getRouteWithRedirect } = useQueryParamRedirect()
 
-  const {
-    redirectToOAuthContinueUrl,
-    handleOAuthLogin,
-    clientTitle,
-    isIdentityVerificationRequired,
-  } = useOAuthGetContext(clientInfo)
+  const { storeTokensAndRedirect, clientTitle, isIdentityVerificationRequired } =
+    useOAuthGetContext(clientInfo)
 
   const shouldRedirectToIdentityVerification =
     isIdentityVerificationRequired && !tierStatus.isIdentityVerified
 
-  const continueHandler = async () => {
-    await handleOAuthLogin()
+  const handleContinue = async () => {
+    await cityAccountClient.userControllerUpsertUserAndRecordClient(
+      {
+        loginClient:
+          (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+          LoginClientEnum.CityAccount,
+      },
+      { authStrategy: 'authOnly' },
+    )
 
-    redirectToOAuthContinueUrl()
+    await storeTokensAndRedirect()
   }
 
-  const logoutHandler = async () => {
+  const handleLogout = async () => {
     setIsLoading(true)
     try {
       await signOut()
@@ -101,12 +106,12 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
                     description: t('auth.oauth_page.description', { email }),
                     confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
                     onConfirm: () => {
-                      continueHandler()
+                      handleContinue()
                     },
                   })}
               confirmIsLoading={isLoading}
               cancelLabel={t('auth.oauth_page.cancel_label')}
-              onCancel={logoutHandler}
+              onCancel={handleLogout}
               cancelIsLoading={isLoading}
             />
           </AccountContainer>

@@ -27,7 +27,7 @@ const LogoutPage = () => {
   const { redirect } = useQueryParamRedirect()
   const [isLoading, setIsLoading] = useState(false)
 
-  const logoutHandler = async () => {
+  const handleLogout = async () => {
     setIsLoading(true)
     try {
       await signOut()
@@ -46,7 +46,7 @@ const LogoutPage = () => {
           title={t('auth.logout_page.title')}
           description={t('auth.logout_page.description')}
           confirmLabel={t('auth.logout_page.confirm_label')}
-          onConfirm={logoutHandler}
+          onConfirm={handleLogout}
           confirmIsLoading={isLoading}
           cancelLabel={t('auth.logout_page.cancel_label')}
           onCancel={() => redirect()}

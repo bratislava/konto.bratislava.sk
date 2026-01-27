@@ -45,7 +45,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
   const [lastRc, setLastRc] = useState('')
   const [lastIdCard, setLastIdCard] = useState('')
 
-  const { isOAuthLogin, clientTitle, redirectToOAuthContinueUrl, isIdentityVerificationRequired } =
+  const { isOAuthLogin, clientTitle, storeTokensAndRedirect, isIdentityVerificationRequired } =
     useOAuthGetContext(clientInfo)
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
@@ -133,7 +133,10 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
               {...(isOAuthLogin
                 ? {
                     confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                    onConfirm: () => redirectToOAuthContinueUrl(),
+                    onConfirm: () => {
+                      // TODO OAuth: What to do here whe identity verification is pending?
+                      storeTokensAndRedirect()
+                    },
                     description:
                       lastRc && lastIdCard
                         ? t('auth.identity_verification.fo.pending_oauth.content', {
@@ -175,7 +178,9 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
               {...(isOAuthLogin
                 ? {
                     confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                    onConfirm: () => redirectToOAuthContinueUrl(),
+                    onConfirm: () => {
+                      storeTokensAndRedirect()
+                    },
                   }
                 : {
                     confirmLabel: t('auth.continue_to_account'),

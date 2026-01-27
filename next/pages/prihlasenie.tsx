@@ -6,7 +6,10 @@ import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
-import { ClientInfoResponseDto } from 'openapi-clients/city-account'
+import {
+  ClientInfoResponseDto,
+  UpsertUserRecordClientRequestDtoLoginClientEnum,
+} from 'openapi-clients/city-account'
 import { useRef, useState } from 'react'
 
 import LoginForm from '../components/forms/auth-forms/LoginForm'
@@ -54,12 +57,8 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const {
-    isOAuthLogin,
-    redirectToOAuthContinueUrl,
-    handleOAuthLogin,
-    isIdentityVerificationRequired,
-  } = useOAuthGetContext(clientInfo)
+  const { isOAuthLogin, storeTokensAndRedirect, isIdentityVerificationRequired } =
+    useOAuthGetContext(clientInfo)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -76,29 +75,35 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
-        if (isOAuthLogin) {
-          logger.info(`[AUTH] Proceeding to OAuth login`)
-          await handleOAuthLogin()
 
+        if (!isOAuthLogin) {
+          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+          removeAmplifyGuestIdentityIdCookies()
+          await prepareFormMigration()
+        }
+
+        // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
+        // there might be some cases where user is not there yet.
+        await cityAccountClient.userControllerUpsertUserAndRecordClient(
+          {
+            loginClient:
+              (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+              LoginClientEnum.CityAccount,
+          },
+          { authStrategy: 'authOnly' },
+        )
+
+        if (isOAuthLogin) {
           if (isIdentityVerificationRequired) {
             router.push(getRouteWithRedirect(ROUTES.OAUTH))
             return
           }
 
-          redirectToOAuthContinueUrl()
+          await storeTokensAndRedirect()
 
           return
         }
 
-        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-        removeAmplifyGuestIdentityIdCookies()
-        await prepareFormMigration()
-        // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
-        // there might be some cases where user is not there yet.
-        await cityAccountClient.userControllerUpsertUserAndRecordClient(
-          { loginClient: LoginClientEnum.CityAccount },
-          { authStrategy: 'authOnly' },
-        )
         await redirect()
 
         return

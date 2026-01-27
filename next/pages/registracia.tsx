@@ -11,6 +11,7 @@ import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import EmailVerificationForm from '../components/forms/auth-forms/EmailVerificationForm'
@@ -92,13 +93,8 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const {
-    isOAuthLogin,
-    redirectToOAuthContinueUrl,
-    handleOAuthLogin,
-    clientTitle,
-    isIdentityVerificationRequired,
-  } = useOAuthGetContext(clientInfo)
+  const { isOAuthLogin, storeTokensAndRedirect, clientTitle, isIdentityVerificationRequired } =
+    useOAuthGetContext(clientInfo)
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -132,18 +128,16 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
-        if (isOAuthLogin) {
-          logger.info(`[AUTH] Proceeding to OAuth login`)
-          await handleOAuthLogin()
-
-          setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
-          return
+        if (!isOAuthLogin) {
+          await prepareFormMigration()
         }
-
-        await prepareFormMigration()
         // This endpoint must be called to register user also to the City Account BE
         await cityAccountClient.userControllerUpsertUserAndRecordClient(
-          { loginClient: LoginClientEnum.CityAccount },
+          {
+            loginClient:
+              (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+              LoginClientEnum.CityAccount,
+          },
           { authStrategy: 'authOnly' },
         )
         setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
@@ -327,7 +321,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
       return {
         confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
         onConfirm: () => {
-          redirectToOAuthContinueUrl()
+          storeTokensAndRedirect()
         },
       }
     }
@@ -345,7 +339,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
     isOAuthLogin,
     lastEmail,
     redirect,
-    redirectToOAuthContinueUrl,
+    storeTokensAndRedirect,
     registrationStatus,
     router,
     safeRedirect.type,

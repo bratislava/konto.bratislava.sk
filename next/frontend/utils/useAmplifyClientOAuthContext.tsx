@@ -1,12 +1,9 @@
 'use client'
 
-import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
+import { cityAccountClient } from '@clients/city-account'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import { useRouter } from 'next/router'
-import {
-  ClientInfoResponseDto,
-  UpsertUserRecordClientRequestDtoLoginClientEnum,
-} from 'openapi-clients/city-account'
+import { ClientInfoResponseDto } from 'openapi-clients/city-account'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { environment } from '../../environment'
@@ -30,14 +27,9 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
     return parsedUrl
   }
 
-  const redirectToOAuthContinueUrl = () => {
-    logger.info(`[AUTH] Calling Continue endpoint`)
-    router
-      .push(getOAuthContinueUrl())
-      .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
-  }
-
   const handlePostOAuthTokens = async () => {
+    logger.info(`[AUTH] Storing tokens to BE`)
+
     const { refreshToken } = (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
 
     if (!refreshToken || !authRequestId) {
@@ -58,21 +50,13 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
     }
   }
 
-  const handleOAuthLogin = async () => {
-    logger.info(`[AUTH] Storing tokens to BE`)
+  const storeTokensAndRedirect = async () => {
     await handlePostOAuthTokens()
 
-    logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
-    // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
-    // there might be some cases where user is not there yet.
-    await cityAccountClient.userControllerUpsertUserAndRecordClient(
-      {
-        loginClient:
-          (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
-          LoginClientEnum.CityAccount,
-      },
-      { authStrategy: 'authOnly' },
-    )
+    logger.info(`[AUTH] Calling Continue endpoint`)
+    router
+      .push(getOAuthContinueUrl())
+      .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
   }
 
   const clientTitle = clientInfo?.clientName
@@ -86,8 +70,7 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
     isOAuthLogin,
     clientInfo,
     clientTitle,
-    redirectToOAuthContinueUrl,
-    handleOAuthLogin,
+    storeTokensAndRedirect,
     isIdentityVerificationRequired: !!isIdentityVerificationRequired,
   }
 }

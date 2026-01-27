@@ -2,7 +2,6 @@ import { useResizeObserver } from '@react-aria/utils'
 import NavBar from 'components/forms/segments/NavBar/NavBar'
 import useMenu from 'components/forms/segments/NavBar/useMenu'
 import cn from 'frontend/cn'
-import { useTranslation } from 'next-i18next'
 import { ReactNode, useRef, useState } from 'react'
 
 declare module 'react' {
@@ -13,12 +12,11 @@ declare module 'react' {
 
 type Props = {
   children: ReactNode
-  hiddenHeaderNav?: boolean
+  hideNavbarHeader?: boolean
   className?: string
 }
 
-const AccountPageLayout = ({ className, children, hiddenHeaderNav }: Props) => {
-  const { t } = useTranslation('account')
+const AccountPageLayout = ({ className, children, hideNavbarHeader }: Props) => {
 
   // https://stackoverflow.com/a/59253905
   const [mainScrollTopMargin, setMainScrollTopMargin] = useState(0)
@@ -50,12 +48,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: Props) => {
         <NavBar
           sectionsList={menuSections}
           menuItems={menuItems}
-          navHidden
-          hiddenHeaderNav={hiddenHeaderNav}
-          languages={[
-            { key: 'sk', title: t('language_long.sk') },
-            { key: 'en', title: t('language_long.en') },
-          ]}
+          hideNavbarHeader={hideNavbarHeader}
           desktopNavbarRef={desktopNavbarRef}
           mobileNavbarRef={mobileNavbarRef}
         />

@@ -1,12 +1,12 @@
-import { ChevronDownSmallIcon, ProfileIcon } from '@assets/ui-icons'
+import { ChevronDownSmallIcon } from '@assets/ui-icons'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
+import UserAvatar from 'components/forms/segments/NavBar/UserAvatar'
 import Button from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
-import { UserAttributes } from 'frontend/dtos/accountDto'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -21,67 +21,38 @@ import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
 import { useNavMenuContext } from './navMenuContext'
 
-interface IProps extends LanguageSelectProps {
-  className?: string
-  navHidden?: boolean
-  sectionsList?: MenuSectionItemBase[]
-  menuItems: MenuItemBase[]
-  hiddenHeaderNav?: boolean
-  desktopNavbarRef: RefObject<HTMLDivElement | null>
-  mobileNavbarRef: RefObject<HTMLDivElement | null>
-}
-
-interface LanguageSelectProps {
-  className?: string
-  languages?: LanguageOption[]
-  currentLanguage?: string
-  onLanguageChange?: (language: LanguageOption) => void
-}
-
-interface LanguageOption {
-  key: string
-  title: string
-}
-
-export interface MenuSectionItemBase {
+export type MenuSectionItemBase = {
   id: number
   title: string
   icon: ReactNode
   url: string
 }
 
-const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) => {
-  return (
-    <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
-      <div className="flex size-6 items-center justify-center font-semibold text-main-700">
-        <span className="uppercase">
-          {userAttributes && userAttributes.given_name && userAttributes.family_name ? (
-            userAttributes.given_name[0] + userAttributes.family_name[0]
-          ) : (
-            <ProfileIcon className="size-6 text-main-700" />
-          )}
-        </span>
-      </div>
-    </div>
-  )
+type Props = {
+  sectionsList?: MenuSectionItemBase[]
+  menuItems: MenuItemBase[]
+  hideNavbarHeader?: boolean
+  desktopNavbarRef: RefObject<HTMLDivElement | null>
+  mobileNavbarRef: RefObject<HTMLDivElement | null>
+  className?: string
 }
 
 export const NavBar = ({
-  className,
   sectionsList,
   menuItems,
-  hiddenHeaderNav,
+  hideNavbarHeader,
   desktopNavbarRef,
   mobileNavbarRef,
-}: IProps) => {
+  className,
+}: Props) => {
+  const { t } = useTranslation('account')
+  const router = useRouter()
+
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()
-
-  const { t } = useTranslation('account')
-  const router = useRouter()
 
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
@@ -132,13 +103,11 @@ export const NavBar = ({
                     data-cy="account-button"
                     className="flex items-center gap-4 font-semibold text-font/75"
                   >
-                    <Avatar userAttributes={userAttributes} />
+                    <UserAvatar userAttributes={userAttributes} />
                     <div className="flex items-center gap-1 font-light lg:font-semibold">
                       {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
                       <ChevronDownSmallIcon
-                        className={`hidden size-5 mix-blend-normal lg:flex ${
-                          isMenuOpen ? '-rotate-180' : ''
-                        }`}
+                        className={cn("hidden size-5 mix-blend-normal lg:flex", { "-rotate-180": isMenuOpen })}
                       />
                     </div>
                   </Button>
@@ -165,7 +134,7 @@ export const NavBar = ({
         </div>
 
         {/* NavBar menu */}
-        {sectionsList && !hiddenHeaderNav && (
+        {sectionsList && !hideNavbarHeader && (
           <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between border-t border-gray-200 lg:flex">
             <NavigationMenu.Root
               value={menuValue}

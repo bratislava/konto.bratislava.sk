@@ -13,8 +13,10 @@ import { get as getAppRootDir } from 'app-root-dir'
 import { devFormDefinitions } from '../src/definitions/devFormDefinitions'
 import unzipper from 'unzipper'
 import { rimraf } from 'rimraf'
+import { SharedLogger } from '../src/utils/sharedLogger'
 
 const rootDir = getAppRootDir()
+const logger = new SharedLogger('generateSlovenskoSkContainer.ts')
 
 async function generateFiles(formDefinition: FormDefinitionSlovenskoSk, validFrom: string) {
   const outputDir = path.join(rootDir, 'dist-schemas', formDefinition.slug)
@@ -102,7 +104,7 @@ async function main() {
   ])
 
   const outputDir = await generateFiles(selectedFormDefinition, validFrom)
-  console.log(`Generated schemas for ${selectedFormDefinition.title} in ${outputDir}`)
+  logger.log(`Generated schemas for ${selectedFormDefinition.title} in ${outputDir}`)
 
   if (unzip) {
     const zipFile = path.join(outputDir, 'container.zip')
@@ -111,14 +113,14 @@ async function main() {
     try {
       await fs.mkdir(unzipDir, { recursive: true })
       await unzipFile(zipFile, unzipDir)
-      console.log(`Unzipped container.zip to ${unzipDir}`)
+      logger.log(`Unzipped container.zip to ${unzipDir}`)
     } catch (error) {
-      console.error('Error unzipping file:', error)
+      logger.error('Error unzipping file:', error)
     }
   }
 }
 
 main().catch((error) => {
-  console.error('An error occurred:', error)
+  logger.error('An error occurred:', error)
   process.exit(1)
 })

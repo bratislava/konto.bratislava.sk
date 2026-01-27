@@ -1,8 +1,12 @@
+import { SharedLogger } from '../src/utils/sharedLogger'
+
+const logger = new SharedLogger('sandbox.ts')
+
 async function main() {
-  console.log('Hello, world!')
+  logger.log('Hello, world!')
 }
 
 main().catch((error) => {
-  console.error('An error occurred:', error)
+  logger.error('An error occurred:', error)
   process.exit(1)
 })

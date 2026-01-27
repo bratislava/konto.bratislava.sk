@@ -85,6 +85,7 @@ import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPris
 import ziadostOUzemnoplanovaciuInformaciu, {
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
+import webhookShowcase from '../schemas/webhookShowcase'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -601,5 +602,15 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
+  },
+  {
+    type: FormDefinitionType.Webhook,
+    slug: 'webhook-showcase',
+    title: 'Webhook showcase',
+    jsonVersion: '1.0.0',
+    schema: webhookShowcase,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
+    webhookUrl: 'http://nest-forms-backend.dev.bratislava.sk/webhook',
+    termsAndConditions: generalTermsAndConditions,
   },
 ]

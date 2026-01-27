@@ -9,7 +9,6 @@ import PasswordField from '../widget-components/PasswordField/PasswordField'
 interface Data {
   oldPassword: string
   password: string
-  passwordConfirmation: string
 }
 
 interface Props {
@@ -37,15 +36,8 @@ const schema = {
         format: 'account:auth.fields.password_format',
       },
     },
-    passwordConfirmation: {
-      const: {
-        $data: '1/password',
-      },
-      type: 'string',
-      errorMessage: { const: 'account:auth.fields.password_confirmation_required' },
-    },
   },
-  required: ['oldPassword', 'password', 'passwordConfirmation'],
+  required: ['oldPassword', 'password'],
 }
 
 const PasswordChangeForm = ({ onSubmit, error }: Props) => {
@@ -57,7 +49,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
     formState: { isSubmitting },
   } = useHookForm<Data>({
     schema,
-    defaultValues: { oldPassword: '', password: '', passwordConfirmation: '' },
+    defaultValues: { oldPassword: '', password: '' },
   })
 
   return (
@@ -93,20 +85,6 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
             helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}
-          />
-        )}
-      />
-      <Controller
-        name="passwordConfirmation"
-        control={control}
-        render={({ field }) => (
-          <PasswordField
-            required
-            autoComplete="new-password"
-            label={t('auth.fields.new_password_confirmation_label')}
-            placeholder={t('auth.fields.new_password_confirmation_placeholder')}
-            {...field}
-            errorMessage={errors.passwordConfirmation}
           />
         )}
       />

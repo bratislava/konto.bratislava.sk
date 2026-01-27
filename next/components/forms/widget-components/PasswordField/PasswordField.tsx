@@ -1,5 +1,6 @@
-import { EyeIcon } from '@assets/ui-icons'
+import { EyeHiddenIcon, EyeIcon } from '@assets/ui-icons'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import { useTranslation } from 'next-i18next'
 import { forwardRef, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 
@@ -34,26 +35,26 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
     },
     ref,
   ) => {
-    const [type, setType] = useState<'password' | 'text'>('password')
+    const { t } = useTranslation('account')
+
+    const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+
     const buttonRef = useRef<HTMLButtonElement>(null)
 
     const { buttonProps } = useButton(
       {
         elementType: 'button',
         isDisabled: disabled,
-        onPressStart() {
-          setType('text')
-        },
-        onPressEnd() {
-          setType('password')
-        },
+        onPress() {
+          setIsPasswordHidden(!isPasswordHidden)
+        }
       },
       buttonRef,
     )
 
     return (
       <InputField
-        type={type}
+        type={isPasswordHidden ? 'password' : 'text'}
         label={label}
         placeholder={placeholder}
         errorMessage={errorMessage}
@@ -73,10 +74,11 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
           <button
             type="button"
             ref={buttonRef}
+            aria-label={isPasswordHidden ? t('auth.fields.password_eyeButton_show') : t('auth.fields.password_eyeButton_hide')}
             className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             {...buttonProps}
           >
-            <EyeIcon />
+            {isPasswordHidden ? <EyeIcon /> : <EyeHiddenIcon />}
           </button>
         }
         {...rest}

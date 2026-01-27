@@ -6,7 +6,7 @@ import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFee
 import { useState } from 'react'
 
 const OfficialCorrespondenceChannelInformation = () => {
-  const { isChannelChangeEffectiveNextYear } = useOfficialCorrespondenceChannel()
+  const { hasChangedDeliveryMethodAfterDeadline } = useOfficialCorrespondenceChannel()
   const strapiTax = useStrapiTax()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -16,7 +16,7 @@ const OfficialCorrespondenceChannelInformation = () => {
       <TaxesFeesDeliveryMethodChangeModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
       <div className="mx-4 flex flex-col gap-4 rounded-lg bg-gray-0 p-4 lg:mx-0 lg:gap-5 lg:p-5">
         <TaxesFeesDeliveryMethodCard onButtonPress={() => setIsModalOpen(true)} />
-        {isChannelChangeEffectiveNextYear && (
+        {hasChangedDeliveryMethodAfterDeadline && (
           <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
         )}
       </div>

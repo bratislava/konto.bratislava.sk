@@ -15,6 +15,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
+import { VerificationReturnType } from '../user-verification/types'
 
 // In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
 
@@ -136,7 +137,7 @@ export class PhysicalEntityService {
       })
     )
 
-    this.logger.log(`Successfully verified uri.`, upvsResult)
+    this.logger.log(`Successfully verified uri.`, upvsResult.success[0]?.uri)
     return { updatedEntities, upvsResult }
   }
 
@@ -157,7 +158,9 @@ export class PhysicalEntityService {
     return { uri, physicalEntityId: entity.id }
   }
 
-  async createFromBirthNumber(birthNumber: string) {
+  async createFromBirthNumber(
+    birthNumber: string
+  ): Promise<VerificationReturnType<RfoIdentityList>> {
     // Creates PhysicalEntity record before user is verified / created. The new record does not have
     // userID set.
 
@@ -173,20 +176,20 @@ export class PhysicalEntityService {
     }
 
     // No data present, return
-    if (!rfoData || rfoData.length == 0) {
+    if (!rfoData.success || rfoData.data.length == 0) {
       this.logger.error(`PhysicalEntity ${birthNumber} not created. No entries from magproxy.`)
       return rfoData
     }
 
     // Multiple data present
-    if (rfoData.length > 1) {
+    if (rfoData.data.length > 1) {
       this.logger.error(
         `PhysicalEntity ${birthNumber} not created. Multiple entries from magproxy.`
       )
       return rfoData
     }
 
-    const singleRfoRecord = rfoData[0]
+    const singleRfoRecord = rfoData.data[0]
 
     const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
 
@@ -219,7 +222,7 @@ export class PhysicalEntityService {
 
     // const rfoData = JSON.parse(result.data.toString()) as RfoIdentityList
     const rfoData = await this.magproxyService.rfoBirthNumberList(entity.birthNumber)
-    if (!Array.isArray(rfoData) || rfoData.length === 0) {
+    if (!rfoData.success || !Array.isArray(rfoData.data) || rfoData.data.length === 0) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
@@ -227,26 +230,26 @@ export class PhysicalEntityService {
       )
     }
 
-    if (rfoData.length > 1) {
+    if (rfoData.data.length > 1) {
       this.logger.error(
         `Found multiple RFO records for birthnumber ${entity.birthNumber} entityId: ${entity.id}`
       )
       return {
         physicalEntity: entity,
-        rfoData,
+        rfoData: rfoData.data,
       }
     }
 
     // TODO if we're storing other data about entity from RFO, do it here
 
-    const singleRfoRecord = rfoData[0]
+    const singleRfoRecord = rfoData.data[0]
 
     const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
 
     if (!upvsInput) {
       return {
         physicalEntity: entity,
-        rfoData,
+        rfoData: rfoData.data,
       }
     }
 
@@ -261,7 +264,7 @@ export class PhysicalEntityService {
 
     return {
       physicalEntity: updatedPhysicalEntity ?? entity,
-      rfoData,
+      rfoData: rfoData.data,
       upvsInput,
       upvsResult: upvsResultSingle,
     }

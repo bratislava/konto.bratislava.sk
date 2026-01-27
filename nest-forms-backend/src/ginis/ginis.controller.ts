@@ -94,9 +94,9 @@ export default class GinisController {
             )
           : this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `Error while getting document or owner from GINIS: ${<string>(
-                error
-              )}`,
+              'Error while getting document or owner from GINIS:',
+              undefined,
+              error,
             )
       throw errorToThrow
     }

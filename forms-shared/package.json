@@ -60,7 +60,7 @@
     "rodnecislo": "^1.6.0",
     "semver": "^7.7.2",
     "traverse": "^0.6.11",
-    "ts-pattern": "^5.8.0",
+    "ts-pattern": "^5.9.0",
     "uuid": "^11.1.0",
     "xml2js": "^0.6.2"
   },
@@ -76,7 +76,7 @@
     "@types/json-schema": "7.0.15",
     "@types/json-schema-merge-allof": "^0.6.5",
     "@types/lodash": "^4.17.21",
-    "@types/node": "^24.3.3",
+    "@types/node": "^22.19.6",
     "@types/object-hash": "^3.0.6",
     "@types/prompts": "^2.4.9",
     "@types/react": "19.1.12",
@@ -91,7 +91,7 @@
     "archiver": "^7.0.1",
     "classnames": "^2.5.1",
     "cross-env": "^10.0.0",
-    "glob": "^11.0.3",
+    "glob": "^13.0.0",
     "inquirer": "^12.9.4",
     "jest-image-snapshot": "^6.5.1",
     "libxml2-wasm": "0.6.0",
@@ -111,11 +111,11 @@
     "vitest": "4.0.15"
   },
   "engines": {
-    "node": ">=20.19.x",
+    "node": ">=22.21.x",
     "npm": ">=10.9.x"
   },
   "volta": {
-    "node": "20.19.6",
-    "npm": "10.9.3"
+    "node": "22.21.1",
+    "npm": "10.9.4"
   }
 }

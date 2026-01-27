@@ -27,15 +27,15 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.888.0",
     "@golevelup/nestjs-rabbitmq": "^7.1.1",
-    "@nestjs/common": "^11.1.9",
+    "@nestjs/common": "^11.1.12",
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "^11.1.9",
+    "@nestjs/core": "^11.1.12",
     "@nestjs/passport": "^11.0.5",
-    "@nestjs/platform-express": "^11.1.9",
-    "@nestjs/schedule": "^6.0.1",
-    "@nestjs/swagger": "^11.2.3",
+    "@nestjs/platform-express": "^11.1.12",
+    "@nestjs/schedule": "^6.1.0",
+    "@nestjs/swagger": "^11.2.5",
     "@prisma/client": "6.17.1",
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "amqplib": "^0.10.9",
     "axios": "^1.13.2",
     "cf-turnstile": "^1.0.8",
@@ -52,15 +52,16 @@
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.1",
+    "playwright": "^1.57.0",
     "rodnecislo": "^1.6.0",
     "uuid": "^11.1.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^5.2.1",
-    "@golevelup/ts-jest": "^0.7.0",
-    "@nestjs/cli": "^11.0.14",
-    "@nestjs/testing": "^11.1.9",
+    "@golevelup/ts-jest": "^1.2.0",
+    "@nestjs/cli": "^11.0.16",
+    "@nestjs/testing": "^11.1.12",
     "@types/amqplib": "^0.10.8",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.21",
@@ -110,6 +111,10 @@
     "setupFilesAfterEnv": [
       "<rootDir>/../test/singleton.ts"
     ]
+  },
+  "engines": {
+    "node": ">=20.19.x",
+    "npm": ">=10.9.x"
   },
   "volta": {
     "node": "20.19.6",

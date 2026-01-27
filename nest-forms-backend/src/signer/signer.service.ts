@@ -70,7 +70,11 @@ export default class SignerService {
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `getSignerData: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        {
+          formDefinitionType: formDefinition.type,
+          slug: form.formDefinitionSlug,
+        },
       )
     }
 

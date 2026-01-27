@@ -24,7 +24,6 @@ interface Data {
   given_name?: string
   family_name?: string
   password: string
-  passwordConfirmation: string
   turnstileToken: string
   account_type: AccountType
 }
@@ -68,13 +67,6 @@ const schema = {
         format: 'account:auth.fields.password_format',
       },
     },
-    passwordConfirmation: {
-      const: {
-        $data: '1/password',
-      },
-      type: 'string',
-      errorMessage: { const: 'account:auth.fields.password_confirmation_required' },
-    },
     turnstileToken: {
       type: 'string',
       minLength: 1,
@@ -116,7 +108,7 @@ const schema = {
       },
     },
   ],
-  required: ['account_type', 'email', 'password', 'passwordConfirmation', 'turnstileToken'],
+  required: ['account_type', 'email', 'password', 'turnstileToken'],
 }
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
@@ -140,7 +132,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       given_name: '',
       name: '',
       password: '',
-      passwordConfirmation: '',
     },
   })
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
@@ -286,20 +277,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             autoComplete="new-password"
             {...field}
             errorMessage={errors.password}
-          />
-        )}
-      />
-      <Controller
-        name="passwordConfirmation"
-        control={control}
-        render={({ field }) => (
-          <PasswordField
-            required
-            autoComplete="new-password"
-            label={t('auth.fields.password_confirmation_label')}
-            placeholder={t('auth.fields.password_confirmation_placeholder')}
-            {...field}
-            errorMessage={errors.passwordConfirmation}
           />
         )}
       />

@@ -115,11 +115,11 @@ export class UserFixtureFactory {
         email,
         birthNumber: null,
         gdprData: [],
+        hasChangedDeliveryMethodAfterDeadline: false,
       }
       if (params.accountType === UserVerifyStateTypeEnum.Fo) {
         return {
           ...base,
-          wasVerifiedBeforeTaxDeadline: false,
           officialCorrespondenceChannel:
             UserOfficialCorrespondenceChannelEnum.Postal,
           showEmailCommunicationBanner: false,

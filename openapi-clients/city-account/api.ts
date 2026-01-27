@@ -503,7 +503,7 @@ export interface RequestBodyVerifyIdentityCardDto {
    */
   birthNumber: string
   /**
-   * String of identitiy card
+   * String of identity card
    */
   identityCard: string
   /**
@@ -571,6 +571,7 @@ export interface ResponseCustomErrorVerificationEidDto {
 
 export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
+  RpoAccessError: 'RPO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
   RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
@@ -610,6 +611,7 @@ export interface ResponseCustomErrorVerificationIdentityCardDto {
 
 export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
+  RpoAccessError: 'RPO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
   RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
@@ -816,13 +818,13 @@ export interface ResponseUserDataBasicDto {
    */
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
   /**
-   * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
-   */
-  wasVerifiedBeforeTaxDeadline: boolean
-  /**
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
    */
   showEmailCommunicationBanner: boolean
+  /**
+   * True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.
+   */
+  hasChangedDeliveryMethodAfterDeadline: boolean
 }
 
 export interface ResponseUserDataDto {
@@ -855,13 +857,13 @@ export interface ResponseUserDataDto {
    */
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
   /**
-   * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
-   */
-  wasVerifiedBeforeTaxDeadline: boolean
-  /**
    * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
    */
   showEmailCommunicationBanner: boolean
+  /**
+   * True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.
+   */
+  hasChangedDeliveryMethodAfterDeadline: boolean
   /**
    * Subscription Data in array
    */
@@ -903,6 +905,7 @@ export interface ResponseVerificationDto {
 
 export const ResponseVerificationDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
+  RpoAccessError: 'RPO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
   RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
@@ -953,6 +956,7 @@ export type ResponseVerificationIdentityCardToQueueDtoMessageEnum =
   (typeof ResponseVerificationIdentityCardToQueueDtoMessageEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoMessageEnum]
 export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
+  RpoAccessError: 'RPO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
   RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',

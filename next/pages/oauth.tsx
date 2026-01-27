@@ -1,26 +1,15 @@
-import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
-import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { prefetchUserQuery } from '../frontend/hooks/useUser'
-import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import {
-  AmplifyClientOAuthProvider,
-  useOAuthGetContext,
-} from '../frontend/utils/useAmplifyClientOAuthContext'
+import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
 import { AuthPageCommonProps } from './prihlasenie'
 
 type PageProps = AuthPageCommonProps & {
@@ -42,78 +31,19 @@ export const getServerSideProps = amplifyGetServerSideProps(
       },
     }
   },
-  { requiresSignIn: true, redirectOAuthParams: true },
+  { isOAuthRedirect: true, redirectOAuthParams: true },
 )
 
 const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
-  const router = useRouter()
   const { t } = useTranslation('account')
-  const { signOut } = useSignOut()
-  const [isLoading, setIsLoading] = useState(false)
 
-  const { userAttributes, tierStatus } = useSsrAuth()
-  const { email } = userAttributes ?? {}
-
-  const { getRouteWithRedirect } = useQueryParamRedirect()
-
-  const { storeTokensAndRedirect, clientTitle, isIdentityVerificationRequired } =
-    useOAuthGetContext(clientInfo)
-
-  const shouldRedirectToIdentityVerification =
-    isIdentityVerificationRequired && !tierStatus.isIdentityVerified
-
-  const handleContinue = async () => {
-    await cityAccountClient.userControllerUpsertUserAndRecordClient(
-      {
-        loginClient:
-          (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
-          LoginClientEnum.CityAccount,
-      },
-      { authStrategy: 'authOnly' },
-    )
-
-    await storeTokensAndRedirect()
-  }
-
-  const handleLogout = async () => {
-    setIsLoading(true)
-    try {
-      await signOut()
-    } catch (error) {
-      // TODO: Display error message to the user.
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
+  // This page should never render, instead, redirect to LOGIN or OAUTH_CONFIRM page should happen on server
   return (
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
         <LoginRegisterLayout backButtonHidden>
           <AccountContainer>
-            <AccountSuccessAlert
-              variant="info"
-              title={t('auth.oauth_page.title')}
-              {...(shouldRedirectToIdentityVerification
-                ? {
-                    description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
-                    confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
-                    onConfirm: () => {
-                      router.push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
-                    },
-                  }
-                : {
-                    description: t('auth.oauth_page.description', { email }),
-                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                    onConfirm: () => {
-                      handleContinue()
-                    },
-                  })}
-              confirmIsLoading={isLoading}
-              cancelLabel={t('auth.oauth_page.cancel_label')}
-              onCancel={handleLogout}
-              cancelIsLoading={isLoading}
-            />
+            <AccountSuccessAlert variant="loading" title={t('auth.oauth_page.title')} />
           </AccountContainer>
         </LoginRegisterLayout>
       </AmplifyClientOAuthProvider>

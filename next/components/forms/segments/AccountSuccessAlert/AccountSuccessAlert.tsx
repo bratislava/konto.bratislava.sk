@@ -4,18 +4,19 @@ import Button from 'components/forms/simple-components/ButtonNew'
 import { ReactNode } from 'react'
 
 import cn from '../../../../frontend/cn'
+import Spinner from '../../simple-components/Spinner'
 
 interface Props {
   title: string
   description?: string
-  confirmLabel: string
-  onConfirm: () => void
+  confirmLabel?: string
+  onConfirm?: () => void
   confirmIsLoading?: boolean
   onCancel?: () => void
   cancelIsLoading?: boolean
   cancelLabel?: string
   children?: ReactNode
-  variant?: 'success' | 'info' | 'logout'
+  variant?: 'success' | 'info' | 'logout' | 'loading'
 }
 
 const AccountSuccessAlert = ({
@@ -38,12 +39,15 @@ const AccountSuccessAlert = ({
           'bg-background-success-soft-default text-content-success-default': variant === 'success',
           'bg-background-passive-secondary text-content-passive-secondary':
             variant === 'info' || variant === 'logout',
+          'bg-transparent': variant === 'loading',
         })}
       >
         {variant === 'info' ? (
           <InfoIcon className="size-6 shrink-0 lg:size-8" />
         ) : variant === 'logout' ? (
           <LogoutIcon className="size-6 shrink-0 lg:size-8" />
+        ) : variant === 'loading' ? (
+          <Spinner size="md" />
         ) : (
           <CheckIcon className="size-6 shrink-0 lg:size-8" />
         )}
@@ -53,16 +57,18 @@ const AccountSuccessAlert = ({
         <AccountMarkdown className="text-center" content={description} variant="sm" />
       )}
       {children}
-      <Button
-        variant="black-solid"
-        onPress={onConfirm}
-        fullWidth
-        isLoading={confirmIsLoading}
-        data-cy={`${confirmLabel.replaceAll(' ', '-').toLowerCase()}-button`}
-      >
-        {confirmLabel}
-      </Button>
-      {onCancel && (
+      {onConfirm && confirmLabel ? (
+        <Button
+          variant="black-solid"
+          onPress={onConfirm}
+          fullWidth
+          isLoading={confirmIsLoading}
+          data-cy={`${confirmLabel.replaceAll(' ', '-').toLowerCase()}-button`}
+        >
+          {confirmLabel}
+        </Button>
+      ) : null}
+      {onCancel && cancelLabel ? (
         <Button
           variant="black-plain"
           onPress={onCancel}
@@ -73,7 +79,7 @@ const AccountSuccessAlert = ({
         >
           {cancelLabel}
         </Button>
-      )}
+      ) : null}
     </div>
   )
 }

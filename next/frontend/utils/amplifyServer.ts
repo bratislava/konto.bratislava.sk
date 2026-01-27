@@ -1,15 +1,18 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
+import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, AuthSession } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
+import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
 import type { GlobalAppProps } from '../../pages/_app'
 import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import { AmplifyServerContextSpec } from './amplifyTypes'
+import { fetchClientInfo } from './fetchClientInfo'
 import { isDefined } from './general'
 import {
   authRequestIdQueryParam,
@@ -55,6 +58,7 @@ export const amplifyGetServerSideProps = <
   options?: {
     requiresSignIn?: boolean
     requiresSignOut?: boolean
+    isOAuthRedirect?: boolean
     skipSsrAuthContext?: boolean
     redirectQueryParam?: boolean
     redirectOAuthParams?: boolean
@@ -100,6 +104,55 @@ export const amplifyGetServerSideProps = <
           }
         }
 
+        let oAuthParams = ''
+        if (options?.redirectOAuthParams) {
+          // TODO rewrite in cleaner way
+          oAuthParams = context.query
+            ? [
+                context.query[isOAuthQueryParam]
+                  ? `${isOAuthQueryParam}=${context.query[isOAuthQueryParam]}`
+                  : undefined,
+                context.query[authRequestIdQueryParam]
+                  ? `${authRequestIdQueryParam}=${context.query[authRequestIdQueryParam]}`
+                  : undefined,
+                context.query[isIdentityVerificationRequiredQueryParam]
+                  ? `${isIdentityVerificationRequiredQueryParam}=${context.query[isIdentityVerificationRequiredQueryParam]}`
+                  : undefined,
+              ]
+                .filter(isDefined)
+                .join('&')
+            : ''
+        }
+
+        if (options?.isOAuthRedirect) {
+          if (isSignedIn) {
+            const clientInfo = await fetchClientInfo(context.query)
+
+            await cityAccountClient.userControllerUpsertUserAndRecordClient(
+              {
+                loginClient:
+                  (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+                  LoginClientEnum.CityAccount,
+              },
+              { authStrategy: 'authOnly', getSsrAuthSession: fetchAuthSessionFn },
+            )
+
+            return {
+              redirect: {
+                destination: `${ROUTES.OAUTH_CONFIRM}?${oAuthParams}`,
+                permanent: false,
+              },
+            }
+          }
+
+          return {
+            redirect: {
+              destination: `${ROUTES.LOGIN}?${oAuthParams}`,
+              permanent: false,
+            },
+          }
+        }
+
         const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
         const shouldRedirectNotSignedOut = options?.requiresSignOut && isSignedIn
 
@@ -116,31 +169,10 @@ export const amplifyGetServerSideProps = <
             }
           }
 
-          if (options?.redirectOAuthParams) {
-            // TODO rewrite in cleaner way
-            const params = context.query
-              ? [
-                  context.query[isOAuthQueryParam]
-                    ? `${isOAuthQueryParam}=${context.query[isOAuthQueryParam]}`
-                    : undefined,
-                  context.query[authRequestIdQueryParam]
-                    ? `${authRequestIdQueryParam}=${context.query[authRequestIdQueryParam]}`
-                    : undefined,
-                  context.query[isIdentityVerificationRequiredQueryParam]
-                    ? `${isIdentityVerificationRequiredQueryParam}=${context.query[isIdentityVerificationRequiredQueryParam]}`
-                    : undefined,
-                ]
-                  .filter(isDefined)
-                  .join('&')
-              : ''
-
-            const destination = shouldRedirectNotSignedIn
-              ? `${ROUTES.LOGIN}?${params}`
-              : ROUTES.HOME
-
+          if (options?.redirectOAuthParams && shouldRedirectNotSignedIn) {
             return {
               redirect: {
-                destination,
+                destination: `${ROUTES.LOGIN}?${oAuthParams}`,
                 permanent: false,
               },
             }

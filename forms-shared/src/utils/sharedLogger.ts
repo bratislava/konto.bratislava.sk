@@ -1,5 +1,3 @@
-import * as process from 'node:process'
-
 // ANSI color escape codes for console output
 const ANSI_RESET = '\u001B[0m'
 const ANSI_GREEN = '\u001B[32m'
@@ -84,12 +82,17 @@ export class SharedLogger {
     const colorStart = this.color ? colorCode : ''
     const colorEnd = this.color ? ANSI_RESET : ''
 
+    const pid =
+      typeof (globalThis as any).process !== 'undefined'
+        ? (globalThis as any).process.pid
+        : undefined
+
     // Combine all parts into the log line
     const logLine = [
       colorStart,
       [
         `process="[SharedLogger]"`,
-        `processPID="${process.pid}"`,
+        pid ? `processPID="${pid}"` : undefined,
         `datetime="${this.getCurrentDateTime()}"`,
         `severity="${severity}"`,
         formattedContext,

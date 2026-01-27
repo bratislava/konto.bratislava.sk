@@ -94,8 +94,9 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
         )
 
         if (isOAuthLogin) {
+          // TODO OAuth: Redirect to identity verification only if user is not verified
           if (isIdentityVerificationRequired) {
-            router.push(getRouteWithRedirect(ROUTES.OAUTH))
+            router.push(getRouteWithRedirect(ROUTES.OAUTH_CONFIRM))
             return
           }
 

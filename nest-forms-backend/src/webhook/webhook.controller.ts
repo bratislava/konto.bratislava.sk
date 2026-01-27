@@ -18,6 +18,6 @@ export default class WebhookController {
   })
   @Post()
   async receiveWebhook(@Body() webhookDto: WebhookDto): Promise<void> {
-    this.logger.log('Received webhook data', webhookDto)
+    this.logger.log('Received webhook data', JSON.stringify(webhookDto))
   }
 }

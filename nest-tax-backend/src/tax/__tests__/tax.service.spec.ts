@@ -1557,6 +1557,7 @@ describe('TaxService', () => {
         taxId: 1,
         overallAmount: 1000,
         taxPayments: mockOneTimeTaxData.taxPayments,
+        taxType: TaxType.DZN,
       })
       expect(result).toEqual(mockPaymentGeneratorDto)
     })

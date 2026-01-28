@@ -3,6 +3,7 @@ import * as glob from 'glob'
 import * as prettier from 'prettier'
 import { get as getAppRootDir } from 'app-root-dir'
 import path from 'path'
+import { SharedLogger } from '../src/utils/sharedLogger'
 
 const globs = [
   'src/generator/uiOptionsTypes.ts',
@@ -17,6 +18,7 @@ const ignorePatterns = [
 
 const rootDir = getAppRootDir()
 const outputPath = path.join(rootDir, 'dist-schemas/prompt.txt')
+const logger = new SharedLogger('createAiPrompt.ts')
 
 async function createAiPrompt() {
   const prettierConfig = await prettier.resolveConfig(rootDir)
@@ -40,10 +42,10 @@ async function createAiPrompt() {
   }
 
   await fs.writeFile(outputPath, combinedContent)
-  console.log(`Combined and formatted files written to ${outputPath}`)
+  logger.log(`Combined and formatted files written to ${outputPath}`)
 }
 
 createAiPrompt().catch((error) => {
-  console.error('An error occurred:', error)
+  logger.error('An error occurred:', error)
   process.exit(1)
 })

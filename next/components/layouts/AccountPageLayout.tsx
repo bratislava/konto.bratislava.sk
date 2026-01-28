@@ -36,9 +36,9 @@ const AccountPageLayout = ({ className, children, hideNavbarHeader }: Props) => 
         style={{
           '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
-        className="relative z-0 **:scroll-mt-(--main-scroll-top-margin)"
+        className="relative **:scroll-mt-(--main-scroll-top-margin)"
       >
-        <div className="bg-gray-0">{children}</div>
+        {children}
       </main>
     </div>
   )

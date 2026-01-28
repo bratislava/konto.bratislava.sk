@@ -29,7 +29,7 @@ const LoginRegisterLayout = ({
         style={{
           '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
-        className="flex grow flex-col gap-0 **:scroll-mt-(--main-scroll-top-margin) md:gap-6 md:bg-background-passive-primary md:py-8"
+        className="**:scroll-mt-(--main-scroll-top-margin) md:gap-6 md:bg-background-passive-primary md:py-8"
       >
         {children}
       </main>

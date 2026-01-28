@@ -1,89 +1,47 @@
 'use client'
 
-import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
-import { Amplify } from 'aws-amplify'
+import { cityAccountClient } from '@clients/city-account'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
+import { useRouter } from 'next/router'
+import { ClientInfoResponseDto } from 'openapi-clients/city-account'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { environment } from '../../environment'
 import { useOAuthParams } from '../hooks/useOAuthParams'
-import { clearOAuthSessionStorage } from './amplifyClient'
+import { GENERIC_ERROR_MESSAGE } from './errors'
 import logger from './logger'
-import {
-  clientIdQueryParam,
-  payloadQueryParam,
-  redirectUriQueryParam,
-  stateQueryParam,
-} from './queryParamRedirect'
+import { authRequestIdQueryParam } from './queryParamRedirect'
 
-export const getOAuthClientInfo = (clientId: string) =>
-  (
-    ({
-      '3ei88tn1gkvhfqpfckkd6plopr': {
-        name: 'PAAS_MPA',
-        title: 'PAAS',
-      },
-      '536t828sp4o7gsn3cmg3fbks5i': {
-        name: 'DPB',
-        title: 'start.dpb.sk',
-      },
-    }) satisfies Record<string, { name: LoginClientEnum; title: string }>
-  )[clientId] ?? null
+export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => {
+  const { authRequestId, isIdentityVerificationRequired } = useOAuthParams()
+  const router = useRouter()
 
-const useGetContext = () => {
-  const { clientId, payload, redirectUri, state } = useOAuthParams()
+  const isOAuthLogin = !!clientInfo
 
-  // TODO OAuth: Discuss what should be considered as oauth login, now we check only if clientId exists in url params
-  const isOAuthLogin = !!clientId
-
-  const currentClientId = Amplify.getConfig().Auth?.Cognito.userPoolClientId
-
-  const clientInfo = currentClientId ? getOAuthClientInfo(currentClientId) : null
-
-  // TODO OAuth: We cannot use GET request due to some cors policy issues. This workaround works, but there may also be a better solution.
+  // We cannot use GET request due to some cors policy issues. This workaround works, but there may also be a better solution.
   const getOAuthContinueUrl = () => {
     const parsedUrl = new URL(`${environment.cityAccountUrl}/oauth2/continue`)
-    if (payload) {
-      parsedUrl.searchParams.set(payloadQueryParam, payload)
-    }
-    if (clientId) {
-      parsedUrl.searchParams.set(clientIdQueryParam, clientId)
-    }
-    if (redirectUri) {
-      parsedUrl.searchParams.set(redirectUriQueryParam, redirectUri)
-    }
-    if (state) {
-      parsedUrl.searchParams.set(stateQueryParam, state)
+    if (authRequestId) {
+      parsedUrl.searchParams.set(authRequestIdQueryParam, authRequestId)
     }
     return parsedUrl
   }
 
   const handlePostOAuthTokens = async () => {
-    const { accessToken, idToken, refreshToken } =
-      (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
+    logger.info(`[AUTH] Storing tokens to BE`)
 
-    const access_token = accessToken?.toString()
-    const id_token = idToken?.toString()
-    const refresh_token = refreshToken
+    const { refreshToken } = (await cognitoUserPoolsTokenProvider.authTokenStore.loadTokens()) ?? {}
 
-    if (!access_token || !refresh_token || !payload) {
-      logger.error(
-        `[AUTH] Missing access_token or refresh_token or payload in handlePostOAuthTokens`,
-      )
-      // TODO OAuth: handle error
+    if (!refreshToken || !authRequestId) {
+      logger.error(`[AUTH] Missing refreshToken or authRequestId in handlePostOAuthTokens`)
       return
     }
 
     try {
       await cityAccountClient.oAuth2ControllerStoreTokens(
         {
-          access_token,
-          id_token,
-          refresh_token,
-          payload,
-          client_id: clientId ?? undefined,
-          redirect_uri: redirectUri ?? undefined,
-          state: state ?? undefined,
+          refreshToken,
+          authRequestId,
         },
         { authStrategy: false },
       )
@@ -92,39 +50,41 @@ const useGetContext = () => {
     }
   }
 
-  const handleOAuthLogin = async () => {
-    logger.info(`[AUTH] Storing tokens to BE`)
+  const storeTokensAndRedirect = async () => {
     await handlePostOAuthTokens()
 
-    logger.info(`[AUTH] Calling userControllerUpsertUserAndRecordClient`)
-    // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
-    // there might be some cases where user is not there yet.
-    await cityAccountClient.userControllerUpsertUserAndRecordClient(
-      // TODO OAuth: Handle missing clientInfo.name
-      { loginClient: clientInfo?.name ?? LoginClientEnum.CityAccount },
-      { authStrategy: 'authOnly' },
-    )
-
-    logger.info(`[AUTH] Clearing session`)
-    clearOAuthSessionStorage()
+    logger.info(`[AUTH] Calling Continue endpoint`)
+    router
+      .push(getOAuthContinueUrl())
+      .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
   }
+
+  const clientTitle = clientInfo?.clientName
+    ? {
+        DPB: 'DPB',
+        PAAS_MPA: 'PAAS',
+      }[clientInfo.clientName]
+    : undefined
 
   return {
     isOAuthLogin,
-    currentClientId,
     clientInfo,
-    getOAuthContinueUrl,
-    handleOAuthLogin,
+    clientTitle,
+    storeTokensAndRedirect,
+    isIdentityVerificationRequired: !!isIdentityVerificationRequired,
   }
 }
 
 export const AmplifyClientOAuthContext = createContext<
-  ReturnType<typeof useGetContext> | undefined
+  ReturnType<typeof useOAuthGetContext> | undefined
 >(undefined)
 
 // https://docs.amplify.aws/nextjs/build-a-backend/server-side-rendering/#configure-amplify-library-for-client-side-usage
-export const AmplifyClientOAuthProvider = ({ children }: PropsWithChildren) => {
-  const context = useGetContext()
+export const AmplifyClientOAuthProvider = ({
+  clientInfo,
+  children,
+}: PropsWithChildren<{ clientInfo: ClientInfoResponseDto | null }>) => {
+  const context = useOAuthGetContext(clientInfo)
 
   return (
     <AmplifyClientOAuthContext.Provider value={context}>

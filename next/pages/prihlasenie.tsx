@@ -6,6 +6,10 @@ import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
+import {
+  ClientInfoResponseDto,
+  UpsertUserRecordClientRequestDtoLoginClientEnum,
+} from 'openapi-clients/city-account'
 import { useRef, useState } from 'react'
 
 import LoginForm from '../components/forms/auth-forms/LoginForm'
@@ -19,13 +23,20 @@ import {
   removeAmplifyGuestIdentityIdCookies,
 } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '../frontend/utils/useAmplifyClientOAuthContext'
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async ({ context }) => {
+    const clientInfo = await fetchClientInfo(context.query)
+
     return {
       props: {
+        clientInfo,
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -35,17 +46,19 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 
-// TODO OAuth: Show partially filled form (username) for oauth instead of redirecting
-const LoginPage = () => {
+export type AuthPageCommonProps = {
+  clientInfo: ClientInfoResponseDto | null
+}
+
+const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
   const router = useRouter()
   const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
-  const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
-
-  // TODO OAuth: Show error when attempting to use oauth login, but with missing params (clientId, payload)
+  const { isOAuthLogin, storeTokensAndRedirect, isIdentityVerificationRequired } =
+    useOAuthGetContext(clientInfo)
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -62,26 +75,36 @@ const LoginPage = () => {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
-        if (isOAuthLogin) {
-          logger.info(`[AUTH] Proceeding to OAuth login`)
-          await handleOAuthLogin()
 
-          logger.info(`[AUTH] Calling Continue endpoint`)
-          // TODO OAuth: handle errors
-          await router.push(getOAuthContinueUrl())
+        if (!isOAuthLogin) {
+          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+          removeAmplifyGuestIdentityIdCookies()
+          await prepareFormMigration()
+        }
+
+        // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
+        // there might be some cases where user is not there yet.
+        await cityAccountClient.userControllerUpsertUserAndRecordClient(
+          {
+            loginClient:
+              (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+              LoginClientEnum.CityAccount,
+          },
+          { authStrategy: 'authOnly' },
+        )
+
+        if (isOAuthLogin) {
+          // TODO OAuth: Redirect to identity verification only if user is not verified
+          if (isIdentityVerificationRequired) {
+            router.push(getRouteWithRedirect(ROUTES.OAUTH_CONFIRM))
+            return
+          }
+
+          await storeTokensAndRedirect()
 
           return
         }
 
-        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-        removeAmplifyGuestIdentityIdCookies()
-        await prepareFormMigration()
-        // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
-        // there might be some cases where user is not there yet.
-        await cityAccountClient.userControllerUpsertUserAndRecordClient(
-          { loginClient: LoginClientEnum.CityAccount },
-          { authStrategy: 'authOnly' },
-        )
         await redirect()
 
         return
@@ -142,13 +165,15 @@ const LoginPage = () => {
   }
 
   return (
-    <LoginRegisterLayout backButtonHidden>
-      <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
-        <LoginForm onSubmit={onLogin} error={loginError} />
-        <HorizontalDivider />
-        <AccountLink variant="registration" />
-      </AccountContainer>
-    </LoginRegisterLayout>
+    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+      <LoginRegisterLayout backButtonHidden>
+        <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
+          <LoginForm onSubmit={onLogin} error={loginError} />
+          <HorizontalDivider />
+          <AccountLink variant="registration" />
+        </AccountContainer>
+      </LoginRegisterLayout>
+    </AmplifyClientOAuthProvider>
   )
 }
 

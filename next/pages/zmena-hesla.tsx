@@ -12,8 +12,11 @@ import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
 import logger from '../frontend/utils/logger'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from './prihlasenie'
 
 enum PasswordChangeStatus {
   INIT = 'INIT',
@@ -21,9 +24,12 @@ enum PasswordChangeStatus {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async ({ context }) => {
+    const clientInfo = await fetchClientInfo(context.query)
+
     return {
       props: {
+        clientInfo,
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -31,7 +37,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true },
 )
 
-const PasswordChangePage = () => {
+const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
   const { userAttributes } = useSsrAuth()
 
   const { t } = useTranslation('account')
@@ -76,21 +82,23 @@ const PasswordChangePage = () => {
   }
 
   return (
-    <LoginRegisterLayout
-      backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
-    >
-      <AccountContainer ref={accountContainerRef}>
-        {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
-          <AccountSuccessAlert
-            title={t('auth.password_change_success_title')}
-            confirmLabel={t('auth.continue_to_account')}
-            onConfirm={onConfirm}
-          />
-        ) : (
-          <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
-        )}
-      </AccountContainer>
-    </LoginRegisterLayout>
+    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+      <LoginRegisterLayout
+        backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+      >
+        <AccountContainer ref={accountContainerRef}>
+          {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
+            <AccountSuccessAlert
+              title={t('auth.password_change_success_title')}
+              confirmLabel={t('auth.continue_to_account')}
+              onConfirm={onConfirm}
+            />
+          ) : (
+            <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
+          )}
+        </AccountContainer>
+      </LoginRegisterLayout>
+    </AmplifyClientOAuthProvider>
   )
 }
 

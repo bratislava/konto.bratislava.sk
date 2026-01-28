@@ -24,6 +24,7 @@ export interface IdentityVerificationOfPhysicalEntityFormData {
 interface Props {
   onSubmit: (data: IdentityVerificationOfPhysicalEntityFormData) => void
   error?: Error | null
+  showSkipButton?: boolean
 }
 
 // must use `minLength: 1` to implement required field
@@ -56,7 +57,11 @@ const foSchema = {
   required: ['rc', 'idCard', 'turnstileToken'],
 }
 
-const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) => {
+const IdentityVerificationOfPhysicalEntityForm = ({
+  onSubmit,
+  error,
+  showSkipButton = true,
+}: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
@@ -154,14 +159,16 @@ const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) =>
       <Button variant="black-solid" fullWidth type="submit" isLoading={isSubmitting}>
         {t('auth.identity_verification.fo.init.submit_button_text')}
       </Button>
-      <Button
-        variant="black-plain"
-        fullWidth
-        onPress={() => redirect()}
-        endIcon={<ArrowRightIcon />}
-      >
-        {t('auth.identity_verification.common.skip_verification_button_text')}
-      </Button>
+      {showSkipButton ? (
+        <Button
+          variant="black-plain"
+          fullWidth
+          onPress={() => redirect()}
+          endIcon={<ArrowRightIcon />}
+        >
+          {t('auth.identity_verification.common.skip_verification_button_text')}
+        </Button>
+      ) : null}
     </form>
   )
 }

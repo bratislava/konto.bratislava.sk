@@ -41,14 +41,7 @@ module.exports = {
     // This rule disallows lexical declarations (let, const, function and class) in case/default clauses.
     'no-case-declarations': 'off',
     // Solve warning "Promise-returning function provided to attribute where a void return was expected."
-    '@typescript-eslint/no-misused-promises': [
-      2,
-      {
-        checksVoidReturn: {
-          attributes: false,
-        },
-      },
-    ],
+    '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
     /** better to use empty function */
     'lodash/prefer-noop': 'off',
     /** if comparing values in cx function or creating translations, it's overkill to create variables for that */
@@ -60,12 +53,7 @@ module.exports = {
     // json schema definitions may contain "then" keys
     'unicorn/no-thenable': 'off',
     'no-process-env': 'error',
-    'react/jsx-no-useless-fragment': [
-      'error',
-      {
-        allowExpressions: true,
-      },
-    ],
+    'react/jsx-no-useless-fragment': ['error', { allowExpressions: true }],
     '@typescript-eslint/ban-ts-comment': 'warn',
     // Mistakes React component for HTML string
     'xss/no-mixed-html': 'off',

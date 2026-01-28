@@ -537,7 +537,7 @@ export class AdminService {
         where: {
           userId: { not: null },
           uri: null,
-          activeEdeskUpdatedAt: null,
+          edeskStatusChangedAt: null,
           activeEdeskUpdateFailCount: 0,
           activeEdeskUpdateFailedAt: null,
         },

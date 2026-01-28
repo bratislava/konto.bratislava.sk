@@ -320,7 +320,7 @@ export class PhysicalEntityService {
         ...data,
         activeEdeskUpdateFailedAt: null,
         activeEdeskUpdateFailCount: 0,
-        activeEdeskUpdatedAt: new Date(),
+        // edeskStatusChangedAt has trigger to update
       }
     }
 

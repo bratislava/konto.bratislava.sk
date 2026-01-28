@@ -83,7 +83,7 @@ export class AdminCronSubservice {
             userId: { not: null },
             uri: null,
             activeEdesk: null,
-            activeEdeskUpdatedAt: null,
+            edeskStatusChangedAt: null,
             activeEdeskUpdateFailedAt: null,
             activeEdeskUpdateFailCount: 0,
           },

@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="all prisma deploy generate" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="cd nest-city-account; npx prisma migrate deploy; npx prisma migrate deploy &amp;&amp; npx prisma generate;cd ../nest-tax-backend; npx prisma migrate deploy; npx prisma migrate deploy &amp;&amp; npx prisma generate;cd ../nest-forms-backend; npx prisma migrate deploy; npx prisma migrate deploy &amp;&amp; npx prisma generate;" />
+    <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+    <option name="SCRIPT_PATH" value="" />
+    <option name="SCRIPT_OPTIONS" value="" />
+    <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+    <option name="INTERPRETER_PATH" value="/bin/zsh" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="EXECUTE_IN_TERMINAL" value="true" />
+    <option name="EXECUTE_SCRIPT_FILE" value="false" />
+    <envs />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="city-account all" run_configuration_type="docker-deploy" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="tax-backend postgres" run_configuration_type="docker-deploy" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="forms-backend all" run_configuration_type="docker-deploy" />
+    </method>
+  </configuration>
+</component>

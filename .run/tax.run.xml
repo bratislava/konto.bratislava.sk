@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="tax" type="JavaScriptTestRunnerJest">
+    <node-interpreter value="project" />
+    <jest-package value="$PROJECT_DIR$/nest-tax-backend/node_modules/jest" />
+    <working-dir value="$PROJECT_DIR$/nest-tax-backend/" />
+    <jest-options value="--runInBand --watchAll" />
+    <envs />
+    <scope-kind value="ALL" />
+    <method v="2" />
+  </configuration>
+</component>

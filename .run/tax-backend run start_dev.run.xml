@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="tax-backend run start:dev" type="js.build_tools.npm" folderName="start:dev">
+    <package-json value="$PROJECT_DIR$/nest-tax-backend/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="start:dev" />
+    </scripts>
+    <node-interpreter value="project" />
+    <envs />
+    <EXTENSION ID="com.intellij.javascript.debugger.execution.StartBrowserRunConfigurationExtension">
+      <browser name="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" with-js-debugger="true" />
+    </EXTENSION>
+    <EXTENSION ID="com.intellij.lang.javascript.buildTools.npm.rc.StartBrowserRunConfigurationExtension">
+      <browser name="53e2f627-b1a7-4dfa-bfa7-5b83cc034776" start="true" url="http://localhost:3300/api" />
+    </EXTENSION>
+    <method v="2" />
+  </configuration>
+</component>

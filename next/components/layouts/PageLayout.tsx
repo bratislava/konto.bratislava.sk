@@ -12,8 +12,8 @@ declare module 'react' {
 }
 
 type Props = {
-  variant: 'default' | 'login-register'
   children: ReactNode
+  variant?: 'default' | 'login-register'
   hideNavbarHeader?: boolean
   hideBackButton?: boolean
   className?: string

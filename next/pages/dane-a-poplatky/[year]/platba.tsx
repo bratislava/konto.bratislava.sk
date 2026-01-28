@@ -7,7 +7,7 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { isAxiosError } from 'axios'
 import TaxFeePaymentSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeePaymentSection/TaxFeePaymentSection'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
 import { prefetchUserQuery } from 'frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from 'frontend/utils/amplifyServer'
@@ -81,11 +81,11 @@ const AccountTaxesFeesPage = ({
 }: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
-      <AccountPageLayout>
+      <PageLayout>
         <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
           <TaxFeePaymentSection />
         </TaxFeeSectionProvider>
-      </AccountPageLayout>
+      </PageLayout>
     </HydrationBoundary>
   )
 }

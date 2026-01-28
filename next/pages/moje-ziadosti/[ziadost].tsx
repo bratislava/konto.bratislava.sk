@@ -1,6 +1,6 @@
 import { formsClient } from '@clients/forms'
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
 import logger from 'frontend/utils/logger'
@@ -73,13 +73,13 @@ const AccountMyApplicationsPage = ({
   myApplicationGinisData,
 }: AccountMyApplicationsPageProps) => {
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <MyApplicationDetails
         formDefinitionTitle={formDefinitionTitle}
         ginisData={myApplicationGinisData}
         detailsData={myApplicationDetailsData}
       />
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

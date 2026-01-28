@@ -52,7 +52,7 @@ const ThankYouSection = () => {
   const status = useMemo(
     () =>
       typeof router.query.status === 'string' &&
-      Object.values(PaymentStatusOptions).includes(router.query.status)
+        Object.values(PaymentStatusOptions).includes(router.query.status)
         ? router.query.status
         : PaymentStatusOptions.FAILED_TO_VERIFY,
     [router.query.status],
@@ -61,7 +61,7 @@ const ThankYouSection = () => {
   const paymentType = useMemo(
     () =>
       typeof router.query.paymentType === 'string' &&
-      Object.values(PaymentTypeEnum).includes(router.query.paymentType as PaymentTypeEnum) // test how this behaves when string is not a valid PaymentTypeEnum
+        Object.values(PaymentTypeEnum).includes(router.query.paymentType as PaymentTypeEnum) // test how this behaves when string is not a valid PaymentTypeEnum
         ? (router.query.paymentType as PaymentTypeEnum)
         : undefined,
     [router.query.paymentType],

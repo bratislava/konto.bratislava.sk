@@ -9,7 +9,7 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { isAxiosError } from 'axios'
 import TaxFeeSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeSection'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { convertYearToNumber } from 'frontend/utils/general'
 import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
 
@@ -93,13 +93,13 @@ const AccountTaxesFeesPage = ({
 }: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
-      <AccountPageLayout>
+      <PageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
           <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
             <TaxFeeSection />
           </TaxFeeSectionProvider>
         </StrapiTaxProvider>
-      </AccountPageLayout>
+      </PageLayout>
     </HydrationBoundary>
   )
 }

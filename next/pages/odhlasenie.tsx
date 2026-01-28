@@ -1,6 +1,6 @@
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -39,7 +39,7 @@ const LogoutPage = () => {
   }
 
   return (
-    <LoginRegisterLayout backButtonHidden>
+    <PageLayout variant="login-register" hideBackButton>
       <AccountContainer>
         <AccountSuccessAlert
           title={t('auth.logout_page.title')}
@@ -51,7 +51,7 @@ const LogoutPage = () => {
           onCancel={() => redirect()}
         />
       </AccountContainer>
-    </LoginRegisterLayout>
+    </PageLayout>
   )
 }
 

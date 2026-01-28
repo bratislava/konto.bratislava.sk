@@ -1,7 +1,7 @@
 import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
@@ -142,13 +142,13 @@ const LoginPage = () => {
   }
 
   return (
-    <LoginRegisterLayout backButtonHidden>
+    <PageLayout variant="login-register" hideBackButton>
       <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
         <LoginForm onSubmit={onLogin} error={loginError} />
         <HorizontalDivider />
         <AccountLink variant="registration" />
       </AccountContainer>
-    </LoginRegisterLayout>
+    </PageLayout>
   )
 }
 

@@ -1,7 +1,7 @@
 import { confirmResetPassword, resetPassword } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -104,8 +104,8 @@ const ForgottenPasswordPage = () => {
   }
 
   return (
-    <LoginRegisterLayout
-      backButtonHidden={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
+    <PageLayout variant="login-register"
+      hideBackButton={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
     >
       <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
         {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
@@ -136,7 +136,7 @@ const ForgottenPasswordPage = () => {
           />
         )}
       </AccountContainer>
-    </LoginRegisterLayout>
+    </PageLayout>
   )
 }
 

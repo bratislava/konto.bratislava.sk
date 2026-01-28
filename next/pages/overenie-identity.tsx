@@ -2,7 +2,7 @@ import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
@@ -96,30 +96,30 @@ const IdentityVerificationPage = () => {
   }
 
   return (
-    <LoginRegisterLayout backButtonHidden>
+    <PageLayout variant="login-register" hideBackButton>
       <AccountContainer ref={accountContainerRef}>
         {(tierStatus.isIdentityVerificationNotYetAttempted ||
           tierStatus.isNotVerifiedIdentityCard) && (
-          <>
-            {isLegalEntity ? (
-              <LegalPersonVerificationPageContent />
-            ) : (
-              <IdentityVerificationOfPhysicalEntityForm
-                onSubmit={verifyIdentityAndRefreshUserData}
-                error={identityVerificationError}
-              />
-            )}
-          </>
-        )}
+            <>
+              {isLegalEntity ? (
+                <LegalPersonVerificationPageContent />
+              ) : (
+                <IdentityVerificationOfPhysicalEntityForm
+                  onSubmit={verifyIdentityAndRefreshUserData}
+                  error={identityVerificationError}
+                />
+              )}
+            </>
+          )}
         {tierStatus.isInQueue && (
           <AccountVerificationPendingAlert
             title={t('auth.identity_verification.fo.pending.title')}
             description={
               lastRc && lastIdCard
                 ? t('auth.identity_verification.fo.pending.content', {
-                    rc: lastRc,
-                    idCard: lastIdCard,
-                  })
+                  rc: lastRc,
+                  idCard: lastIdCard,
+                })
                 : t('auth.identity_verification.fo.pending.content_without_data')
             }
             confirmLabel={t('auth.continue_to_account')}
@@ -143,7 +143,7 @@ const IdentityVerificationPage = () => {
           />
         )}
       </AccountContainer>
-    </LoginRegisterLayout>
+    </PageLayout>
   )
 }
 

@@ -49,7 +49,7 @@ const PageLayout = ({ variant = "default", className, children, hideNavbarHeader
         style={{
           '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
-        className={cn("relative **:scroll-mt-(--main-scroll-top-margin", {
+        className={cn("relative min-h-[calc(100vh-var(--main-scroll-top-margin))] **:scroll-mt-(--main-scroll-top-margin", {
           "md:gap-6 md:bg-background-passive-primary md:py-8": variant === "login-register"
         })}
       >

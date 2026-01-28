@@ -1,4 +1,4 @@
-import { DeliveryMethodNamed, TaxPaymentSource } from '@prisma/client'
+import { DeliveryMethodNamed, TaxPaymentSource, TaxType } from '@prisma/client'
 
 export enum BloomreachEventNameEnum {
   TAX = 'tax',
@@ -10,6 +10,8 @@ export type TaxPaymentBloomreachData = {
   year: number
   amount: number
   payment_source: TaxPaymentSource
+  taxType: TaxType
+  order: number
   suppress_email: boolean
 }
 
@@ -17,8 +19,12 @@ export type TaxBloomreachData = {
   year: number
   amount: number
   delivery_method: DeliveryMethodNamed | null
+  taxType: TaxType
+  order: number
 }
 
 export type UnpaidTaxReminderBloomreachData = {
   year: number
+  taxType: TaxType
+  order: number
 }

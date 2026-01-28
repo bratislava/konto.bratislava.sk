@@ -1,22 +1,25 @@
-import { TaxAdministrator, TaxDetailareaType } from '@prisma/client'
+import { TaxType } from '@prisma/client'
 import currency from 'currency.js'
 
-import { NorisRealEstateTax } from '../types/noris.types'
 import {
-  AreaTypesEnum,
-  DeliveryMethod,
-  DeliveryMethodNoris,
-} from './noris.types'
+  CommunalWasteTaxDetail,
+  RealEstateTaxAreaType,
+  RealEstateTaxDetail,
+  RealEstateTaxPropertyType,
+} from '../../prisma/json-types'
+import { DeliveryMethod, DeliveryMethodNoris } from '../types/noris.enums'
+import {
+  NorisBaseTax,
+  NorisCommunalWasteTaxGrouped,
+  NorisRealEstateTax,
+} from '../types/noris.types'
 
 export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue
 }
 
 // Helper mapping functions to improve maintainability
-export const mapNorisToTaxPayerData = (
-  data: NorisRealEstateTax,
-  taxAdministrator?: TaxAdministrator,
-) => {
+export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   return {
     birthNumber: data.ICO_RC,
     permanentResidenceAddress: data.adresa_tp_sidlo,
@@ -27,7 +30,6 @@ export const mapNorisToTaxPayerData = (
     permanentResidenceStreetTxt: data.TXT_UL,
     permanentResidenceCity: data.obec_nazev_tb,
     nameTxt: data.TXT_MENO,
-    taxAdministratorId: taxAdministrator?.id,
   }
 }
 
@@ -40,7 +42,7 @@ type NorisTaxAdministratorData = {
 }
 
 export const mapNorisToTaxAdministratorData = (
-  data: NorisRealEstateTax,
+  data: NorisBaseTax,
 ): NorisTaxAdministratorData | undefined => {
   return data.vyb_id && data.vyb_telefon_prace && data.vyb_email
     ? {
@@ -53,23 +55,15 @@ export const mapNorisToTaxAdministratorData = (
     : undefined
 }
 
-export const mapNorisToTaxData = (
-  data: NorisRealEstateTax,
-  year: number,
-  taxPayerId: number,
-) => {
-  return {
-    amount: convertCurrencyToInt(data.dan_spolu),
-    year,
-    taxPayerId,
-    variableSymbol: data.variabilny_symbol,
-    dateCreateTax: data.akt_datum,
-    dateTaxRuling: data.datum_platnosti,
-    taxId: data.cislo_konania,
-    taxLand: convertCurrencyToInt(data.dan_pozemky),
-    taxConstructions: convertCurrencyToInt(data.dan_stavby_SPOLU),
-    taxFlat: convertCurrencyToInt(data.dan_byty),
-  }
+export type DatabaseBaseTaxData = {
+  amount: number
+  year: number
+  taxPayerId: number
+  variableSymbol: string
+  dateCreateTax: string | null
+  dateTaxRuling: Date | null
+  taxId: string | null
+  isCancelled: boolean
 }
 
 type TaxInstallment = {
@@ -80,7 +74,7 @@ type TaxInstallment = {
 }
 
 export const mapNorisToTaxInstallmentsData = (
-  data: NorisRealEstateTax,
+  data: NorisBaseTax,
   taxId: number,
 ): TaxInstallment[] => {
   if (data.SPL4_2 === '') {
@@ -94,7 +88,7 @@ export const mapNorisToTaxInstallmentsData = (
     ]
   }
 
-  return [
+  const installments = [
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_1),
@@ -114,6 +108,15 @@ export const mapNorisToTaxInstallmentsData = (
       text: data.TXTSPL4_3,
     },
   ]
+  if (data.SPL4_4) {
+    installments.push({
+      taxId,
+      amount: convertCurrencyToInt(data.SPL4_4),
+      order: 4,
+      text: data.TXTSPL4_4,
+    })
+  }
+  return installments
 }
 
 export const mapDeliveryMethodToNoris = (
@@ -134,52 +137,101 @@ export const mapDeliveryMethodToNoris = (
   return norisMethod
 }
 
-export type TaxDetail = {
-  taxId: number
-  areaType: TaxDetailareaType
-  type: AreaTypesEnum
-  base: number
-  amount: number
-  area: string | null
+export const mapNorisToDatabaseBaseTax = (
+  data: NorisBaseTax,
+  year: number,
+  taxPayerId: number,
+): DatabaseBaseTaxData => {
+  return {
+    amount: convertCurrencyToInt(data.dan_spolu),
+    year,
+    taxPayerId,
+    variableSymbol: data.variabilny_symbol,
+    dateCreateTax: data.akt_datum,
+    dateTaxRuling: data.datum_platnosti,
+    taxId: data.cislo_konania,
+    isCancelled: data.stav_dokladu === 'S',
+  }
 }
-export const mapNorisToTaxDetailData = (
+
+export const mapNorisToCommunalWasteDatabaseDetail = (
+  data: NorisCommunalWasteTaxGrouped,
+): CommunalWasteTaxDetail => {
+  return {
+    type: TaxType.KO,
+    addresses: data.addresses.map((address) => ({
+      addressDetail: address.addressDetail,
+      containers: address.containers.map((container) => ({
+        ...container,
+        poplatok: convertCurrencyToInt(container.poplatok.toString()),
+      })),
+    })),
+  }
+}
+
+export const mapNorisToRealEstateDatabaseDetail = (
   data: NorisRealEstateTax,
-  taxId: number,
-): TaxDetail[] => {
+): RealEstateTaxDetail => {
   const config: Record<
     string,
     {
-      areaType: AreaTypesEnum
+      areaType: RealEstateTaxPropertyType
       base: string
       amount: string
       area: string | false
-      types: TaxDetailareaType[]
+      types: RealEstateTaxAreaType[]
     }
   > = {
     pozemky: {
-      areaType: AreaTypesEnum.GROUND,
+      areaType: RealEstateTaxPropertyType.GROUND,
       base: 'ZAKLAD',
       amount: 'DAN',
       area: 'VYMERA',
-      types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      types: [
+        RealEstateTaxAreaType.A,
+        RealEstateTaxAreaType.B,
+        RealEstateTaxAreaType.C,
+        RealEstateTaxAreaType.D,
+        RealEstateTaxAreaType.E,
+        RealEstateTaxAreaType.F,
+        RealEstateTaxAreaType.G,
+        RealEstateTaxAreaType.H,
+      ],
     },
     stavba: {
-      areaType: AreaTypesEnum.CONSTRUCTION,
+      areaType: RealEstateTaxPropertyType.CONSTRUCTION,
       base: 'ZAKLAD',
       amount: 'DAN',
       area: false,
-      types: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'jH', 'jI', 'H'],
+      types: [
+        RealEstateTaxAreaType.A,
+        RealEstateTaxAreaType.B,
+        RealEstateTaxAreaType.C,
+        RealEstateTaxAreaType.D,
+        RealEstateTaxAreaType.E,
+        RealEstateTaxAreaType.F,
+        RealEstateTaxAreaType.G,
+        RealEstateTaxAreaType.jH,
+        RealEstateTaxAreaType.jI,
+        RealEstateTaxAreaType.H,
+      ],
     },
     byt: {
-      areaType: AreaTypesEnum.APARTMENT,
+      areaType: RealEstateTaxPropertyType.APARTMENT,
       base: 'zaklad_dane',
       amount: 'dan_byty',
       area: false,
-      types: ['byt', 'nebyt'],
+      types: [RealEstateTaxAreaType.byt, RealEstateTaxAreaType.nebyt],
     },
   }
 
-  const response: TaxDetail[] = []
+  const details: RealEstateTaxDetail = {
+    type: TaxType.DZN,
+    taxLand: convertCurrencyToInt(data.dan_pozemky),
+    taxConstructions: convertCurrencyToInt(data.dan_stavby_SPOLU),
+    taxFlat: convertCurrencyToInt(data.dan_byty),
+    propertyDetails: [],
+  }
 
   Object.entries(config).forEach(([keyTaxConfig, valueTaxConfig]) => {
     valueTaxConfig.types.forEach((taxType) => {
@@ -190,8 +242,7 @@ export const mapNorisToTaxDetailData = (
       const amountKey =
         `${prefix}_${valueTaxConfig.amount}_${taxType}` as keyof NorisRealEstateTax
 
-      const taxDetailItem: TaxDetail = {
-        taxId,
+      const taxDetailItem = {
         areaType: taxType,
         type: valueTaxConfig.areaType,
         base: currency((data[baseKey] as string).replace(',', '.')).intValue,
@@ -201,12 +252,12 @@ export const mapNorisToTaxDetailData = (
           ? (data[
               `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisRealEstateTax
             ] as string)
-          : null,
+          : undefined,
       }
 
-      response.push(taxDetailItem)
+      details.propertyDetails.push(taxDetailItem)
     })
   })
 
-  return response
+  return details
 }

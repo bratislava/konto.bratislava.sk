@@ -105,11 +105,6 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS,
       ) === 'true',
-    taxReportCorrespondenceAddress:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS,
-      ) === 'true',
     hideStatusbar:
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR',

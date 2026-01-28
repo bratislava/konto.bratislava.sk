@@ -651,12 +651,13 @@ export interface ApiTaxTax extends Schema.SingleType {
   }
   attributes: {
     accountCommunicationConsentText: Attribute.RichText & Attribute.Required
-    channelChangeEffectiveNextYearText: Attribute.RichText
-    channelChangeEffectiveNextYearTitle: Attribute.String
     createdAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
+    feedbackLinkDzn: Attribute.String
+    feedbackLinkKo: Attribute.String
+    channelChangeEffectiveNextYearText: Attribute.RichText
+    channelChangeEffectiveNextYearTitle: Attribute.String
     paymentAlertText: Attribute.RichText
-    paymentSuccessFeedbackLink: Attribute.String
     updatedAt: Attribute.DateTime
     updatedBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
   }
@@ -854,11 +855,11 @@ export interface PluginUploadFolder extends Schema.CollectionType {
     }
   }
   attributes: {
-    children: Attribute.Relation<'plugin::upload.folder', 'oneToMany', 'plugin::upload.folder'>
     createdAt: Attribute.DateTime
     createdBy: Attribute.Relation<'plugin::upload.folder', 'oneToOne', 'admin::user'> &
       Attribute.Private
     files: Attribute.Relation<'plugin::upload.folder', 'oneToMany', 'plugin::upload.file'>
+    children: Attribute.Relation<'plugin::upload.folder', 'oneToMany', 'plugin::upload.folder'>
     name: Attribute.String &
       Attribute.Required &
       Attribute.SetMinMax<

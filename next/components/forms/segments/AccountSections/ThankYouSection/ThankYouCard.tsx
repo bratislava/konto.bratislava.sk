@@ -1,21 +1,23 @@
 import { CheckIcon, CrossIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import cn from 'frontend/cn'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
-import ButtonNew from '../../../simple-components/ButtonNew'
 
-type ThankYouCardBase = {
+export type ThankYouCardBase = {
   success?: boolean
   title?: string
   firstButtonTitle?: string
   secondButtonTitle?: string
   content?: string
-  feedbackLink?: string
   feedbackTitle?: string
   firstButtonLink?: string
   secondButtonLink?: string
 }
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20618-3493&t=PbcmCPTKtvfExOYw-4
+ */
 
 const ThankYouCard = ({
   success,
@@ -23,7 +25,6 @@ const ThankYouCard = ({
   firstButtonTitle,
   secondButtonTitle,
   content,
-  feedbackLink,
   feedbackTitle,
   firstButtonLink,
   secondButtonLink,
@@ -56,16 +57,16 @@ const ThankYouCard = ({
       >
         {success ? (
           <>
-            {firstButtonTitle && feedbackLink ? (
+            {firstButtonTitle ? (
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
                   <h3 className="text-left text-h3">{feedbackTitle}</h3>
-                  <ButtonNew href={feedbackLink} variant="black-solid" fullWidth>
+                  <ButtonNew href={firstButtonLink} variant="black-solid" fullWidth>
                     {firstButtonTitle}
                   </ButtonNew>
                 </div>
               ) : (
-                <ButtonNew href={feedbackLink} variant="black-solid" fullWidth>
+                <ButtonNew href={firstButtonLink} variant="black-solid" fullWidth>
                   {firstButtonTitle}
                 </ButtonNew>
               )
@@ -84,7 +85,7 @@ const ThankYouCard = ({
               </ButtonNew>
             ) : null}
             {secondButtonTitle ? (
-              <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
+              <ButtonNew href={secondButtonLink} variant="black-outline" fullWidth>
                 {secondButtonTitle}
               </ButtonNew>
             ) : null}

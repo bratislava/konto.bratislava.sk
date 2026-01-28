@@ -19,7 +19,6 @@ const TaxFeePaymentMethodsItem = ({
   buttonHref,
 }: TaxFeePaymentMethodsItemProps) => {
   return (
-    // components in figma is not grouped properly, so gaps are all over the place to match figma design
     <div className="flex w-full flex-col justify-between gap-4 border-gray-200 p-4 nth-2:border-t-2 lg:flex-row lg:gap-0 lg:p-6">
       <div className="flex flex-col items-start gap-3">
         <div className="text-p2">{title}</div>
@@ -37,7 +36,7 @@ const TaxFeePaymentMethodsItem = ({
           // fixed width is wanted, however size doesn't match figma,
           // ButtonNew has to be implemented as part of design system then we can adjust size,
           // othervise text will be split into two lines
-          className="lg:w-53"
+          className="lg:w-55"
         >
           {buttonText}
         </ButtonNew>

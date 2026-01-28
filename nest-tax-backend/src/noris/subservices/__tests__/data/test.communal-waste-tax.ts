@@ -1,14 +1,14 @@
-import { NorisRawCommunalWasteTax } from '../../../types/noris.types'
+import { NorisCommunalWasteTax } from '../../../types/noris.types'
 
 // Test data 1: Complete data with all fields populated - multiple containers for one person
-export const testCommunalWasteTax1: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax1: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030151-36/78/219197',
   datum_platnosti: new Date('2025-03-26T00:00:00.000Z'),
   variabilny_symbol: '3425030151',
-  specificky_symbol: null,
   rok: 2025,
   dan_spolu: '448,66',
   uhrazeno: 448.66,
@@ -49,14 +49,14 @@ export const testCommunalWasteTax1: NorisRawCommunalWasteTax = {
   orientacne_cislo: '22',
 }
 
-export const testCommunalWasteTax2: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax2: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030151-36/78/219197',
   datum_platnosti: new Date('2025-03-26T00:00:00.000Z'),
   variabilny_symbol: '3425030151',
-  specificky_symbol: null,
   rok: 2025,
   dan_spolu: '448,66',
   uhrazeno: 448.66,
@@ -97,14 +97,14 @@ export const testCommunalWasteTax2: NorisRawCommunalWasteTax = {
   orientacne_cislo: '18',
 }
 
-export const testCommunalWasteTax3: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax3: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_822,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030150-36/78/219197',
   datum_platnosti: new Date('2025-03-26T00:00:00.000Z'),
   variabilny_symbol: '3425030150',
-  specificky_symbol: null,
   rok: 2025,
   dan_spolu: '448,66',
   uhrazeno: 448.66,
@@ -145,14 +145,14 @@ export const testCommunalWasteTax3: NorisRawCommunalWasteTax = {
   orientacne_cislo: '21',
 }
 
-export const testCommunalWasteTax4: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax4: NorisCommunalWasteTax = {
   cislo_poradace: 13_020,
+  stav_dokladu: 'Z',
   cislo_subjektu: 138_546_824,
   adresa_tp_sidlo: 'Hlavná ulica,Testovacia Obec,12345',
   cislo_konania: '4/25/030152-36/78/219197',
   datum_platnosti: new Date('2025-03-26T00:00:00.000Z'),
   variabilny_symbol: '3425030152',
-  specificky_symbol: null,
   rok: 2025,
   dan_spolu: '224,33',
   uhrazeno: 224.33,
@@ -194,14 +194,14 @@ export const testCommunalWasteTax4: NorisRawCommunalWasteTax = {
 }
 
 // Test data 5: Minimal data with some null values
-export const testCommunalWasteTax5: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax5: NorisCommunalWasteTax = {
   cislo_poradace: 98_765,
+  stav_dokladu: 'Z',
   cislo_subjektu: 234_567_890,
   adresa_tp_sidlo: null,
   cislo_konania: null,
   datum_platnosti: null,
   variabilny_symbol: '9876543210',
-  specificky_symbol: null,
   rok: 2024,
   dan_spolu: '300,00',
   uhrazeno: 300,
@@ -242,14 +242,14 @@ export const testCommunalWasteTax5: NorisRawCommunalWasteTax = {
 }
 
 // Test data 6: Different container type and payment structure
-export const testCommunalWasteTax6: NorisRawCommunalWasteTax = {
+export const testCommunalWasteTax6: NorisCommunalWasteTax = {
   cislo_poradace: 54_321,
+  stav_dokladu: 'Z',
   cislo_subjektu: 345_678_901,
   adresa_tp_sidlo: 'Druhá ulica,Mesto Test,54321',
   cislo_konania: '5/26/028734-45/22/836299',
   datum_platnosti: new Date('2025-04-15T00:00:00.000Z'),
   variabilny_symbol: '4567890123',
-  specificky_symbol: '9876543210',
   rok: 2025,
   dan_spolu: '150,50',
   uhrazeno: 150.5,

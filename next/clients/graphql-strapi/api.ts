@@ -1294,8 +1294,9 @@ export type Tax = {
   channelChangeEffectiveNextYearText?: Maybe<Scalars['String']['output']>
   channelChangeEffectiveNextYearTitle?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
+  feedbackLinkDzn?: Maybe<Scalars['String']['output']>
+  feedbackLinkKo?: Maybe<Scalars['String']['output']>
   paymentAlertText?: Maybe<Scalars['String']['output']>
-  paymentSuccessFeedbackLink?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
@@ -1314,8 +1315,9 @@ export type TaxInput = {
   accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearTitle?: InputMaybe<Scalars['String']['input']>
+  feedbackLinkDzn?: InputMaybe<Scalars['String']['input']>
+  feedbackLinkKo?: InputMaybe<Scalars['String']['input']>
   paymentAlertText?: InputMaybe<Scalars['String']['input']>
-  paymentSuccessFeedbackLink?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UploadFile = {
@@ -2186,7 +2188,8 @@ export type TaxFragment = {
   accountCommunicationConsentText: string
   channelChangeEffectiveNextYearText?: string | null
   channelChangeEffectiveNextYearTitle?: string | null
-  paymentSuccessFeedbackLink?: string | null
+  feedbackLinkDzn?: string | null
+  feedbackLinkKo?: string | null
 }
 
 export type TaxQueryVariables = Exact<{ [key: string]: never }>
@@ -2202,7 +2205,8 @@ export type TaxQuery = {
         accountCommunicationConsentText: string
         channelChangeEffectiveNextYearText?: string | null
         channelChangeEffectiveNextYearTitle?: string | null
-        paymentSuccessFeedbackLink?: string | null
+        feedbackLinkDzn?: string | null
+        feedbackLinkKo?: string | null
       } | null
     } | null
   } | null
@@ -2363,7 +2367,8 @@ export const TaxFragmentDoc = gql`
     accountCommunicationConsentText
     channelChangeEffectiveNextYearText
     channelChangeEffectiveNextYearTitle
-    paymentSuccessFeedbackLink
+    feedbackLinkDzn
+    feedbackLinkKo
   }
 `
 export const AlertsDocument = gql`

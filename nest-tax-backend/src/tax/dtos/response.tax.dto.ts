@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxDetailareaType } from '@prisma/client'
+import { TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -7,6 +7,7 @@ import {
   IsDate,
   IsEmail,
   IsEnum,
+  IsInt,
   IsNumber,
   IsObject,
   IsOptional,
@@ -15,18 +16,12 @@ import {
   ValidateNested,
 } from 'class-validator'
 
+import { RealEstateTaxAreaType } from '../../prisma/json-types'
+
 export enum TaxDetailTypeEnum {
   APARTMENT = 'APARTMENT',
   CONSTRUCTION = 'CONSTRUCTION',
   GROUND = 'GROUND',
-}
-
-// TODO deprecated enum
-export enum TaxPaidStatusEnum {
-  NOT_PAID = 'NOT_PAID',
-  PARTIALLY_PAID = 'PARTIALLY_PAID',
-  PAID = 'PAID',
-  OVER_PAID = 'OVER_PAID',
 }
 
 export enum TaxStatusEnum {
@@ -35,6 +30,7 @@ export enum TaxStatusEnum {
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
   AWAITING_PROCESSING = 'AWAITING_PROCESSING',
+  CANCELLED = 'CANCELLED',
 }
 
 export enum TaxAvailabilityStatus {
@@ -64,10 +60,6 @@ export enum InstallmentPaidStatusEnum {
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
-}
-
-export enum PaymentTypeEnum {
-  DZN = 'DzN',
 }
 
 export class ResponseTaxAdministratorDto {
@@ -126,6 +118,22 @@ export class ResponseGetTaxesListBodyDto {
   })
   @IsEnum(TaxStatusEnum)
   status: TaxStatusEnum
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  type: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class ResponseGetTaxesListDto {
@@ -161,12 +169,12 @@ export class ResponseGetTaxesListDto {
 export class ResponseApartmentTaxDetailDto {
   @ApiProperty({
     description: 'Type of apartment',
-    default: TaxDetailareaType.byt,
-    enumName: 'TaxDetailareaType',
-    enum: TaxDetailareaType,
+    default: RealEstateTaxAreaType.byt,
+    enumName: 'RealEstateTaxAreaType',
+    enum: RealEstateTaxAreaType,
   })
-  @IsEnum(TaxDetailareaType)
-  type: TaxDetailareaType
+  @IsEnum(RealEstateTaxAreaType)
+  type: RealEstateTaxAreaType
 
   @ApiProperty({
     description: 'Base of tax in m^2',
@@ -188,12 +196,12 @@ export class ResponseApartmentTaxDetailDto {
 export class ResponseGroundTaxDetailDto {
   @ApiProperty({
     description: 'Type of area',
-    default: TaxDetailareaType.byt,
-    enumName: 'TaxDetailareaType',
-    enum: TaxDetailareaType,
+    default: RealEstateTaxAreaType.byt,
+    enumName: 'RealEstateTaxAreaType',
+    enum: RealEstateTaxAreaType,
   })
-  @IsEnum(TaxDetailareaType)
-  type: TaxDetailareaType
+  @IsEnum(RealEstateTaxAreaType)
+  type: RealEstateTaxAreaType
 
   @ApiPropertyOptional({
     description: 'Area of taxed ground in m^2',
@@ -224,12 +232,12 @@ export class ResponseGroundTaxDetailDto {
 export class ResponseConstructionTaxDetailDto {
   @ApiProperty({
     description: 'Type of construction',
-    default: TaxDetailareaType.RESIDENTIAL,
-    enumName: 'TaxDetailareaType',
-    enum: TaxDetailareaType,
+    default: RealEstateTaxAreaType.RESIDENTIAL,
+    enumName: 'RealEstateTaxAreaType',
+    enum: RealEstateTaxAreaType,
   })
-  @IsEnum(TaxDetailareaType)
-  type: TaxDetailareaType
+  @IsEnum(RealEstateTaxAreaType)
+  type: RealEstateTaxAreaType
 
   @ApiProperty({
     description: 'Base of tax in m^2',
@@ -246,72 +254,6 @@ export class ResponseConstructionTaxDetailDto {
   @IsNumber()
   @IsPositive()
   amount: number
-}
-
-export class ResponseTaxDetailItemizedDto {
-  @ApiProperty({
-    description: 'Total amount of tax for apartment',
-    type: Number,
-  })
-  @IsNumber()
-  @IsPositive()
-  apartmentTotalAmount: number
-
-  @ApiProperty({
-    description: 'Total amount of tax for construction',
-    type: Number,
-  })
-  @IsNumber()
-  @IsPositive()
-  constructionTotalAmount: number
-
-  @ApiProperty({
-    description: 'Total amount of tax for ground',
-    type: Number,
-  })
-  @IsNumber()
-  @IsPositive()
-  groundTotalAmount: number
-
-  @ApiProperty({
-    description: 'Apartment tax itemized',
-    type: ResponseApartmentTaxDetailDto,
-    isArray: true,
-    example: [{ type: TaxDetailareaType.byt, base: 100, amount: 100 }],
-  })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ResponseApartmentTaxDetailDto)
-  apartmentTaxDetail: ResponseApartmentTaxDetailDto[]
-
-  @ApiProperty({
-    description: 'Ground tax itemized',
-    type: ResponseGroundTaxDetailDto,
-    example: [
-      {
-        type: TaxDetailareaType.A,
-        area: '100m2',
-        base: 100,
-        amount: 100,
-      },
-    ],
-    isArray: true,
-  })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ResponseGroundTaxDetailDto)
-  groundTaxDetail: ResponseGroundTaxDetailDto[]
-
-  @ApiProperty({
-    description: 'Construction tax itemized',
-    type: ResponseConstructionTaxDetailDto,
-    isArray: true,
-    example: [{ type: TaxDetailareaType.RESIDENTIAL, base: 100, amount: 100 }],
-  })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ResponseConstructionTaxDetailDto)
-  constructionTaxDetail: ResponseConstructionTaxDetailDto[]
 }
 
 export class ResponseOneTimePaymentDetailsDto {
@@ -457,7 +399,8 @@ export class ResponseInstallmentPaymentDetailDto {
   dueDateLastPayment?: Date
 
   @ApiPropertyOptional({
-    description: 'List of exactly 3 installments or none at all',
+    description:
+      'List of 3 or 4 installments depending on tax type (4 for PKO, 3 for others), or none at all',
     type: ResponseInstallmentItemDto,
     isArray: true,
     example: [
@@ -543,20 +486,25 @@ export class ResponseTaxPayerReducedDto {
   externalId: string | null
 }
 
-export class ResponseTaxSummaryDetailDto {
+export class ResponseTaxSummaryDetailBaseDto {
   @ApiProperty({
     description: 'Payment status',
-    example: TaxPaidStatusEnum.PAID,
-    enumName: 'TaxPaidStatusEnum',
-    enum: TaxPaidStatusEnum,
+    example: TaxStatusEnum.PAID,
+    enumName: 'TaxStatusEnum',
+    enum: TaxStatusEnum,
   })
-  @IsEnum(TaxPaidStatusEnum)
-  paidStatus: TaxPaidStatusEnum
+  @IsEnum(TaxStatusEnum)
+  paidStatus: TaxStatusEnum
 
   @ApiProperty({ description: 'Year of tax', example: 2024 })
   @IsNumber()
   @IsPositive()
   year: number
+
+  @ApiProperty({ description: 'Order of tax', example: 1 })
+  @IsNumber()
+  @IsPositive()
+  order: number
 
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()
@@ -572,15 +520,6 @@ export class ResponseTaxSummaryDetailDto {
   @IsNumber()
   @IsPositive()
   overallAmount: number
-
-  @ApiProperty({
-    description: 'Itemized details',
-    type: ResponseTaxDetailItemizedDto,
-  })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => ResponseTaxDetailItemizedDto)
-  itemizedDetail: ResponseTaxDetailItemizedDto
 
   @ApiProperty({
     description: 'One-time payment details',
@@ -619,3 +558,233 @@ export class ResponseTaxSummaryDetailDto {
   @Type(() => ResponseTaxPayerReducedDto)
   taxPayer: ResponseTaxPayerReducedDto
 }
+
+export class ResponseRealEstateTaxDetailItemizedDto {
+  @ApiProperty({
+    description: 'Total amount of tax for apartment',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  apartmentTotalAmount: number
+
+  @ApiProperty({
+    description: 'Total amount of tax for construction',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  constructionTotalAmount: number
+
+  @ApiProperty({
+    description: 'Total amount of tax for ground',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  groundTotalAmount: number
+
+  @ApiProperty({
+    description: 'Apartment tax itemized',
+    type: ResponseApartmentTaxDetailDto,
+    isArray: true,
+    example: [{ type: RealEstateTaxAreaType.byt, base: 100, amount: 100 }],
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseApartmentTaxDetailDto)
+  apartmentTaxDetail: ResponseApartmentTaxDetailDto[]
+
+  @ApiProperty({
+    description: 'Ground tax itemized',
+    type: ResponseGroundTaxDetailDto,
+    example: [
+      {
+        type: RealEstateTaxAreaType.A,
+        area: '100m2',
+        base: 100,
+        amount: 100,
+      },
+    ],
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseGroundTaxDetailDto)
+  groundTaxDetail: ResponseGroundTaxDetailDto[]
+
+  @ApiProperty({
+    description: 'Construction tax itemized',
+    type: ResponseConstructionTaxDetailDto,
+    isArray: true,
+    example: [
+      { type: RealEstateTaxAreaType.RESIDENTIAL, base: 100, amount: 100 },
+    ],
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseConstructionTaxDetailDto)
+  constructionTaxDetail: ResponseConstructionTaxDetailDto[]
+}
+
+export class ResponseRealEstateTaxSummaryDetailDto extends ResponseTaxSummaryDetailBaseDto {
+  @ApiProperty({
+    description: 'Type of tax.',
+    example: 'DZN',
+    enum: ['DZN'],
+  })
+  @IsEnum(['DZN'])
+  type: 'DZN'
+
+  @ApiProperty({
+    description: 'Itemized details',
+    type: ResponseRealEstateTaxDetailItemizedDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseRealEstateTaxDetailItemizedDto)
+  itemizedDetail: ResponseRealEstateTaxDetailItemizedDto
+}
+
+export class ResponseCommunalWasteTaxAddressDto {
+  @ApiProperty({
+    description: 'Street name',
+    example: 'Uršulínska',
+  })
+  @IsString()
+  street: string
+
+  @ApiProperty({
+    description: 'Orientation number',
+    example: '123',
+  })
+  @IsString()
+  orientationNumber: string
+}
+
+export class ResponseCommunalWasteTaxItemizedAddressDto {
+  @ApiProperty({
+    description: 'Container volume in liters',
+    example: 120,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  containerVolume: number
+
+  @ApiProperty({
+    description: 'Number of containers',
+    example: 2,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  containerCount: number
+
+  @ApiProperty({
+    description: 'Number of waste disposals',
+    example: 52,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  numberOfDisposals: number
+
+  @ApiProperty({
+    description: 'Unit tax rate (sadzba)',
+    example: 50,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  unitRate: number
+
+  @ApiProperty({
+    description: 'Container type (druh_nadoby)',
+    example: 'Plastová nádoba',
+  })
+  @IsString()
+  containerType: string
+
+  @ApiProperty({
+    description: 'Fee amount (poplatok)',
+    example: 5200,
+  })
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  fee: number
+}
+
+export class ResponseCommunalWasteTaxAddressDetailItemizedDto {
+  @ApiProperty({
+    description: 'Address information',
+    type: ResponseCommunalWasteTaxAddressDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseCommunalWasteTaxAddressDto)
+  address: ResponseCommunalWasteTaxAddressDto
+
+  @ApiProperty({
+    description: 'Total tax amount for this address',
+    example: 104,
+  })
+  @IsNumber()
+  @IsPositive()
+  totalAmount: number
+
+  @ApiProperty({
+    description: 'Itemized container details',
+    type: ResponseCommunalWasteTaxItemizedAddressDto,
+    isArray: true,
+    example: [
+      {
+        containerVolume: 120,
+        containerCount: 2,
+        numberOfDisposals: 52,
+        sadzba: 0.5,
+        poplatok: 52,
+      },
+    ],
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseCommunalWasteTaxItemizedAddressDto)
+  itemizedContainers: ResponseCommunalWasteTaxItemizedAddressDto[]
+}
+
+export class ResponseCommunalWasteTaxDetailItemizedDto {
+  @ApiProperty({
+    description: 'Itemized details by address',
+    type: ResponseCommunalWasteTaxAddressDetailItemizedDto,
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseCommunalWasteTaxAddressDetailItemizedDto)
+  addressDetail: ResponseCommunalWasteTaxAddressDetailItemizedDto[]
+}
+
+export class ResponseCommunalWasteTaxSummaryDetailDto extends ResponseTaxSummaryDetailBaseDto {
+  @ApiProperty({
+    description: 'Type of tax.',
+    example: 'KO',
+    enum: ['KO'],
+  })
+  @IsEnum(['KO'])
+  type: 'KO'
+
+  @ApiProperty({
+    description: 'Itemized details',
+    type: ResponseCommunalWasteTaxDetailItemizedDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseCommunalWasteTaxDetailItemizedDto)
+  itemizedDetail: ResponseCommunalWasteTaxDetailItemizedDto
+}
+
+export type ResponseAnyTaxSummaryDetailDto =
+  | ResponseRealEstateTaxSummaryDetailDto
+  | ResponseCommunalWasteTaxSummaryDetailDto

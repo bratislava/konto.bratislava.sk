@@ -7,6 +7,11 @@ import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
+  DeliveryMethod,
+  IsInCityAccount,
+  UpdateNorisDeliveryMethods,
+} from '../types/noris.enums'
+import {
   NorisDeliveryMethodsUpdateResultSchema,
   NorisOrganizationResultSchema,
 } from '../types/noris.schema'
@@ -16,11 +21,6 @@ import {
   getBirthNumbersForSubjects,
   setDeliveryMethodsForUser,
 } from '../utils/noris.queries'
-import {
-  DeliveryMethod,
-  IsInCityAccount,
-  UpdateNorisDeliveryMethods,
-} from '../utils/noris.types'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisValidatorSubservice } from './noris-validator.subservice'
 

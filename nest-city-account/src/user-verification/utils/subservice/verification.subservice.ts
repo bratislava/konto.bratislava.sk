@@ -100,6 +100,60 @@ export class VerificationSubservice {
   }
 
   /**
+   * Validates the first and last name of a person against a provided RFO identity data structure.
+   *
+   * @param {RfoIdentityListElement} rfoData - The RFO identity data containing first and last names to compare against.
+   * @param {string | undefined} firstName - The first name of the person to validate.
+   * @param {string | undefined} lastName - The last name of the person to validate.
+   * @return {boolean} Returns true if the provided first and last name match entries in the RFO identity data, otherwise false.
+   */
+  private validatePersonName(
+    rfoData: RfoIdentityListElement,
+    firstName: string | undefined,
+    lastName: string | undefined
+  ) {
+    if (!firstName || !lastName) {
+      return false
+    }
+
+    const stripDiacritics = (str: string): string =>
+      str.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+
+    const normalize = (str: string): string => stripDiacritics(str).trim().toLowerCase()
+
+    const splitToParts = (str: string): string[] =>
+      normalize(str)
+        .split(/\s+/g) // handles multiple spaces + leading/trailing spaces after trim()
+        .filter(Boolean)
+
+    const normalizedFirstNames = splitToParts(firstName)
+    const normalizedLastNames = splitToParts(lastName)
+
+    if (normalizedFirstNames.length === 0 || normalizedLastNames.length === 0) {
+      return false
+    }
+
+    const rfoFirstNames = (rfoData.menaOsoby ?? [])
+      .map((x) => x.meno)
+      .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalize)
+
+    const rfoLastNames = (rfoData.priezviskaOsoby ?? [])
+      .map((x) => x.meno)
+      .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalize)
+
+    if (rfoFirstNames.length === 0 || rfoLastNames.length === 0) {
+      return false
+    }
+
+    const firstOk = normalizedFirstNames.every((name) => rfoFirstNames.includes(name))
+    const lastOk = normalizedLastNames.every((name) => rfoLastNames.includes(name))
+
+    return firstOk && lastOk
+  }
+
+  /**
    * Verifies the identity card of a user.
    *
    * The function attempts to verify the user's identity by comparing RFO data from magproxy with the provided data.
@@ -142,6 +196,14 @@ export class VerificationSubservice {
 
       const identityCardCheckResult = this.checkIdentityCard(rfoDataSingle, data.identityCard)
       if (!identityCardCheckResult.success) {
+        continue
+      }
+
+      // For physical person, require Cognito given_name + family_name match to RFO
+      if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
+        this.logger.warn('We refused validation based on names not matching.', {
+          cognitoID: user.sub,
+        })
         continue
       }
 

@@ -37,7 +37,7 @@ export const deliveryMethodSetToNotificationHtml = `
         <span style="font-size: 10pt; line-height: 115%; font-family: Inter; letter-spacing: -0.1pt"></span>
       </b>
       </p>
-      <div style="height: 1.2em;"></div>
+      <div style="height: 1.1em;"></div>
       <table style="width: 100%; border-collapse: collapse; margin-top: 4pt;">
         <tbody>
           <tr>
@@ -103,8 +103,8 @@ export const deliveryMethodSetToNotificationHtml = `
         dane<b> <u>výslovný súhlas so zasielaním</u>:</b>
         </span>
       </p>
-      <div style="height: 1.2em;"></div>
-      <div style="height: 1.2em;"></div>
+      <div style="height: 1.1em;"></div>
+      <div style="height: 1.1em;"></div>
       <table style="width: 100%; border-collapse: collapse; margin-left: 0;">
         <tr>
           <td style="width: 18pt; vertical-align: top; font-size: 10pt; font-family: Symbol;">·</td>
@@ -127,7 +127,7 @@ export const deliveryMethodSetToNotificationHtml = `
       <p class="Normal" style="margin-left: 18pt; text-align: justify">
         <span style="font-size: 10pt; font-family: Inter; letter-spacing: -0.1pt">(ďalej len „Oznámenie“) </span>
       </p>
-      <div style="height: 1.2em;"></div>
+      <div style="height: 1.1em;"></div>
       <p class="Normal" style="text-align: justify">
         <span style="font-size: 10pt; font-family: Inter; letter-spacing: -0.1pt">spôsobom v zmysle § 98b ods. 5 zákona č. 582/2004 Z. z. o&nbsp;miestnych daniach
         a&nbsp;miestnom poplatku za komunálne odpady a&nbsp;drobné stavebné odpady v&nbsp;znení
@@ -135,14 +135,14 @@ export const deliveryMethodSetToNotificationHtml = `
         mesta č. ......./2024 o&nbsp;podrobnostiach pri elektronickej komunikácii
         a&nbsp;poskytovaní elektronických služieb, a&nbsp;to konkrétne: </span>
       </p>
-      <div style="height: 2.4em;"></div>
+      <div style="height: 2.2em;"></div>
       <p class="Normal" align="center" style="text-align: center">
         <span style="font-size: 10pt; font-family: Inter; letter-spacing: -0.1pt">
         <b><u>prostredníctvom osobnej internetovej zóny v informačnom systéme Hlavného mesta, t.j.
         prostredníctvom Bratislavského konta</u></b>.
         </span>
       </p>
-      <div style="height: 2.4em;"></div>
+      <div style="height: 2.2em;"></div>
       <p class="Normal" style="text-align: justify">
         <span style="font-size: 10pt; font-family: Inter; letter-spacing: -0.1pt">
         Oznámenia mi môžu byť doručované aj na moju Kontaktnú e-mailovú adresu
@@ -152,19 +152,19 @@ export const deliveryMethodSetToNotificationHtml = `
         úhradu a&nbsp;potrebné platobné údaje</b>.
         </span>
       </p>
-      <div style="height: 1.2em;"></div>
+      <div style="height: 1.1em;"></div>
       <p class="Normal" style="text-align: justify">
         <span style="font-size: 10pt; font-family: Inter">
         Potvrdzujem, že som sa oboznámil so skutočnosťou, že
         <b>pri neuhradení sumy v&nbsp;zmysle Oznámenia</b>v lehote určenej v&nbsp;Oznámení, Hlavné mesto <b> vyrubí daň alebo poplatok rozhodnutím </b> a&nbsp;toto rozhodnutie mi bude ako daňovému subjektu doručované štandardne poštou do vlastných rúk.
         </span>
       </p>
-      <div style="height: 1.2em;"></div>
+      <div style="height: 1.1em;"></div>
       <p class="Normal" style="text-align: justify">
         <span style="font-size: 10pt; font-family: Inter; letter-spacing: -0.1pt">Nezaplatenie dane, poplatku alebo preddavku na
         poplatok na základe Oznámenia <b>nie je správnym deliktom</b>. Daň uhradená v lehote uvedenej v Oznámení sa považuje za právoplatne vyrubenú dňom jej zaplatenia. Poplatok alebo preddavok na poplatok uhradený v lehote uvedenej v Oznámení sa považuje za právoplatne vyrubený dňom jeho zaplatenia. Proti Oznámeniu<b> nemožno podať opravné prostriedky</b>. </span>
       </p>
-      <div style="height: 1.2em;"></div>
+      <div style="height: 1.1em;"></div>
       <p class="Normal" style="text-align: justify">
         <span style="font-size: 10pt; font-family: Inter">Zároveň výslovne vyhlasujem, že
         <b>som sa oboznámil s&nbsp;podmienkami spracúvania osobných údajov</b> Hlavného mesta ako
@@ -172,11 +172,11 @@ export const deliveryMethodSetToNotificationHtml = `
         na spracovanie a&nbsp;doručenie Oznámenia a&nbsp;splnenie ďalších súvisiacich zákonných
         povinností. </span>
       </p>
-      <div style="height: 2.4em;"></div>
+      <div style="height: 2.2em;"></div>
       <p class="Normal" style="margin-top: 4pt; text-align: justify">
         <span style="font-size: 10pt; font-family: Inter">Dátum udelenia súhlasu {{date}}</span>
       </p>
-      <div style="height: 1.2em;"></div>
+      <div style="height: 1.1em;"></div>
     </div>
   </body>
 </html>

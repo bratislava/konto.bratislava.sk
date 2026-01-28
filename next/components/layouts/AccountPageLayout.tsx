@@ -1,8 +1,8 @@
-import { useResizeObserver } from '@react-aria/utils'
 import NavBar from 'components/forms/segments/NavBar/NavBar'
 import useMenu from 'components/forms/segments/NavBar/useMenu'
+import { useNavbarHeight } from 'components/layouts/useNavbarHeight'
 import cn from 'frontend/cn'
-import { ReactNode, useRef, useState } from 'react'
+import { ReactNode } from 'react'
 
 declare module 'react' {
   interface CSSProperties {
@@ -17,32 +17,11 @@ type Props = {
 }
 
 const AccountPageLayout = ({ className, children, hideNavbarHeader }: Props) => {
-
-  // https://stackoverflow.com/a/59253905
-  const [mainScrollTopMargin, setMainScrollTopMargin] = useState(0)
-
-  // It is not possible to measure the height of header directly, because it is `display: contents`.
-  // The header also might include status bar, that we don't want to include in the height calculation 
-  // because it hides when scrolling (as it is not sticky)
-  const desktopNavbarRef = useRef<HTMLDivElement>(null)
-  const mobileNavbarRef = useRef<HTMLDivElement>(null)
-
-  const handleHeaderResize = () => {
-    setMainScrollTopMargin(
-      Math.max(
-        desktopNavbarRef.current?.getBoundingClientRect().height ?? 0,
-        mobileNavbarRef.current?.getBoundingClientRect().height ?? 0,
-      ),
-    )
-  }
-
-  useResizeObserver({ ref: desktopNavbarRef, onResize: handleHeaderResize })
-  useResizeObserver({ ref: mobileNavbarRef, onResize: handleHeaderResize })
-
   const { menuSections, menuItems } = useMenu()
+  const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
   return (
-    <div className={cn('flex min-h-screen flex-col', className)}>
+    <div className={cn('min-h-screen', className)}>
       {/* 'contents' class in header enables sticky elements inside it to work */}
       <header className="relative z-30 contents">
         <NavBar
@@ -55,7 +34,7 @@ const AccountPageLayout = ({ className, children, hideNavbarHeader }: Props) => 
       </header>
       <main
         style={{
-          '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
+          '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
         className="relative z-0 **:scroll-mt-(--main-scroll-top-margin)"
       >

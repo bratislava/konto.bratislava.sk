@@ -1,8 +1,7 @@
-import { useResizeObserver } from '@react-aria/utils'
 import LoginRegisterNavBar from 'components/forms/segments/LoginRegisterNavBar/LoginRegisterNavBar'
-import { ReactNode, useRef, useState } from 'react'
-
-import cn from '../../frontend/cn'
+import { useNavbarHeight } from 'components/layouts/useNavbarHeight'
+import cn from 'frontend/cn'
+import { ReactNode } from 'react'
 
 interface LoginRegisterLayoutProps {
   className?: string
@@ -16,28 +15,11 @@ const LoginRegisterLayout = ({
   children,
   backButtonHidden,
 }: LoginRegisterLayoutProps) => {
-  const [mainScrollTopMargin, setMainScrollTopMargin] = useState(0)
 
-  // It is not possible to measure the height of header directly, because it is `display: contents`, the header also
-  // might include status bar, that we don't want to include in the height calculation because it hides when scrolling
-  // (as it is not sticky)
-  const desktopNavbarRef = useRef<HTMLDivElement>(null)
-  const mobileNavbarRef = useRef<HTMLDivElement>(null)
-
-  const handleHeaderResize = () => {
-    setMainScrollTopMargin(
-      Math.max(
-        desktopNavbarRef.current?.getBoundingClientRect().height ?? 0,
-        mobileNavbarRef.current?.getBoundingClientRect().height ?? 0,
-      ),
-    )
-  }
-
-  useResizeObserver({ ref: desktopNavbarRef, onResize: handleHeaderResize })
-  useResizeObserver({ ref: mobileNavbarRef, onResize: handleHeaderResize })
+  const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
   return (
-    <div className={cn('flex min-h-screen flex-col', className)}>
+    <div className={cn('min-h-screen', className)}>
       <LoginRegisterNavBar
         backButtonHidden={backButtonHidden}
         desktopNavbarRef={desktopNavbarRef}
@@ -45,7 +27,7 @@ const LoginRegisterLayout = ({
       />
       <main
         style={{
-          '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
+          '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
         className="flex grow flex-col gap-0 **:scroll-mt-(--main-scroll-top-margin) md:gap-6 md:bg-background-passive-primary md:py-8"
       >

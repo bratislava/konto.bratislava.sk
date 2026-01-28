@@ -30,8 +30,6 @@ export default class AppLoggerMiddleware implements NestMiddleware {
         userAgent,
         ip,
         userId,
-        'request-body': JSON.stringify(body),
-        'response-data': responseData,
         ...logData,
       }
       if (response.statusCode >= 500 || logObj.alert === 1) {

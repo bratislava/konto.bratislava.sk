@@ -337,6 +337,7 @@
   "tax_detail_section.tax_payment_installment": "<strong>Platba splátkou</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
   "tax_detail_section.tax_payment_installment_alert_before_next_payment": "Pred termínom nasledujúcej splátky vám pošleme pripomienku na <strong>{{email}}</strong>",
   "tax_detail_section.tax_payment_installment_subtitle": "Platba nasledujúcej splátky do {{date}}",
+  "tax_detail_section.tax_payment_installment_subtitle_not_available": "Úhrada prvej splátky v termíne do 15 dní odo dňa právoplatnosti rozhodnutia.",
   "tax_detail_section.tax_payment_methods": "Spôsob platby",
   "tax_detail_section.tax_payment_rest": "<strong>Platba zostávajúcej sumy</strong> platobnou kartou, QR kódom alebo bankovým prevodom",
   "tax_detail_section.tax_payment_rest_subtitle": "Platba do {{date}}",

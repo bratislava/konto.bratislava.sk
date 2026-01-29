@@ -147,8 +147,18 @@ export class VerificationSubservice {
       return false
     }
 
-    const firstOk = normalizedFirstNames.every((name) => rfoFirstNames.includes(name))
-    const lastOk = normalizedLastNames.every((name) => rfoLastNames.includes(name))
+    const inputFirstSet = new Set(normalizedFirstNames)
+    const inputLastSet = new Set(normalizedLastNames)
+    const rfoFirstSet = new Set(rfoFirstNames)
+    const rfoLastSet = new Set(rfoLastNames)
+
+    const firstOk =
+      [...inputFirstSet].every((name) => rfoFirstSet.has(name)) &&
+      [...rfoFirstSet].every((name) => inputFirstSet.has(name))
+
+    const lastOk =
+      [...inputLastSet].every((name) => rfoLastSet.has(name)) &&
+      [...rfoLastSet].every((name) => inputLastSet.has(name))
 
     return firstOk && lastOk
   }
@@ -249,6 +259,14 @@ export class VerificationSubservice {
 
     if (!rfoDataDcom.success) {
       return rfoDataDcom
+    }
+
+    // For physical person, require Cognito given_name + family_name match to RFO
+    if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
+      this.logger.warn('We refused validation based on names not matching.', {
+        cognitoID: user.sub,
+      })
+      return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
     }
 
     if (!rfoDataDcom.data?.rodneCislo) {

@@ -238,8 +238,8 @@ describe('VerificationSubservice', () => {
         priezviskaOsoby: [{ meno: 'Novák' }, { meno: 'Horváth' }],
       } as unknown as RfoIdentityListElement
 
-      expect(service['validatePersonName'](rfoData, 'peter', 'horvath')).toBe(true)
-      expect(service['validatePersonName'](rfoData, 'jan', 'novak')).toBe(true)
+      expect(service['validatePersonName'](rfoData, 'peter jan', 'horvath novak')).toBe(true)
+      expect(service['validatePersonName'](rfoData, 'jan peter', 'novak horvath')).toBe(true)
     })
 
     it('should treat tabs/newlines as whitespace between multiple names', () => {
@@ -284,6 +284,33 @@ describe('VerificationSubservice', () => {
 
       // Input splits to ["maria","anna"], but RFO normalizes to ["maria anna"] => currently false.
       expect(service['validatePersonName'](rfoData, 'Maria Anna', 'Novák')).toBe(false)
+    })
+    it('should return false if the user did not provide all first names that exist in RFO', () => {
+      const rfoData = {
+        menaOsoby: [{ meno: 'Ján' }, { meno: 'Peter' }],
+        priezviskaOsoby: [{ meno: 'Novák' }],
+      } as unknown as RfoIdentityListElement
+
+      expect(service['validatePersonName'](rfoData, 'Ján', 'Novák')).toBe(false)
+    })
+
+    it('should return false if the user did not provide all last names that exist in RFO', () => {
+      const rfoData = {
+        menaOsoby: [{ meno: 'Ján' }],
+        priezviskaOsoby: [{ meno: 'Novák' }, { meno: 'Horváth' }],
+      } as unknown as RfoIdentityListElement
+
+      expect(service['validatePersonName'](rfoData, 'Ján', 'Novák')).toBe(false)
+    })
+
+    it('should return false if any provided name part is missing in RFO (multi-name input)', () => {
+      const rfoData = {
+        menaOsoby: [{ meno: 'Ján' }], // Peter missing
+        priezviskaOsoby: [{ meno: 'Novák' }, { meno: 'Horváth' }],
+      } as unknown as RfoIdentityListElement
+
+      expect(service['validatePersonName'](rfoData, 'Ján Peter', 'Novák')).toBe(false)
+      expect(service['validatePersonName'](rfoData, 'Ján', 'Novák Horváth Svoboda')).toBe(false)
     })
   })
 })

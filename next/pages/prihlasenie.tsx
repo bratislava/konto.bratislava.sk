@@ -1,5 +1,11 @@
 import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
-import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
+import {
+  AuthError,
+  fetchUserAttributes,
+  getCurrentUser,
+  resendSignUpCode,
+  signIn,
+} from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -17,6 +23,7 @@ import HorizontalDivider from '../components/forms/HorizontalDivider'
 import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { Tier } from '../frontend/dtos/accountDto'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import {
   removeAllCookiesAndClearLocalStorage,
@@ -94,8 +101,12 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
         )
 
         if (isOAuthLogin) {
-          // TODO OAuth: Redirect to identity verification only if user is not verified
-          if (isIdentityVerificationRequired) {
+          // TODO make util function for this?
+          const { 'custom:tier': tier } = await fetchUserAttributes()
+          const shouldRedirectToIdentityVerification =
+            isIdentityVerificationRequired && !(tier === Tier.IDENTITY_CARD || tier === Tier.EID)
+
+          if (shouldRedirectToIdentityVerification) {
             router.push(getRouteWithRedirect(ROUTES.OAUTH_CONFIRM))
             return
           }

@@ -49050,7 +49050,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                       "baOrder": 7,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15” a “16”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
                                           "helptextFooterMarkdown": true,
                                         },
                                         "ui:widget": "Number",
@@ -63884,7 +63884,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                       "baOrder": 7,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15” a “16”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
                                           "helptextFooterMarkdown": true,
                                         },
                                         "ui:widget": "Number",

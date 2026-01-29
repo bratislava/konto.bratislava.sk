@@ -280,6 +280,8 @@ export class TaxService {
       installments: tax.taxInstallments,
       taxDetails: tax.taxDetails,
       taxPayments: tax.taxPayments,
+      deliveryMethod: tax.deliveryMethod,
+      createdAt: tax.createdAt,
     })
 
     let oneTimePaymentQrCode: string | undefined

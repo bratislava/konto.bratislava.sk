@@ -1,4 +1,9 @@
-import { PaymentStatus, TaxAdministrator, TaxType } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  TaxAdministrator,
+  TaxType,
+} from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
 import {
@@ -52,6 +57,8 @@ export type GetTaxDetailPureOptions<TTaxType extends TaxType> = {
     amount: number
     status: PaymentStatus
   }[]
+  deliveryMethod: DeliveryMethodNamed | null
+  createdAt: Date
 }
 
 export type GetTaxDetailPureResponse<TTaxType extends TaxType> = {

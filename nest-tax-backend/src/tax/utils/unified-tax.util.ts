@@ -1,4 +1,4 @@
-import { PaymentStatus, TaxType } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -512,6 +512,8 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     installments,
     taxDetails,
     taxPayments,
+    deliveryMethod,
+    createdAt,
   } = options
 
   let overallPaid = 0
@@ -523,7 +525,23 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
 
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
-  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  if (!deliveryMethod) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.MISSING_DELIVERY_METHOD,
+      CustomErrorTaxTypesResponseEnum.MISSING_DELIVERY_METHOD,
+    )
+  }
+
+  let dateOfValidityDayjs: Dayjs | null
+  if (deliveryMethod === DeliveryMethodNamed.CITY_ACCOUNT) {
+    dateOfValidityDayjs = dayjs(createdAt)
+      .tz(bratislavaTimeZone)
+      .startOf('day')
+      .add(16, 'day')
+  } else {
+    dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  }
+
   const dueDate = calculateDueDate(dateOfValidityDayjs)
 
   const taxDefinition = getTaxDefinitionByType(type)

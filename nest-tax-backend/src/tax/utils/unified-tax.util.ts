@@ -158,7 +158,8 @@ export const stateHolidays = [
   },
 ]
 
-const dueDateOffset = 21
+const dueDateOffsetPostEdesk = 21
+const dueDateOffsetCityAccount = 16
 
 const isStateHoliday = (date: Dayjs): boolean => {
   const year = date.year()
@@ -190,7 +191,19 @@ const ensureWorkingDay = (date: Dayjs): Dayjs => {
   return workingDay
 }
 
-const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
+const calculateDueDate = (
+  dateOfValidity: Dayjs | null,
+  deliveryMethod: DeliveryMethodNamed | null,
+  createdAt: Dayjs,
+): Dayjs | undefined => {
+  if (deliveryMethod && deliveryMethod === DeliveryMethodNamed.CITY_ACCOUNT) {
+    const dueDateBase = createdAt
+      .tz(bratislavaTimeZone)
+      .startOf('day')
+      .add(dueDateOffsetCityAccount, 'day')
+    return ensureWorkingDay(dueDateBase)
+  }
+
   // We will not provide due date if date of validity for the first payment is not set.
   if (!dateOfValidity) {
     return undefined
@@ -200,7 +213,7 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
   const dueDateBase = dateOfValidity
     .tz(bratislavaTimeZone)
     .startOf('day')
-    .add(dueDateOffset, 'day')
+    .add(dueDateOffsetPostEdesk, 'day')
   return ensureWorkingDay(dueDateBase)
 }
 
@@ -525,24 +538,13 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
 
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
-  if (!deliveryMethod) {
-    throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.MISSING_DELIVERY_METHOD,
-      CustomErrorTaxTypesResponseEnum.MISSING_DELIVERY_METHOD,
-    )
-  }
+  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
 
-  let dateOfValidityDayjs: Dayjs | null
-  if (deliveryMethod === DeliveryMethodNamed.CITY_ACCOUNT) {
-    dateOfValidityDayjs = dayjs(createdAt)
-      .tz(bratislavaTimeZone)
-      .startOf('day')
-      .add(16, 'day')
-  } else {
-    dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
-  }
-
-  const dueDate = calculateDueDate(dateOfValidityDayjs)
+  const dueDate = calculateDueDate(
+    dateOfValidityDayjs,
+    deliveryMethod,
+    dayjs(createdAt),
+  )
 
   const taxDefinition = getTaxDefinitionByType(type)
 
@@ -632,6 +634,8 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     amount: number
     status: PaymentStatus
   }[]
+  deliveryMethod: DeliveryMethodNamed | null
+  createdAt: Date
 }): PaymentGateURLGeneratorDto => {
   const {
     taxType,
@@ -643,6 +647,8 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     dateOfValidity,
     installments,
     taxPayments,
+    deliveryMethod,
+    createdAt,
   } = options
   const {
     paymentCalendarThreshold,
@@ -659,7 +665,11 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   })
 
   const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
-  const dueDate = calculateDueDate(dateOfValidityDayjs)
+  const dueDate = calculateDueDate(
+    dateOfValidityDayjs,
+    deliveryMethod,
+    dayjs(createdAt),
+  )
 
   const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,

@@ -404,6 +404,8 @@ export class TaxService {
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
       taxPayments: tax.taxPayments,
+      deliveryMethod: tax.deliveryMethod,
+      createdAt: tax.createdAt,
     })
   }
 }

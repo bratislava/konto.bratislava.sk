@@ -199,6 +199,7 @@
   "auth.links.login_link_text": "Prihlásiť sa",
   "auth.links.register_description": "Nemáte ešte vytvorené konto?",
   "auth.links.register_link_text": "Registrovať sa",
+  "auth.login_page.continue_to_oauth_origin": "Prihlásiť a pokračovať na {{clientTitle}}",
   "auth.login_submit": "Prihlásiť sa",
   "auth.login_title": "Prihláste sa do svojho konta",
   "auth.logout_page.cancel_label": "Zostať prihlásený",

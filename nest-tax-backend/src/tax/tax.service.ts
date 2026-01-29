@@ -304,6 +304,8 @@ export class TaxService {
             variableSymbol:
               detailWithoutQrCode.installmentPayment.activeInstallment
                 .variableSymbol,
+            dueDate:
+              detailWithoutQrCode.installmentPayment.activeInstallment.dueDate,
             qrCode: await this.qrCodeSubservice.createQrCode(
               detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
             ),

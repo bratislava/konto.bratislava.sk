@@ -2,19 +2,14 @@ import { StatusBar } from 'components/forms/info-components/StatusBar'
 import MobileNavBar from 'components/forms/segments/NavBar/MobileNavBar'
 import NavBarHeader from 'components/forms/segments/NavBar/NavBarHeader'
 import NavMenu from 'components/forms/segments/NavBar/NavMenu'
-import { MenuSectionBase } from 'components/forms/segments/NavBar/useMenu'
-import {
-  MenuItemBase,
-} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import useMenu from 'components/forms/segments/NavBar/useMenu'
 import cn from 'frontend/cn'
 import { RefObject } from 'react'
 
 type Props = {
-  sectionsList?: MenuSectionBase[]
-  menuItems: MenuItemBase[]
-  hideNavMenu?: boolean
   desktopNavbarRef: RefObject<HTMLDivElement | null>
   mobileNavbarRef: RefObject<HTMLDivElement | null>
+  hideNavMenu?: boolean
   className?: string
 }
 
@@ -23,13 +18,13 @@ type Props = {
  */
 
 export const NavBar = ({
-  sectionsList,
-  menuItems,
-  hideNavMenu,
   desktopNavbarRef,
   mobileNavbarRef,
+  hideNavMenu,
   className,
 }: Props) => {
+  const { menuSections, menuItems } = useMenu()
+
   return (
     <>
       <div className="hidden lg:block">
@@ -45,13 +40,13 @@ export const NavBar = ({
         ref={desktopNavbarRef}
       >
         <NavBarHeader menuItems={menuItems} />
-        {!hideNavMenu && <NavMenu menuSections={sectionsList ?? []} />}
+        {!hideNavMenu && <NavMenu menuSections={menuSections ?? []} />}
 
       </div>
       {/* Mobile */}
       <MobileNavBar
         menuItems={menuItems}
-        sectionsList={sectionsList}
+        menuSections={menuSections}
         mobileNavbarRef={mobileNavbarRef}
       />
     </>

@@ -1,6 +1,5 @@
 import LoginRegisterNavBar from 'components/forms/segments/LoginRegisterNavBar/LoginRegisterNavBar'
 import NavBar from 'components/forms/segments/NavBar/NavBar'
-import useMenu from 'components/forms/segments/NavBar/useMenu'
 import { useNavbarHeight } from 'components/layouts/useNavbarHeight'
 import cn from 'frontend/cn'
 import { ReactNode } from 'react'
@@ -24,7 +23,6 @@ type Props = {
  */
 
 const PageLayout = ({ variant = "default", className, children, hideNavMenu, hideBackButton }: Props) => {
-  const { menuSections, menuItems } = useMenu()
   const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
   return (
@@ -38,8 +36,6 @@ const PageLayout = ({ variant = "default", className, children, hideNavMenu, hid
             mobileNavbarRef={mobileNavbarRef}
           /> :
           <NavBar
-            sectionsList={menuSections}
-            menuItems={menuItems}
             hideNavMenu={hideNavMenu}
             desktopNavbarRef={desktopNavbarRef}
             mobileNavbarRef={mobileNavbarRef}

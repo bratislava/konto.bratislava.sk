@@ -15,7 +15,7 @@ import { useEventListener, useScrollLock } from 'usehooks-ts'
 
 
 type Props = {
-  sectionsList?: MenuSectionBase[]
+  menuSections?: MenuSectionBase[]
   menuItems: MenuItemBase[]
   closeMenu: () => void
 }
@@ -52,7 +52,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
   },
 )
 
-export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: Props) => {
+export const HamburgerMenu = ({ menuSections, menuItems, closeMenu }: Props) => {
   const router = useRouter()
   const { menuValue, setMenuValue, setMobileMenuOpen } = useNavMenuContext()
   const { t } = useTranslation('account')
@@ -78,9 +78,9 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: Props) => 
         aria-label={t('NavMenu.aria.navMenuLabel')}
       >
         <NavigationMenu.List className="flex flex-col">
-          {sectionsList && (
+          {menuSections && (
             <>
-              {sectionsList.map((sectionItem) => (
+              {menuSections.map((sectionItem) => (
                 <NavigationMenu.Item key={sectionItem.id}>
                   <NavigationMenu.Link asChild onClick={closeMenu}>
                     <ItemLink

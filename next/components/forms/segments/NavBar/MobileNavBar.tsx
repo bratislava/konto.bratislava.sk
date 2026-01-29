@@ -10,13 +10,13 @@ import { ROUTES } from 'frontend/api/constants'
 import { RefObject } from 'react'
 
 interface MobileMenuNavBarProps {
-  sectionsList?: MenuSectionBase[]
+  menuSections?: MenuSectionBase[]
   menuItems: MenuItemBase[]
   mobileNavbarRef: RefObject<HTMLDivElement | null>
 }
 
 export const MobileNavBar = ({
-  sectionsList,
+  menuSections,
   menuItems,
   mobileNavbarRef,
 }: MobileMenuNavBarProps) => {
@@ -50,7 +50,7 @@ export const MobileNavBar = ({
 
               {isMobileMenuOpen && (
                 <HamburgerMenu
-                  sectionsList={sectionsList}
+                  menuSections={menuSections}
                   menuItems={menuItems}
                   closeMenu={() => setMobileMenuOpen(false)}
                 />

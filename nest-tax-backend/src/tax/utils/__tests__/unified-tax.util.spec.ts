@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import { PaymentStatus, TaxType } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import noop from 'lodash/noop'
 
 import {
@@ -41,6 +41,8 @@ const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
   paymentCalendarThreshold: 6600,
   variableSymbol: '1234567890',
   dateOfValidity: new Date('2025-01-01'),
+  deliveryMethod: null,
+  createdAt: new Date('2025-01-01'),
   installments: [
     { order: 1, amount: 2200 },
     { order: 2, amount: 2200 },
@@ -646,6 +648,40 @@ describe('UnifiedTaxUtil', () => {
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
+        it('undefined dateOfValidity', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            dateOfValidity: null,
+          })
+
+          const expected = createExpectedOutput((draft) => {
+            delete draft.installmentPayment.installments![0].dueDate
+            delete draft.oneTimePayment.dueDate
+          })
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
+
+        it('CITY_ACCOUNT uses createdAt (16 days) and returns a working day even when dateOfValidity is null', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            dateOfValidity: null,
+            deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
+            // 2025-04-17 + 16 days = 2025-05-03 (Sat) -> next working day is 2025-05-05 (Mon)
+            createdAt: new Date('2025-04-17T10:00:00.000Z'),
+          })
+
+          const expectedDueDate = new Date('2025-05-04T22:00:00.000Z')
+
+          const expected = createExpectedOutput((draft) => {
+            draft.oneTimePayment.dueDate = expectedDueDate
+            draft.installmentPayment.installments![0].dueDate = expectedDueDate
+            draft.installmentPayment.activeInstallment!.dueDate =
+              expectedDueDate
+          })
+
+          expectEqualAsJsonStringsWithDates(output, expected)
+        })
       })
 
       it('undefined dateOfValidity', () => {
@@ -773,6 +809,8 @@ describe('UnifiedTaxUtil', () => {
       paymentCalendarThreshold: 0,
       variableSymbol: '1234567890',
       dateOfValidity: new Date('2025-01-01'),
+      deliveryMethod: null,
+      createdAt: new Date('2025-01-01'),
       installments: [
         { order: 1, amount: 2000 },
         { order: 2, amount: 2000 },
@@ -1366,6 +1404,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       amount: number
       status: PaymentStatus
     }[]
+    deliveryMethod: DeliveryMethodNamed | null
+    createdAt: Date
   } = {
     taxType: TaxType.DZN,
     taxId: 123,
@@ -1374,6 +1414,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     overallAmount: 6600,
     variableSymbol: '1234567890',
     dateOfValidity: new Date('2025-01-01'),
+    deliveryMethod: null,
+    createdAt: new Date('2025-01-01'),
     installments: [
       { order: 1, amount: 2200 },
       { order: 2, amount: 2200 },

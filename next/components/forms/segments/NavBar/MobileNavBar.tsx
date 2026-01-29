@@ -9,7 +9,7 @@ import FocusTrap from 'focus-trap-react'
 import { ROUTES } from 'frontend/api/constants'
 import { RefObject } from 'react'
 
-interface MobileMenuNavBarProps {
+type Props = {
   menuSections?: MenuSectionBase[]
   menuItems: MenuItemBase[]
   mobileNavbarRef: RefObject<HTMLDivElement | null>
@@ -19,7 +19,7 @@ export const MobileNavBar = ({
   menuSections,
   menuItems,
   mobileNavbarRef,
-}: MobileMenuNavBarProps) => {
+}: Props) => {
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
   return (

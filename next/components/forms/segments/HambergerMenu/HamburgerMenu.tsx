@@ -13,7 +13,6 @@ import { useTranslation } from 'next-i18next'
 import { ComponentProps, forwardRef } from 'react'
 import { useEventListener, useScrollLock } from 'usehooks-ts'
 
-
 type Props = {
   menuSections?: MenuSectionBase[]
   menuItems: MenuItemBase[]

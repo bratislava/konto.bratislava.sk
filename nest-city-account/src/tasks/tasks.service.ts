@@ -440,7 +440,7 @@ export class TasksService {
             where: { birthNumber: { in: edeskUsers.map((u) => u.birthNumber) } },
             data: {
               taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
-              taxDeliveryMethodCityAccountDate: null,
+              taxDeliveryMethodCityAccountLockDate: null,
             },
           }),
 
@@ -450,7 +450,7 @@ export class TasksService {
             where: { birthNumber: { in: postalUsers.map((u) => u.birthNumber) } },
             data: {
               taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
-              taxDeliveryMethodCityAccountDate: null,
+              taxDeliveryMethodCityAccountLockDate: null,
             },
           }),
 
@@ -460,7 +460,7 @@ export class TasksService {
             where: { birthNumber: entry.birthNumber },
             data: {
               taxDeliveryMethodAtLockDate: entry.deliveryMethod,
-              taxDeliveryMethodCityAccountDate: entry.date,
+              taxDeliveryMethodCityAccountLockDate: entry.date,
             },
           })
         ),

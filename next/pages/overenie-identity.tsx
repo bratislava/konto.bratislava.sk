@@ -165,14 +165,15 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
           {tierStatus.isIdentityVerified && (
             <AccountSuccessAlert
               title={t('auth.identity_verification.common.success.title')}
-              // TODO legal entity text (lastRc && lastIdCard is used only for FO)
               description={
-                lastRc &&
-                lastIdCard &&
-                t('auth.identity_verification.fo.success.content', {
-                  rc: lastRc,
-                  idCard: lastIdCard,
-                })
+                isLegalEntity
+                  ? t('auth.identity_verification.fop_po_eid.success.content')
+                  : lastRc &&
+                    lastIdCard &&
+                    t('auth.identity_verification.fo.success.content', {
+                      rc: lastRc,
+                      idCard: lastIdCard,
+                    })
               }
               {...(isOAuthLogin
                 ? {

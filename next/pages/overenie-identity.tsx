@@ -135,7 +135,6 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
                     confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
                     onConfirm: () => {
                       // TODO OAuth: What to do here whe identity verification is pending?
-                      storeTokensAndRedirect()
                     },
                     description:
                       lastRc && lastIdCard

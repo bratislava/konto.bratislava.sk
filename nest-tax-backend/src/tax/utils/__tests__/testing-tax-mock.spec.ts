@@ -138,10 +138,9 @@ describe('testing-tax-mock', () => {
         const spl1 = parseFloat(result.SPL4_1.replace(',', '.'))
         const spl2 = parseFloat(result.SPL4_2.replace(',', '.'))
         const spl3 = parseFloat(result.SPL4_3.replace(',', '.'))
-        const spl4 = parseFloat(result.SPL4_4.replace(',', '.'))
 
-        expect(spl1 + spl2 + spl3 + spl4).toBeCloseTo(150, 2)
-        expect(spl4).toBe(0)
+        expect(spl1 + spl2 + spl3).toBeCloseTo(150, 2)
+        expect(result.SPL4_4).toBe('')
       })
 
       it('should have correct installment format (comma as decimal separator)', () => {
@@ -154,7 +153,7 @@ describe('testing-tax-mock', () => {
         expect(result.SPL4_1).toMatch(/^\d+,\d{2}$/)
         expect(result.SPL4_2).toMatch(/^\d+,\d{2}$/)
         expect(result.SPL4_3).toMatch(/^\d+,\d{2}$/)
-        expect(result.SPL4_4).toMatch(/^\d+,\d{2}$/)
+        expect(result.SPL4_4).toBe('')
       })
 
       it.each([
@@ -539,12 +538,11 @@ describe('testing-tax-mock', () => {
         2024,
       )
 
-      const realEstateSpl4 = parseFloat(realEstate.SPL4_4.replace(',', '.'))
       const communalWasteSpl4 = parseFloat(
         communalWaste.SPL4_4.replace(',', '.'),
       )
 
-      expect(realEstateSpl4).toBe(0)
+      expect(realEstate.SPL4_4).toBe('')
       expect(communalWasteSpl4).toBeGreaterThan(0)
     })
 

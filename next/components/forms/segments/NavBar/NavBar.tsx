@@ -1,72 +1,35 @@
-import { ChevronDownSmallIcon } from '@assets/ui-icons'
-import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import UserAvatar from 'components/forms/segments/NavBar/UserAvatar'
-import Button from 'components/forms/simple-components/ButtonNew'
-import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
-import MenuDropdown, {
+import { StatusBar } from 'components/forms/info-components/StatusBar'
+import MobileNavBar from 'components/forms/segments/NavBar/MobileNavBar'
+import NavBarHeader from 'components/forms/segments/NavBar/NavBarHeader'
+import NavMenu from 'components/forms/segments/NavBar/NavMenu'
+import { MenuSectionBase } from 'components/forms/segments/NavBar/useMenu'
+import {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
-import NextLink from 'next/link'
-import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
-import { ReactNode, RefObject, useState } from 'react'
-
-import { ROUTES } from '../../../../frontend/api/constants'
-import cn from '../../../../frontend/cn'
-import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import { StatusBar } from '../../info-components/StatusBar'
-import Brand from '../../simple-components/Brand'
-import { MobileNavBar } from './MobileNavBar'
-import { useNavMenuContext } from './navMenuContext'
-
-export type MenuSectionItemBase = {
-  id: number
-  title: string
-  icon: ReactNode
-  url: string
-}
+import cn from 'frontend/cn'
+import { RefObject } from 'react'
 
 type Props = {
-  sectionsList?: MenuSectionItemBase[]
+  sectionsList?: MenuSectionBase[]
   menuItems: MenuItemBase[]
-  hideNavbarHeader?: boolean
+  hideNavMenu?: boolean
   desktopNavbarRef: RefObject<HTMLDivElement | null>
   mobileNavbarRef: RefObject<HTMLDivElement | null>
   className?: string
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
+ */
+
 export const NavBar = ({
   sectionsList,
   menuItems,
-  hideNavbarHeader,
+  hideNavMenu,
   desktopNavbarRef,
   mobileNavbarRef,
   className,
 }: Props) => {
-  const { t } = useTranslation('account')
-  const router = useRouter()
-
-  const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
-  const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
-
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-  const { menuValue, setMenuValue } = useNavMenuContext()
-
-  // we need to keep the work in progress of the open form if navigating away form it
-  const optionalFormRedirectsContext = useConditionalFormRedirects()
-  const login = () =>
-    optionalFormRedirectsContext
-      ? optionalFormRedirectsContext.login()
-      : router.push(getRouteWithCurrentUrlRedirect(ROUTES.LOGIN))
-  const register = () =>
-    optionalFormRedirectsContext
-      ? optionalFormRedirectsContext.register()
-      : router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
-
-  const isActive = (sectionItem: MenuSectionItemBase) =>
-    sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
   return (
     <>
       <div className="hidden lg:block">
@@ -81,94 +44,9 @@ export const NavBar = ({
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto hidden h-[57px] max-w-(--breakpoint-lg) items-center gap-x-6 lg:flex">
-          <Brand
-            className="group grow"
-            url={ROUTES.HOME}
-            title={
-              <p className="text-p2 text-font group-hover:text-gray-600">
-                {t('NavBar.capitalCityOfSR')}
-                <span className="font-semibold"> Bratislava</span>
-              </p>
-            }
-          />
-          <IdentityVerificationStatus />
-          <nav className="flex gap-x-8 font-semibold text-font/75">
-            {isSignedIn ? (
-              <MenuDropdown
-                setIsOpen={setIsMenuOpen}
-                buttonTrigger={
-                  <Button
-                    variant="unstyled"
-                    data-cy="account-button"
-                    className="flex items-center gap-4 font-semibold text-font/75"
-                  >
-                    <UserAvatar userAttributes={userAttributes} />
-                    <div className="flex items-center gap-1 font-light lg:font-semibold">
-                      {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
-                      <ChevronDownSmallIcon
-                        className={cn("hidden size-5 mix-blend-normal lg:flex", { "-rotate-180": isMenuOpen })}
-                      />
-                    </div>
-                  </Button>
-                }
-                itemVariant="header"
-                items={menuItems}
-              />
-            ) : (
-              <div className="flex items-center gap-6">
-                <Button variant="black-plain" size="small" onPress={login} data-cy="login-button">
-                  {t('menu_links.login')}
-                </Button>
-                <Button
-                  variant="black-solid"
-                  onPress={register}
-                  size="small"
-                  data-cy="register-button"
-                >
-                  {t('menu_links.register')}
-                </Button>
-              </div>
-            )}
-          </nav>
-        </div>
+        <NavBarHeader menuItems={menuItems} />
+        {!hideNavMenu && <NavMenu menuSections={sectionsList ?? []} />}
 
-        {/* NavBar menu */}
-        {sectionsList && !hideNavbarHeader && (
-          <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between border-t border-gray-200 lg:flex">
-            <NavigationMenu.Root
-              value={menuValue}
-              onValueChange={setMenuValue}
-              aria-label={t('NavMenu.aria.navMenuLabel')}
-              // because of this https://github.com/radix-ui/primitives/discussions/1874 we can't directly access subelement (<div style="position: relative;")
-              // of "<nav>" element that NavigationMenu.List creates when used. Solution is to add grid class to the parent element.
-              className="grid size-full"
-            >
-              <NavigationMenu.List className="flex size-full items-center">
-                {sectionsList.map((sectionItem) => (
-                  <NavigationMenu.Item key={sectionItem.id} className="size-full">
-                    <NavigationMenu.Link asChild>
-                      <NextLink href={sectionItem.url}>
-                        <div
-                          className={cn(
-                            'flex h-full w-full cursor-pointer items-center justify-center border-b-2 text-p2-semibold transition-all hover:border-main-700 hover:text-main-700',
-                            {
-                              'border-main-700 text-main-700': isActive(sectionItem),
-                              'border-transparent': !isActive(sectionItem),
-                            },
-                          )}
-                        >
-                          {sectionItem.icon}
-                          <span className="ml-3">{sectionItem.title}</span>
-                        </div>
-                      </NextLink>
-                    </NavigationMenu.Link>
-                  </NavigationMenu.Item>
-                ))}
-              </NavigationMenu.List>
-            </NavigationMenu.Root>
-          </div>
-        )}
       </div>
       {/* Mobile */}
       <MobileNavBar

@@ -14,7 +14,7 @@ declare module 'react' {
 type Props = {
   children: ReactNode
   variant?: 'default' | 'login-register'
-  hideNavbarHeader?: boolean
+  hideNavMenu?: boolean
   hideBackButton?: boolean
   className?: string
 }
@@ -23,7 +23,7 @@ type Props = {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21361&m=dev
  */
 
-const PageLayout = ({ variant = "default", className, children, hideNavbarHeader, hideBackButton }: Props) => {
+const PageLayout = ({ variant = "default", className, children, hideNavMenu, hideBackButton }: Props) => {
   const { menuSections, menuItems } = useMenu()
   const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
@@ -40,7 +40,7 @@ const PageLayout = ({ variant = "default", className, children, hideNavbarHeader
           <NavBar
             sectionsList={menuSections}
             menuItems={menuItems}
-            hideNavbarHeader={hideNavbarHeader}
+            hideNavMenu={hideNavMenu}
             desktopNavbarRef={desktopNavbarRef}
             mobileNavbarRef={mobileNavbarRef}
           />}

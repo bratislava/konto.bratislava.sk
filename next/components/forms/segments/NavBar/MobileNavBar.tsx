@@ -1,25 +1,18 @@
 import { CrossIcon, HamburgerIcon } from '@assets/ui-icons'
 import { StatusBar } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
+import { useNavMenuContext } from 'components/forms/segments/NavBar/navMenuContext'
+import { MenuSectionBase } from 'components/forms/segments/NavBar/useMenu'
+import Brand from 'components/forms/simple-components/Brand'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import FocusTrap from 'focus-trap-react'
-import { ReactNode, RefObject } from 'react'
-
-import { ROUTES } from '../../../../frontend/api/constants'
-import Brand from '../../simple-components/Brand'
-import { useNavMenuContext } from './navMenuContext'
+import { ROUTES } from 'frontend/api/constants'
+import { RefObject } from 'react'
 
 interface MobileMenuNavBarProps {
-  sectionsList?: MenuSectionItemBase[]
+  sectionsList?: MenuSectionBase[]
   menuItems: MenuItemBase[]
   mobileNavbarRef: RefObject<HTMLDivElement | null>
-}
-
-export interface MenuSectionItemBase {
-  id: number
-  title: string
-  icon: ReactNode
-  url: string
 }
 
 export const MobileNavBar = ({

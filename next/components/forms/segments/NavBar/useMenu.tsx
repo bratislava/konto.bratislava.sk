@@ -7,7 +7,6 @@ import {
   ProfileIcon,
   ServicesIcon,
 } from '@assets/ui-icons'
-import { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
 import { ROUTES } from 'frontend/api/constants'
@@ -17,7 +16,14 @@ import { useSignOut } from 'frontend/utils/amplifyClient'
 import { isDefined } from 'frontend/utils/general'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { ReactNode } from 'react'
 
+export type MenuSectionBase = {
+  id: number
+  title: string
+  icon: ReactNode
+  url: string
+}
 
 export const useMenu = () => {
   const { t } = useTranslation('account')
@@ -42,7 +48,7 @@ export const useMenu = () => {
       await router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
     }
 
-  const menuSections: (MenuSectionItemBase & { hidden?: boolean })[] = [
+  const menuSections: (MenuSectionBase & { hidden?: boolean })[] = [
     {
       id: 0,
       title: t('account_section_intro.navigation'),

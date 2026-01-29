@@ -446,6 +446,7 @@ const calculateInstallmentPaymentDetails = (options: {
   const activeInstallment = {
     remainingAmount: active.remainingAmount,
     variableSymbol,
+    dueDate: active.dueDate,
     qrCode: {
       amount: active.remainingAmount,
       variableSymbol,

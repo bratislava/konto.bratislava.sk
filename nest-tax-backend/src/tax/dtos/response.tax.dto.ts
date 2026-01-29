@@ -366,6 +366,15 @@ export class ResponseActiveInstallmentDto {
   @IsString()
   variableSymbol: string
 
+  @ApiPropertyOptional({
+    description: 'Due date',
+    example: '2023-04-13',
+  })
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  dueDate?: Date
+
   @ApiProperty({ description: 'QR code' })
   @IsString()
   qrCode: string

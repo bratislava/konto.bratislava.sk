@@ -218,8 +218,7 @@ describe('AdminService', () => {
       expect(
         parseFloat(norisDataCalled[0].SPL4_1.replace(',', '.')) +
           parseFloat(norisDataCalled[0].SPL4_2.replace(',', '.')) +
-          parseFloat(norisDataCalled[0].SPL4_3.replace(',', '.')) +
-          parseFloat(norisDataCalled[0].SPL4_4.replace(',', '.')),
+          parseFloat(norisDataCalled[0].SPL4_3.replace(',', '.')),
       ).toEqual(parseFloat(mockNorisData.taxTotal.replace(',', '.')))
       expect(isArray(norisDataCalled)).toBe(true)
       expect(yearCalled).toBe(1970)
@@ -227,6 +226,7 @@ describe('AdminService', () => {
         prepareOnly: false,
         ignoreBatchLimit: true,
       })
+      expect(norisDataCalled[0].SPL4_4).toBe('')
     })
 
     it('should create testing tax successfully for KO type', async () => {

@@ -68,7 +68,7 @@ export const createTestingRealEstateTaxMock = (
     TXTSPL4_3: 'Test splatka3',
     SPL4_3: spl3.toFixed(2).replace('.', ','),
     TXTSPL4_4: '',
-    SPL4_4: (0).toFixed(2).replace('.', ','),
+    SPL4_4: '',
 
     // tax detail fields - mock only
     det_zaklad_dane_byt: '100,50',

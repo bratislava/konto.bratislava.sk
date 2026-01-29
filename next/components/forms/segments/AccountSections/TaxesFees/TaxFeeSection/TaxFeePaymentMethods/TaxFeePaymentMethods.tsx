@@ -72,7 +72,7 @@ const TaxFeePaymentMethods = () => {
                 />
               }
               subtitle={t('tax_detail_section.tax_payment_installment_subtitle', {
-                date: formatDate(installmentPayment.dueDateLastPayment || ''),
+                date: formatDate(installmentPayment.activeInstallment?.dueDate || ''),
               })}
               amount={installmentPayment.activeInstallment?.remainingAmount}
               buttonVariant="black-outline"

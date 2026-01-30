@@ -492,7 +492,15 @@ export default class GinisService {
 
       return new Nack(false)
     }
-    return this.nackTrueWithWait(20_000)
+
+    this.logger.error(
+      this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `ERROR onQueueConsumption - ginis state ${form.ginisState} not supported in form ${form.id}`,
+        { formId: form.id, ginisState: form.ginisState },
+      ),
+    )
+    return new Nack(false)
   }
 
   private async sendToSharepoint(formId: string): Promise<void> {

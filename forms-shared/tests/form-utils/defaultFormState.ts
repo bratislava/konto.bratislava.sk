@@ -4,7 +4,7 @@ import {
   isFileMultipleSchema,
 } from '../../src/form-utils/defaultFormState'
 import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
-import { filterSharedLogger } from '../../test-utils/filterSharedLogger'
+import { filterLogLines } from '../../test-utils/filterLogLines'
 import { createCondition } from '../../src/generator/helpers'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { selectMultiple } from '../../src/generator/functions/selectMultiple'
@@ -87,7 +87,7 @@ describe('defaultFormState', () => {
       ),
     ])
 
-    filterSharedLogger({
+    const restore = filterLogLines({
       severity: 'WARN',
       messageIncludes: 'could not merge subschemas in allOf',
     })
@@ -100,6 +100,8 @@ describe('defaultFormState', () => {
       checkboxGroupRequired: [],
       arrayFieldRequired: [{}],
     })
+
+    restore()
   })
 
   test('getDefaultForm should not prefill const values', () => {

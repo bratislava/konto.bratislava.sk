@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, test } from 'vitest'
+import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
 import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { FileStatusType } from '../../src/form-files/fileStatus'
-import { filterSharedLogger } from '../../test-utils/filterSharedLogger'
+import { filterLogLines } from '../../test-utils/filterLogLines'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { input } from '../../src/generator/functions/input'
 import { fileUpload } from '../../src/generator/functions/fileUpload'
@@ -11,7 +11,11 @@ import { checkPathForErrors } from '../../src/summary-renderer/checkPathForError
 
 describe('validateSummary', () => {
   beforeEach(() => {
-    filterSharedLogger({ severity: 'WARN', messageIncludes: 'could not merge subschemas in allOf' })
+    filterLogLines({ severity: 'WARN', messageIncludes: 'could not merge subschemas in allOf' })
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   describe('Simple validation', () => {

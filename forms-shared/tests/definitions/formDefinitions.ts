@@ -1,6 +1,6 @@
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
-import { filterSharedLogger } from '../../test-utils/filterSharedLogger'
+import { filterLogLines } from '../../test-utils/filterLogLines'
 import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
@@ -24,7 +24,7 @@ describe('Form definitions', () => {
       })
 
       test('default form state should match snapshot', () => {
-        filterSharedLogger({
+        const restore = filterLogLines({
           severity: 'WARN',
           messageIncludes: 'could not merge subschemas in allOf',
         })
@@ -32,6 +32,8 @@ describe('Form definitions', () => {
         expect(
           baGetDefaultFormState(formDefinition.schema, {}, testValidatorRegistry),
         ).toMatchSnapshot()
+
+        restore()
       })
 
       if (!formDefinition.exampleFormNotRequired) {

@@ -125,29 +125,29 @@ export const amplifyGetServerSideProps = <
         }
 
         if (options?.isOAuthRedirect) {
-          if (isSignedIn) {
-            const clientInfo = await fetchClientInfo(context.query)
-
-            await cityAccountClient.userControllerUpsertUserAndRecordClient(
-              {
-                loginClient:
-                  (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
-                  LoginClientEnum.CityAccount,
-              },
-              { authStrategy: 'authOnly', getSsrAuthSession: fetchAuthSessionFn },
-            )
-
+          if (!isSignedIn) {
             return {
               redirect: {
-                destination: `${ROUTES.OAUTH_CONFIRM}?${oAuthParams}`,
+                destination: `${ROUTES.LOGIN}?${oAuthParams}`,
                 permanent: false,
               },
             }
           }
 
+          const clientInfo = await fetchClientInfo(context.query)
+
+          await cityAccountClient.userControllerUpsertUserAndRecordClient(
+            {
+              loginClient:
+                (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+                LoginClientEnum.CityAccount,
+            },
+            { authStrategy: 'authOnly', getSsrAuthSession: fetchAuthSessionFn },
+          )
+
           return {
             redirect: {
-              destination: `${ROUTES.LOGIN}?${oAuthParams}`,
+              destination: `${ROUTES.OAUTH_CONFIRM}?${oAuthParams}`,
               permanent: false,
             },
           }

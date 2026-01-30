@@ -128,9 +128,9 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
-        if (!isOAuthLogin) {
-          await prepareFormMigration()
-        }
+
+        await prepareFormMigration()
+
         // This endpoint must be called to register user also to the City Account BE
         await cityAccountClient.userControllerUpsertUserAndRecordClient(
           {
@@ -188,10 +188,8 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
         logger.info(
           `[AUTH] Successfully signed up for email ${email}, proceeding to manual sign in`,
         )
-        if (!isOAuthLogin) {
-          // TODO: Is is even needed to call prepareFormMigration here when it's called also in handleAutoSignIn?
-          await prepareFormMigration()
-        }
+        await prepareFormMigration()
+
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)

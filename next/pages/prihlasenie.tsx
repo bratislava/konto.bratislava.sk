@@ -83,11 +83,9 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
 
-        if (!isOAuthLogin) {
-          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-          removeAmplifyGuestIdentityIdCookies()
-          await prepareFormMigration()
-        }
+        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+        removeAmplifyGuestIdentityIdCookies()
+        await prepareFormMigration()
 
         // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,
         // there might be some cases where user is not there yet.
@@ -101,10 +99,11 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
         )
 
         if (isOAuthLogin) {
-          // TODO make util function for this?
+          // TODO OAuth: Make util function for this? Or can we use userAttributes from useSsrAuth() hook?
           const { 'custom:tier': tier } = await fetchUserAttributes()
+          const isIdentityVerified = tier === Tier.IDENTITY_CARD || tier === Tier.EID
           const shouldRedirectToIdentityVerification =
-            isIdentityVerificationRequired && !(tier === Tier.IDENTITY_CARD || tier === Tier.EID)
+            isIdentityVerificationRequired && !isIdentityVerified
 
           if (shouldRedirectToIdentityVerification) {
             router.push(getRouteWithRedirect(ROUTES.OAUTH_CONFIRM))

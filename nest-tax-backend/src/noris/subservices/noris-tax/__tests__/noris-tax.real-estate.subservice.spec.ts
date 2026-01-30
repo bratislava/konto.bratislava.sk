@@ -988,7 +988,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             year: 2023,
             delivery_method:
               ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum.Edesk,
-            taxType: TaxType.DZN,
+            tax_type: TaxType.DZN,
             order: 1,
           },
           'ext123',

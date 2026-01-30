@@ -360,7 +360,7 @@ export class NorisPaymentSubservice {
           amount: createdTaxPayment.amount,
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
-          taxType: taxData.type,
+          tax_type: taxData.type,
           order: taxData.order!, // non-null by DB trigger and constraint
           suppress_email: bloomreachSettings?.suppressEmail ?? false,
         },

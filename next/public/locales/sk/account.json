@@ -175,7 +175,7 @@
   "auth.forgotten_password_title": "Zabudli ste heslo?",
   "auth.identity_verification.common.skip_verification_button_text": "Preskočiť a overiť neskôr",
   "auth.identity_verification.common.success.title": "Overenie bolo úspešné",
-  "auth.identity_verification.fo.init.content": "Vaše údaje použijeme na <strong>jednorazové overenie totožnosti</strong> v štátnych registroch. Bez overenia nebudete môcť zaplatiť daň z nehnuteľností online či odoslať vybrané elektronické žiadosti v Bratislavskom konte.",
+  "auth.identity_verification.fo.init.content": "Údaje potrebujeme poznať na to, aby sme overili vašu totožnosť voči štátnym registrom. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností online či odoslať vybrané elektronické žiadosti v Bratislavskom konte. Overenie je jednorazové.",
   "auth.identity_verification.fo.init.submit_button_text": "Overiť totožnosť",
   "auth.identity_verification.fo.init.title": "Overte svoju totožnosť",
   "auth.identity_verification.fo.pending.content": "Ospravedlňujeme sa, ale rodné číslo {{rc}} a číslo dokladu {{idCard}} ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",

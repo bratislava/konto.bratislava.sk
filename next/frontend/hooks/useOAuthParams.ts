@@ -1,22 +1,22 @@
-import { useQueryState } from 'nuqs'
+import { parseAsBoolean, useQueryState } from 'nuqs'
 
 import {
-  clientIdQueryParam,
-  payloadQueryParam,
-  redirectUriQueryParam,
-  stateQueryParam,
+  authRequestIdQueryParam,
+  isIdentityVerificationRequiredQueryParam,
+  isOAuthQueryParam,
 } from '../utils/queryParamRedirect'
 
 export const useOAuthParams = () => {
-  const [clientId] = useQueryState(clientIdQueryParam)
-  const [payload] = useQueryState(payloadQueryParam)
-  const [redirectUri] = useQueryState(redirectUriQueryParam)
-  const [state] = useQueryState(stateQueryParam)
+  const [isOAuth] = useQueryState(isOAuthQueryParam, parseAsBoolean.withDefault(false))
+  const [authRequestId] = useQueryState(authRequestIdQueryParam)
+  const [isIdentityVerificationRequired] = useQueryState(
+    isIdentityVerificationRequiredQueryParam,
+    parseAsBoolean.withDefault(false),
+  )
 
   return {
-    clientId,
-    payload,
-    redirectUri,
-    state,
+    isOAuth,
+    authRequestId,
+    isIdentityVerificationRequired,
   }
 }

@@ -10,7 +10,6 @@ export enum CustomErrorTaxTypesEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
   BELOW_THRESHOLD = 'BELOW_THRESHOLD',
   TAX_TYPE_NOT_FOUND = 'TAX_TYPE_NOT_FOUND',
-  MISSING_DELIVERY_METHOD = 'MISSING_DELIVERY_METHOD',
 }
 
 export enum CustomErrorTaxTypesResponseEnum {
@@ -24,5 +23,4 @@ export enum CustomErrorTaxTypesResponseEnum {
   ALREADY_PAID = 'Tax for this year was already paid.',
   AFTER_DUE_DATE = 'Tax is after due date.',
   BELOW_THRESHOLD = 'Tax amount is below threshold for installment payments.',
-  MISSING_DELIVERY_METHOD = 'Tax does not have its delivery method set.',
 }

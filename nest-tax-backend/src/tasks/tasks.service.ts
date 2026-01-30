@@ -352,7 +352,7 @@ export class TasksService {
           userDataFromCityAccount[tax.taxPayer.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           await this.bloomreachService.trackEventUnpaidTaxReminder(
-            { year: tax.year, taxType: tax.type, order: tax.order! },
+            { year: tax.year, tax_type: tax.type, order: tax.order! },
             userFromCityAccount.externalId,
           )
         }

@@ -206,7 +206,7 @@ export class AdminService {
         year,
         amount: 0,
         delivery_method: null,
-        taxType,
+        tax_type: taxType,
         order,
       },
       userDataFromCityAccount.externalId ?? undefined,

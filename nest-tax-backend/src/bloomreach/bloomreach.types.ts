@@ -10,7 +10,7 @@ export type TaxPaymentBloomreachData = {
   year: number
   amount: number
   payment_source: TaxPaymentSource
-  taxType: TaxType
+  tax_type: TaxType
   order: number
   suppress_email: boolean
 }
@@ -19,12 +19,12 @@ export type TaxBloomreachData = {
   year: number
   amount: number
   delivery_method: DeliveryMethodNamed | null
-  taxType: TaxType
+  tax_type: TaxType
   order: number
 }
 
 export type UnpaidTaxReminderBloomreachData = {
   year: number
-  taxType: TaxType
+  tax_type: TaxType
   order: number
 }

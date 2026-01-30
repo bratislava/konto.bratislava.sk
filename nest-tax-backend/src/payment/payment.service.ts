@@ -200,7 +200,7 @@ export class PaymentService {
           amount: taxPayment.amount,
           payment_source: taxPayment.source ?? TaxPaymentSource.BANK_ACCOUNT,
           year: taxPayment.tax.year,
-          taxType: taxPayment.tax.type,
+          tax_type: taxPayment.tax.type,
           order: taxPayment.tax.order!, // non-null by DB trigger and constraint
           suppress_email: false,
         },

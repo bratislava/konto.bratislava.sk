@@ -67,7 +67,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         amount: 0,
         year,
         delivery_method: tax.deliveryMethod,
-        taxType: this.getTaxType(),
+        tax_type: this.getTaxType(),
         order: tax.order!,
       },
       userFromCityAccount.externalId ?? undefined,
@@ -462,7 +462,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
             year,
             delivery_method:
               userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
-            taxType: taxDefinition.type,
+            tax_type: taxDefinition.type,
             order: tax.order!,
           },
           userFromCityAccount.externalId ?? undefined,

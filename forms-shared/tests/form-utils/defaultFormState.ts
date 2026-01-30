@@ -4,7 +4,7 @@ import {
   isFileMultipleSchema,
 } from '../../src/form-utils/defaultFormState'
 import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
-import { filterLogLines } from '../../test-utils/filterLogLines'
+import { filterConsole } from '../../test-utils/filterConsole'
 import { createCondition } from '../../src/generator/helpers'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { selectMultiple } from '../../src/generator/functions/selectMultiple'
@@ -16,7 +16,6 @@ import { arrayField } from '../../src/generator/functions/arrayField'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 import { describe, expect, test } from 'vitest'
-import { filter } from 'lodash'
 
 describe('defaultFormState', () => {
   test('isFileMultipleSchema should return true for file array schema', () => {
@@ -87,10 +86,11 @@ describe('defaultFormState', () => {
       ),
     ])
 
-    const restore = filterLogLines({
-      severity: 'WARN',
-      messageIncludes: 'could not merge subschemas in allOf',
-    })
+    const restore = filterConsole(
+      'warn',
+      (message) =>
+        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+    )
     expect(baGetDefaultFormState(definition.schema, {}, testValidatorRegistry)).toEqual({
       fileMultiple: [],
       fileMultipleRequired: [],
@@ -126,15 +126,17 @@ describe('baGetDefaultFormStateStable', () => {
   ])
 
   test('should return correct default values', () => {
-    filter({
-      severity: 'WARN',
-      messageIncludes: 'could not merge subschemas in allOf',
-    })
+    const restore = filterConsole(
+      'warn',
+      (message) =>
+        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+    )
 
     const result = baGetDefaultFormState(schema, {}, testValidatorRegistry)
     const resultStable = baGetDefaultFormStateStable(schema, {}, testValidatorRegistry)
 
     expect(result).toEqual({ input1: 'value1' })
     expect(resultStable).toEqual({ input1: 'value1', input2: 'value2' })
+    restore()
   })
 })

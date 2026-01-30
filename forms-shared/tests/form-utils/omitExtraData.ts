@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
-import { filterLogLines } from '../../test-utils/filterLogLines'
+import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { input } from '../../src/generator/functions/input'
@@ -9,10 +9,11 @@ import { object } from '../../src/generator/object'
 
 describe('omitExtraData', () => {
   beforeEach(() => {
-    filterLogLines({
-      severity: 'WARN',
-      messageIncludes: 'could not merge subschemas in allOf',
-    })
+    filterConsole(
+      'warn',
+      (message) =>
+        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+    )
   })
 
   afterEach(() => {

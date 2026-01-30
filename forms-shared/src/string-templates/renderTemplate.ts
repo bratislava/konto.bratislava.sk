@@ -2,7 +2,6 @@ import { GenericObjectType } from '@rjsf/utils'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../form-utils/safeData'
 import { Eta } from 'eta'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
-import { SharedLogger } from '../utils/sharedLogger'
 
 const eta = new Eta()
 
@@ -27,9 +26,8 @@ export const renderFormTemplate = (
 
     return renderedString
   } catch (error) {
-    const logger = new SharedLogger('renderTemplate.ts')
     if (logError) {
-      logger.error('Error rendering template', error)
+      console.error('Error rendering template', error)
     }
     return null
   }

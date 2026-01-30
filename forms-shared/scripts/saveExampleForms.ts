@@ -2,9 +2,6 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import { get as getAppRootDir } from 'app-root-dir'
 import { exampleForms } from '../src/example-forms/exampleForms'
-import { SharedLogger } from '../src/utils/sharedLogger'
-
-const logger = new SharedLogger('saveExampleForms.ts')
 
 /**
  * Saves example forms to JSON files in the `dist-example-forms` directory.
@@ -23,14 +20,14 @@ async function saveExampleForms() {
       const filePath = path.join(outputDir, fileName)
 
       await fs.writeFile(filePath, JSON.stringify(example.formData, null, 2))
-      logger.log(`Saved ${fileName}`)
+      console.log(`Saved ${fileName}`)
     }
   }
 
-  logger.log(`\nAll example forms have been saved to ${outputDir}`)
+  console.log(`\nAll example forms have been saved to ${outputDir}`)
 }
 
 saveExampleForms().catch((error) => {
-  logger.error('An error occurred:', error)
+  console.error('An error occurred:', error)
   process.exit(1)
 })

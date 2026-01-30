@@ -3,7 +3,6 @@ import { Expression, Parser } from 'expr-eval'
 import { clone } from 'lodash'
 
 import { parseRatio } from '../form-utils/ajvFormats'
-import { SharedLogger } from '../utils/sharedLogger'
 
 export function getFormCalculatorExpression(formula: string, logError = false) {
   const parser = new Parser()
@@ -34,8 +33,7 @@ export function getFormCalculatorExpression(formula: string, logError = false) {
     return parser.parse(formula)
   } catch (error) {
     if (logError) {
-      const logger = new SharedLogger('calculators.ts')
-      logger.log('Error in getFormCalculatorExpression', error)
+      console.log('Error in getFormCalculatorExpression', error)
     }
     return null
   }
@@ -58,8 +56,7 @@ export function calculateFormCalculatorExpression(
     return evaluated as number
   } catch (error) {
     if (logError) {
-      const logger = new SharedLogger('calculators.ts')
-      logger.log('Error in calculateFormCalculatorExpression', error)
+      console.log('Error in calculateFormCalculatorExpression', error)
     }
     return null
   }

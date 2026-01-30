@@ -5,14 +5,18 @@ import { symbolKeysToStrings } from '../logging'
 import { errorTypeKeys } from '../guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
+function rethrowIfNotHttp(host: ArgumentsHost, exception: unknown, filterName: string): void {
+  if (host.getType() !== 'http') {
+    const logger = new LineLoggerSubservice(`${filterName} non HTTP`)
+    logger.error(exception)
+    throw exception
+  }
+}
+
 @Catch(Error)
 export class ErrorFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost): void {
-    if (host.getType() !== 'http') {
-      const logger = new LineLoggerSubservice(`${ErrorFilter.name} non HTTP`)
-      logger.error(exception)
-      throw exception
-    }
+    rethrowIfNotHttp(host, exception, ErrorFilter.name)
 
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
@@ -40,11 +44,7 @@ export class ErrorFilter implements ExceptionFilter {
 @Catch(TypeError)
 export class TypeErrorFilter implements ExceptionFilter {
   catch(exception: TypeError, host: ArgumentsHost) {
-    if (host.getType() !== 'http') {
-      const logger = new LineLoggerSubservice(`${ErrorFilter.name} non HTTP`)
-      logger.error(exception)
-      throw exception
-    }
+    rethrowIfNotHttp(host, exception, TypeErrorFilter.name)
 
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
@@ -70,11 +70,7 @@ export class TypeErrorFilter implements ExceptionFilter {
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
-    if (host.getType() !== 'http') {
-      const logger = new LineLoggerSubservice(`${ErrorFilter.name} non HTTP`)
-      logger.error(exception)
-      throw exception
-    }
+    rethrowIfNotHttp(host, exception, HttpExceptionFilter.name)
 
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()

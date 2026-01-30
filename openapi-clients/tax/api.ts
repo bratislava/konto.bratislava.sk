@@ -308,6 +308,10 @@ export interface ResponseActiveInstallmentDto {
    */
   variableSymbol: string
   /**
+   * Due date
+   */
+  dueDate?: string
+  /**
    * QR code
    */
   qrCode: string

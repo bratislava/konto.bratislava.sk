@@ -71,9 +71,13 @@ const TaxFeePaymentMethods = () => {
                   components={{ strong: <strong className="font-semibold" /> }}
                 />
               }
-              subtitle={t('tax_detail_section.tax_payment_installment_subtitle', {
-                date: formatDate(installmentPayment.dueDateLastPayment || ''),
-              })}
+              subtitle={
+                installmentPayment.activeInstallment?.dueDate
+                  ? t('tax_detail_section.tax_payment_installment_subtitle', {
+                      date: formatDate(installmentPayment.activeInstallment?.dueDate || ''),
+                    })
+                  : t('tax_detail_section.tax_payment_installment_subtitle_not_available')
+              }
               amount={installmentPayment.activeInstallment?.remainingAmount}
               buttonVariant="black-outline"
               buttonText={t('taxes.payment.pay_installment')}

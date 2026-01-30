@@ -54,6 +54,7 @@ describe('NorisTaxSubservice', () => {
       expect(result).toBe(norisTaxRealEstateSubservice)
     })
 
+    // eslint-disable-next-line no-secrets/no-secrets
     it('should return norisTaxCommunalWasteSubservice for TaxType.KO', () => {
       const result = service['getImplementationByType'](TaxType.KO)
       expect(result).toBe(norisTaxCommunalWasteSubservice)
@@ -211,6 +212,7 @@ describe('NorisTaxSubservice', () => {
     })
   })
 
+  // eslint-disable-next-line no-secrets/no-secrets
   describe('getAndProcessNorisTaxDataByBirthNumberAndYear', () => {
     const mockYear = 2024
     const mockBirthNumbers = ['123456/7890', '987654/3210']
@@ -332,6 +334,7 @@ describe('NorisTaxSubservice', () => {
     })
   })
 
+  // eslint-disable-next-line no-secrets/no-secrets
   describe('getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords', () => {
     const mockYear = 2024
     const mockBirthNumbers = ['123456/7890', '987654/3210']

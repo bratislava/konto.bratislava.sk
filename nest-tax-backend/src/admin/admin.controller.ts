@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   Param,
+  ParseEnumPipe,
   Post,
   Query,
   UseGuards,
@@ -171,7 +172,7 @@ export class AdminController {
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
-    @Query('taxType') taxType: TaxType,
+    @Query('taxType', new ParseEnumPipe(TaxType)) taxType: TaxType,
   ): Promise<void> {
     await this.adminService.createTestingTax(request, taxType)
   }

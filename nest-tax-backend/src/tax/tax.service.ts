@@ -280,6 +280,8 @@ export class TaxService {
       installments: tax.taxInstallments,
       taxDetails: tax.taxDetails,
       taxPayments: tax.taxPayments,
+      deliveryMethod: tax.deliveryMethod,
+      createdAt: tax.createdAt,
     })
 
     let oneTimePaymentQrCode: string | undefined
@@ -304,6 +306,8 @@ export class TaxService {
             variableSymbol:
               detailWithoutQrCode.installmentPayment.activeInstallment
                 .variableSymbol,
+            dueDate:
+              detailWithoutQrCode.installmentPayment.activeInstallment.dueDate,
             qrCode: await this.qrCodeSubservice.createQrCode(
               detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
             ),
@@ -400,6 +404,8 @@ export class TaxService {
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
       taxPayments: tax.taxPayments,
+      deliveryMethod: tax.deliveryMethod,
+      createdAt: tax.createdAt,
     })
   }
 }

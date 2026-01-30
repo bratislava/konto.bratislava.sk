@@ -261,6 +261,7 @@ describe('testing-tax-mock', () => {
     })
   })
 
+  // eslint-disable-next-line no-secrets/no-secrets
   describe('createTestingCommunalWasteTaxMock', () => {
     const testCases = [
       { taxTotal: '120,00', description: 'standard amount' },

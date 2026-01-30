@@ -121,13 +121,13 @@ export class VerificationSubservice {
 
     const normalize = (str: string): string => stripDiacritics(str).trim().toLowerCase()
 
-    const splitToParts = (str: string): string[] =>
+    const splitToPartsAndNormalize = (str: string): string[] =>
       normalize(str)
         .split(/\s+/g) // handles multiple spaces + leading/trailing spaces after trim()
         .filter(Boolean)
 
-    const normalizedFirstNames = splitToParts(firstName)
-    const normalizedLastNames = splitToParts(lastName)
+    const normalizedFirstNames = splitToPartsAndNormalize(firstName)
+    const normalizedLastNames = splitToPartsAndNormalize(lastName)
 
     if (normalizedFirstNames.length === 0 || normalizedLastNames.length === 0) {
       return false

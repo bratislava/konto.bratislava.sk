@@ -4,18 +4,23 @@ import React from 'react'
 
 import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
 import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
-import AccountVerificationPendingAlert from '../forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
+import AccountSuccessAlert from '../forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import Button from '../forms/simple-components/ButtonNew'
 import { useVerifyEid, VerificationStatus } from './useVerifyEid'
 
-const LegalPersonVerificationPageContent = () => {
+type Props = {
+  showSkipButton?: boolean
+}
+
+const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) => {
   const { t } = useTranslation('account')
   const { redirect } = useQueryParamRedirect()
 
   const { loginWithEid, verificationStatus } = useVerifyEid()
 
   return verificationStatus === VerificationStatus.VERIFYING ? (
-    <AccountVerificationPendingAlert
+    <AccountSuccessAlert
+      variant="loading"
       title={t('auth.identity_verification.fop_po_eid.pending.title')}
       description={t('auth.identity_verification.fop_po_eid.pending.content')}
     />
@@ -55,9 +60,11 @@ const LegalPersonVerificationPageContent = () => {
       >
         {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
       </Button>
-      <Button variant="black-plain" fullWidth onPress={() => redirect()}>
-        {t('auth.identity_verification.common.skip_verification_button_text')}
-      </Button>
+      {showSkipButton ? (
+        <Button variant="black-plain" fullWidth onPress={() => redirect()}>
+          {t('auth.identity_verification.common.skip_verification_button_text')}
+        </Button>
+      ) : null}
     </div>
   )
 }

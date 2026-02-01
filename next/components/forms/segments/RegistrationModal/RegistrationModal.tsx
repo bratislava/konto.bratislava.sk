@@ -22,6 +22,10 @@ type RegistrationModalBase = {
   login: () => void
 } & ModalProps
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10993-2968&t=nvTJpHb34NMAiOw5-4
+ */
+
 const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('forms')
   const {
@@ -99,9 +103,9 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
 
   const { title, subtitle } = type
     ? {
-        title: t(getTitleKey()),
-        subtitle: t(getSubtitleKey()),
-      }
+      title: t(getTitleKey()),
+      subtitle: t(getSubtitleKey()),
+    }
     : { title: null, subtitle: null }
 
   // TODO Translations: bodyList is "an array", make sure it's correctly used:
@@ -162,38 +166,38 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       </div>
       {(type === RegistrationModalType.Initial ||
         type === RegistrationModalType.NotAuthenticatedSubmitForm) && (
-        <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
-          <div className="mt-3 flex items-center md:mt-6">
-            <span className="h-0.5 w-full bg-gray-200" />
-            <span className="px-6 text-p1">{t('registration_modal.footer_choice')}</span>
-            <span className="h-0.5 w-full bg-gray-200" />
-          </div>
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
-            {type === RegistrationModalType.Initial && (
-              <>
-                {eidSendPossible ? (
+          <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
+            <div className="mt-3 flex items-center md:mt-6">
+              <span className="h-0.5 w-full bg-gray-200" />
+              <span className="px-6 text-p1">{t('registration_modal.footer_choice')}</span>
+              <span className="h-0.5 w-full bg-gray-200" />
+            </div>
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
+              {type === RegistrationModalType.Initial && (
+                <>
+                  {eidSendPossible ? (
+                    <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                      {t('registration_modal.buttons_initial_continue_eid')}
+                    </ButtonNew>
+                  ) : null}
                   <ButtonNew variant="black-outline" onPress={close} fullWidth>
-                    {t('registration_modal.buttons_initial_continue_eid')}
+                    {t('registration_modal.buttons_initial_skip')}
                   </ButtonNew>
-                ) : null}
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
-                  {t('registration_modal.buttons_initial_skip')}
-                </ButtonNew>
-              </>
-            )}
-            {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
-              <>
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
-                  {t('registration_modal.buttons_not_verified_submit_back')}
-                </ButtonNew>
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
-                  {t('registration_modal.buttons_not_verified_submit_send')}
-                </ButtonNew>
-              </>
-            )}
+                </>
+              )}
+              {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
+                <>
+                  <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                    {t('registration_modal.buttons_not_verified_submit_back')}
+                  </ButtonNew>
+                  <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                    {t('registration_modal.buttons_not_verified_submit_send')}
+                  </ButtonNew>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </Modal>
   )
 }

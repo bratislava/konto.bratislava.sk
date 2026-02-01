@@ -11,6 +11,7 @@ import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import EmailVerificationForm from '../components/forms/auth-forms/EmailVerificationForm'
@@ -21,11 +22,15 @@ import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
 import logger from '../frontend/utils/logger'
 import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { useAmplifyClientOAuthContext } from '../frontend/utils/useAmplifyClientOAuthContext'
-import { loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '../frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps, loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
 
 enum RegistrationStatus {
   INIT = 'INIT',
@@ -39,9 +44,12 @@ enum RegistrationStatus {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async ({ context }) => {
+    const clientInfo = await fetchClientInfo(context.query)
+
     return {
       props: {
+        clientInfo,
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -80,12 +88,13 @@ const getInitialState = (query: ParsedUrlQuery) => {
   return { registrationStatus: RegistrationStatus.INIT, lastEmail: '' }
 }
 
-const RegisterPage = () => {
+const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
   const router = useRouter()
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
-  const { isOAuthLogin, getOAuthContinueUrl, handleOAuthLogin } = useAmplifyClientOAuthContext()
+  const { isOAuthLogin, storeTokensAndRedirect, clientTitle, isIdentityVerificationRequired } =
+    useOAuthGetContext(clientInfo)
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -119,18 +128,16 @@ const RegisterPage = () => {
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
-        if (isOAuthLogin) {
-          logger.info(`[AUTH] Proceeding to OAuth login`)
-          await handleOAuthLogin()
-
-          setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
-          return
-        }
 
         await prepareFormMigration()
+
         // This endpoint must be called to register user also to the City Account BE
         await cityAccountClient.userControllerUpsertUserAndRecordClient(
-          { loginClient: LoginClientEnum.CityAccount },
+          {
+            loginClient:
+              (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+              LoginClientEnum.CityAccount,
+          },
           { authStrategy: 'authOnly' },
         )
         setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
@@ -181,10 +188,8 @@ const RegisterPage = () => {
         logger.info(
           `[AUTH] Successfully signed up for email ${email}, proceeding to manual sign in`,
         )
-        if (!isOAuthLogin) {
-          // TODO: Is is even needed to call prepareFormMigration here when it's called also in handleAutoSignIn?
-          await prepareFormMigration()
-        }
+        await prepareFormMigration()
+
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)
@@ -271,10 +276,11 @@ const RegisterPage = () => {
     if (registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) {
       return {
         confirmLabel: t('auth.register_success_go_to_login'),
-        onConfirm: () =>
+        onConfirm: () => {
           router
             .push(getRouteWithRedirect(ROUTES.LOGIN))
-            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
+            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+        },
       }
     }
 
@@ -298,39 +304,40 @@ const RegisterPage = () => {
     }
 
     if (isOAuthLogin) {
+      if (isIdentityVerificationRequired) {
+        return {
+          description: `${t('auth.register_success_description', { email: lastEmail })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
+          confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+          onConfirm: () => {
+            router
+              .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
+              .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+          },
+        }
+      }
+
       return {
-        // TODO OAuth: Add client title to continue button
-        confirmLabel: t('auth.continue_to_account'),
-        onConfirm: async () => {
-          // TODO OAuth: handle errors
-          logger.info(`[AUTH] Calling Continue endpoint`)
-          await router.push(getOAuthContinueUrl())
+        confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+        onConfirm: () => {
+          storeTokensAndRedirect()
         },
       }
     }
 
-    // TODO OAuth: identity verification
-    // const redirectToIdentityVerificationAfterOAuthLogin = TODO
-    //
-    // if (redirectToIdentityVerificationAfterOAuthLogin) {
-    //   return {
-    //     confirmLabel: t('auth.continue_to_account'),
-    //     onConfirm: () =>
-    //       router
-    //         .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
-    //         .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
-    //   }
-    // }
-
     return {
       confirmLabel: t('auth.continue_to_account'),
-      onConfirm: () => redirect(),
+      onConfirm: () => {
+        redirect()
+      },
     }
   }, [
-    getOAuthContinueUrl,
+    clientTitle,
     getRouteWithRedirect,
+    isIdentityVerificationRequired,
     isOAuthLogin,
+    lastEmail,
     redirect,
+    storeTokensAndRedirect,
     registrationStatus,
     router,
     safeRedirect.type,
@@ -339,39 +346,45 @@ const RegisterPage = () => {
   ])
 
   return (
-    <PageLayout variant="login-register" hideBackButton>
-      {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
+    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+      <PageLayout variant="login-register" hideBackButton>
+        {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
 
-      <AccountContainer
-        dataCyPrefix="registration"
-        ref={accountContainerRef}
-        className="flex flex-col gap-8 md:gap-10"
-      >
-        {registrationStatus === RegistrationStatus.INIT && (
-          <>
-            <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
-            <HorizontalDivider />
-            <AccountLink variant="login" />
-          </>
-        )}
-        {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
-          <EmailVerificationForm
-            lastEmail={lastEmail}
-            onResend={resendVerificationCode}
-            onSubmit={verifyEmail}
-            error={registrationError}
-          />
-        )}
-        {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
-          registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
-            <AccountSuccessAlert
-              title={t('auth.register_success_title')}
-              description={t('auth.register_success_description', { email: lastEmail })}
-              {...accountSuccessAlertProps}
+        <AccountContainer
+          dataCyPrefix="registration"
+          ref={accountContainerRef}
+          className="flex flex-col gap-8 md:gap-10"
+        >
+          {registrationStatus === RegistrationStatus.INIT && (
+            <>
+              <RegisterForm
+                lastEmail={lastEmail}
+                onSubmit={handleSignUp}
+                error={registrationError}
+              />
+              <HorizontalDivider />
+              <AccountLink variant="login" />
+            </>
+          )}
+          {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
+            <EmailVerificationForm
+              lastEmail={lastEmail}
+              onResend={resendVerificationCode}
+              onSubmit={verifyEmail}
+              error={registrationError}
             />
           )}
-      </AccountContainer>
-    </PageLayout>
+          {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
+            registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
+              <AccountSuccessAlert
+                title={t('auth.register_success_title')}
+                description={t('auth.register_success_description', { email: lastEmail })}
+                {...accountSuccessAlertProps}
+              />
+            )}
+        </AccountContainer>
+      </PageLayout>
+    </AmplifyClientOAuthProvider>
   )
 }
 

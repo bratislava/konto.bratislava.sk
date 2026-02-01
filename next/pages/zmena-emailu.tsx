@@ -20,8 +20,11 @@ import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
 import logger from '../frontend/utils/logger'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from './prihlasenie'
 
 enum EmailChangeStatus {
   INIT = 'INIT',
@@ -48,9 +51,12 @@ const verifyPassword = async (password: string) => {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async ({ context }) => {
+    const clientInfo = await fetchClientInfo(context.query)
+
     return {
       props: {
+        clientInfo,
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -58,7 +64,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true },
 )
 
-const EmailChangePage = () => {
+const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
   const { t } = useTranslation('account')
   const router = useRouter()
   const { userAttributes } = useSsrAuth()
@@ -184,29 +190,31 @@ const EmailChangePage = () => {
   }
 
   return (
-    <PageLayout variant="login-register"
-      hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
-    >
-      <AccountContainer ref={accountContainerRef}>
-        {emailChangeStatus === EmailChangeStatus.INIT ? (
-          <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
-        ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
-          <EmailVerificationForm
-            lastEmail={lastEmail}
-            onResend={resendVerificationCode}
-            onSubmit={verifyEmail}
-            error={emailChangeError}
-          />
-        ) : (
-          <AccountSuccessAlert
-            title={t('auth.email_change_success_title')}
-            confirmLabel={t('auth.continue_to_account')}
-            onConfirm={onConfirm}
-            description={t('auth.email_change_success_description', { email: lastEmail })}
-          />
-        )}
-      </AccountContainer>
-    </PageLayout>
+    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+      <PageLayout variant="login-register"
+        hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+      >
+        <AccountContainer ref={accountContainerRef}>
+          {emailChangeStatus === EmailChangeStatus.INIT ? (
+            <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
+          ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
+            <EmailVerificationForm
+              lastEmail={lastEmail}
+              onResend={resendVerificationCode}
+              onSubmit={verifyEmail}
+              error={emailChangeError}
+            />
+          ) : (
+            <AccountSuccessAlert
+              title={t('auth.email_change_success_title')}
+              confirmLabel={t('auth.continue_to_account')}
+              onConfirm={onConfirm}
+              description={t('auth.email_change_success_description', { email: lastEmail })}
+            />
+          )}
+        </AccountContainer>
+      </PageLayout>
+    </AmplifyClientOAuthProvider>
   )
 }
 

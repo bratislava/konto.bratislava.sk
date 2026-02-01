@@ -1,6 +1,5 @@
-import { EyeHiddenIcon, EyeIcon } from '@assets/ui-icons'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useTranslation } from 'next-i18next'
+import PasswordEyeButton from 'components/forms/widget-components/PasswordField/PasswordEyeButton'
 import { forwardRef, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 
@@ -35,8 +34,6 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
     },
     ref,
   ) => {
-    const { t } = useTranslation('account')
-
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
 
     const buttonRef = useRef<HTMLButtonElement>(null)
@@ -71,16 +68,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         ref={ref}
         autoComplete={autoComplete}
         endIcon={
-          <button
-            type="button"
-            ref={buttonRef}
-            aria-label={t('auth.fields.password_eyeButton.aria')}
-            aria-pressed={!isPasswordHidden}
-            className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
-            {...buttonProps}
-          >
-            {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}
-          </button>
+          <PasswordEyeButton isPasswordHidden={isPasswordHidden} {...buttonProps} />
         }
         {...rest}
       />

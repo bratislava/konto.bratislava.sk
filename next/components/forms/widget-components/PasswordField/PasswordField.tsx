@@ -74,11 +74,12 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
           <button
             type="button"
             ref={buttonRef}
-            aria-label={isPasswordHidden ? t('auth.fields.password_eyeButton_show') : t('auth.fields.password_eyeButton_hide')}
+            aria-label={t('auth.fields.password_eyeButton.aria')}
+            aria-pressed={!isPasswordHidden}
             className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             {...buttonProps}
           >
-            {isPasswordHidden ? <EyeIcon /> : <EyeHiddenIcon />}
+            {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}
           </button>
         }
         {...rest}

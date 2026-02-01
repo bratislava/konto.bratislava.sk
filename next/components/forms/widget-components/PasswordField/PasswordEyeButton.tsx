@@ -20,7 +20,7 @@ const PasswordEyeButton = ({ isPasswordHidden, className, ...props }: Props) => 
       type="button"
       aria-label={t('auth.fields.password_eyeButton.aria')}
       aria-pressed={!isPasswordHidden}
-      className={cn("absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4", className)}
+      className={cn("absolute inset-y-1/2 right-1 flex size-11 -translate-y-2/4 cursor-pointer items-center justify-center", className)}
       {...props}
     >
       {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}

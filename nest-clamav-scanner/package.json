@@ -49,9 +49,9 @@
     "rimraf": "^6.0.1"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^7.1.17",
+    "@darraghor/eslint-plugin-nestjs-typed": "^7.1.18",
     "@eslint/js": "^9.39.2",
-    "@eslint/json": "^0.14.0",
+    "@eslint/json": "^1.0.0",
     "@eslint/markdown": "^7.5.1",
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
@@ -63,8 +63,8 @@
     "@types/mime-types": "^3.0.1",
     "@types/node": "^22.15.18",
     "@types/passport-http": "^0.3.11",
-    "@typescript-eslint/eslint-plugin": "^8.53.1",
-    "@typescript-eslint/parser": "^8.53.1",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-eslint-comments": "^3.2.0",
@@ -74,7 +74,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^3.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-sonarjs": "^3.0.5",
+    "eslint-plugin-sonarjs": "^3.0.6",
     "eslint-plugin-xss": "^0.1.12",
     "jest": "^30.2.0",
     "jiti": "^2.5.1",
@@ -86,7 +86,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.53.1"
+    "typescript-eslint": "^8.54.0"
   },
   "overrides": {
     "glob": "^11.0.1"

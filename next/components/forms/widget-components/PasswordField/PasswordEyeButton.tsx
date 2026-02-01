@@ -1,30 +1,31 @@
 import { EyeHiddenIcon, EyeIcon } from "@assets/ui-icons"
 import cn from "frontend/cn"
 import { useTranslation } from "next-i18next"
-import { ButtonHTMLAttributes } from "react"
+import { ToggleButton as RACToggleButton, ToggleButtonProps } from "react-aria-components"
 
 type Props = {
   isPasswordHidden: boolean
-
-} & ButtonHTMLAttributes<HTMLButtonElement>
+  onToggle: (isPasswordHidden: boolean) => void
+} & Omit<ToggleButtonProps, 'isSelected' | 'onChange' | 'children'>
 
 /**
- * Inspired by https://medium.com/@web-accessibility-education/dos-and-donts-of-accessible-show-password-buttons-9a5fbc2c566b
+ * Based on RAC ToggleButton: https://react-spectrum.adobe.com/react-aria/ToggleButton.html
+ * Read more: https://medium.com/@web-accessibility-education/dos-and-donts-of-accessible-show-password-buttons-9a5fbc2c566b
  */
 
-const PasswordEyeButton = ({ isPasswordHidden, className, ...props }: Props) => {
+const PasswordEyeButton = ({ isPasswordHidden, onToggle, className, ...restProps }: Props) => {
   const { t } = useTranslation('account')
 
   return (
-    <button
-      type="button"
+    <RACToggleButton
       aria-label={t('auth.fields.password_eyeButton.aria')}
-      aria-pressed={!isPasswordHidden}
-      className={cn("absolute inset-y-1/2 right-1 flex size-11 -translate-y-2/4 cursor-pointer items-center justify-center", className)}
-      {...props}
+      isSelected={!isPasswordHidden}
+      onChange={(selected) => onToggle(!selected)}
+      className={cn("flex size-11 items-center justify-center", className)}
+      {...restProps}
     >
       {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}
-    </button>
+    </RACToggleButton>
   )
 }
 

@@ -1,7 +1,6 @@
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordEyeButton from 'components/forms/widget-components/PasswordField/PasswordEyeButton'
-import { forwardRef, useRef, useState } from 'react'
-import { useButton } from 'react-aria'
+import { forwardRef, useState } from 'react'
 
 import { FieldWrapperProps } from '../FieldWrapper'
 
@@ -36,19 +35,6 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
   ) => {
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
 
-    const buttonRef = useRef<HTMLButtonElement>(null)
-
-    const { buttonProps } = useButton(
-      {
-        elementType: 'button',
-        isDisabled: disabled,
-        onPress() {
-          setIsPasswordHidden(!isPasswordHidden)
-        }
-      },
-      buttonRef,
-    )
-
     return (
       <InputField
         type={isPasswordHidden ? 'password' : 'text'}
@@ -68,7 +54,12 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         ref={ref}
         autoComplete={autoComplete}
         endIcon={
-          <PasswordEyeButton isPasswordHidden={isPasswordHidden} {...buttonProps} />
+          <PasswordEyeButton
+            isPasswordHidden={isPasswordHidden}
+            onToggle={setIsPasswordHidden}
+            isDisabled={disabled}
+            className="absolute inset-y-1/2 right-1 -translate-y-2/4"
+          />
         }
         {...rest}
       />

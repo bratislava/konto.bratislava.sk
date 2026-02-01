@@ -242,6 +242,7 @@
   "correspondence_address_change.fields.locality_required": "Mesto je povinné",
   "correspondence_address_change.fields.postal_code_label": "PSČ",
   "correspondence_address_change.fields.postal_code_placeholder": "PSČ",
+  "correspondence_address_change.fields.postal_code_format": "PSČ musí obsahovať práve 5 číslic",
   "correspondence_address_change.fields.postal_code_required": "PSČ je povinné",
   "correspondence_address_change.fields.postal_code_tooltip": "V prípade, že je vaša korešpondenčná adresa v zahraničí a PSČ má iný formát ako 5 čísiel, kontaktujte nás na info@bratislava.sk.",
   "correspondence_address_change.fields.street_address_label": "Ulica a číslo",

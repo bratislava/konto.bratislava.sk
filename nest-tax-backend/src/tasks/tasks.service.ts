@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  Prisma,
+  TaxType,
+} from '@prisma/client'
 import dayjs from 'dayjs'
 import pLimit from 'p-limit'
 
@@ -9,6 +14,7 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
+import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PaymentService } from '../payment/payment.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
@@ -16,6 +22,7 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
@@ -36,6 +43,10 @@ const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 @Injectable()
 export class TasksService {
   private readonly logger: Logger
+
+  private lastLoadedTaxType: TaxType = TaxType.DZN
+
+  private lastUpdateTaxType: TaxType = TaxType.KO
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -68,7 +79,7 @@ export class TasksService {
     }[] = []
 
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
-    // this function "updatePaymentsFromNoris" will overwrite the testing taxes payments which is not desired
+    // this function will overwrite the testing taxes payments which is not desired
     if (
       this.configService.getOrThrow<string>(
         'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
@@ -139,7 +150,7 @@ export class TasksService {
       alreadyCreated: number
     }
     try {
-      const norisPaymentData =
+      const norisPaymentData: NorisTaxPayment[] =
         await this.norisService.getPaymentDataFromNorisByVariableSymbols(data)
       result =
         await this.norisService.updatePaymentsFromNorisWithData(
@@ -171,7 +182,7 @@ export class TasksService {
     )
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async updateTaxesFromNoris() {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
@@ -184,51 +195,63 @@ export class TasksService {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return
     }
+
+    this.lastUpdateTaxType =
+      this.lastUpdateTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+
+    await this.updateTaxesFromNorisByTaxType(this.lastUpdateTaxType)
+  }
+
+  private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
     const currentYear = new Date().getFullYear()
-    const taxes = await this.prismaService.tax.findMany({
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
+
+    const taxPayers = await this.prismaService.taxPayer.findMany({
       select: {
         id: true,
-        taxPayer: {
-          select: {
-            birthNumber: true,
+        birthNumber: true,
+      },
+      where: {
+        taxes: {
+          some: {
+            year: currentYear,
+            type: taxType,
           },
         },
       },
-      where: {
-        year: currentYear,
+      orderBy: {
+        [lastUpdatedAtDatabaseFieldName]: 'asc',
       },
       take: MAX_NORIS_TAXES_TO_UPDATE,
-      orderBy: {
-        lastCheckedUpdates: 'asc',
-      },
     })
 
-    if (taxes.length === 0) {
+    if (taxPayers.length === 0) {
       return
     }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris with ids: ${taxes.map((t) => t.id).join(', ')}`,
+      `TasksService: Updating taxes from Noris for tax payers with birth numbers: ${taxPayers.map((t) => t.birthNumber).join(', ')}, tax type: ${taxType}, current year: ${currentYear}`,
     )
 
     const { updated } =
       await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-        {
-          year: currentYear,
-          birthNumbers: taxes.map((t) => t.taxPayer.birthNumber),
-        },
+        taxType,
+        currentYear,
+        taxPayers.map((t) => t.birthNumber),
       )
 
-    this.logger.log(`TasksService: Updated ${updated} taxes from Noris`)
+    this.logger.log(
+      `TasksService: Updated ${updated} ${taxType} taxes from Noris`,
+    )
 
-    await this.prismaService.tax.updateMany({
+    await this.prismaService.taxPayer.updateMany({
       where: {
         id: {
-          in: taxes.map((t) => t.id),
+          in: taxPayers.map((t) => t.id),
         },
       },
       data: {
-        lastCheckedUpdates: new Date(),
+        [lastUpdatedAtDatabaseFieldName]: new Date(),
       },
     })
   }
@@ -263,6 +286,8 @@ export class TasksService {
       select: {
         id: true,
         year: true,
+        type: true,
+        order: true,
         taxPayer: {
           select: {
             birthNumber: true,
@@ -271,6 +296,7 @@ export class TasksService {
       },
       where: {
         bloomreachUnpaidTaxReminderSent: false,
+        isCancelled: false,
         taxPayments: {
           none: {
             status: PaymentStatus.SUCCESS,
@@ -326,7 +352,7 @@ export class TasksService {
           userDataFromCityAccount[tax.taxPayer.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           await this.bloomreachService.trackEventUnpaidTaxReminder(
-            { year: tax.year },
+            { year: tax.year, tax_type: tax.type, order: tax.order! },
             userFromCityAccount.externalId,
           )
         }
@@ -409,6 +435,7 @@ export class TasksService {
     } else {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
+        // eslint-disable-next-line no-secrets/no-secrets
         'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
         undefined,
         `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
@@ -416,12 +443,22 @@ export class TasksService {
     }
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
-    this.logger.log('Starting loadTaxesForUsers task')
+    this.lastLoadedTaxType =
+      this.lastLoadedTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
 
+    this.logger.log(
+      `Starting LoadTaxForUsers task for TaxType: ${this.lastLoadedTaxType}`,
+    )
+
+    await this.loadTaxDataForUserByTaxType(this.lastLoadedTaxType)
+  }
+
+  private async loadTaxDataForUserByTaxType(taxType: TaxType) {
     const year = new Date().getFullYear()
+
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
       this.taxImportHelperSubservice.isWithinImportWindow(),
       this.taxImportHelperSubservice.getTodayTaxCount(),
@@ -436,6 +473,7 @@ export class TasksService {
 
     const { birthNumbers, newlyCreated } =
       await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
+        taxType,
         year,
         importPhase,
       )
@@ -443,15 +481,39 @@ export class TasksService {
     // Import newly created users regardless of window or limit
     if (newlyCreated.length > 0) {
       this.logger.log(
-        `Found ${newlyCreated.length} newly created users, importing immediately`,
+        `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
       )
-      await this.taxImportHelperSubservice.importTaxes(newlyCreated, year)
+      await this.taxImportHelperSubservice.importTaxes(
+        TaxType.DZN,
+        newlyCreated,
+        year,
+      )
+      await this.taxImportHelperSubservice.importTaxes(
+        TaxType.KO,
+        newlyCreated,
+        year,
+      )
     }
 
     if (birthNumbers.length > 0) {
+      this.logger.log(
+        `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'}`,
+      )
       await (importPhase
-        ? this.taxImportHelperSubservice.importTaxes(birthNumbers, year)
-        : this.taxImportHelperSubservice.prepareTaxes(birthNumbers, year))
+        ? this.taxImportHelperSubservice.importTaxes(
+            taxType,
+            birthNumbers,
+            year,
+          )
+        : this.taxImportHelperSubservice.prepareTaxes(
+            taxType,
+            birthNumbers,
+            year,
+          ))
+    }
+
+    if (birthNumbers.length === 0 && newlyCreated.length === 0) {
+      this.logger.log('No birth numbers found to import taxes')
     }
   }
 
@@ -501,6 +563,7 @@ export class TasksService {
         return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
           data,
         )
+        // eslint-disable-next-line no-secrets/no-secrets
       }, 'updateOverpaymentsDataFromNorisByDateRange')
 
       // Success: reset lookback days to default

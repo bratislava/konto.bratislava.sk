@@ -81,7 +81,7 @@ const ThankYouFormSection = () => {
           firstButtonTitle={firstButtonTitle}
           secondButtonTitle={secondButtonTitle}
           content={content}
-          feedbackLink={feedbackLink}
+          firstButtonLink={feedbackLink}
           feedbackTitle={feedbackTitle}
         />
         {displayAccountLinks ? (

@@ -32,7 +32,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
                 <Heading slot="title" className="grow text-h6">
-                  {t('all_steps')}
+                  {t('stepper.all_steps')}
                 </Heading>
                 <AriaButton
                   className="flex h-full cursor-pointer flex-col justify-center"

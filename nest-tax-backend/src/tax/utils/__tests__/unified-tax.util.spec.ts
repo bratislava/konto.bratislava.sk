@@ -690,6 +690,20 @@ describe('UnifiedTaxUtil', () => {
           expect(output.installmentPayment.installments?.[0].dueDate).toBeUndefined()
         })
 
+        it('should set status to AFTER_DUE_DATE if today is in the future and the due date is in the past', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            dateOfValidity: new Date('2025-03-02'),
+            today: new Date('2025-09-01'), // In the future, but still able to pay by installments
+            taxPayments: [{ amount: 100, status: PaymentStatus.SUCCESS }], // Partial payment
+          })
+
+          expect(output.installmentPayment.installments?.[0].status).toBe(
+            InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+          )
+          expect(output.installmentPayment.installments?.[0].dueDate).toBeDefined()
+        })
+
         it('CITY_ACCOUNT uses createdAt (16 days) and returns a working day even when dateOfValidity is null', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,

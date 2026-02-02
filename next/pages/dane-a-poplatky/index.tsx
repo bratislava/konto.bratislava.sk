@@ -11,11 +11,11 @@ import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
 import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
 import { TaxesFeesSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
+import PageLayout from 'components/layouts/PageLayout'
 import { AccountType } from 'frontend/dtos/accountDto'
 import { ResponseGetTaxesListDto, TaxType } from 'openapi-clients/tax'
 
 import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import AccountPageLayout from '../../components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
@@ -106,7 +106,7 @@ const AccountTaxesFeesPage = ({
 }: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
-      <AccountPageLayout>
+      <PageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
           <TaxesFeesSectionProvider
             taxesData={taxesData}
@@ -115,7 +115,7 @@ const AccountTaxesFeesPage = ({
             <TaxesFeesSection />
           </TaxesFeesSectionProvider>
         </StrapiTaxProvider>
-      </AccountPageLayout>
+      </PageLayout>
     </HydrationBoundary>
   )
 }

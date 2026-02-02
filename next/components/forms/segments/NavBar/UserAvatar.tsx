@@ -1,10 +1,14 @@
 import { ProfileIcon } from '@assets/ui-icons'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
+ * 
+ * TODO Consolidate with similar component in user profile:
+ *  https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21166-5210&t=EGiWvvrAjJLDEfQk-4
+ */
 
-export const Avatar = () => {
-  const { userAttributes } = useSsrAuth()
-
+const UserAvatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) => {
   return (
     <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
       <div className="flex size-6 items-center justify-center font-semibold text-main-700">
@@ -20,4 +24,4 @@ export const Avatar = () => {
   )
 }
 
-export default Avatar
+export default UserAvatar

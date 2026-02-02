@@ -10,7 +10,7 @@ import { isAxiosError } from 'axios'
 import TaxFeeSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeSection'
 import { StrapiTaxProvider } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
 import { TaxFeeRouteProps } from 'frontend/api/constants'
 import { prefetchUserQuery } from 'frontend/hooks/useUser'
@@ -104,13 +104,13 @@ const AccountTaxesFeesPage = ({
 }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
-      <AccountPageLayout>
+      <PageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
           <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
             <TaxFeeSection />
           </TaxFeeSectionProvider>
         </StrapiTaxProvider>
-      </AccountPageLayout>
+      </PageLayout>
     </HydrationBoundary>
   )
 }

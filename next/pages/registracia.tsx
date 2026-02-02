@@ -5,7 +5,7 @@ import { AuthError, autoSignIn, confirmSignUp, resendSignUpCode, signUp } from '
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { UserAttributes } from 'frontend/dtos/accountDto'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
@@ -347,7 +347,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout backButtonHidden>
+      <PageLayout variant="login-register" hideBackButton>
         {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
 
         <AccountContainer
@@ -376,14 +376,14 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
           )}
           {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
             registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
-            <AccountSuccessAlert
-              title={t('auth.register_success_title')}
-              description={t('auth.register_success_description', { email: lastEmail })}
-              {...accountSuccessAlertProps}
-            />
-          )}
+              <AccountSuccessAlert
+                title={t('auth.register_success_title')}
+                description={t('auth.register_success_description', { email: lastEmail })}
+                {...accountSuccessAlertProps}
+              />
+            )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

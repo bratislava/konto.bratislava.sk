@@ -673,7 +673,9 @@ describe('UnifiedTaxUtil', () => {
           expect(output.installmentPayment.installments?.[0].status).toBe(
             InstallmentPaidStatusEnum.NOT_PAID,
           )
-          expect(output.installmentPayment.installments?.[0].dueDate).toBeUndefined()
+          expect(
+            output.installmentPayment.installments?.[0].dueDate,
+          ).toBeUndefined()
         })
 
         it('undefined dateOfValidity with partial payment should never set status to AFTER_DUE_DATE even when today is in the future', () => {
@@ -687,7 +689,9 @@ describe('UnifiedTaxUtil', () => {
           expect(output.installmentPayment.installments?.[0].status).toBe(
             InstallmentPaidStatusEnum.PARTIALLY_PAID,
           )
-          expect(output.installmentPayment.installments?.[0].dueDate).toBeUndefined()
+          expect(
+            output.installmentPayment.installments?.[0].dueDate,
+          ).toBeUndefined()
         })
 
         it('should set status to AFTER_DUE_DATE if today is in the future and the due date is in the past', () => {
@@ -701,7 +705,9 @@ describe('UnifiedTaxUtil', () => {
           expect(output.installmentPayment.installments?.[0].status).toBe(
             InstallmentPaidStatusEnum.AFTER_DUE_DATE,
           )
-          expect(output.installmentPayment.installments?.[0].dueDate).toBeDefined()
+          expect(
+            output.installmentPayment.installments?.[0].dueDate,
+          ).toBeDefined()
         })
 
         it('CITY_ACCOUNT uses createdAt (16 days) and returns a working day even when dateOfValidity is null', () => {

@@ -20,16 +20,18 @@ type TaxTypeToNorisSubservice = {
 
 @Injectable()
 export class NorisTaxSubservice {
-  private readonly subservices = {
-    [TaxType.DZN]: this.norisTaxRealEstateSubservice,
-    [TaxType.KO]: this.norisTaxCommunalWasteSubservice,
-  } as const satisfies TaxTypeToNorisSubservice
+  private readonly subservices: TaxTypeToNorisSubservice
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly norisTaxRealEstateSubservice: NorisTaxRealEstateSubservice,
     private readonly norisTaxCommunalWasteSubservice: NorisTaxCommunalWasteSubservice,
-  ) {}
+  ) {
+    this.subservices = {
+      [TaxType.DZN]: this.norisTaxRealEstateSubservice,
+      [TaxType.KO]: this.norisTaxCommunalWasteSubservice,
+    }
+  }
 
   private getImplementationByType<TTaxType extends TaxType>(
     taxType: TTaxType,

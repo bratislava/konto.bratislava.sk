@@ -40,9 +40,8 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
-export const stateHolidays = [
-  {
-    year: 2023,
+export const stateHolidays: Record<number, { dates: Dayjs[] }> = {
+  2023: {
     dates: [
       dayjs.tz('2023-01-01', bratislavaTimeZone),
       dayjs.tz('2023-01-06', bratislavaTimeZone),
@@ -61,8 +60,7 @@ export const stateHolidays = [
       dayjs.tz('2023-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2024,
+  2024: {
     dates: [
       dayjs.tz('2024-01-01', bratislavaTimeZone),
       dayjs.tz('2024-01-06', bratislavaTimeZone),
@@ -80,8 +78,7 @@ export const stateHolidays = [
       dayjs.tz('2024-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2025,
+  2025: {
     dates: [
       dayjs.tz('2025-01-01', bratislavaTimeZone),
       dayjs.tz('2025-01-06', bratislavaTimeZone),
@@ -99,8 +96,7 @@ export const stateHolidays = [
       dayjs.tz('2025-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2026,
+  2026: {
     dates: [
       dayjs.tz('2026-01-01', bratislavaTimeZone),
       dayjs.tz('2026-01-06', bratislavaTimeZone),
@@ -118,8 +114,7 @@ export const stateHolidays = [
       dayjs.tz('2026-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2027,
+  2027: {
     dates: [
       dayjs.tz('2027-01-01', bratislavaTimeZone),
       dayjs.tz('2027-01-06', bratislavaTimeZone),
@@ -137,8 +132,7 @@ export const stateHolidays = [
       dayjs.tz('2027-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2028,
+  2028: {
     dates: [
       dayjs.tz('2028-01-01', bratislavaTimeZone),
       dayjs.tz('2028-01-06', bratislavaTimeZone),
@@ -156,14 +150,14 @@ export const stateHolidays = [
       dayjs.tz('2028-12-26', bratislavaTimeZone),
     ],
   },
-]
+}
 
 const dueDateOffsetPostEdesk = 21
 const dueDateOffsetCityAccount = 16
 
 const isStateHoliday = (date: Dayjs): boolean => {
   const year = date.year()
-  const yearHolidays = stateHolidays.find((holiday) => holiday.year === year)
+  const yearHolidays = stateHolidays[year]
 
   if (!yearHolidays) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
@@ -310,7 +304,8 @@ const calculateInstallmentStatus = (
     const installmentDueDate = installmentDueDates[i]
     // If due date is undefined, we can't determine if it's late, so use the original status
     const isDueDateInFuture =
-      installmentDueDate !== undefined && installmentDueDate > dayjs(today)
+      installmentDueDate !== undefined &&
+      installmentDueDate.isAfter(dayjs(today))
     const isLateInstallment =
       !isDueDateInFuture &&
       installmentAmounts[i].status !== InstallmentPaidStatusEnum.PAID &&
@@ -399,7 +394,7 @@ const calculateInstallmentPaymentDetails = (options: {
     }
   }
 
-  if (dayjs(today) > dueDateLastPayment) {
+  if (dayjs(today).isAfter(dueDateLastPayment)) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,

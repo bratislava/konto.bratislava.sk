@@ -50,10 +50,17 @@ export class TaxService {
     private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
 
-  private async getAmountAlreadyPaidByTaxId(id: number) {
-    const taxPayment = await this.prisma.taxPayment.aggregate({
+  private async getAmountsAlreadyPaidByTaxIds(
+    taxIds: number[],
+  ): Promise<Map<number, number>> {
+    if (taxIds.length === 0) {
+      return new Map()
+    }
+
+    const payments = await this.prisma.taxPayment.groupBy({
+      by: ['taxId'],
       where: {
-        taxId: id,
+        taxId: { in: taxIds },
         status: PaymentStatus.SUCCESS,
       },
       _sum: {
@@ -61,7 +68,18 @@ export class TaxService {
       },
     })
 
-    return taxPayment._sum.amount || 0
+    const paidAmountsMap = new Map<number, number>(
+      payments.map((payment) => [payment.taxId, payment._sum.amount || 0]),
+    )
+
+    // Set 0 for taxes with no payments
+    taxIds.forEach((taxId) => {
+      if (!paidAmountsMap.has(taxId)) {
+        paidAmountsMap.set(taxId, 0)
+      }
+    })
+
+    return paidAmountsMap
   }
 
   async getListOfTaxesByBirthnumberAndType(
@@ -135,22 +153,23 @@ export class TaxService {
       }
     }
 
-    const items: ResponseGetTaxesListBodyDto[] = await Promise.all(
-      taxes.map(async (tax) => {
-        const paid = await this.getAmountAlreadyPaidByTaxId(tax.id)
-        const status = getExistingTaxStatus(tax.amount, paid, tax.isCancelled)
-        const amountToBePaid =
-          status === TaxStatusEnum.CANCELLED ? undefined : tax.amount - paid
-        return {
-          createdAt: tax.createdAt,
-          year: tax.year,
-          amountToBePaid,
-          status,
-          type: tax.type,
-          order: tax.order!, // non-null by DB trigger and constraint
-        }
-      }),
-    )
+    const taxIds = taxes.map((tax) => tax.id)
+    const paidAmountsMap = await this.getAmountsAlreadyPaidByTaxIds(taxIds)
+
+    const items: ResponseGetTaxesListBodyDto[] = taxes.map((tax) => {
+      const paid = paidAmountsMap.get(tax.id) || 0
+      const status = getExistingTaxStatus(tax.amount, paid, tax.isCancelled)
+      const amountToBePaid =
+        status === TaxStatusEnum.CANCELLED ? undefined : tax.amount - paid
+      return {
+        createdAt: tax.createdAt,
+        year: tax.year,
+        amountToBePaid,
+        status,
+        type: tax.type,
+        order: tax.order!, // non-null by DB trigger and constraint
+      }
+    })
 
     const currentYearTaxExists = items.some(
       (item) => item.year === currentTime.year(),
@@ -191,7 +210,7 @@ export class TaxService {
     year: number,
     type: TaxType,
     order: number,
-  ) {
+  ): Promise<Prisma.TaxGetPayload<{ include: T }>> {
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: taxPayerWhereUniqueInput,
       select: { id: true },

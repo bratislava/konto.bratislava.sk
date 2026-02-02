@@ -145,15 +145,15 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     ): Promise<boolean> => {
       return this.concurrencyLimit(async () => {
         const taxIdentifier = norisItem.ICO_RC
-        const taxExists = taxIdentifierToTax.get(taxIdentifier)
-        if (!taxExists) {
+        const existingTax = taxIdentifierToTax.get(taxIdentifier)
+        if (!existingTax) {
           return false
         }
         try {
           await this.updateExistingTaxRecord(
             taxDefinition,
             norisItem,
-            taxExists,
+            existingTax,
             year,
             userDataFromCityAccount,
           )

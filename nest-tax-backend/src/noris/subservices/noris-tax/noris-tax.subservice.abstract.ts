@@ -62,7 +62,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     year: number,
     userFromCityAccount: ResponseUserByBirthNumberDto,
   ) {
-    const bloomreachTracker = await this.bloomreachService.trackEventTax(
+    const trackingSuccess = await this.bloomreachService.trackEventTax(
       {
         amount: 0,
         year,
@@ -72,7 +72,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       },
       userFromCityAccount.externalId ?? undefined,
     )
-    if (!bloomreachTracker) {
+    if (!trackingSuccess) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
@@ -94,7 +94,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         },
       })
 
-      const userFromCityAccount =
+      const userFromCityAccount: ResponseUserByBirthNumberDto | null =
         userDataFromCityAccount[norisItem.ICO_RC] || null
 
       const tax = await this.insertTaxDataToDatabase(
@@ -168,6 +168,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    *
    * @param norisData - Tax data from Noris
    * @param year - Year of the taxes
+   * @param options - Options for processing Noris tax data
+   * @param options.prepareOnly - If `true`, only prepares data (validates and marks as ready) without creating taxes. If `false` or undefined, taxes will be created normally. Default: `false`
+   * @param options.ignoreBatchLimit - If `true`, ignores the batch limit for the number of taxes to process. Useful when you need to process a large number of taxes in a single operation. Default: `false`
    * @returns CreateBirthNumbersResponseDto containing birth numbers of the tax payers that were processed
    */
   async processNorisTaxData(
@@ -278,6 +281,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    *
    * @param year - Year of the taxes
    * @param birthNumbers - Birth numbers of the tax payers to process
+   * @param options - Options for processing Noris tax data
+   * @param options.prepareOnly - If `true`, only prepares data (validates and marks as ready) without creating taxes. If `false` or undefined, taxes will be created normally. Default: `false`
+   * @param options.ignoreBatchLimit - If `true`, ignores the batch limit for the number of taxes to process. Useful when you need to process a large number of taxes in a single operation. Default: `false`
    * @returns Birth numbers of the tax payers that were processed
    */
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
@@ -435,7 +441,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   ) => {
     try {
       await this.prismaService.$transaction(async (tx) => {
-        const userFromCityAccount =
+        const userFromCityAccount: ResponseUserByBirthNumberDto | null =
           userDataFromCityAccount[norisItem.ICO_RC] || null
 
         if (!userFromCityAccount) {
@@ -456,7 +462,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           ? 0
           : convertCurrencyToInt(norisItem.dan_spolu)
 
-        const bloomreachTracker = await this.bloomreachService.trackEventTax(
+        const trackingSuccess = await this.bloomreachService.trackEventTax(
           {
             amount: amountToTrack,
             year,
@@ -467,7 +473,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           },
           userFromCityAccount.externalId ?? undefined,
         )
-        if (!bloomreachTracker) {
+        if (!trackingSuccess) {
           throw this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
             `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,

@@ -40,12 +40,12 @@ const useGetContext = () => {
     },
     onMutate: () => {
       // TODO: Wording.
-      openSnackbarInfo(t('concept_save_and_redirect'))
+      openSnackbarInfo(t('useFormRedirects.save_concept.on_mutate_snackbar_message'))
       turnOffLeaveProtection()
     },
     onError: () => {
       // Maybe different wording for this case.
-      openSnackbarError(t('unable_to_save_concept_and_redirect'))
+      openSnackbarError(t('useFormRedirects.save_concept.on_error_snackbar_message'))
     },
   })
 

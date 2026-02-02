@@ -33,15 +33,19 @@ const TaxFeePaymentMethods = () => {
       <div className="flex w-full flex-col rounded-lg border-2 border-gray-200">
         <TaxFeePaymentMethodsItem
           title={
-            <Trans
-              ns="account"
-              i18nKey={
-                paidStatus === TaxStatusEnum.PartiallyPaid
-                  ? 'tax_detail_section.tax_payment_rest'
-                  : 'tax_detail_section.tax_payment_full'
-              }
-              components={{ strong: <strong className="font-semibold" /> }}
-            />
+            taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? (
+              <Trans
+                ns="account"
+                i18nKey="tax_detail_section.tax_payment_rest"
+                components={{ strong: <strong className="font-semibold" /> }}
+              />
+            ) : (
+              <Trans
+                ns="account"
+                i18nKey="tax_detail_section.tax_payment_full"
+                components={{ strong: <strong className="font-semibold" /> }}
+              />
+            )
           }
           subtitle={
             // only first installment is calculated, others are hardcoded so they will always be available for DzN,

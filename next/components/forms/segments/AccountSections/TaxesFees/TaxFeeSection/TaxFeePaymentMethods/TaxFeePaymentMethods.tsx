@@ -33,7 +33,7 @@ const TaxFeePaymentMethods = () => {
       <div className="flex w-full flex-col rounded-lg border-2 border-gray-200">
         <TaxFeePaymentMethodsItem
           title={
-            taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid ? (
+            taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? (
               <Trans
                 ns="account"
                 i18nKey="tax_detail_section.tax_payment_rest"

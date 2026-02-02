@@ -111,7 +111,7 @@ const ForgottenPasswordPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="login-register"
+      <PageLayout variant="auth"
         hideBackButton={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">

@@ -347,7 +347,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="login-register" hideBackButton>
+      <PageLayout variant="auth" hideBackButton>
         {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
 
         <AccountContainer

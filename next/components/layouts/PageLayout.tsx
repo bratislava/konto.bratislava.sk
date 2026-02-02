@@ -1,4 +1,4 @@
-import LoginRegisterNavBar from 'components/forms/segments/LoginRegisterNavBar/LoginRegisterNavBar'
+import AuthNavBar from 'components/forms/segments/NavBar/AuthNavBar'
 import NavBar from 'components/forms/segments/NavBar/NavBar'
 import { useNavbarHeight } from 'components/layouts/useNavbarHeight'
 import cn from 'frontend/cn'
@@ -12,7 +12,7 @@ declare module 'react' {
 
 type Props = {
   children: ReactNode
-  variant?: 'default' | 'login-register'
+  variant?: 'default' | 'auth'
   hideNavMenu?: boolean
   hideBackButton?: boolean
   className?: string
@@ -29,8 +29,8 @@ const PageLayout = ({ variant = "default", className, children, hideNavMenu, hid
     <div className={cn('min-h-screen', className)}>
       {/* 'contents' class in header enables sticky elements inside it to work */}
       <header className="relative z-30 contents">
-        {variant === 'login-register' ?
-          <LoginRegisterNavBar
+        {variant === 'auth' ?
+          <AuthNavBar
             backButtonHidden={hideBackButton}
             desktopNavbarRef={desktopNavbarRef}
             mobileNavbarRef={mobileNavbarRef}
@@ -46,7 +46,7 @@ const PageLayout = ({ variant = "default", className, children, hideNavMenu, hid
           '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
         className={cn("relative min-h-[calc(100vh-var(--main-scroll-top-margin))] **:scroll-mt-(--main-scroll-top-margin", {
-          "md:gap-6 md:bg-background-passive-primary md:py-8": variant === "login-register"
+          "md:gap-6 md:bg-background-passive-primary md:py-8": variant === "auth"
         })}
       >
         {children}

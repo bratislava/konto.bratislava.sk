@@ -83,7 +83,7 @@ const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="login-register"
+      <PageLayout variant="auth"
         hideBackButton={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef}>

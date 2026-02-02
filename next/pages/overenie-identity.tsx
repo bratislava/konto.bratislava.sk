@@ -109,7 +109,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="login-register" hideBackButton>
+      <PageLayout variant="auth" hideBackButton>
         <AccountContainer ref={accountContainerRef}>
           {(tierStatus.isIdentityVerificationNotYetAttempted ||
             tierStatus.isNotVerifiedIdentityCard) && (

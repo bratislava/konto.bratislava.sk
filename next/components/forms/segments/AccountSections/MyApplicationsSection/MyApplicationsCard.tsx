@@ -63,9 +63,9 @@ const MyApplicationsCard = ({
   variant,
   formDefinitionSlugTitleMap,
 }: MyApplicationsCardProps) => {
-  const { t } = useTranslation('account')
   // TODO Translations
-  const { t: ft } = useTranslation('forms')
+  const { t } = useTranslation(['account', 'forms'])
+
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -96,7 +96,7 @@ const MyApplicationsCard = ({
   // xml and pdf exports copied from useFormExportImport
   // TODO refactor, same as next/frontend/hooks/useFormExportImport.tsx
   const exportXml = async () => {
-    openSnackbarInfo(ft('info_messages.xml_export'))
+    openSnackbarInfo(t('forms:info_messages.xml_export'))
     try {
       if (!formId) throw new Error('No form id provided for exportXml')
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
@@ -107,15 +107,15 @@ const MyApplicationsCard = ({
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
       closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.xml_export'))
+      openSnackbarSuccess(t('forms:success_messages.xml_export'))
     } catch (error) {
-      openSnackbarError(ft('errors.xml_export'))
+      openSnackbarError(t('forms:errors.xml_export'))
       logger.error(JSON.stringify(error))
     }
   }
 
   const exportPdf = async () => {
-    openSnackbarInfo(ft('info_messages.pdf_export'))
+    openSnackbarInfo(t('forms:info_messages.pdf_export'))
     try {
       if (!formSlug || !formId)
         throw new Error(
@@ -130,26 +130,26 @@ const MyApplicationsCard = ({
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
       closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.pdf_export'))
+      openSnackbarSuccess(t('forms:success_messages.pdf_export'))
     } catch (error) {
       logger.error(error)
-      openSnackbarError(ft('errors.pdf_export'))
+      openSnackbarError(t('forms:errors.pdf_export'))
     }
   }
 
   const deleteConcept = async () => {
-    openSnackbarInfo(ft('info_messages.concept_delete'))
+    openSnackbarInfo(t('forms:info_messages.concept_delete'))
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsClient.nasesControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
       closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.concept_delete'))
+      openSnackbarSuccess(t('forms:success_messages.concept_delete'))
       await refreshListData()
     } catch (error) {
       logger.error(error)
-      openSnackbarError(ft('errors.concept_delete'))
+      openSnackbarError(t('forms:errors.concept_delete'))
     }
   }
 
@@ -327,13 +327,13 @@ const MyApplicationsCard = ({
         </div>
       </Wrapper>
       <MessageModal
-        title={ft('concept_delete_modal.title')}
+        title={t('forms:concept_delete_modal.title')}
         type="error"
         isOpen={deleteConceptModalShow}
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {ft('modals_close_button_title')}
+            {t('forms:modal.close_button_label')}
           </Button>,
           <Button
             variant="negative-solid"
@@ -342,11 +342,11 @@ const MyApplicationsCard = ({
               return deleteConcept()
             }}
           >
-            {ft('concept_delete_modal.button_title')}
+            {t('forms:concept_delete_modal.button_title')}
           </Button>,
         ]}
       >
-        {ft('concept_delete_modal.content_with_name', { conceptName: subject })}
+        {t('forms:concept_delete_modal.content_with_name', { conceptName: subject })}
       </MessageModal>
       <BottomSheetMenuModal
         isOpen={bottomSheetIsOpen}

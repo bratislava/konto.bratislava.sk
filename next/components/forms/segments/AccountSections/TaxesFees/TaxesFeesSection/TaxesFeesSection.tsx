@@ -1,8 +1,8 @@
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import IdentityVerificationInProcessBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationInProcessBanner'
-import IdentityVerificationNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationNeededBanner'
+import IdentityVerificationBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelInformation from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
 import OfficialCorrespondenceChannelNeededBanner from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
+import TaxesFeesAdministratorCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxesFeesOverview from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesOverview'
 import TaxesFeesTabs, {
   TaxTypeTabOptions,
@@ -11,17 +11,12 @@ import { useOfficialCorrespondenceChannel } from 'components/forms/segments/Acco
 import { useTaxesFeesSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { useTranslation } from 'next-i18next'
+import { TaxType } from 'openapi-clients/tax'
 import React, { useState } from 'react'
 import { Key } from 'react-aria-components'
 
-// TODO replace by proper type from openapi-clients/tax when ready
-export enum TaxType {
-  Dzn = 'DZN',
-}
-
 /**
- * Figma: https://www.figma.com/design/myxp4iAtBRzxWej3osyzjV/BK--Dane-a-poplatky?node-id=1382-2696&p=f&t=cfC6ztqIUDfRkwYY-0
- * TODO Add new figma link when ready
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1475&t=fznV5maoQK8a2irI-4
  */
 
 const TaxesFeesSection = () => {
@@ -30,17 +25,18 @@ const TaxesFeesSection = () => {
   const {
     tierStatus: { isInQueue, isIdentityVerified },
   } = useSsrAuth()
-  const { channel, showChannelNeededBanner } = useOfficialCorrespondenceChannel()
+  const { showChannelNeededBanner } = useOfficialCorrespondenceChannel()
   const { taxesData, strapiTaxAdministrator } = useTaxesFeesSection()
 
   const taxTypeTabOptions: TaxTypeTabOptions = [
     { title: t('account_section_payment.property_tax_title'), id: TaxType.Dzn },
+    { title: t('account_section_payment.communal_waste_fee_title'), id: TaxType.Ko },
   ]
 
   const [selectedTaxType, setSelectedTaxType] = useState<TaxType>(taxTypeTabOptions[0].id)
 
   const handleTabChange = (key: Key) => {
-    if (key === TaxType.Dzn) {
+    if (key === TaxType.Dzn || key === TaxType.Ko) {
       setSelectedTaxType(key)
     }
   }
@@ -53,7 +49,7 @@ const TaxesFeesSection = () => {
         titleWrapperClassName="pb-0 pt-8 lg:py-0"
         wrapperClassName="lg:pt-14"
       >
-        {channel && <OfficialCorrespondenceChannelInformation />}
+        <OfficialCorrespondenceChannelInformation />
         <TaxesFeesTabs
           selectedKey={selectedTaxType}
           onSelectionChange={handleTabChange}
@@ -63,18 +59,24 @@ const TaxesFeesSection = () => {
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-4 p-4 lg:gap-8 lg:px-0 lg:py-12">
         {!isIdentityVerified &&
           (isInQueue ? (
-            <IdentityVerificationInProcessBanner />
+            <IdentityVerificationBanner variant="verification-in-process" />
           ) : (
-            <IdentityVerificationNeededBanner />
+            <IdentityVerificationBanner variant="verification-needed" />
           ))}
         {isIdentityVerified &&
           (showChannelNeededBanner ? (
             <OfficialCorrespondenceChannelNeededBanner />
           ) : (
-            <TaxesFeesOverview
-              taxesData={taxesData}
-              strapiTaxAdministrator={strapiTaxAdministrator}
-            />
+            <div className="flex flex-col gap-4 lg:gap-6">
+              {(taxesData[selectedTaxType]?.taxAdministrator || strapiTaxAdministrator) && (
+                <TaxesFeesAdministratorCardWrapper
+                  taxType={selectedTaxType}
+                  beTaxAdministrator={taxesData[selectedTaxType]?.taxAdministrator ?? null}
+                  strapiTaxAdministrator={strapiTaxAdministrator}
+                />
+              )}
+              <TaxesFeesOverview taxesData={taxesData[selectedTaxType]} taxType={selectedTaxType} />
+            </div>
           ))}
       </div>
     </>

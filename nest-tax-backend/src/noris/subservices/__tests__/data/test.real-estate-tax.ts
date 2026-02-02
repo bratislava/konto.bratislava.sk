@@ -1,8 +1,8 @@
 import { NorisRealEstateTax } from '../../../types/noris.types'
 
 export const testRealEstateTax1: NorisRealEstateTax = {
+  stav_dokladu: 'Z',
   adresa_tp_sidlo: 'Hlavná ulica, Testovacia Obec, 12345',
-  sposob_dorucenia: 'E',
   cislo_poradace: 12_561,
   cislo_subjektu: 139_431_111,
   cislo_konania: '1/25/019623-36/21/925188',
@@ -92,13 +92,12 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   SPL4_3: '37,96',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: '1234567890',
   uhrazeno: 113.9,
 }
 
 export const testRealEstateTax2: NorisRealEstateTax = {
+  stav_dokladu: 'Z',
   adresa_tp_sidlo: null,
-  sposob_dorucenia: null,
   cislo_poradace: 98_765,
   cislo_subjektu: 234_567_890,
   cislo_konania: null,
@@ -185,13 +184,12 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   SPL4_3: '',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: null,
   uhrazeno: 250.5,
 }
 
 export const testRealEstateTax3 = {
+  stav_dokladu: 'Z',
   adresa_tp_sidlo: 'Druhá ulica, Mesto Test, 54321',
-  sposob_dorucenia: 'P',
   cislo_poradace: 54_321,
   cislo_subjektu: 345_678_901,
   cislo_konania: '2/26/028734-45/22/836299',
@@ -281,7 +279,6 @@ export const testRealEstateTax3 = {
   SPL4_3: '150,25',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: '9876543210',
   uhrazeno: '450.75',
 }
 

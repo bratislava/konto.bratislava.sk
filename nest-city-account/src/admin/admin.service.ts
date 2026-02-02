@@ -38,7 +38,6 @@ import {
   removeLegalPersonDataFromDatabase,
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
-import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
@@ -633,21 +632,6 @@ export class AdminService {
       validatedUsers: result.success.length,
       entities: result,
     }
-  }
-
-  async deleteTax(data: RequestAdminDeleteTaxDto): Promise<OnlySuccessDto> {
-    const user = await this.prismaService.user.findUnique({
-      where: { birthNumber: data.birthNumber, ...ACTIVE_USER_FILTER },
-    })
-    if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND
-      )
-    }
-
-    await this.taxSubservice.deleteTax(data)
-    return { success: true }
   }
 
   async getNewVerifiedUsersBirthNumbers(

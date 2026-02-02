@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -19,7 +20,10 @@ export class BloomreachService {
     'binary',
   ).toString('base64')
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly configService: ConfigService,
+  ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
       !process.env.BLOOMREACH_API_KEY ||
@@ -39,6 +43,16 @@ export class BloomreachService {
     cognitoId: string,
     eventName: BloomreachEventNameEnum,
   ): Promise<boolean> {
+    if (
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_SEND_BLOOMREACH_EVENTS',
+      ) !== 'true'
+    ) {
+      this.logger.debug(
+        `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}. Object content: ${JSON.stringify(data)}`,
+      )
+      return true
+    }
     const eventResponse = await fetch(
       `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
       {

@@ -18,7 +18,6 @@ export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue
 }
 
-// Helper mapping functions to improve maintainability
 export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   return {
     birthNumber: data.ICO_RC,
@@ -245,9 +244,8 @@ export const mapNorisToRealEstateDatabaseDetail = (
       const taxDetailItem = {
         areaType: taxType,
         type: valueTaxConfig.areaType,
-        base: currency((data[baseKey] as string).replace(',', '.')).intValue,
-        amount: currency((data[amountKey] as string).replace(',', '.'))
-          .intValue,
+        base: convertCurrencyToInt(data[baseKey] as string),
+        amount: convertCurrencyToInt(data[amountKey] as string),
         area: valueTaxConfig.area
           ? (data[
               `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisRealEstateTax

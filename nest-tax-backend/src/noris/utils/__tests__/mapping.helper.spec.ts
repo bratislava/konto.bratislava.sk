@@ -1,7 +1,10 @@
 /* eslint-disable no-secrets/no-secrets */
 import { TaxType } from '@prisma/client'
 
-import { RealEstateTaxPropertyType } from '../../../prisma/json-types'
+import {
+  RealEstateTaxAreaType,
+  RealEstateTaxPropertyType,
+} from '../../../prisma/json-types'
 import {
   AreaTypesEnum,
   DeliveryMethod,
@@ -425,7 +428,14 @@ describe('mapNorisToRealEstateTaxDetailData', () => {
     const result = mapNorisToRealEstateDatabaseDetail(
       invalidData as NorisRealEstateTax,
     )
-    expect(() => result).not.toThrow()
+    expect(result.propertyDetails).toContainEqual(
+      expect.objectContaining({
+        areaType: RealEstateTaxAreaType.byt,
+        type: RealEstateTaxPropertyType.APARTMENT,
+        amount: 1050, // '10.50'
+        base: 0, // 'invalid'
+      }),
+    )
   })
 
   it('should process all configured types for each category', () => {

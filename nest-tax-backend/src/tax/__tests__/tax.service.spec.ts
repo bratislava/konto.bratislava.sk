@@ -508,11 +508,15 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
 
-      // Mock getAmountAlreadyPaidByTaxId for each tax
+      // Mock getAmountsAlreadyPaidByTaxIds
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValueOnce(200) // For tax id 1
-        .mockResolvedValueOnce(0) // For tax id 2
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(
+          new Map([
+            [1, 200], // For tax id 1
+            [2, 0], // For tax id 2
+          ]),
+        )
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -566,8 +570,8 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValue(0)
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(new Map([[1, 0]]))
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -624,11 +628,15 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
 
-      // Mock getAmountAlreadyPaidByTaxId for each tax
+      // Mock getAmountsAlreadyPaidByTaxIds
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValueOnce(200) // For tax id 1
-        .mockResolvedValueOnce(0) // For tax id 2
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(
+          new Map([
+            [1, 200], // For tax id 1
+            [2, 0], // For tax id 2
+          ]),
+        )
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -678,11 +686,15 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
 
-      // Mock getAmountAlreadyPaidByTaxId - even if there are payments, amountToBePaid should be undefined
+      // Mock getAmountsAlreadyPaidByTaxIds - even if there are payments, amountToBePaid should be undefined
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValueOnce(300) // For tax id 1 - partially paid but cancelled
-        .mockResolvedValueOnce(500) // For tax id 2 - fully paid but cancelled
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(
+          new Map([
+            [1, 300], // For tax id 1 - partially paid but cancelled
+            [2, 500], // For tax id 2 - fully paid but cancelled
+          ]),
+        )
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -739,8 +751,13 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValue(0)
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(
+          new Map([
+            [1, 0],
+            [2, 0],
+          ]),
+        )
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -776,8 +793,8 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValue(0)
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(new Map([[1, 0]]))
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -813,8 +830,8 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes as any)
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValue(0)
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(new Map([[1, 0]]))
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -855,8 +872,8 @@ describe('TaxService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes as any)
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockResolvedValue(500)
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(new Map([[1, 500]]))
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -919,23 +936,14 @@ describe('TaxService', () => {
 
       // Mock different payment amounts for each tax
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockImplementation((...args: unknown[]) => {
-          const taxId = args[0] as number
-          switch (taxId) {
-            case 1:
-              return Promise.resolve(500)
-
-            case 2:
-              return Promise.resolve(2000)
-
-            case 3:
-              return Promise.resolve(0)
-
-            default:
-              return Promise.resolve(0)
-          }
-        })
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(
+          new Map([
+            [1, 500],
+            [2, 2000],
+            [3, 0],
+          ]),
+        )
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -1029,26 +1037,15 @@ describe('TaxService', () => {
 
       // Mock different payment amounts for each tax
       jest
-        .spyOn(service as any, 'getAmountAlreadyPaidByTaxId')
-        .mockImplementation((...args: unknown[]) => {
-          const taxId = args[0] as number
-          switch (taxId) {
-            case 1:
-              return Promise.resolve(1200)
-
-            case 2:
-              return Promise.resolve(400)
-
-            case 3:
-              return Promise.resolve(0)
-
-            case 4:
-              return Promise.resolve(2000)
-
-            default:
-              return Promise.resolve(0)
-          }
-        })
+        .spyOn(service as any, 'getAmountsAlreadyPaidByTaxIds')
+        .mockResolvedValue(
+          new Map([
+            [1, 1200],
+            [2, 400],
+            [3, 0],
+            [4, 2000],
+          ]),
+        )
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -1826,32 +1823,63 @@ describe('TaxService', () => {
       })
     })
 
-    describe('getAmountAlreadyPaidByTaxId', () => {
-      it('should return total paid amount', async () => {
-        prismaMock.taxPayment.aggregate.mockResolvedValue({
-          _sum: { amount: 500 },
-        } as Prisma.GetTaxPaymentAggregateType<{ _sum: { amount: true } }>)
+    describe('getAmountsAlreadyPaidByTaxIds', () => {
+      it('should return Map with paid amounts for multiple tax IDs', async () => {
+        prismaMock.taxPayment.groupBy.mockResolvedValue([
+          { taxId: 1, _sum: { amount: 500 } },
+          { taxId: 2, _sum: { amount: 1000 } },
+          { taxId: 3, _sum: { amount: null } },
+        ] as any)
 
-        const result = await service['getAmountAlreadyPaidByTaxId'](1)
+        const result = await service['getAmountsAlreadyPaidByTaxIds']([
+          1, 2, 3, 4,
+        ])
 
-        expect(prismaMock.taxPayment.aggregate).toHaveBeenCalledWith({
+        expect(prismaMock.taxPayment.groupBy).toHaveBeenCalledWith({
+          by: ['taxId'],
           where: {
-            taxId: 1,
+            taxId: { in: [1, 2, 3, 4] },
             status: PaymentStatus.SUCCESS,
           },
-          _sum: { amount: true },
+          _sum: {
+            amount: true,
+          },
         })
-        expect(result).toBe(500)
+        expect(result.get(1)).toBe(500)
+        expect(result.get(2)).toBe(1000)
+        expect(result.get(3)).toBe(0) // null converted to 0
+        expect(result.get(4)).toBe(0) // tax with no payments
       })
 
-      it('should return 0 when no payments found', async () => {
-        prismaMock.taxPayment.aggregate.mockResolvedValue({
-          _sum: { amount: null },
-        } as Prisma.GetTaxPaymentAggregateType<{ _sum: { amount: true } }>)
+      it('should return empty Map when taxIds array is empty', async () => {
+        const result = await service['getAmountsAlreadyPaidByTaxIds']([])
 
-        const result = await service['getAmountAlreadyPaidByTaxId'](1)
+        expect(prismaMock.taxPayment.groupBy).not.toHaveBeenCalled()
+        expect(result.size).toBe(0)
+      })
 
-        expect(result).toBe(0)
+      it('should return 0 for taxes with no payments', async () => {
+        prismaMock.taxPayment.groupBy.mockResolvedValue([
+          { taxId: 1, _sum: { amount: 200 } },
+        ] as any)
+
+        const result = await service['getAmountsAlreadyPaidByTaxIds']([1, 2, 3])
+
+        expect(result.get(1)).toBe(200)
+        expect(result.get(2)).toBe(0) // no payments
+        expect(result.get(3)).toBe(0) // no payments
+      })
+
+      it('should handle null amounts correctly', async () => {
+        prismaMock.taxPayment.groupBy.mockResolvedValue([
+          { taxId: 1, _sum: { amount: null } },
+          { taxId: 2, _sum: { amount: 0 } },
+        ] as any)
+
+        const result = await service['getAmountsAlreadyPaidByTaxIds']([1, 2])
+
+        expect(result.get(1)).toBe(0) // null converted to 0
+        expect(result.get(2)).toBe(0)
       })
     })
   })

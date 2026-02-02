@@ -376,9 +376,7 @@ export class TasksService {
   async sendAlertsIfHolidaysAreNotSet() {
     const nextYear = dayjs().year() + 1
 
-    const stateHolidaysForNextYear = stateHolidays.some(
-      (entry) => entry.year === nextYear,
-    )
+    const stateHolidaysForNextYear = !!stateHolidays[nextYear]
 
     if (!stateHolidaysForNextYear) {
       this.throwerErrorGuard.InternalServerErrorException(

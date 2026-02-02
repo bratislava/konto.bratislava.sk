@@ -9,7 +9,6 @@ import {
   NorisTaxPaymentSchema,
 } from './noris.schema'
 
-// Type inference from schemas
 export type NorisBaseTax = z.infer<typeof NorisBaseTaxSchema>
 
 /**

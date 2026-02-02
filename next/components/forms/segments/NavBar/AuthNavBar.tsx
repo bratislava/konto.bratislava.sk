@@ -11,12 +11,12 @@ import { getLanguageKey } from '../../../../frontend/utils/general'
 import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
 import OAuthInfo from '../OAuthConfigure/OAuthInfo'
 
-interface LoginRegisterNavBarProps {
-  className?: string
+type Props = {
   currentLanguage?: string
   backButtonHidden?: boolean
   desktopNavbarRef: RefObject<HTMLDivElement | null>
   mobileNavbarRef: RefObject<HTMLDivElement | null>
+  className?: string
 }
 
 const BackButton = () => {
@@ -31,14 +31,18 @@ const BackButton = () => {
   )
 }
 
-// TODO consider deleting this file and use NavBar instead
-export const LoginRegisterNavBar = ({
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=fPsumQDg2MzoD5cz-4
+ * TODO consider deleting this file and use NavBar instead
+ */
+
+export const AuthNavBar = ({
   className,
   currentLanguage = 'sk',
   backButtonHidden,
   desktopNavbarRef,
   mobileNavbarRef,
-}: LoginRegisterNavBarProps) => {
+}: Props) => {
   const { t } = useTranslation('account')
   const languageKey = getLanguageKey(currentLanguage)
 
@@ -115,4 +119,4 @@ export const LoginRegisterNavBar = ({
   )
 }
 
-export default LoginRegisterNavBar
+export default AuthNavBar

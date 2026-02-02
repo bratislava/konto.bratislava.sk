@@ -176,7 +176,7 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="login-register" hideBackButton>
+      <PageLayout variant="auth" hideBackButton>
         <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
           <LoginForm onSubmit={onLogin} error={loginError} />
           <HorizontalDivider />

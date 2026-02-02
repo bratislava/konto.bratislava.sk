@@ -191,7 +191,7 @@ const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="login-register"
+      <PageLayout variant="auth"
         hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef}>

@@ -9,8 +9,5 @@ module.exports = {
   // makes the translation json file flat
   keySeparator: false,
   // Translations in account forms (registration, login...) are thrown away during parsing. This is quick fix, how to keep them.
-  keepRemoved: [
-    /^(?:account:)?auth\.fields\.[^.]+_(format|required)$/,
-    /^account:correspondence_address_change\.fields\.(street_address|locality|postal_code)_(format|required)$/,
-  ],
+  keepRemoved: [/^(?:account:)?auth\.fields\.[^.]+_(format|required)$/],
 }

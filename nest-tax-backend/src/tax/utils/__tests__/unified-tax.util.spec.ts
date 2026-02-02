@@ -662,6 +662,34 @@ describe('UnifiedTaxUtil', () => {
           expectEqualAsJsonStringsWithDates(output, expected)
         })
 
+        it('undefined dateOfValidity should never set status to AFTER_DUE_DATE even when today is in the future', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            dateOfValidity: null,
+            today: new Date('2025-09-01'), // In the future, but still able to pay by installments
+            taxPayments: [], // No payments, so first installment should be NOT_PAID
+          })
+
+          expect(output.installmentPayment.installments?.[0].status).toBe(
+            InstallmentPaidStatusEnum.NOT_PAID,
+          )
+          expect(output.installmentPayment.installments?.[0].dueDate).toBeUndefined()
+        })
+
+        it('undefined dateOfValidity with partial payment should never set status to AFTER_DUE_DATE even when today is in the future', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            dateOfValidity: null,
+            today: new Date('2025-09-01'), // In the future, but still able to pay by installments
+            taxPayments: [{ amount: 100, status: PaymentStatus.SUCCESS }], // Partial payment
+          })
+
+          expect(output.installmentPayment.installments?.[0].status).toBe(
+            InstallmentPaidStatusEnum.PARTIALLY_PAID,
+          )
+          expect(output.installmentPayment.installments?.[0].dueDate).toBeUndefined()
+        })
+
         it('CITY_ACCOUNT uses createdAt (16 days) and returns a working day even when dateOfValidity is null', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,

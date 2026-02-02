@@ -304,7 +304,7 @@ const calculateInstallmentStatus = (
     const installmentDueDate = installmentDueDates[i]
     // If due date is undefined, we can't determine if it's late, so use the original status
     const isDueDateInFuture =
-      installmentDueDate !== undefined &&
+      installmentDueDate === undefined ||
       installmentDueDate.isAfter(dayjs(today))
     const isLateInstallment =
       !isDueDateInFuture &&

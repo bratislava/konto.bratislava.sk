@@ -75,5 +75,3 @@ declare global {
     type TaxDetailType = TaxDetail
   }
 }
-
-export {}

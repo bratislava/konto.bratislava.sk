@@ -21,7 +21,7 @@ const PasswordEyeButton = ({ isPasswordHidden, onToggle, className, ...restProps
       aria-label={t('auth.fields.password_eyeButton.aria')}
       isSelected={!isPasswordHidden}
       onChange={(selected) => onToggle(!selected)}
-      className={cn("flex size-11 items-center justify-center", className)}
+      className={cn("flex items-center justify-center", className)}
       {...restProps}
     >
       {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}

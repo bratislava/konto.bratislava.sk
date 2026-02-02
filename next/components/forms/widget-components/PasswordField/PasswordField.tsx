@@ -58,7 +58,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
             isPasswordHidden={isPasswordHidden}
             onToggle={setIsPasswordHidden}
             isDisabled={disabled}
-            className="absolute inset-y-1/2 right-1 -translate-y-2/4"
+            className="absolute h-full aspect-square inset-y-1/2 right-1 -translate-y-2/4"
           />
         }
         {...rest}

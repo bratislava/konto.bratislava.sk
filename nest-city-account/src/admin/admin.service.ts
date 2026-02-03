@@ -3,10 +3,6 @@ import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
-import {
-  UpvsIdentityByUriService,
-  UpvsIdentityByUriServiceCreateManyParam,
-} from 'src/upvs-identity-by-uri/upvs-identity-by-uri.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import {
@@ -55,7 +51,6 @@ export class AdminService {
     private cognitoSubservice: CognitoSubservice,
     private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
-    private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
     private readonly taxSubservice: TaxSubservice,
@@ -530,108 +525,29 @@ export class AdminService {
     return { success: true }
   }
 
+  /**
+   * DEPRECATED: This method constructed URIs from Cognito user names, which was unreliable.
+   *
+   * Identity resolution should now be done via RFO data using
+   * PhysicalEntityService.searchByPersonDataAndUpdateEdesk(), which searches UPVS
+   * by name and date of birth directly without constructing URIs.
+   *
+   * Historical context: This batch job attempted to validate eDesk status by:
+   * 1. Fetching physical entities without URIs
+   * 2. Loading their Cognito user data
+   * 3. Constructing URIs like: rc://sk/{birthNumber}_{familyName}_{givenName}
+   * 4. Batch validating those constructed URIs against UPVS
+   *
+   * Problems with this approach:
+   * - Name formatting in Cognito often differed from official registry
+   * - Multiple given names, surname changes not handled well
+   * - URI construction was a "best guess" that frequently failed
+   */
   async validateEdeskWithUriFromCognito(offset: number) {
-    const physicalEntitiesWithoutUriVerificationAttempts =
-      await this.prismaService.physicalEntity.findMany({
-        where: {
-          userId: { not: null },
-          uri: null,
-          activeEdeskUpdatedAt: null,
-          activeEdeskUpdateFailCount: 0,
-          activeEdeskUpdateFailedAt: null,
-        },
-        take: 100,
-        skip: offset,
-      })
-
-    const physicalEntitiesByBirthNumber = _.keyBy(
-      physicalEntitiesWithoutUriVerificationAttempts,
-      'birthNumber'
+    throw this.throwerErrorGuard.BadRequestException(
+      ErrorsEnum.BAD_REQUEST_ERROR,
+      'This method is deprecated. Use RFO-based identity resolution via PhysicalEntityService.createFromBirthNumber() or updateFromRFO() instead.'
     )
-    const physicalEntitiesByUserId = _.keyBy(
-      physicalEntitiesWithoutUriVerificationAttempts,
-      'userId'
-    )
-
-    if (
-      Object.values(physicalEntitiesByBirthNumber).length !==
-      physicalEntitiesWithoutUriVerificationAttempts.length
-    ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        'Duplicate birth numbers in this batch, aborting'
-      )
-    }
-
-    const users = await this.prismaService.user.findMany({
-      where: {
-        id: {
-          in: physicalEntitiesWithoutUriVerificationAttempts
-            .map((physicalEntity) => physicalEntity.userId)
-            .filter((id) => id !== null) as string[],
-        },
-        externalId: {
-          not: null,
-        },
-        ...ACTIVE_USER_FILTER,
-      },
-    })
-
-    const cognitoUsers = await Promise.all(
-      users.map((user) => {
-        if (!user.externalId) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            UserErrorsEnum.NO_EXTERNAL_ID,
-            UserErrorsResponseEnum.NO_EXTERNAL_ID
-          )
-        }
-        return this.cognitoSubservice.getDataFromCognito(user.externalId).catch(() => undefined)
-      })
-    )
-    const usersMappedToTheirPhysicalEntities = users.map(
-      (user) => physicalEntitiesByUserId[user.id]
-    )
-    const dbAndCognitoData = _.zip(usersMappedToTheirPhysicalEntities, cognitoUsers)
-    const upvsIdentityByUriData = dbAndCognitoData
-      .map(([dbData, cognitoData]) => {
-        if (!cognitoData?.family_name || !cognitoData?.given_name) return null
-        const processedFamilyName = cognitoData?.family_name
-          .replace(/,.*/, '')
-          .trim()
-          .normalize('NFD')
-          .replace(/\p{Diacritic}/gu, '')
-          .toLowerCase()
-        const processedGivenName = cognitoData?.given_name
-          .replace(/,.*/, '')
-          .trim()
-          .normalize('NFD')
-          .replace(/\p{Diacritic}/gu, '')
-          .toLowerCase()
-        const processedBirthNumber = dbData?.birthNumber?.replaceAll('/', '')
-        return {
-          physicalEntityId: dbData?.id,
-          uri: `rc://sk/${processedBirthNumber}_${processedFamilyName}_${processedGivenName}`,
-        }
-      })
-      .filter((data) => data !== null)
-      .filter(_.identity) as UpvsIdentityByUriServiceCreateManyParam
-
-    // TODO move this into physicalEntityService function and call that from here
-    const result = await this.upvsIdentityByUriService.createMany(upvsIdentityByUriData)
-    for (const success of result.success) {
-      if (!success.physicalEntityId) continue
-      await this.physicalEntityService.update({
-        id: success.physicalEntityId,
-        uri: success.uri,
-        activeEdesk: success.data.upvs?.edesk_status === 'deliverable',
-      })
-    }
-
-    return {
-      validatedUsers: result.success.length,
-      entities: result,
-    }
   }
 
   async getNewVerifiedUsersBirthNumbers(

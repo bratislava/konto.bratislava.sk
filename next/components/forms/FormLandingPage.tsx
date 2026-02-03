@@ -1,6 +1,7 @@
 import { formsClient } from '@clients/forms'
 import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { useMutation } from '@tanstack/react-query'
+import PageLayout from 'components/layouts/PageLayout'
 import { isDefined } from 'frontend/utils/general'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -9,7 +10,6 @@ import React from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
-import AccountPageLayout from '../layouts/AccountPageLayout'
 import { ClientLandingPageFormDefinition } from './clientFormDefinitions'
 import FormLandingPageCard from './info-components/FormLandingPageCard'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
@@ -58,7 +58,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
   })
 
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <div className="relative flex flex-col">
         <div className="size-full bg-gray-50 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
           <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
@@ -96,7 +96,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           </div>
         </div>
       </div>
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

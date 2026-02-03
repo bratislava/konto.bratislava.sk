@@ -3,7 +3,7 @@ import { MunicipalServiceEntityFragment } from '@clients/graphql-strapi/api'
 import MunicipalServicesSection, {
   MunicipalServicesSectionProps,
 } from 'components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { uniqBy } from 'lodash'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
@@ -60,14 +60,14 @@ const AccountMunicipalServicesPage = ({
   categoriesLegalPerson,
 }: AccountMunicipalServicesPageProps) => {
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <MunicipalServicesSection
         services={services}
         categories={categories}
         servicesLegalPerson={servicesLegalPerson}
         categoriesLegalPerson={categoriesLegalPerson}
       />
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

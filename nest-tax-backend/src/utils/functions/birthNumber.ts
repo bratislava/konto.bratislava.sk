@@ -7,6 +7,7 @@ export function addSlashToBirthNumber(birthNumber: string): string {
     const thrower = new ThrowerErrorGuard()
     throw thrower.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,
+      // eslint-disable-next-line no-secrets/no-secrets
       `Invalid birth number passed to addSlashToBirthNumber ${birthNumber}`,
     )
   }

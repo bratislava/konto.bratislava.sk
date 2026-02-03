@@ -1,8 +1,7 @@
+import cn from 'frontend/cn'
 import NextLink from 'next/link'
 
-import cn from '../../../../frontend/cn'
-
-interface IProps {
+type Props = {
   className?: string
   href: string
   target?: '_blank' | '_self' | '_parent' | '_top'
@@ -14,7 +13,7 @@ interface IProps {
   variant?: 'primary' | 'plain'
 }
 
-const Link = ({
+const NavBarLink = ({
   className,
   href,
   target,
@@ -24,7 +23,7 @@ const Link = ({
   iconPosition,
   iconClassName,
   variant = 'primary',
-}: IProps) => {
+}: Props) => {
   const hasIcon = !!icon
   const hasIconLeft = hasIcon && iconPosition === 'left'
   const hasIconRight = hasIcon && iconPosition === 'right'
@@ -55,4 +54,4 @@ const Link = ({
   )
 }
 
-export default Link
+export default NavBarLink

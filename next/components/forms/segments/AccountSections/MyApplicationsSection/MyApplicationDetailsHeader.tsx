@@ -21,8 +21,8 @@ const MyApplicationDetailsHeader = ({
   data,
   ginisData,
 }: MyApplicationDetailsHeaderBase) => {
-  const { t } = useTranslation('account')
-  const { t: ft } = useTranslation('forms')
+  // TODO Translations
+  const { t } = useTranslation(['account', 'forms'])
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
@@ -43,7 +43,7 @@ const MyApplicationDetailsHeader = ({
   const { icon, text } = useFormStateComponents({ error, state })
 
   const exportPdf = async () => {
-    openSnackbarInfo(ft('info_messages.pdf_export'))
+    openSnackbarInfo(t('forms:info_messages.pdf_export'))
     try {
       if (!formId)
         throw new Error(
@@ -58,10 +58,10 @@ const MyApplicationDetailsHeader = ({
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
       closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.pdf_export'))
+      openSnackbarSuccess(t('forms:success_messages.pdf_export'))
     } catch (error) {
       logger.error(error)
-      openSnackbarError(ft('errors.pdf_export'))
+      openSnackbarError(t('forms:errors.pdf_export'))
     }
   }
 

@@ -1,7 +1,7 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { useTranslation } from 'next-i18next'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
@@ -41,11 +41,11 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-        <LoginRegisterLayout backButtonHidden>
+        <PageLayout variant="auth" hideBackButton>
           <AccountContainer>
             <AccountSuccessAlert variant="loading" title={t('auth.oauth_page.title')} />
           </AccountContainer>
-        </LoginRegisterLayout>
+        </PageLayout>
       </AmplifyClientOAuthProvider>
     </HydrationBoundary>
   )

@@ -1,7 +1,6 @@
 import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import PageLayout from 'components/layouts/PageLayout'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -113,81 +112,83 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
         <AccountContainer ref={accountContainerRef}>
           {(tierStatus.isIdentityVerificationNotYetAttempted ||
             tierStatus.isNotVerifiedIdentityCard) && (
-              <>
-                {isLegalEntity ? (
-                  <LegalPersonVerificationPageContent
-                    showSkipButton={!isIdentityVerificationRequired}
-                  />
-                ) : (
-                  <IdentityVerificationOfPhysicalEntityForm
-                    onSubmit={verifyIdentityAndRefreshUserData}
-                    error={identityVerificationError}
-                    showSkipButton={!isIdentityVerificationRequired}
-                  />
-                )}
-              </>
-            )}
+            <>
+              {isLegalEntity ? (
+                <LegalPersonVerificationPageContent
+                  showSkipButton={!isIdentityVerificationRequired}
+                />
+              ) : (
+                <IdentityVerificationOfPhysicalEntityForm
+                  onSubmit={verifyIdentityAndRefreshUserData}
+                  error={identityVerificationError}
+                  showSkipButton={!isIdentityVerificationRequired}
+                />
+              )}
+            </>
+          )}
           {tierStatus.isInQueue && (
-            <AccountVerificationPendingAlert
+            <AccountSuccessAlert
+              variant="pending"
               title={t('auth.identity_verification.fo.pending.title')}
               {...(isOAuthLogin
                 ? {
-                  confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                  onConfirm: () => {
-                    // TODO OAuth: What to do here whe identity verification is pending?
-                  },
-                  description:
-                    lastRc && lastIdCard
-                      ? t('auth.identity_verification.fo.pending_oauth.content', {
-                        rc: lastRc,
-                        idCard: lastIdCard,
-                        clientTitle,
-                      })
-                      : t('auth.identity_verification.fo.pending_oauth.content_without_data', {
-                        clientTitle,
-                      }),
-                }
+                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                    onConfirm: () => {
+                      // TODO OAuth: What to do here whe identity verification is pending?
+                    },
+                    description:
+                      lastRc && lastIdCard
+                        ? t('auth.identity_verification.fo.pending_oauth.content', {
+                            rc: lastRc,
+                            idCard: lastIdCard,
+                            clientTitle,
+                          })
+                        : t('auth.identity_verification.fo.pending_oauth.content_without_data', {
+                            clientTitle,
+                          }),
+                  }
                 : {
-                  confirmLabel: t('auth.continue_to_account'),
-                  onConfirm: () => {
-                    redirect()
-                  },
-                  description:
-                    lastRc && lastIdCard
-                      ? t('auth.identity_verification.fo.pending.content', {
-                        rc: lastRc,
-                        idCard: lastIdCard,
-                      })
-                      : t('auth.identity_verification.fo.pending.content_without_data'),
-                })}
+                    confirmLabel: t('auth.continue_to_account'),
+                    onConfirm: () => {
+                      redirect()
+                    },
+                    description:
+                      lastRc && lastIdCard
+                        ? t('auth.identity_verification.fo.pending.content', {
+                            rc: lastRc,
+                            idCard: lastIdCard,
+                          })
+                        : t('auth.identity_verification.fo.pending.content_without_data'),
+                  })}
             />
           )}
           {tierStatus.isIdentityVerified && (
             <AccountSuccessAlert
+              variant="success"
               title={t('auth.identity_verification.common.success.title')}
               description={
                 isLegalEntity
                   ? t('auth.identity_verification.fop_po_eid.success.content')
                   : lastRc &&
-                  lastIdCard &&
-                  t('auth.identity_verification.fo.success.content', {
-                    rc: lastRc,
-                    idCard: lastIdCard,
-                  })
+                    lastIdCard &&
+                    t('auth.identity_verification.fo.success.content', {
+                      rc: lastRc,
+                      idCard: lastIdCard,
+                    })
               }
               {...(isOAuthLogin
                 ? {
-                  confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                  onConfirm: () => {
-                    storeTokensAndRedirect()
-                  },
-                }
+                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                    onConfirm: () => {
+                      storeTokensAndRedirect()
+                    },
+                  }
                 : {
-                  confirmLabel: t('auth.continue_to_account'),
-                  onConfirm: () => {
-                    redirect()
-                  },
-                })}
+                    confirmLabel: t('auth.continue_to_account'),
+                    onConfirm: () => {
+                      redirect()
+                    },
+                  })}
             />
           )}
         </AccountContainer>

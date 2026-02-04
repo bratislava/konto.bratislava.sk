@@ -387,6 +387,7 @@ export class TaxService {
       taxId: tax.id,
       overallAmount: tax.amount,
       taxPayments: tax.taxPayments,
+      taxType: type,
     })
   }
 

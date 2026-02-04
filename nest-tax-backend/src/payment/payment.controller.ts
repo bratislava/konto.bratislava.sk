@@ -23,13 +23,13 @@ import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
+import { PaymentResponseQueryDto } from '../gpwebpay/dtos/gpwebpay.dto'
 import { Tiers } from '../utils/decorators/tier.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
 } from '../utils/guards/dtos/error.dto'
-import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   PaymentRedirectResponseDto,
@@ -165,8 +165,13 @@ export class PaymentController {
     type: ResponseErrorDto,
   })
   @Redirect()
-  @Get('cardpay/response')
-  async paymentResponse(@Query() query: PaymentResponseQueryDto) {
-    return { url: await this.paymentService.processPaymentResponse(query) }
+  @Get('cardpay/response/:taxType')
+  async paymentResponse(
+    @Param('taxType', new ParseEnumPipe(TaxType)) taxType: TaxType,
+    @Query() query: PaymentResponseQueryDto,
+  ) {
+    return {
+      url: await this.paymentService.processPaymentResponse(taxType, query),
+    }
   }
 }

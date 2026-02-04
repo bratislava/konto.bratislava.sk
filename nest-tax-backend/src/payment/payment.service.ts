@@ -335,19 +335,21 @@ export class PaymentService {
         taxPayment = taxPaymentWithTax
       }
 
-      const user = await this.retryService.retryWithDelay(
-        () =>
-          this.cityAccountSubservice.getUserDataAdmin(
-            taxPaymentWithTax.tax.taxPayer.birthNumber,
-          ),
-        'getUserDataAdmin',
-        3,
-        1000, // 1 second delay, 3 retries
-      )
-      await this.trackPaymentInBloomreach(
-        taxPayment,
-        user?.externalId ?? undefined,
-      )
+      if (nextStatus === PaymentStatus.SUCCESS) {
+        const user = await this.retryService.retryWithDelay(
+          () =>
+            this.cityAccountSubservice.getUserDataAdmin(
+              taxPaymentWithTax.tax.taxPayer.birthNumber,
+            ),
+          'getUserDataAdmin',
+          3,
+          1000, // 1 second delay, 3 retries
+        )
+        await this.trackPaymentInBloomreach(
+          taxPayment,
+          user?.externalId ?? undefined,
+        )
+      }
 
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
     } catch (error) {

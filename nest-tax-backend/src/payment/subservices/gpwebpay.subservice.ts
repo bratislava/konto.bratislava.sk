@@ -8,7 +8,7 @@ import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,
   SignedOrderData,
-} from './dtos/gpwebpay.dto'
+} from '../dtos/gpwebpay.dto'
 
 export const GP_WEBPAY_CONFIG_KEYS: Record<
   TaxType,
@@ -35,7 +35,7 @@ export const GP_WEBPAY_CONFIG_KEYS: Record<
 // TODO finalize all calls
 
 @Injectable()
-export class GpWebpayService {
+export class GpWebpaySubservice {
   constructor(private readonly configService: ConfigService) {}
 
   private readonly getDataToSign = (data: CreateOrderData): string => {

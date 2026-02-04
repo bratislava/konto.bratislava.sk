@@ -7,11 +7,11 @@ import { TaxType } from '@prisma/client'
 import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,
-} from '../dtos/gpwebpay.dto'
-import { GpWebpayService } from '../gpwebpay.service'
+} from '../../dtos/gpwebpay.dto'
+import { GpWebpaySubservice } from '../gpwebpay.subservice'
 
-describe('GpWebpayService', () => {
-  let service: GpWebpayService
+describe('GpWebpaySubservice', () => {
+  let service: GpWebpaySubservice
 
   const mockConfigService = {
     getOrThrow: jest.fn((key: string) => {
@@ -37,7 +37,7 @@ describe('GpWebpayService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        GpWebpayService,
+        GpWebpaySubservice,
         {
           provide: ConfigService,
           useValue: mockConfigService,
@@ -45,7 +45,7 @@ describe('GpWebpayService', () => {
       ],
     }).compile()
 
-    service = module.get<GpWebpayService>(GpWebpayService)
+    service = module.get<GpWebpaySubservice>(GpWebpaySubservice)
   })
 
   describe('getDataToSign', () => {

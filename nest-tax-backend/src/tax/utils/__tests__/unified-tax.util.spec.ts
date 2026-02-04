@@ -1497,6 +1497,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       amount: 2200,
       taxId: 123,
       description: 'Platba 1. splatky za dane pre BA s id dane 123',
+      taxType: TaxType.DZN,
     })
   })
 
@@ -1511,6 +1512,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       amount: 2199,
       taxId: 123,
       description: 'Platba zostatku 1. splatky za dane pre BA s id dane 123',
+      taxType: TaxType.DZN,
     })
   })
 
@@ -1649,10 +1651,12 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
       amount: number
       status: PaymentStatus
     }[]
+    taxType: TaxType
   } = {
     taxId: 123,
     overallAmount: 6600,
     taxPayments: [],
+    taxType: TaxType.DZN,
   }
   it('should generate full payment', () => {
     const output = getTaxDetailPureForOneTimeGenerator(options)
@@ -1661,6 +1665,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
       amount: 6600,
       taxId: 123,
       description: 'Platba za dane pre BA s id dane 123',
+      taxType: TaxType.DZN,
     })
   })
 
@@ -1681,6 +1686,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
       amount: 6599,
       taxId: 123,
       description: 'Platba zostatku za dane pre BA s id dane 123',
+      taxType: TaxType.DZN,
     })
   })
 

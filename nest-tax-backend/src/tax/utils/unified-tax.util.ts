@@ -580,13 +580,14 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
 
 export const getTaxDetailPureForOneTimeGenerator = (options: {
   taxId: number
+  taxType: TaxType
   overallAmount: number
   taxPayments: {
     amount: number
     status: PaymentStatus
   }[]
 }): PaymentGateURLGeneratorDto => {
-  const { taxId, overallAmount, taxPayments } = options
+  const { taxId, taxType, overallAmount, taxPayments } = options
 
   let overallPaid = 0
   taxPayments.forEach((payment) => {
@@ -613,6 +614,7 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
     amount: overallBalance,
     taxId,
     description,
+    taxType,
   }
 }
 
@@ -737,5 +739,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     amount: activeInstallmentInfo.remainingAmount,
     taxId,
     description,
+    taxType,
   }
 }

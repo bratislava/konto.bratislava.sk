@@ -2155,6 +2155,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {string} taxType
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2166,6 +2167,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     paymentControllerPaymentResponse: async (
+      taxType: string,
       dIGEST: string,
       dIGEST1: string,
       oPERATION: string,
@@ -2175,6 +2177,8 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       rESULTTEXT: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'taxType' is not null or undefined
+      assertParamExists('paymentControllerPaymentResponse', 'taxType', taxType)
       // verify required parameter 'dIGEST' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'dIGEST', dIGEST)
       // verify required parameter 'dIGEST1' is not null or undefined
@@ -2189,7 +2193,10 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       assertParamExists('paymentControllerPaymentResponse', 'sRCODE', sRCODE)
       // verify required parameter 'rESULTTEXT' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'rESULTTEXT', rESULTTEXT)
-      const localVarPath = `/payment/cardpay/response`
+      const localVarPath = `/payment/cardpay/response/{taxType}`.replace(
+        `{${'taxType'}}`,
+        encodeURIComponent(String(taxType)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2329,6 +2336,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {string} taxType
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2340,6 +2348,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async paymentControllerPaymentResponse(
+      taxType: string,
       dIGEST: string,
       dIGEST1: string,
       oPERATION: string,
@@ -2350,6 +2359,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.paymentControllerPaymentResponse(
+        taxType,
         dIGEST,
         dIGEST1,
         oPERATION,
@@ -2425,6 +2435,7 @@ export const PaymentApiFactory = function (
     },
     /**
      *
+     * @param {string} taxType
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2436,6 +2447,7 @@ export const PaymentApiFactory = function (
      * @throws {RequiredError}
      */
     paymentControllerPaymentResponse(
+      taxType: string,
       dIGEST: string,
       dIGEST1: string,
       oPERATION: string,
@@ -2447,6 +2459,7 @@ export const PaymentApiFactory = function (
     ): AxiosPromise<void> {
       return localVarFp
         .paymentControllerPaymentResponse(
+          taxType,
           dIGEST,
           dIGEST1,
           oPERATION,
@@ -2507,6 +2520,7 @@ export class PaymentApi extends BaseAPI {
 
   /**
    *
+   * @param {string} taxType
    * @param {string} dIGEST
    * @param {string} dIGEST1
    * @param {string} oPERATION
@@ -2518,6 +2532,7 @@ export class PaymentApi extends BaseAPI {
    * @throws {RequiredError}
    */
   public paymentControllerPaymentResponse(
+    taxType: string,
     dIGEST: string,
     dIGEST1: string,
     oPERATION: string,
@@ -2529,6 +2544,7 @@ export class PaymentApi extends BaseAPI {
   ) {
     return PaymentApiFp(this.configuration)
       .paymentControllerPaymentResponse(
+        taxType,
         dIGEST,
         dIGEST1,
         oPERATION,

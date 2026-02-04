@@ -298,7 +298,9 @@ describe('PaymentService', () => {
         jest
           .spyOn(retryService, 'retryWithDelay')
           .mockResolvedValue({ externalId: 'ext-123' } as any)
-        jest.spyOn(service, 'trackPaymentInBloomreach').mockResolvedValue()
+        const trackSpy = jest
+          .spyOn(service, 'trackPaymentInBloomreach')
+          .mockResolvedValue()
 
         const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
 
@@ -308,15 +310,22 @@ describe('PaymentService', () => {
         })
 
         expect(updateSpy).not.toHaveBeenCalled()
+        expect(trackSpy).not.toHaveBeenCalled()
         expect(result).toContain(`status=${expectedState}`)
       },
     )
 
     it('should return FAILED_TO_VERIFY if ORDERNUMBER is missing', async () => {
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
+
       const result = await service.processPaymentResponse({
         ...mockQuery,
         ORDERNUMBER: undefined,
       } as any)
+
+      expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
         `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`,
       )
@@ -325,8 +334,13 @@ describe('PaymentService', () => {
     it('should return FAILED_TO_VERIFY if DIGEST verification fails', async () => {
       jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(false)
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
 
       const result = await service.processPaymentResponse(mockQuery)
+
+      expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
         `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`,
       )
@@ -335,8 +349,13 @@ describe('PaymentService', () => {
     it('should return PAYMENT_FAILED if payment is not found in database', async () => {
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
       jest.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue(null)
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
 
       const result = await service.processPaymentResponse(mockQuery)
+
+      expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
         `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,
       )
@@ -350,6 +369,11 @@ describe('PaymentService', () => {
       jest.spyOn(prismaMock.taxPayment, 'update').mockResolvedValue({
         ...mockTaxPayment,
         status: PaymentStatus.SUCCESS,
+        tax: {
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+        },
       } as any)
       jest
         .spyOn(retryService, 'retryWithDelay')
@@ -380,7 +404,13 @@ describe('PaymentService', () => {
       jest
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
+      jest
+        .spyOn(retryService, 'retryWithDelay')
+        .mockResolvedValue({ externalId: 'ext-123' } as any)
       const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
 
       const result = await service.processPaymentResponse({
         ...mockQuery,
@@ -388,6 +418,7 @@ describe('PaymentService', () => {
       })
 
       expect(updateSpy).not.toHaveBeenCalled()
+      expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toContain(
         `status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}`,
       )
@@ -399,6 +430,12 @@ describe('PaymentService', () => {
       jest
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
+      jest
+        .spyOn(retryService, 'retryWithDelay')
+        .mockResolvedValue({ externalId: 'ext-123' } as any)
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
 
       const result = await service.processPaymentResponse({
         ...mockQuery,
@@ -406,6 +443,7 @@ describe('PaymentService', () => {
       })
 
       expect(updateSpy).not.toHaveBeenCalled()
+      expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toContain(
         `status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`,
       )
@@ -419,7 +457,18 @@ describe('PaymentService', () => {
       jest.spyOn(prismaMock.taxPayment, 'update').mockResolvedValue({
         ...mockTaxPayment,
         status: PaymentStatus.FAIL,
+        tax: {
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+        },
       } as any)
+      jest
+        .spyOn(retryService, 'retryWithDelay')
+        .mockResolvedValue({ externalId: 'ext-123' } as any)
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
 
       const result = await service.processPaymentResponse({
         ...mockQuery,
@@ -431,6 +480,7 @@ describe('PaymentService', () => {
           data: expect.objectContaining({ status: PaymentStatus.FAIL }),
         }),
       )
+      expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toContain(
         `status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,
       )
@@ -445,7 +495,9 @@ describe('PaymentService', () => {
       jest
         .spyOn(retryService, 'retryWithDelay')
         .mockResolvedValue({ externalId: 'ext-123' } as any)
-      jest.spyOn(service, 'trackPaymentInBloomreach').mockResolvedValue()
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
 
       const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
 
@@ -455,6 +507,7 @@ describe('PaymentService', () => {
       })
 
       expect(updateSpy).not.toHaveBeenCalled()
+      expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toContain(
         `status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,
       )
@@ -468,10 +521,15 @@ describe('PaymentService', () => {
       jest
         .spyOn(throwerErrorGuard, 'UnprocessableEntityException')
         .mockReturnValue(mockError as any)
+      const trackSpy = jest
+        .spyOn(service, 'trackPaymentInBloomreach')
+        .mockResolvedValue()
 
       await expect(service.processPaymentResponse(mockQuery)).rejects.toThrow(
         'Mapped Error',
       )
+
+      expect(trackSpy).not.toHaveBeenCalled()
     })
   })
 })

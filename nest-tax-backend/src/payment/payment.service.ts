@@ -10,11 +10,6 @@ import {
 import formurlencoded from 'form-urlencoded'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { PaymentResponseQueryDto } from '../gpwebpay/dtos/gpwebpay.dto'
-import {
-  GP_WEBPAY_CONFIG_KEYS,
-  GpWebpayService,
-} from '../gpwebpay/gpwebpay.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { TaxService } from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -29,7 +24,12 @@ import {
   CustomErrorPaymentTypesEnum,
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
+import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import {
+  GP_WEBPAY_CONFIG_KEYS,
+  GpWebpaySubservice,
+} from './subservices/gpwebpay.subservice'
 
 interface GpWebpayProcessingStrategy {
   dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
@@ -43,7 +43,7 @@ export class PaymentService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly gpWebpayService: GpWebpayService,
+    private readonly gpWebpaySubservice: GpWebpaySubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly configService: ConfigService,
@@ -99,7 +99,7 @@ export class PaymentService {
         DESCRIPTION: options.description,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
-      const signedData = this.gpWebpayService.getSignedData(
+      const signedData = this.gpWebpaySubservice.getSignedData(
         options.taxType,
         requestData,
       )
@@ -214,7 +214,7 @@ export class PaymentService {
     }
 
     try {
-      const dataToVerify = this.gpWebpayService.getDataToVerify({
+      const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
         OPERATION,
         ORDERNUMBER,
         PRCODE,
@@ -223,8 +223,8 @@ export class PaymentService {
       })
       if (
         !(
-          this.gpWebpayService.verifyData(taxType, dataToVerify, DIGEST) &&
-          this.gpWebpayService.verifyData(
+          this.gpWebpaySubservice.verifyData(taxType, dataToVerify, DIGEST) &&
+          this.gpWebpaySubservice.verifyData(
             taxType,
             `${dataToVerify}|${this.configService.getOrThrow<string>(GP_WEBPAY_CONFIG_KEYS[taxType].PAYGATE_MERCHANT_NUMBER)}`,
             DIGEST1,

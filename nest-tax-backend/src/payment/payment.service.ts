@@ -52,6 +52,20 @@ export class PaymentService {
     private readonly retryService: RetryService,
   ) {}
 
+  private getRedirectUrl(taxType: TaxType) {
+    const redirectUrl = this.configService.getOrThrow<string>(
+      'PAYGATE_REDIRECT_URL',
+    )
+
+    const url = new URL(redirectUrl)
+
+    const basePath = url.pathname.endsWith('/')
+      ? url.pathname
+      : `${url.pathname}/`
+
+    return new URL(taxType, `${url.origin}${basePath}`).toString()
+  }
+
   /**
    * @internal
    * DO NOT EXPOSE THIS METHOD DIRECTLY IN CONTROLLERS!
@@ -82,10 +96,7 @@ export class PaymentService {
 
     try {
       // data that goes to payment gateway should not contain diacritics
-      const redirectUrl = new URL(
-        options.taxType,
-        this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
-      ).toString()
+      const redirectUrl = this.getRedirectUrl(options.taxType)
       const requestData = {
         MERCHANTNUMBER: this.configService.getOrThrow<string>(
           GP_WEBPAY_CONFIG_KEYS[options.taxType].PAYGATE_MERCHANT_NUMBER,

@@ -22,6 +22,7 @@ describe('PaymentService', () => {
   let throwerErrorGuard: ThrowerErrorGuard
   let gpWebpaySubservice: GpWebpaySubservice
   let retryService: RetryService
+  let configService: ConfigService
 
   beforeEach(async () => {
     jest.resetModules()
@@ -63,7 +64,7 @@ describe('PaymentService', () => {
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
     gpWebpaySubservice = module.get<GpWebpaySubservice>(GpWebpaySubservice)
     retryService = module.get<RetryService>(RetryService)
-    const configService = module.get<ConfigService>(ConfigService)
+    configService = module.get<ConfigService>(ConfigService)
 
     jest
       .spyOn(configService, 'getOrThrow')
@@ -535,6 +536,115 @@ describe('PaymentService', () => {
       await expect(
         service.processPaymentResponse(TaxType.DZN, mockQuery),
       ).rejects.toThrow('Mapped Error')
+    })
+  })
+
+  describe('getRedirectUrl', () => {
+    it('should append taxType to base URL without trailing slash', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'http://localhost:3000/payment/cardpay/response'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('http://localhost:3000/payment/cardpay/response/DZN')
+    })
+
+    it('should append taxType to base URL with trailing slash', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'http://localhost:3000/payment/cardpay/response/'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.KO)
+
+      expect(result).toBe('http://localhost:3000/payment/cardpay/response/KO')
+    })
+
+    it('should handle different TaxType values', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response'
+          }
+          return 'mock-value'
+        })
+
+      const resultDZN = (service as any).getRedirectUrl(TaxType.DZN)
+      const resultKO = (service as any).getRedirectUrl(TaxType.KO)
+
+      expect(resultDZN).toBe('https://example.com/payment/response/DZN')
+      expect(resultKO).toBe('https://example.com/payment/response/KO')
+    })
+
+    it('should handle base URL with query parameters', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response?param=value'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('https://example.com/payment/response/DZN')
+    })
+
+    it('should handle base URL with hash', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response#section'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('https://example.com/payment/response/DZN')
+    })
+
+    it('should handle base URL with port number', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'http://localhost:8080/payment/response'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.KO)
+
+      expect(result).toBe('http://localhost:8080/payment/response/KO')
+    })
+
+    it('should handle base URL ending with multiple slashes', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response//'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('https://example.com/payment/response//DZN')
     })
   })
 })

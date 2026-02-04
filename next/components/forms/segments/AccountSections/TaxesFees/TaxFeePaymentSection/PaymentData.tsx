@@ -16,7 +16,7 @@ import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
 import { useUser } from 'frontend/hooks/useUser'
 import { PaymentMethod, PaymentMethodType } from 'frontend/types/types'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
-import { isDefined } from 'frontend/utils/general'
+import { isDefined, isProductionDeployment } from 'frontend/utils/general'
 import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
@@ -151,8 +151,8 @@ const PaymentData = ({ paymentMethod }: Props) => {
         <div className="text-h5">{t('taxes.payment_data.payment_methods_title')}</div>
         <div className="rounded-lg border px-4 lg:px-6">
           {
-            // Temporarily hide pay-by-card option for KO, until we setup correct payment gateway
-            taxData.type !== TaxType.Ko && (
+            // Temporarily hide pay-by-card option for KO on production, until we setup correct payment gateway
+            (taxData.type !== TaxType.Ko || !isProductionDeployment()) && (
               <>
                 <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">

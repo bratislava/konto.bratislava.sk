@@ -307,7 +307,9 @@ describe('PaymentService', () => {
     ])(
       'should not update TaxPayment for PRCODE $prCode (KEEP_CURRENT dbStatus)',
       async ({ prCode, expectedState }) => {
-        jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+        jest
+          .spyOn(gpWebpaySubservice, 'getDataToVerify')
+          .mockReturnValue('data')
         jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
         jest
           .spyOn(prismaMock.taxPayment, 'findUnique')

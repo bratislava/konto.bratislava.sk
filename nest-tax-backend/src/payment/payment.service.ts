@@ -15,8 +15,6 @@ import { TaxService } from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
-import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxPaymentWithTaxInfo } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
@@ -26,7 +24,12 @@ import {
   CustomErrorPaymentTypesEnum,
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
+import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import {
+  GP_WEBPAY_CONFIG_KEY_MAP,
+  GpWebpaySubservice,
+} from './subservices/gpwebpay.subservice'
 
 interface GpWebpayProcessingStrategy {
   dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
@@ -49,32 +52,18 @@ export class PaymentService {
     private readonly retryService: RetryService,
   ) {}
 
-  private async getTaxPaymentByTaxId(
-    id: number,
-  ): Promise<TaxPaymentWithTaxInfo<{ year: true }> | null> {
-    try {
-      return await this.prisma.taxPayment.findFirst({
-        where: {
-          status: PaymentStatus.SUCCESS,
-          taxId: id,
-        },
-        include: {
-          tax: {
-            select: {
-              year: true,
-            },
-          },
-        },
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Can not load data from taxPayment',
-        'Database error',
-        undefined,
-        error,
-      )
-    }
+  private getRedirectUrl(taxType: TaxType) {
+    const redirectUrl = this.configService.getOrThrow<string>(
+      'PAYGATE_REDIRECT_URL',
+    )
+
+    const url = new URL(redirectUrl)
+
+    const basePath = url.pathname.endsWith('/')
+      ? url.pathname
+      : `${url.pathname}/`
+
+    return new URL(taxType, `${url.origin}${basePath}`).toString()
   }
 
   /**
@@ -107,20 +96,24 @@ export class PaymentService {
 
     try {
       // data that goes to payment gateway should not contain diacritics
+      const redirectUrl = this.getRedirectUrl(options.taxType)
       const requestData = {
         MERCHANTNUMBER: this.configService.getOrThrow<string>(
-          'PAYGATE_MERCHANT_NUMBER',
+          GP_WEBPAY_CONFIG_KEY_MAP[options.taxType].PAYGATE_MERCHANT_NUMBER,
         ),
         OPERATION: 'CREATE_ORDER',
         ORDERNUMBER: orderId,
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
+        URL: redirectUrl,
         DESCRIPTION: options.description,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
-      const signedData = this.gpWebpaySubservice.getSignedData(requestData)
+      const signedData = this.gpWebpaySubservice.getSignedData(
+        options.taxType,
+        requestData,
+      )
       return `${this.configService.getOrThrow<string>('PAYGATE_PAYMENT_REDIRECT_URL')}?${formurlencoded(
         signedData,
         {
@@ -215,15 +208,18 @@ export class PaymentService {
     })
   }
 
-  async processPaymentResponse({
-    OPERATION,
-    ORDERNUMBER,
-    PRCODE,
-    SRCODE,
-    DIGEST,
-    DIGEST1,
-    RESULTTEXT,
-  }: PaymentResponseQueryDto): Promise<string> {
+  async processPaymentResponse(
+    taxType: TaxType,
+    {
+      OPERATION,
+      ORDERNUMBER,
+      PRCODE,
+      SRCODE,
+      DIGEST,
+      DIGEST1,
+      RESULTTEXT,
+    }: PaymentResponseQueryDto,
+  ): Promise<string> {
     if (!ORDERNUMBER) {
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
@@ -238,9 +234,10 @@ export class PaymentService {
       })
       if (
         !(
-          this.gpWebpaySubservice.verifyData(dataToVerify, DIGEST) &&
+          this.gpWebpaySubservice.verifyData(taxType, dataToVerify, DIGEST) &&
           this.gpWebpaySubservice.verifyData(
-            `${dataToVerify}|${process.env.PAYGATE_MERCHANT_NUMBER}`,
+            taxType,
+            `${dataToVerify}|${this.configService.getOrThrow<string>(GP_WEBPAY_CONFIG_KEY_MAP[taxType].PAYGATE_MERCHANT_NUMBER)}`,
             DIGEST1,
           )
         )

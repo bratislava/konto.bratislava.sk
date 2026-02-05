@@ -9,12 +9,12 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { TaxService } from '../../tax/tax.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import { PaymentResponseQueryDto } from '../../utils/subservices/dtos/gpwebpay.dto'
-import { GpWebpaySubservice } from '../../utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxInfo } from '../../utils/types/types.prisma'
 import { RetryService } from '../../utils-module/retry.service'
+import { PaymentResponseQueryDto } from '../dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from '../dtos/redirect.payent.dto'
 import { PaymentService } from '../payment.service'
+import { GpWebpaySubservice } from '../subservices/gpwebpay.subservice'
 
 describe('PaymentService', () => {
   let service: PaymentService
@@ -22,14 +22,10 @@ describe('PaymentService', () => {
   let throwerErrorGuard: ThrowerErrorGuard
   let gpWebpaySubservice: GpWebpaySubservice
   let retryService: RetryService
-
-  const originalEnv = process.env
+  let configService: ConfigService
 
   beforeEach(async () => {
     jest.resetModules()
-    process.env = { ...originalEnv }
-    process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND = 'https://frontend.url'
-    process.env.PAYGATE_MERCHANT_NUMBER = '12345'
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -68,6 +64,22 @@ describe('PaymentService', () => {
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
     gpWebpaySubservice = module.get<GpWebpaySubservice>(GpWebpaySubservice)
     retryService = module.get<RetryService>(RetryService)
+    configService = module.get<ConfigService>(ConfigService)
+
+    jest
+      .spyOn(configService, 'getOrThrow')
+      .mockImplementation((key: string) => {
+        switch (key) {
+          case 'PAYGATE_MERCHANT_NUMBER':
+            return '12345'
+
+          case 'PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND':
+            return 'https://frontend.url'
+
+          default:
+            return 'mock-value'
+        }
+      })
   })
 
   describe('trackPaymentInBloomreach', () => {
@@ -271,6 +283,11 @@ describe('PaymentService', () => {
       },
     }
 
+    beforeEach(() => {
+      process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND =
+        'https://frontend.url'
+    })
+
     it.each([
       {
         prCode: '14',
@@ -291,6 +308,9 @@ describe('PaymentService', () => {
     ])(
       'should not update TaxPayment for PRCODE $prCode (KEEP_CURRENT dbStatus)',
       async ({ prCode, expectedState }) => {
+        jest
+          .spyOn(gpWebpaySubservice, 'getDataToVerify')
+          .mockReturnValue('data')
         jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
         jest
           .spyOn(prismaMock.taxPayment, 'findUnique')
@@ -304,7 +324,7 @@ describe('PaymentService', () => {
 
         const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
 
-        const result = await service.processPaymentResponse({
+        const result = await service.processPaymentResponse(TaxType.DZN, {
           ...mockQuery,
           PRCODE: prCode,
         })
@@ -320,7 +340,7 @@ describe('PaymentService', () => {
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const result = await service.processPaymentResponse({
+      const result = await service.processPaymentResponse(TaxType.DZN, {
         ...mockQuery,
         ORDERNUMBER: undefined,
       } as any)
@@ -332,13 +352,19 @@ describe('PaymentService', () => {
     })
 
     it('should return FAILED_TO_VERIFY if DIGEST verification fails', async () => {
+      jest
+        .spyOn(prismaMock.taxPayment, 'findUnique')
+        .mockResolvedValue(mockTaxPayment as any)
       jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(false)
       const trackSpy = jest
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const result = await service.processPaymentResponse(mockQuery)
+      const result = await service.processPaymentResponse(
+        TaxType.DZN,
+        mockQuery,
+      )
 
       expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
@@ -347,13 +373,17 @@ describe('PaymentService', () => {
     })
 
     it('should return PAYMENT_FAILED if payment is not found in database', async () => {
+      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
       jest.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue(null)
       const trackSpy = jest
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const result = await service.processPaymentResponse(mockQuery)
+      const result = await service.processPaymentResponse(
+        TaxType.DZN,
+        mockQuery,
+      )
 
       expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
@@ -362,6 +392,7 @@ describe('PaymentService', () => {
     })
 
     it('should process successful payment (PRCODE 0)', async () => {
+      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
       jest
         .spyOn(prismaMock.taxPayment, 'findUnique')
@@ -382,7 +413,10 @@ describe('PaymentService', () => {
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const result = await service.processPaymentResponse(mockQuery)
+      const result = await service.processPaymentResponse(
+        TaxType.DZN,
+        mockQuery,
+      )
 
       expect(prismaMock.taxPayment.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -400,6 +434,7 @@ describe('PaymentService', () => {
     })
 
     it('should handle "Already Paid" response (PRCODE 14)', async () => {
+      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
       jest
         .spyOn(prismaMock.taxPayment, 'findUnique')
@@ -412,7 +447,7 @@ describe('PaymentService', () => {
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const result = await service.processPaymentResponse({
+      const result = await service.processPaymentResponse(TaxType.DZN, {
         ...mockQuery,
         PRCODE: '14',
       })
@@ -425,6 +460,7 @@ describe('PaymentService', () => {
     })
 
     it('should handle Digest mismatch (PRCODE 31)', async () => {
+      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
       const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
       jest
@@ -437,7 +473,7 @@ describe('PaymentService', () => {
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const result = await service.processPaymentResponse({
+      const result = await service.processPaymentResponse(TaxType.DZN, {
         ...mockQuery,
         PRCODE: '31',
       })
@@ -450,6 +486,7 @@ describe('PaymentService', () => {
     })
 
     it('should transition NEW to FAIL for technical errors (PRCODE 1)', async () => {
+      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
       jest
         .spyOn(prismaMock.taxPayment, 'findUnique')
@@ -470,7 +507,7 @@ describe('PaymentService', () => {
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const result = await service.processPaymentResponse({
+      const result = await service.processPaymentResponse(TaxType.DZN, {
         ...mockQuery,
         PRCODE: '1',
       })
@@ -487,6 +524,7 @@ describe('PaymentService', () => {
     })
 
     it('should not transition to FAIL for technical errors (PRCODE 1) when current status is not NEW', async () => {
+      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
       jest.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue({
         ...mockTaxPayment,
@@ -501,7 +539,7 @@ describe('PaymentService', () => {
 
       const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
 
-      const result = await service.processPaymentResponse({
+      const result = await service.processPaymentResponse(TaxType.DZN, {
         ...mockQuery,
         PRCODE: '1',
       })
@@ -514,6 +552,10 @@ describe('PaymentService', () => {
     })
 
     it('should throw UnprocessableEntityException on unexpected error', async () => {
+      jest
+        .spyOn(prismaMock.taxPayment, 'findUnique')
+        .mockResolvedValue(mockTaxPayment as any)
+      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
       jest.spyOn(gpWebpaySubservice, 'verifyData').mockImplementation(() => {
         throw new Error('Unexpected')
       })
@@ -525,11 +567,120 @@ describe('PaymentService', () => {
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      await expect(service.processPaymentResponse(mockQuery)).rejects.toThrow(
-        'Mapped Error',
-      )
+      await expect(
+        service.processPaymentResponse(TaxType.DZN, mockQuery),
+      ).rejects.toThrow('Mapped Error')
 
       expect(trackSpy).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('getRedirectUrl', () => {
+    it('should append taxType to base URL without trailing slash', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'http://localhost:3000/payment/cardpay/response'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('http://localhost:3000/payment/cardpay/response/DZN')
+    })
+
+    it('should append taxType to base URL with trailing slash', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'http://localhost:3000/payment/cardpay/response/'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.KO)
+
+      expect(result).toBe('http://localhost:3000/payment/cardpay/response/KO')
+    })
+
+    it('should handle different TaxType values', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response'
+          }
+          return 'mock-value'
+        })
+
+      const resultDZN = (service as any).getRedirectUrl(TaxType.DZN)
+      const resultKO = (service as any).getRedirectUrl(TaxType.KO)
+
+      expect(resultDZN).toBe('https://example.com/payment/response/DZN')
+      expect(resultKO).toBe('https://example.com/payment/response/KO')
+    })
+
+    it('should handle base URL with query parameters', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response?param=value'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('https://example.com/payment/response/DZN')
+    })
+
+    it('should handle base URL with hash', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response#section'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('https://example.com/payment/response/DZN')
+    })
+
+    it('should handle base URL with port number', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'http://localhost:8080/payment/response'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.KO)
+
+      expect(result).toBe('http://localhost:8080/payment/response/KO')
+    })
+
+    it('should handle base URL ending with multiple slashes', () => {
+      jest
+        .spyOn(configService, 'getOrThrow')
+        .mockImplementation((key: string) => {
+          if (key === 'PAYGATE_REDIRECT_URL') {
+            return 'https://example.com/payment/response//'
+          }
+          return 'mock-value'
+        })
+
+      const result = (service as any).getRedirectUrl(TaxType.DZN)
+
+      expect(result).toBe('https://example.com/payment/response//DZN')
     })
   })
 })

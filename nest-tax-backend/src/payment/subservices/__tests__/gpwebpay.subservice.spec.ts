@@ -2,11 +2,12 @@ import crypto from 'node:crypto'
 
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { TaxType } from '@prisma/client'
 
 import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,
-} from '../dtos/gpwebpay.dto'
+} from '../../dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from '../gpwebpay.subservice'
 
 describe('GpWebpaySubservice', () => {
@@ -20,6 +21,12 @@ describe('GpWebpaySubservice', () => {
 
         case 'PAYGATE_KEY':
           return 'mock-key'
+
+        case 'PAYGATE_MERCHANT_NUMBER':
+          return 'mock-merchant-number'
+
+        case 'PAYGATE_PASSPHRASE':
+          return 'mock-passphrase'
 
         default:
           throw new Error('Invalid key')
@@ -113,7 +120,7 @@ describe('GpWebpaySubservice', () => {
         URL: 'http://example.com',
       }
 
-      const result = service.getSignedData(mockData)
+      const result = service.getSignedData(TaxType.DZN, mockData)
       expect(result).toEqual({
         ...mockData,
         DIGEST: 'mock-signature',
@@ -129,7 +136,7 @@ describe('GpWebpaySubservice', () => {
         verify: jest.fn().mockReturnValue(true),
       } as any)
 
-      const result = service.verifyData('test-data', 'test-digest')
+      const result = service.verifyData(TaxType.DZN, 'test-data', 'test-digest')
       expect(result).toBe(true)
     })
   })

@@ -157,9 +157,11 @@ export class PhysicalEntityService {
   }> {
     try {
       const results = await this.nasesService.searchUpvsIdentitiesByPersonData({
-        familyName: params.familyName,
-        givenName: params.givenName,
-        dateOfBirth: params.dateOfBirth,
+        natural_person: {
+          family_name: params.familyName,
+          given_name: params.givenName,
+          date_of_birth: params.dateOfBirth,
+        },
       })
 
       if (!Array.isArray(results) || results.length === 0) {

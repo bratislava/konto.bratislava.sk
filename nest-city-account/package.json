@@ -28,7 +28,7 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.888.0",
     "@golevelup/nestjs-rabbitmq": "^7.1.1",
     "@nestjs/common": "^11.1.12",
-    "@nestjs/config": "^4.0.2",
+    "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.1.12",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.12",

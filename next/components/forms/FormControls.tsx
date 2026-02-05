@@ -19,7 +19,7 @@ const FormControls = () => {
               onPress={goToPreviousStep}
               startIcon={<ChevronLeftIcon />}
             >
-              {t('buttons.previous')}
+              {t('form_controls.back')}
             </Button>
           )}
         </div>
@@ -27,7 +27,7 @@ const FormControls = () => {
         <div className="flex flex-wrap gap-5">
           {canGoToNextStep && (
             <Button variant="black-outline" onPress={goToNextStep}>
-              {t('buttons.skip')}
+              {t('form_controls.skip')}
             </Button>
           )}
           <Button
@@ -36,7 +36,7 @@ const FormControls = () => {
             data-cy="continue-button-desktop"
             endIcon={<ArrowRightIcon />}
           >
-            {t('buttons.continue')}
+            {t('form_controls.continue')}
           </Button>
         </div>
       </div>
@@ -44,17 +44,17 @@ const FormControls = () => {
       {/* Mobile */}
       <div className="mt-4 flex flex-col gap-2 md:hidden">
         <Button variant="black-solid" type="submit" fullWidth data-cy="continue-button-mobile">
-          {t('buttons.continue')}
+          {t('form_controls.continue')}
         </Button>
         <div className="flex items-center gap-3">
           {canGoToPreviousStep && (
             <Button variant="black-outline" fullWidth onPress={goToPreviousStep}>
-              {t('buttons.previous')}
+              {t('form_controls.back')}
             </Button>
           )}
           {canGoToNextStep && (
             <Button variant="black-outline" fullWidth onPress={goToNextStep}>
-              {t('buttons.skip')}
+              {t('form_controls.skip')}
             </Button>
           )}
         </div>

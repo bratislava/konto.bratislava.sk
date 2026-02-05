@@ -2,7 +2,8 @@ fragment Tax on Tax {
   accountCommunicationConsentText
   channelChangeEffectiveNextYearText
   channelChangeEffectiveNextYearTitle
-  paymentSuccessFeedbackLink
+  feedbackLinkDzn
+  feedbackLinkKo
 }
 
 query Tax {

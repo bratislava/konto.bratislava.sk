@@ -1,8 +1,7 @@
 import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
@@ -109,7 +108,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout backButtonHidden>
+      <PageLayout variant="auth" hideBackButton>
         <AccountContainer ref={accountContainerRef}>
           {(tierStatus.isIdentityVerificationNotYetAttempted ||
             tierStatus.isNotVerifiedIdentityCard) && (
@@ -128,7 +127,8 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
             </>
           )}
           {tierStatus.isInQueue && (
-            <AccountVerificationPendingAlert
+            <AccountSuccessAlert
+              variant="pending"
               title={t('auth.identity_verification.fo.pending.title')}
               {...(isOAuthLogin
                 ? {
@@ -164,6 +164,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
           )}
           {tierStatus.isIdentityVerified && (
             <AccountSuccessAlert
+              variant="success"
               title={t('auth.identity_verification.common.success.title')}
               description={
                 isLegalEntity
@@ -191,7 +192,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
             />
           )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

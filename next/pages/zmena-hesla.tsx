@@ -1,7 +1,7 @@
 import { updatePassword } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -83,8 +83,8 @@ const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout
-        backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+      <PageLayout variant="auth"
+        hideBackButton={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef}>
           {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
@@ -97,7 +97,7 @@ const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
             <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
           )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

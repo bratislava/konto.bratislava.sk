@@ -74,13 +74,23 @@ describe('UserService', () => {
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).not.toHaveBeenCalled()
     })
     
-    it('should return true when user has no delivery method set at lock date, but selected different delivery method', async () => {
+    it('should return true when user has no delivery method set at lock date, but selected CITY_ACCOUNT', async () => {
       databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates.mockResolvedValue({
         active: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
         locked: undefined,
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
+      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+    })
+
+    it('should return false when user has no delivery method set at lock date, but selected POSTAL', async () => {
+      databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates.mockResolvedValue({
+        active: { deliveryMethod: DeliveryMethodEnum.POSTAL },
+        locked: undefined,
+      })
+      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
+      expect(result).toBe(false)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
     })
 
@@ -140,16 +150,6 @@ describe('UserService', () => {
       databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates.mockResolvedValue({
         active: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
         locked: { deliveryMethod: DeliveryMethodEnum.POSTAL },
-      })
-      const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
-      expect(result).toBe(true)
-      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
-    })
-
-    it('should return true when user has active delivery method but no locked delivery method', async () => {
-      databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates.mockResolvedValue({
-        active: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
-        locked: undefined,
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)

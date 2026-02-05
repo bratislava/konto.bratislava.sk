@@ -175,7 +175,7 @@ export class PaymentController {
     }
   }
 
-  // TODO - remove this endpoint after release
+  // TODO - remove this endpoint after release https://github.com/bratislava/private-konto.bratislava.sk/issues/1225
   @ApiOperation({
     summary:
       'Process payment response without tax type, for compatibility during release.',

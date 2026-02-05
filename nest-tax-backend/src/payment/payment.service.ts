@@ -27,7 +27,7 @@ import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 import {
-  GP_WEBPAY_CONFIG_KEYS,
+  GP_WEBPAY_CONFIG_KEY_MAP,
   GpWebpaySubservice,
 } from './subservices/gpwebpay.subservice'
 
@@ -99,7 +99,7 @@ export class PaymentService {
       const redirectUrl = this.getRedirectUrl(options.taxType)
       const requestData = {
         MERCHANTNUMBER: this.configService.getOrThrow<string>(
-          GP_WEBPAY_CONFIG_KEYS[options.taxType].PAYGATE_MERCHANT_NUMBER,
+          GP_WEBPAY_CONFIG_KEY_MAP[options.taxType].PAYGATE_MERCHANT_NUMBER,
         ),
         OPERATION: 'CREATE_ORDER',
         ORDERNUMBER: orderId,
@@ -237,7 +237,7 @@ export class PaymentService {
           this.gpWebpaySubservice.verifyData(taxType, dataToVerify, DIGEST) &&
           this.gpWebpaySubservice.verifyData(
             taxType,
-            `${dataToVerify}|${this.configService.getOrThrow<string>(GP_WEBPAY_CONFIG_KEYS[taxType].PAYGATE_MERCHANT_NUMBER)}`,
+            `${dataToVerify}|${this.configService.getOrThrow<string>(GP_WEBPAY_CONFIG_KEY_MAP[taxType].PAYGATE_MERCHANT_NUMBER)}`,
             DIGEST1,
           )
         )

@@ -10,7 +10,7 @@ import {
   SignedOrderData,
 } from '../dtos/gpwebpay.dto'
 
-export const GP_WEBPAY_CONFIG_KEYS: Record<
+export const GP_WEBPAY_CONFIG_KEY_MAP: Record<
   TaxType,
   {
     PAYGATE_KEY: string
@@ -82,13 +82,13 @@ export class GpWebpaySubservice {
     signer.end()
 
     const key = this.configService.getOrThrow<string>(
-      GP_WEBPAY_CONFIG_KEYS[taxType].PAYGATE_KEY,
+      GP_WEBPAY_CONFIG_KEY_MAP[taxType].PAYGATE_KEY,
     )
     const signature = signer.sign(
       {
         key,
         passphrase: this.configService.getOrThrow<string>(
-          GP_WEBPAY_CONFIG_KEYS[taxType].PAYGATE_PASSPHRASE,
+          GP_WEBPAY_CONFIG_KEY_MAP[taxType].PAYGATE_PASSPHRASE,
         ),
       },
       'base64',
@@ -108,7 +108,7 @@ export class GpWebpaySubservice {
 
     return verifier.verify(
       this.configService.getOrThrow<string>(
-        GP_WEBPAY_CONFIG_KEYS[taxType].PAYGATE_SIGN_CERT,
+        GP_WEBPAY_CONFIG_KEY_MAP[taxType].PAYGATE_SIGN_CERT,
       ),
       digest,
       'base64',

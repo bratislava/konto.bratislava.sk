@@ -8,7 +8,7 @@ import {
 } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -191,8 +191,8 @@ const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout
-        backButtonHidden={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+      <PageLayout variant="auth"
+        hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef}>
           {emailChangeStatus === EmailChangeStatus.INIT ? (
@@ -213,7 +213,7 @@ const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
             />
           )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

@@ -1,7 +1,7 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -82,34 +82,34 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-        <LoginRegisterLayout backButtonHidden>
+        <PageLayout variant="auth" hideBackButton>
           <AccountContainer>
             <AccountSuccessAlert
               title={t('auth.oauth_page.title')}
               {...(shouldRedirectToIdentityVerification
                 ? {
-                    variant: 'info',
-                    description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
-                    confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
-                    onConfirm: () => {
-                      handleRedirectToIdentityVerification()
-                    },
-                  }
+                  variant: 'info',
+                  description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
+                  confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+                  onConfirm: () => {
+                    handleRedirectToIdentityVerification()
+                  },
+                }
                 : {
-                    variant: 'success',
-                    description: t('auth.oauth_page.description', { email }),
-                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                    onConfirm: () => {
-                      handleOAuthContinue()
-                    },
-                  })}
+                  variant: 'success',
+                  description: t('auth.oauth_page.description', { email }),
+                  confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                  onConfirm: () => {
+                    handleOAuthContinue()
+                  },
+                })}
               confirmIsLoading={isLoading}
               cancelLabel={t('auth.oauth_page.cancel_label')}
               onCancel={handleLogout}
               cancelIsLoading={isLoading}
             />
           </AccountContainer>
-        </LoginRegisterLayout>
+        </PageLayout>
       </AmplifyClientOAuthProvider>
     </HydrationBoundary>
   )

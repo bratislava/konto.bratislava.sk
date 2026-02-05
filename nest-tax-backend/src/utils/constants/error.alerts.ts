@@ -24,4 +24,5 @@ export default [
   CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
   CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
   CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+  CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
 ] as string[]

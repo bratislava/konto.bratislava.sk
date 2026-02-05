@@ -4,7 +4,7 @@ import {
   MunicipalServiceCardEntityFragment,
 } from '@clients/graphql-strapi/api'
 import IntroSection from 'components/forms/segments/AccountSections/IntroSection/IntroSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { isDefined } from 'frontend/utils/general'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
@@ -73,14 +73,14 @@ const AccountIntroPage = ({
   announcementsLegalPerson,
 }: AccountIntroPageProps) => {
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <IntroSection
         services={services}
         servicesLegalPerson={servicesLegalPerson}
         announcements={announcements}
         announcementsLegalPerson={announcementsLegalPerson}
       />
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

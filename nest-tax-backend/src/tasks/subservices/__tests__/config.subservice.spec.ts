@@ -64,6 +64,7 @@ describe('TasksConfigSubservice', () => {
     })
   })
 
+  // eslint-disable-next-line no-secrets/no-secrets
   describe('incrementOverpaymentsLookbackDays', () => {
     it('should increment lookback days by 1 when config exists', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '5' }

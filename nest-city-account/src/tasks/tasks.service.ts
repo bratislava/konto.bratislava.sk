@@ -642,10 +642,11 @@ export class TasksService {
           const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
           const firstName = cognitoData.given_name
 
-          await this.mailgunService.sendEmail('placeholder-postal-activated', {
-            to: user.email,
-            variables: { firstName: firstName ?? null },
-          })
+          // TODO
+          // await this.mailgunService.sendEmail('placeholder-postal-activated', {
+          //   to: user.email,
+          //   variables: { firstName: firstName ?? null },
+          // })
 
           this.logger.log(`Sent postal activation email to user ${userId} (eDesk deactivated)`)
         } catch (err) {
@@ -722,10 +723,11 @@ export class TasksService {
           this.logger.log(`Sent City Account activation email to user ${userId}`)
         } else {
           // Changed to unsubscribe (Postal)
-          await this.mailgunService.sendEmail('placeholder-postal-activated', {
-            to: user.email,
-            variables: { firstName: firstName ?? null },
-          })
+          // TODO
+          // await this.mailgunService.sendEmail('placeholder-postal-activated', {
+          //   to: user.email,
+          //   variables: { firstName: firstName ?? null },
+          // })
 
           this.logger.log(`Sent postal activation email to user ${userId}`)
         }

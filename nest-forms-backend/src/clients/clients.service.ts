@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { createCityAccountClient } from 'openapi-clients/city-account'
-import { createSlovenskoSkClient } from 'openapi-clients/slovensko-sk'
+import {
+  type CityAccountClient,
+  createCityAccountClient,
+} from 'openapi-clients/city-account'
+import {
+  createSlovenskoSkClient,
+  type SlovenskoSkClient,
+} from 'openapi-clients/slovensko-sk'
 
 import BaConfigService from '../config/ba-config.service'
 
@@ -8,11 +14,11 @@ import BaConfigService from '../config/ba-config.service'
 export default class ClientsService {
   constructor(private readonly baConfigService: BaConfigService) {}
 
-  public readonly slovenskoSkApi = createSlovenskoSkClient({
+  public readonly slovenskoSkApi: SlovenskoSkClient = createSlovenskoSkClient({
     basePath: this.baConfigService.slovenskoSk.url,
   })
 
-  public readonly cityAccountApi = createCityAccountClient({
+  public readonly cityAccountApi: CityAccountClient = createCityAccountClient({
     basePath: this.baConfigService.cityAccountBackend.url,
   })
 }

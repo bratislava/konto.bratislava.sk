@@ -11,7 +11,7 @@ import ConditionalWrap from './simple-components/ConditionalWrap'
 import { FormContextProvider, FormServerContext, useFormContext } from './useFormContext'
 import { FormSentProvider, useFormSent } from './useFormSent'
 
-const FormStateRouter = () => {
+const FormStateRouter = ({ nonce }: { nonce?: string }) => {
   const { formSent } = useFormSent()
   const { versionCompareContinueAction } = useFormContext()
 
@@ -24,15 +24,15 @@ const FormStateRouter = () => {
     return <FormVersionCompareAction />
   }
 
-  return <FormContent />
+  return <FormContent nonce={nonce} />
 }
 
-const FormLayoutContainer = () => {
+const FormLayoutContainer = ({ nonce }: { nonce?: string }) => {
   const { isEmbedded, versionCompareContinueAction } = useFormContext()
   const { formSent } = useFormSent()
 
   return (
-    <IframeResizerChild enabled={isEmbedded}>
+    <IframeResizerChild enabled={isEmbedded} nonce={nonce}>
       <ConditionalWrap
         condition={!isEmbedded}
         wrap={(children) => (
@@ -51,13 +51,14 @@ const FormLayoutContainer = () => {
 
 export type FormPageProps = {
   formServerContext: FormServerContext
+  nonce?: string
 }
 
-const FormPage = ({ formServerContext }: FormPageProps) => {
+const FormPage = ({ formServerContext, nonce }: FormPageProps) => {
   return (
     <FormContextProvider formServerContext={formServerContext}>
       <FormSentProvider initialFormSent={formServerContext.initialFormSent}>
-        <FormLayoutContainer />
+        <FormLayoutContainer nonce={nonce} />
       </FormSentProvider>
     </FormContextProvider>
   )

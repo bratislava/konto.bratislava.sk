@@ -15,7 +15,6 @@ import {
   EDESK_COGNITO_CONFIG_DB_KEY,
   EDESK_RFO_CONFIG_DB_KEY,
 } from '../utils/constants'
-import { UpvsIdentityByUriSuccessType } from '../../upvs-identity-by-uri/upvs-identity-by-uri.service'
 
 const ValidateEdeskConfigValueSchema = z.object({
   active: z.boolean(),
@@ -38,73 +37,23 @@ export class AdminCronSubservice {
   ) {}
 
   /**
-   * @deprecated ⚠️This is older code. New implementation is available in the Tasks Service.
-   * Please validate thoroughly before use as it may no longer function as intended.
-   * Ensure you definitely want to use this legacy logic over the new service.
+   * DEPRECATED AND DISABLED: This cron job used Cognito-based URI construction which was unreliable.
+   *
+   * Historical context: Attempted to validate eDesk by constructing URIs from Cognito user names,
+   * which often failed due to name formatting differences between Cognito and official registry.
+   *
+   * New approach: Use RFO-based identity resolution via PhysicalEntityService.searchByPersonDataAndUpdateEdesk()
+   * which searches UPVS by name and date of birth directly from RFO data, without constructing URIs.
+   *
+   * This cron job is commented out and will not run. The underlying method now throws an error.
    */
-  @Cron(CronExpression.EVERY_30_SECONDS)
-  @HandleErrors('Cron Error')
+  // @Cron(CronExpression.EVERY_30_SECONDS)
+  // @HandleErrors('Cron Error')
   async validateEdeskFromCognitoData(): Promise<void> {
-    const configDbResult = await this.prismaService.config.findUnique({
-      where: { key: EDESK_COGNITO_CONFIG_DB_KEY },
-    })
-    if (!configDbResult) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `${EDESK_COGNITO_CONFIG_DB_KEY} not found in database config.`
-      )
-    }
-
-    const config = ValidateEdeskConfigValueSchema.parse(configDbResult.value)
-    if (!config.active) {
-      return
-    }
-    this.logger.log(
-      `${EDESK_COGNITO_CONFIG_DB_KEY} turned ON, starting, current offset: ${config.offset}`
+    this.logger.warn(
+      'validateEdeskFromCognitoData is deprecated and disabled. Use RFO-based identity resolution instead.'
     )
-
-    const result = await this.adminService.validateEdeskWithUriFromCognito(config.offset)
-    const validatedUsers = result.validatedUsers
-    const mappingFn = (
-      upvsResult: UpvsIdentityByUriSuccessType | { physicalEntityId?: string; uri: string }
-    ) => `uri: ${upvsResult.uri} physicalEntityId: ${upvsResult.physicalEntityId}`
-    const successData = result.entities.success.map(mappingFn)
-    const failedData = result.entities.failed.map(mappingFn)
-    this.logger.log(
-      `${EDESK_COGNITO_CONFIG_DB_KEY} done: validatedUsers: ${validatedUsers} successData: ${successData} failedData: ${failedData}`
-    )
-
-    if (failedData.length > 0) {
-      // expected result was that in the (up to) 100 uris we've sent to validate there are at least 10 correct ones (UPVS returns up to 10 entities)
-      // if failed data exists, there were less than 10 - we need to move the offset past the users for whom we can't construct the correct uris
-      const physicalEntitiesWithoutUriVerificationAttemptsCount =
-        await this.prismaService.physicalEntity.count({
-          where: {
-            userId: { not: null },
-            uri: null,
-            activeEdesk: null,
-            activeEdeskUpdatedAt: null,
-            activeEdeskUpdateFailedAt: null,
-            activeEdeskUpdateFailCount: 0,
-          },
-        })
-      const currentOffset = config.offset
-      const newOffset = (currentOffset + 90) % physicalEntitiesWithoutUriVerificationAttemptsCount
-      this.logger.log(
-        `Attempt to set new offset: ${newOffset}, previous offset: ${currentOffset}, untestedEntitiesCount: ${physicalEntitiesWithoutUriVerificationAttemptsCount}`
-      )
-      await this.prismaService.$transaction(async (tx) => {
-        const { value } = (await tx.config.findUnique({
-          where: { key: EDESK_COGNITO_CONFIG_DB_KEY },
-        })) as Config // Existence in db is checked at the start of the function
-        const validatedValue = ValidateEdeskConfigValueSchema.parse(value)
-        await tx.config.update({
-          where: { key: EDESK_COGNITO_CONFIG_DB_KEY },
-          data: { value: { ...validatedValue, offset: newOffset } },
-        })
-      })
-      this.logger.log(`New offset set: ${newOffset}`)
-    }
+    return
   }
 
   /**

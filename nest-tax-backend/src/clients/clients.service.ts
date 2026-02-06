@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {
-  createCityAccountClient,
   type CityAccountClient,
+  createCityAccountClient,
 } from 'openapi-clients/city-account'
 
 @Injectable()

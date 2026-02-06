@@ -10,6 +10,7 @@ import { Response } from 'express'
 import { errorTypeKeys } from '../guards/dtos/error.dto'
 import { symbolKeysToStrings } from '../logging'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
+
 function rethrowIfNotHttp(
   host: ArgumentsHost,
   exception: unknown,

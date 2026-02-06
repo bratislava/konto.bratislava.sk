@@ -63,7 +63,7 @@ const SummaryFormControls = () => {
           onPress={goToPreviousStep}
           startIcon={<ChevronLeftIcon className="size-6" />}
         >
-          {t('buttons.previous')}
+          {t('form_controls.back')}
         </ButtonNew>
       </div>
       <div className="flex flex-col gap-2 md:flex-row md:gap-5">
@@ -81,7 +81,7 @@ const SummaryFormControls = () => {
           onPress={goToPreviousStep}
           fullWidthMobile
         >
-          {t('buttons.previous')}
+          {t('form_controls.back')}
         </ButtonNew>
       </div>
     </div>

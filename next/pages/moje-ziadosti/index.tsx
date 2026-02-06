@@ -1,6 +1,6 @@
 import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageLayout from 'components/layouts/PageLayout'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
@@ -63,14 +63,14 @@ const AccountMyApplicationsPage = ({
   emailFormSlugs,
 }: AccountMyApplicationsPageProps) => {
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <MyApplicationsSection
         selectedSection={selectedSection}
         applications={applications}
         formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
         emailFormSlugs={emailFormSlugs}
       />
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

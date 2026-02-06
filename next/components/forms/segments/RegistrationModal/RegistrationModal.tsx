@@ -22,32 +22,36 @@ type RegistrationModalBase = {
   login: () => void
 } & ModalProps
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10993-2968&t=nvTJpHb34NMAiOw5-4
+ */
+
 const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('forms')
   const {
     evaluatedSendPolicy: { sendAllowedForUserResult, eidSendPossible },
   } = useFormContext()
 
-  const getTitleKey = () => {
+  const getTitleTranslation = () => {
     if (
       type === RegistrationModalType.Initial ||
       type === RegistrationModalType.NotAuthenticatedSubmitForm
     ) {
       if (eidSendPossible) {
-        return 'registration_modal.header_initial_title_with_eid'
+        return t('registration_modal.header_initial_title_with_eid')
       }
 
-      return 'registration_modal.header_initial_title_without_eid'
+      return t('registration_modal.header_initial_title_without_eid')
     }
 
     if (type === RegistrationModalType.NotAuthenticatedConceptSave) {
-      return 'registration_modal.header_not_authenticated_concept_save_title'
+      return t('registration_modal.header_not_authenticated_concept_save_title')
     }
 
     return ''
   }
 
-  const getSubtitleKey = () => {
+  const getSubtitleTranslation = () => {
     const verificationMissingType =
       sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing ||
       sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
@@ -57,17 +61,17 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
     if (type === RegistrationModalType.Initial) {
       if (eidSendPossible) {
         if (verificationMissingType) {
-          return 'registration_modal.header_initial_subtitle_with_eid_verified'
+          return t('registration_modal.header_initial_subtitle_with_eid_verified')
         }
         if (onlyAuthenticationMissingType) {
-          return 'registration_modal.header_initial_subtitle_with_eid_not_verified'
+          return t('registration_modal.header_initial_subtitle_with_eid_not_verified')
         }
       } else {
         if (verificationMissingType) {
-          return 'registration_modal.header_initial_subtitle_without_eid_verified'
+          return t('registration_modal.header_initial_subtitle_without_eid_verified')
         }
         if (onlyAuthenticationMissingType) {
-          return 'registration_modal.header_initial_subtitle_without_eid_not_verified'
+          return t('registration_modal.header_initial_subtitle_without_eid_not_verified')
         }
       }
     }
@@ -75,23 +79,29 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
     if (type === RegistrationModalType.NotAuthenticatedSubmitForm) {
       if (eidSendPossible) {
         if (verificationMissingType) {
-          return 'registration_modal.header_not_authenticated_submit_subtitle_with_eid_verified'
+          return t('registration_modal.header_not_authenticated_submit_subtitle_with_eid_verified')
         }
         if (onlyAuthenticationMissingType) {
-          return 'registration_modal.header_not_authenticated_submit_subtitle_with_eid_not_verified'
+          return t(
+            'registration_modal.header_not_authenticated_submit_subtitle_with_eid_not_verified',
+          )
         }
       } else {
         if (verificationMissingType) {
-          return 'registration_modal.header_not_authenticated_submit_subtitle_without_eid_verified'
+          return t(
+            'registration_modal.header_not_authenticated_submit_subtitle_without_eid_verified',
+          )
         }
         if (onlyAuthenticationMissingType) {
-          return 'registration_modal.header_not_authenticated_submit_subtitle_without_eid_not_verified'
+          return t(
+            'registration_modal.header_not_authenticated_submit_subtitle_without_eid_not_verified',
+          )
         }
       }
     }
 
     if (type === RegistrationModalType.NotAuthenticatedConceptSave) {
-      return 'registration_modal.header_not_authenticated_concept_save_subtitle'
+      return t('registration_modal.header_not_authenticated_concept_save_subtitle')
     }
 
     return ''
@@ -99,20 +109,18 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
 
   const { title, subtitle } = type
     ? {
-        title: t(getTitleKey()),
-        subtitle: t(getSubtitleKey()),
+        title: getTitleTranslation(),
+        subtitle: getSubtitleTranslation(),
       }
     : { title: null, subtitle: null }
 
-  // TODO Translations: bodyList is "an array", make sure it's correctly used:
-  //   "registration_modal.body_list.0": "Nájdite všetky služby mesta na jednom mieste",
-  //   "registration_modal.body_list.1": "Sledujte aktuálny stav podaných žiadostí a čo sa s nimi deje v čase",
-  //   "registration_modal.body_list.2": "Majte prehľad o daniach a poplatkoch",
-  //   "registration_modal.body_list.3": "Využívajte dôveryhodné digitálne služby pod hlavičkou hlavného mesta",
-  //   "registration_modal.body_list.4": "Uložte si žiadosti a vráťte sa k nim kedykoľvek budete chcieť",
-  //
-  const bodyListTranslation = t('registration_modal.body_list', { returnObjects: true })
-  const bodyList = Array.isArray(bodyListTranslation) ? (bodyListTranslation as string[]) : []
+  const bodyList = [
+    t('registration_modal.body_list.0'),
+    t('registration_modal.body_list.1'),
+    t('registration_modal.body_list.2'),
+    t('registration_modal.body_list.3'),
+    t('registration_modal.body_list.4'),
+  ]
 
   const close = () => {
     rest?.onOpenChange?.(false)
@@ -135,8 +143,8 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             <h4 className="text-h4">{t('registration_modal.body_title')}</h4>
             <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
               {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
-              {bodyList.map((item, i) => (
-                <li key={i} className="flex items-center gap-4">
+              {bodyList.map((item, index) => (
+                <li key={index} className="flex items-center gap-4">
                   <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
                     <CheckIcon className="size-7" />
                   </span>

@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import useHookForm from '../../../frontend/hooks/useHookForm'
+import { useAmplifyClientOAuthContext } from '../../../frontend/utils/useAmplifyClientOAuthContext'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '../segments/AccountLink/AccountLink'
 import Button from '../simple-components/ButtonNew'
@@ -42,6 +43,7 @@ const schema = {
 
 const LoginForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
+  const { isOAuthLogin, clientTitle } = useAmplifyClientOAuthContext()
 
   const {
     handleSubmit,
@@ -95,7 +97,9 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         isDisabled={isSubmitting}
         data-cy="login-button"
       >
-        {t('auth.login_submit')}
+        {isOAuthLogin && clientTitle
+          ? t('auth.login_page.continue_to_oauth_origin', { clientTitle })
+          : t('auth.login_submit')}
       </Button>
     </form>
   )

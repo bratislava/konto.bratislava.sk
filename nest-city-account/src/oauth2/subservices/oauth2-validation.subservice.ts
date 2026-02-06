@@ -39,7 +39,7 @@ export class OAuth2ValidationSubservice {
    * Validate authorization request parameters
    * Used by both /authorize and /continue endpoints
    *
-   * @param params - The authorization parameters (from query or decoded payload)
+   * @param params - The authorization parameters (from query or loaded from DB by authRequestId)
    */
   validateAuthorizationRequest(params: AuthorizationParams) {
     const client = this.validateClientId(params.clientId)

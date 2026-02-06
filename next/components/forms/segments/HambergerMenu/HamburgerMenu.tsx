@@ -1,7 +1,11 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
+import HorizontalDivider from 'components/forms/HorizontalDivider'
+import { useNavMenuContext } from 'components/forms/segments/NavBar/navMenuContext'
+import { MenuSectionBase } from 'components/forms/segments/NavBar/useMenu'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { ROUTES } from 'frontend/api/constants'
+import cn from 'frontend/cn'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -9,21 +13,13 @@ import { useTranslation } from 'next-i18next'
 import { ComponentProps, forwardRef } from 'react'
 import { useEventListener, useScrollLock } from 'usehooks-ts'
 
-import { ROUTES } from '../../../../frontend/api/constants'
-import cn from '../../../../frontend/cn'
-import { useNavMenuContext } from '../NavBar/navMenuContext'
-
-interface IProps {
-  sectionsList?: MenuSectionItemBase[]
+type Props = {
+  menuSections?: MenuSectionBase[]
   menuItems: MenuItemBase[]
   closeMenu: () => void
 }
 
-const Divider = () => {
-  return <div className="border-b-solid my-4 border-b-2" />
-}
-
-export type ItemLinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref' | 'href'> & {
+type ItemLinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref' | 'href'> & {
   menuItem: MenuItemBase
   isSelected?: boolean
   onClick: () => void
@@ -55,7 +51,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
   },
 )
 
-export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) => {
+export const HamburgerMenu = ({ menuSections, menuItems, closeMenu }: Props) => {
   const router = useRouter()
   const { menuValue, setMenuValue, setMobileMenuOpen } = useNavMenuContext()
   const { t } = useTranslation('account')
@@ -81,9 +77,9 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
         aria-label={t('NavMenu.aria.navMenuLabel')}
       >
         <NavigationMenu.List className="flex flex-col">
-          {sectionsList && (
+          {menuSections && (
             <>
-              {sectionsList.map((sectionItem) => (
+              {menuSections.map((sectionItem) => (
                 <NavigationMenu.Item key={sectionItem.id}>
                   <NavigationMenu.Link asChild onClick={closeMenu}>
                     <ItemLink
@@ -94,9 +90,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
                   </NavigationMenu.Link>
                 </NavigationMenu.Item>
               ))}
-              <li aria-hidden>
-                <Divider />
-              </li>
+              <HorizontalDivider asListItem className='my-4 border-b-2' />
             </>
           )}
           {menuItems.map((sectionItem) => {

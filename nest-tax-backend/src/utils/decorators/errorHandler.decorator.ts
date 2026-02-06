@@ -13,7 +13,9 @@ export default function HandleErrors(
     const logger = new LineLoggerSubservice(loggerName)
 
     const modifiedDescriptor = descriptor
-    modifiedDescriptor.value = async function (...args: undefined[]) {
+    modifiedDescriptor.value = async function errorHandlerWrapper(
+      ...args: undefined[]
+    ) {
       try {
         const result = await originalMethod.apply(this, args)
         return result

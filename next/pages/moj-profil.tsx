@@ -1,9 +1,9 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import UserProfileView from 'components/forms/segments/UserProfile/UserProfileView'
+import PageLayout from 'components/layouts/PageLayout'
 import { useTranslation } from 'next-i18next'
 
 import AccountSectionHeader from '../components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import AccountPageLayout from '../components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
@@ -33,10 +33,10 @@ const MojProfil = ({ dehydratedState }: MojProfilProps) => {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <AccountPageLayout>
+      <PageLayout>
         <AccountSectionHeader title={t('account_section_my_profile.title')} />
         <UserProfileView />
-      </AccountPageLayout>
+      </PageLayout>
     </HydrationBoundary>
   )
 }

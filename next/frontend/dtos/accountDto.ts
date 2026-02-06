@@ -1,4 +1,3 @@
-import { LoginClientEnum } from '@clients/city-account'
 import { FetchUserAttributesOutput } from 'aws-amplify/auth'
 
 export enum Tier {
@@ -33,5 +32,5 @@ export type UserAttributes = FetchUserAttributesOutput & {
   'custom:2024_tax_form_beta'?: string
   'custom:hide_phone_modal'?: string
   'custom:origin_client_id'?: string
-  'custom:origin_client_name'?: LoginClientEnum
+  'custom:origin_client_name'?: string
 }

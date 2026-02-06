@@ -3,6 +3,7 @@ import { signOut as amplifySignOut } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 
 import { ROUTES } from '../api/constants'
+import { useQueryParamRedirect } from '../hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../hooks/useSsrAuth'
 import logger from './logger'
 
@@ -36,17 +37,11 @@ export const removeAmplifyGuestIdentityIdCookies = () => {
   })
 }
 
-/**
- * Clear temporarily stored tokens in session storage when using OAuth sign up or sign in
- */
-export const clearOAuthSessionStorage = () => {
-  sessionStorage.clear()
-}
-
 export const useSignOut = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const { userAttributes } = useSsrAuth()
+  const { getRouteWithRedirect } = useQueryParamRedirect()
 
   const signOut = async () => {
     try {
@@ -55,7 +50,7 @@ export const useSignOut = () => {
       logger.info(`[AUTH] Successfully signed out email ${userAttributes?.email}`)
       // Removes user data from the cache.
       queryClient.removeQueries()
-      await router.push(ROUTES.LOGIN)
+      await router.push(getRouteWithRedirect(ROUTES.LOGIN))
     } catch (error) {
       logger.error(`[AUTH] Failed to sign out email ${userAttributes?.email}`, error)
       // Rethrow the error to be handled by the caller.

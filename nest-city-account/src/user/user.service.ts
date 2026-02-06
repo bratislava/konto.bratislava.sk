@@ -49,7 +49,8 @@ export class UserService {
       return false
     }
 
-    const { active, locked } = await this.databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
+    const { active, locked } =
+      await this.databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
 
     // If EDESK is activated after the deadline, the information is sent directly to Noris.
     // We are legally required to communicate with residents via EDESK once it is active.
@@ -85,7 +86,9 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+        user.id
+      ),
     }
   }
 
@@ -139,7 +142,9 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+        user.id
+      ),
     }
   }
 
@@ -166,13 +171,6 @@ export class UserService {
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
 
-    await this.bloomreachService.trackEventConsents(
-      gdprData.map((elem) => ({ ...elem, subType: gdprSubType })),
-      user.externalId,
-      user.id,
-      false
-    )
-
     const officialCorrespondenceChannel =
       await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
@@ -186,7 +184,9 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
-      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+        user.id
+      ),
     }
   }
 
@@ -223,13 +223,6 @@ export class UserService {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
-
-    await this.bloomreachService.trackEventConsents(
-      gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe })),
-      user.externalId,
-      user.id,
-      false
-    )
 
     return { id: id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
   }
@@ -270,7 +263,9 @@ export class UserService {
         ...user,
         officialCorrespondenceChannel,
         showEmailCommunicationBanner,
-        hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(user.id),
+        hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+          user.id
+        ),
       }
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(

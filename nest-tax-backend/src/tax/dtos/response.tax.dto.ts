@@ -41,6 +41,7 @@ export enum TaxAvailabilityStatus {
 
 export enum OneTimePaymentReasonNotPossibleEnum {
   ALREADY_PAID = 'ALREADY_PAID',
+  TAX_IS_CANCELLED = 'TAX_IS_CANCELLED',
 }
 
 export enum OneTimePaymentTypeEnum {
@@ -52,6 +53,7 @@ export enum InstallmentPaymentReasonNotPossibleEnum {
   BELOW_THRESHOLD = 'BELOW_THRESHOLD',
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
   ALREADY_PAID = 'ALREADY_PAID',
+  TAX_IS_CANCELLED = 'TAX_IS_CANCELLED',
 }
 
 export enum InstallmentPaidStatusEnum {

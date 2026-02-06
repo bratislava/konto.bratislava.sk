@@ -59,6 +59,7 @@ export type GetTaxDetailPureOptions<TTaxType extends TaxType> = {
   }[]
   deliveryMethod: DeliveryMethodNamed | null
   createdAt: Date
+  isCancelled: boolean
 }
 
 export type GetTaxDetailPureResponse<TTaxType extends TaxType> = {

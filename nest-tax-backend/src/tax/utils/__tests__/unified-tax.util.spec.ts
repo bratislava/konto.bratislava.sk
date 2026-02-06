@@ -113,6 +113,7 @@ const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
     ],
   },
   taxPayments: [{ amount: 123, status: PaymentStatus.NEW }],
+  isCancelled: false,
 }
 
 const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
@@ -419,6 +420,59 @@ describe('UnifiedTaxUtil', () => {
           })
 
           expectEqualAsJsonStringsWithDates(output, expected)
+        })
+      })
+
+      describe('isCancelled', () => {
+        it('when isCancelled is false, returns normal payment details (unpaid)', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            isCancelled: false,
+          })
+
+          expect(output.oneTimePayment.isPossible).toBe(true)
+          expect(output.installmentPayment.isPossible).toBe(true)
+          expect(output.oneTimePayment).toHaveProperty('qrCode')
+          expect(output.installmentPayment).toHaveProperty('activeInstallment')
+        })
+
+        it('when isCancelled is true, oneTimePayment is not possible with TAX_IS_CANCELLED reason', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            isCancelled: true,
+          })
+
+          expect(output.oneTimePayment.isPossible).toBe(false)
+          expect(output.oneTimePayment.reasonNotPossible).toBe(
+            OneTimePaymentReasonNotPossibleEnum.TAX_IS_CANCELLED,
+          )
+          expect(output.oneTimePayment).not.toHaveProperty('qrCode')
+        })
+
+        it('when isCancelled is true, installmentPayment is not possible with TAX_IS_CANCELLED reason', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            isCancelled: true,
+          })
+
+          expect(output.installmentPayment.isPossible).toBe(false)
+          expect(output.installmentPayment.reasonNotPossible).toBe(
+            InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED,
+          )
+          expect(output.installmentPayment).not.toHaveProperty(
+            'activeInstallment',
+          )
+        })
+
+        it('when isCancelled is true, overall amounts are still correct', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            isCancelled: true,
+          })
+
+          expect(output.overallAmount).toBe(6600)
+          expect(output.overallPaid).toBe(0)
+          expect(output.overallBalance).toBe(6600)
         })
       })
 
@@ -887,6 +941,7 @@ describe('UnifiedTaxUtil', () => {
         ],
       },
       taxPayments: [],
+      isCancelled: false,
     }
 
     const defaultOutput4Installments: GetTaxDetailPureResponse<'KO'> = {
@@ -1454,6 +1509,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }[]
     deliveryMethod: DeliveryMethodNamed | null
     createdAt: Date
+    isCancelled: boolean
   } = {
     taxType: TaxType.DZN,
     taxId: 123,
@@ -1470,6 +1526,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       { order: 3, amount: 2200 },
     ],
     taxPayments: [],
+    isCancelled: false,
   }
 
   beforeEach(() => {

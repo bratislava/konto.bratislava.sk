@@ -71,7 +71,7 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   const handleLogout = async () => {
     setIsLoading(true)
     try {
-      await signOut()
+      await signOut({ forceRedirectToLogin: true })
     } catch (error) {
       // TODO: Display error message to the user.
     } finally {
@@ -88,21 +88,21 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
               title={t('auth.oauth_page.title')}
               {...(shouldRedirectToIdentityVerification
                 ? {
-                  variant: 'info',
-                  description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
-                  confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
-                  onConfirm: () => {
-                    handleRedirectToIdentityVerification()
-                  },
-                }
+                    variant: 'info',
+                    description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
+                    confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+                    onConfirm: () => {
+                      handleRedirectToIdentityVerification()
+                    },
+                  }
                 : {
-                  variant: 'success',
-                  description: t('auth.oauth_page.description', { email }),
-                  confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                  onConfirm: () => {
-                    handleOAuthContinue()
-                  },
-                })}
+                    variant: 'success',
+                    description: t('auth.oauth_page.description', { email }),
+                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                    onConfirm: () => {
+                      handleOAuthContinue()
+                    },
+                  })}
               confirmIsLoading={isLoading}
               cancelLabel={t('auth.oauth_page.cancel_label')}
               onCancel={handleLogout}

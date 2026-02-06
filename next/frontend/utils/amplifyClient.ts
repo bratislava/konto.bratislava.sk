@@ -41,16 +41,24 @@ export const useSignOut = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const { userAttributes } = useSsrAuth()
-  const { getRouteWithRedirect } = useQueryParamRedirect()
+  const { redirect, getRouteWithRedirect } = useQueryParamRedirect()
 
-  const signOut = async () => {
+  const signOut = async (options?: { forceRedirectToLogin?: boolean }) => {
+    const { forceRedirectToLogin } = options ?? {}
+
     try {
       logger.info(`[AUTH] Attempting to sign out email ${userAttributes?.email}`)
       await amplifySignOut()
       logger.info(`[AUTH] Successfully signed out email ${userAttributes?.email}`)
       // Removes user data from the cache.
       queryClient.removeQueries()
-      await router.push(getRouteWithRedirect(ROUTES.LOGIN))
+
+      if (forceRedirectToLogin) {
+        await router.push(getRouteWithRedirect(ROUTES.LOGIN))
+        return
+      }
+
+      await redirect()
     } catch (error) {
       logger.error(`[AUTH] Failed to sign out email ${userAttributes?.email}`, error)
       // Rethrow the error to be handled by the caller.

@@ -70,7 +70,7 @@
     "@tailwindcss/postcss": "4.1.11",
     "@types/adm-zip": "^0.5.7",
     "@types/app-root-dir": "^0.1.4",
-    "@types/archiver": "^6.0.3",
+    "@types/archiver": "^7.0.0",
     "@types/jest-image-snapshot": "^6.4.1",
     "@types/jsdom": "^21.1.7",
     "@types/json-schema": "7.0.15",

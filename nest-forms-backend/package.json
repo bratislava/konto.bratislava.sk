@@ -28,9 +28,9 @@
     "update-aws": "npm install @aws-sdk/client-cognito-identity@latest @aws-sdk/client-cognito-identity-provider@latest @aws-sdk/client-sts@latest aws-jwt-verify@latest"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity": "^3.888.0",
-    "@aws-sdk/client-cognito-identity-provider": "^3.888.0",
-    "@aws-sdk/client-sts": "^3.888.0",
+    "@aws-sdk/client-cognito-identity": "^3.985.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.985.0",
+    "@aws-sdk/client-sts": "^3.985.0",
     "@bratislava/ginis-sdk": "^2.1.2",
     "@golevelup/nestjs-rabbitmq": "7.1.2",
     "@nestjs/bull": "11.0.4",
@@ -44,7 +44,7 @@
     "@prisma/client": "6.15.0",
     "@rjsf/utils": "5.24.9",
     "amqplib": "^0.10.9",
-    "aws-jwt-verify": "^5.1.0",
+    "aws-jwt-verify": "^5.1.1",
     "axios": "^1.13.2",
     "bull": "4.16.5",
     "class-transformer": "0.5.1",

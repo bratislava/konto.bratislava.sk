@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { ComponentProps } from 'react'
 
 import cn from '../../../../../../frontend/cn'
-import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-components/ButtonNew'
+import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-components/Button'
 
 type AnnouncementBlockProps = {
   announcementContent?: string

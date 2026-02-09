@@ -5,7 +5,7 @@ import {
 } from '@clients/graphql-strapi/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
-import Button from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'

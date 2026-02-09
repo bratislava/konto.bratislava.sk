@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import cn from '../../../../frontend/cn'
-import ButtonNew from '../../simple-components/ButtonNew'
+import ButtonNew from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 type SearchFieldProps = FieldWrapperProps & {

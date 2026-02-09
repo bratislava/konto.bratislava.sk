@@ -8,7 +8,7 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { formsClient } from '@clients/forms'
-import Button from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'

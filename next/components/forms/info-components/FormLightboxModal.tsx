@@ -7,7 +7,7 @@ import { Button as AriaButton } from 'react-aria-components'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
-import ButtonNew from '../simple-components/ButtonNew'
+import ButtonNew from '../simple-components/Button'
 import Spinner from '../simple-components/Spinner'
 
 type FormLightboxModalProps = { imageUrl: string }

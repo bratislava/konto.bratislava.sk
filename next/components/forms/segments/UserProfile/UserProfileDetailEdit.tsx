@@ -1,4 +1,4 @@
-import Button from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { baPhoneNumberRegex } from 'forms-shared/form-utils/ajvFormats'
 import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'

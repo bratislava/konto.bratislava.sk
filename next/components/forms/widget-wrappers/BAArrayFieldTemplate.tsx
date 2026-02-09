@@ -16,7 +16,7 @@ import cn from '../../../frontend/cn'
 import Alert from '../info-components/Alert'
 import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import ButtonNew from '../simple-components/ButtonNew'
+import ButtonNew from '../simple-components/Button'
 import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
 import WidgetWrapper from './WidgetWrapper'
 

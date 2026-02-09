@@ -4,7 +4,7 @@ import React from 'react'
 import { mergeProps } from 'react-aria'
 
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import ButtonNew from '../../simple-components/ButtonNew'
+import ButtonNew from '../../simple-components/Button'
 import Modal, { ModalProps } from '../../simple-components/Modal'
 import Spinner from '../../simple-components/Spinner'
 import { useFormContext } from '../../useFormContext'

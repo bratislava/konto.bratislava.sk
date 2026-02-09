@@ -1,4 +1,4 @@
-import Button from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'

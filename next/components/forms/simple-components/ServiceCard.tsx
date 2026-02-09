@@ -2,7 +2,7 @@ import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { ReactNode } from 'react'
 
 import cn from '../../../frontend/cn'
-import ButtonNew from './ButtonNew'
+import ButtonNew from './Button'
 import { LinkPlausibleProps } from './MLinkNew'
 
 type ServiceCardBase = {

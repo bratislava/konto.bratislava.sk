@@ -6,7 +6,7 @@ import useHookForm from '../../../frontend/hooks/useHookForm'
 import logger from '../../../frontend/utils/logger'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import Button from '../simple-components/ButtonNew'
+import Button from '../simple-components/Button'
 import InputField from '../widget-components/InputField/InputField'
 
 interface Data {

@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronRightIcon } from '@assets/ui-icons'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import ButtonNew from 'components/forms/simple-components/Button'
 import MLinkNew from 'components/forms/simple-components/MLinkNew'
 import { useTranslation } from 'next-i18next'
 

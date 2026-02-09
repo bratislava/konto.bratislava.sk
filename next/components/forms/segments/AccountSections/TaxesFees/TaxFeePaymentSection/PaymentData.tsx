@@ -10,7 +10,7 @@ import {
 import HorizontalDivider from 'components/forms/HorizontalDivider'
 import Alert from 'components/forms/info-components/Alert'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import ButtonNew from 'components/forms/simple-components/Button'
 import ClipboardCopy from 'components/forms/simple-components/ClipboardCopy'
 import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
 import { useUser } from 'frontend/hooks/useUser'

@@ -4,7 +4,7 @@ import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
-import Button from '../ButtonNew'
+import Button from '../Button'
 import usePagination from './usePagination'
 
 type PaginationProps = {

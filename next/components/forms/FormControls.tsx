@@ -1,7 +1,7 @@
 import { ArrowRightIcon, ChevronLeftIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 
-import Button from './simple-components/ButtonNew'
+import Button from './simple-components/Button'
 import { useFormState } from './useFormState'
 
 const FormControls = () => {

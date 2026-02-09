@@ -1,5 +1,5 @@
 import { DiscIcon, EllipsisVerticalIcon } from '@assets/ui-icons'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import ButtonNew from 'components/forms/simple-components/Button'
 import MenuDropdown from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'

@@ -3,7 +3,7 @@ import OfficialCorrespondenceChannelAlert from 'components/forms/segments/Accoun
 import OfficialCorrespondenceChannelChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import ButtonNew from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'

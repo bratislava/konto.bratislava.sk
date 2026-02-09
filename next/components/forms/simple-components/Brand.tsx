@@ -1,5 +1,5 @@
 import BALogo from '@assets/images/BALogo.svg'
-import Button from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import React from 'react'
 
 import cn from '../../../frontend/cn'

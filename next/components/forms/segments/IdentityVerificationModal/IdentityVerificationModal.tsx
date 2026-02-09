@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { AccountType } from '../../../../frontend/dtos/accountDto'
-import ButtonNew from '../../simple-components/ButtonNew'
+import ButtonNew from '../../simple-components/Button'
 import { ModalProps } from '../../simple-components/Modal'
 import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal from '../../widget-components/Modals/MessageModal'

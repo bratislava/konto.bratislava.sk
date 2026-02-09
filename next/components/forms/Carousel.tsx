@@ -3,7 +3,7 @@ import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useRef, useState } from 'react'
 
-import Button from './simple-components/ButtonNew'
+import Button from './simple-components/Button'
 
 export type AllowedVisibleCount = 1 | 2 | 3 | 4
 

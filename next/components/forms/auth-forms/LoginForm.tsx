@@ -5,7 +5,7 @@ import useHookForm from '../../../frontend/hooks/useHookForm'
 import { useAmplifyClientOAuthContext } from '../../../frontend/utils/useAmplifyClientOAuthContext'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '../segments/AccountLink/AccountLink'
-import Button from '../simple-components/ButtonNew'
+import Button from '../simple-components/Button'
 import InputField from '../widget-components/InputField/InputField'
 import PasswordField from '../widget-components/PasswordField/PasswordField'
 

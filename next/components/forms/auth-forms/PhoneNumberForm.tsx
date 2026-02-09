@@ -3,7 +3,7 @@ import { Controller } from 'react-hook-form'
 
 import useHookForm from '../../../frontend/hooks/useHookForm'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '../simple-components/ButtonNew'
+import Button from '../simple-components/Button'
 import InputField from '../widget-components/InputField/InputField'
 
 export interface PhoneNumberData {

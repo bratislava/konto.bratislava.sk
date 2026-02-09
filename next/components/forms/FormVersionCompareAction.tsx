@@ -11,7 +11,7 @@ import { ROUTES } from '../../frontend/api/constants'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
-import ButtonNew from './simple-components/ButtonNew'
+import ButtonNew from './simple-components/Button'
 import { useFormContext } from './useFormContext'
 
 const FormVersionCompareAction = () => {

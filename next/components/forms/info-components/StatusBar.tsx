@@ -10,7 +10,7 @@ import { environment } from '../../../environment'
 import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
-import Button from '../simple-components/ButtonNew'
+import Button from '../simple-components/Button'
 
 const fetchAlert = async () => {
   try {

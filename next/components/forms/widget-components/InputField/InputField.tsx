@@ -6,7 +6,7 @@ import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
 import cn from '../../../../frontend/cn'
-import ButtonNew from '../../simple-components/ButtonNew'
+import ButtonNew from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'

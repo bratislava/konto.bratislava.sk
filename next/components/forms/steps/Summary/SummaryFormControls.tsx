@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
-import ButtonNew, { ButtonProps } from '../../simple-components/ButtonNew'
+import ButtonNew, { ButtonProps } from '../../simple-components/Button'
 import { useFormContext } from '../../useFormContext'
 import { useFormSend } from '../../useFormSend'
 import { useFormState } from '../../useFormState'

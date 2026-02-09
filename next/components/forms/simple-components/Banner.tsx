@@ -1,6 +1,6 @@
 import { PhoneIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 

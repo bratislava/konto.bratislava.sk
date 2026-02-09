@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
 
-import ButtonNew from '../../../simple-components/ButtonNew'
+import ButtonNew from '../../../simple-components/Button'
 import CalendarGrid from './CalendarGrid'
 
 type CalendarBase = {

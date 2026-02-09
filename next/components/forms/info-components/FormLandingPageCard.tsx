@@ -4,7 +4,7 @@ import {
 } from '@clients/graphql-strapi/api'
 import React from 'react'
 
-import ButtonNew from '../simple-components/ButtonNew'
+import ButtonNew from '../simple-components/Button'
 
 export type FormLandingPageCardProps =
   | FormLandingPageLinkCtaFragment

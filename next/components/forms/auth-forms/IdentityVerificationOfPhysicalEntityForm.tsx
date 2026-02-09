@@ -12,7 +12,7 @@ import { isBrowser } from '../../../frontend/utils/general'
 import logger from '../../../frontend/utils/logger'
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import Button from '../simple-components/ButtonNew'
+import Button from '../simple-components/Button'
 import InputField from '../widget-components/InputField/InputField'
 
 export interface IdentityVerificationOfPhysicalEntityFormData {

@@ -5,7 +5,7 @@ import React from 'react'
 import Alert from '../../info-components/Alert'
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import AccordionV2 from '../../simple-components/AccordionV2'
-import Button from '../../simple-components/ButtonNew'
+import Button from '../../simple-components/Button'
 
 const CustomComponent = ({ id, component }: { id: string; component: CustomComponentType }) => {
   if (component.type === 'accordion') {

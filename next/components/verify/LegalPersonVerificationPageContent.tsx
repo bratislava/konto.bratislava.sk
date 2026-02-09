@@ -5,7 +5,7 @@ import React from 'react'
 import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
 import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
 import AccountSuccessAlert from '../forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import Button from '../forms/simple-components/ButtonNew'
+import Button from '../forms/simple-components/Button'
 import { useVerifyEid, VerificationStatus } from './useVerifyEid'
 
 type Props = {

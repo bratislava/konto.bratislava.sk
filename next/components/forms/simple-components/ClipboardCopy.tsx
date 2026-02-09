@@ -4,7 +4,7 @@ import { useCopyToClipboard } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import logger from '../../../frontend/utils/logger'
-import ButtonNew from './ButtonNew'
+import ButtonNew from './Button'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()

@@ -3,7 +3,7 @@ import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import ButtonNew from '../../simple-components/ButtonNew'
+import ButtonNew from '../../simple-components/Button'
 import Modal, { ModalProps } from '../../simple-components/Modal'
 import { useFormContext } from '../../useFormContext'
 import AccountLink from '../AccountLink/AccountLink'

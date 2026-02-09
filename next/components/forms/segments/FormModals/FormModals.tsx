@@ -3,7 +3,7 @@ import React from 'react'
 
 import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import Button from '../../simple-components/ButtonNew'
+import Button from '../../simple-components/Button'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'

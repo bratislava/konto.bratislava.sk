@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import ButtonNew from '../../forms/simple-components/ButtonNew'
+import ButtonNew from '../../forms/simple-components/Button'
 import Modal from '../../forms/simple-components/Modal'
 import MessageModal from '../../forms/widget-components/Modals/MessageModal'
 import { Stack } from '../Stack'

@@ -211,9 +211,14 @@ LEFT OUTER JOIN
         z_vybav.cislo_subjektu=dp_conf.vybavuje  
 
 LEFT OUTER JOIN 
+    lcs.organizace org_cudz  
+    ON
+        lcs.dane21_doklad.subjekt=org_cudz.cislo_subjektu  
+
+LEFT OUTER JOIN 
     lcs.subjekty subjekt_tp_adresa  
     ON 
-        lcs.dane21_priznanie.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu  
+        org_cudz.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_e1  
@@ -243,7 +248,7 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN 
     lcs.dane_21_adresa_view a_tb  
     ON 
-        lcs.dane21_priznanie.adresa_tp_sidlo=a_tb.cislo_subjektu  
+        org_cudz.adresa_tp_sidlo=a_tb.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.dane_21_adresa_view a_pb  
@@ -344,11 +349,6 @@ LEFT OUTER JOIN
     lcs.zamestnanci z_opravneny_podpisat  
     ON
         lcs.dane21_druh_dokladu.opravneny_podpisat=z_opravneny_podpisat.cislo_subjektu  
-
-LEFT OUTER JOIN 
-    lcs.organizace org_cudz  
-    ON
-        lcs.dane21_doklad.subjekt=org_cudz.cislo_subjektu  
 
 LEFT OUTER JOIN
     lcs.evidence_dic ev_dic_cudz  
@@ -707,10 +707,15 @@ export const getCommunalWasteTaxesFromNoris = `
         ON 
             doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu
 
+    LEFT OUTER JOIN 
+        lcs.organizace org_cudz  
+        ON
+            doklad.subjekt=org_cudz.cislo_subjektu  
+
     JOIN 
         lcs.subjekty subjekt_tp_adresa  
         ON 
-            poplatok.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu
+            org_cudz.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu
 
     JOIN 
         lcs.subjekty subjekt_doklad_sub  
@@ -721,11 +726,6 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.dane_21_sum_pko_popl_celkom dsum  
         ON
             dsum.cs_dan_prizn=poplatok.cislo_subjektu
-
-    LEFT OUTER JOIN 
-        lcs.organizace org_cudz  
-        ON
-            doklad.subjekt=org_cudz.cislo_subjektu  
 
     LEFT OUTER JOIN
         lcs.evidence_dic ev_dic_cudz  
@@ -740,7 +740,7 @@ export const getCommunalWasteTaxesFromNoris = `
     JOIN 
         lcs.dane_21_adresa_view a_tb  
         ON 
-            poplatok.adresa_tp_sidlo=a_tb.cislo_subjektu
+            org_cudz.adresa_tp_sidlo=a_tb.cislo_subjektu
     WHERE 
         poplatok.rodne_cislo IN (@birth_numbers) AND
         nadoba.druh_odpadu IS NULL AND

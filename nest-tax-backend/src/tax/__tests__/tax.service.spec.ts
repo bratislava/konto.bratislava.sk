@@ -67,8 +67,6 @@ const createMockTaxPayer = (
     permanentResidenceAddress: 'Test Address 123',
     externalId: 'ext-taxpayer-1',
     name: 'John Doe',
-    nameTxt: 'John Doe',
-    permanentResidenceStreetTxt: 'Test Street 123',
     permanentResidenceStreet: 'Test Street',
     permanentResidenceZip: '12345',
     permanentResidenceCity: 'Test City',

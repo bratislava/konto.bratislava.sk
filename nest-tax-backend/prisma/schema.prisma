@@ -24,8 +24,6 @@ model TaxPayer {
   permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
-  nameTxt                     String?
-  permanentResidenceStreetTxt String?
   permanentResidenceStreet    String?
   permanentResidenceZip       String?
   permanentResidenceCity      String?

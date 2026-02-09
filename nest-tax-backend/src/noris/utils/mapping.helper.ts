@@ -26,9 +26,7 @@ export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
     name: data.subjekt_nazev,
     permanentResidenceStreet: data.ulica_tb_cislo,
     permanentResidenceZip: data.psc_ref_tb,
-    permanentResidenceStreetTxt: data.TXT_UL,
     permanentResidenceCity: data.obec_nazev_tb,
-    nameTxt: data.TXT_MENO,
   }
 }
 

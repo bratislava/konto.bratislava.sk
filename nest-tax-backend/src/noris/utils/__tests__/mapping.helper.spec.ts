@@ -54,9 +54,7 @@ describe('mapNorisToTaxPayerData', () => {
     subjekt_nazev: 'Test Subject',
     ulica_tb_cislo: 'Test Street 1',
     psc_ref_tb: '12345',
-    TXT_UL: 'Test Street Text',
     obec_nazev_tb: 'Test City',
-    TXT_MENO: 'Test Name',
   } as NorisRealEstateTax
 
   it('should map Noris data to TaxPayer data correctly', () => {
@@ -69,9 +67,7 @@ describe('mapNorisToTaxPayerData', () => {
       name: 'Test Subject',
       permanentResidenceStreet: 'Test Street 1',
       permanentResidenceZip: '12345',
-      permanentResidenceStreetTxt: 'Test Street Text',
       permanentResidenceCity: 'Test City',
-      nameTxt: 'Test Name',
     })
   })
 })

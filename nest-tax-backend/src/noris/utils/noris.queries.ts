@@ -80,18 +80,6 @@ SELECT
     lcs.fn21_dec2string(dsum.det_stavba_DAN_H , 2) det_stavba_DAN_H, 
     lcs.fn21_dec2string(dsum.det_stavba_ZAKLAD_H, 2) det_stavba_ZAKLAD_H   /*zmena 31032008 z DP_conf.typ_priznania='F' na lcs.dane21_priznanie.podnikatel='N'*/, 
     (case 
-        when lcs.dane21_priznanie.podnikatel='N' then 'Meno a priezvisko:' 
-        else 'Obchodné meno:' 
-    end  ) TXT_MENO, 
-    (case 
-        when lcs.dane21_priznanie.podnikatel='N' then 'Adresa trvalého pobytu:' 
-        else 'Sídlo:'
-    end  ) TXT_UL, 
-    (case 
-        when lcs.dane21_priznanie.podnikatel='N' then 'Rodné číslo:' 
-        else 'IČO/DIČ:' 
-    end  ) TYP_USER, 
-    (case 
         when lcs.dane21_priznanie.podnikatel='N' then lcs.dane21_priznanie.rodne_cislo 
         else  isnull(lcs.dane21_priznanie.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
     end) ICO_RC, 
@@ -640,18 +628,6 @@ export const getCommunalWasteTaxesFromNoris = `
 
         /* --------- Texty splátok výmeru end ----------------------------*/
 
-        (case 
-            when poplatok.podnikatel='N' then 'Meno a priezvisko:' 
-            else 'Obchodné meno:' 
-        end  ) TXT_MENO, 
-        (case 
-            when poplatok.podnikatel='N' then 'Adresa trvalého pobytu:' 
-            else 'Sídlo:'
-        end  ) TXT_UL, 
-        (case 
-            when poplatok.podnikatel='N' then 'Rodné číslo:' 
-            else 'IČO/DIČ:' 
-        end  ) TYP_USER, 
         (case 
             when poplatok.podnikatel='N' then poplatok.rodne_cislo 
             else  isnull(poplatok.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 

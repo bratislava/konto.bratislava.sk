@@ -28,6 +28,7 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
@@ -579,6 +580,7 @@ export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
@@ -619,6 +621,7 @@ export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
@@ -913,6 +916,7 @@ export const ResponseVerificationDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseVerificationDtoErrorNameEnum =
@@ -964,6 +968,7 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =

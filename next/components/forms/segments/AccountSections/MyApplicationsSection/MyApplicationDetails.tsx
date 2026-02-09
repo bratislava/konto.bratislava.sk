@@ -5,6 +5,8 @@ import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
 import { useTranslation } from 'next-i18next'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
+import MLinkNew from '../../../simple-components/MLinkNew'
+
 type MyApplicationsDetailsBase = {
   formDefinitionTitle: string
   detailsData: GetFormResponseDto
@@ -68,19 +70,16 @@ const MyApplicationDetails = ({
             >
               <p>
                 {ginisData?.ownerPhone ? (
-                  <a className="underline underline-offset-4" href={`tel:${ginisData.ownerPhone}`}>
+                  <MLinkNew variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
                     {`${ginisData.ownerPhone}, `}
-                  </a>
+                  </MLinkNew>
                 ) : (
                   ''
                 )}
                 {ginisData?.ownerEmail ? (
-                  <a
-                    className="underline underline-offset-4"
-                    href={`mailto:${ginisData.ownerEmail}`}
-                  >
+                  <MLinkNew variant="underlined" href={`mailto:${ginisData.ownerEmail}`}>
                     {ginisData.ownerEmail}
-                  </a>
+                  </MLinkNew>
                 ) : (
                   t('account_section_applications.details.application_details.email_unavailable')
                 )}

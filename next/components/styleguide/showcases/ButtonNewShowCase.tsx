@@ -4,7 +4,7 @@ import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-const ButtonStacks = ({ variant }: { variant: 'category' | 'black' | 'negative' }) => (
+const ButtonStacks = ({ variant }: { variant: 'black' | 'negative' }) => (
   <>
     <Stack>
       <Button variant={`${variant}-solid`}>Button {variant} solid</Button>
@@ -228,23 +228,8 @@ const ButtonShowCase = () => {
         clickable/touchable area. For this case, we have `icon-wrapped` variant.
       </div>
       <div>TODO: Loading spinner</div>
-      <ButtonStacks variant="category" />
       <ButtonStacks variant="black" />
       <ButtonStacks variant="negative" />
-      <Stack>
-        <Button variant="category-link" href="#" hasLinkIcon>
-          Link
-        </Button>
-        <Button variant="category-link" href="#" size="small" hasLinkIcon>
-          Link
-        </Button>
-        <Button variant="category-link" href="https://bratislava.sk" hasLinkIcon>
-          External link
-        </Button>
-        <Button variant="category-link" href="https://bratislava.sk" size="small" hasLinkIcon>
-          External link
-        </Button>
-      </Stack>
       <Stack>
         <Button variant="black-link" href="#" hasLinkIcon>
           Link
@@ -259,25 +244,7 @@ const ButtonShowCase = () => {
           External link
         </Button>
       </Stack>
-      <Stack>
-        <Button variant="category-solid" href="#" hasLinkIcon>
-          Link
-        </Button>
-        <Button variant="category-solid" href="#" size="small" hasLinkIcon>
-          Link
-        </Button>
-        <Button variant="category-solid" href="https://bratislava.sk" hasLinkIcon>
-          External link
-        </Button>
-        <Button variant="category-solid" href="https://bratislava.sk" size="small" hasLinkIcon>
-          External link
-        </Button>
-      </Stack>
-      <Stack>
-        <Button variant="category-solid" isLoading>
-          This is loading button
-        </Button>
-      </Stack>
+
       <Stack>
         <Button variant="icon-wrapped" icon={<CalendarIcon />} aria-label="Calendar" />
         <Button variant="icon-wrapped" icon={<CalendarIcon />} aria-label="Calendar" size="small" />

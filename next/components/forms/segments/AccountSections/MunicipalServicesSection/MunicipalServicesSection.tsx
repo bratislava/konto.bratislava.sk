@@ -98,9 +98,9 @@ const MunicipalServicesSection = ({
         </div>
         <div className="my-4 lg:my-8">
           <Pagination
-            count={Math.ceil(filteredServices.length / ITEMS_PER_PAGE)}
-            selectedPage={currentPage}
-            onChange={setCurrentPage}
+            totalCount={Math.ceil(filteredServices.length / ITEMS_PER_PAGE)}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
           />
         </div>
       </div>

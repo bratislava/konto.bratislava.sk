@@ -91,9 +91,9 @@ const MyApplicationsList = ({
           </ul>
           <div className="my-4 lg:my-8">
             <Pagination
-              count={totalPagesCount}
-              selectedPage={currentPage}
-              onChange={(page) =>
+              totalCount={totalPagesCount}
+              currentPage={currentPage}
+              onPageChange={(page) =>
                 router
                   .push(
                     {

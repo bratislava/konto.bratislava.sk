@@ -29,16 +29,12 @@ type ButtonBase = {
     | 'unstyled'
     | 'icon-wrapped'
     | 'icon-wrapped-negative-margin'
-    | 'category-solid'
-    | 'category-outline'
-    | 'category-plain'
     | 'black-solid'
     | 'black-outline'
     | 'black-plain'
     | 'negative-solid'
     | 'negative-plain'
     | 'black-link'
-    | 'category-link'
   size?: 'responsive' | 'large' | 'small'
   className?: string
   fullWidth?: boolean
@@ -175,12 +171,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'p-2': size === 'large' && isIconButton && isPlainVariant,
 
               // colors - bg, border, text - idle & focus
-              'border-category-700 bg-category-700 text-font-contrast':
-                variant === 'category-solid',
-              'border-category-800 bg-category-800': variant === 'category-solid' && isPressed,
-
-              'border-category-700 bg-transparent text-gray-700 data-pressed:border-category-800 data-pressed:text-gray-800':
-                variant === 'category-outline',
               'border-gray-700 bg-gray-700 text-white data-pressed:border-gray-800 data-pressed:bg-gray-800':
                 variant === 'black-solid',
               'border-gray-200 bg-transparent text-gray-700 data-pressed:border-gray-300 data-pressed:text-gray-800':
@@ -188,24 +178,15 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'border-negative-700 bg-negative-700 text-white data-pressed:border-negative-800 data-pressed:bg-negative-800':
                 variant === 'negative-solid',
 
-              'text-category-700 data-pressed:bg-category-200 data-pressed:text-category-800':
-                variant === 'category-plain',
               'text-gray-700 data-pressed:bg-gray-200 data-pressed:text-gray-800':
                 variant === 'black-plain',
               'text-negative-700 data-pressed:bg-negative-200 data-pressed:text-negative-800':
                 variant === 'negative-plain',
 
-              'text-category-700 data-pressed:text-category-800': variant === 'category-link',
               'text-gray-700 data-pressed:text-gray-800': variant === 'black-link',
 
               // colors:hover - bg, border, text
               // using custom `data-hovered:` because `hover:` is not working with `disabled` state
-              'data-hovered:border-category-600 data-hovered:bg-category-600':
-                variant === 'category-solid',
-              'text-gray-700 data-hovered:border-category-600': variant === 'category-outline',
-              'data-hovered:bg-category-100 data-hovered:text-category-600':
-                variant === 'category-plain',
-
               'data-hovered:border-gray-600 data-hovered:bg-gray-600': variant === 'black-solid',
               'data-hovered:border-gray-200 data-hovered:text-gray-600':
                 variant === 'black-outline',
@@ -216,7 +197,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'data-hovered:bg-negative-100 data-hovered:text-negative-600':
                 variant === 'negative-plain',
 
-              'data-hovered:text-category-600': variant === 'category-link',
               'data-hovered:text-gray-600': variant === 'black-link',
 
               // svg icons

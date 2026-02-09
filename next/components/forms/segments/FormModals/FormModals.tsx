@@ -93,7 +93,7 @@ const FormModals = () => {
           {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="category-solid"
+          variant="negative-solid"
           size="small"
           onPress={() => saveConcept(true)}
           isLoading={saveConceptIsPending}

@@ -1,5 +1,6 @@
-import logger from 'frontend/utils/logger'
 import { useMemo } from 'react'
+
+import logger from '@/frontend/utils/logger'
 
 // useful if you're getting json as a string in your component and don't want to tie it's parsing to each render or a pre-existing effect hook
 export default <T>(stringToParse: string | undefined | null) =>

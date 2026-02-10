@@ -1,11 +1,12 @@
-import { MailIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
-import { ROUTES } from 'frontend/api/constants'
-import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
+
+import { MailIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { useOfficialCorrespondenceChannel } from '@/components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
+import { ROUTES } from '@/frontend/api/constants'
+import cn from '@/frontend/cn'
 
 // TODO unify with TaxesFeesAdministratorCardWrapper
 const OfficialCorrespondenceChannelCardWrapper = () => {

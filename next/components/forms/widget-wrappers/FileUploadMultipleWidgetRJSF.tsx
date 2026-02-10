@@ -1,10 +1,10 @@
 import { WidgetProps } from '@rjsf/utils'
-import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { FileUploadUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
-import { useFormFileUpload } from '../useFormFileUpload'
-import Upload from '../widget-components/Upload/Upload'
+import { useFormFileUpload } from '@/components/forms/useFormFileUpload'
+import Upload from '@/components/forms/widget-components/Upload/Upload'
+import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
 
 interface FileUploadMultipleWidgetRJSFProps extends WidgetProps {
   options: FileUploadUiOptions

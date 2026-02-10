@@ -13,21 +13,21 @@ import React, {
   useState,
 } from 'react'
 
+import { FormStepIndex } from '@/components/forms/types/Steps'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormCurrentStepIndex } from '@/components/forms/useFormCurrentStepIndex'
+import { useFormData } from '@/components/forms/useFormData'
+import { useFormFileUpload } from '@/components/forms/useFormFileUpload'
+import { useFormLeaveProtection } from '@/components/forms/useFormLeaveProtection'
+import { useFormModals } from '@/components/forms/useFormModals'
+import { useFormValidatorRegistry } from '@/components/forms/useFormValidatorRegistry'
 import {
   getEvaluatedStepsSchemas,
   getStepperData,
   getStepProperty,
   parseStepFromFieldId,
   removeUnusedPropertiesFromFormData,
-} from '../../frontend/utils/formState'
-import { FormStepIndex } from './types/Steps'
-import { useFormContext } from './useFormContext'
-import { useFormCurrentStepIndex } from './useFormCurrentStepIndex'
-import { useFormData } from './useFormData'
-import { useFormFileUpload } from './useFormFileUpload'
-import { useFormLeaveProtection } from './useFormLeaveProtection'
-import { useFormModals } from './useFormModals'
-import { useFormValidatorRegistry } from './useFormValidatorRegistry'
+} from '@/frontend/utils/formState'
 
 const useGetContext = () => {
   const {

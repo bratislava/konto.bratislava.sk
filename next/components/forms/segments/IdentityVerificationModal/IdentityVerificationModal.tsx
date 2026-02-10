@@ -1,13 +1,13 @@
-import { ArrowRightIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { AccountType } from '../../../../frontend/dtos/accountDto'
-import ButtonNew from '../../simple-components/ButtonNew'
-import { ModalProps } from '../../simple-components/Modal'
-import { useFormRedirects } from '../../useFormRedirects'
-import MessageModal from '../../widget-components/Modals/MessageModal'
+import { ArrowRightIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import { ModalProps } from '@/components/forms/simple-components/Modal'
+import { useFormRedirects } from '@/components/forms/useFormRedirects'
+import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
+import { AccountType } from '@/frontend/dtos/accountDto'
 
 type IdentityVerificationModalProps = {
   accountType: AccountType | undefined
@@ -28,16 +28,12 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       variant="vertical"
       buttonsAlign="center"
       buttons={[
-        <ButtonNew className="grow" variant="black-solid" onPress={() => verifyIdentity()}>
+        <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>
           {t('auth.verification_url_text')}
-        </ButtonNew>,
-        <ButtonNew
-          className="grow"
-          variant="black-outline"
-          onPress={() => rest?.onOpenChange?.(false)}
-        >
+        </Button>,
+        <Button className="grow" variant="outline" onPress={() => rest?.onOpenChange?.(false)}>
           {t('verification_modal.footer_desktop_eID_text')}
-        </ButtonNew>,
+        </Button>,
       ]}
       titleClassName="text-h3"
       afterContent={
@@ -48,13 +44,13 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="mt-6 flex justify-center">
-            <ButtonNew
-              variant="black-plain"
+            <Button
+              variant="plain"
               endIcon={<ArrowRightIcon className="size-6" />}
               onPress={() => rest?.onOpenChange?.(false)}
             >
               {t('verification_modal.footer_desktop_continue')}
-            </ButtonNew>
+            </Button>
           </div>
         </>
       }

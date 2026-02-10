@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import cn from '../../../../frontend/cn'
-import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
+import cn from '@/frontend/cn'
 
 type TextAreaBase = FieldWrapperProps & {
   defaultValue?: string

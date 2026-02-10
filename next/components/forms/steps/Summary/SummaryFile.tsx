@@ -1,4 +1,3 @@
-import { AlertIcon, AttachmentIcon, CheckInCircleIcon, ScanningIcon } from '@assets/ui-icons'
 import {
   FileInfoSummary,
   isDoneFileStatusType,
@@ -8,8 +7,9 @@ import {
 } from 'forms-shared/form-files/fileStatus'
 import React, { useMemo } from 'react'
 
-import cn from '../../../../frontend/cn'
-import Spinner from '../../simple-components/Spinner'
+import { AlertIcon, AttachmentIcon, CheckInCircleIcon, ScanningIcon } from '@/assets/ui-icons'
+import Spinner from '@/components/forms/simple-components/Spinner'
+import cn from '@/frontend/cn'
 
 type SummaryFileProps = {
   fileInfo: FileInfoSummary

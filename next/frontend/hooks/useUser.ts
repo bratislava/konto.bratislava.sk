@@ -1,4 +1,3 @@
-import { cityAccountClient } from '@clients/city-account'
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
 import { AxiosError, AxiosResponse } from 'axios'
@@ -7,6 +6,8 @@ import {
   GDPRSubTypeEnum,
   UserControllerGetOrCreateUser200Response,
 } from 'openapi-clients/city-account'
+
+import { cityAccountClient } from '@/clients/city-account'
 
 const userQueryKey = ['user']
 

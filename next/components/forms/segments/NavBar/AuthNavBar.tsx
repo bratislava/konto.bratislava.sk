@@ -1,4 +1,3 @@
-import { ArrowLeftIcon } from '@assets/ui-icons'
 import { StatusBar } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
 import { ROUTES } from 'frontend/api/constants'
@@ -6,10 +5,11 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
-import cn from '../../../../frontend/cn'
-import { getLanguageKey } from '../../../../frontend/utils/general'
-import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
-import OAuthInfo from '../OAuthConfigure/OAuthInfo'
+import { ArrowLeftIcon } from '@/assets/ui-icons'
+import OAuthInfo from '@/components/forms/segments/OAuthConfigure/OAuthInfo'
+import cn from '@/frontend/cn'
+import { getLanguageKey } from '@/frontend/utils/general'
+import { useAmplifyClientOAuthContext } from '@/frontend/utils/useAmplifyClientOAuthContext'
 
 type Props = {
   currentLanguage?: string

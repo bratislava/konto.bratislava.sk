@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import BATooltip from '../../info-components/Tooltip/BATooltip'
+import BATooltip from '@/components/forms/info-components/Tooltip/BATooltip'
 
 interface UserProfileDetailViewRowProps {
   label: string

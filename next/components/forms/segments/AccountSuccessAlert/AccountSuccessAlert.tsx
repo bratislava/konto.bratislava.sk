@@ -1,10 +1,10 @@
-import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/ButtonNew'
 import { ReactNode } from 'react'
 
-import cn from '../../../../frontend/cn'
-import Spinner from '../../simple-components/Spinner'
+import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import Spinner from '@/components/forms/simple-components/Spinner'
+import cn from '@/frontend/cn'
 
 interface Props {
   title: string
@@ -68,7 +68,7 @@ const AccountSuccessAlert = ({
       <div className="flex flex-col gap-3 lg:gap-4">
         {onConfirm && confirmLabel ? (
           <Button
-            variant="black-solid"
+            variant="solid"
             onPress={onConfirm}
             fullWidth
             isLoading={confirmIsLoading}
@@ -79,7 +79,7 @@ const AccountSuccessAlert = ({
         ) : null}
         {onCancel && cancelLabel ? (
           <Button
-            variant="black-plain"
+            variant="plain"
             onPress={onCancel}
             fullWidth
             endIcon={<ArrowRightIcon className="size-6" />}

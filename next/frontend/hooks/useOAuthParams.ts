@@ -4,7 +4,7 @@ import {
   authRequestIdQueryParam,
   isIdentityVerificationRequiredQueryParam,
   isOAuthQueryParam,
-} from '../utils/queryParamRedirect'
+} from '@/frontend/utils/queryParamRedirect'
 
 export const useOAuthParams = () => {
   const [isOAuth] = useQueryState(isOAuthQueryParam, parseAsBoolean.withDefault(false))

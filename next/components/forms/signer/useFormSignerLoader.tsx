@@ -1,7 +1,7 @@
 import Script from 'next/script'
 import React, { createContext, Fragment, PropsWithChildren, useContext, useState } from 'react'
 
-import { useFormContext } from '../useFormContext'
+import { useFormContext } from '@/components/forms/useFormContext'
 
 type FormSignerLoaderContextType = {
   isError: boolean

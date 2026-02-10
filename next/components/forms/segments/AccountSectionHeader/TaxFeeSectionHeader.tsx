@@ -1,4 +1,6 @@
-import Breadcrumbs, { BreadcrumbsProps } from './Breadcrumbs'
+import Breadcrumbs, {
+  BreadcrumbsProps,
+} from '@/components/forms/segments/AccountSectionHeader/Breadcrumbs'
 
 type TaxFeeSectionHeaderProps = {
   title: string

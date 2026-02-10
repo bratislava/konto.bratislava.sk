@@ -1,12 +1,13 @@
-import { MailIcon, SettingsIcon } from '@assets/ui-icons'
-import OfficialCorrespondenceChannelAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
+
+import { MailIcon, SettingsIcon } from '@/assets/ui-icons'
+import OfficialCorrespondenceChannelAlert from '@/components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4
@@ -48,16 +49,16 @@ const OfficialCorrespondenceChannelInformation = () => {
           {canUserChangeChannel && (
             <>
               {/* Desktop */}
-              <ButtonNew
+              <Button
                 onPress={() => setIsModalOpen(true)}
-                variant="black-link"
+                variant="link"
                 startIcon={<SettingsIcon />}
                 className="max-lg:hidden"
               >
                 {t('taxes.communication_channel.change_button')}
-              </ButtonNew>
+              </Button>
               {/* Mobile */}
-              <ButtonNew
+              <Button
                 onPress={() => setIsModalOpen(true)}
                 variant="icon-wrapped"
                 icon={<SettingsIcon />}

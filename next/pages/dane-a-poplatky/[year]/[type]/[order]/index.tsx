@@ -1,23 +1,24 @@
+import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
+import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
+
 import {
   getTaxAdministratorForUser,
   StrapiTaxAdministrator,
-} from '@backend/utils/strapi-tax-administrator'
-import { strapiClient } from '@clients/graphql-strapi'
-import { TaxFragment } from '@clients/graphql-strapi/api'
-import { taxClient } from '@clients/tax'
-import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
-import TaxFeeSection from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeSection'
-import { StrapiTaxProvider } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import { TaxFeeSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import PageLayout from 'components/layouts/PageLayout'
-import { SsrAuthProviderHOC } from 'components/logic/SsrAuthContext'
-import { TaxFeeRouteProps } from 'frontend/api/constants'
-import { prefetchUserQuery } from 'frontend/hooks/useUser'
-import { amplifyGetServerSideProps } from 'frontend/utils/amplifyServer'
-import { convertYearToNumber } from 'frontend/utils/general'
-import { slovakServerSideTranslations } from 'frontend/utils/slovakServerSideTranslations'
-import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
+} from '@/backend/utils/strapi-tax-administrator'
+import { strapiClient } from '@/clients/graphql-strapi'
+import { TaxFragment } from '@/clients/graphql-strapi/api'
+import { taxClient } from '@/clients/tax'
+import TaxFeeSection from '@/components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeSection'
+import { StrapiTaxProvider } from '@/components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
+import { TaxFeeSectionProvider } from '@/components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { TaxFeeRouteProps } from '@/frontend/api/constants'
+import { prefetchUserQuery } from '@/frontend/hooks/useUser'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { convertYearToNumber } from '@/frontend/utils/general'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 type PageProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response

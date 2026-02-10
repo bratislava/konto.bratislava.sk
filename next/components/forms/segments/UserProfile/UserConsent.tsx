@@ -1,6 +1,5 @@
-import Toggle from 'components/forms/simple-components/Toggle'
-
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Toggle from '@/components/forms/simple-components/Toggle'
 
 interface Consent {
   id: string

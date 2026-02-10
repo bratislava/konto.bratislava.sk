@@ -1,10 +1,11 @@
-import DznAccordionTableTaxContent from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/DznAccordionTableTaxContent'
 import KoAccordionTableTaxContent from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/KoAccordionTableTaxContent'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import { useCurrencyFromCentsFormatter } from 'frontend/utils/formatCurrency'
 import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
+
+import DznAccordionTableTaxContent from '@/components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/DznAccordionTableTaxContent'
+import { useCurrencyFromCentsFormatter } from '@/frontend/utils/formatCurrency'
 
 const TaxFeeAccordions = () => {
   const { taxData } = useTaxFeeSection()

@@ -3,7 +3,8 @@ import { parseTime } from '@internationalized/date'
 import { useControlledState } from '@react-stately/utils'
 import { forwardRef, useMemo } from 'react'
 
-import { FieldWrapperProps } from '../FieldWrapper'
+import { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
+
 import TimeField from './TimeField'
 
 function removeSecondsFromTime(time: string): string {

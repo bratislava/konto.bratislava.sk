@@ -1,5 +1,4 @@
-import { ChevronRightIcon } from '@assets/ui-icons'
-import MLinkNew from 'components/forms/simple-components/MLinkNew'
+import MLink from 'components/forms/simple-components/MLink'
 import { ROUTES } from 'frontend/api/constants'
 import cn from 'frontend/cn'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
@@ -7,6 +6,8 @@ import { formatDate, isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
+
+import { ChevronRightIcon } from '@/assets/ui-icons'
 
 type TaxesFeesOverviewRowProps = {
   taxData: ResponseGetTaxesListBodyDto
@@ -69,9 +70,9 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
       <div className="wrapper-focus-ring group relative hidden w-full items-center justify-between gap-6 py-4 lg:flex">
         <div className="flex w-full max-w-[450px] flex-col">
           {isActiveLink ? (
-            <MLinkNew href={href} variant="unstyled" stretched>
+            <MLink href={href} variant="unstyled" stretched>
               <h3 className="mb-1 text-16-semibold group-hover:underline">{title}</h3>
-            </MLinkNew>
+            </MLink>
           ) : (
             <h3 className="mb-1 text-16-semibold">{title}</h3>
           )}
@@ -114,9 +115,9 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
       <div className="relative flex w-full items-start justify-between py-4 lg:hidden">
         <div className="flex flex-col gap-2">
           {isActiveLink ? (
-            <MLinkNew href={href} variant="unstyled" stretched className="text-p2-semibold">
+            <MLink href={href} variant="unstyled" stretched className="text-p2-semibold">
               {title}
-            </MLinkNew>
+            </MLink>
           ) : (
             <span className="text-p2-semibold">{title}</span>
           )}

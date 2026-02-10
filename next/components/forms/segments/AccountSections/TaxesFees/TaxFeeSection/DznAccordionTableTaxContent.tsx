@@ -1,5 +1,4 @@
 import AccordionV2 from 'components/forms/simple-components/AccordionV2'
-import cn from 'frontend/cn'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { useHorizontalScrollFade } from 'frontend/utils/useHorizontalScrollFade'
 import { useTranslation } from 'next-i18next'
@@ -9,6 +8,8 @@ import {
   ResponseGroundTaxDetailDto,
 } from 'openapi-clients/tax'
 import React, { useRef } from 'react'
+
+import cn from '@/frontend/cn'
 
 const tableHeaderData = {
   subject: <span>Predmet dane</span>,

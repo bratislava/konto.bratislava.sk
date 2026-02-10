@@ -10,9 +10,8 @@ import {
 } from 'react-aria-components'
 
 import { CrossIcon } from '@/assets/ui-icons'
+import { useIframeResizerChildContext } from '@/components/forms/IframeResizerChild'
 import cn from '@/frontend/cn'
-
-import { useIframeResizerChildContext } from '../IframeResizerChild'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string

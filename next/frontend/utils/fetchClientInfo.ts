@@ -3,8 +3,7 @@ import { ParsedUrlQuery } from 'node:querystring'
 import { ClientInfoResponseDto } from 'openapi-clients/city-account'
 
 import { cityAccountClient } from '@/clients/city-account'
-
-import { authRequestIdQueryParam, isOAuthQueryParam } from './queryParamRedirect'
+import { authRequestIdQueryParam, isOAuthQueryParam } from '@/frontend/utils/queryParamRedirect'
 
 export const fetchClientInfo = async (queryParams: ParsedUrlQuery) => {
   const isOAuth = queryParams[isOAuthQueryParam]

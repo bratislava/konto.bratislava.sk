@@ -1,9 +1,8 @@
 import { forwardRef, useState } from 'react'
 
+import { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
 import InputField from '@/components/forms/widget-components/InputField/InputField'
 import PasswordEyeButton from '@/components/forms/widget-components/PasswordField/PasswordEyeButton'
-
-import { FieldWrapperProps } from '../FieldWrapper'
 
 type Props = FieldWrapperProps & {
   value?: string

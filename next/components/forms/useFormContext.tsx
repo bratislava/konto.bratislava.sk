@@ -8,13 +8,12 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import { useIsSSR } from 'react-aria'
 
 import { FormBaseFragment } from '@/clients/graphql-strapi/api'
-import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
 import {
   ClientFormDefinition,
   isClientSlovenskoSkFormDefinition,
   isClientSlovenskoSkTaxFormDefinition,
-} from './clientFormDefinitions'
+} from '@/components/forms/clientFormDefinitions'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 declare global {
   interface Window {

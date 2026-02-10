@@ -5,10 +5,9 @@ import { ArrowRightIcon } from '@/assets/ui-icons'
 import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from '@/components/forms/simple-components/Button'
 import { ModalProps } from '@/components/forms/simple-components/Modal'
+import { useFormRedirects } from '@/components/forms/useFormRedirects'
 import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
 import { AccountType } from '@/frontend/dtos/accountDto'
-
-import { useFormRedirects } from '../../useFormRedirects'
 
 type IdentityVerificationModalProps = {
   accountType: AccountType | undefined

@@ -6,14 +6,13 @@ import { useState } from 'react'
 
 import { AlertIcon, ErrorIcon } from '@/assets/ui-icons'
 import { formsClient } from '@/clients/forms'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import { useFormContext } from '@/components/forms/useFormContext'
 import { ROUTES } from '@/frontend/api/constants'
 import cn from '@/frontend/cn'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
-import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
-import Button from './simple-components/Button'
-import { useFormContext } from './useFormContext'
 
 const FormVersionCompareAction = () => {
   const {

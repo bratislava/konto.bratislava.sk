@@ -6,14 +6,13 @@ import {
   MunicipalServiceCardEntityFragment,
 } from '@/clients/graphql-strapi/api'
 import AccountSectionHeader from '@/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
+import Announcements from '@/components/forms/segments/AccountSections/IntroSection/Announcements/Announcements'
+import MunicipalServiceCard from '@/components/forms/segments/MunicipalServiceCard/MunicipalServiceCard'
+import PhoneNumberModal from '@/components/forms/segments/PhoneNumberModal/PhoneNumberModal'
 import Banner from '@/components/forms/simple-components/Banner'
 import Button from '@/components/forms/simple-components/Button'
 import { ROUTES } from '@/frontend/api/constants'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
-import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
-import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
-import Announcements from './Announcements/Announcements'
 
 type IntroSectionProps = {
   services: MunicipalServiceCardEntityFragment[]

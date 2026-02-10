@@ -3,10 +3,9 @@ import React, { ReactNode, useRef } from 'react'
 import { TimeValue, useTimeField } from 'react-aria'
 import { useTimeFieldState } from 'react-stately'
 
+import DateTimeSegment from '@/components/forms/widget-components/DateTimePicker/DateTimeSegment'
+import FieldWrapper, { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
 import cn from '@/frontend/cn'
-
-import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
-import DateTimeSegment from './DateTimeSegment'
 
 type TimeFieldProps = FieldWrapperProps & {
   children?: ReactNode

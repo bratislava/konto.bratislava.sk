@@ -5,9 +5,9 @@ import React, { forwardRef, ReactNode } from 'react'
 import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
 import { useDateFieldState } from 'react-stately'
 
+import FieldWrapper, { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
 import cn from '@/frontend/cn'
 
-import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import DateTimeSegment from './DateTimeSegment'
 
 type DateFieldProps = FieldWrapperProps & {

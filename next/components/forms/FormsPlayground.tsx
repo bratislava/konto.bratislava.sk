@@ -12,17 +12,21 @@ import React, { ContextType, createRef, useEffect, useMemo, useRef, useState } f
 import { v4 as uuidv4 } from 'uuid'
 
 import { DownloadIcon, UploadIcon } from '@/assets/ui-icons'
+import { ClientPlaygroundFormDefinition } from '@/components/forms/clientFormDefinitions'
+import Button from '@/components/forms/simple-components/Button'
+import ThemedForm from '@/components/forms/ThemedForm'
+import { FormDataContext } from '@/components/forms/useFormData'
+import { useFormErrorTranslations } from '@/components/forms/useFormErrorTranslations'
+import { FormFileUploadContext } from '@/components/forms/useFormFileUpload'
+import {
+  FormValidatorRegistryProvider,
+  useFormValidatorRegistry,
+} from '@/components/forms/useFormValidatorRegistry'
+import SelectField, {
+  SelectOption,
+} from '@/components/forms/widget-components/SelectField/SelectField'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
 import { downloadBlob } from '@/frontend/utils/general'
-
-import { ClientPlaygroundFormDefinition } from './clientFormDefinitions'
-import Button from './simple-components/Button'
-import ThemedForm from './ThemedForm'
-import { FormDataContext } from './useFormData'
-import { useFormErrorTranslations } from './useFormErrorTranslations'
-import { FormFileUploadContext } from './useFormFileUpload'
-import { FormValidatorRegistryProvider, useFormValidatorRegistry } from './useFormValidatorRegistry'
-import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
 
 export type FormsPlaygroundProps = {
   formDefinitions: ClientPlaygroundFormDefinition[]

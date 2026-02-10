@@ -2,10 +2,9 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Button from '@/components/forms/simple-components/Button'
+import { useConditionalFormRedirects } from '@/components/forms/useFormRedirects'
 import { ROUTES } from '@/frontend/api/constants'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
-import { useConditionalFormRedirects } from '../useFormRedirects'
 
 const IdentityVerificationStatus = () => {
   const { isSignedIn, tierStatus } = useSsrAuth()

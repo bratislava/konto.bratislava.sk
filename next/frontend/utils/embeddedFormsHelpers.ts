@@ -2,8 +2,7 @@ import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { GetServerSidePropsContext } from 'next/types'
 
 import { environment } from '@/environment'
-
-import { isDefined } from './general'
+import { isDefined } from '@/frontend/utils/general'
 
 const map = {
   olo: environment.embeddedFormsOloOrigins,

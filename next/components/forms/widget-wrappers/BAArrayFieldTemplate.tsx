@@ -16,10 +16,9 @@ import Alert from '@/components/forms/info-components/Alert'
 import ConditionalFormMarkdown from '@/components/forms/info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '@/components/forms/info-components/FieldErrorMessage'
 import Button from '@/components/forms/simple-components/Button'
+import type { BAArrayFieldItemTemplateAdditionalProps } from '@/components/forms/widget-wrappers/BAArrayFieldItemTemplate'
+import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
 import cn from '@/frontend/cn'
-
-import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
-import WidgetWrapper from './WidgetWrapper'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldTemplate/ArrayFieldTemplate.tsx

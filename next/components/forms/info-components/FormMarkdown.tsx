@@ -5,9 +5,8 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
 
+import FormLightboxModal from '@/components/forms/info-components/FormLightboxModal'
 import MLink from '@/components/forms/simple-components/MLink'
-
-import FormLightboxModal from './FormLightboxModal'
 
 function getTaxYear() {
   const today = new Date()

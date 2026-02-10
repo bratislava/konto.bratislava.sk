@@ -1,11 +1,10 @@
 import { useTranslation } from 'next-i18next'
 
 import { LockIcon } from '@/assets/ui-icons'
+import UserProfileSection from '@/components/forms/segments/UserProfile/UserProfileSection'
+import UserProfileSectionHeader from '@/components/forms/segments/UserProfile/UserProfileSectionHeader'
 import Button from '@/components/forms/simple-components/Button'
 import { ROUTES } from '@/frontend/api/constants'
-
-import UserProfileSection from './UserProfileSection'
-import UserProfileSectionHeader from './UserProfileSectionHeader'
 
 const UserProfilePassword = () => {
   const { t } = useTranslation('account')

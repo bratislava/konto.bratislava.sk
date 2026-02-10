@@ -4,14 +4,13 @@ import { useTranslation } from 'next-i18next'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { formsClient } from '@/clients/forms'
+import { useFormSignature } from '@/components/forms/signer/useFormSignature'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormData } from '@/components/forms/useFormData'
+import { useFormLeaveProtection } from '@/components/forms/useFormLeaveProtection'
 import { ROUTES } from '@/frontend/api/constants'
 import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
-
-import { useFormSignature } from './signer/useFormSignature'
-import { useFormContext } from './useFormContext'
-import { useFormData } from './useFormData'
-import { useFormLeaveProtection } from './useFormLeaveProtection'
 
 const useGetContext = () => {
   const router = useRouter()

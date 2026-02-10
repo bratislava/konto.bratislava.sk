@@ -1,9 +1,8 @@
 import { useTranslation } from 'next-i18next'
 
 import Alert from '@/components/forms/info-components/Alert'
-
-import { useFormContext } from '../useFormContext'
-import { useFormSummary } from './Summary/useFormSummary'
+import { useFormSummary } from '@/components/forms/steps/Summary/useFormSummary'
+import { useFormContext } from '@/components/forms/useFormContext'
 
 const SummaryHeader = () => {
   const { isSigned } = useFormContext()

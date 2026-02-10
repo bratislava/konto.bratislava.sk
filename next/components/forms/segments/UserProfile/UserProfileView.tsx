@@ -6,6 +6,9 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
+import UserProfileConsents from '@/components/forms/segments/UserProfile/UserProfileConsents'
+import UserProfileDetail from '@/components/forms/segments/UserProfile/UserProfileDetail'
+import UserProfilePassword from '@/components/forms/segments/UserProfile/UserProfilePassword'
 import { UserAttributes } from '@/frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from '@/frontend/hooks/useRefreshServerSideProps'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
@@ -13,10 +16,6 @@ import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 import { useUserUpdateBloomreachData } from '@/frontend/hooks/useUser'
 import { GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
 import logger from '@/frontend/utils/logger'
-
-import UserProfileConsents from './UserProfileConsents'
-import UserProfileDetail from './UserProfileDetail'
-import UserProfilePassword from './UserProfilePassword'
 
 const UserProfileView = () => {
   const { t } = useTranslation('account')

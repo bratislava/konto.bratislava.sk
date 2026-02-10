@@ -14,6 +14,7 @@ import {
   PdfIcon,
 } from '@/assets/ui-icons'
 import { formsClient } from '@/clients/forms'
+import BottomSheetMenuModal from '@/components/forms/segments/AccountSections/MyApplicationsSection/BottomSheetMenu/BottomSheetMenuModal'
 import Button from '@/components/forms/simple-components/Button'
 import ConditionalWrap from '@/components/forms/simple-components/ConditionalWrap'
 import FormatDate from '@/components/forms/simple-components/FormatDate'
@@ -26,8 +27,6 @@ import useFormStateComponents from '@/frontend/hooks/useFormStateComponents'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
 import { downloadBlob } from '@/frontend/utils/general'
 import logger from '@/frontend/utils/logger'
-
-import BottomSheetMenuModal from './BottomSheetMenu/BottomSheetMenuModal'
 
 export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 

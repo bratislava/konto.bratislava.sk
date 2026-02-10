@@ -3,14 +3,13 @@ import React from 'react'
 import { mergeProps } from 'react-aria'
 
 import { CheckIcon } from '@/assets/ui-icons'
+import { TaxFormPdfExportModalState } from '@/components/forms/segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import Button from '@/components/forms/simple-components/Button'
 import Modal, { ModalProps } from '@/components/forms/simple-components/Modal'
 import Spinner from '@/components/forms/simple-components/Spinner'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormRedirects } from '@/components/forms/useFormRedirects'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
-import { useFormContext } from '../../useFormContext'
-import { useFormRedirects } from '../../useFormRedirects'
-import { TaxFormPdfExportModalState } from './TaxFormPdfExportModalState'
 
 type TaxFormPdfExportModalProps = {
   state: TaxFormPdfExportModalState | null

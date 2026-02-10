@@ -1,19 +1,18 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import IdentityVerificationModal from '@/components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
+import RegistrationModal from '@/components/forms/segments/RegistrationModal/RegistrationModal'
+import TaxFormPdfExportModal from '@/components/forms/segments/TaxFormPdfExportModal/TaxFormPdfExportModal'
 import Button from '@/components/forms/simple-components/Button'
+import { useFormModals } from '@/components/forms/useFormModals'
+import { useFormRedirects } from '@/components/forms/useFormRedirects'
 import MessageModal, {
   MessageModalProps,
 } from '@/components/forms/widget-components/Modals/MessageModal'
 import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
-import { useFormModals } from '../../useFormModals'
-import { useFormRedirects } from '../../useFormRedirects'
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
-import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
-import RegistrationModal from '../RegistrationModal/RegistrationModal'
-import TaxFormPdfExportModal from '../TaxFormPdfExportModal/TaxFormPdfExportModal'
 
 const FormModals = () => {
   const { t } = useTranslation('forms')

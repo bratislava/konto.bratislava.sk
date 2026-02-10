@@ -1,5 +1,7 @@
-import FormCreatedRedirectPage, { FormCreatedRedirectPageProps } from './FormCreatedRedirectPage'
-import FormLandingPage, { FormLandingPageProps } from './FormLandingPage'
+import FormCreatedRedirectPage, {
+  FormCreatedRedirectPageProps,
+} from '@/components/forms/FormCreatedRedirectPage'
+import FormLandingPage, { FormLandingPageProps } from '@/components/forms/FormLandingPage'
 
 export type FormCreatedSplitPageProps =
   | ({

@@ -4,11 +4,10 @@ import BratislavaIcon from '@/assets/images/bratislava-footer.svg'
 import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from '@/components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from '@/components/forms/simple-components/Button'
+import { useFormContext } from '@/components/forms/useFormContext'
 import { ROUTES } from '@/frontend/api/constants'
 import cn from '@/frontend/cn'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
-import { useFormContext } from '../../../useFormContext'
 
 const useThankYouFormSection = () => {
   const {

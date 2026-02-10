@@ -2,16 +2,15 @@ import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
 import Alert from '@/components/forms/info-components/Alert'
+import UserProfileDetailEdit from '@/components/forms/segments/UserProfile/UserProfileDetailEdit'
+import UserProfileDetailsButtons from '@/components/forms/segments/UserProfile/UserProfileDetailsButtons'
+import UserProfileDetailView from '@/components/forms/segments/UserProfile/UserProfileDetailView'
+import UserProfilePhoto from '@/components/forms/segments/UserProfile/UserProfilePhoto'
+import UserProfileSection from '@/components/forms/segments/UserProfile/UserProfileSection'
+import UserProfileSectionHeader from '@/components/forms/segments/UserProfile/UserProfileSectionHeader'
 import cn from '@/frontend/cn'
 import { UserAttributes } from '@/frontend/dtos/accountDto'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
-
-import UserProfileDetailEdit from './UserProfileDetailEdit'
-import UserProfileDetailsButtons from './UserProfileDetailsButtons'
-import UserProfileDetailView from './UserProfileDetailView'
-import UserProfilePhoto from './UserProfilePhoto'
-import UserProfileSection from './UserProfileSection'
-import UserProfileSectionHeader from './UserProfileSectionHeader'
 
 interface UserProfileDetailProps {
   userAttributes?: UserAttributes | null

@@ -3,13 +3,12 @@ import { useState } from 'react'
 import { Button as AriaButton, Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
 
 import { ChevronDownIcon, CrossIcon } from '@/assets/ui-icons'
+import StepperViewList from '@/components/forms/steps/StepperViewList'
+import StepperViewRow from '@/components/forms/steps/StepperViewRow'
+import { useFormSummary } from '@/components/forms/steps/Summary/useFormSummary'
 import { FormStepIndex } from '@/components/forms/types/Steps'
 import { useFormState } from '@/components/forms/useFormState'
 import cn from '@/frontend/cn'
-
-import StepperViewList from './StepperViewList'
-import StepperViewRow from './StepperViewRow'
-import { useFormSummary } from './Summary/useFormSummary'
 
 type StepperModalProps = {
   isOpen: boolean

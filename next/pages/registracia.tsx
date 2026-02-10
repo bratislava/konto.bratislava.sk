@@ -30,8 +30,7 @@ import {
   useOAuthGetContext,
 } from '@/frontend/utils/useAmplifyClientOAuthContext'
 import { usePrepareFormMigration } from '@/frontend/utils/usePrepareFormMigration'
-
-import { AuthPageCommonProps, loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
+import { AuthPageCommonProps, loginConfirmSignUpEmailHiddenQueryParam } from '@/pages/prihlasenie'
 
 enum RegistrationStatus {
   INIT = 'INIT',

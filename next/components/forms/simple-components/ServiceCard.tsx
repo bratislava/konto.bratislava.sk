@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 
 import { ArrowRightIcon, ExportIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import { LinkPlausibleProps } from '@/components/forms/simple-components/MLink'
 import cn from '@/frontend/cn'
-
-import Button from './Button'
-import { LinkPlausibleProps } from './MLink'
 
 type ServiceCardBase = {
   title: string

@@ -6,12 +6,11 @@ import React from 'react'
 
 import { formsClient } from '@/clients/forms'
 import MyApplicationCardsPlaceholder from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
+import MyApplicationsCard from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
+import { patchApplicationFormIfNeeded } from '@/components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededClient'
 import Pagination from '@/components/forms/simple-components/Pagination/Pagination'
 import { useRefreshServerSideProps } from '@/frontend/hooks/useRefreshServerSideProps'
 import logger from '@/frontend/utils/logger'
-
-import MyApplicationsCard from './MyApplicationsCard'
-import { patchApplicationFormIfNeeded } from './patchApplicationFormIfNeededClient'
 
 // must be string due to typing
 const PAGE_SIZE = '10'

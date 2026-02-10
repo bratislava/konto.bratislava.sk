@@ -19,8 +19,7 @@ import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
 import logger from '@/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 import { AmplifyClientOAuthProvider } from '@/frontend/utils/useAmplifyClientOAuthContext'
-
-import { AuthPageCommonProps } from './prihlasenie'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 enum ForgotPasswordStatus {
   INIT = 'INIT',

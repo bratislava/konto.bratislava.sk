@@ -12,10 +12,9 @@ import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
 import ConditionalFormMarkdown from '@/components/forms/info-components/ConditionalFormMarkdown'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useFormData } from '@/components/forms/useFormData'
 import cn from '@/frontend/cn'
-
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 /**
  * Extracts the path of the RJSF component position, e.g.

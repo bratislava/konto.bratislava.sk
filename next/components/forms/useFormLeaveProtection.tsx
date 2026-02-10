@@ -3,9 +3,8 @@ import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 
+import { useFormContext } from '@/components/forms/useFormContext'
 import logger from '@/frontend/utils/logger'
-
-import { useFormContext } from './useFormContext'
 
 const useGetContext = () => {
   const { isDevRoute } = useFormContext()

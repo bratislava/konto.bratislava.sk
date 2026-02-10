@@ -11,8 +11,7 @@ import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
 import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
 import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 import { AmplifyClientOAuthProvider } from '@/frontend/utils/useAmplifyClientOAuthContext'
-
-import { AuthPageCommonProps } from './prihlasenie'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {

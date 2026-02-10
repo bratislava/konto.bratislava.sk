@@ -14,6 +14,14 @@ import React, {
 } from 'react'
 
 import { formsClient } from '@/clients/forms'
+import { RegistrationModalType } from '@/components/forms/segments/RegistrationModal/RegistrationModal'
+import { useFormSignature } from '@/components/forms/signer/useFormSignature'
+import { useFormSummary } from '@/components/forms/steps/Summary/useFormSummary'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormData } from '@/components/forms/useFormData'
+import { useFormLeaveProtection } from '@/components/forms/useFormLeaveProtection'
+import { useFormModals } from '@/components/forms/useFormModals'
+import { useFormSent } from '@/components/forms/useFormSent'
 import { environment } from '@/environment'
 import { AccountType } from '@/frontend/dtos/accountDto'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
@@ -24,15 +32,6 @@ import {
   popSendEidMetadata,
   setSendEidMetadata,
 } from '@/frontend/utils/metadataStorage'
-
-import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
-import { useFormSignature } from './signer/useFormSignature'
-import { useFormSummary } from './steps/Summary/useFormSummary'
-import { useFormContext } from './useFormContext'
-import { useFormData } from './useFormData'
-import { useFormLeaveProtection } from './useFormLeaveProtection'
-import { useFormModals } from './useFormModals'
-import { useFormSent } from './useFormSent'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.

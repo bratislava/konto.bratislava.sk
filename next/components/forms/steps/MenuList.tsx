@@ -1,8 +1,7 @@
 import Link from 'next/link'
 
+import { useFormMenuItems } from '@/components/forms/useFormMenuItems'
 import cn from '@/frontend/cn'
-
-import { useFormMenuItems } from '../useFormMenuItems'
 
 const MenuList = () => {
   const menuItems = useFormMenuItems()

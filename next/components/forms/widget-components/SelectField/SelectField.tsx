@@ -11,10 +11,9 @@ import Select, {
 } from 'react-select'
 
 import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@/assets/ui-icons'
+import CheckboxIcon from '@/components/forms/icon-components/CheckboxIcon'
+import FieldWrapper, { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
 import cn from '@/frontend/cn'
-
-import CheckboxIcon from '../../icon-components/CheckboxIcon'
-import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type SelectOption = { value: string; label: string; description?: string }
 

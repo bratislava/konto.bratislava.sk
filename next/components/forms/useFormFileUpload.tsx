@@ -20,6 +20,7 @@ import React, {
 import { useIsMounted } from 'usehooks-ts'
 
 import { formsClient } from '@/clients/forms'
+import { useFormContext } from '@/components/forms/useFormContext'
 import { environment } from '@/environment'
 import { FormFileUploadConstraints } from '@/frontend/types/formFileUploadTypes'
 import {
@@ -27,8 +28,6 @@ import {
   shouldPollServerFiles,
   uploadFile,
 } from '@/frontend/utils/formFileUpload'
-
-import { useFormContext } from './useFormContext'
 
 const REFETCH_INTERVAL = 5000
 

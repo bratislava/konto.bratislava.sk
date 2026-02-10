@@ -7,11 +7,10 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { cityAccountClient } from '@/clients/city-account'
 import { environment } from '@/environment'
-
-import { useOAuthParams } from '../hooks/useOAuthParams'
-import { GENERIC_ERROR_MESSAGE } from './errors'
-import logger from './logger'
-import { authRequestIdQueryParam } from './queryParamRedirect'
+import { useOAuthParams } from '@/frontend/hooks/useOAuthParams'
+import { GENERIC_ERROR_MESSAGE } from '@/frontend/utils/errors'
+import logger from '@/frontend/utils/logger'
+import { authRequestIdQueryParam } from '@/frontend/utils/queryParamRedirect'
 
 export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => {
   const { authRequestId, isIdentityVerificationRequired } = useOAuthParams()

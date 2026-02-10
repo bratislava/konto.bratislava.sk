@@ -3,11 +3,10 @@ import React from 'react'
 
 import { ChevronLeftIcon } from '@/assets/ui-icons'
 import Button, { ButtonProps } from '@/components/forms/simple-components/Button'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormSend } from '@/components/forms/useFormSend'
+import { useFormState } from '@/components/forms/useFormState'
 import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
-
-import { useFormContext } from '../../useFormContext'
-import { useFormSend } from '../../useFormSend'
-import { useFormState } from '../../useFormState'
 
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')

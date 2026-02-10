@@ -2,11 +2,10 @@ import { GenericObjectType } from '@rjsf/utils'
 import useStateRef from 'react-usestateref'
 import { useIsMounted } from 'usehooks-ts'
 
+import { mapDitecError, SignerErrorType } from '@/components/forms/signer/mapDitecError'
+import { SignOptions } from '@/components/forms/signer/signerTypes'
+import { useFormSignerLoader } from '@/components/forms/signer/useFormSignerLoader'
 import { isDefined } from '@/frontend/utils/general'
-
-import { mapDitecError, SignerErrorType } from './mapDitecError'
-import { SignOptions } from './signerTypes'
-import { useFormSignerLoader } from './useFormSignerLoader'
 
 export enum SignerDeploymentStatus {
   NotDeployed,

@@ -2,12 +2,11 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ErrorIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import Button from '@/components/forms/simple-components/Button'
+import { useVerifyEid, VerificationStatus } from '@/components/verify/useVerifyEid'
 import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
-
-import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
-import AccountSuccessAlert from '../forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import Button from '../forms/simple-components/Button'
-import { useVerifyEid, VerificationStatus } from './useVerifyEid'
 
 type Props = {
   showSkipButton?: boolean

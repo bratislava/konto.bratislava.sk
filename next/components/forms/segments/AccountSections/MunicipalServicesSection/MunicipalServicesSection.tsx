@@ -7,12 +7,11 @@ import {
   MunicipalServiceEntityFragment,
 } from '@/clients/graphql-strapi/api'
 import MunicipalServicesSectionHeader from '@/components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
+import MunicipalServiceCard from '@/components/forms/segments/MunicipalServiceCard/MunicipalServiceCard'
 import Pagination from '@/components/forms/simple-components/Pagination/Pagination'
 import { SelectOption } from '@/components/forms/widget-components/SelectField/SelectField'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 import { isDefined } from '@/frontend/utils/general'
-
-import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
 
 export type MunicipalServicesSectionProps = {
   services: MunicipalServiceEntityFragment[]

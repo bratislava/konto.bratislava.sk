@@ -3,13 +3,12 @@ import { useTranslation } from 'next-i18next'
 import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
+import { useStrapiTax } from '@/components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
 import ThankYouCard, {
   ThankYouCardBase,
 } from '@/components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import { ROUTES } from '@/frontend/api/constants'
 import logger from '@/frontend/utils/logger'
-
-import { useStrapiTax } from '../TaxesFees/useStrapiTax'
 
 // TODO use the nuqs library to get query params
 // example: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/sections/ArticlesSection/ArticlesAll/useArticlesFilters.tsx

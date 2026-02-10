@@ -19,8 +19,7 @@ import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
 } from '@/frontend/utils/useAmplifyClientOAuthContext'
-
-import { AuthPageCommonProps } from './prihlasenie'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 type PageProps = AuthPageCommonProps & {
   dehydratedState: DehydratedState

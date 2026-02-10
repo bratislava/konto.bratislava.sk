@@ -14,14 +14,13 @@ import React, { useMemo } from 'react'
 import { useIsSSR } from 'react-aria'
 
 import { AlertIcon, ChevronDownIcon } from '@/assets/ui-icons'
+import SummaryFile from '@/components/forms/steps/Summary/SummaryFile'
+import SummaryRow from '@/components/forms/steps/Summary/SummaryRow'
+import { useFormSummary } from '@/components/forms/steps/Summary/useFormSummary'
+import { useFormContext } from '@/components/forms/useFormContext'
 import { useFormData } from '@/components/forms/useFormData'
-
-import { useFormContext } from '../../useFormContext'
-import { useFormState } from '../../useFormState'
-import { useFormValidatorRegistry } from '../../useFormValidatorRegistry'
-import SummaryFile from './SummaryFile'
-import SummaryRow from './SummaryRow'
-import { useFormSummary } from './useFormSummary'
+import { useFormState } from '@/components/forms/useFormState'
+import { useFormValidatorRegistry } from '@/components/forms/useFormValidatorRegistry'
 
 const FormComponent = ({ children }: SummaryFormComponentProps) => (
   <div className="flex flex-col gap-8">{children}</div>

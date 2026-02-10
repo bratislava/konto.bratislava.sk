@@ -1,12 +1,11 @@
 import { useTranslation } from 'next-i18next'
 
 import { BinIcon, ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@/assets/ui-icons'
+import { MenuItemBase } from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormModals } from '@/components/forms/useFormModals'
 import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
 import { isDefined } from '@/frontend/utils/general'
-
-import { MenuItemBase } from './simple-components/MenuDropdown/MenuDropdown'
-import { useFormContext } from './useFormContext'
-import { useFormModals } from './useFormModals'
 
 type FormMenuItem = MenuItemBase & {
   dataCy?: string

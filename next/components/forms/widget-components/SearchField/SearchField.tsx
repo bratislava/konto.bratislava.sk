@@ -4,9 +4,8 @@ import { useTextField } from 'react-aria'
 
 import { RemoveIcon, SearchIcon } from '@/assets/ui-icons'
 import Button from '@/components/forms/simple-components/Button'
+import FieldWrapper, { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
 import cn from '@/frontend/cn'
-
-import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 type SearchFieldProps = FieldWrapperProps & {
   value?: string

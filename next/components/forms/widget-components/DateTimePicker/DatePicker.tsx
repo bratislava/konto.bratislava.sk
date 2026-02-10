@@ -9,8 +9,8 @@ import { useDatePickerState } from 'react-stately'
 
 import { CalendarIcon } from '@/assets/ui-icons'
 import Button from '@/components/forms/simple-components/Button'
+import { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
 
-import { FieldWrapperProps } from '../FieldWrapper'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
 

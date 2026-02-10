@@ -10,8 +10,7 @@ import { handleEmbeddedFormRequest } from '@/frontend/utils/embeddedFormsHelpers
 import { getDefaultFormDataForFormDefinition } from '@/frontend/utils/getDefaultFormDataForFormDefinition'
 import { getInitialSummaryJson } from '@/frontend/utils/getInitialSummaryJson'
 import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
-
-import type { GlobalAppProps } from '../../_app'
+import type { GlobalAppProps } from '@/pages/_app'
 
 type Params = {
   slug: string

@@ -20,8 +20,7 @@ import { getDefaultFormDataForFormDefinition } from '@/frontend/utils/getDefault
 import { getInitialSummaryJson } from '@/frontend/utils/getInitialSummaryJson'
 import { redirectQueryParam } from '@/frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
-
-import type { GlobalAppProps } from '../../_app'
+import type { GlobalAppProps } from '@/pages/_app'
 
 const fetchStrapiForm = async (slug: string): Promise<FormBaseFragment | null | undefined> => {
   const result = await strapiClient.FormBaseBySlug({ slug })

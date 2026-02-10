@@ -4,8 +4,8 @@ import MoneyServiceIcon from '@/assets/icons/city-bratislava/taxes-and-fees.svg'
 import PoolServiceIcon from '@/assets/icons/education-sport/swimming-pool.svg'
 import CompassServiceIcon from '@/assets/icons/environment-construction/spatial-planning.svg'
 import BasketServiceIcon from '@/assets/icons/environment-construction/waste.svg'
+import ServiceCard from '@/components/forms/simple-components/ServiceCard'
 
-import ServiceCard from '../../forms/simple-components/ServiceCard'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

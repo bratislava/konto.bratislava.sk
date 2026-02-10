@@ -2,10 +2,9 @@ import { useTranslation } from 'next-i18next'
 import { useCopyToClipboard } from 'usehooks-ts'
 
 import { CopyIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
 import logger from '@/frontend/utils/logger'
-
-import Button from './Button'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()

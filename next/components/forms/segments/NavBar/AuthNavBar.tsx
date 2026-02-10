@@ -6,11 +6,10 @@ import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import { ArrowLeftIcon } from '@/assets/ui-icons'
+import OAuthInfo from '@/components/forms/segments/OAuthConfigure/OAuthInfo'
 import cn from '@/frontend/cn'
 import { getLanguageKey } from '@/frontend/utils/general'
 import { useAmplifyClientOAuthContext } from '@/frontend/utils/useAmplifyClientOAuthContext'
-
-import OAuthInfo from '../OAuthConfigure/OAuthInfo'
 
 type Props = {
   currentLanguage?: string

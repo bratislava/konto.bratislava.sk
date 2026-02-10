@@ -3,9 +3,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
 import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { useFormContext } from '@/components/forms/useFormContext'
 import { useFormData } from '@/components/forms/useFormData'
-
-import { useFormContext } from '../../useFormContext'
 
 const SummaryAdditionalInfo = () => {
   const { t } = useTranslation('forms')

@@ -1,9 +1,9 @@
 import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import React, { forwardRef } from 'react'
 
+import FieldWrapper, { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
 import cn from '@/frontend/cn'
 
-import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
 import UploadFilesList from './UploadFilesList'

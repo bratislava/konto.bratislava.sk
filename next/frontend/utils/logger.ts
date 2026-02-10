@@ -7,8 +7,7 @@ import {
 import pino from 'pino'
 
 import { environment } from '@/environment'
-
-import { isBrowser, isProductionDeployment } from './general'
+import { isBrowser, isProductionDeployment } from '@/frontend/utils/general'
 
 let mutableFaro: Faro | null = null
 

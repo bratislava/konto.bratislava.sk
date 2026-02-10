@@ -1,6 +1,6 @@
 import { ChevronDownIcon, ChevronRightIcon } from '@assets/ui-icons'
 import Button from 'components/forms/simple-components/Button'
-import MLinkNew from 'components/forms/simple-components/MLinkNew'
+import MLink from 'components/forms/simple-components/MLink'
 import { useTranslation } from 'next-i18next'
 
 import type { BreadcrumbsProps } from './Breadcrumbs'
@@ -34,14 +34,9 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
           </Button>
           <div className="h-4 w-px bg-grey-300" />
           {last?.path ? (
-            <MLinkNew
-              href={last.path}
-              variant="underlined"
-              aria-hidden
-              className="truncate py-3 pr-4"
-            >
+            <MLink href={last.path} variant="underlined" aria-hidden className="truncate py-3 pr-4">
               {last.title}
-            </MLinkNew>
+            </MLink>
           ) : (
             <div className="truncate py-3 pr-4">{last?.title}</div>
           )}
@@ -59,10 +54,10 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
               // eslint-disable-next-line react/no-array-index-key
               <li className="text-size-p-tiny font-medium" key={index}>
                 {breadcrumb.path ? (
-                  <MLinkNew href={breadcrumb.path} variant="underlined" className="flex gap-1">
+                  <MLink href={breadcrumb.path} variant="underlined" className="flex gap-1">
                     <ChevronRightIcon className="size-5 shrink-0 rotate-180" />
                     {breadcrumb.title}
-                  </MLinkNew>
+                  </MLink>
                 ) : (
                   <div className="flex gap-1">
                     <ChevronRightIcon className="size-5 shrink-0 rotate-180" />

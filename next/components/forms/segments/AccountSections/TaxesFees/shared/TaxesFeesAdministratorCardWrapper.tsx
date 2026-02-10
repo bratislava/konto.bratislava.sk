@@ -1,6 +1,6 @@
 import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
 import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
-import MLinkNew from 'components/forms/simple-components/MLinkNew'
+import MLink from 'components/forms/simple-components/MLink'
 import { EXTERNAL_LINKS } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { ResponseTaxAdministratorDto, TaxType } from 'openapi-clients/tax'
@@ -61,23 +61,23 @@ const TaxesFeesAdministratorCardWrapper = ({
           <div className="flex flex-col flex-wrap gap-x-4 gap-y-2 self-stretch break-all lg:flex-row lg:items-center">
             <span className="flex items-center gap-x-2">
               <PhoneIcon className="size-5 shrink-0" />
-              <MLinkNew href={`tel:${taxAdministrator.phone}`} variant="underlined-medium">
+              <MLink href={`tel:${taxAdministrator.phone}`} variant="underlined-medium">
                 {taxAdministrator.phone}
-              </MLinkNew>
+              </MLink>
             </span>
 
             <span className="flex items-center gap-x-2">
               <MailIcon className="size-5 shrink-0" />
-              <MLinkNew href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
+              <MLink href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
                 {taxAdministrator.email}
-              </MLinkNew>
+              </MLink>
             </span>
 
             <span className="flex items-center gap-x-2">
               <ClockIcon className="size-5 shrink-0" />
-              <MLinkNew href={workingHoursLinkHref} variant="underlined-medium" target="_blank">
+              <MLink href={workingHoursLinkHref} variant="underlined-medium" target="_blank">
                 {t('taxes.tax_administrator_card.working_hours')}
-              </MLinkNew>
+              </MLink>
             </span>
           </div>
         </div>

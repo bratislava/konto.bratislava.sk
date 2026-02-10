@@ -8,7 +8,7 @@ import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref } from 'r
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
 
 import cn from '../../../frontend/cn'
-import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
+import MLink, { LinkPlausibleProps } from './MLink'
 
 type ButtonOrIconButton =
   | {
@@ -213,7 +213,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       const linkIcon = hasLinkIcon ? isExternal ? <ExportIcon /> : <ArrowRightIcon /> : null
 
       return (
-        <MLinkNew
+        <MLink
           href={rest.href}
           ref={ref as Ref<HTMLAnchorElement>}
           // following conventions from react-aria-components, slightly changed for easier styling of hovered state
@@ -233,7 +233,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           {startIcon}
           {icon ?? children}
           {linkIcon ?? endIcon}
-        </MLinkNew>
+        </MLink>
       )
     }
 

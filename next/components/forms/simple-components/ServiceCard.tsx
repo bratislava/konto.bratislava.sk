@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 import cn from '../../../frontend/cn'
 import Button from './Button'
-import { LinkPlausibleProps } from './MLinkNew'
+import { LinkPlausibleProps } from './MLink'
 
 type ServiceCardBase = {
   title: string

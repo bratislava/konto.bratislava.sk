@@ -5,7 +5,7 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
 
-import MLinkNew from '../simple-components/MLinkNew'
+import MLink from '../simple-components/MLink'
 import FormLightboxModal from './FormLightboxModal'
 
 function getTaxYear() {
@@ -84,13 +84,13 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
           )
         },
         a: ({ href, children: childrenInner }) => (
-          <MLinkNew
+          <MLink
             href={href ?? '#'}
             target={href?.startsWith('http') ? '_blank' : ''}
             variant="underlined"
           >
             {childrenInner as ReactNode}
-          </MLinkNew>
+          </MLink>
         ),
         ul: ({ children: childrenInner }) => (
           <ul className="list-disc pl-8 whitespace-normal">{childrenInner as ReactNode}</ul>

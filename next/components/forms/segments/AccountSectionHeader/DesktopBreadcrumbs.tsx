@@ -1,5 +1,5 @@
 import { ChevronRightIcon, HomeIcon } from '@assets/ui-icons'
-import MLinkNew from 'components/forms/simple-components/MLinkNew'
+import MLink from 'components/forms/simple-components/MLink'
 import { useTranslation } from 'next-i18next'
 
 import type { BreadcrumbsProps } from './Breadcrumbs'
@@ -15,14 +15,14 @@ const DesktopBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
   return (
     <ol className="flex flex-wrap items-center gap-x-1 gap-y-1.5 py-3 lg:py-6">
       <li>
-        <MLinkNew
+        <MLink
           href="/"
           variant="underlined"
           className="shrink-0"
           aria-label={t('Breadcrumbs.homepage')}
         >
           <HomeIcon className="size-5 shrink-0" />
-        </MLinkNew>
+        </MLink>
       </li>
       {breadcrumbs.map((breadcrumb, index) => {
         const isLast = index === breadcrumbs.length - 1
@@ -32,9 +32,9 @@ const DesktopBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
           <li className="text-size-p-tiny flex gap-1 font-medium" key={index}>
             <ChevronRightIcon className="size-5 shrink-0" aria-hidden />
             {breadcrumb.path && !isLast ? (
-              <MLinkNew href={breadcrumb.path} variant="underlined">
+              <MLink href={breadcrumb.path} variant="underlined">
                 {breadcrumb.title}
-              </MLinkNew>
+              </MLink>
             ) : (
               breadcrumb.title
             )}

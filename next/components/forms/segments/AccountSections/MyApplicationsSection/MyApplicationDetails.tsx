@@ -1,11 +1,10 @@
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
 import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
+import MLink from 'components/forms/simple-components/MLink'
 import SummaryRowSimple from 'components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
 import { useTranslation } from 'next-i18next'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
-
-import MLinkNew from '../../../simple-components/MLinkNew'
 
 type MyApplicationsDetailsBase = {
   formDefinitionTitle: string
@@ -70,16 +69,16 @@ const MyApplicationDetails = ({
             >
               <p>
                 {ginisData?.ownerPhone ? (
-                  <MLinkNew variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
+                  <MLink variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
                     {`${ginisData.ownerPhone}, `}
-                  </MLinkNew>
+                  </MLink>
                 ) : (
                   ''
                 )}
                 {ginisData?.ownerEmail ? (
-                  <MLinkNew variant="underlined" href={`mailto:${ginisData.ownerEmail}`}>
+                  <MLink variant="underlined" href={`mailto:${ginisData.ownerEmail}`}>
                     {ginisData.ownerEmail}
-                  </MLinkNew>
+                  </MLink>
                 ) : (
                   t('account_section_applications.details.application_details.email_unavailable')
                 )}

@@ -175,7 +175,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
       <Button
         className="min-w-full"
         type="submit"
-        variant="black-solid"
+        variant="solid"
         isDisabled={isSubmitting || !isValid}
         isLoading={isSubmitting}
       >

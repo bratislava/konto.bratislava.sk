@@ -13,10 +13,10 @@ const ModalShowCase = () => {
   return (
     <Wrapper direction="column" title="Modal">
       <Stack direction="column">
-        <Button variant="black-solid" onPress={() => setSimpleModalOpen(true)}>
+        <Button variant="solid" onPress={() => setSimpleModalOpen(true)}>
           Open simple modal
         </Button>
-        <Button variant="black-solid" onPress={() => setMessageModal(true)}>
+        <Button variant="solid" onPress={() => setMessageModal(true)}>
           Open message modal
         </Button>
 
@@ -35,10 +35,10 @@ const ModalShowCase = () => {
                 unknown printer took a galley of type and scrambled it to make a type specimen book.
               </div>
               <div className="mt-2 flex justify-between">
-                <Button variant="black-outline" onPress={() => setSimpleModalOpen(false)}>
+                <Button variant="outline" onPress={() => setSimpleModalOpen(false)}>
                   Cancel
                 </Button>
-                <Button variant="black-solid" onPress={() => setSimpleModalOpen(false)}>
+                <Button variant="solid" onPress={() => setSimpleModalOpen(false)}>
                   Submit
                 </Button>
               </div>
@@ -52,7 +52,7 @@ const ModalShowCase = () => {
           onOpenChange={setMessageModal}
           title="Lorem ipsum"
           buttons={[
-            <Button key="test-button" variant="black-plain">
+            <Button key="test-button" variant="plain">
               Test button
             </Button>,
           ]}

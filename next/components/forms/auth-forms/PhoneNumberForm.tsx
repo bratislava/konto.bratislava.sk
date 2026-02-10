@@ -62,7 +62,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
           />
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('phone_number_form.save_changes_button')}
       </Button>
     </form>

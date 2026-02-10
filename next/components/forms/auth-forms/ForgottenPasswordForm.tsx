@@ -70,7 +70,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
           />
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.forgotten_password_submit')}
       </Button>
     </form>

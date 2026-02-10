@@ -68,7 +68,7 @@ const AccountSuccessAlert = ({
       <div className="flex flex-col gap-3 lg:gap-4">
         {onConfirm && confirmLabel ? (
           <Button
-            variant="black-solid"
+            variant="solid"
             onPress={onConfirm}
             fullWidth
             isLoading={confirmIsLoading}
@@ -79,7 +79,7 @@ const AccountSuccessAlert = ({
         ) : null}
         {onCancel && cancelLabel ? (
           <Button
-            variant="black-plain"
+            variant="plain"
             onPress={onCancel}
             fullWidth
             endIcon={<ArrowRightIcon className="size-6" />}

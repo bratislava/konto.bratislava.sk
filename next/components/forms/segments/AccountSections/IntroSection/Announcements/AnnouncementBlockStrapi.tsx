@@ -22,7 +22,7 @@ const AnnouncementBlockStrapi = ({ announcement, reversed }: AnnouncementBlockSt
     {
       children: buttonText,
       href,
-      variant: 'black-solid',
+      variant: 'solid',
       endIcon: <ArrowRightIcon className="size-6" />,
     },
   ]

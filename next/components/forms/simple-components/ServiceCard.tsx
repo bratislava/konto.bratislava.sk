@@ -63,7 +63,7 @@ const ServiceCard = ({
         <div className="flex h-max w-full items-center justify-between">
           <Button
             href={href}
-            variant="black-link"
+            variant="link"
             className="text-p2-semibold"
             stretched
             plausibleProps={plausibleProps}

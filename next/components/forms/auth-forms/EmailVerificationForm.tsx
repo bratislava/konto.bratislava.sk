@@ -101,7 +101,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
           />
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.email_verification_submit')}
       </Button>
       {/* don't show timer if error */}
@@ -117,7 +117,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       </div>
 
       <Button
-        variant="black-outline"
+        variant="outline"
         onPress={handleResend}
         fullWidth
         isDisabled={count > 0 && noError}

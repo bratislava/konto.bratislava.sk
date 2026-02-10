@@ -29,7 +29,7 @@ const NotFoundPage = () => {
           <div className="max-w-xs pb-10 text-center text-p1 lg:text-left">
             {t('404.sorryNoResultsFound')}
           </div>
-          <Button href="/" variant="black-solid">
+          <Button href="/" variant="solid">
             {t('404.toTheMainPage')}
           </Button>
         </div>

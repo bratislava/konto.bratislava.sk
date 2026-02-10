@@ -93,10 +93,10 @@ const ThankYouFormSection = () => {
               />
             </span>
             <div className="mt-4 flex flex-col gap-3 md:mt-6">
-              <Button variant="black-link" href={ROUTES.HELP}>
+              <Button variant="link" href={ROUTES.HELP}>
                 {t('thank_you.button_faq_text')}
               </Button>
-              <Button variant="black-link" href="https://bratislava.sk/ochrana-osobnych-udajov">
+              <Button variant="link" href="https://bratislava.sk/ochrana-osobnych-udajov">
                 {t('thank_you.button_privacy_text')}
               </Button>
             </div>

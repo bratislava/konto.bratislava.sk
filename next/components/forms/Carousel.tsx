@@ -115,7 +115,7 @@ const Carousel = ({
           {controlsVariant === 'side' && (
             <>
               <Button
-                variant="black-solid"
+                variant="solid"
                 excludeFromTabOrder
                 onPress={handleGoToPrevious}
                 className={cn(
@@ -127,7 +127,7 @@ const Carousel = ({
                 aria-label={t('Carousel.aria.previous')}
               />
               <Button
-                variant="black-solid"
+                variant="solid"
                 excludeFromTabOrder
                 onPress={handleGoToNext}
                 className={cn(
@@ -146,7 +146,7 @@ const Carousel = ({
             <ul aria-label={t('Carousel.aria.controlButtons')} className="mt-6 flex gap-2">
               <li>
                 <Button
-                  variant="black-outline"
+                  variant="outline"
                   onPress={handleGoToPrevious}
                   icon={<ArrowLeftIcon />}
                   aria-label={t('Carousel.aria.previous')}
@@ -155,7 +155,7 @@ const Carousel = ({
               </li>
               <li>
                 <Button
-                  variant="black-outline"
+                  variant="outline"
                   onPress={handleGoToNext}
                   icon={<ArrowRightIcon />}
                   aria-label={t('Carousel.aria.next')}

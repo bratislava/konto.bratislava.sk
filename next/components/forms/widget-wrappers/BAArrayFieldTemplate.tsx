@@ -127,9 +127,7 @@ const BAArrayFieldTemplate = <
               </div>
             )}
             <Button
-              variant={
-                { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[variant]
-              }
+              variant={({ topLevel: 'outline', nested: 'plain' } as const)[variant]}
               startIcon={<AddIcon />}
               onPress={onAddClickPatched}
               isDisabled={!canAdd || disabled || readonly}

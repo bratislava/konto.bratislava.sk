@@ -93,7 +93,7 @@ const SuccessContent = () => {
         {feedbackLink ? (
           <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
             <h3 className="text-left text-h3">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
-            <Button variant="black-solid" className="w-full" href={feedbackLink} target="_blank">
+            <Button variant="solid" className="w-full" href={feedbackLink} target="_blank">
               {t('tax_form_pdf_export_modal.feedback_button')}
             </Button>
           </div>
@@ -139,7 +139,7 @@ const SuccessContent = () => {
               </div>
               <div className="rounded-b-lg bg-gray-100 px-4 pb-4 lg:px-0 lg:pb-0">
                 <Button
-                  variant="black-solid"
+                  variant="solid"
                   fullWidth
                   className="rounded-lg px-5 py-2 text-p1-semibold leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
                   onPress={() => register()}

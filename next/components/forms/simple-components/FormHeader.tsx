@@ -39,7 +39,7 @@ const FormHeader = () => {
             {!isReadonly && (
               <Button
                 size="small"
-                variant="black-outline"
+                variant="outline"
                 startIcon={<DiscIcon className="size-5" />}
                 onPress={() => saveConcept()}
                 data-cy="save-concept-desktop"
@@ -51,7 +51,7 @@ const FormHeader = () => {
             <MenuDropdown
               buttonTrigger={
                 <Button
-                  variant="black-outline"
+                  variant="outline"
                   size="small"
                   icon={<EllipsisVerticalIcon />}
                   aria-label="Menu"

@@ -70,7 +70,7 @@ const FormModals = () => {
           {t('migration_required_modal.button_discard')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() => migrateForm()}
           fullWidthMobile
@@ -89,7 +89,7 @@ const FormModals = () => {
       type: 'error',
       title: t('concept_save_error_modal.title'),
       buttons: [
-        <Button variant="black-plain" onPress={() => setConceptSaveErrorModal(false)}>
+        <Button variant="plain" onPress={() => setConceptSaveErrorModal(false)}>
           {t('modal.close_button_label')}
         </Button>,
         <Button
@@ -111,14 +111,10 @@ const FormModals = () => {
       title: t('send_identity_missing_modal.title'),
       type: 'warning',
       buttons: [
-        <Button
-          variant="black-plain"
-          onPress={() => setSendIdentityMissingModal(false)}
-          fullWidthMobile
-        >
+        <Button variant="plain" onPress={() => setSendIdentityMissingModal(false)} fullWidthMobile>
           {t('modal.close_button_label')}
         </Button>,
-        <Button variant="black-solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
+        <Button variant="solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
           {t('send_identity_missing_modal.button_title')}
         </Button>,
       ],
@@ -131,7 +127,7 @@ const FormModals = () => {
       title: t('send_files_uploading_modal.title'),
       type: 'warning',
       buttons: [
-        <Button variant="black-plain" onPress={() => setSendFilesUploadingModal(false)}>
+        <Button variant="plain" onPress={() => setSendFilesUploadingModal(false)}>
           {t('modal.close_button_label')}
         </Button>,
       ],
@@ -144,7 +140,7 @@ const FormModals = () => {
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
       buttons: [
-        <Button variant="black-plain" onPress={() => setSendFilesScanningModal(false)}>
+        <Button variant="plain" onPress={() => setSendFilesScanningModal(false)}>
           {t('modal.close_button_label')}
         </Button>,
       ],
@@ -162,7 +158,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationModal({ isOpen: false })}
           fullWidthMobile
           isDisabled={sendPending}
@@ -170,7 +166,7 @@ const FormModals = () => {
           {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.confirmCallback()}
           fullWidthMobile
@@ -196,7 +192,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
@@ -204,7 +200,7 @@ const FormModals = () => {
           {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             sendConfirmationEidModal.isOpen && sendConfirmationEidModal.confirmCallback()
@@ -237,7 +233,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
@@ -245,7 +241,7 @@ const FormModals = () => {
           {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.confirmCallback()
@@ -273,7 +269,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
           fullWidthMobile
           isDisabled={eidSendConfirmationModalIsPending}
@@ -281,7 +277,7 @@ const FormModals = () => {
           {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
@@ -324,7 +320,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-solid"
+          variant="solid"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
           isDisabled={sendEidPending}
           fullWidthMobile
@@ -347,7 +343,7 @@ const FormModals = () => {
       title: t('concept_delete_modal.title'),
       type: 'error',
       buttons: [
-        <Button variant="black-plain" onPress={() => setDeleteConceptModal({ isOpen: false })}>
+        <Button variant="plain" onPress={() => setDeleteConceptModal({ isOpen: false })}>
           {t('modal.close_button_label')}
         </Button>,
         <Button
@@ -385,14 +381,14 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setXmlImportVersionConfirmationModal({ isOpen: false })}
           fullWidthMobile
         >
           {t('xml_import_version_confirmation_modal.button_cancel')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             xmlImportVersionConfirmationModal.isOpen &&

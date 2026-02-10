@@ -40,7 +40,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         variant="sm"
       />
 
-      <Button variant="black-solid" onPress={() => redirect()} fullWidth>
+      <Button variant="solid" onPress={() => redirect()} fullWidth>
         {t('auth.identity_verification.fop_po_eid.error.button_text')}
       </Button>
     </div>
@@ -52,7 +52,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         content={t('auth.identity_verification.fop_po_eid.init.content')}
       />
       <Button
-        variant="black-solid"
+        variant="solid"
         onPress={loginWithEid}
         fullWidth
         isLoading={verificationStatus === VerificationStatus.REDIRECTING}
@@ -61,7 +61,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
       </Button>
       {showSkipButton ? (
-        <Button variant="black-plain" fullWidth onPress={() => redirect()}>
+        <Button variant="plain" fullWidth onPress={() => redirect()}>
           {t('auth.identity_verification.common.skip_verification_button_text')}
         </Button>
       ) : null}

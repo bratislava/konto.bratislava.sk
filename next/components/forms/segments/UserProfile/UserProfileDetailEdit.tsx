@@ -222,7 +222,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
         <div className="flex flex-col justify-end pt-1">
-          <Button variant="black-solid" onPress={onEmailChange} data-cy="change-email-button">
+          <Button variant="solid" onPress={onEmailChange} data-cy="change-email-button">
             {t('my_profile.profile_detail.email_button')}
           </Button>
         </div>
@@ -294,7 +294,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       {/* Save button (mobile) */}
       <div className="py-2 md:hidden">
         <Button
-          variant="black-solid"
+          variant="solid"
           type="submit"
           form={formId}
           fullWidthMobile

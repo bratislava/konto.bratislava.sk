@@ -20,7 +20,7 @@ const IdentityVerificationBanner = ({ variant }: Props) => {
           {
             children: t('account_section_payment.verify_and_set'),
             href: ROUTES.IDENTITY_VERIFICATION,
-            variant: 'black-solid',
+            variant: 'solid',
             fullWidthMobile: true,
           },
         ]}

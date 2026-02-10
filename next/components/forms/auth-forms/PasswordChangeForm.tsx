@@ -89,7 +89,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         )}
       />
       <Button
-        variant="black-solid"
+        variant="solid"
         type="submit"
         fullWidth
         isDisabled={isSubmitting}

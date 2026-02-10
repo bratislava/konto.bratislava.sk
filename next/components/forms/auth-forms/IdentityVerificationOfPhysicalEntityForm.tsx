@@ -157,16 +157,11 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         )}
       />
       <div className="flex flex-col gap-3 lg:gap-4">
-        <Button variant="black-solid" fullWidth type="submit" isLoading={isSubmitting}>
+        <Button variant="solid" fullWidth type="submit" isLoading={isSubmitting}>
           {t('auth.identity_verification.fo.init.submit_button_text')}
         </Button>
         {showSkipButton ? (
-          <Button
-            variant="black-plain"
-            fullWidth
-            onPress={() => redirect()}
-            endIcon={<ArrowRightIcon />}
-          >
+          <Button variant="plain" fullWidth onPress={() => redirect()} endIcon={<ArrowRightIcon />}>
             {t('auth.identity_verification.common.skip_verification_button_text')}
           </Button>
         ) : null}

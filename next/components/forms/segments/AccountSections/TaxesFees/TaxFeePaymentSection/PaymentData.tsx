@@ -173,7 +173,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                       {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
                     </span>
                     <Button
-                      variant="black-solid"
+                      variant="solid"
                       onPress={handleRedirectToPayment}
                       isLoading={isLoading}
                       endIcon={<ArrowRightIcon />}
@@ -233,7 +233,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                   </div>
                   <Button
                     startIcon={<DownloadIcon />}
-                    variant="black-outline"
+                    variant="outline"
                     className="text-nowrap max-lg:w-full"
                     onPress={handleDownloadQrCode}
                   >

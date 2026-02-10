@@ -73,7 +73,7 @@ const SummaryFormSignature = () => {
               <Button
                 href="https://www.slovensko.sk/sk/na-stiahnutie"
                 target="_blank"
-                variant="black-link"
+                variant="link"
               >
                 zoznam podporovaných aplikácií.
               </Button>
@@ -88,7 +88,7 @@ const SummaryFormSignature = () => {
           message={
             <>
               Podpisovač sa nepodarilo načítať.{' '}
-              <Button variant="black-link" onPress={() => retry()}>
+              <Button variant="link" onPress={() => retry()}>
                 Skúsiť znova
               </Button>
             </>
@@ -109,7 +109,7 @@ const SummaryFormSignature = () => {
               <AlertContent>
                 Podpis v dokumente nie je aktuálny.{' '}
                 <Button
-                  variant="black-link"
+                  variant="link"
                   isLoading={isLoading}
                   isDisabled={signerButtonDisabled}
                   onPress={() => sign()}
@@ -124,7 +124,7 @@ const SummaryFormSignature = () => {
         ))}
       {!signature && (
         <Button
-          variant="black-outline"
+          variant="outline"
           isLoading={isLoading}
           isDisabled={signerButtonDisabled}
           onPress={() => sign()}

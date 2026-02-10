@@ -82,10 +82,10 @@ export const NavBarHeader = ({ menuItems }: Props) => {
           />
         ) : (
           <div className="flex items-center gap-6">
-            <Button variant="black-plain" size="small" onPress={login} data-cy="login-button">
+            <Button variant="plain" size="small" onPress={login} data-cy="login-button">
               {t('menu_links.login')}
             </Button>
-            <Button variant="black-solid" onPress={register} size="small" data-cy="register-button">
+            <Button variant="solid" onPress={register} size="small" data-cy="register-button">
               {t('menu_links.register')}
             </Button>
           </div>

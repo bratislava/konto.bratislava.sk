@@ -20,7 +20,7 @@ const CustomComponent = ({ id, component }: { id: string; component: CustomCompo
     return (
       <div className="flex flex-col gap-2">
         {component.props?.links?.map(({ title, href }) => (
-          <Button key={title} variant="black-link" href={href} hasLinkIcon>
+          <Button key={title} variant="link" href={href} hasLinkIcon>
             {title}
           </Button>
         ))}

@@ -79,7 +79,7 @@ const MyApplicationDetailsHeader = ({
               <div className="flex w-full items-center justify-between">
                 <h1 className="text-h1">{subject}</h1>
                 <Button
-                  variant="black-solid"
+                  variant="solid"
                   className="max-md:hidden"
                   startIcon={<DownloadIcon />}
                   onPress={exportPdf}
@@ -113,7 +113,7 @@ const MyApplicationDetailsHeader = ({
               </div>
             </div>
             <Button
-              variant="black-solid"
+              variant="solid"
               fullWidth
               className="md:hidden"
               startIcon={<DownloadIcon />}

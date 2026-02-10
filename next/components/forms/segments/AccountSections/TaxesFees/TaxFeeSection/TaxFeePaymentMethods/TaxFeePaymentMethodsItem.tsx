@@ -1,4 +1,4 @@
-import Button from 'components/forms/simple-components/Button'
+import Button, { ButtonProps } from 'components/forms/simple-components/Button'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 
 interface TaxFeePaymentMethodsItemProps {
@@ -6,7 +6,7 @@ interface TaxFeePaymentMethodsItemProps {
   subtitle: string
   amount: number
   buttonText: string
-  buttonVariant: 'black-solid' | 'black-outline'
+  buttonVariant: Extract<ButtonProps['variant'], 'solid' | 'outline'>
   buttonHref: string
 }
 

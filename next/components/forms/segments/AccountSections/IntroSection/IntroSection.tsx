@@ -61,7 +61,7 @@ const IntroSection = ({
           <div className="flex flex-col gap-6 py-6 lg:py-16">
             <div className="flex w-full flex-col gap-2 px-4 md:flex-row md:items-center md:justify-between lg:px-0">
               <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
-              <Button variant="black-link" href={ROUTES.MUNICIPAL_SERVICES}>
+              <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
                 {t('account_section_intro.all_services')}
               </Button>
             </div>

@@ -330,10 +330,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           />
 
           <div className="mt-4 flex gap-2">
-            <Button onPress={exportJson} variant="black-solid" startIcon={<DownloadIcon />}>
+            <Button onPress={exportJson} variant="solid" startIcon={<DownloadIcon />}>
               {t('menu_list.download_json')}
             </Button>
-            <Button onPress={triggerImportJson} variant="black-outline" startIcon={<UploadIcon />}>
+            <Button onPress={triggerImportJson} variant="outline" startIcon={<UploadIcon />}>
               {t('menu_list.upload_json')}
             </Button>
             <input
@@ -346,10 +346,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           </div>
 
           <div className="mt-4 flex gap-2">
-            <Button onPress={handleValidateForm} variant="black-outline">
+            <Button onPress={handleValidateForm} variant="outline">
               Validovať formulár
             </Button>
-            <Button onPress={forceReset} variant="black-outline">
+            <Button onPress={forceReset} variant="outline">
               Reštartovať formulár
             </Button>
           </div>

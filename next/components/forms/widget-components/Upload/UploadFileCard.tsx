@@ -178,7 +178,7 @@ const UploadFileCard = ({
 
           {'canRetry' in fileInfo.status && fileInfo.status.canRetry && (
             <Button
-              variant="black-link"
+              variant="link"
               onPress={onFileRetry}
               size="small"
               className="font-semibold"

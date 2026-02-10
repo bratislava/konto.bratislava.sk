@@ -36,7 +36,7 @@ const IdentityVerificationStatus = () => {
           </span>
         </div>
         <Button
-          variant="black-plain"
+          variant="plain"
           className="max-lg:hidden"
           size="small"
           onPress={() =>

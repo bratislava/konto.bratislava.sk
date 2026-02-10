@@ -103,7 +103,7 @@ const RadioGroup = (props: RadioGroupProps) => {
 
             {required ? null : (
               <Button
-                variant="black-plain"
+                variant="plain"
                 size="small"
                 className="self-end font-medium"
                 onPress={handleReset}

@@ -42,7 +42,7 @@ const Banner = ({
         <div className="flex flex-col gap-4 lg:flex-row">
           <Button
             href={href}
-            variant="black-solid"
+            variant="solid"
             onPress={onPress}
             fullWidthMobile
             // TODO use solid-inverted variant when implemented

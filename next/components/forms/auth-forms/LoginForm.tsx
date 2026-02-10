@@ -91,7 +91,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       />
       <AccountLink variant="forgotten-password" />
       <Button
-        variant="black-solid"
+        variant="solid"
         type="submit"
         fullWidth
         isDisabled={isSubmitting}

@@ -18,7 +18,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
 
   return (
     <>
-      <Button onPress={() => setIsOpen(true)} variant="black-link">
+      <Button onPress={() => setIsOpen(true)} variant="link">
         {children}
       </Button>
 

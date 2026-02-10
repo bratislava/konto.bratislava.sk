@@ -28,14 +28,10 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       variant="vertical"
       buttonsAlign="center"
       buttons={[
-        <Button className="grow" variant="black-solid" onPress={() => verifyIdentity()}>
+        <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>
           {t('auth.verification_url_text')}
         </Button>,
-        <Button
-          className="grow"
-          variant="black-outline"
-          onPress={() => rest?.onOpenChange?.(false)}
-        >
+        <Button className="grow" variant="outline" onPress={() => rest?.onOpenChange?.(false)}>
           {t('verification_modal.footer_desktop_eID_text')}
         </Button>,
       ]}
@@ -49,7 +45,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
           </div>
           <div className="mt-6 flex justify-center">
             <Button
-              variant="black-plain"
+              variant="plain"
               endIcon={<ArrowRightIcon className="size-6" />}
               onPress={() => rest?.onOpenChange?.(false)}
             >

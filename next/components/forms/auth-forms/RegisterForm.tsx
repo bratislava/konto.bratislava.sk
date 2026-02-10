@@ -320,7 +320,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           </>
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.register_submit')}
       </Button>
     </form>

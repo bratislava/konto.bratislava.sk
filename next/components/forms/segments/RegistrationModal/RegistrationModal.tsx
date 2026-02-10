@@ -155,7 +155,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           </div>
           <div className="rounded-b-lg bg-gray-100 px-4 pb-4 md:px-0 md:pb-0">
             <Button
-              variant="black-solid"
+              variant="solid"
               fullWidth
               onPress={() => register()}
               className="rounded-lg px-5 py-2 text-p1-semibold leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
@@ -180,21 +180,21 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             {type === RegistrationModalType.Initial && (
               <>
                 {eidSendPossible ? (
-                  <Button variant="black-outline" onPress={close} fullWidth>
+                  <Button variant="outline" onPress={close} fullWidth>
                     {t('registration_modal.buttons_initial_continue_eid')}
                   </Button>
                 ) : null}
-                <Button variant="black-outline" onPress={close} fullWidth>
+                <Button variant="outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_initial_skip')}
                 </Button>
               </>
             )}
             {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
               <>
-                <Button variant="black-outline" onPress={close} fullWidth>
+                <Button variant="outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_back')}
                 </Button>
-                <Button variant="black-outline" onPress={close} fullWidth>
+                <Button variant="outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_send')}
                 </Button>
               </>

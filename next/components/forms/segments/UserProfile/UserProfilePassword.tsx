@@ -18,7 +18,7 @@ const UserProfilePassword = () => {
         childrenToColumn
       >
         <Button
-          variant="black-solid"
+          variant="solid"
           startIcon={<LockIcon />}
           href={ROUTES.PASSWORD_CHANGE}
           fullWidthMobile

@@ -24,7 +24,7 @@ const UserProfileDetailsButtons = ({
       {isEditing ? (
         <>
           {/* Cancel button */}
-          <Button className="max-md:hidden" variant="black-outline" onPress={onCancelEditing}>
+          <Button className="max-md:hidden" variant="outline" onPress={onCancelEditing}>
             {t('my_profile.profile_detail.discard_changes_button')}
           </Button>
           <Button
@@ -38,7 +38,7 @@ const UserProfileDetailsButtons = ({
 
           {/* Save button (desktop) */}
           <Button
-            variant="black-solid"
+            variant="solid"
             className="max-md:hidden"
             type="submit"
             form={formId}
@@ -51,7 +51,7 @@ const UserProfileDetailsButtons = ({
         <>
           {/* Edit button */}
           <Button
-            variant="black-solid"
+            variant="solid"
             className="max-md:hidden"
             startIcon={<EditIcon />}
             onPress={() => onChangeIsEditing(true)}

@@ -27,7 +27,7 @@ const SummaryFormControls = () => {
   const buttons: ((ButtonProps & { 'data-cy'?: string }) | null)[] = [
     isTaxForm
       ? {
-          variant: 'black-outline',
+          variant: 'outline',
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onPress: () => exportPdf(),
           children: t('summary.export_pdf'),
@@ -37,7 +37,7 @@ const SummaryFormControls = () => {
     eidSendPossible
       ? {
           isDisabled: submitDisabled(),
-          variant: sendPossible ? 'black-outline' : 'black-solid',
+          variant: sendPossible ? 'outline' : 'solid',
           onPress: () => handleSendEidButtonPress(),
           type: 'submit',
           children: t('summary.button_send_eid'),
@@ -46,7 +46,7 @@ const SummaryFormControls = () => {
     sendPossible
       ? {
           isDisabled: submitDisabled(),
-          variant: 'black-solid',
+          variant: 'solid',
           onPress: () => handleSendButtonPress(),
           type: 'submit',
           children: t('summary.button_send'),
@@ -59,7 +59,7 @@ const SummaryFormControls = () => {
       <div className="hidden grow items-center md:flex">
         <Button
           className="hidden md:inline-flex"
-          variant="black-plain"
+          variant="plain"
           onPress={goToPreviousStep}
           startIcon={<ChevronLeftIcon className="size-6" />}
         >
@@ -75,12 +75,7 @@ const SummaryFormControls = () => {
           return <Button key={index} {...button} fullWidthMobile />
         })}
 
-        <Button
-          className="md:hidden"
-          variant="black-outline"
-          onPress={goToPreviousStep}
-          fullWidthMobile
-        >
+        <Button className="md:hidden" variant="outline" onPress={goToPreviousStep} fullWidthMobile>
           {t('form_controls.back')}
         </Button>
       </div>

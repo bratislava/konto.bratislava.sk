@@ -102,18 +102,18 @@ const FormVersionCompareAction = () => {
 
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
             {isSignedIn ? (
-              <Button variant="black-outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
+              <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
                 {t('form_version_compare_action.button_back')}
               </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.CannotContinue ? (
-              <Button variant="black-solid" fullWidth href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}>
+              <Button variant="solid" fullWidth href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}>
                 {t('form_version_compare_action.button_create_new')}
               </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.RequiresBump ? (
               <Button
-                variant="black-solid"
+                variant="solid"
                 fullWidth
                 onPress={() => {
                   bumpVersionMutate()

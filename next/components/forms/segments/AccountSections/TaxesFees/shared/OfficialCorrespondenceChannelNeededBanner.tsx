@@ -22,7 +22,7 @@ const OfficialCorrespondenceChannelNeededBanner = () => {
           {
             children: t('account_section_payment.set_delivery_method'),
             onPress: () => setIsModalOpen(true),
-            variant: 'black-solid',
+            variant: 'solid',
             fullWidthMobile: true,
           },
         ]}

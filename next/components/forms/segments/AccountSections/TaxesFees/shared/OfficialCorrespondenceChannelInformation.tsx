@@ -50,7 +50,7 @@ const OfficialCorrespondenceChannelInformation = () => {
               {/* Desktop */}
               <Button
                 onPress={() => setIsModalOpen(true)}
-                variant="black-link"
+                variant="link"
                 startIcon={<SettingsIcon />}
                 className="max-lg:hidden"
               >

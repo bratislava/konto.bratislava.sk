@@ -56,7 +56,7 @@ const Pagination = ({ currentPage, totalCount, onPageChange = () => {} }: Pagina
               case 'page':
                 children = (
                   <Button
-                    variant={selected ? 'black-solid' : 'black-outline'}
+                    variant={selected ? 'solid' : 'outline'}
                     isDisabled={disabled}
                     onPress={onPress}
                     aria-current={ariaCurrent}
@@ -84,7 +84,7 @@ const Pagination = ({ currentPage, totalCount, onPageChange = () => {} }: Pagina
 
                 children = (
                   <Button
-                    variant="black-plain"
+                    variant="plain"
                     isDisabled={disabled}
                     onPress={onPress}
                     aria-label={ariaLabel}

@@ -247,7 +247,7 @@ const MyApplicationsCard = ({
                 ) : (
                   <>
                     <Button
-                      variant="black-outline"
+                      variant="outline"
                       startIcon={
                         isEditable ? (
                           <EditIcon className="size-5" />
@@ -274,7 +274,7 @@ const MyApplicationsCard = ({
                     <MenuDropdown
                       buttonTrigger={
                         <Button
-                          variant="black-outline"
+                          variant="outline"
                           icon={<EllipsisVerticalIcon />}
                           aria-label="Menu"
                         />
@@ -332,7 +332,7 @@ const MyApplicationsCard = ({
         isOpen={deleteConceptModalShow}
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
-          <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
+          <Button variant="plain" onPress={() => setDeleteConceptModalShow(false)}>
             {t('forms:modal.close_button_label')}
           </Button>,
           <Button

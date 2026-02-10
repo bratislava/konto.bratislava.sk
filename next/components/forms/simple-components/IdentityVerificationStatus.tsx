@@ -1,10 +1,10 @@
-import Button from 'components/forms/simple-components/ButtonNew'
-import { ROUTES } from 'frontend/api/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import { useSsrAuth } from '../../../frontend/hooks/useSsrAuth'
-import { useConditionalFormRedirects } from '../useFormRedirects'
+import Button from '@/components/forms/simple-components/Button'
+import { useConditionalFormRedirects } from '@/components/forms/useFormRedirects'
+import { ROUTES } from '@/frontend/api/constants'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 const IdentityVerificationStatus = () => {
   const { isSignedIn, tierStatus } = useSsrAuth()
@@ -36,7 +36,7 @@ const IdentityVerificationStatus = () => {
           </span>
         </div>
         <Button
-          variant="black-plain"
+          variant="plain"
           className="max-lg:hidden"
           size="small"
           onPress={() =>

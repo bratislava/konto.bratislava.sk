@@ -2,7 +2,7 @@ import React from 'react'
 import { VisuallyHidden } from 'react-aria'
 import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
 
-import { useFormExportImport } from '../../frontend/hooks/useFormExportImport'
+import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
 
 const FormUploadXmlJson = () => {
   const { importXmlButtonRef, handleImportXml, importJsonButtonRef, handleImportJson } =

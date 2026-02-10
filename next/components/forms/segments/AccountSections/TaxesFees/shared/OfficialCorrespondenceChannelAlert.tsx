@@ -1,7 +1,8 @@
-import { TaxFragment } from '@clients/graphql-strapi/api'
-import Alert from 'components/forms/info-components/Alert'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import React from 'react'
+
+import { TaxFragment } from '@/clients/graphql-strapi/api'
+import Alert from '@/components/forms/info-components/Alert'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 
 type Props = {
   strapiTax: TaxFragment

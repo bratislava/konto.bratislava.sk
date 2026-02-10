@@ -1,10 +1,11 @@
-import { StatusBar } from 'components/forms/info-components/StatusBar'
-import MobileNavBar from 'components/forms/segments/NavBar/MobileNavBar'
-import NavBarHeader from 'components/forms/segments/NavBar/NavBarHeader'
-import NavMenu from 'components/forms/segments/NavBar/NavMenu'
-import useMenu from 'components/forms/segments/NavBar/useMenu'
-import cn from 'frontend/cn'
 import { RefObject } from 'react'
+
+import { StatusBar } from '@/components/forms/info-components/StatusBar'
+import MobileNavBar from '@/components/forms/segments/NavBar/MobileNavBar'
+import NavBarHeader from '@/components/forms/segments/NavBar/NavBarHeader'
+import NavMenu from '@/components/forms/segments/NavBar/NavMenu'
+import useMenu from '@/components/forms/segments/NavBar/useMenu'
+import cn from '@/frontend/cn'
 
 type Props = {
   desktopNavbarRef: RefObject<HTMLDivElement | null>
@@ -17,12 +18,7 @@ type Props = {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
  */
 
-export const NavBar = ({
-  desktopNavbarRef,
-  mobileNavbarRef,
-  hideNavMenu,
-  className,
-}: Props) => {
+export const NavBar = ({ desktopNavbarRef, mobileNavbarRef, hideNavMenu, className }: Props) => {
   const { menuSections, menuItems } = useMenu()
 
   return (
@@ -41,7 +37,6 @@ export const NavBar = ({
       >
         <NavBarHeader menuItems={menuItems} />
         {!hideNavMenu && <NavMenu menuSections={menuSections ?? []} />}
-
       </div>
       {/* Mobile */}
       <MobileNavBar

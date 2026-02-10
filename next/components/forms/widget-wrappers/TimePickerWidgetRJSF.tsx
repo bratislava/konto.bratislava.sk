@@ -1,10 +1,10 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import TimePicker from 'components/forms/widget-components/DateTimePicker/TimePicker'
-import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { TimePickerUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
-import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
+import TimePicker from '@/components/forms/widget-components/DateTimePicker/TimePicker'
+import FieldBlurWrapper from '@/components/forms/widget-components/FieldBlurWrapper/FieldBlurWrapper'
+import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
   options: TimePickerUiOptions

@@ -1,4 +1,3 @@
-import { formsClient } from '@clients/forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
@@ -12,14 +11,15 @@ import { SignerDataResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
-import useSnackbar from '../../../frontend/hooks/useSnackbar'
-import { isClientSlovenskoSkFormDefinition } from '../clientFormDefinitions'
-import { useFormContext } from '../useFormContext'
-import { useFormData } from '../useFormData'
-import { useFormLeaveProtection } from '../useFormLeaveProtection'
-import { useFormModals } from '../useFormModals'
-import { SignerErrorType } from './mapDitecError'
-import { SignerDeploymentStatus, useFormSigner } from './useFormSigner'
+import { formsClient } from '@/clients/forms'
+import { isClientSlovenskoSkFormDefinition } from '@/components/forms/clientFormDefinitions'
+import { SignerErrorType } from '@/components/forms/signer/mapDitecError'
+import { SignerDeploymentStatus, useFormSigner } from '@/components/forms/signer/useFormSigner'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormData } from '@/components/forms/useFormData'
+import { useFormLeaveProtection } from '@/components/forms/useFormLeaveProtection'
+import { useFormModals } from '@/components/forms/useFormModals'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
 
 const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

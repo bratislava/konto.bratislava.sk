@@ -1,10 +1,11 @@
-import MyApplicationsCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
 import {
   FormState,
   GetFormResponseDtoErrorEnum,
   GetFormResponseSimpleDto,
 } from 'openapi-clients/forms'
 import React from 'react'
+
+import MyApplicationsCard from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

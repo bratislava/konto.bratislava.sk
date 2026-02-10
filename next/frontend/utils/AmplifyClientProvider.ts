@@ -3,7 +3,7 @@
 import { Amplify } from 'aws-amplify'
 import { PropsWithChildren } from 'react'
 
-import { amplifyConfig, amplifyLibraryOptions } from './amplifyConfig'
+import { amplifyConfig, amplifyLibraryOptions } from '@/frontend/utils/amplifyConfig'
 
 Amplify.configure(amplifyConfig, amplifyLibraryOptions)
 

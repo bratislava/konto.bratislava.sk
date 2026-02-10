@@ -1,5 +1,6 @@
-import cn from 'frontend/cn'
 import NextLink from 'next/link'
+
+import cn from '@/frontend/cn'
 
 type Props = {
   className?: string

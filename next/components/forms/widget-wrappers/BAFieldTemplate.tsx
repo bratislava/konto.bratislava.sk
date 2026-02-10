@@ -2,7 +2,7 @@ import { getDefaultRegistry } from '@rjsf/core'
 import { FieldTemplateProps, getUiOptions } from '@rjsf/utils'
 import { WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
-import { isDefined } from '../../../frontend/utils/general'
+import { isDefined } from '@/frontend/utils/general'
 
 const defaultRegistry = getDefaultRegistry()
 const { FieldTemplate } = defaultRegistry.templates

@@ -1,17 +1,17 @@
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import PageLayout from 'components/layouts/PageLayout'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { useSignOut } from '../frontend/utils/amplifyClient'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps } from './prihlasenie'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { useSignOut } from '@/frontend/utils/amplifyClient'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
+import { AmplifyClientOAuthProvider } from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {

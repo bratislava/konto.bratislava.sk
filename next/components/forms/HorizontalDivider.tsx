@@ -1,6 +1,6 @@
 import React from 'react'
 
-import cn from '../../frontend/cn'
+import cn from '@/frontend/cn'
 
 type HorizontalDividerProps = {
   className?: string

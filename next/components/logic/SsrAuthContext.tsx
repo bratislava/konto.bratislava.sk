@@ -1,5 +1,6 @@
-import { UserAttributes } from 'frontend/dtos/accountDto'
 import React, { ComponentType, createContext } from 'react'
+
+import { UserAttributes } from '@/frontend/dtos/accountDto'
 
 export const ssrAuthContextPropKey = '__ssrAuthContext'
 

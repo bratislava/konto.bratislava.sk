@@ -5,8 +5,8 @@ import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { createSingleUseValidatorRegistry } from 'forms-shared/form-utils/validatorRegistry'
 import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
 
-import { STEP_QUERY_PARAM_KEY } from '../../components/forms/useFormCurrentStepIndex'
-import { STEP_QUERY_PARAM_VALUE_SUMMARY } from './formState'
+import { STEP_QUERY_PARAM_KEY } from '@/components/forms/useFormCurrentStepIndex'
+import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '@/frontend/utils/formState'
 
 const validatorRegistry = createSingleUseValidatorRegistry()
 

@@ -1,12 +1,12 @@
-import { ErrorIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
-import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
-import AccountSuccessAlert from '../forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import Button from '../forms/simple-components/ButtonNew'
-import { useVerifyEid, VerificationStatus } from './useVerifyEid'
+import { ErrorIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import Button from '@/components/forms/simple-components/Button'
+import { useVerifyEid, VerificationStatus } from '@/components/verify/useVerifyEid'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
 
 type Props = {
   showSkipButton?: boolean
@@ -40,7 +40,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         variant="sm"
       />
 
-      <Button variant="black-solid" onPress={() => redirect()} fullWidth>
+      <Button variant="solid" onPress={() => redirect()} fullWidth>
         {t('auth.identity_verification.fop_po_eid.error.button_text')}
       </Button>
     </div>
@@ -52,7 +52,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         content={t('auth.identity_verification.fop_po_eid.init.content')}
       />
       <Button
-        variant="black-solid"
+        variant="solid"
         onPress={loginWithEid}
         fullWidth
         isLoading={verificationStatus === VerificationStatus.REDIRECTING}
@@ -61,7 +61,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
       </Button>
       {showSkipButton ? (
-        <Button variant="black-plain" fullWidth onPress={() => redirect()}>
+        <Button variant="plain" fullWidth onPress={() => redirect()}>
           {t('auth.identity_verification.common.skip_verification_button_text')}
         </Button>
       ) : null}

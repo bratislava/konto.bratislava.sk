@@ -2,12 +2,12 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import logger from '../../../frontend/utils/logger'
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import Button from '../simple-components/ButtonNew'
-import InputField from '../widget-components/InputField/InputField'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import logger from '@/frontend/utils/logger'
 
 interface Data {
   verificationCode: string
@@ -101,7 +101,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
           />
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.email_verification_submit')}
       </Button>
       {/* don't show timer if error */}
@@ -117,7 +117,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       </div>
 
       <Button
-        variant="black-outline"
+        variant="outline"
         onPress={handleResend}
         fullWidth
         isDisabled={count > 0 && noError}

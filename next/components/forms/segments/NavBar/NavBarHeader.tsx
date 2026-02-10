@@ -1,7 +1,6 @@
-import { ChevronDownSmallIcon } from '@assets/ui-icons'
 import UserAvatar from 'components/forms/segments/NavBar/UserAvatar'
 import Brand from 'components/forms/simple-components/Brand'
-import Button from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import MenuDropdown, {
   MenuItemBase,
@@ -15,6 +14,8 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import { ChevronDownSmallIcon } from '@/assets/ui-icons'
+
 type Props = {
   menuItems: MenuItemBase[]
 }
@@ -23,9 +24,7 @@ type Props = {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
  */
 
-export const NavBarHeader = ({
-  menuItems,
-}: Props) => {
+export const NavBarHeader = ({ menuItems }: Props) => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -72,7 +71,9 @@ export const NavBarHeader = ({
                 <div className="flex items-center gap-1 font-light lg:font-semibold">
                   {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
                   <ChevronDownSmallIcon
-                    className={cn("hidden size-5 mix-blend-normal lg:flex", { "-rotate-180": isMenuOpen })}
+                    className={cn('hidden size-5 mix-blend-normal lg:flex', {
+                      '-rotate-180': isMenuOpen,
+                    })}
                   />
                 </div>
               </Button>
@@ -82,22 +83,16 @@ export const NavBarHeader = ({
           />
         ) : (
           <div className="flex items-center gap-6">
-            <Button variant="black-plain" size="small" onPress={login} data-cy="login-button">
+            <Button variant="plain" size="small" onPress={login} data-cy="login-button">
               {t('menu_links.login')}
             </Button>
-            <Button
-              variant="black-solid"
-              onPress={register}
-              size="small"
-              data-cy="register-button"
-            >
+            <Button variant="solid" onPress={register} size="small" data-cy="register-button">
               {t('menu_links.register')}
             </Button>
           </div>
         )}
       </nav>
     </div>
-
   )
 }
 

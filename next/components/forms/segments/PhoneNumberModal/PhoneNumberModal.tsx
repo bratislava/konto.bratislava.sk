@@ -2,12 +2,12 @@ import { updateUserAttributes } from 'aws-amplify/auth'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import { UserAttributes } from '../../../../frontend/dtos/accountDto'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import { GENERIC_ERROR_MESSAGE, isError } from '../../../../frontend/utils/errors'
-import logger from '../../../../frontend/utils/logger'
-import PhoneNumberForm, { PhoneNumberData } from '../../auth-forms/PhoneNumberForm'
-import MessageModal from '../../widget-components/Modals/MessageModal'
+import PhoneNumberForm, { PhoneNumberData } from '@/components/forms/auth-forms/PhoneNumberForm'
+import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
+import { UserAttributes } from '@/frontend/dtos/accountDto'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import logger from '@/frontend/utils/logger'
 
 const getInitialOpen = (userAttributes: UserAttributes | null) => {
   // Signed out

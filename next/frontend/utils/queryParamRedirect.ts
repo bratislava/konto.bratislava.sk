@@ -1,8 +1,8 @@
 import { AuthSession } from 'aws-amplify/auth'
 import qs from 'qs'
 
-import { environment } from '../../environment'
-import { ROUTES } from '../api/constants'
+import { environment } from '@/environment'
+import { ROUTES } from '@/frontend/api/constants'
 
 export enum SafeRedirectType {
   Local = 'local',

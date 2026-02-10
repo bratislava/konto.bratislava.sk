@@ -88,7 +88,7 @@ function setFlattenedQueryParams(
 ): void {
   if (parameter == null) return
   if (typeof parameter === 'object') {
-    if (Array.isArray(parameter)) {
+    if (Array.isArray(parameter) || parameter instanceof Set) {
       ;(parameter as any[]).forEach((item) => setFlattenedQueryParams(urlSearchParams, item, key))
     } else {
       Object.keys(parameter).forEach((currentKey) =>
@@ -114,6 +114,19 @@ export const setSearchParams = function (url: URL, ...objects: any[]) {
   url.search = searchParams.toString()
 }
 
+/**
+ * JSON serialization helper function which replaces instances of unserializable types with serializable ones.
+ * This function will run for every key-value pair encountered by JSON.stringify while traversing an object.
+ * Converting a set to a string will return an empty object, so an intermediate conversion to an array is required.
+ */
+export const replaceWithSerializableTypeIfNeeded = function (key: any, value: any) {
+  if (value instanceof Set) {
+    return Array.from(value)
+  } else {
+    return value
+  }
+}
+
 export const serializeDataIfNeeded = function (
   value: any,
   requestOptions: any,
@@ -124,7 +137,9 @@ export const serializeDataIfNeeded = function (
     nonString && configuration && configuration.isJsonMime
       ? configuration.isJsonMime(requestOptions.headers['Content-Type'])
       : nonString
-  return needsSerialization ? JSON.stringify(value !== undefined ? value : {}) : value || ''
+  return needsSerialization
+    ? JSON.stringify(value !== undefined ? value : {}, replaceWithSerializableTypeIfNeeded)
+    : value || ''
 }
 
 export const toPathString = function (url: URL) {

@@ -1,8 +1,8 @@
 import Link, { LinkProps } from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { ROUTES } from '../../../../frontend/api/constants'
-import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
+import { ROUTES } from '@/frontend/api/constants'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
 
 type Props = {
   variant: 'login' | 'registration' | 'forgotten-password'

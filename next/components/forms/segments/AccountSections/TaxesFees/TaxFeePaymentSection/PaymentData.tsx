@@ -1,16 +1,7 @@
-import {
-  ApplePayIcon,
-  ArrowRightIcon,
-  CreditCardIcon,
-  DownloadIcon,
-  GooglePayIcon,
-  PaymentHandIcon,
-  QrCodeIcon,
-} from '@assets/ui-icons'
 import HorizontalDivider from 'components/forms/HorizontalDivider'
 import Alert from 'components/forms/info-components/Alert'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
+import Button from 'components/forms/simple-components/Button'
 import ClipboardCopy from 'components/forms/simple-components/ClipboardCopy'
 import PaymentSchedule from 'components/forms/simple-components/PaymentSchedule'
 import { useUser } from 'frontend/hooks/useUser'
@@ -21,6 +12,16 @@ import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React, { Fragment } from 'react'
+
+import {
+  ApplePayIcon,
+  ArrowRightIcon,
+  CreditCardIcon,
+  DownloadIcon,
+  GooglePayIcon,
+  PaymentHandIcon,
+  QrCodeIcon,
+} from '@/assets/ui-icons'
 
 type Props = {
   paymentMethod: PaymentMethodType
@@ -172,8 +173,8 @@ const PaymentData = ({ paymentMethod }: Props) => {
                     <span className="w-full text-h5 lg:w-auto">
                       {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
                     </span>
-                    <ButtonNew
-                      variant="black-solid"
+                    <Button
+                      variant="solid"
                       onPress={handleRedirectToPayment}
                       isLoading={isLoading}
                       endIcon={<ArrowRightIcon />}
@@ -181,7 +182,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                       className="max-lg:w-full"
                     >
                       {t('taxes.payment.to_pay')}
-                    </ButtonNew>
+                    </Button>
                   </div>
                 </div>
                 <HorizontalDivider />
@@ -231,14 +232,14 @@ const PaymentData = ({ paymentMethod }: Props) => {
                       {t('taxes.payment_data.use_your_banking_app_to_load')}
                     </div>
                   </div>
-                  <ButtonNew
+                  <Button
                     startIcon={<DownloadIcon />}
-                    variant="black-outline"
+                    variant="outline"
                     className="text-nowrap max-lg:w-full"
                     onPress={handleDownloadQrCode}
                   >
                     {t('taxes.payment_data.download_qr_code')}
-                  </ButtonNew>
+                  </Button>
                 </div>
                 <div className="flex h-full flex-col justify-center lg:w-100">
                   <img className="aspect-square w-full" src={qrCodeImageSrc} alt="QR code" />{' '}

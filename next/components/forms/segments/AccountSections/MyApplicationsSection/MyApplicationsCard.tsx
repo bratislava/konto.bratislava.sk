@@ -1,3 +1,9 @@
+import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
+import { useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
+
 import {
   BinIcon,
   ChevronRightIcon,
@@ -6,27 +12,21 @@ import {
   EllipsisVerticalIcon,
   EyeIcon,
   PdfIcon,
-} from '@assets/ui-icons'
-import { formsClient } from '@clients/forms'
-import Button from 'components/forms/simple-components/ButtonNew'
+} from '@/assets/ui-icons'
+import { formsClient } from '@/clients/forms'
+import BottomSheetMenuModal from '@/components/forms/segments/AccountSections/MyApplicationsSection/BottomSheetMenu/BottomSheetMenuModal'
+import Button from '@/components/forms/simple-components/Button'
+import ConditionalWrap from '@/components/forms/simple-components/ConditionalWrap'
+import FormatDate from '@/components/forms/simple-components/FormatDate'
 import MenuDropdown, {
   MenuItemBase,
-} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
-import { ROUTES } from 'frontend/api/constants'
-import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
-import useSnackbar from 'frontend/hooks/useSnackbar'
-import { downloadBlob } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
-import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
-import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
-import { useState } from 'react'
-import Skeleton from 'react-loading-skeleton'
-
-import ConditionalWrap from '../../../simple-components/ConditionalWrap'
-import FormatDate from '../../../simple-components/FormatDate'
-import BottomSheetMenuModal from './BottomSheetMenu/BottomSheetMenuModal'
+} from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
+import { ROUTES } from '@/frontend/api/constants'
+import useFormStateComponents from '@/frontend/hooks/useFormStateComponents'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { downloadBlob } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
 
 export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 
@@ -247,7 +247,7 @@ const MyApplicationsCard = ({
                 ) : (
                   <>
                     <Button
-                      variant="black-outline"
+                      variant="outline"
                       startIcon={
                         isEditable ? (
                           <EditIcon className="size-5" />
@@ -274,7 +274,7 @@ const MyApplicationsCard = ({
                     <MenuDropdown
                       buttonTrigger={
                         <Button
-                          variant="black-outline"
+                          variant="outline"
                           icon={<EllipsisVerticalIcon />}
                           aria-label="Menu"
                         />
@@ -332,7 +332,7 @@ const MyApplicationsCard = ({
         isOpen={deleteConceptModalShow}
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
-          <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
+          <Button variant="plain" onPress={() => setDeleteConceptModalShow(false)}>
             {t('forms:modal.close_button_label')}
           </Button>,
           <Button

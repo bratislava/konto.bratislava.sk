@@ -1,4 +1,3 @@
-import Alert from 'components/forms/info-components/Alert'
 import ResponsiveCarousel from 'components/forms/ResponsiveCarousel'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import OfficialCorrespondenceChannelCardWrapper from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
@@ -7,10 +6,12 @@ import TaxFeeDetails from 'components/forms/segments/AccountSections/TaxesFees/T
 import TaxFeePaymentMethods from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentMethods/TaxFeePaymentMethods'
 import TaxFeeSubjectInformation from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeSubjectInformation'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
+
+import Alert from '@/components/forms/info-components/Alert'
+import { ROUTES } from '@/frontend/api/constants'
 
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1608&t=fznV5maoQK8a2irI-4

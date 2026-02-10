@@ -1,5 +1,6 @@
-import { ChevronDownIcon } from '@assets/ui-icons'
 import { ReactNode } from 'react'
+
+import { ChevronDownIcon } from '@/assets/ui-icons'
 
 export type AccordionV2Props = {
   title: string | ReactNode | null | undefined

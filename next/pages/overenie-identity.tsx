@@ -1,28 +1,28 @@
-import { cityAccountClient } from '@clients/city-account'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import PageLayout from 'components/layouts/PageLayout'
-import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
+import { cityAccountClient } from '@/clients/city-account'
 import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
-} from '../components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import LegalPersonVerificationPageContent from '../components/verify/LegalPersonVerificationPageContent'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import logger from '../frontend/utils/logger'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+} from '@/components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import LegalPersonVerificationPageContent from '@/components/verify/LegalPersonVerificationPageContent'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { useRefreshServerSideProps } from '@/frontend/hooks/useRefreshServerSideProps'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
-} from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps } from './prihlasenie'
+} from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {

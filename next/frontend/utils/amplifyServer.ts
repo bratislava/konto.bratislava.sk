@@ -1,19 +1,18 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, AuthSession } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
 import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 
-import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
-import type { GlobalAppProps } from '../../pages/_app'
-import { ROUTES } from '../api/constants'
-import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
-import { AmplifyServerContextSpec } from './amplifyTypes'
-import { fetchClientInfo } from './fetchClientInfo'
-import { isDefined } from './general'
+import { cityAccountClient, LoginClientEnum } from '@/clients/city-account'
+import { ssrAuthContextPropKey, SsrAuthContextType } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { baRunWithAmplifyServerContext } from '@/frontend/utils/amplifyServerRunner'
+import { AmplifyServerContextSpec } from '@/frontend/utils/amplifyTypes'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import { isDefined } from '@/frontend/utils/general'
 import {
   authRequestIdQueryParam,
   getRedirectUrl,
@@ -23,7 +22,8 @@ import {
   redirectQueryParam,
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
-} from './queryParamRedirect'
+} from '@/frontend/utils/queryParamRedirect'
+import type { GlobalAppProps } from '@/pages/_app'
 
 /**
  * In Amplify V6, `getServerSideProps` must run in Amplify server context to execute Amplify operations. This is a

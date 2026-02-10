@@ -1,10 +1,10 @@
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '../simple-components/ButtonNew'
-import InputField from '../widget-components/InputField/InputField'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import useHookForm from '@/frontend/hooks/useHookForm'
 
 interface Data {
   email: string
@@ -70,7 +70,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
           />
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.forgotten_password_submit')}
       </Button>
     </form>

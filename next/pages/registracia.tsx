@@ -1,36 +1,36 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
-import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import PageLayout from 'components/layouts/PageLayout'
-import { UserAttributes } from 'frontend/dtos/accountDto'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import EmailVerificationForm from '../components/forms/auth-forms/EmailVerificationForm'
-import RegisterForm from '../components/forms/auth-forms/RegisterForm'
-import HorizontalDivider from '../components/forms/HorizontalDivider'
-import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import logger from '../frontend/utils/logger'
-import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { cityAccountClient, LoginClientEnum } from '@/clients/city-account'
+import EmailVerificationForm from '@/components/forms/auth-forms/EmailVerificationForm'
+import RegisterForm from '@/components/forms/auth-forms/RegisterForm'
+import HorizontalDivider from '@/components/forms/HorizontalDivider'
+import AccountActivator from '@/components/forms/segments/AccountActivator/AccountActivator'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountLink from '@/components/forms/segments/AccountLink/AccountLink'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { UserAttributes } from '@/frontend/dtos/accountDto'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { SafeRedirectType } from '@/frontend/utils/queryParamRedirect'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
-} from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps, loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
+} from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { usePrepareFormMigration } from '@/frontend/utils/usePrepareFormMigration'
+import { AuthPageCommonProps, loginConfirmSignUpEmailHiddenQueryParam } from '@/pages/prihlasenie'
 
 enum RegistrationStatus {
   INIT = 'INIT',
@@ -376,12 +376,12 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
           )}
           {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
             registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
-              <AccountSuccessAlert
-                title={t('auth.register_success_title')}
-                description={t('auth.register_success_description', { email: lastEmail })}
-                {...accountSuccessAlertProps}
-              />
-            )}
+            <AccountSuccessAlert
+              title={t('auth.register_success_title')}
+              description={t('auth.register_success_description', { email: lastEmail })}
+              {...accountSuccessAlertProps}
+            />
+          )}
         </AccountContainer>
       </PageLayout>
     </AmplifyClientOAuthProvider>

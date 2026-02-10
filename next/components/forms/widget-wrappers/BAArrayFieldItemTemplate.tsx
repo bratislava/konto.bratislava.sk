@@ -1,4 +1,3 @@
-import { RemoveIcon } from '@assets/ui-icons'
 import {
   ArrayFieldTemplateItemType,
   FormContextType,
@@ -8,8 +7,9 @@ import {
 import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
-import cn from '../../../frontend/cn'
-import Button from '../simple-components/ButtonNew'
+import { RemoveIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import cn from '@/frontend/cn'
 
 export type BAArrayFieldItemTemplateAdditionalProps = {
   parentUiOptions: ArrayFieldUiOptions

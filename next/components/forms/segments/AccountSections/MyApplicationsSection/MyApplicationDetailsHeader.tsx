@@ -1,14 +1,15 @@
-import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
-import { formsClient } from '@clients/forms'
-import Button from 'components/forms/simple-components/ButtonNew'
-import FormatDate from 'components/forms/simple-components/FormatDate'
-import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
-import useSnackbar from 'frontend/hooks/useSnackbar'
-import { downloadBlob } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
+
+import { ChevronLeftIcon, DownloadIcon } from '@/assets/ui-icons'
+import { formsClient } from '@/clients/forms'
+import Button from '@/components/forms/simple-components/Button'
+import FormatDate from '@/components/forms/simple-components/FormatDate'
+import useFormStateComponents from '@/frontend/hooks/useFormStateComponents'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { downloadBlob } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
 
 type MyApplicationDetailsHeaderBase = {
   formDefinitionTitle: string
@@ -79,7 +80,7 @@ const MyApplicationDetailsHeader = ({
               <div className="flex w-full items-center justify-between">
                 <h1 className="text-h1">{subject}</h1>
                 <Button
-                  variant="black-solid"
+                  variant="solid"
                   className="max-md:hidden"
                   startIcon={<DownloadIcon />}
                   onPress={exportPdf}
@@ -113,7 +114,7 @@ const MyApplicationDetailsHeader = ({
               </div>
             </div>
             <Button
-              variant="black-solid"
+              variant="solid"
               fullWidth
               className="md:hidden"
               startIcon={<DownloadIcon />}

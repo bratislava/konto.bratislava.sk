@@ -1,10 +1,10 @@
-import { PhoneIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/ButtonNew'
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
-import cn from '../../../frontend/cn'
+import { PhoneIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import cn from '@/frontend/cn'
 
 type BannerBase = {
   title: string
@@ -42,7 +42,7 @@ const Banner = ({
         <div className="flex flex-col gap-4 lg:flex-row">
           <Button
             href={href}
-            variant="black-solid"
+            variant="solid"
             onPress={onPress}
             fullWidthMobile
             // TODO use solid-inverted variant when implemented

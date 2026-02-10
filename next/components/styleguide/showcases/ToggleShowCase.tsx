@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import Toggle from '../../forms/simple-components/Toggle'
+import Toggle from '@/components/forms/simple-components/Toggle'
+
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

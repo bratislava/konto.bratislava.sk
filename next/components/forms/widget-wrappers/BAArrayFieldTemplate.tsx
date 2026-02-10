@@ -1,4 +1,3 @@
-import { AddIcon } from '@assets/ui-icons'
 import {
   ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
@@ -12,13 +11,14 @@ import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
-import cn from '../../../frontend/cn'
-import Alert from '../info-components/Alert'
-import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
-import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import ButtonNew from '../simple-components/ButtonNew'
-import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
-import WidgetWrapper from './WidgetWrapper'
+import { AddIcon } from '@/assets/ui-icons'
+import Alert from '@/components/forms/info-components/Alert'
+import ConditionalFormMarkdown from '@/components/forms/info-components/ConditionalFormMarkdown'
+import FieldErrorMessage from '@/components/forms/info-components/FieldErrorMessage'
+import Button from '@/components/forms/simple-components/Button'
+import type { BAArrayFieldItemTemplateAdditionalProps } from '@/components/forms/widget-wrappers/BAArrayFieldItemTemplate'
+import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
+import cn from '@/frontend/cn'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldTemplate/ArrayFieldTemplate.tsx
@@ -126,10 +126,8 @@ const BAArrayFieldTemplate = <
                 {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
               </div>
             )}
-            <ButtonNew
-              variant={
-                { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[variant]
-              }
+            <Button
+              variant={({ topLevel: 'outline', nested: 'plain' } as const)[variant]}
               startIcon={<AddIcon />}
               onPress={onAddClickPatched}
               isDisabled={!canAdd || disabled || readonly}
@@ -137,7 +135,7 @@ const BAArrayFieldTemplate = <
               data-cy="add-button"
             >
               {addButtonLabel}
-            </ButtonNew>
+            </Button>
             {!canAdd && cannotAddItemMessage && <span>{cannotAddItemMessage}</span>}
           </div>
           {hasErrors && <FieldErrorMessage errorMessage={rawErrors} />}

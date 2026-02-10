@@ -1,5 +1,6 @@
-import cn from 'frontend/cn'
 import { PropsWithChildren } from 'react'
+
+import cn from '@/frontend/cn'
 
 type AccountSectionHeaderBase = PropsWithChildren<{
   title: string

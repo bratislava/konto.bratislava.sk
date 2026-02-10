@@ -62,7 +62,7 @@ const TaxFeePaymentMethods = () => {
               ? t('taxes.payment.pay_rest')
               : t('taxes.payment.pay_all')
           }
-          buttonVariant="black-solid"
+          buttonVariant="solid"
           buttonHref={`${paymentPagePath}?sposob-uhrady=zvysna-suma`}
         />
         {installmentPayment?.isPossible &&
@@ -83,7 +83,7 @@ const TaxFeePaymentMethods = () => {
                   : t('tax_detail_section.tax_payment_installment_subtitle_not_available')
               }
               amount={installmentPayment.activeInstallment?.remainingAmount}
-              buttonVariant="black-outline"
+              buttonVariant="outline"
               buttonText={t('taxes.payment.pay_installment')}
               buttonHref={`${paymentPagePath}?sposob-uhrady=splatky`}
             />

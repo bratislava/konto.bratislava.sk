@@ -6,8 +6,8 @@ import {
 } from '@grafana/faro-web-sdk'
 import pino from 'pino'
 
-import { environment } from '../../environment'
-import { isBrowser, isProductionDeployment } from './general'
+import { environment } from '@/environment'
+import { isBrowser, isProductionDeployment } from '@/frontend/utils/general'
 
 let mutableFaro: Faro | null = null
 

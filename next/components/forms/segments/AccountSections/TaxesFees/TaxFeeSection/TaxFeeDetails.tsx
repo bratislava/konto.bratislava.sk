@@ -1,12 +1,13 @@
-import { ExportIcon } from '@assets/ui-icons'
-import TaxFeeAccordions from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeAccordions'
 import TaxFeePaymentSummary from 'components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeePaymentSummary'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
-import { EXTERNAL_LINKS } from 'frontend/api/constants'
+import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
+
+import { ExportIcon } from '@/assets/ui-icons'
+import TaxFeeAccordions from '@/components/forms/segments/AccountSections/TaxesFees/TaxFeeSection/TaxFeeAccordions'
+import { EXTERNAL_LINKS } from '@/frontend/api/constants'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20611-9194&t=Ccb3STSCmoifklgW-4
@@ -36,11 +37,7 @@ const TaxFeeDetails = () => {
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
       <div className="flex w-full flex-col justify-between lg:flex-row">
         <span className="text-h5">{taxFeeAccordionsHeader}</span>
-        <ButtonNew
-          variant="black-link"
-          endIcon={<ExportIcon />}
-          {...taxFeeAccordionsHeaderLinkProps}
-        />
+        <Button variant="link" endIcon={<ExportIcon />} {...taxFeeAccordionsHeaderLinkProps} />
       </div>
       <TaxFeeAccordions />
       <TaxFeePaymentSummary />

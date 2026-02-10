@@ -64,6 +64,7 @@ module.exports = {
     'const-case/uppercase': 'off',
     // Temporarily disabled because IDE problems
     'prettier/prettier': 'off',
+    'import/extensions': 'off',
   },
   ignorePatterns: [
     '*.config.*',

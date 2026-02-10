@@ -1,7 +1,7 @@
 import { createFormsClient, FormsClient } from 'openapi-clients/forms'
 
-import { environment } from '../environment'
-import { axiosInstance, ClientWithCustomConfig } from './axios-instance'
+import { axiosInstance, ClientWithCustomConfig } from '@/clients/axios-instance'
+import { environment } from '@/environment'
 
 export const formsClient = createFormsClient({
   basePath: environment.formsUrl,

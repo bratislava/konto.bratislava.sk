@@ -1,18 +1,18 @@
-import BannerImage from '@assets/images/bratislava-dog.png'
+import { useTranslation } from 'next-i18next'
+
+import BannerImage from '@/assets/images/bratislava-dog.png'
 import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
-} from '@clients/graphql-strapi/api'
-import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import Banner from 'components/forms/simple-components/Banner'
-import Button from 'components/forms/simple-components/ButtonNew'
-import { useTranslation } from 'next-i18next'
-
-import { ROUTES } from '../../../../../frontend/api/constants'
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
-import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
-import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
-import Announcements from './Announcements/Announcements'
+} from '@/clients/graphql-strapi/api'
+import AccountSectionHeader from '@/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
+import Announcements from '@/components/forms/segments/AccountSections/IntroSection/Announcements/Announcements'
+import MunicipalServiceCard from '@/components/forms/segments/MunicipalServiceCard/MunicipalServiceCard'
+import PhoneNumberModal from '@/components/forms/segments/PhoneNumberModal/PhoneNumberModal'
+import Banner from '@/components/forms/simple-components/Banner'
+import Button from '@/components/forms/simple-components/Button'
+import { ROUTES } from '@/frontend/api/constants'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 type IntroSectionProps = {
   services: MunicipalServiceCardEntityFragment[]
@@ -61,7 +61,7 @@ const IntroSection = ({
           <div className="flex flex-col gap-6 py-6 lg:py-16">
             <div className="flex w-full flex-col gap-2 px-4 md:flex-row md:items-center md:justify-between lg:px-0">
               <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
-              <Button variant="black-link" href={ROUTES.MUNICIPAL_SERVICES}>
+              <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
                 {t('account_section_intro.all_services')}
               </Button>
             </div>

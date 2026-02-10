@@ -1,21 +1,22 @@
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import OfficialCorrespondenceChannelAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
-import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
-import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
-import Modal, { ModalProps } from 'components/forms/simple-components/Modal'
-import Radio from 'components/forms/widget-components/RadioButton/Radio'
-import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
-import useHookForm from 'frontend/hooks/useHookForm'
-import useSnackbar from 'frontend/hooks/useSnackbar'
-import { useUserSubscription } from 'frontend/hooks/useUser'
-import { isDefined } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'
 import { Controller } from 'react-hook-form'
+
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import OfficialCorrespondenceChannelAlert from '@/components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
+import { useOfficialCorrespondenceChannel } from '@/components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
+import { useStrapiTax } from '@/components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
+import Button from '@/components/forms/simple-components/Button'
+import Modal, { ModalProps } from '@/components/forms/simple-components/Modal'
+import Radio from '@/components/forms/widget-components/RadioButton/Radio'
+import RadioGroup from '@/components/forms/widget-components/RadioButton/RadioGroup'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { useUserSubscription } from '@/frontend/hooks/useUser'
+import { isDefined } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
 
 type AgreementProps = {
   onScrollToBottom: () => void
@@ -172,15 +173,15 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
           />
         </div>
       )}
-      <ButtonNew
+      <Button
         className="min-w-full"
         type="submit"
-        variant="black-solid"
+        variant="solid"
         isDisabled={isSubmitting || !isValid}
         isLoading={isSubmitting}
       >
         {t('taxes.delivery_method_change_modal.confirm_button_text')}
-      </ButtonNew>
+      </Button>
     </form>
   )
 }

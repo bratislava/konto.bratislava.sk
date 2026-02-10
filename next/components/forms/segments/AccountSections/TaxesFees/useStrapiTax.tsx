@@ -1,5 +1,6 @@
-import { TaxFragment } from '@clients/graphql-strapi/api'
 import React, { createContext, PropsWithChildren, useContext } from 'react'
+
+import { TaxFragment } from '@/clients/graphql-strapi/api'
 
 type StrapiTaxProviderProps = {
   strapiTax: TaxFragment | null | undefined

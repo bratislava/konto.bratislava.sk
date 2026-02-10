@@ -1,10 +1,10 @@
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '../simple-components/ButtonNew'
-import InputField from '../widget-components/InputField/InputField'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import useHookForm from '@/frontend/hooks/useHookForm'
 
 export interface PhoneNumberData {
   phone_number?: string
@@ -62,7 +62,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
           />
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('phone_number_form.save_changes_button')}
       </Button>
     </form>

@@ -1,4 +1,3 @@
-import { cityAccountClient } from '@clients/city-account'
 import { useMutation } from '@tanstack/react-query'
 import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import {
@@ -9,9 +8,10 @@ import {
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 
-import { environment } from '../../environment'
-import { useRefreshServerSideProps } from '../../frontend/hooks/useRefreshServerSideProps'
-import { ErrorWithName } from '../../frontend/utils/errors'
+import { cityAccountClient } from '@/clients/city-account'
+import { environment } from '@/environment'
+import { useRefreshServerSideProps } from '@/frontend/hooks/useRefreshServerSideProps'
+import { ErrorWithName } from '@/frontend/utils/errors'
 
 export enum VerificationStatus {
   INIT = 'INIT',

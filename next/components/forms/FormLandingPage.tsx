@@ -1,18 +1,18 @@
-import { formsClient } from '@clients/forms'
-import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { useMutation } from '@tanstack/react-query'
-import PageLayout from 'components/layouts/PageLayout'
-import { isDefined } from 'frontend/utils/general'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ROUTES } from '../../frontend/api/constants'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { ClientLandingPageFormDefinition } from './clientFormDefinitions'
-import FormLandingPageCard from './info-components/FormLandingPageCard'
-import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
+import { formsClient } from '@/clients/forms'
+import { FormWithLandingPageFragment } from '@/clients/graphql-strapi/api'
+import { ClientLandingPageFormDefinition } from '@/components/forms/clientFormDefinitions'
+import FormLandingPageCard from '@/components/forms/info-components/FormLandingPageCard'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import PageLayout from '@/components/layouts/PageLayout'
+import { ROUTES } from '@/frontend/api/constants'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { isDefined } from '@/frontend/utils/general'
 
 export type FormWithLandingPageRequiredFragment = Omit<
   FormWithLandingPageFragment,

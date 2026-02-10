@@ -1,15 +1,14 @@
-import { strapiClient } from '@clients/graphql-strapi'
+import { strapiClient } from '@/clients/graphql-strapi'
 import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
-} from '@clients/graphql-strapi/api'
-import IntroSection from 'components/forms/segments/AccountSections/IntroSection/IntroSection'
-import PageLayout from 'components/layouts/PageLayout'
-import { isDefined } from 'frontend/utils/general'
-
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+} from '@/clients/graphql-strapi/api'
+import IntroSection from '@/components/forms/segments/AccountSections/IntroSection/IntroSection'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { isDefined } from '@/frontend/utils/general'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 const filterValidAnnouncements = (
   announcements: HomepageAnnouncementEntityFragment[],

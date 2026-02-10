@@ -1,10 +1,11 @@
-import HorizontalDivider from 'components/forms/HorizontalDivider'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import cn from 'frontend/cn'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React, { Fragment } from 'react'
+
+import HorizontalDivider from '@/components/forms/HorizontalDivider'
+import cn from '@/frontend/cn'
 
 const TaxFeePaymentSummary = () => {
   const { taxData } = useTaxFeeSection()

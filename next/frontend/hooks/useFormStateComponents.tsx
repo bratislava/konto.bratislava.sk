@@ -1,3 +1,7 @@
+import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
+import { useMemo } from 'react'
+
 import {
   CheckIcon,
   CrossIcon,
@@ -5,11 +9,8 @@ import {
   ScanningIcon,
   SendIcon,
   TwoPeopleIcon,
-} from '@assets/ui-icons'
-import logger from 'frontend/utils/logger'
-import { useTranslation } from 'next-i18next'
-import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
-import { useMemo } from 'react'
+} from '@/assets/ui-icons'
+import logger from '@/frontend/utils/logger'
 
 export type UseFormStateComponentsParams = {
   state?: GetFormResponseDtoStateEnum | null

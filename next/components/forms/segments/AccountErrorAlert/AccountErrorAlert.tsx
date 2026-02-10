@@ -1,10 +1,10 @@
-import Alert from 'components/forms/info-components/Alert'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 
-import logger from '../../../../frontend/utils/logger'
+import Alert from '@/components/forms/info-components/Alert'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from '@/frontend/utils/errors'
+import logger from '@/frontend/utils/logger'
 
 interface Props {
   error?: Error | null

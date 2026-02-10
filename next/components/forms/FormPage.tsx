@@ -1,15 +1,19 @@
-import PageLayout from 'components/layouts/PageLayout'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import React from 'react'
 
-import cn from '../../frontend/cn'
-import FormContent from './FormContent'
-import FormVersionCompareAction from './FormVersionCompareAction'
-import IframeResizerChild from './IframeResizerChild'
-import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
-import ConditionalWrap from './simple-components/ConditionalWrap'
-import { FormContextProvider, FormServerContext, useFormContext } from './useFormContext'
-import { FormSentProvider, useFormSent } from './useFormSent'
+import FormContent from '@/components/forms/FormContent'
+import FormVersionCompareAction from '@/components/forms/FormVersionCompareAction'
+import IframeResizerChild from '@/components/forms/IframeResizerChild'
+import ThankYouFormSection from '@/components/forms/segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import ConditionalWrap from '@/components/forms/simple-components/ConditionalWrap'
+import {
+  FormContextProvider,
+  FormServerContext,
+  useFormContext,
+} from '@/components/forms/useFormContext'
+import { FormSentProvider, useFormSent } from '@/components/forms/useFormSent'
+import PageLayout from '@/components/layouts/PageLayout'
+import cn from '@/frontend/cn'
 
 const FormStateRouter = () => {
   const { formSent } = useFormSent()
@@ -36,11 +40,15 @@ const FormLayoutContainer = () => {
       <ConditionalWrap
         condition={!isEmbedded}
         wrap={(children) => (
-          <PageLayout className={cn({
-            'bg-gray-50': formSent,
-            'bg-gray-0 md:bg-gray-50':
-              !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,
-          })}>{children}</PageLayout>
+          <PageLayout
+            className={cn({
+              'bg-gray-50': formSent,
+              'bg-gray-0 md:bg-gray-50':
+                !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,
+            })}
+          >
+            {children}
+          </PageLayout>
         )}
       >
         <FormStateRouter />

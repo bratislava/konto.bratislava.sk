@@ -1,17 +1,18 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import HorizontalDivider from 'components/forms/HorizontalDivider'
-import { useNavMenuContext } from 'components/forms/segments/NavBar/navMenuContext'
-import { MenuSectionBase } from 'components/forms/segments/NavBar/useMenu'
-import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
-import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import { ROUTES } from 'frontend/api/constants'
-import cn from 'frontend/cn'
-import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ComponentProps, forwardRef } from 'react'
 import { useEventListener, useScrollLock } from 'usehooks-ts'
+
+import HorizontalDivider from '@/components/forms/HorizontalDivider'
+import { useNavMenuContext } from '@/components/forms/segments/NavBar/navMenuContext'
+import { MenuSectionBase } from '@/components/forms/segments/NavBar/useMenu'
+import IdentityVerificationStatus from '@/components/forms/simple-components/IdentityVerificationStatus'
+import { MenuItemBase } from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { ROUTES } from '@/frontend/api/constants'
+import cn from '@/frontend/cn'
+import logger from '@/frontend/utils/logger'
 
 type Props = {
   menuSections?: MenuSectionBase[]
@@ -90,7 +91,7 @@ export const HamburgerMenu = ({ menuSections, menuItems, closeMenu }: Props) => 
                   </NavigationMenu.Link>
                 </NavigationMenu.Item>
               ))}
-              <HorizontalDivider asListItem className='my-4 border-b-2' />
+              <HorizontalDivider asListItem className="my-4 border-b-2" />
             </>
           )}
           {menuItems.map((sectionItem) => {

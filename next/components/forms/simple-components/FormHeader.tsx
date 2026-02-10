@@ -1,12 +1,12 @@
-import { DiscIcon, EllipsisVerticalIcon } from '@assets/ui-icons'
-import ButtonNew from 'components/forms/simple-components/ButtonNew'
-import MenuDropdown from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
-import { useFormContext } from '../useFormContext'
-import { useFormMenuItems } from '../useFormMenuItems'
+import { DiscIcon, EllipsisVerticalIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import MenuDropdown from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormMenuItems } from '@/components/forms/useFormMenuItems'
+import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
 
 const FormHeader = () => {
   const {
@@ -37,25 +37,25 @@ const FormHeader = () => {
           </div>
           <div className="hidden h-full shrink-0 gap-3 lg:flex">
             {!isReadonly && (
-              <ButtonNew
+              <Button
                 size="small"
-                variant="black-outline"
+                variant="outline"
                 startIcon={<DiscIcon className="size-5" />}
                 onPress={() => saveConcept()}
                 data-cy="save-concept-desktop"
-                className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when ButtonNew is updated according to DS
+                className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
               >
                 {t('menu_list.save_concept')}
-              </ButtonNew>
+              </Button>
             )}
             <MenuDropdown
               buttonTrigger={
-                <ButtonNew
-                  variant="black-outline"
+                <Button
+                  variant="outline"
                   size="small"
                   icon={<EllipsisVerticalIcon />}
                   aria-label="Menu"
-                  className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when ButtonNew is updated according to DS
+                  className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
                 />
               }
               items={menuItems}

@@ -2,7 +2,7 @@ import { GenericObjectType } from '@rjsf/utils'
 import React, { createContext, PropsWithChildren, useContext } from 'react'
 import useStateRef from 'react-usestateref'
 
-import { useFormContext } from './useFormContext'
+import { useFormContext } from '@/components/forms/useFormContext'
 
 const useGetContext = () => {
   const { initialFormDataJson } = useFormContext()

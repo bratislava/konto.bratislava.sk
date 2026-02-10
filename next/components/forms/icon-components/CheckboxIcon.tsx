@@ -1,6 +1,5 @@
-import { CheckIcon } from '@assets/ui-icons'
-
-import cn from '../../../frontend/cn'
+import { CheckIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
 
 interface SelectCheckboxProps {
   checked?: boolean

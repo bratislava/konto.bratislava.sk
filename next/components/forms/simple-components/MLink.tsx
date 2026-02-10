@@ -2,11 +2,11 @@ import NextLink from 'next/link'
 import { usePlausible } from 'next-plausible'
 import { ComponentProps, forwardRef } from 'react'
 
-import cn from '../../../frontend/cn'
+import cn from '@/frontend/cn'
 
 export type LinkPlausibleProps = { id: string }
 
-export type MLinkNewProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref'> & {
+export type MLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref'> & {
   /**
    * 'standard' variant is always underlined on mobile, but underlined only on hover on desktop
    * @default unstyled
@@ -20,7 +20,7 @@ export type MLinkNewProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHr
   stretched?: boolean
 }
 
-const MLink = forwardRef<HTMLAnchorElement, MLinkNewProps>(
+const MLink = forwardRef<HTMLAnchorElement, MLinkProps>(
   (
     { href, children, className, variant = 'unstyled', stretched = false, plausibleProps, ...rest },
     ref,

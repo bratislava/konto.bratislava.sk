@@ -1,5 +1,4 @@
 import { useDeepMemo } from '@react-aria/utils'
-import { useFormData } from 'components/forms/useFormData'
 import {
   FileStatusType,
   isInfectedFileStatusType,
@@ -12,11 +11,12 @@ import isEqual from 'lodash/isEqual'
 import memoizeOne from 'memoize-one'
 import React, { createContext, PropsWithChildren, useCallback, useContext } from 'react'
 
-import { environment } from '../../../../environment'
-import { useFormContext } from '../../useFormContext'
-import { useFormFileUpload } from '../../useFormFileUpload'
-import { useFormState } from '../../useFormState'
-import { useFormValidatorRegistry } from '../../useFormValidatorRegistry'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormData } from '@/components/forms/useFormData'
+import { useFormFileUpload } from '@/components/forms/useFormFileUpload'
+import { useFormState } from '@/components/forms/useFormState'
+import { useFormValidatorRegistry } from '@/components/forms/useFormValidatorRegistry'
+import { environment } from '@/environment'
 
 const memoizedValidateSummary = memoizeOne(validateSummary)
 

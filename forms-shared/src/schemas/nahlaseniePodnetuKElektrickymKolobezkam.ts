@@ -83,6 +83,7 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
       {
         title: 'Fotografia podnetu',
         required: true,
+        maxItems: 2,
       },
       {
         type: 'dragAndDrop',

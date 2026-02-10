@@ -21,7 +21,6 @@ model TaxPayer {
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @default(now()) @updatedAt
   birthNumber                 String // with slash
-  permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
   permanentResidenceStreet    String?

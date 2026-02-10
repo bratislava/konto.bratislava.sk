@@ -206,10 +206,7 @@ describe('testing-tax-mock', () => {
 
         expect(result.ulica_tb_cislo).toBe('test ulica cislo')
         expect(result.psc_ref_tb).toBe('test psc')
-        expect(result.psc_naz_tb).toBe('test psc nazov')
-        expect(result.stat_nazov_plny).toBe('test stat')
         expect(result.obec_nazev_tb).toBe('test obec')
-        expect(result.adresa_tp_sidlo).toBe('test sidlo')
       })
 
       it('should set numeric fields with correct values', () => {
@@ -473,10 +470,7 @@ describe('testing-tax-mock', () => {
 
         expect(result.ulica_tb_cislo).toBe('test ulica cislo')
         expect(result.psc_ref_tb).toBe('test psc')
-        expect(result.psc_naz_tb).toBe('test psc nazov')
-        expect(result.stat_nazov_plny).toBe('test stat')
         expect(result.obec_nazev_tb).toBe('test obec')
-        expect(result.adresa_tp_sidlo).toBe('test sidlo')
       })
 
       it('should set numeric fields with correct values', () => {

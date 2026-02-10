@@ -7,7 +7,6 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
   cislo_poradace: z.number(),
   stav_dokladu: z.enum(['Z', 'S', 'P', 'O']),
   cislo_subjektu: z.number(),
-  adresa_tp_sidlo: z.string().nullable(),
   cislo_konania: z.string().nullable(),
   datum_platnosti: z.date().nullable(),
   variabilny_symbol: z.string(), // If it is null, we should not process the tax. Currently all were non-null, thus we can expect it to be non-null, otherwise throw error when parsing.
@@ -31,8 +30,6 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
   ICO_RC: z.string(),
   ulica_tb_cislo: z.string().nullable(),
   psc_ref_tb: z.string().nullable(),
-  psc_naz_tb: z.string().nullable(),
-  stat_nazov_plny: z.string().nullable(),
   obec_nazev_tb: z.string().nullable(),
   vyb_telefon_prace: z.string().nullable(),
   vyb_email: z.string().nullable(),

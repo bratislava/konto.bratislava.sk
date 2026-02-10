@@ -52,8 +52,6 @@ export const createTestingRealEstateTaxMock = (
     dan_stavby_SPOLU: '0',
     ulica_tb_cislo: 'test ulica cislo',
     psc_ref_tb: 'test psc',
-    psc_naz_tb: 'test psc nazov',
-    stat_nazov_plny: 'test stat',
     obec_nazev_tb: 'test obec',
 
     // splátky (installments) data
@@ -124,7 +122,6 @@ export const createTestingRealEstateTaxMock = (
     dan_stavby: '600,50',
     dan_stavby_viac: '300,25',
     dan_byty: norisData.taxTotal,
-    adresa_tp_sidlo: 'test sidlo',
   }
 }
 
@@ -175,10 +172,7 @@ export const createTestingCommunalWasteTaxMock = (
     subjekt_refer: '123456789',
     ulica_tb_cislo: 'test ulica cislo',
     psc_ref_tb: 'test psc',
-    psc_naz_tb: 'test psc nazov',
-    stat_nazov_plny: 'test stat',
     obec_nazev_tb: 'test obec',
-    adresa_tp_sidlo: 'test sidlo',
     cislo_subjektu: 123_456,
     akt_datum: new Date().toISOString().split('T')[0],
 

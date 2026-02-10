@@ -4,7 +4,6 @@ SELECT
     subjekt_doklad.cislo_poradace,
     lcs.dane21_doklad.stav_dokladu as stav_dokladu,
     lcs.dane21_doklad.cislo_subjektu,
-    subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
     subjekt_doklad.reference_subjektu cislo_konania , 
     lcs.dane21_doklad.datum_platnosti,
     lcs.dane21_doklad.variabilny_symbol, 
@@ -17,8 +16,6 @@ SELECT
     lcs.dane21_priznanie.rok, 
     a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_priznanie.adr_tp_sup_cislo, lcs.dane21_priznanie.adr_tp_or_cislo), '') as ulica_tb_cislo, 
     a_tb.psc_refer as psc_ref_tb,
-    a_tb.psc_nazev as psc_naz_tb, 
-    a_tb.stat_nazov_plny, 
     a_tb.obec_nazev obec_nazev_tb, 
     CONVERT(char(10), lcs.dane21_doklad.datum_realizacie, 104) akt_datum, 
     lcs.fn21_meno_osoby_org(lcs.dane21_doklad.vybavuje, null) vyb_nazov, 
@@ -214,11 +211,6 @@ LEFT OUTER JOIN
     lcs.organizace org_cudz  
     ON
         lcs.dane21_doklad.subjekt=org_cudz.cislo_subjektu  
-
-LEFT OUTER JOIN 
-    lcs.subjekty subjekt_tp_adresa  
-    ON 
-        org_cudz.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_e1  
@@ -545,7 +537,6 @@ export const getCommunalWasteTaxesFromNoris = `
         subjekt_doklad.cislo_poradace,
         doklad.stav_dokladu as stav_dokladu,
         doklad.cislo_subjektu,
-        subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
         subjekt_doklad.reference_subjektu cislo_konania,
         doklad.datum_platnosti,
         doklad.variabilny_symbol,
@@ -635,8 +626,6 @@ export const getCommunalWasteTaxesFromNoris = `
 
         a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, poplatok.adr_tp_sup_cislo, poplatok.adr_tp_or_cislo), '') as ulica_tb_cislo, 
         a_tb.psc_refer as psc_ref_tb,
-        a_tb.psc_nazev as psc_naz_tb, 
-        a_tb.stat_nazov_plny, 
         a_tb.obec_nazev obec_nazev_tb, 
 
         z_vybav.telefon_prace vyb_telefon_prace, 
@@ -711,11 +700,6 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.organizace org_cudz  
         ON
             doklad.subjekt=org_cudz.cislo_subjektu  
-
-    JOIN 
-        lcs.subjekty subjekt_tp_adresa  
-        ON 
-            org_cudz.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu
 
     JOIN 
         lcs.subjekty subjekt_doklad_sub  

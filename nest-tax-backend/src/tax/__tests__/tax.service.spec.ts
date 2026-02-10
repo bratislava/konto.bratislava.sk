@@ -64,7 +64,6 @@ const createMockTaxPayer = (
         taxType: TaxType.DZN,
       },
     ],
-    permanentResidenceAddress: 'Test Address 123',
     externalId: 'ext-taxpayer-1',
     name: 'John Doe',
     permanentResidenceStreet: 'Test Street',

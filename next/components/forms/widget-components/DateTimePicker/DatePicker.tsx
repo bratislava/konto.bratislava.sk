@@ -8,7 +8,7 @@ import { useDatePicker } from 'react-aria'
 import { Dialog, Popover } from 'react-aria-components'
 import { useDatePickerState } from 'react-stately'
 
-import ButtonNew from '../../simple-components/Button'
+import Button from '../../simple-components/Button'
 import { FieldWrapperProps } from '../FieldWrapper'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
@@ -136,7 +136,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           displayOptionalLabel={displayOptionalLabel}
           ref={dateFieldRef}
         >
-          <ButtonNew
+          <Button
             variant="icon-wrapped-negative-margin"
             {...buttonPropsFixed}
             isDisabled={disabled}

@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronRightIcon } from '@assets/ui-icons'
-import ButtonNew from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/Button'
 import MLinkNew from 'components/forms/simple-components/MLinkNew'
 import { useTranslation } from 'next-i18next'
 
@@ -24,14 +24,14 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
     <div className="relative">
       <div className="flex justify-between">
         <div className="text-size-p-tiny -mx-4 flex items-center gap-2 font-medium">
-          <ButtonNew
+          <Button
             onPress={goBack}
             variant="black-link"
             className="shrink-0 py-3 pl-4 text-[14px]"
             startIcon={<ChevronRightIcon className="shrink-0 rotate-180" />}
           >
             {t('Breadcrumbs.back')}
-          </ButtonNew>
+          </Button>
           <div className="h-4 w-px bg-grey-300" />
           {last?.path ? (
             <MLinkNew

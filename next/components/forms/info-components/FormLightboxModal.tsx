@@ -7,7 +7,7 @@ import { Button as AriaButton } from 'react-aria-components'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
-import ButtonNew from '../simple-components/Button'
+import Button from '../simple-components/Button'
 import Spinner from '../simple-components/Spinner'
 
 type FormLightboxModalProps = { imageUrl: string }
@@ -18,9 +18,9 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
 
   return (
     <>
-      <ButtonNew onPress={() => setIsOpen(true)} variant="black-link">
+      <Button onPress={() => setIsOpen(true)} variant="black-link">
         {children}
-      </ButtonNew>
+      </Button>
 
       <Lightbox
         className="[&_.yarl\_\_container]:bg-gray-800/40"

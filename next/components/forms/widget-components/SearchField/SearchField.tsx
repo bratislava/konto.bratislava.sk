@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import cn from '../../../../frontend/cn'
-import ButtonNew from '../../simple-components/Button'
+import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 type SearchFieldProps = FieldWrapperProps & {
@@ -109,14 +109,14 @@ const SearchField = ({
             className={style}
           />
           {resetIcon && valueState && (
-            <ButtonNew
+            <Button
               onPress={() => setValueState('')}
               variant="unstyled"
               className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             >
               <RemoveIcon />
               <span className="sr-only">{t('SearchField.aria.reset')}</span>
-            </ButtonNew>
+            </Button>
           )}
         </div>
       </FieldWrapper>

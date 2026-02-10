@@ -1,6 +1,6 @@
 import { CheckIcon, CrossIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import ButtonNew from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/Button'
 import cn from 'frontend/cn'
 
 export type ThankYouCardBase = {
@@ -60,33 +60,33 @@ const ThankYouCard = ({
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
                   <h3 className="text-left text-h3">{feedbackTitle}</h3>
-                  <ButtonNew href={firstButtonLink} variant="black-solid" fullWidth>
+                  <Button href={firstButtonLink} variant="black-solid" fullWidth>
                     {firstButtonTitle}
-                  </ButtonNew>
+                  </Button>
                 </div>
               ) : (
-                <ButtonNew href={firstButtonLink} variant="black-solid" fullWidth>
+                <Button href={firstButtonLink} variant="black-solid" fullWidth>
                   {firstButtonTitle}
-                </ButtonNew>
+                </Button>
               )
             ) : null}
             {secondButtonTitle ? (
-              <ButtonNew href={secondButtonLink} variant="black-outline" fullWidth>
+              <Button href={secondButtonLink} variant="black-outline" fullWidth>
                 {secondButtonTitle}
-              </ButtonNew>
+              </Button>
             ) : null}
           </>
         ) : (
           <>
             {firstButtonTitle ? (
-              <ButtonNew href={firstButtonLink} variant="black-solid" fullWidth>
+              <Button href={firstButtonLink} variant="black-solid" fullWidth>
                 {firstButtonTitle}
-              </ButtonNew>
+              </Button>
             ) : null}
             {secondButtonTitle ? (
-              <ButtonNew href={secondButtonLink} variant="black-outline" fullWidth>
+              <Button href={secondButtonLink} variant="black-outline" fullWidth>
                 {secondButtonTitle}
-              </ButtonNew>
+              </Button>
             ) : null}
           </>
         )}

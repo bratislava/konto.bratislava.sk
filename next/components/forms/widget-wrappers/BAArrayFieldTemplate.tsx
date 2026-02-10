@@ -16,7 +16,7 @@ import cn from '../../../frontend/cn'
 import Alert from '../info-components/Alert'
 import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import ButtonNew from '../simple-components/Button'
+import Button from '../simple-components/Button'
 import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
 import WidgetWrapper from './WidgetWrapper'
 
@@ -126,7 +126,7 @@ const BAArrayFieldTemplate = <
                 {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
               </div>
             )}
-            <ButtonNew
+            <Button
               variant={
                 { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[variant]
               }
@@ -137,7 +137,7 @@ const BAArrayFieldTemplate = <
               data-cy="add-button"
             >
               {addButtonLabel}
-            </ButtonNew>
+            </Button>
             {!canAdd && cannotAddItemMessage && <span>{cannotAddItemMessage}</span>}
           </div>
           {hasErrors && <FieldErrorMessage errorMessage={rawErrors} />}

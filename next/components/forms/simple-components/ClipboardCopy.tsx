@@ -4,7 +4,7 @@ import { useCopyToClipboard } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import logger from '../../../frontend/utils/logger'
-import ButtonNew from './Button'
+import Button from './Button'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()
@@ -18,10 +18,10 @@ const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   }
 
   return (
-    <ButtonNew onPress={handleCopy} variant="unstyled">
+    <Button onPress={handleCopy} variant="unstyled">
       <CopyIcon />
       <span className="sr-only">{t('ClipboardCopy.aria.copyToClipboard')}</span>
-    </ButtonNew>
+    </Button>
   )
 }
 

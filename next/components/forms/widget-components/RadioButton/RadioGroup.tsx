@@ -8,7 +8,7 @@ import {
 } from 'react-stately'
 
 import cn from '../../../../frontend/cn'
-import ButtonNew from '../../simple-components/Button'
+import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)
@@ -102,14 +102,14 @@ const RadioGroup = (props: RadioGroupProps) => {
             </div>
 
             {required ? null : (
-              <ButtonNew
+              <Button
                 variant="black-plain"
                 size="small"
                 className="self-end font-medium"
                 onPress={handleReset}
               >
                 {t('RadioGroup.resetChoice')}
-              </ButtonNew>
+              </Button>
             )}
           </div>
         </RadioContext.Provider>

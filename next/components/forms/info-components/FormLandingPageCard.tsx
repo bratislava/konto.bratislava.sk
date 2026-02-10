@@ -4,7 +4,7 @@ import {
 } from '@clients/graphql-strapi/api'
 import React from 'react'
 
-import ButtonNew from '../simple-components/Button'
+import Button from '../simple-components/Button'
 
 export type FormLandingPageCardProps =
   | FormLandingPageLinkCtaFragment
@@ -17,15 +17,15 @@ export type FormLandingPageCardProps =
 const FormLandingPageButton = (props: FormLandingPageCardProps) => {
   if (props.__typename === 'ComponentBlocksFormLandingPageLinkCta') {
     return (
-      <ButtonNew variant="black-outline" href={props.url} target="_blank" fullWidthMobile>
+      <Button variant="black-outline" href={props.url} target="_blank" fullWidthMobile>
         {props.buttonLabel}
-      </ButtonNew>
+      </Button>
     )
   }
 
   if (props.__typename === 'ComponentBlocksFormLandingPageFormCta') {
     return (
-      <ButtonNew
+      <Button
         variant="black-solid"
         onPress={props.onPress}
         isLoading={props.isLoading}
@@ -33,7 +33,7 @@ const FormLandingPageButton = (props: FormLandingPageCardProps) => {
         data-cy="form-landing-page-fill-form-button"
       >
         {props.buttonLabel}
-      </ButtonNew>
+      </Button>
     )
   }
 

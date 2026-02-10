@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { ComponentProps } from 'react'
 
 import cn from '../../../../../../frontend/cn'
-import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-components/Button'
+import Button, { AnchorProps, ButtonProps } from '../../../../simple-components/Button'
 
 type AnnouncementBlockProps = {
   announcementContent?: string
@@ -44,7 +44,7 @@ const AnnouncementBlock = ({
         {buttons.length > 0 && (
           <div className="flex flex-col gap-4 lg:flex-row">
             {buttons.map((props, index) => (
-              <ButtonNew key={index} {...props} />
+              <Button key={index} {...props} />
             ))}
           </div>
         )}

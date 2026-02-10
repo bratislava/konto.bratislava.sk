@@ -5,7 +5,7 @@ import { isFormSigningDisabled } from '../../../../frontend/utils/formSummary'
 import Alert from '../../info-components/Alert'
 import { useFormSignature } from '../../signer/useFormSignature'
 import { useFormSignerLoader } from '../../signer/useFormSignerLoader'
-import ButtonNew from '../../simple-components/Button'
+import Button from '../../simple-components/Button'
 import MenuDropdown from '../../simple-components/MenuDropdown/MenuDropdown'
 import { useFormContext } from '../../useFormContext'
 import { useFormSummary } from './useFormSummary'
@@ -30,7 +30,7 @@ const SummaryFormSignature = () => {
       <div className="ml-2 shrink-0">
         <MenuDropdown
           buttonTrigger={
-            <ButtonNew
+            <Button
               variant="icon-wrapped-negative-margin"
               size="small"
               icon={<EllipsisVerticalIcon />}
@@ -70,13 +70,13 @@ const SummaryFormSignature = () => {
           message={
             <>
               Platforma, na ktorej sa nachádzate nie je podporovaná. Pozrite si{' '}
-              <ButtonNew
+              <Button
                 href="https://www.slovensko.sk/sk/na-stiahnutie"
                 target="_blank"
                 variant="black-link"
               >
                 zoznam podporovaných aplikácií.
-              </ButtonNew>
+              </Button>
             </>
           }
           className="min-w-full"
@@ -88,9 +88,9 @@ const SummaryFormSignature = () => {
           message={
             <>
               Podpisovač sa nepodarilo načítať.{' '}
-              <ButtonNew variant="black-link" onPress={() => retry()}>
+              <Button variant="black-link" onPress={() => retry()}>
                 Skúsiť znova
-              </ButtonNew>
+              </Button>
             </>
           }
           className="min-w-full"
@@ -108,14 +108,14 @@ const SummaryFormSignature = () => {
             message={
               <AlertContent>
                 Podpis v dokumente nie je aktuálny.{' '}
-                <ButtonNew
+                <Button
                   variant="black-link"
                   isLoading={isLoading}
                   isDisabled={signerButtonDisabled}
                   onPress={() => sign()}
                 >
                   Podpísať znova
-                </ButtonNew>
+                </Button>
               </AlertContent>
             }
             type="warning"
@@ -123,14 +123,14 @@ const SummaryFormSignature = () => {
           />
         ))}
       {!signature && (
-        <ButtonNew
+        <Button
           variant="black-outline"
           isLoading={isLoading}
           isDisabled={signerButtonDisabled}
           onPress={() => sign()}
         >
           Podpísať dokument
-        </ButtonNew>
+        </Button>
       )}
     </div>
   )

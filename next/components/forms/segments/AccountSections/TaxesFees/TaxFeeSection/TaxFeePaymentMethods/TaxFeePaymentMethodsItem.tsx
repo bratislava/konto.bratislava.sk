@@ -1,4 +1,4 @@
-import ButtonNew from 'components/forms/simple-components/Button'
+import Button from 'components/forms/simple-components/Button'
 import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
 
 interface TaxFeePaymentMethodsItemProps {
@@ -28,18 +28,18 @@ const TaxFeePaymentMethodsItem = ({
         <span className="text-p1-semibold">
           <FormatCurrencyFromCents value={amount} />
         </span>
-        <ButtonNew
+        <Button
           variant={buttonVariant}
           href={buttonHref}
           fullWidthMobile
           hasLinkIcon
           // fixed width is wanted, however size doesn't match figma,
-          // ButtonNew has to be implemented as part of design system then we can adjust size,
+          // Button has to be implemented as part of design system then we can adjust size,
           // othervise text will be split into two lines
           className="lg:w-55"
         >
           {buttonText}
-        </ButtonNew>
+        </Button>
       </div>
     </div>
   )

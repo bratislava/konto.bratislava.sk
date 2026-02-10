@@ -11,7 +11,7 @@ import { ROUTES } from '../../frontend/api/constants'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
-import ButtonNew from './simple-components/Button'
+import Button from './simple-components/Button'
 import { useFormContext } from './useFormContext'
 
 const FormVersionCompareAction = () => {
@@ -102,21 +102,17 @@ const FormVersionCompareAction = () => {
 
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
             {isSignedIn ? (
-              <ButtonNew variant="black-outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
+              <Button variant="black-outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
                 {t('form_version_compare_action.button_back')}
-              </ButtonNew>
+              </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.CannotContinue ? (
-              <ButtonNew
-                variant="black-solid"
-                fullWidth
-                href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}
-              >
+              <Button variant="black-solid" fullWidth href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}>
                 {t('form_version_compare_action.button_create_new')}
-              </ButtonNew>
+              </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.RequiresBump ? (
-              <ButtonNew
+              <Button
                 variant="black-solid"
                 fullWidth
                 onPress={() => {
@@ -125,7 +121,7 @@ const FormVersionCompareAction = () => {
                 isLoading={bumpVersionIsPending || isRedirecting}
               >
                 {t('form_version_compare_action.button_confirm')}
-              </ButtonNew>
+              </Button>
             ) : null}
           </div>
         </div>

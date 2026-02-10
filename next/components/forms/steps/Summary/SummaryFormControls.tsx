@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
-import ButtonNew, { ButtonProps } from '../../simple-components/Button'
+import Button, { ButtonProps } from '../../simple-components/Button'
 import { useFormContext } from '../../useFormContext'
 import { useFormSend } from '../../useFormSend'
 import { useFormState } from '../../useFormState'
@@ -57,14 +57,14 @@ const SummaryFormControls = () => {
   return (
     <div className="mt-4 flex flex-col gap-2 md:mt-10 md:flex-row md:flex-wrap md:gap-5">
       <div className="hidden grow items-center md:flex">
-        <ButtonNew
+        <Button
           className="hidden md:inline-flex"
           variant="black-plain"
           onPress={goToPreviousStep}
           startIcon={<ChevronLeftIcon className="size-6" />}
         >
           {t('form_controls.back')}
-        </ButtonNew>
+        </Button>
       </div>
       <div className="flex flex-col gap-2 md:flex-row md:gap-5">
         {buttons.map((button, index) => {
@@ -72,17 +72,17 @@ const SummaryFormControls = () => {
             return null
           }
 
-          return <ButtonNew key={index} {...button} fullWidthMobile />
+          return <Button key={index} {...button} fullWidthMobile />
         })}
 
-        <ButtonNew
+        <Button
           className="md:hidden"
           variant="black-outline"
           onPress={goToPreviousStep}
           fullWidthMobile
         >
           {t('form_controls.back')}
-        </ButtonNew>
+        </Button>
       </div>
     </div>
   )

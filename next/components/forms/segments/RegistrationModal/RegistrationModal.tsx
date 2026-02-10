@@ -3,7 +3,7 @@ import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import ButtonNew from '../../simple-components/Button'
+import Button from '../../simple-components/Button'
 import Modal, { ModalProps } from '../../simple-components/Modal'
 import { useFormContext } from '../../useFormContext'
 import AccountLink from '../AccountLink/AccountLink'
@@ -154,7 +154,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             </ul>
           </div>
           <div className="rounded-b-lg bg-gray-100 px-4 pb-4 md:px-0 md:pb-0">
-            <ButtonNew
+            <Button
               variant="black-solid"
               fullWidth
               onPress={() => register()}
@@ -162,7 +162,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
               data-cy="registration-modal-button"
             >
               {t('registration_modal.body_action')}
-            </ButtonNew>
+            </Button>
           </div>
         </div>
 
@@ -180,23 +180,23 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             {type === RegistrationModalType.Initial && (
               <>
                 {eidSendPossible ? (
-                  <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                  <Button variant="black-outline" onPress={close} fullWidth>
                     {t('registration_modal.buttons_initial_continue_eid')}
-                  </ButtonNew>
+                  </Button>
                 ) : null}
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                <Button variant="black-outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_initial_skip')}
-                </ButtonNew>
+                </Button>
               </>
             )}
             {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
               <>
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                <Button variant="black-outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_back')}
-                </ButtonNew>
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                </Button>
+                <Button variant="black-outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_send')}
-                </ButtonNew>
+                </Button>
               </>
             )}
           </div>

@@ -6,7 +6,7 @@ import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
 import cn from '../../../../frontend/cn'
-import ButtonNew from '../../simple-components/Button'
+import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
@@ -179,14 +179,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             data-cy={`input-${name}`}
           />
           {resetIcon && valueState && (
-            <ButtonNew
+            <Button
               onPress={resetIconHandler}
               variant="unstyled"
               className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             >
               <RemoveIcon />
               <span className="sr-only">{t('InputField.aria.reset')}</span>
-            </ButtonNew>
+            </Button>
           )}
           {endIcon}
         </div>

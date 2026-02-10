@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { AccountType } from '../../../../frontend/dtos/accountDto'
-import ButtonNew from '../../simple-components/Button'
+import Button from '../../simple-components/Button'
 import { ModalProps } from '../../simple-components/Modal'
 import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal from '../../widget-components/Modals/MessageModal'
@@ -28,16 +28,16 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       variant="vertical"
       buttonsAlign="center"
       buttons={[
-        <ButtonNew className="grow" variant="black-solid" onPress={() => verifyIdentity()}>
+        <Button className="grow" variant="black-solid" onPress={() => verifyIdentity()}>
           {t('auth.verification_url_text')}
-        </ButtonNew>,
-        <ButtonNew
+        </Button>,
+        <Button
           className="grow"
           variant="black-outline"
           onPress={() => rest?.onOpenChange?.(false)}
         >
           {t('verification_modal.footer_desktop_eID_text')}
-        </ButtonNew>,
+        </Button>,
       ]}
       titleClassName="text-h3"
       afterContent={
@@ -48,13 +48,13 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="mt-6 flex justify-center">
-            <ButtonNew
+            <Button
               variant="black-plain"
               endIcon={<ArrowRightIcon className="size-6" />}
               onPress={() => rest?.onOpenChange?.(false)}
             >
               {t('verification_modal.footer_desktop_continue')}
-            </ButtonNew>
+            </Button>
           </div>
         </>
       }

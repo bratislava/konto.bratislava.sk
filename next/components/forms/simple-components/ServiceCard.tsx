@@ -2,7 +2,7 @@ import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { ReactNode } from 'react'
 
 import cn from '../../../frontend/cn'
-import ButtonNew from './Button'
+import Button from './Button'
 import { LinkPlausibleProps } from './MLinkNew'
 
 type ServiceCardBase = {
@@ -61,7 +61,7 @@ const ServiceCard = ({
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
-          <ButtonNew
+          <Button
             href={href}
             variant="black-link"
             className="text-p2-semibold"
@@ -69,7 +69,7 @@ const ServiceCard = ({
             plausibleProps={plausibleProps}
           >
             {buttonText}
-          </ButtonNew>
+          </Button>
           {buttonText && (
             <span className="flex size-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
               {href?.includes('http') ? (

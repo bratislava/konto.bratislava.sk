@@ -944,6 +944,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                 "format": "ba-file-uuid",
                 "type": "string",
               },
+              "maxItems": 2,
               "minItems": 1,
               "title": "Fotografia podnetu",
               "type": "array",

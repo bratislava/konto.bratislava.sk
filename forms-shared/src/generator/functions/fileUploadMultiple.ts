@@ -2,9 +2,14 @@ import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
 
+type FileUploadMultipleOptions = GeneratorBaseOptions & {
+  minItems?: number
+  maxItems?: number
+}
+
 export const fileUploadMultiple = (
   property: string,
-  options: GeneratorBaseOptions,
+  options: FileUploadMultipleOptions,
   uiOptions: FileUploadUiOptions,
 ): GeneratorField => ({
   property,
@@ -16,7 +21,8 @@ export const fileUploadMultiple = (
       format: 'ba-file-uuid',
       baFile: true,
     },
-    minItems: options.required ? 1 : undefined,
+    minItems: options.minItems ?? (options.required ? 1 : undefined),
+    maxItems: options.maxItems,
     default: [],
     baUiSchema: {
       'ui:widget': BaWidgetType.FileUploadMultiple,

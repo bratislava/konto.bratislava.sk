@@ -89,7 +89,11 @@ import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPris
 import ziadostOUzemnoplanovaciuInformaciu, {
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
-import nahlaseniePodnetuKElektrickymKolobezkam from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
+import nahlaseniePodnetuKElektrickymKolobezkam, {
+  nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
+} from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -623,16 +627,26 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: nahlaseniePodnetuKElektrickymKolobezkam,
     sendPolicy: FormSendPolicy.NotAuthenticated,
+    subject: {
+      extractTechnical: nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+    },
     email: {
-      address: { prod: '', test: '' }, // TODO: Implement multiple addresses + extractors
-      fromAddress: { prod: '', test: '' }, // TODO: Implement multiple addresses + extractors
-      extractEmail: {
-        type: 'schemaless',
-        extractFn: () => '',
-      }, // TODO: Implment optional extractEmail
+      address: {
+        prod: [
+          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
+          nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+          'mikromobilita@bratislava.sk',
+        ],
+        test: ['inovacie.bratislava@gmail.com'],
+      },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.OLO_SENT_SUCCESS, // TODO: Implement Konto template
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION, // TODO: Implement Konto template
+      technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,
   },

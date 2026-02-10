@@ -876,6 +876,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > defaul
 {
   "podnet": {
     "fotografia": [],
+    "typPodnetu": "nespravneZaparkovana",
   },
 }
 `;
@@ -906,11 +907,10 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                     "baUiSchema": {
                       "ui:options": {
                         "helptext": "Napr. navrhujem úpravu miesta parkovania",
-                        "size": "medium",
                       },
                       "ui:widget": "TextArea",
                     },
-                    "title": "Špecifikujte o aký podnet ide",
+                    "title": "Špecifikácia podnetu",
                     "type": "string",
                   },
                 },
@@ -928,25 +928,12 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
             },
           },
           "properties": {
-            "adresaPodnetu": {
-              "baOrder": 4,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte ulicu a číslo",
-                  "inputType": "text",
-                  "size": "medium",
-                },
-                "ui:widget": "Input",
-              },
-              "title": "Adresa podnetu",
-              "type": "string",
-            },
             "fotografia": {
               "baOrder": 6,
               "baUiSchema": {
                 "ui:options": {
+                  "accept": ".jpg,.jpeg,.png",
                   "helptext": "Nahrajte fotografiu kolobežky alebo lokality, ktorej sa podnet týka",
-                  "size": "medium",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -957,6 +944,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                 "format": "ba-file-uuid",
                 "type": "string",
               },
+              "minItems": 1,
               "title": "Fotografia podnetu",
               "type": "array",
             },
@@ -964,14 +952,23 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
               "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
-                  "helptext": "Cca 4-miestne číslo. Nachádza sa [doplniť kde sa nachádza]",
-                  "helptextMarkdown": true,
+                  "helptext": "Nachádza sa v strede riadidiel pod QR kódom",
                   "inputType": "text",
-                  "size": "medium",
                 },
                 "ui:widget": "Input",
               },
               "title": "Identifikačný kód kolobežky",
+              "type": "string",
+            },
+            "miestoPodnetu": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt alebo ulicu a číslo",
+                },
+                "ui:widget": "TextArea",
+              },
+              "title": "Miesto podnetu",
               "type": "string",
             },
             "poskytovatel": {
@@ -993,7 +990,6 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                     },
                   ],
                   "orientations": "column",
-                  "size": "medium",
                   "variant": "boxed",
                 },
                 "ui:widget": "RadioGroup",
@@ -1025,11 +1021,11 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                     },
                   ],
                   "orientations": "column",
-                  "size": "medium",
                   "variant": "boxed",
                 },
                 "ui:widget": "RadioGroup",
               },
+              "default": "nespravneZaparkovana",
               "enum": [
                 "nespravneZaparkovana",
                 "neschopnaPrevadzky",
@@ -1042,7 +1038,8 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
           "required": [
             "typPodnetu",
             "poskytovatel",
-            "adresaPodnetu",
+            "miestoPodnetu",
+            "fotografia",
           ],
           "title": "Podnet",
           "type": "object",

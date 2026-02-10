@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`formDataExtractors > extractEmailFormEmail > nahlaseniePodnetuKElektrickymKolobezkamExample email should match snapshot 1`] = `""`;
+exports[`formDataExtractors > extractEmailFormEmail > nahlaseniePodnetuKElektrickymKolobezkamExample email should match snapshot 1`] = `undefined`;
 
 exports[`formDataExtractors > extractEmailFormEmail > oloDocistenieStanovistaZbernychNadobExample email should match snapshot 1`] = `"test@email.com"`;
 

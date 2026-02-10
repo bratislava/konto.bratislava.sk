@@ -6,6 +6,7 @@ import { step } from '../generator/functions/step'
 import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
+import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
 
 export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám' }, [
   step('podnet', { title: 'Podnet' }, [
@@ -16,7 +17,11 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         title: 'Typ podnetu',
         required: true,
         items: [
-          { value: 'nespravneZaparkovana', label: 'Nesprávne zaparkovaná kolobežka' },
+          {
+            value: 'nespravneZaparkovana',
+            label: 'Nesprávne zaparkovaná kolobežka',
+            isDefault: true,
+          },
           { value: 'neschopnaPrevadzky', label: 'Kolobežka neschopná prevádzky' },
           { value: 'ine', label: 'Iné' },
         ],
@@ -24,19 +29,17 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
       {
         variant: 'boxed',
         orientations: 'column',
-        size: 'medium',
       },
     ),
     conditionalFields(createCondition([[['typPodnetu'], { const: 'ine' }]]), [
       textArea(
         'specifikaciaPodnetu',
         {
-          title: 'Špecifikujte o aký podnet ide',
+          title: 'Špecifikácia podnetu',
           required: true,
         },
         {
           helptext: 'Napr. navrhujem úpravu miesta parkovania',
-          size: 'medium',
         },
       ),
     ]),
@@ -55,19 +58,17 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
       {
         variant: 'boxed',
         orientations: 'column',
-        size: 'medium',
       },
     ),
-    input(
-      'adresaPodnetu',
+    textArea(
+      'miestoPodnetu',
       {
-        title: 'Adresa podnetu',
-        type: 'text',
+        title: 'Miesto podnetu',
         required: true,
       },
       {
-        helptext: 'Vyplňte ulicu a číslo',
-        size: 'medium',
+        helptext:
+          'Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt alebo ulicu a číslo',
       },
     ),
     input(
@@ -78,22 +79,80 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         required: false,
       },
       {
-        helptext: 'Cca 4-miestne číslo. Nachádza sa [doplniť kde sa nachádza]',
-        helptextMarkdown: true,
-        size: 'medium',
+        helptext: 'Nachádza sa v strede riadidiel pod QR kódom',
       },
     ),
     fileUploadMultiple(
       'fotografia',
       {
         title: 'Fotografia podnetu',
-        required: false,
+        required: true,
       },
       {
         type: 'dragAndDrop',
+        accept: '.jpg,.jpeg,.png',
         helptext: 'Nahrajte fotografiu kolobežky alebo lokality, ktorej sa podnet týka',
-        size: 'medium',
       },
     ),
   ]),
 ])
+type ExtractProviderFormData = {
+  podnet: {
+    poskytovatel: 'bolt' | 'dott' | 'svist'
+  }
+}
+
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress: SchemalessFormDataExtractor<ExtractProviderFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      switch (formData.podnet.poskytovatel) {
+        case 'bolt':
+          return 'boltskba@bolt.eu'
+        case 'dott':
+          return 'bratislava@ridedott.com'
+        case 'svist':
+          return 'bratislava@svist.sk'
+      }
+    },
+  }
+
+type ExtractMunicipalityFormData = {
+  podnet: {
+    miestoPodnetu: string
+  }
+}
+
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress: SchemalessFormDataExtractor<ExtractMunicipalityFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      return 'inovacie.bratislava@gmail.com' // TODO implement municipality email extraction by address field
+    },
+  }
+
+type ExtractTypeFormData = {
+  podnet: {
+    typPodnetu: 'nespravneZaparkovana' | 'neschopnaPrevadzky' | 'ine'
+  }
+}
+
+const extractTechnicalSubjectFn = (formData: ExtractTypeFormData) => {
+  if (formData.podnet.typPodnetu === 'nespravneZaparkovana') {
+    return 'Kolobežky: nesprávne zaparkovaná'
+  }
+  if (formData.podnet.typPodnetu === 'neschopnaPrevadzky') {
+    return 'Kolobežky: neschopná prevádzky'
+  }
+  if (formData.podnet.typPodnetu === 'ine') {
+    return 'Kolobežky: iné'
+  }
+
+  return 'Kolobežky: podnet'
+}
+
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractTypeFormData> =
+  {
+    type: 'schemaless',
+    extractFn: extractTechnicalSubjectFn,
+  }

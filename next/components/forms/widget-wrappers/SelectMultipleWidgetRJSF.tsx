@@ -4,10 +4,11 @@ import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { SelectUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { useMemo } from 'react'
 
+import SelectField, {
+  SelectOption,
+} from '@/components/forms/widget-components/SelectField/SelectField'
 import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
 import { isDefined } from '@/frontend/utils/general'
-
-import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
 
 interface SelectMultipleWidgetRJSFProps extends WidgetProps {
   options: WithEnumOptions<SelectUiOptions>

@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
-import Alert from '../info-components/Alert'
+import Alert from '@/components/forms/info-components/Alert'
+
 import { useFormContext } from '../useFormContext'
 import { useFormSummary } from './Summary/useFormSummary'
 

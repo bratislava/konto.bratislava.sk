@@ -2,9 +2,8 @@ import { WidgetProps } from '@rjsf/utils'
 import { NumberUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
+import NumberField from '@/components/forms/widget-components/NumberField/NumberField'
 import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
-
-import NumberField from '../widget-components/NumberField/NumberField'
 
 interface NumberWidgetRJSFProps extends WidgetProps {
   options: NumberUiOptions

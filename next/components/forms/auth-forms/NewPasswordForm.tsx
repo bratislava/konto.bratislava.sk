@@ -2,14 +2,13 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '@/components/forms/segments/AccountLink/AccountLink'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import PasswordField from '@/components/forms/widget-components/PasswordField/PasswordField'
 import useHookForm from '@/frontend/hooks/useHookForm'
 import logger from '@/frontend/utils/logger'
-
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import AccountLink from '../segments/AccountLink/AccountLink'
-import Button from '../simple-components/Button'
-import InputField from '../widget-components/InputField/InputField'
-import PasswordField from '../widget-components/PasswordField/PasswordField'
 
 interface Data {
   verificationCode: string

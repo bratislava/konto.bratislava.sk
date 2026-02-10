@@ -7,9 +7,9 @@ import {
   useRadioGroupState,
 } from 'react-stately'
 
+import Button from '@/components/forms/simple-components/Button'
 import cn from '@/frontend/cn'
 
-import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)

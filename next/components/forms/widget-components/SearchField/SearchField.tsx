@@ -3,9 +3,9 @@ import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import { RemoveIcon, SearchIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
 import cn from '@/frontend/cn'
 
-import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 type SearchFieldProps = FieldWrapperProps & {

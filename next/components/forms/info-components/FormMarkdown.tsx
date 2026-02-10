@@ -5,7 +5,8 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
 
-import MLink from '../simple-components/MLink'
+import MLink from '@/components/forms/simple-components/MLink'
+
 import FormLightboxModal from './FormLightboxModal'
 
 function getTaxYear() {

@@ -19,11 +19,10 @@ import {
   ErrorIcon,
   ScanningIcon,
 } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import PrettyBytes from '@/components/forms/simple-components/PrettyBytes'
+import ProgressBar from '@/components/forms/simple-components/ProgressBar'
 import cn from '@/frontend/cn'
-
-import Button from '../../simple-components/Button'
-import PrettyBytes from '../../simple-components/PrettyBytes'
-import ProgressBar from '../../simple-components/ProgressBar'
 
 type UploadedFileProps = {
   fileInfo: FileInfo

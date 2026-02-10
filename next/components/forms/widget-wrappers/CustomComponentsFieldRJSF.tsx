@@ -1,7 +1,8 @@
 import { FieldProps, getUiOptions } from '@rjsf/utils'
 import { CustomComponentFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
-import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
+import CustomComponents from '@/components/forms/widget-components/CustomComponents/CustomComponents'
+
 import WidgetWrapper from './WidgetWrapper'
 
 const CustomComponentsFieldRJSF = ({ idSchema, uiSchema }: FieldProps) => {

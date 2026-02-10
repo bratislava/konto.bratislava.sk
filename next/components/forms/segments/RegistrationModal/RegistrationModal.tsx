@@ -3,9 +3,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { CheckIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import Modal, { ModalProps } from '@/components/forms/simple-components/Modal'
 
-import Button from '../../simple-components/Button'
-import Modal, { ModalProps } from '../../simple-components/Modal'
 import { useFormContext } from '../../useFormContext'
 import AccountLink from '../AccountLink/AccountLink'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'

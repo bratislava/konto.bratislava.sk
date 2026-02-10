@@ -3,10 +3,10 @@ import React, { useState } from 'react'
 import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
 
 import { HelpIcon } from '@/assets/ui-icons'
+// eslint-disable-next-line import/no-cycle
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import cn from '@/frontend/cn'
 
-// eslint-disable-next-line import/no-cycle
-import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import HorizontalArrowIcon from './tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from './tooltip-vertical-arrow.svg'
 

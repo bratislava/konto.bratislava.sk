@@ -12,12 +12,12 @@ import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
 import { AddIcon } from '@/assets/ui-icons'
+import Alert from '@/components/forms/info-components/Alert'
+import ConditionalFormMarkdown from '@/components/forms/info-components/ConditionalFormMarkdown'
+import FieldErrorMessage from '@/components/forms/info-components/FieldErrorMessage'
+import Button from '@/components/forms/simple-components/Button'
 import cn from '@/frontend/cn'
 
-import Alert from '../info-components/Alert'
-import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
-import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import Button from '../simple-components/Button'
 import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
 import WidgetWrapper from './WidgetWrapper'
 

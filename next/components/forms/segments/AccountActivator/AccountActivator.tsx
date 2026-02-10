@@ -3,8 +3,7 @@ import React from 'react'
 
 import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
 import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
-
-import Button from '../../simple-components/Button'
+import Button from '@/components/forms/simple-components/Button'
 
 const AccountActivator = () => {
   const { t } = useTranslation('account')

@@ -8,9 +8,8 @@ import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import { RemoveIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
 import cn from '@/frontend/cn'
-
-import Button from '../simple-components/Button'
 
 export type BAArrayFieldItemTemplateAdditionalProps = {
   parentUiOptions: ArrayFieldUiOptions

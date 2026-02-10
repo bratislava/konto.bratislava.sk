@@ -3,12 +3,12 @@ import React from 'react'
 
 import { ArrowRightIcon } from '@/assets/ui-icons'
 import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import { ModalProps } from '@/components/forms/simple-components/Modal'
+import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
 import { AccountType } from '@/frontend/dtos/accountDto'
 
-import Button from '../../simple-components/Button'
-import { ModalProps } from '../../simple-components/Modal'
 import { useFormRedirects } from '../../useFormRedirects'
-import MessageModal from '../../widget-components/Modals/MessageModal'
 
 type IdentityVerificationModalProps = {
   accountType: AccountType | undefined

@@ -16,9 +16,8 @@ import { v4 as createUuid } from 'uuid'
 
 import { formsClient } from '@/clients/forms'
 import { environment } from '@/environment'
-
-import { FormFileUploadConstraints } from '../types/formFileUploadTypes'
-import { isDefined } from './general'
+import { FormFileUploadConstraints } from '@/frontend/types/formFileUploadTypes'
+import { isDefined } from '@/frontend/utils/general'
 
 export const uploadFile = async ({
   formId,

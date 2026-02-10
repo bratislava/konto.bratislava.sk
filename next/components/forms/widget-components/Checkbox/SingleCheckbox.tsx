@@ -3,9 +3,8 @@ import { useCheckbox, useFocusRing, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
 
 import { CheckIcon } from '@/assets/ui-icons'
+import BATooltip from '@/components/forms/info-components/Tooltip/BATooltip'
 import cn from '@/frontend/cn'
-
-import BATooltip from '../../info-components/Tooltip/BATooltip'
 
 type CheckBoxBase = {
   variant?: 'basic' | 'boxed'

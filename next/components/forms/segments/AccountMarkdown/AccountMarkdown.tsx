@@ -6,11 +6,10 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 
+// eslint-disable-next-line import/no-cycle
+import BATooltip from '@/components/forms/info-components/Tooltip/BATooltip'
 import cn from '@/frontend/cn'
 import { isDefined } from '@/frontend/utils/general'
-
-// eslint-disable-next-line import/no-cycle
-import BATooltip from '../../info-components/Tooltip/BATooltip'
 
 type AccountMarkdownBase = {
   className?: string

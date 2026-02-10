@@ -3,9 +3,8 @@ import { TimePickerUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import TimePicker from '@/components/forms/widget-components/DateTimePicker/TimePicker'
+import FieldBlurWrapper from '@/components/forms/widget-components/FieldBlurWrapper/FieldBlurWrapper'
 import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
-
-import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
   options: TimePickerUiOptions

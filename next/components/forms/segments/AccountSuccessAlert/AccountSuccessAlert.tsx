@@ -2,10 +2,9 @@ import { ReactNode } from 'react'
 
 import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/assets/ui-icons'
 import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import Spinner from '@/components/forms/simple-components/Spinner'
 import cn from '@/frontend/cn'
-
-import Button from '../../simple-components/Button'
-import Spinner from '../../simple-components/Spinner'
 
 interface Props {
   title: string

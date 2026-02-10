@@ -2,9 +2,9 @@ import { renderFormAdditionalInfo } from 'forms-shared/string-templates/renderTe
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useFormData } from '@/components/forms/useFormData'
 
-import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import { useFormContext } from '../../useFormContext'
 
 const SummaryAdditionalInfo = () => {

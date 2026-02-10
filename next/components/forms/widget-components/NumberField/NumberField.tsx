@@ -7,10 +7,10 @@ import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 
 import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/assets/ui-icons'
+import MailIcon from '@/assets/ui-icons/custom_mail.svg'
+import Button from '@/components/forms/simple-components/Button'
 import cn from '@/frontend/cn'
 
-import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
-import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'

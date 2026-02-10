@@ -2,10 +2,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { CheckIcon } from '@/assets/ui-icons'
+import { FormStepperStep } from '@/components/forms/types/Steps'
+import { useFormState } from '@/components/forms/useFormState'
 import cn from '@/frontend/cn'
-
-import { FormStepperStep } from '../types/Steps'
-import { useFormState } from '../useFormState'
 
 interface StepperViewRowProps {
   step: FormStepperStep

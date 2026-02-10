@@ -2,9 +2,9 @@ import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
+import ConditionalFormMarkdown from '@/components/forms/info-components/ConditionalFormMarkdown'
 import cn from '@/frontend/cn'
 
-import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import WidgetWrapper from './WidgetWrapper'
 
 /**
@@ -21,7 +21,7 @@ const BAObjectFieldTemplate = ({
   const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
   const { isStepObject } = getObjectFieldInfo(idSchema)
   const fieldsetClassname = cn({
-    'border-grey-200 rounded-xl border p-4': options.objectDisplay === 'boxed',
+    'rounded-xl border border-grey-200 p-4': options.objectDisplay === 'boxed',
   })
 
   return (

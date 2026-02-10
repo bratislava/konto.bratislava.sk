@@ -9,6 +9,7 @@ import {
 } from 'react-aria-components'
 
 import { UploadIcon } from '@/assets/ui-icons'
+import PrettyBytes from '@/components/forms/simple-components/PrettyBytes'
 import cn from '@/frontend/cn'
 import {
   getDisplayMaxFileSize,
@@ -16,8 +17,6 @@ import {
   getSupportedFileExtensions,
 } from '@/frontend/utils/formFileUpload'
 import { isDefined } from '@/frontend/utils/general'
-
-import PrettyBytes from '../../simple-components/PrettyBytes'
 
 interface UploadDropAreaProps {
   disabled?: boolean

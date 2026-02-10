@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { Button as AriaButton, Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
 
 import { ChevronDownIcon, CrossIcon } from '@/assets/ui-icons'
+import { FormStepIndex } from '@/components/forms/types/Steps'
+import { useFormState } from '@/components/forms/useFormState'
 import cn from '@/frontend/cn'
 
-import { FormStepIndex } from '../types/Steps'
-import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
 import { useFormSummary } from './Summary/useFormSummary'

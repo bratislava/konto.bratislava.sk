@@ -8,10 +8,10 @@ import {
 } from '@/clients/graphql-strapi/api'
 import MunicipalServicesSectionHeader from '@/components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from '@/components/forms/simple-components/Pagination/Pagination'
+import { SelectOption } from '@/components/forms/widget-components/SelectField/SelectField'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 import { isDefined } from '@/frontend/utils/general'
 
-import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
 
 export type MunicipalServicesSectionProps = {

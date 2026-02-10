@@ -5,16 +5,15 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { ArrowRightIcon } from '@/assets/ui-icons'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
 import { environment } from '@/environment'
 import useHookForm from '@/frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
 import { isBrowser } from '@/frontend/utils/general'
 import logger from '@/frontend/utils/logger'
-
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import Button from '../simple-components/Button'
-import InputField from '../widget-components/InputField/InputField'
 
 export interface IdentityVerificationOfPhysicalEntityFormData {
   rc: string

@@ -4,8 +4,8 @@ import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
 
-import Button from '../../../simple-components/Button'
 import CalendarGrid from './CalendarGrid'
 
 type CalendarBase = {

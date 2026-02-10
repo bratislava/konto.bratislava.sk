@@ -1,15 +1,14 @@
 import React, { PropsWithChildren, useMemo } from 'react'
 
 import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@/assets/ui-icons'
+import Alert from '@/components/forms/info-components/Alert'
+import { useFormSignature } from '@/components/forms/signer/useFormSignature'
+import { useFormSignerLoader } from '@/components/forms/signer/useFormSignerLoader'
+import Button from '@/components/forms/simple-components/Button'
+import MenuDropdown from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { useFormSummary } from '@/components/forms/steps/Summary/useFormSummary'
+import { useFormContext } from '@/components/forms/useFormContext'
 import { isFormSigningDisabled } from '@/frontend/utils/formSummary'
-
-import Alert from '../../info-components/Alert'
-import { useFormSignature } from '../../signer/useFormSignature'
-import { useFormSignerLoader } from '../../signer/useFormSignerLoader'
-import Button from '../../simple-components/Button'
-import MenuDropdown from '../../simple-components/MenuDropdown/MenuDropdown'
-import { useFormContext } from '../../useFormContext'
-import { useFormSummary } from './useFormSummary'
 
 /**
  * TODO: Texts and translations + MenuDropdown position fix

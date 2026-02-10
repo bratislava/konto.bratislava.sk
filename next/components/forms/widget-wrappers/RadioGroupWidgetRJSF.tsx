@@ -4,10 +4,9 @@ import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { RadioGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { ReactNode, useMemo } from 'react'
 
+import Radio from '@/components/forms/widget-components/RadioButton/Radio'
+import RadioGroup from '@/components/forms/widget-components/RadioButton/RadioGroup'
 import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
-
-import Radio from '../widget-components/RadioButton/Radio'
-import RadioGroup from '../widget-components/RadioButton/RadioGroup'
 
 type ValueType = string | boolean | undefined
 

@@ -3,11 +3,10 @@ import { InstallmentPaidStatusEnum } from 'openapi-clients/tax'
 import React, { Fragment } from 'react'
 
 import HorizontalDivider from '@/components/forms/HorizontalDivider'
+import { useTaxFeeSection } from '@/components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import cn from '@/frontend/cn'
 import { FormatCurrencyFromCents } from '@/frontend/utils/formatCurrency'
 import { formatDate } from '@/frontend/utils/general'
-
-import { useTaxFeeSection } from '../segments/AccountSections/TaxesFees/useTaxFeeSection'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19579-6510&m=dev

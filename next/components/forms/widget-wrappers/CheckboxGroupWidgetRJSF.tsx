@@ -4,10 +4,9 @@ import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { CheckboxGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { useMemo } from 'react'
 
+import Checkbox from '@/components/forms/widget-components/Checkbox/Checkbox'
+import CheckboxGroup from '@/components/forms/widget-components/Checkbox/CheckboxGroup'
 import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
-
-import Checkbox from '../widget-components/Checkbox/Checkbox'
-import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
 interface CheckboxGroupRJSFProps extends WidgetProps {
   options: WithEnumOptions<CheckboxGroupUiOptions>

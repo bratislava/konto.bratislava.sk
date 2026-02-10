@@ -1,13 +1,15 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import Button from '@/components/forms/simple-components/Button'
+import MessageModal, {
+  MessageModalProps,
+} from '@/components/forms/widget-components/Modals/MessageModal'
 import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
-import Button from '../../simple-components/Button'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
-import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'

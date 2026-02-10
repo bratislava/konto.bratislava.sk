@@ -15,6 +15,8 @@ import {
 } from '@/assets/ui-icons'
 import { formsClient } from '@/clients/forms'
 import Button from '@/components/forms/simple-components/Button'
+import ConditionalWrap from '@/components/forms/simple-components/ConditionalWrap'
+import FormatDate from '@/components/forms/simple-components/FormatDate'
 import MenuDropdown, {
   MenuItemBase,
 } from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
@@ -25,8 +27,6 @@ import useSnackbar from '@/frontend/hooks/useSnackbar'
 import { downloadBlob } from '@/frontend/utils/general'
 import logger from '@/frontend/utils/logger'
 
-import ConditionalWrap from '../../../simple-components/ConditionalWrap'
-import FormatDate from '../../../simple-components/FormatDate'
 import BottomSheetMenuModal from './BottomSheetMenu/BottomSheetMenuModal'
 
 export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'

@@ -6,12 +6,12 @@ import { useLocalStorage } from 'usehooks-ts'
 
 import { CrossIcon } from '@/assets/ui-icons'
 import { strapiClient } from '@/clients/graphql-strapi'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { SectionContainer } from '@/components/forms/segments/SectionContainer/SectionContainer'
+import Button from '@/components/forms/simple-components/Button'
 import { environment } from '@/environment'
 
 import WarningIcon from '../icon-components/WarningIcon'
-import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
-import Button from '../simple-components/Button'
 
 const fetchAlert = async () => {
   try {

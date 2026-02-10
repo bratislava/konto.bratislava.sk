@@ -70,15 +70,16 @@ export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: {
     mailer: 'olo' | 'mailgun'
-    address: { test: string; prod: string }
-    /**
-     * If undefined, the `address` value is used.
-     */
-    fromAddress?: { test: string; prod: string }
+    address: {
+      test: (string | SchemalessFormDataExtractor<any>)[]
+      prod: (string | SchemalessFormDataExtractor<any>)[]
+    }
+
+    fromAddress: { test: string; prod: string }
     newSubmissionTemplate: MailgunTemplateEnum
     userResponseTemplate: MailgunTemplateEnum
     sendJsonDataAttachmentInTechnicalMail?: boolean
-    extractEmail: SchemalessFormDataExtractor<any>
+    extractEmail?: SchemalessFormDataExtractor<any>
     extractName?: SchemalessFormDataExtractor<any>
     /**
      * If undefined, the default value from the email template is used.

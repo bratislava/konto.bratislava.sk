@@ -71,7 +71,7 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   const handleLogout = async () => {
     setIsLoading(true)
     try {
-      await signOut()
+      await signOut({ forceRedirectToLogin: true })
     } catch (error) {
       // TODO: Display error message to the user.
     } finally {

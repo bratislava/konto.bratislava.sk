@@ -85,6 +85,7 @@ import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPris
 import ziadostOUzemnoplanovaciuInformaciu, {
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
+import nahlaseniePodnetuKElektrickymKolobezkam from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -601,5 +602,25 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
+    title: 'Nahlásenie podnetu k elektrickým kolobežkám',
+    jsonVersion: '1.0.0',
+    schema: nahlaseniePodnetuKElektrickymKolobezkam,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
+    email: {
+      address: { prod: '', test: '' }, // TODO: Implement multiple addresses + extractors
+      fromAddress: { prod: '', test: '' }, // TODO: Implement multiple addresses + extractors
+      extractEmail: {
+        type: 'schemaless',
+        extractFn: () => '',
+      }, // TODO: Implment optional extractEmail
+      mailer: 'mailgun',
+      userResponseTemplate: MailgunTemplateEnum.OLO_SENT_SUCCESS, // TODO: Implement Konto template
+      newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION, // TODO: Implement Konto template
+    },
+    termsAndConditions: generalTermsAndConditions,
   },
 ]

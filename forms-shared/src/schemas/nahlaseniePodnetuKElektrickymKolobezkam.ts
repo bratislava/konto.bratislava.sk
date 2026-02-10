@@ -25,19 +25,17 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
       {
         variant: 'boxed',
         orientations: 'column',
-        size: 'medium',
       },
     ),
     conditionalFields(createCondition([[['typPodnetu'], { const: 'ine' }]]), [
       textArea(
         'specifikaciaPodnetu',
         {
-          title: 'Špecifikujte o aký podnet ide',
+          title: 'Špecifikácia podnetu',
           required: true,
         },
         {
           helptext: 'Napr. navrhujem úpravu miesta parkovania',
-          size: 'medium',
         },
       ),
     ]),
@@ -49,26 +47,24 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         required: true,
         items: [
           { value: 'bolt', label: 'Bolt' },
-          { value: 'dott', label: 'Dott' },
+          { value: 'dott', label: 'Dott (Tier)' },
           { value: 'svist', label: 'Svišť' },
         ],
       },
       {
         variant: 'boxed',
         orientations: 'column',
-        size: 'medium',
       },
     ),
-    input(
-      'adresaPodnetu',
+    textArea(
+      'miestoPodnetu',
       {
-        title: 'Adresa podnetu',
-        type: 'text',
+        title: 'Miesto podnetu',
         required: true,
       },
       {
-        helptext: 'Vyplňte ulicu a číslo',
-        size: 'medium',
+        helptext:
+          'Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt alebo ulicu a číslo',
       },
     ),
     input(
@@ -79,21 +75,19 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         required: false,
       },
       {
-        helptext: 'Cca 4-miestne číslo. Nachádza sa [doplniť kde sa nachádza]',
-        helptextMarkdown: true,
-        size: 'medium',
+        helptext: 'Nachádza sa v strede riadidiel pod QR kódom',
       },
     ),
     fileUploadMultiple(
       'fotografia',
       {
         title: 'Fotografia podnetu',
-        required: false,
+        required: true,
       },
       {
         type: 'dragAndDrop',
+        accept: '.jpg,.jpeg,.png',
         helptext: 'Nahrajte fotografiu kolobežky alebo lokality, ktorej sa podnet týka',
-        size: 'medium',
       },
     ),
   ]),
@@ -122,7 +116,7 @@ export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress: Sche
 
 type ExtractMunicipalityFormData = {
   podnet: {
-    adresaPodnetu: string
+    miestoPodnetu: string
   }
 }
 

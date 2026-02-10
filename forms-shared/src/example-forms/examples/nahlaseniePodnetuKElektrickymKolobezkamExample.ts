@@ -6,7 +6,7 @@ const exampleForm: ExampleForm = {
     podnet: {
       typPodnetu: 'nespravneZaparkovana',
       poskytovatel: 'bolt',
-      adresaPodnetu: 'Námestie SNP 1, Bratislava',
+      miestoPodnetu: 'Námestie SNP 1, Bratislava',
       identifikacnyKod: 'BT-8745692',
       fotografia: ['b1feb5ae-da31-4619-a735-c3389dc9e17b'],
     },

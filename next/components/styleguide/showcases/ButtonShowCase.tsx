@@ -214,7 +214,7 @@ const ButtonStacks = ({ variant }: { variant: '' | 'negative-' }) => (
 
 const ButtonShowCase = () => {
   return (
-    <Wrapper direction="column" title="Button New">
+    <Wrapper direction="column" title="Button">
       <div>
         For link buttons, you can use `hasLinkIcon` to automatically add endIcon (ArrowRight or
         ExternalLink icon).

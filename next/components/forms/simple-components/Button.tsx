@@ -98,11 +98,11 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     const { focusProps, isFocused, isFocusVisible } = useFocusRing()
     const { hoverProps, isHovered } = useHover({ isDisabled: isLoadingOrDisabled })
 
-    const isSolidVariant = variant.endsWith('-solid')
-    const isOutlineVariant = variant.endsWith('-outline')
+    const isSolidVariant = variant.endsWith('solid')
+    const isOutlineVariant = variant.endsWith('outline')
     const isSolidOrOutlineVariant = isSolidVariant || isOutlineVariant
-    const isPlainVariant = variant.endsWith('-plain')
-    const isLinkVariant = variant.endsWith('-link')
+    const isPlainVariant = variant.endsWith('plain')
+    const isLinkVariant = variant.endsWith('link')
     const isIconWrappedVariant =
       variant === 'icon-wrapped' || variant === 'icon-wrapped-negative-margin'
     const isIconButton = Boolean(icon)

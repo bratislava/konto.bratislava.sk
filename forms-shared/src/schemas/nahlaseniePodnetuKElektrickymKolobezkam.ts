@@ -99,13 +99,13 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
   ]),
 ])
 
-type ExtractFormData = {
+type ExtractProviderFormData = {
   podnet: {
     poskytovatel: 'bolt' | 'dott' | 'svist'
   }
 }
 
-export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress: SchemalessFormDataExtractor<ExtractFormData> =
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress: SchemalessFormDataExtractor<ExtractProviderFormData> =
   {
     type: 'schemaless',
     extractFn: (formData) => {
@@ -120,10 +120,42 @@ export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress: Sche
     },
   }
 
-export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress: SchemalessFormDataExtractor<ExtractFormData> =
+type ExtractMunicipalityFormData = {
+  podnet: {
+    adresaPodnetu: string
+  }
+}
+
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress: SchemalessFormDataExtractor<ExtractMunicipalityFormData> =
   {
     type: 'schemaless',
     extractFn: (formData) => {
       return 'inovacie.bratislava@gmail.com' // TODO implement municipality email extraction by address field
     },
+  }
+
+type ExtractTypeFormData = {
+  podnet: {
+    typPodnetu: 'nespravneZaparkovana' | 'neschopnaPrevadzky' | 'ine'
+  }
+}
+
+const extractTechnicalSubjectFn = (formData: ExtractTypeFormData) => {
+  if (formData.podnet.typPodnetu === 'nespravneZaparkovana') {
+    return 'Kolobežky: nesprávne zaparkovaná'
+  }
+  if (formData.podnet.typPodnetu === 'neschopnaPrevadzky') {
+    return 'Kolobežky: neschopná prevádzky'
+  }
+  if (formData.podnet.typPodnetu === 'ine') {
+    return 'Kolobežky: iné'
+  }
+
+  return 'Kolobežky: podnet'
+}
+
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractTypeFormData> =
+  {
+    type: 'schemaless',
+    extractFn: extractTechnicalSubjectFn,
   }

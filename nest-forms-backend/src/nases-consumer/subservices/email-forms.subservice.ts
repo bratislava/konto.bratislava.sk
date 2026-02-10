@@ -12,6 +12,7 @@ import {
   extractEmailFormEmail,
   extractEmailFormName,
   extractFormSubjectPlain,
+  extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
@@ -299,6 +300,17 @@ export default class EmailFormsSubservice {
 
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
+    let technicalSubject: string | undefined
+    if (formDefinition.subject?.extractTechnical) {
+      technicalSubject = extractFormSubjectTechnical(
+        formDefinition,
+        form.formDataJson,
+      )
+      if (formDefinition.email.technicalEmailSubjectAppendId) {
+        technicalSubject += ` [${form.id}]`
+      }
+    }
+
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail({
       data: {
@@ -329,7 +341,7 @@ export default class EmailFormsSubservice {
             fileIdInfoMap,
           )
         : undefined,
-      subject: formDefinition.email.technicalEmailSubject,
+      subject: technicalSubject,
     })
 
     const userConfirmationEmail =

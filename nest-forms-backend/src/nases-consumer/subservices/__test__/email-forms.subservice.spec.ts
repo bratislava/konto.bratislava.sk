@@ -36,6 +36,7 @@ const formId = 'test-form-id'
 const userEmail = 'test@example.com'
 const userFirstName = 'Test'
 const mockExtractedSubject = 'Mock Extracted Subject'
+const mockExtractedTechnicalSubject = 'Test technical Subject'
 const mockExtractedEmail = 'extracted@example.com'
 const mockExtractedName = 'Extracted Name'
 const mockExtractedOloEmail = 'extracted-olo@example.com'
@@ -665,11 +666,16 @@ describe('EmailFormsSubservice', () => {
     it('should use subject from the form definition if there is one', async () => {
       const formDefinitionWithSubject = {
         ...mockFormDefinitionWithSendEmail,
-        email: {
-          ...mockFormDefinitionWithSendEmail.email,
-          technicalEmailSubject: 'Test technical Subject',
+        subject: {
+          extractTechnical: {
+            type: 'schemaless' as const,
+            extractFn: () => mockExtractedTechnicalSubject,
+          },
         },
       }
+      jest
+        .spyOn(formDataExtractors, 'extractFormSubjectTechnical')
+        .mockReturnValue(mockExtractedTechnicalSubject)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(formDefinitionWithSubject)
@@ -679,7 +685,7 @@ describe('EmailFormsSubservice', () => {
         data: expect.anything(),
         emailFrom: expect.anything(),
         attachments: expect.anything(),
-        subject: 'Test technical Subject',
+        subject: mockExtractedTechnicalSubject,
       })
     })
   })

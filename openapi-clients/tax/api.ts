@@ -2252,99 +2252,6 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       }
     },
-    /**
-     * Process payment response without tax type, by using DZN tax type as default. This is a temporary endpoint for compatibility during release, during which some payments might be in progress.
-     * @summary Process payment response without tax type, for compatibility during release.
-     * @param {string} dIGEST
-     * @param {string} dIGEST1
-     * @param {string} oPERATION
-     * @param {string} oRDERNUMBER
-     * @param {string} pRCODE
-     * @param {string} sRCODE
-     * @param {string} rESULTTEXT
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    paymentControllerPaymentResponseTemporary: async (
-      dIGEST: string,
-      dIGEST1: string,
-      oPERATION: string,
-      oRDERNUMBER: string,
-      pRCODE: string,
-      sRCODE: string,
-      rESULTTEXT: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'dIGEST' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponseTemporary', 'dIGEST', dIGEST)
-      // verify required parameter 'dIGEST1' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponseTemporary', 'dIGEST1', dIGEST1)
-      // verify required parameter 'oPERATION' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponseTemporary', 'oPERATION', oPERATION)
-      // verify required parameter 'oRDERNUMBER' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponseTemporary', 'oRDERNUMBER', oRDERNUMBER)
-      // verify required parameter 'pRCODE' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponseTemporary', 'pRCODE', pRCODE)
-      // verify required parameter 'sRCODE' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponseTemporary', 'sRCODE', sRCODE)
-      // verify required parameter 'rESULTTEXT' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponseTemporary', 'rESULTTEXT', rESULTTEXT)
-      const localVarPath = `/payment/cardpay/response`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      if (dIGEST !== undefined) {
-        localVarQueryParameter['DIGEST'] = dIGEST
-      }
-
-      if (dIGEST1 !== undefined) {
-        localVarQueryParameter['DIGEST1'] = dIGEST1
-      }
-
-      if (oPERATION !== undefined) {
-        localVarQueryParameter['OPERATION'] = oPERATION
-      }
-
-      if (oRDERNUMBER !== undefined) {
-        localVarQueryParameter['ORDERNUMBER'] = oRDERNUMBER
-      }
-
-      if (pRCODE !== undefined) {
-        localVarQueryParameter['PRCODE'] = pRCODE
-      }
-
-      if (sRCODE !== undefined) {
-        localVarQueryParameter['SRCODE'] = sRCODE
-      }
-
-      if (rESULTTEXT !== undefined) {
-        localVarQueryParameter['RESULTTEXT'] = rESULTTEXT
-      }
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
   }
 }
 
@@ -2476,54 +2383,6 @@ export const PaymentApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
-    /**
-     * Process payment response without tax type, by using DZN tax type as default. This is a temporary endpoint for compatibility during release, during which some payments might be in progress.
-     * @summary Process payment response without tax type, for compatibility during release.
-     * @param {string} dIGEST
-     * @param {string} dIGEST1
-     * @param {string} oPERATION
-     * @param {string} oRDERNUMBER
-     * @param {string} pRCODE
-     * @param {string} sRCODE
-     * @param {string} rESULTTEXT
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async paymentControllerPaymentResponseTemporary(
-      dIGEST: string,
-      dIGEST1: string,
-      oPERATION: string,
-      oRDERNUMBER: string,
-      pRCODE: string,
-      sRCODE: string,
-      rESULTTEXT: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.paymentControllerPaymentResponseTemporary(
-          dIGEST,
-          dIGEST1,
-          oPERATION,
-          oRDERNUMBER,
-          pRCODE,
-          sRCODE,
-          rESULTTEXT,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['PaymentApi.paymentControllerPaymentResponseTemporary']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
   }
 }
 
@@ -2613,43 +2472,6 @@ export const PaymentApiFactory = function (
         )
         .then((request) => request(axios, basePath))
     },
-    /**
-     * Process payment response without tax type, by using DZN tax type as default. This is a temporary endpoint for compatibility during release, during which some payments might be in progress.
-     * @summary Process payment response without tax type, for compatibility during release.
-     * @param {string} dIGEST
-     * @param {string} dIGEST1
-     * @param {string} oPERATION
-     * @param {string} oRDERNUMBER
-     * @param {string} pRCODE
-     * @param {string} sRCODE
-     * @param {string} rESULTTEXT
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    paymentControllerPaymentResponseTemporary(
-      dIGEST: string,
-      dIGEST1: string,
-      oPERATION: string,
-      oRDERNUMBER: string,
-      pRCODE: string,
-      sRCODE: string,
-      rESULTTEXT: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .paymentControllerPaymentResponseTemporary(
-          dIGEST,
-          dIGEST1,
-          oPERATION,
-          oRDERNUMBER,
-          pRCODE,
-          sRCODE,
-          rESULTTEXT,
-          options,
-        )
-        .then((request) => request(axios, basePath))
-    },
   }
 }
 
@@ -2724,44 +2546,6 @@ export class PaymentApi extends BaseAPI {
     return PaymentApiFp(this.configuration)
       .paymentControllerPaymentResponse(
         taxType,
-        dIGEST,
-        dIGEST1,
-        oPERATION,
-        oRDERNUMBER,
-        pRCODE,
-        sRCODE,
-        rESULTTEXT,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Process payment response without tax type, by using DZN tax type as default. This is a temporary endpoint for compatibility during release, during which some payments might be in progress.
-   * @summary Process payment response without tax type, for compatibility during release.
-   * @param {string} dIGEST
-   * @param {string} dIGEST1
-   * @param {string} oPERATION
-   * @param {string} oRDERNUMBER
-   * @param {string} pRCODE
-   * @param {string} sRCODE
-   * @param {string} rESULTTEXT
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   */
-  public paymentControllerPaymentResponseTemporary(
-    dIGEST: string,
-    dIGEST1: string,
-    oPERATION: string,
-    oRDERNUMBER: string,
-    pRCODE: string,
-    sRCODE: string,
-    rESULTTEXT: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return PaymentApiFp(this.configuration)
-      .paymentControllerPaymentResponseTemporary(
         dIGEST,
         dIGEST1,
         oPERATION,

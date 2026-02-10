@@ -1,7 +1,8 @@
-import { CheckIcon } from '@assets/ui-icons'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import { CheckIcon } from '@/assets/ui-icons'
 
 import Button from '../../simple-components/Button'
 import Modal, { ModalProps } from '../../simple-components/Modal'

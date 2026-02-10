@@ -1,8 +1,9 @@
-import ImageMestskeKontoSituacia from '@assets/images/mestske-konto-situacia.png'
-import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
-import { ROUTES } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import ImageMestskeKontoSituacia from '@/assets/images/mestske-konto-situacia.png'
+import AnnouncementBlock from '@/components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
+import { ROUTES } from '@/frontend/api/constants'
 
 type Props = {
   variant: 'verification-needed' | 'verification-in-process'

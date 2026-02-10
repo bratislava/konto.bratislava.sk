@@ -1,8 +1,9 @@
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Image from 'next/image'
 import { ComponentProps } from 'react'
 
-import cn from '../../../../../../frontend/cn'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import cn from '@/frontend/cn'
+
 import Button, { AnchorProps, ButtonProps } from '../../../../simple-components/Button'
 
 type AnnouncementBlockProps = {

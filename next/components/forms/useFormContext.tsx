@@ -1,4 +1,3 @@
-import { FormBaseFragment } from '@clients/graphql-strapi/api'
 import { GenericObjectType } from '@rjsf/utils'
 import { evaluateFormSendPolicy, SendPolicyAccountType } from 'forms-shared/send-policy/sendPolicy'
 import { FormSignature } from 'forms-shared/signer/signature'
@@ -8,7 +7,9 @@ import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 
-import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
+import { FormBaseFragment } from '@/clients/graphql-strapi/api'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+
 import {
   ClientFormDefinition,
   isClientSlovenskoSkFormDefinition,

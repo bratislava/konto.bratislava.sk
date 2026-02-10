@@ -1,7 +1,8 @@
-import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { ReactNode } from 'react'
 
-import cn from '../../../frontend/cn'
+import { ArrowRightIcon, ExportIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import Button from './Button'
 import { LinkPlausibleProps } from './MLink'
 

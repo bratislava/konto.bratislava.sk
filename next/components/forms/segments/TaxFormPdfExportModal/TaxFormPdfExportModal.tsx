@@ -1,9 +1,10 @@
-import { CheckIcon } from '@assets/ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { mergeProps } from 'react-aria'
 
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
+import { CheckIcon } from '@/assets/ui-icons'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+
 import Button from '../../simple-components/Button'
 import Modal, { ModalProps } from '../../simple-components/Modal'
 import Spinner from '../../simple-components/Spinner'

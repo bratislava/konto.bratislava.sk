@@ -1,7 +1,8 @@
-import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@assets/ui-icons'
 import React, { PropsWithChildren, useMemo } from 'react'
 
-import { isFormSigningDisabled } from '../../../../frontend/utils/formSummary'
+import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@/assets/ui-icons'
+import { isFormSigningDisabled } from '@/frontend/utils/formSummary'
+
 import Alert from '../../info-components/Alert'
 import { useFormSignature } from '../../signer/useFormSignature'
 import { useFormSignerLoader } from '../../signer/useFormSignerLoader'

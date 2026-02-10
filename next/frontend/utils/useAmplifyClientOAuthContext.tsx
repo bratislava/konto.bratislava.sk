@@ -1,12 +1,13 @@
 'use client'
 
-import { cityAccountClient } from '@clients/city-account'
 import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito'
 import { useRouter } from 'next/router'
 import { ClientInfoResponseDto } from 'openapi-clients/city-account'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
-import { environment } from '../../environment'
+import { cityAccountClient } from '@/clients/city-account'
+import { environment } from '@/environment'
+
 import { useOAuthParams } from '../hooks/useOAuthParams'
 import { GENERIC_ERROR_MESSAGE } from './errors'
 import logger from './logger'

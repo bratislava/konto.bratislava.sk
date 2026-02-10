@@ -1,7 +1,8 @@
-import { ArrowLeftIcon, ArrowRightIcon } from '@assets/ui-icons'
-import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useRef, useState } from 'react'
+
+import { ArrowLeftIcon, ArrowRightIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
 
 import Button from './simple-components/Button'
 

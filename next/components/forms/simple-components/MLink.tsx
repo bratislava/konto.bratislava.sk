@@ -2,7 +2,7 @@ import NextLink from 'next/link'
 import { usePlausible } from 'next-plausible'
 import { ComponentProps, forwardRef } from 'react'
 
-import cn from '../../../frontend/cn'
+import cn from '@/frontend/cn'
 
 export type LinkPlausibleProps = { id: string }
 

@@ -1,7 +1,7 @@
-import { EditIcon } from '@assets/ui-icons'
 import { PropsWithChildren } from 'react'
 
-import cn from '../../../frontend/cn'
+import { EditIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
 
 type SummaryRowProps = PropsWithChildren<{
   label: string

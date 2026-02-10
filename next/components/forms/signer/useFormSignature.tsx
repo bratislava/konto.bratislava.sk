@@ -1,4 +1,3 @@
-import { formsClient } from '@clients/forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
@@ -12,7 +11,9 @@ import { SignerDataResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
-import useSnackbar from '../../../frontend/hooks/useSnackbar'
+import { formsClient } from '@/clients/forms'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+
 import { isClientSlovenskoSkFormDefinition } from '../clientFormDefinitions'
 import { useFormContext } from '../useFormContext'
 import { useFormData } from '../useFormData'

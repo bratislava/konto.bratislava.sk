@@ -2,7 +2,8 @@ import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { isDefined } from '../../../../frontend/utils/general'
+import { isDefined } from '@/frontend/utils/general'
+
 import UploadFileCard from './UploadFileCard'
 
 interface UploadedFilesListProps {

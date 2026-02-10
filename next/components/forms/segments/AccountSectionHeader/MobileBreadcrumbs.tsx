@@ -1,7 +1,8 @@
-import { ChevronDownIcon, ChevronRightIcon } from '@assets/ui-icons'
-import Button from 'components/forms/simple-components/Button'
-import MLink from 'components/forms/simple-components/MLink'
 import { useTranslation } from 'next-i18next'
+
+import { ChevronDownIcon, ChevronRightIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import MLink from '@/components/forms/simple-components/MLink'
 
 import type { BreadcrumbsProps } from './Breadcrumbs'
 

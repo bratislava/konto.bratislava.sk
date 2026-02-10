@@ -1,5 +1,3 @@
-import { MailIcon, SettingsIcon } from '@assets/ui-icons'
-import OfficialCorrespondenceChannelAlert from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from 'components/forms/segments/AccountSections/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from 'components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
@@ -7,6 +5,9 @@ import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
+
+import { MailIcon, SettingsIcon } from '@/assets/ui-icons'
+import OfficialCorrespondenceChannelAlert from '@/components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4

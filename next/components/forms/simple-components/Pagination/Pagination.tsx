@@ -1,8 +1,9 @@
 /* eslint-disable switch-case/no-case-curly */
-import { ArrowLeftIcon, ArrowRightIcon } from '@assets/ui-icons'
 import cn from 'frontend/cn'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
+
+import { ArrowLeftIcon, ArrowRightIcon } from '@/assets/ui-icons'
 
 import Button from '../Button'
 import usePagination from './usePagination'

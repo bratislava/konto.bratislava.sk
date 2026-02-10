@@ -1,15 +1,16 @@
-import {
-  MunicipalServiceCategoryEntityFragment,
-  MunicipalServiceEntityFragment,
-} from '@clients/graphql-strapi/api'
-import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
-import Pagination from 'components/forms/simple-components/Pagination/Pagination'
-import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
+import {
+  MunicipalServiceCategoryEntityFragment,
+  MunicipalServiceEntityFragment,
+} from '@/clients/graphql-strapi/api'
+import MunicipalServicesSectionHeader from '@/components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
+import Pagination from '@/components/forms/simple-components/Pagination/Pagination'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { isDefined } from '@/frontend/utils/general'
+
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
 

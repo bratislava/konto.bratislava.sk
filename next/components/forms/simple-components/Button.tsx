@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import { LinkButtonProps } from '@react-types/button'
 import Spinner from 'components/forms/simple-components/Spinner'
@@ -7,7 +6,9 @@ import NextLink from 'next/link'
 import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
 
-import cn from '../../../frontend/cn'
+import { ArrowRightIcon, ExportIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import MLink, { LinkPlausibleProps } from './MLink'
 
 type ButtonOrIconButton =

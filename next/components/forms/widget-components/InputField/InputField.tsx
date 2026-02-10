@@ -1,11 +1,12 @@
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
+import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
-import cn from '../../../../frontend/cn'
 import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 

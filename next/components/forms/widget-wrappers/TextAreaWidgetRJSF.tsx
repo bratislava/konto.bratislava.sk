@@ -1,9 +1,10 @@
 import { WidgetProps } from '@rjsf/utils'
-import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
-import cn from '../../../frontend/cn'
+import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
+import cn from '@/frontend/cn'
+
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
 

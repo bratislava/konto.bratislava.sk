@@ -1,7 +1,8 @@
-import { EyeHiddenIcon, EyeIcon } from "@assets/ui-icons"
-import cn from "frontend/cn"
-import { useTranslation } from "next-i18next"
-import { ToggleButton as RACToggleButton, ToggleButtonProps } from "react-aria-components"
+import cn from 'frontend/cn'
+import { useTranslation } from 'next-i18next'
+import { ToggleButton as RACToggleButton, ToggleButtonProps } from 'react-aria-components'
+
+import { EyeHiddenIcon, EyeIcon } from '@/assets/ui-icons'
 
 type Props = {
   isPasswordHidden: boolean
@@ -21,7 +22,7 @@ const PasswordEyeButton = ({ isPasswordHidden, onToggle, className, ...restProps
       aria-label={t('auth.fields.password_eyeButton.aria')}
       isSelected={!isPasswordHidden}
       onChange={(selected) => onToggle(!selected)}
-      className={cn("flex items-center justify-center", className)}
+      className={cn('flex items-center justify-center', className)}
       {...restProps}
     >
       {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}

@@ -2,8 +2,9 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import logger from '../../../frontend/utils/logger'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import logger from '@/frontend/utils/logger'
+
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import Button from '../simple-components/Button'

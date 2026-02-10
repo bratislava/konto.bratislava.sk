@@ -1,5 +1,4 @@
 import { GenericObjectType } from '@rjsf/utils'
-import { useFormData } from 'components/forms/useFormData'
 import {
   calculateFormCalculatorExpression,
   getFormCalculatorExpression,
@@ -12,7 +11,9 @@ import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
-import cn from '../../../../frontend/cn'
+import { useFormData } from '@/components/forms/useFormData'
+import cn from '@/frontend/cn'
+
 import ConditionalFormMarkdown from '../../info-components/ConditionalFormMarkdown'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 

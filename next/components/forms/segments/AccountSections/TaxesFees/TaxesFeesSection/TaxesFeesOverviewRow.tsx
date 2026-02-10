@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from '@assets/ui-icons'
 import MLink from 'components/forms/simple-components/MLink'
 import { ROUTES } from 'frontend/api/constants'
 import cn from 'frontend/cn'
@@ -7,6 +6,8 @@ import { formatDate, isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
+
+import { ChevronRightIcon } from '@/assets/ui-icons'
 
 type TaxesFeesOverviewRowProps = {
   taxData: ResponseGetTaxesListBodyDto

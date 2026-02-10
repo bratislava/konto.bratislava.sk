@@ -1,10 +1,10 @@
-import { PhoneIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
-import cn from '../../../frontend/cn'
+import { PhoneIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import cn from '@/frontend/cn'
 
 type BannerBase = {
   title: string

@@ -1,13 +1,13 @@
-import Button from 'components/forms/simple-components/Button'
-import InputField from 'components/forms/widget-components/InputField/InputField'
 import { baPhoneNumberRegex } from 'forms-shared/form-utils/ajvFormats'
-import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
-import useHookForm from 'frontend/hooks/useHookForm'
-import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import cn from '../../../../frontend/cn'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import cn from '@/frontend/cn'
+import { AccountType, Address, UserAttributes } from '@/frontend/dtos/accountDto'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import useJsonParseMemo from '@/frontend/hooks/useJsonParseMemo'
 
 interface Data {
   email?: string

@@ -1,4 +1,3 @@
-import { CalendarIcon } from '@assets/ui-icons'
 import { parseDate } from '@internationalized/date'
 import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
@@ -7,6 +6,8 @@ import { forwardRef, useMemo } from 'react'
 import { useDatePicker } from 'react-aria'
 import { Dialog, Popover } from 'react-aria-components'
 import { useDatePickerState } from 'react-stately'
+
+import { CalendarIcon } from '@/assets/ui-icons'
 
 import Button from '../../simple-components/Button'
 import { FieldWrapperProps } from '../FieldWrapper'

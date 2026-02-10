@@ -1,9 +1,10 @@
-import { CheckIcon } from '@assets/ui-icons'
 import * as React from 'react'
 import { useRef } from 'react'
 import { useCheckboxGroupItem, useFocusRing, VisuallyHidden } from 'react-aria'
 
-import cn from '../../../../frontend/cn'
+import { CheckIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import BATooltip from '../../info-components/Tooltip/BATooltip'
 import { CheckboxGroupContext } from './CheckboxGroup'
 

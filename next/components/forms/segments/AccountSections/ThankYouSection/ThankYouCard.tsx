@@ -1,7 +1,7 @@
-import { CheckIcon, CrossIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
-import cn from 'frontend/cn'
+import { CheckIcon, CrossIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import cn from '@/frontend/cn'
 
 export type ThankYouCardBase = {
   success?: boolean

@@ -1,15 +1,16 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import PageLayout from 'components/layouts/PageLayout'
 import { useTranslation } from 'next-i18next'
 
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { prefetchUserQuery } from '../frontend/hooks/useUser'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { prefetchUserQuery } from '@/frontend/hooks/useUser'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
+import { AmplifyClientOAuthProvider } from '@/frontend/utils/useAmplifyClientOAuthContext'
+
 import { AuthPageCommonProps } from './prihlasenie'
 
 type PageProps = AuthPageCommonProps & {

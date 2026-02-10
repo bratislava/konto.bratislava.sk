@@ -1,8 +1,9 @@
+import React from 'react'
+
 import {
   FormLandingPageFormCtaFragment,
   FormLandingPageLinkCtaFragment,
-} from '@clients/graphql-strapi/api'
-import React from 'react'
+} from '@/clients/graphql-strapi/api'
 
 import Button from '../simple-components/Button'
 

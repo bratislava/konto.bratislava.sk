@@ -1,10 +1,11 @@
-import BannerPhone from '@assets/images/help-page-banner-image.png'
-import { HelpPageFragment } from '@clients/graphql-strapi/api'
-import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import Banner from 'components/forms/simple-components/Banner'
 import { useTranslation } from 'next-i18next'
 
-import { isDefined } from '../../../../../frontend/utils/general'
+import BannerPhone from '@/assets/images/help-page-banner-image.png'
+import { HelpPageFragment } from '@/clients/graphql-strapi/api'
+import AccountSectionHeader from '@/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
+import Banner from '@/components/forms/simple-components/Banner'
+import { isDefined } from '@/frontend/utils/general'
+
 import AccordionV2 from '../../../simple-components/AccordionV2'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
 

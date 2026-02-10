@@ -1,5 +1,4 @@
 import { useDeepMemo } from '@react-aria/utils'
-import { useFormData } from 'components/forms/useFormData'
 import {
   FileStatusType,
   isInfectedFileStatusType,
@@ -12,7 +11,9 @@ import isEqual from 'lodash/isEqual'
 import memoizeOne from 'memoize-one'
 import React, { createContext, PropsWithChildren, useCallback, useContext } from 'react'
 
-import { environment } from '../../../../environment'
+import { useFormData } from '@/components/forms/useFormData'
+import { environment } from '@/environment'
+
 import { useFormContext } from '../../useFormContext'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormState } from '../../useFormState'

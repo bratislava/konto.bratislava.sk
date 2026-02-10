@@ -1,15 +1,15 @@
-import { strapiClient } from '@clients/graphql-strapi'
-import { MunicipalServiceEntityFragment } from '@clients/graphql-strapi/api'
-import MunicipalServicesSection, {
-  MunicipalServicesSectionProps,
-} from 'components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
-import PageLayout from 'components/layouts/PageLayout'
 import { uniqBy } from 'lodash'
 
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { isDefined } from '../frontend/utils/general'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { strapiClient } from '@/clients/graphql-strapi'
+import { MunicipalServiceEntityFragment } from '@/clients/graphql-strapi/api'
+import MunicipalServicesSection, {
+  MunicipalServicesSectionProps,
+} from '@/components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { isDefined } from '@/frontend/utils/general'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 type AccountMunicipalServicesPageProps = MunicipalServicesSectionProps
 

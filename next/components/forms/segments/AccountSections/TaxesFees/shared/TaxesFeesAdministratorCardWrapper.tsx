@@ -1,10 +1,11 @@
-import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
-import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
-import MLink from 'components/forms/simple-components/MLink'
-import { EXTERNAL_LINKS } from 'frontend/api/constants'
 import { useTranslation } from 'next-i18next'
 import { ResponseTaxAdministratorDto, TaxType } from 'openapi-clients/tax'
 import React from 'react'
+
+import { ClockIcon, MailIcon, PhoneIcon } from '@/assets/ui-icons'
+import { StrapiTaxAdministrator } from '@/backend/utils/strapi-tax-administrator'
+import MLink from '@/components/forms/simple-components/MLink'
+import { EXTERNAL_LINKS } from '@/frontend/api/constants'
 
 type Props = {
   taxType: TaxType

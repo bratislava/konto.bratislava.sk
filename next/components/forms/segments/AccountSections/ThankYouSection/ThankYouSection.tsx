@@ -1,11 +1,14 @@
-import ThankYouCard, { ThankYouCardBase } from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
-import { ROUTES } from 'frontend/api/constants'
 import { NextRouter, useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
-import logger from '../../../../../frontend/utils/logger'
+import ThankYouCard, {
+  ThankYouCardBase,
+} from '@/components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
+import { ROUTES } from '@/frontend/api/constants'
+import logger from '@/frontend/utils/logger'
+
 import { useStrapiTax } from '../TaxesFees/useStrapiTax'
 
 // TODO use the nuqs library to get query params
@@ -17,9 +20,9 @@ const useGetPaymentQueryParams = (router: NextRouter) => {
   const status = useMemo(
     () =>
       typeof router.query.status === 'string' &&
-        Object.values(PaymentRedirectStateEnum).includes(
-          router.query.status as PaymentRedirectStateEnum,
-        )
+      Object.values(PaymentRedirectStateEnum).includes(
+        router.query.status as PaymentRedirectStateEnum,
+      )
         ? (router.query.status as PaymentRedirectStateEnum)
         : PaymentRedirectStateEnum.FailedToVerify,
     [router.query.status],
@@ -28,7 +31,7 @@ const useGetPaymentQueryParams = (router: NextRouter) => {
   const type = useMemo(
     () =>
       typeof router.query.taxType === 'string' &&
-        Object.values(TaxType).includes(router.query.taxType as TaxType)
+      Object.values(TaxType).includes(router.query.taxType as TaxType)
         ? (router.query.taxType as TaxType)
         : undefined,
     [router.query.taxType],
@@ -92,7 +95,7 @@ const ThankYouSection = () => {
       title: t('thank_you.result.payment_success.title'),
       content: t('thank_you.result.payment_success.content'),
       firstButtonTitle: t('thank_you.button_to_formular_text'),
-      firstButtonLink: feedbackLink ?? "#",
+      firstButtonLink: feedbackLink ?? '#',
     },
     [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
       success: true,

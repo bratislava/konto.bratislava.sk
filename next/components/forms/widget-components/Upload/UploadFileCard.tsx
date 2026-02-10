@@ -1,12 +1,4 @@
 import {
-  AttachmentIcon,
-  CheckInCircleIcon,
-  CrossInCircleIcon,
-  DownloadIcon,
-  ErrorIcon,
-  ScanningIcon,
-} from '@assets/ui-icons'
-import {
   FileInfo,
   FileStatusType,
   isDoneFileStatusType,
@@ -19,7 +11,16 @@ import {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import cn from '../../../../frontend/cn'
+import {
+  AttachmentIcon,
+  CheckInCircleIcon,
+  CrossInCircleIcon,
+  DownloadIcon,
+  ErrorIcon,
+  ScanningIcon,
+} from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import Button from '../../simple-components/Button'
 import PrettyBytes from '../../simple-components/PrettyBytes'
 import ProgressBar from '../../simple-components/ProgressBar'

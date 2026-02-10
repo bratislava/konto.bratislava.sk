@@ -1,5 +1,6 @@
-import { ArrowRightIcon, ChevronLeftIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
+
+import { ArrowRightIcon, ChevronLeftIcon } from '@/assets/ui-icons'
 
 import Button from './simple-components/Button'
 import { useFormState } from './useFormState'

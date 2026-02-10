@@ -1,8 +1,9 @@
-import { ErrorIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
+import { ErrorIcon } from '@/assets/ui-icons'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+
 import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
 import AccountSuccessAlert from '../forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import Button from '../forms/simple-components/Button'

@@ -1,8 +1,9 @@
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import { useAmplifyClientOAuthContext } from '../../../frontend/utils/useAmplifyClientOAuthContext'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import { useAmplifyClientOAuthContext } from '@/frontend/utils/useAmplifyClientOAuthContext'
+
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '../segments/AccountLink/AccountLink'
 import Button from '../simple-components/Button'

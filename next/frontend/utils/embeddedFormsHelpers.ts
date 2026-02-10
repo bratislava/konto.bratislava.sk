@@ -1,7 +1,8 @@
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { GetServerSidePropsContext } from 'next/types'
 
-import { environment } from '../../environment'
+import { environment } from '@/environment'
+
 import { isDefined } from './general'
 
 const map = {

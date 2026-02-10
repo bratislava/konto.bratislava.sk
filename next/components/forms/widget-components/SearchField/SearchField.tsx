@@ -1,9 +1,10 @@
-import { RemoveIcon, SearchIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import cn from '../../../../frontend/cn'
+import { RemoveIcon, SearchIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 

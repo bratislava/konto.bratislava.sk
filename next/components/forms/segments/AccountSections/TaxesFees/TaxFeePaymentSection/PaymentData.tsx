@@ -1,12 +1,3 @@
-import {
-  ApplePayIcon,
-  ArrowRightIcon,
-  CreditCardIcon,
-  DownloadIcon,
-  GooglePayIcon,
-  PaymentHandIcon,
-  QrCodeIcon,
-} from '@assets/ui-icons'
 import HorizontalDivider from 'components/forms/HorizontalDivider'
 import Alert from 'components/forms/info-components/Alert'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
@@ -21,6 +12,16 @@ import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React, { Fragment } from 'react'
+
+import {
+  ApplePayIcon,
+  ArrowRightIcon,
+  CreditCardIcon,
+  DownloadIcon,
+  GooglePayIcon,
+  PaymentHandIcon,
+  QrCodeIcon,
+} from '@/assets/ui-icons'
 
 type Props = {
   paymentMethod: PaymentMethodType

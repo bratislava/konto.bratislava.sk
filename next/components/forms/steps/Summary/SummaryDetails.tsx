@@ -1,5 +1,3 @@
-import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
-import { useFormData } from 'components/forms/useFormData'
 import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
 import {
   SummaryArrayComponentProps,
@@ -14,6 +12,9 @@ import {
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { useIsSSR } from 'react-aria'
+
+import { AlertIcon, ChevronDownIcon } from '@/assets/ui-icons'
+import { useFormData } from '@/components/forms/useFormData'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'

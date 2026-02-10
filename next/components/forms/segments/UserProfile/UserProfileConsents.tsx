@@ -1,8 +1,9 @@
 import { useTranslation } from 'next-i18next'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 
-import useSnackbar from '../../../../frontend/hooks/useSnackbar'
-import { useUserSubscription } from '../../../../frontend/hooks/useUser'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { useUserSubscription } from '@/frontend/hooks/useUser'
+
 import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
 

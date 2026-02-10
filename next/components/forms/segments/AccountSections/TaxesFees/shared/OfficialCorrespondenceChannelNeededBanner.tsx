@@ -1,8 +1,9 @@
-import ImageMestskeKontoSituacia from '@assets/images/mestske-konto-situacia.png'
-import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
-import OfficialCorrespondenceChannelChangeModal from 'components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
+
+import ImageMestskeKontoSituacia from '@/assets/images/mestske-konto-situacia.png'
+import AnnouncementBlock from '@/components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
+import OfficialCorrespondenceChannelChangeModal from '@/components/forms/segments/AccountSections/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 
 const OfficialCorrespondenceChannelNeededBanner = () => {
   const { t } = useTranslation('account')

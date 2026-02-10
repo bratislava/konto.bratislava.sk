@@ -1,25 +1,25 @@
-import {
-  getTaxAdministratorForUser,
-  StrapiTaxAdministrator,
-} from '@backend/utils/strapi-tax-administrator'
-import { strapiClient } from '@clients/graphql-strapi'
-import { TaxFragment } from '@clients/graphql-strapi/api'
-import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
-import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
-import { TaxesFeesSectionProvider } from 'components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
-import PageLayout from 'components/layouts/PageLayout'
-import { AccountType } from 'frontend/dtos/accountDto'
 import { ResponseGetTaxesListDto, TaxType } from 'openapi-clients/tax'
 
-import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
-import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
+import {
+  getTaxAdministratorForUser,
+  StrapiTaxAdministrator,
+} from '@/backend/utils/strapi-tax-administrator'
+import { strapiClient } from '@/clients/graphql-strapi'
+import { TaxFragment } from '@/clients/graphql-strapi/api'
+import { taxClient } from '@/clients/tax'
+import TaxesFeesSection from '@/components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
+import { StrapiTaxProvider } from '@/components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
+import { TaxesFeesSectionProvider } from '@/components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { AccountType } from '@/frontend/dtos/accountDto'
+import { prefetchUserQuery } from '@/frontend/hooks/useUser'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 export type TaxesData = ResponseGetTaxesListDto
 

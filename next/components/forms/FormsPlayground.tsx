@@ -1,4 +1,3 @@
-import { DownloadIcon, UploadIcon } from '@assets/ui-icons'
 import Editor from '@monaco-editor/react'
 import Form from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
@@ -12,8 +11,10 @@ import { useQueryState } from 'nuqs'
 import React, { ContextType, createRef, useEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { downloadBlob } from '../../frontend/utils/general'
+import { DownloadIcon, UploadIcon } from '@/assets/ui-icons'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { downloadBlob } from '@/frontend/utils/general'
+
 import { ClientPlaygroundFormDefinition } from './clientFormDefinitions'
 import Button from './simple-components/Button'
 import ThemedForm from './ThemedForm'

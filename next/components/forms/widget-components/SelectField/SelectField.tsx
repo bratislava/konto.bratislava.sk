@@ -1,4 +1,3 @@
-import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { useId } from 'react'
 import Select, {
@@ -11,7 +10,9 @@ import Select, {
   Props as ReactSelectProps,
 } from 'react-select'
 
-import cn from '../../../../frontend/cn'
+import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 

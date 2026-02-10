@@ -1,6 +1,7 @@
-import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
-import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useTranslation } from 'next-i18next'
+
+import { AccountType, Address, UserAttributes } from '@/frontend/dtos/accountDto'
+import useJsonParseMemo from '@/frontend/hooks/useJsonParseMemo'
 
 import UserProfileDetailViewRow from './UserProfileDetailViewRow'
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import cn from '../../../../frontend/cn'
+import cn from '@/frontend/cn'
+
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 type TextAreaBase = FieldWrapperProps & {

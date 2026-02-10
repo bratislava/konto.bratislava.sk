@@ -1,4 +1,5 @@
-import useSnackbar from '../../../frontend/hooks/useSnackbar'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+
 import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

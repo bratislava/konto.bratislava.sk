@@ -1,7 +1,8 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { cityAccountClient } from '@clients/city-account'
 import { ClientInfoResponseDto } from 'openapi-clients/city-account'
+
+import { cityAccountClient } from '@/clients/city-account'
 
 import { authRequestIdQueryParam, isOAuthQueryParam } from './queryParamRedirect'
 

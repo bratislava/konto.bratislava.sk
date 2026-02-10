@@ -1,4 +1,3 @@
-import { AddIcon } from '@assets/ui-icons'
 import {
   ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
@@ -12,7 +11,9 @@ import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
-import cn from '../../../frontend/cn'
+import { AddIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import Alert from '../info-components/Alert'
 import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'

@@ -1,7 +1,7 @@
-import { AccountType, Tier } from 'frontend/dtos/accountDto'
 import { useContext } from 'react'
 
-import { SsrAuthContext } from '../../components/logic/SsrAuthContext'
+import { SsrAuthContext } from '@/components/logic/SsrAuthContext'
+import { AccountType, Tier } from '@/frontend/dtos/accountDto'
 
 export const useSsrAuth = () => {
   const ssrAuthContext = useContext(SsrAuthContext)

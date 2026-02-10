@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
-import cn from '../../../frontend/cn'
+import cn from '@/frontend/cn'
+
 import { useFormMenuItems } from '../useFormMenuItems'
 
 const MenuList = () => {

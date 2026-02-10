@@ -1,6 +1,7 @@
-import FormCalculator from 'components/forms/segments/FormCalculator/FormCalculator'
 import { CustomComponentType } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
+
+import FormCalculator from '@/components/forms/segments/FormCalculator/FormCalculator'
 
 import Alert from '../../info-components/Alert'
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'

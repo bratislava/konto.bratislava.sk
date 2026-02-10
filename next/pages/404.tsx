@@ -1,10 +1,10 @@
-import Button from 'components/forms/simple-components/Button'
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import Button from '@/components/forms/simple-components/Button'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 export const getStaticProps: GetStaticProps = async () => {
   return {

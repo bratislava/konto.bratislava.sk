@@ -1,4 +1,3 @@
-import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
@@ -14,16 +13,18 @@ import React, {
   useRef,
 } from 'react'
 
-import { environment } from '../../environment'
-import { AccountType } from '../../frontend/dtos/accountDto'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
-import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
+import { formsClient } from '@/clients/forms'
+import { environment } from '@/environment'
+import { AccountType } from '@/frontend/dtos/accountDto'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { isFormSubmitDisabled } from '@/frontend/utils/formSummary'
 import {
   NASES_TOKEN_QUERY_KEY,
   popSendEidMetadata,
   setSendEidMetadata,
-} from '../../frontend/utils/metadataStorage'
+} from '@/frontend/utils/metadataStorage'
+
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormSummary } from './steps/Summary/useFormSummary'

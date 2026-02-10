@@ -1,8 +1,9 @@
-import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
+
+import logger from '@/frontend/utils/logger'
 
 import { useFormContext } from './useFormContext'
 

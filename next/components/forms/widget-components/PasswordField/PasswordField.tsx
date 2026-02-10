@@ -1,6 +1,7 @@
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import PasswordEyeButton from 'components/forms/widget-components/PasswordField/PasswordEyeButton'
 import { forwardRef, useState } from 'react'
+
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import PasswordEyeButton from '@/components/forms/widget-components/PasswordField/PasswordEyeButton'
 
 import { FieldWrapperProps } from '../FieldWrapper'
 
@@ -58,7 +59,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
             isPasswordHidden={isPasswordHidden}
             onToggle={setIsPasswordHidden}
             isDisabled={disabled}
-            className="absolute h-full aspect-square inset-y-1/2 right-1 -translate-y-2/4"
+            className="absolute inset-y-1/2 right-1 aspect-square h-full -translate-y-2/4"
           />
         }
         {...rest}

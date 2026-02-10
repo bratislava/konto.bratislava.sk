@@ -3,7 +3,8 @@ import IframeResizer from '@iframe-resizer/react'
 import { useQueryState } from 'nuqs'
 import React, { useEffect } from 'react'
 
-import { ROUTES } from '../../frontend/api/constants'
+import { ROUTES } from '@/frontend/api/constants'
+
 import SelectField from './widget-components/SelectField/SelectField'
 
 export type FormsIframeTestPageProps = {

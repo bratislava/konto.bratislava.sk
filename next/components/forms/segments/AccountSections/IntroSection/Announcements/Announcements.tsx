@@ -1,8 +1,9 @@
-import { HomepageAnnouncementEntityFragment } from '@clients/graphql-strapi/api'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useSsrAuth } from '../../../../../../frontend/hooks/useSsrAuth'
+import { HomepageAnnouncementEntityFragment } from '@/clients/graphql-strapi/api'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+
 import AnnouncementBlockStrapi from './AnnouncementBlockStrapi'
 
 type AnnouncementsProps = {

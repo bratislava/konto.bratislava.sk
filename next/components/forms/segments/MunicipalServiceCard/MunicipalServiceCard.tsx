@@ -1,11 +1,13 @@
+import { ReactNode } from 'react'
+
 import {
   Enum_Municipalservice_Color,
   Enum_Municipalservice_Icon,
   MunicipalServiceCardEntityFragment,
   MunicipalServiceEntityFragment,
-} from '@clients/graphql-strapi/api'
-import ServiceCard from 'components/forms/simple-components/ServiceCard'
-import { ReactNode } from 'react'
+} from '@/clients/graphql-strapi/api'
+import ServiceCard from '@/components/forms/simple-components/ServiceCard'
+import { isDefined } from '@/frontend/utils/general'
 
 import AdministrationIcon from '../../../../assets/icons/city-bratislava/city-administration.svg'
 import PublicSpaceOccupationIcon from '../../../../assets/icons/city-bratislava/public-space-occupation.svg'
@@ -33,7 +35,6 @@ import ExcavationsIcon from '../../../../assets/icons/transport-and-maps/excavat
 import ManagmentCommunicationsIcon from '../../../../assets/icons/transport-and-maps/management-communications.svg'
 import ParkingIcon from '../../../../assets/icons/transport-and-maps/parking.svg'
 import TowIcon from '../../../../assets/icons/transport-and-maps/towing.svg'
-import { isDefined } from '../../../../frontend/utils/general'
 
 const getIconComponent = (
   iconName: Enum_Municipalservice_Icon,

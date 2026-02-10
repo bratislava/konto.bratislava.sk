@@ -1,15 +1,16 @@
-import BannerImage from '@assets/images/bratislava-dog.png'
+import { useTranslation } from 'next-i18next'
+
+import BannerImage from '@/assets/images/bratislava-dog.png'
 import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
-} from '@clients/graphql-strapi/api'
-import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import Banner from 'components/forms/simple-components/Banner'
-import Button from 'components/forms/simple-components/Button'
-import { useTranslation } from 'next-i18next'
+} from '@/clients/graphql-strapi/api'
+import AccountSectionHeader from '@/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
+import Banner from '@/components/forms/simple-components/Banner'
+import Button from '@/components/forms/simple-components/Button'
+import { ROUTES } from '@/frontend/api/constants'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'

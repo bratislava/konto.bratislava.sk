@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import cn from '../../../../frontend/cn'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
+import cn from '@/frontend/cn'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 interface UserProfileSectionHeaderProps {
   title: string

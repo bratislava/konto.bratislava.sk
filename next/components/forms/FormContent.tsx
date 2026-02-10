@@ -1,6 +1,7 @@
-import MenuList from 'components/forms/steps/MenuList'
 import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
+
+import MenuList from '@/components/forms/steps/MenuList'
 
 import FormControls from './FormControls'
 import FormProviders from './FormProviders'

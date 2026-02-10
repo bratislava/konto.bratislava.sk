@@ -1,4 +1,3 @@
-import { CrossIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
 import { mergeProps } from 'react-aria'
@@ -10,7 +9,9 @@ import {
   ModalOverlayProps,
 } from 'react-aria-components'
 
-import cn from '../../../frontend/cn'
+import { CrossIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import { useIframeResizerChildContext } from '../IframeResizerChild'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {

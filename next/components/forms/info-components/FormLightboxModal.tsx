@@ -1,11 +1,12 @@
 import 'yet-another-react-lightbox/styles.css'
 
-import { CrossIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren, useState } from 'react'
 import { Button as AriaButton } from 'react-aria-components'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
+
+import { CrossIcon } from '@/assets/ui-icons'
 
 import Button from '../simple-components/Button'
 import Spinner from '../simple-components/Spinner'

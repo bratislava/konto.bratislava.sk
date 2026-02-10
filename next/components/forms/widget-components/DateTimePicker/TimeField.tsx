@@ -3,7 +3,8 @@ import React, { ReactNode, useRef } from 'react'
 import { TimeValue, useTimeField } from 'react-aria'
 import { useTimeFieldState } from 'react-stately'
 
-import cn from '../../../../frontend/cn'
+import cn from '@/frontend/cn'
+
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import DateTimeSegment from './DateTimeSegment'
 

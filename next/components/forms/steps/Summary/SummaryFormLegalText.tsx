@@ -1,6 +1,7 @@
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 
 import { useFormContext } from '../../useFormContext'
 

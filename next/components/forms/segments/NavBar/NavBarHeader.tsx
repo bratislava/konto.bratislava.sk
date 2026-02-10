@@ -1,4 +1,3 @@
-import { ChevronDownSmallIcon } from '@assets/ui-icons'
 import UserAvatar from 'components/forms/segments/NavBar/UserAvatar'
 import Brand from 'components/forms/simple-components/Brand'
 import Button from 'components/forms/simple-components/Button'
@@ -14,6 +13,8 @@ import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
+
+import { ChevronDownSmallIcon } from '@/assets/ui-icons'
 
 type Props = {
   menuItems: MenuItemBase[]

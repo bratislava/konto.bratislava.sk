@@ -1,7 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
+import useHookForm from '@/frontend/hooks/useHookForm'
+
 import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
 import Button from '../simple-components/Button'
 import PasswordField from '../widget-components/PasswordField/PasswordField'

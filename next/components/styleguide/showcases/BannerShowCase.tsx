@@ -1,5 +1,6 @@
-import BannerPhone from '@assets/images/banner-phone.png'
 import React from 'react'
+
+import BannerPhone from '@/assets/images/banner-phone.png'
 
 import Banner from '../../forms/simple-components/Banner'
 import { Stack } from '../Stack'

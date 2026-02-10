@@ -1,7 +1,8 @@
 import { createParser, useQueryState } from 'nuqs'
 import { useEffect, useMemo, useRef } from 'react'
 
-import { isDefined } from '../../frontend/utils/general'
+import { isDefined } from '@/frontend/utils/general'
+
 import { FormStepIndex, FormStepperStep } from './types/Steps'
 
 const getStepIndexByQueryParam = (

@@ -1,12 +1,13 @@
-import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
-import { ROUTES } from '../../frontend/api/constants'
-import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { formsClient } from '@/clients/forms'
+import { ROUTES } from '@/frontend/api/constants'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormContext } from './useFormContext'
 import { useFormData } from './useFormData'

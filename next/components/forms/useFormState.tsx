@@ -19,7 +19,8 @@ import {
   getStepProperty,
   parseStepFromFieldId,
   removeUnusedPropertiesFromFormData,
-} from '../../frontend/utils/formState'
+} from '@/frontend/utils/formState'
+
 import { FormStepIndex } from './types/Steps'
 import { useFormContext } from './useFormContext'
 import { useFormCurrentStepIndex } from './useFormCurrentStepIndex'

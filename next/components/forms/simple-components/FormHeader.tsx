@@ -1,10 +1,11 @@
-import { DiscIcon, EllipsisVerticalIcon } from '@assets/ui-icons'
-import Button from 'components/forms/simple-components/Button'
-import MenuDropdown from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
+import { DiscIcon, EllipsisVerticalIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import MenuDropdown from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
+
 import { useFormContext } from '../useFormContext'
 import { useFormMenuItems } from '../useFormMenuItems'
 

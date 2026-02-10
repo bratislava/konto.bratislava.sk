@@ -1,8 +1,9 @@
-import { LinkVariantIcon } from '@assets/ui-icons'
 import { ReactNode } from 'react'
 import slugify from 'slugify'
 
-import cn from '../../frontend/cn'
+import { LinkVariantIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import MLink from '../forms/simple-components/MLink'
 
 type WrapperProps = {

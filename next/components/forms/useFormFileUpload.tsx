@@ -1,4 +1,3 @@
-import { formsClient } from '@clients/forms'
 import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   ClientFileInfo,
@@ -20,13 +19,15 @@ import React, {
 } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
-import { environment } from '../../environment'
-import { FormFileUploadConstraints } from '../../frontend/types/formFileUploadTypes'
+import { formsClient } from '@/clients/forms'
+import { environment } from '@/environment'
+import { FormFileUploadConstraints } from '@/frontend/types/formFileUploadTypes'
 import {
   getFileInfoForNewFiles,
   shouldPollServerFiles,
   uploadFile,
-} from '../../frontend/utils/formFileUpload'
+} from '@/frontend/utils/formFileUpload'
+
 import { useFormContext } from './useFormContext'
 
 const REFETCH_INTERVAL = 5000

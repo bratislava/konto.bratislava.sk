@@ -1,10 +1,11 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
 import { ArrayFieldTemplateItemType, FieldProps, WidgetProps } from '@rjsf/utils'
-import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
-import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
 import { defaultFormFields, DefaultFormFieldType } from 'forms-shared/form-utils/defaultFormFields'
 import { BaFieldType, BaWidgetType } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
+
+import DatePickerWidgetRJSF from '@/components/forms/widget-wrappers/DatePickerWidgetRJSF'
+import TimePickerWidgetRJSF from '@/components/forms/widget-wrappers/TimePickerWidgetRJSF'
 
 import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'

@@ -1,6 +1,7 @@
-import { CrossIcon, EditIcon } from '@assets/ui-icons'
-import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
+
+import { CrossIcon, EditIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
 
 interface UserProfileDetailsButtonsProps {
   formId: string

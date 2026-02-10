@@ -1,4 +1,4 @@
-import Toggle from 'components/forms/simple-components/Toggle'
+import Toggle from '@/components/forms/simple-components/Toggle'
 
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 

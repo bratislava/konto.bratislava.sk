@@ -1,8 +1,9 @@
-import { ChevronLeftIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
+import { ChevronLeftIcon } from '@/assets/ui-icons'
+import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
+
 import Button, { ButtonProps } from '../../simple-components/Button'
 import { useFormContext } from '../../useFormContext'
 import { useFormSend } from '../../useFormSend'

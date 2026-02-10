@@ -1,4 +1,3 @@
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
 import type { NumberFieldProps as ReactAriaNumberFieldProps } from '@react-types/numberfield'
@@ -7,8 +6,10 @@ import { forwardRef, ReactNode } from 'react'
 import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 
+import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
-import cn from '../../../../frontend/cn'
 import Button from '../../simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 

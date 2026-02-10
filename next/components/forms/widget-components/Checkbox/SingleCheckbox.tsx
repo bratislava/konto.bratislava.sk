@@ -1,9 +1,10 @@
-import { CheckIcon } from '@assets/ui-icons'
 import React from 'react'
 import { useCheckbox, useFocusRing, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
 
-import cn from '../../../../frontend/cn'
+import { CheckIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
+
 import BATooltip from '../../info-components/Tooltip/BATooltip'
 
 type CheckBoxBase = {

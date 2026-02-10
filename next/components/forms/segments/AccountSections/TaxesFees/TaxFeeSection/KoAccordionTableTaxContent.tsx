@@ -1,10 +1,11 @@
-import AccordionV2 from 'components/forms/simple-components/AccordionV2'
-import cn from 'frontend/cn'
-import { FormatCurrencyFromCents } from 'frontend/utils/formatCurrency'
-import { isDefined } from 'frontend/utils/general'
 import { useHorizontalScrollFade } from 'frontend/utils/useHorizontalScrollFade'
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import React, { PropsWithChildren, useRef } from 'react'
+
+import AccordionV2 from '@/components/forms/simple-components/AccordionV2'
+import cn from '@/frontend/cn'
+import { FormatCurrencyFromCents } from '@/frontend/utils/formatCurrency'
+import { isDefined } from '@/frontend/utils/general'
 
 type TableDataType = ResponseCommunalWasteTaxItemizedAddressDto[]
 type TableHeaderDataType = TableDataType[0]

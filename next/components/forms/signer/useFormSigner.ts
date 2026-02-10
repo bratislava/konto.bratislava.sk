@@ -2,7 +2,8 @@ import { GenericObjectType } from '@rjsf/utils'
 import useStateRef from 'react-usestateref'
 import { useIsMounted } from 'usehooks-ts'
 
-import { isDefined } from '../../../frontend/utils/general'
+import { isDefined } from '@/frontend/utils/general'
+
 import { mapDitecError, SignerErrorType } from './mapDitecError'
 import { SignOptions } from './signerTypes'
 import { useFormSignerLoader } from './useFormSignerLoader'

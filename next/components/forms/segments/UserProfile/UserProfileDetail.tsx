@@ -1,10 +1,11 @@
-import Alert from 'components/forms/info-components/Alert'
-import { UserAttributes } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
-import cn from '../../../../frontend/cn'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
+import Alert from '@/components/forms/info-components/Alert'
+import cn from '@/frontend/cn'
+import { UserAttributes } from '@/frontend/dtos/accountDto'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'

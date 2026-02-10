@@ -1,6 +1,7 @@
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
 
-import cn from '../../../../frontend/cn'
+import cn from '@/frontend/cn'
+
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'

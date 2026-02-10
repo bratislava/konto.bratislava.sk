@@ -1,8 +1,9 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@assets/ui-icons'
 import { createCalendar } from '@internationalized/date'
 import { useRef } from 'react'
 import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
+
+import { ChevronLeftIcon, ChevronRightIcon } from '@/assets/ui-icons'
 
 import Button from '../../../simple-components/Button'
 import CalendarGrid from './CalendarGrid'

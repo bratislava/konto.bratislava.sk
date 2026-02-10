@@ -2,14 +2,14 @@ import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 
-import { STEP_QUERY_PARAM_KEY } from '../../components/forms/useFormCurrentStepIndex'
-import { ROUTES } from '../../frontend/api/constants'
-import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '../../frontend/utils/formState'
+import { STEP_QUERY_PARAM_KEY } from '@/components/forms/useFormCurrentStepIndex'
+import { ROUTES } from '@/frontend/api/constants'
+import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '@/frontend/utils/formState'
 import {
   NASES_TOKEN_QUERY_KEY,
   popSendEidMetadata,
   popVerifyEidMetadata,
-} from '../../frontend/utils/metadataStorage'
+} from '@/frontend/utils/metadataStorage'
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return { props: {} }

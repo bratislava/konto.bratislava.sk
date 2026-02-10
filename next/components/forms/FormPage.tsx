@@ -1,8 +1,9 @@
-import PageLayout from 'components/layouts/PageLayout'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import React from 'react'
 
-import cn from '../../frontend/cn'
+import PageLayout from '@/components/layouts/PageLayout'
+import cn from '@/frontend/cn'
+
 import FormContent from './FormContent'
 import FormVersionCompareAction from './FormVersionCompareAction'
 import IframeResizerChild from './IframeResizerChild'
@@ -36,11 +37,15 @@ const FormLayoutContainer = () => {
       <ConditionalWrap
         condition={!isEmbedded}
         wrap={(children) => (
-          <PageLayout className={cn({
-            'bg-gray-50': formSent,
-            'bg-gray-0 md:bg-gray-50':
-              !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,
-          })}>{children}</PageLayout>
+          <PageLayout
+            className={cn({
+              'bg-gray-50': formSent,
+              'bg-gray-0 md:bg-gray-50':
+                !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,
+            })}
+          >
+            {children}
+          </PageLayout>
         )}
       >
         <FormStateRouter />

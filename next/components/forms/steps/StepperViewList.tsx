@@ -1,7 +1,8 @@
 import React from 'react'
 import { Button as AriaButton } from 'react-aria-components'
 
-import cn from '../../../frontend/cn'
+import cn from '@/frontend/cn'
+
 import { FormStepIndex, FormStepperStep } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewRow from './StepperViewRow'

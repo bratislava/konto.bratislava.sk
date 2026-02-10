@@ -1,13 +1,14 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import { AuthError, AuthSession } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
 import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 
-import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
+import { cityAccountClient, LoginClientEnum } from '@/clients/city-account'
+import { ssrAuthContextPropKey, SsrAuthContextType } from '@/components/logic/SsrAuthContext'
+
 import type { GlobalAppProps } from '../../pages/_app'
 import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'

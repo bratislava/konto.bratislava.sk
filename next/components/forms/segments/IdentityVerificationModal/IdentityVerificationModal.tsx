@@ -1,9 +1,10 @@
-import { ArrowRightIcon } from '@assets/ui-icons'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { AccountType } from '../../../../frontend/dtos/accountDto'
+import { ArrowRightIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { AccountType } from '@/frontend/dtos/accountDto'
+
 import Button from '../../simple-components/Button'
 import { ModalProps } from '../../simple-components/Modal'
 import { useFormRedirects } from '../../useFormRedirects'

@@ -1,15 +1,16 @@
 import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 
-import { makeClientFormDefinition } from '../../../components/forms/clientFormDefinitions'
-import FormPageWrapper, { FormPageProps } from '../../../components/forms/FormPage'
-import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
-import { environment } from '../../../environment'
-import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
-import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
-import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
-import { getInitialSummaryJson } from '../../../frontend/utils/getInitialSummaryJson'
-import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
+import { makeClientFormDefinition } from '@/components/forms/clientFormDefinitions'
+import FormPageWrapper, { FormPageProps } from '@/components/forms/FormPage'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { environment } from '@/environment'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { handleEmbeddedFormRequest } from '@/frontend/utils/embeddedFormsHelpers'
+import { getDefaultFormDataForFormDefinition } from '@/frontend/utils/getDefaultFormDataForFormDefinition'
+import { getInitialSummaryJson } from '@/frontend/utils/getInitialSummaryJson'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
+
 import type { GlobalAppProps } from '../../_app'
 
 type Params = {

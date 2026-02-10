@@ -1,3 +1,9 @@
+import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
+import { useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
+
 import {
   BinIcon,
   ChevronRightIcon,
@@ -6,23 +12,18 @@ import {
   EllipsisVerticalIcon,
   EyeIcon,
   PdfIcon,
-} from '@assets/ui-icons'
-import { formsClient } from '@clients/forms'
-import Button from 'components/forms/simple-components/Button'
+} from '@/assets/ui-icons'
+import { formsClient } from '@/clients/forms'
+import Button from '@/components/forms/simple-components/Button'
 import MenuDropdown, {
   MenuItemBase,
-} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
-import { ROUTES } from 'frontend/api/constants'
-import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
-import useSnackbar from 'frontend/hooks/useSnackbar'
-import { downloadBlob } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
-import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
-import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
-import { useState } from 'react'
-import Skeleton from 'react-loading-skeleton'
+} from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
+import { ROUTES } from '@/frontend/api/constants'
+import useFormStateComponents from '@/frontend/hooks/useFormStateComponents'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { downloadBlob } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
 
 import ConditionalWrap from '../../../simple-components/ConditionalWrap'
 import FormatDate from '../../../simple-components/FormatDate'

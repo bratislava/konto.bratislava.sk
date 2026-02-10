@@ -3,7 +3,8 @@ import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
 
-import cn from '../../../frontend/cn'
+import cn from '@/frontend/cn'
+
 import FieldHelptext from './FieldHelptext'
 import BATooltip from './Tooltip/BATooltip'
 

@@ -6,7 +6,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import { GoogleTagManager } from '@next/third-parties/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenuContext'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
@@ -18,11 +17,12 @@ import { useEffect, useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 
-import { environment } from '../environment'
-import { removeAllCookiesAndClearLocalStorage } from '../frontend/utils/amplifyClient'
-import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
-import { isProductionDeployment } from '../frontend/utils/general'
-import logger from '../frontend/utils/logger'
+import { NavMenuContextProvider } from '@/components/forms/segments/NavBar/navMenuContext'
+import { environment } from '@/environment'
+import { removeAllCookiesAndClearLocalStorage } from '@/frontend/utils/amplifyClient'
+import AmplifyClientProvider from '@/frontend/utils/AmplifyClientProvider'
+import { isProductionDeployment } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],

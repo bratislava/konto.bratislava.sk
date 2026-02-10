@@ -174,46 +174,4 @@ export class PaymentController {
       url: await this.paymentService.processPaymentResponse(taxType, query),
     }
   }
-
-  // TODO - remove this endpoint after release https://github.com/bratislava/private-konto.bratislava.sk/issues/1225
-  @ApiOperation({
-    summary:
-      'Process payment response without tax type, for compatibility during release.',
-    description:
-      'Process payment response without tax type, by using DZN tax type as default. This is a temporary endpoint for compatibility during release, during which some payments might be in progress.',
-    deprecated: true,
-  })
-  @ApiResponse({
-    status: 302,
-    description:
-      'Redirect to Frontend with status query parameter. The redirect URL will contain query parameters documented in PaymentRedirectResponseDto.',
-    schema: {
-      type: 'object',
-      properties: {
-        url: {
-          type: 'string',
-          description:
-            'Redirect URL with status query parameter. Status values are defined in PaymentRedirectStateEnum.',
-          example: `https://frontend.bratislava.sk?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&taxType=DZN&year=2024@order=1`,
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 422,
-    description: 'Error to redirect',
-    type: ResponseErrorDto,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: ResponseErrorDto,
-  })
-  @Redirect()
-  @Get('cardpay/response')
-  async paymentResponseTemporary(@Query() query: PaymentResponseQueryDto) {
-    return {
-      url: await this.paymentService.processPaymentResponse(TaxType.DZN, query),
-    }
-  }
 }

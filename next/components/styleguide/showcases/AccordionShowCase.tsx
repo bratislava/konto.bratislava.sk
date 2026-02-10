@@ -1,7 +1,8 @@
 import React from 'react'
 
-import AccountMarkdown from '../../forms/segments/AccountMarkdown/AccountMarkdown'
-import AccordionV2 from '../../forms/simple-components/AccordionV2'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import AccordionV2 from '@/components/forms/simple-components/AccordionV2'
+
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

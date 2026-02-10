@@ -1,13 +1,14 @@
-import { CrossIcon, HamburgerIcon } from '@assets/ui-icons'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
-import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
-import { useNavMenuContext } from 'components/forms/segments/NavBar/navMenuContext'
-import { MenuSectionBase } from 'components/forms/segments/NavBar/useMenu'
-import Brand from 'components/forms/simple-components/Brand'
-import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import FocusTrap from 'focus-trap-react'
-import { ROUTES } from 'frontend/api/constants'
 import { RefObject } from 'react'
+
+import { CrossIcon, HamburgerIcon } from '@/assets/ui-icons'
+import { StatusBar } from '@/components/forms/info-components/StatusBar'
+import HamburgerMenu from '@/components/forms/segments/HambergerMenu/HamburgerMenu'
+import { useNavMenuContext } from '@/components/forms/segments/NavBar/navMenuContext'
+import { MenuSectionBase } from '@/components/forms/segments/NavBar/useMenu'
+import Brand from '@/components/forms/simple-components/Brand'
+import { MenuItemBase } from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { ROUTES } from '@/frontend/api/constants'
 
 type Props = {
   menuSections?: MenuSectionBase[]
@@ -15,11 +16,7 @@ type Props = {
   mobileNavbarRef: RefObject<HTMLDivElement | null>
 }
 
-export const MobileNavBar = ({
-  menuSections,
-  menuItems,
-  mobileNavbarRef,
-}: Props) => {
+export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props) => {
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
   return (

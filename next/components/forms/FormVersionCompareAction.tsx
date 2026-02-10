@@ -1,18 +1,18 @@
-import { AlertIcon, ErrorIcon } from '@assets/ui-icons'
-import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
-import cn from 'frontend/cn'
 import { router } from 'next/client'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import { ROUTES } from '../../frontend/api/constants'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
-import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
-import ButtonNew from './simple-components/ButtonNew'
-import { useFormContext } from './useFormContext'
+import { AlertIcon, ErrorIcon } from '@/assets/ui-icons'
+import { formsClient } from '@/clients/forms'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { ROUTES } from '@/frontend/api/constants'
+import cn from '@/frontend/cn'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 const FormVersionCompareAction = () => {
   const {
@@ -102,22 +102,18 @@ const FormVersionCompareAction = () => {
 
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
             {isSignedIn ? (
-              <ButtonNew variant="black-outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
+              <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
                 {t('form_version_compare_action.button_back')}
-              </ButtonNew>
+              </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.CannotContinue ? (
-              <ButtonNew
-                variant="black-solid"
-                fullWidth
-                href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}
-              >
+              <Button variant="solid" fullWidth href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}>
                 {t('form_version_compare_action.button_create_new')}
-              </ButtonNew>
+              </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.RequiresBump ? (
-              <ButtonNew
-                variant="black-solid"
+              <Button
+                variant="solid"
                 fullWidth
                 onPress={() => {
                   bumpVersionMutate()
@@ -125,7 +121,7 @@ const FormVersionCompareAction = () => {
                 isLoading={bumpVersionIsPending || isRedirecting}
               >
                 {t('form_version_compare_action.button_confirm')}
-              </ButtonNew>
+              </Button>
             ) : null}
           </div>
         </div>

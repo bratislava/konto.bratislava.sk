@@ -9,7 +9,7 @@ import React, {
   useState,
 } from 'react'
 
-import { environment } from '../../environment'
+import { environment } from '@/environment'
 
 const IframeResizerChildContext = createContext<iframeResizer.ParentProps | null>(null)
 

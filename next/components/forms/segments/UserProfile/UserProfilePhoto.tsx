@@ -1,4 +1,4 @@
-import { UserAttributes } from 'frontend/dtos/accountDto'
+import { UserAttributes } from '@/frontend/dtos/accountDto'
 
 interface UserProfilePhotoProps {
   userAttributes: UserAttributes

@@ -1,7 +1,8 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import FormMenuItem from 'components/forms/simple-components/MenuDropdown/FormMenuItem'
-import HeaderMenuItem from 'components/forms/simple-components/MenuDropdown/HeaderMenuItem'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+
+import FormMenuItem from '@/components/forms/simple-components/MenuDropdown/FormMenuItem'
+import HeaderMenuItem from '@/components/forms/simple-components/MenuDropdown/HeaderMenuItem'
 
 export type MenuItemBase = {
   id?: number

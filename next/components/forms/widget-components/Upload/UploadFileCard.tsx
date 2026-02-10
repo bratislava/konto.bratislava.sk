@@ -1,12 +1,4 @@
 import {
-  AttachmentIcon,
-  CheckInCircleIcon,
-  CrossInCircleIcon,
-  DownloadIcon,
-  ErrorIcon,
-  ScanningIcon,
-} from '@assets/ui-icons'
-import {
   FileInfo,
   FileStatusType,
   isDoneFileStatusType,
@@ -19,10 +11,18 @@ import {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import cn from '../../../../frontend/cn'
-import Button from '../../simple-components/ButtonNew'
-import PrettyBytes from '../../simple-components/PrettyBytes'
-import ProgressBar from '../../simple-components/ProgressBar'
+import {
+  AttachmentIcon,
+  CheckInCircleIcon,
+  CrossInCircleIcon,
+  DownloadIcon,
+  ErrorIcon,
+  ScanningIcon,
+} from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import PrettyBytes from '@/components/forms/simple-components/PrettyBytes'
+import ProgressBar from '@/components/forms/simple-components/ProgressBar'
+import cn from '@/frontend/cn'
 
 type UploadedFileProps = {
   fileInfo: FileInfo
@@ -178,7 +178,7 @@ const UploadFileCard = ({
 
           {'canRetry' in fileInfo.status && fileInfo.status.canRetry && (
             <Button
-              variant="black-link"
+              variant="link"
               onPress={onFileRetry}
               size="small"
               className="font-semibold"

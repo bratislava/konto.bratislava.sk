@@ -1,13 +1,13 @@
-import { CheckIcon } from '@assets/ui-icons'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import ButtonNew from '../../simple-components/ButtonNew'
-import Modal, { ModalProps } from '../../simple-components/Modal'
-import { useFormContext } from '../../useFormContext'
-import AccountLink from '../AccountLink/AccountLink'
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
+import { CheckIcon } from '@/assets/ui-icons'
+import AccountLink from '@/components/forms/segments/AccountLink/AccountLink'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import Modal, { ModalProps } from '@/components/forms/simple-components/Modal'
+import { useFormContext } from '@/components/forms/useFormContext'
 
 export enum RegistrationModalType {
   Initial = 'Initial',
@@ -154,15 +154,15 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             </ul>
           </div>
           <div className="rounded-b-lg bg-gray-100 px-4 pb-4 md:px-0 md:pb-0">
-            <ButtonNew
-              variant="black-solid"
+            <Button
+              variant="solid"
               fullWidth
               onPress={() => register()}
               className="rounded-lg px-5 py-2 text-p1-semibold leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
               data-cy="registration-modal-button"
             >
               {t('registration_modal.body_action')}
-            </ButtonNew>
+            </Button>
           </div>
         </div>
 
@@ -180,23 +180,23 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             {type === RegistrationModalType.Initial && (
               <>
                 {eidSendPossible ? (
-                  <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                  <Button variant="outline" onPress={close} fullWidth>
                     {t('registration_modal.buttons_initial_continue_eid')}
-                  </ButtonNew>
+                  </Button>
                 ) : null}
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                <Button variant="outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_initial_skip')}
-                </ButtonNew>
+                </Button>
               </>
             )}
             {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
               <>
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                <Button variant="outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_back')}
-                </ButtonNew>
-                <ButtonNew variant="black-outline" onPress={close} fullWidth>
+                </Button>
+                <Button variant="outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_send')}
-                </ButtonNew>
+                </Button>
               </>
             )}
           </div>

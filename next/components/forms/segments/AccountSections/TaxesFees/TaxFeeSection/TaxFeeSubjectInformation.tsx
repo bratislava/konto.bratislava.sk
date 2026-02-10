@@ -1,11 +1,12 @@
-import HorizontalDivider from 'components/forms/HorizontalDivider'
 import { useTaxFeeSection } from 'components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
-import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
 import { formatZip } from 'frontend/utils/formatZip'
 import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
+
+import HorizontalDivider from '@/components/forms/HorizontalDivider'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 const displayStrings = (strings: (string | undefined | null)[], separator: string) =>
   strings.filter(isDefined).join(separator)

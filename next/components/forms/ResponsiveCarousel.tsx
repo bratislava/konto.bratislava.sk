@@ -1,5 +1,6 @@
-import cn from 'frontend/cn'
 import React from 'react'
+
+import cn from '@/frontend/cn'
 
 import Carousel, { AllowedVisibleCount, CarouselProps } from './Carousel'
 

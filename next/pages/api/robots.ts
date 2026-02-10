@@ -1,5 +1,6 @@
-import { environment } from 'environment'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import { environment } from '@/environment'
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   if (environment.isStaging) {

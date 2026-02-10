@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { isProductionDeployment } from '../../../../frontend/utils/general'
-import { useAmplifyClientOAuthContext } from '../../../../frontend/utils/useAmplifyClientOAuthContext'
+import { isProductionDeployment } from '@/frontend/utils/general'
+import { useAmplifyClientOAuthContext } from '@/frontend/utils/useAmplifyClientOAuthContext'
+
 import { DpbLogoSvg, PaasMpaLogoSvg } from './logos'
 
 const OAuthClientLogo = ({ clientName }: { clientName: string }) => {

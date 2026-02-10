@@ -1,8 +1,8 @@
 import { WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { PropsWithChildren } from 'react'
 
-import cn from '../../../frontend/cn'
-import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
+import CustomComponents from '@/components/forms/widget-components/CustomComponents/CustomComponents'
+import cn from '@/frontend/cn'
 
 type WidgetWrapperProps = PropsWithChildren<{
   id: string

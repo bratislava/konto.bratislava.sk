@@ -2,11 +2,11 @@ import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 
 import FormsIframeTestPage, {
   FormsIframeTestPageProps,
-} from '../components/forms/FormsIframeTestPage'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { environment } from '../environment'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+} from '@/components/forms/FormsIframeTestPage'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { environment } from '@/environment'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps<FormsIframeTestPageProps>(async () => {
   if (!environment.featureToggles.developmentForms) {

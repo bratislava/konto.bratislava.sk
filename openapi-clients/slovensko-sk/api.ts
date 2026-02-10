@@ -31,6 +31,7 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
@@ -554,18 +555,11 @@ export interface ApiUsrPostRequest {
    */
   request: string
 }
-/**
- * Podpísaný objekt v rámci modulu CEP. Napríklad ASiC-E kontajner.
- */
 export interface CepSignedObject {
-  /**
-   * Certifikát časovej pečiatky podpisu objektu.
-   */
-  timestamp_certificate: string
   /**
    * Identifikátor objektu.
    */
-  id: string
+  id?: string
   /**
    * Názov objektu.
    */
@@ -594,6 +588,10 @@ export interface CepSignedObject {
    * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
    */
   content: string
+  /**
+   * Certifikát časovej pečiatky podpisu objektu.
+   */
+  timestamp_certificate: string
 }
 
 export const CepSignedObjectEncodingEnum = {
@@ -742,45 +740,159 @@ export interface CepSigningV2ObjectGroup {
    */
   id: string
 }
-/**
- * Overený ASiC CAdES objekt v rámci modulu CEP.
- */
 export interface CepVerifiedAsicCadesObject {
   /**
-   * Autorizácie objektu.
-   */
-  authorizations?: Array<object>
-  /**
    * Identifikátor objektu v rámci MessageContainer.
    */
   id?: string | null
+  /**
+   * Autorizácie objektu.
+   */
+  authorizations?: Array<CepVerifiedAsicCadesObjectAllOfAuthorizations>
 }
-/**
- * Overený ASiC XAdES objekt v rámci modulu CEP.
- */
+export interface CepVerifiedAsicCadesObjectAllOfAuthorizations {
+  /**
+   * Podpísané objekty.
+   */
+  objects?: Array<CepVerifiedAsicCadesObjectAllOfObjects>
+}
+export interface CepVerifiedAsicCadesObjectAllOfObjects {
+  /**
+   * Názov objektu.
+   */
+  name?: string
+  /**
+   * Typ internetového média v súlade s typom a obsahom objektu.
+   */
+  mime_type?: string
+  /**
+   * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
+   */
+  encoding?: CepVerifiedAsicCadesObjectAllOfObjectsEncodingEnum
+  /**
+   * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
+   */
+  content?: string
+  /**
+   * Digitálny odtlačok objektu.
+   */
+  digest?: string
+}
+
+export const CepVerifiedAsicCadesObjectAllOfObjectsEncodingEnum = {
+  Base64: 'Base64',
+  Xml: 'XML',
+} as const
+
+export type CepVerifiedAsicCadesObjectAllOfObjectsEncodingEnum =
+  (typeof CepVerifiedAsicCadesObjectAllOfObjectsEncodingEnum)[keyof typeof CepVerifiedAsicCadesObjectAllOfObjectsEncodingEnum]
+
 export interface CepVerifiedAsicXadesObject {
   /**
-   * Autorizácie objektu.
-   */
-  authorizations?: Array<object>
-  /**
    * Identifikátor objektu v rámci MessageContainer.
    */
   id?: string | null
+  /**
+   * Autorizácie objektu.
+   */
+  authorizations?: Array<CepVerifiedAsicXadesObjectAllOfAuthorizations>
 }
-/**
- * Overený CAdES objekt v rámci modulu CEP.
- */
+export interface CepVerifiedAsicXadesObjectAllOfAuthorizations {
+  /**
+   * Podpísané objekty.
+   */
+  objects?: Array<CepVerifiedAsicXadesObjectAllOfObjects>
+}
+export interface CepVerifiedAsicXadesObjectAllOfObjects {
+  /**
+   * Referenčný identifikátor objektu.
+   */
+  id?: string
+  /**
+   * URI objektu.
+   */
+  uri?: string
+  /**
+   * Schéma objektu.
+   */
+  schema?: string
+  /**
+   * Popis objektu.
+   */
+  description?: string
+  /**
+   * Typ internetového média v súlade s typom a obsahom objektu.
+   */
+  mime_type?: string
+  /**
+   * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
+   */
+  encoding?: CepVerifiedAsicXadesObjectAllOfObjectsEncodingEnum
+  /**
+   * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
+   */
+  content?: string
+  /**
+   * Digitálny odtlačok objektu.
+   */
+  digest?: string
+}
+
+export const CepVerifiedAsicXadesObjectAllOfObjectsEncodingEnum = {
+  Base64: 'Base64',
+  Xml: 'XML',
+} as const
+
+export type CepVerifiedAsicXadesObjectAllOfObjectsEncodingEnum =
+  (typeof CepVerifiedAsicXadesObjectAllOfObjectsEncodingEnum)[keyof typeof CepVerifiedAsicXadesObjectAllOfObjectsEncodingEnum]
+
 export interface CepVerifiedCadesObject {
   /**
-   * Autorizácie objektu.
-   */
-  authorizations?: Array<object>
-  /**
    * Identifikátor objektu v rámci MessageContainer.
    */
   id?: string | null
+  /**
+   * Autorizácie objektu.
+   */
+  authorizations?: Array<CepVerifiedCadesObjectAllOfAuthorizations>
 }
+export interface CepVerifiedCadesObjectAllOfAuthorizations {
+  /**
+   * Podpísané objekty.
+   */
+  objects?: Array<CepVerifiedCadesObjectAllOfObjects>
+}
+export interface CepVerifiedCadesObjectAllOfObjects {
+  /**
+   * Názov objektu.
+   */
+  name?: string
+  /**
+   * Typ internetového média v súlade s typom a obsahom objektu.
+   */
+  mime_type?: string
+  /**
+   * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
+   */
+  encoding?: CepVerifiedCadesObjectAllOfObjectsEncodingEnum
+  /**
+   * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
+   */
+  content?: string
+  /**
+   * Digitálny odtlačok objektu.
+   */
+  digest?: string
+}
+
+export const CepVerifiedCadesObjectAllOfObjectsEncodingEnum = {
+  Base64: 'Base64',
+  Xml: 'XML',
+} as const
+
+export type CepVerifiedCadesObjectAllOfObjectsEncodingEnum =
+  (typeof CepVerifiedCadesObjectAllOfObjectsEncodingEnum)[keyof typeof CepVerifiedCadesObjectAllOfObjectsEncodingEnum]
+
 /**
  * Overený objekt v rámci modulu CEP.
  */
@@ -916,31 +1028,108 @@ export interface CepVerifiedObjectAuthorizationsInnerVerificationVerifier {
    */
   description?: string
 }
-/**
- * Overený PAdES objekt v rámci modulu CEP.
- */
 export interface CepVerifiedPadesObject {
   /**
-   * Autorizácie objektu.
-   */
-  authorizations?: Array<object>
-  /**
    * Identifikátor objektu v rámci MessageContainer.
    */
   id?: string | null
+  /**
+   * Autorizácie objektu.
+   */
+  authorizations?: Array<CepVerifiedPadesObjectAllOfAuthorizations>
 }
-/**
- * Overený XAdES objekt v rámci modulu CEP.
- */
+export interface CepVerifiedPadesObjectAllOfAuthorizations {
+  /**
+   * Podpísané objekty.
+   */
+  objects?: Array<CepVerifiedPadesObjectAllOfObjects>
+}
+export interface CepVerifiedPadesObjectAllOfObjects {
+  /**
+   * Typ internetového média v súlade s typom a obsahom objektu.
+   */
+  mime_type?: string
+  /**
+   * Kódovanie obsahu objektu v tomto prípade vždy `Base64`.
+   */
+  encoding?: string
+  /**
+   * Digitálny odtlačok objektu.
+   */
+  digest?: string
+}
 export interface CepVerifiedXadesObject {
   /**
-   * Autorizácie objektu.
-   */
-  authorizations?: Array<object>
-  /**
    * Identifikátor objektu v rámci MessageContainer.
    */
   id?: string | null
+  /**
+   * Autorizácie objektu.
+   */
+  authorizations?: Array<CepVerifiedXadesObjectAllOfAuthorizations>
+}
+export interface CepVerifiedXadesObjectAllOfAuthorizations {
+  /**
+   * Podpísané objekty.
+   */
+  objects?: Array<CepVerifiedXadesObjectAllOfObjects>
+}
+export interface CepVerifiedXadesObjectAllOfObjects {
+  /**
+   * URI objektu.
+   */
+  uri?: string
+  /**
+   * Schéma objektu.
+   */
+  schema?: string
+  /**
+   * Popis objektu.
+   */
+  description?: string
+  /**
+   * Typ internetového média v súlade s typom a obsahom objektu.
+   */
+  mime_type?: string
+  /**
+   * Kódovanie obsahu objektu v súlade s hodnotou v atribúte `content`.
+   */
+  encoding?: CepVerifiedXadesObjectAllOfObjectsEncodingEnum
+  /**
+   * Obsah objektu zakódovaný podľa hodnoty v atribúte `encoding`.
+   */
+  content?: string
+  /**
+   * Digitálny odtlačok objektu.
+   */
+  digest?: string
+  verification?: CepVerifiedXadesObjectAllOfVerification
+}
+
+export const CepVerifiedXadesObjectAllOfObjectsEncodingEnum = {
+  Base64: 'Base64',
+  Xml: 'XML',
+} as const
+
+export type CepVerifiedXadesObjectAllOfObjectsEncodingEnum =
+  (typeof CepVerifiedXadesObjectAllOfObjectsEncodingEnum)[keyof typeof CepVerifiedXadesObjectAllOfObjectsEncodingEnum]
+
+/**
+ * Verifikačné dáta v podpise objektu.
+ */
+export interface CepVerifiedXadesObjectAllOfVerification {
+  parameters?: CepVerifiedXadesObjectAllOfVerificationParameters
+  /**
+   * Verzia verifikačných dát v podpise.
+   */
+  version?: string
+}
+/**
+ * Parametre verifikačných dát v podpise.
+ */
+export interface CepVerifiedXadesObjectAllOfVerificationParameters {
+  key?: string
+  value?: string
 }
 /**
  * Doručenka na prevzatie správy.
@@ -1049,10 +1238,31 @@ export interface EdeskHeader {
    */
   delivered_at: string
 }
-/**
- * Správa v schránke s obsahom a extrahovanými prílohami.
- */
 export interface EdeskMessage {
+  /**
+   * eDesk identifikátor správy.
+   */
+  id: number
+  /**
+   * SKTalk trieda správy.
+   */
+  class: string
+  /**
+   * SKTalk identifikátor správy. Správa odoslaná viacerým adresátom má rovnaké `message_id`, no rôzne eDesk `id` u každého adresáta.
+   */
+  message_id: string
+  /**
+   * SKTalk identifikátor vlákna správ.
+   */
+  correlation_id: string
+  /**
+   * Predmet správy.
+   */
+  subject: string
+  /**
+   * Čas doručenia správy.
+   */
+  delivered_at: string
   /**
    * SKTalk identifikátor referenčnej správy.
    */
@@ -1096,30 +1306,6 @@ export interface EdeskMessage {
    * Indikátor či došlo k chybe pri spracovaní správy na strane komponentu.
    */
   parse_error: boolean
-  /**
-   * eDesk identifikátor správy.
-   */
-  id: number
-  /**
-   * SKTalk trieda správy.
-   */
-  class: string
-  /**
-   * SKTalk identifikátor správy. Správa odoslaná viacerým adresátom má rovnaké `message_id`, no rôzne eDesk `id` u každého adresáta.
-   */
-  message_id: string
-  /**
-   * SKTalk identifikátor vlákna správ.
-   */
-  correlation_id: string
-  /**
-   * Predmet správy.
-   */
-  subject: string
-  /**
-   * Čas doručenia správy.
-   */
-  delivered_at: string
 }
 /**
  * Objekt v správe. Napríklad PDF príloha, podpísaný kontajner (ASiC, ZEP) alebo XML formulár.
@@ -1339,14 +1525,7 @@ export interface SktalkSaveToOutboxResult {
    */
   save_to_outbox_result: number
 }
-/**
- * ÚPVS identita právnickej osoby.
- */
 export interface UpvsCorporateBody {
-  /**
-   * Právnická osoba.
-   */
-  corporate_body?: object
   /**
    * Sektorové identifikátory.
    */
@@ -1392,6 +1571,7 @@ export interface UpvsCorporateBody {
    * Telefónne čísla.
    */
   phones?: Array<UpvsIdentityPhonesInner>
+  corporate_body?: UpvsCorporateBodyAllOfCorporateBody
 }
 
 export const UpvsCorporateBodyTypeEnum = {
@@ -1415,6 +1595,59 @@ export const UpvsCorporateBodyStatusEnum = {
 export type UpvsCorporateBodyStatusEnum =
   (typeof UpvsCorporateBodyStatusEnum)[keyof typeof UpvsCorporateBodyStatusEnum]
 
+/**
+ * Právnická osoba.
+ */
+export interface UpvsCorporateBodyAllOfCorporateBody {
+  /**
+   * Identifikačné číslo organizácie.
+   */
+  cin?: string
+  /**
+   * Daňové identifikačné číslo.
+   */
+  tin?: string
+  /**
+   * Identifikátor organizácie.
+   */
+  organization_id?: number
+  /**
+   * Organizačné jednotky.
+   */
+  organization_units?: Array<string>
+  /**
+   * Názov.
+   */
+  name?: string
+  /**
+   * Alternatívne názvy.
+   */
+  alternative_names?: Array<string>
+  /**
+   * Právna forma podľa číselníka ŠÚSR 0056.
+   */
+  legal_form?: UpvsEnumeration
+  /**
+   * Právne skutočnosti.
+   */
+  legal_facts?: Array<string>
+  /**
+   * Predmety činnosti.
+   */
+  activities?: Array<string>
+  /**
+   * Dátum vzniku.
+   */
+  established_on?: string
+  /**
+   * Dátum zániku.
+   */
+  terminated_on?: string
+  /**
+   * Dátum nahlásenia zmeny stavu.
+   */
+  updated_on?: string
+}
 /**
  * Hodnota podľa číselníka.
  */
@@ -1758,14 +1991,7 @@ export interface UpvsIdentityVariousIdsInner {
    */
   specified?: boolean
 }
-/**
- * ÚPVS identita fyzickej osoby.
- */
 export interface UpvsNaturalPerson {
-  /**
-   * Fyzická osoba.
-   */
-  natural_person?: object
   /**
    * Sektorové identifikátory.
    */
@@ -1811,6 +2037,7 @@ export interface UpvsNaturalPerson {
    * Telefónne čísla.
    */
   phones?: Array<UpvsIdentityPhonesInner>
+  natural_person?: UpvsNaturalPersonAllOfNaturalPerson
 }
 
 export const UpvsNaturalPersonTypeEnum = {
@@ -1858,6 +2085,87 @@ export const UpvsNaturalPersonAffixTypeEnum = {
 export type UpvsNaturalPersonAffixTypeEnum =
   (typeof UpvsNaturalPersonAffixTypeEnum)[keyof typeof UpvsNaturalPersonAffixTypeEnum]
 
+/**
+ * Fyzická osoba.
+ */
+export interface UpvsNaturalPersonAllOfNaturalPerson {
+  /**
+   * Typ.
+   */
+  type?: UpvsEnumeration
+  /**
+   * Meno.
+   */
+  name?: string
+  /**
+   * Krstné mená.
+   */
+  given_names?: Array<string>
+  /**
+   * Preferované krstné meno.
+   */
+  preferred_given_name?: string
+  /**
+   * Rodné priezviská.
+   */
+  given_family_names?: Array<UpvsNaturalPersonFamilyName>
+  /**
+   * Priezviská.
+   */
+  family_names?: Array<UpvsNaturalPersonFamilyName>
+  /**
+   * Právne meno.
+   */
+  legal_name?: string
+  /**
+   * Ďalšie meno.
+   */
+  other_name?: string
+  /**
+   * Tituly pred menom podľa číselníka ŠÚSR 0062.
+   */
+  prefixes?: Array<UpvsNaturalPersonAffix>
+  /**
+   * Tituly za menom podľa číselníka ŠÚSR 0063.
+   */
+  suffixes?: Array<UpvsNaturalPersonAffix>
+  /**
+   * Alternatívne meno.
+   */
+  alternative_names?: Array<string>
+  /**
+   * Pohlavie podľa číselníka ŠÚSR 3003.
+   */
+  gender?: UpvsEnumeration
+  /**
+   * Rodinný stav podľa číselníka ŠÚSR 4002.
+   */
+  marital_status?: string
+  /**
+   * Existenčný stav podľa číselníka ŠÚSR 4003.
+   */
+  vital_status?: UpvsEnumeration
+  /**
+   * Štátna príslušnosť podľa číselníka ŠÚSR 0086.
+   */
+  nationality?: UpvsEnumeration
+  /**
+   * Povolanie podľa číselníka ŠÚSR 5598.
+   */
+  occupation?: UpvsEnumeration
+  /**
+   * Narodenie.
+   */
+  birth?: UpvsNaturalPersonVitalEvent
+  /**
+   * Úmrtie.
+   */
+  death?: UpvsNaturalPersonVitalEvent
+  /**
+   * Dátum nahlásenia zmeny stavu.
+   */
+  updated_on?: string
+}
 /**
  * Priezvisko fyzickej osoby.
  */
@@ -2010,6 +2318,7 @@ export const CentrlnaRadnTabuaDostupnLenPreOVMApiAxiosParamCreator = function (
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2097,6 +2406,7 @@ export const CentrlnaRadnTabuaDostupnLenPreOVMApiAxiosParamCreator = function (
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2218,6 +2528,7 @@ export const CentrlnaRadnTabuaDostupnLenPreOVMApiAxiosParamCreator = function (
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2748,6 +3059,7 @@ export const DlhodobLoiskoApiAxiosParamCreator = function (configuration?: Confi
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2824,6 +3136,7 @@ export const DlhodobLoiskoApiAxiosParamCreator = function (configuration?: Confi
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2900,6 +3213,7 @@ export const DlhodobLoiskoApiAxiosParamCreator = function (configuration?: Confi
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3000,6 +3314,7 @@ export const DlhodobLoiskoApiAxiosParamCreator = function (configuration?: Confi
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3101,6 +3416,7 @@ export const DlhodobLoiskoApiAxiosParamCreator = function (configuration?: Confi
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3742,6 +4058,8 @@ export const InformcieOPrihlsenomPouvateoviApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/samlassertion+xml'
+
       if (accept != null) {
         localVarHeaderParameter['Accept'] = String(accept)
       }
@@ -3780,6 +4098,8 @@ export const InformcieOPrihlsenomPouvateoviApiAxiosParamCreator = function (
       // authentication API + OBO Token required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4002,6 +4322,8 @@ export const ManamentAutentifikanchCertifiktovAdministrciaApiAxiosParamCreator =
       // authentication Administration Token required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4306,6 +4628,8 @@ export const ManipulciaSoSchrnkouApiAxiosParamCreator = function (configuration?
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -4363,6 +4687,8 @@ export const ManipulciaSoSchrnkouApiAxiosParamCreator = function (configuration?
         localVarQueryParameter['per_page'] = perPage
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -4407,6 +4733,8 @@ export const ManipulciaSoSchrnkouApiAxiosParamCreator = function (configuration?
       // authentication API Token required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4497,6 +4825,8 @@ export const ManipulciaSoSchrnkouApiAxiosParamCreator = function (configuration?
       // authentication API Token required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -4617,6 +4947,8 @@ export const ManipulciaSoSchrnkouApiAxiosParamCreator = function (configuration?
       if (perPage !== undefined) {
         localVarQueryParameter['per_page'] = perPage
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5120,6 +5452,7 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5169,6 +5502,7 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5218,6 +5552,7 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5271,6 +5606,7 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5320,6 +5656,7 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5739,6 +6076,7 @@ export const PrihlasovaniePomocouEIDApiAxiosParamCreator = function (
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5988,6 +6326,8 @@ export const StavKomponentuMonitoringApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6115,6 +6455,7 @@ export const UniverzlneSynchrnneRozhranieSluiebPVSApiAxiosParamCreator = functio
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/xml'
 
       if (accept != null) {
         localVarHeaderParameter['Accept'] = String(accept)
@@ -6273,6 +6614,8 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6320,6 +6663,7 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiAxiosParamCreator = function (
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6543,6 +6887,8 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
         localVarQueryParameter['type'] = type
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6596,6 +6942,8 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
       if (version !== undefined) {
         localVarQueryParameter['version'] = version
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6660,6 +7008,7 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6703,6 +7052,8 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
       // authentication API + OBO Token required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6755,6 +7106,7 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6812,6 +7164,7 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -6869,6 +7222,7 @@ export const ZasielaniePodanApiAxiosParamCreator = function (configuration?: Con
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}

@@ -219,6 +219,17 @@ describe('formDataExtractors', () => {
   })
 
   describe('extractEmailFormEmail', () => {
+    test('should return undefined if extractEmail is not provided', () => {
+      const formDefinition = {
+        type: FormDefinitionType.Email,
+        email: {},
+      } as FormDefinitionEmail
+      const formData = {}
+
+      const result = extractEmailFormEmail(formDefinition, formData)
+      expect(result).toBeUndefined()
+    })
+
     test('should return result of extractEmail', () => {
       const extractEmailMock: SchemalessFormDataExtractor<any> = {
         type: 'schemaless',

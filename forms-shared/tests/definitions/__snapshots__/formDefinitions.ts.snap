@@ -872,6 +872,188 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
 }
 `;
 
+exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > default form state should match snapshot 1`] = `
+{
+  "podnet": {
+    "fotografia": [],
+  },
+}
+`;
+
+exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "podnet": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "typPodnetu": {
+                    "const": "ine",
+                  },
+                },
+                "required": [
+                  "typPodnetu",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "specifikaciaPodnetu": {
+                    "baOrder": 2,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Napr. navrhujem úpravu miesta parkovania",
+                      },
+                      "ui:widget": "TextArea",
+                    },
+                    "title": "Špecifikácia podnetu",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "specifikaciaPodnetu",
+                ],
+                "type": "object",
+              },
+            },
+          ],
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "podnet",
+            },
+          },
+          "properties": {
+            "fotografia": {
+              "baOrder": 6,
+              "baUiSchema": {
+                "ui:options": {
+                  "accept": ".jpg,.jpeg,.png",
+                  "helptext": "Nahrajte fotografiu kolobežky alebo lokality, ktorej sa podnet týka",
+                  "type": "dragAndDrop",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "maxItems": 2,
+              "minItems": 1,
+              "title": "Fotografia podnetu",
+              "type": "array",
+            },
+            "identifikacnyKod": {
+              "baOrder": 5,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Nachádza sa v strede riadidiel pod QR kódom",
+                  "inputType": "text",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Identifikačný kód kolobežky",
+              "type": "string",
+            },
+            "miestoPodnetu": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt alebo ulicu a číslo",
+                },
+                "ui:widget": "TextArea",
+              },
+              "title": "Miesto podnetu",
+              "type": "string",
+            },
+            "poskytovatel": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Bolt",
+                      "value": "bolt",
+                    },
+                    {
+                      "label": "Dott (Tier)",
+                      "value": "dott",
+                    },
+                    {
+                      "label": "Svišť",
+                      "value": "svist",
+                    },
+                  ],
+                  "orientations": "column",
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "enum": [
+                "bolt",
+                "dott",
+                "svist",
+              ],
+              "title": "Poskytovateľ kolobežky",
+              "type": "string",
+            },
+            "typPodnetu": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Nesprávne zaparkovaná kolobežka",
+                      "value": "nespravneZaparkovana",
+                    },
+                    {
+                      "label": "Kolobežka neschopná prevádzky",
+                      "value": "neschopnaPrevadzky",
+                    },
+                    {
+                      "label": "Iné",
+                      "value": "ine",
+                    },
+                  ],
+                  "orientations": "column",
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "enum": [
+                "nespravneZaparkovana",
+                "neschopnaPrevadzky",
+                "ine",
+              ],
+              "title": "Typ podnetu",
+              "type": "string",
+            },
+          },
+          "required": [
+            "typPodnetu",
+            "poskytovatel",
+            "miestoPodnetu",
+            "fotografia",
+          ],
+          "title": "Podnet",
+          "type": "object",
+        },
+      },
+      "required": [
+        "podnet",
+      ],
+      "type": "object",
+    },
+  ],
+  "title": "Nahlásenie podnetu k elektrickým kolobežkám",
+}
+`;
+
 exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > default form state should match snapshot 1`] = `
 {
   "sluzba": {},

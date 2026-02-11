@@ -31,12 +31,12 @@ import EmailFormsSubservice from '../email-forms.subservice'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
 jest.mock('forms-shared/form-utils/omitExtraData')
-jest.mock('forms-shared/form-utils/formDataExtractors')
 
 const formId = 'test-form-id'
 const userEmail = 'test@example.com'
 const userFirstName = 'Test'
 const mockExtractedSubject = 'Mock Extracted Subject'
+const mockExtractedTechnicalSubject = 'Test technical Subject'
 const mockExtractedEmail = 'extracted@example.com'
 const mockExtractedName = 'Extracted Name'
 const mockExtractedOloEmail = 'extracted-olo@example.com'
@@ -88,10 +88,13 @@ const mockFormDefinitionWithSendEmail = {
   termsAndConditions: 'test-terms',
   email: {
     address: {
-      prod: 'department@bratislava.sk',
-      test: 'department-test@bratislava.sk',
+      prod: ['department@bratislava.sk'],
+      test: ['department-test@bratislava.sk'],
     },
-    fromAddress: undefined, // Tests the fallback to email
+    fromAddress: {
+      prod: 'department-from@bratislava.sk',
+      test: 'department-from-test@bratislava.sk',
+    },
     mailer: 'mailgun',
     extractEmail: { type: 'schemaless', extractFn: () => mockExtractedEmail },
     extractName: { type: 'schemaless', extractFn: () => mockExtractedName },
@@ -118,7 +121,7 @@ const mockFormDefinitionWithSendOloEmail = {
       extractFn: () => mockExtractedOloEmail,
     },
     extractName: { type: 'schemaless', extractFn: () => mockExtractedOloName },
-    address: { prod: 'olo@bratislava.sk', test: 'olo-test@bratislava.sk' },
+    address: { prod: ['olo@bratislava.sk'], test: ['olo-test@bratislava.sk'] },
     fromAddress: {
       prod: 'from-olo@bratislava.sk',
       test: 'from-olo-test@bratislava.sk',
@@ -264,7 +267,7 @@ describe('EmailFormsSubservice', () => {
       expect(mailgunService.sendEmail).toHaveBeenCalledTimes(2)
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
         data: expect.objectContaining({
-          to: mockFormDefinitionWithSendEmail.email.address.prod,
+          to: mockFormDefinitionWithSendEmail.email.address.prod.join(', '),
           template: mockFormDefinitionWithSendEmail.email.newSubmissionTemplate,
           data: expect.objectContaining({
             formId: mockForm.id,
@@ -272,7 +275,7 @@ describe('EmailFormsSubservice', () => {
             messageSubject: mockExtractedSubject,
           }),
         }),
-        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
         attachments: expect.arrayContaining([
           expect.objectContaining({
             filename: 'submission.json',
@@ -294,7 +297,7 @@ describe('EmailFormsSubservice', () => {
             messageSubject: mockExtractedSubject,
           }),
         }),
-        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
         attachments: expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -352,7 +355,7 @@ describe('EmailFormsSubservice', () => {
       expect(oloMailerService.sendEmail).toHaveBeenCalledTimes(2)
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
         data: expect.objectContaining({
-          to: mockFormDefinitionWithSendOloEmail.email.address.prod,
+          to: mockFormDefinitionWithSendOloEmail.email.address.prod.join(', '),
           template:
             mockFormDefinitionWithSendOloEmail.email.newSubmissionTemplate,
           data: expect.objectContaining({
@@ -475,7 +478,7 @@ describe('EmailFormsSubservice', () => {
         data: expect.objectContaining({
           to: mockExtractedEmail,
         }),
-        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
         attachments: expect.any(Array),
       })
     })
@@ -495,7 +498,7 @@ describe('EmailFormsSubservice', () => {
             firstName: mockExtractedName,
           }),
         }),
-        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
         attachments: expect.any(Array),
       })
     })
@@ -572,11 +575,16 @@ describe('EmailFormsSubservice', () => {
     })
 
     it('should not send JSON data as attachment when sendJsonDataAttachmentInTechnicalMail is false', async () => {
-      // Temporarily set sendJsonDataAttachmentInTechnicalMail to false for this test
-      const originalSendJsonData =
-        mockFormDefinitionWithSendEmail.email
-          .sendJsonDataAttachmentInTechnicalMail
-      mockFormDefinitionWithSendEmail.email.sendJsonDataAttachmentInTechnicalMail = false
+      const mockFormDefinitionWithNoJsonAttachment = {
+        ...mockFormDefinitionWithSendEmail,
+        email: {
+          ...mockFormDefinitionWithSendEmail.email,
+          sendJsonDataAttachmentInTechnicalMail: false,
+        },
+      } as FormDefinitionEmail
+      jest
+        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
+        .mockReturnValue(mockFormDefinitionWithNoJsonAttachment)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
@@ -587,10 +595,6 @@ describe('EmailFormsSubservice', () => {
         attachments: undefined,
         subject: undefined,
       })
-
-      // Restore original value
-      mockFormDefinitionWithSendEmail.email.sendJsonDataAttachmentInTechnicalMail =
-        originalSendJsonData
     })
 
     it('should log error but continue when updating form state fails', async () => {
@@ -611,7 +615,7 @@ describe('EmailFormsSubservice', () => {
         data: expect.objectContaining({
           to: 'department@bratislava.sk',
         }),
-        emailFrom: 'department@bratislava.sk',
+        emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
         attachments: expect.any(Array),
         subject: undefined,
       })
@@ -662,11 +666,16 @@ describe('EmailFormsSubservice', () => {
     it('should use subject from the form definition if there is one', async () => {
       const formDefinitionWithSubject = {
         ...mockFormDefinitionWithSendEmail,
-        email: {
-          ...mockFormDefinitionWithSendEmail.email,
-          technicalEmailSubject: 'Test technical Subject',
+        subject: {
+          extractTechnical: {
+            type: 'schemaless' as const,
+            extractFn: () => mockExtractedTechnicalSubject,
+          },
         },
       }
+      jest
+        .spyOn(formDataExtractors, 'extractFormSubjectTechnical')
+        .mockReturnValue(mockExtractedTechnicalSubject)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(formDefinitionWithSubject)
@@ -676,7 +685,7 @@ describe('EmailFormsSubservice', () => {
         data: expect.anything(),
         emailFrom: expect.anything(),
         attachments: expect.anything(),
-        subject: 'Test technical Subject',
+        subject: mockExtractedTechnicalSubject,
       })
     })
   })
@@ -724,6 +733,20 @@ describe('EmailFormsSubservice', () => {
       }
       const result = service['resolveAddress'](addressObject)
       expect(result).toBe(addressObject.test)
+      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
+    })
+  })
+
+  describe('resolveMultipleAddresses', () => {
+    it('should return empty string when address list is empty', () => {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      configService.get.mockReturnValue(undefined)
+      const addressObject = {
+        test: [] as string[],
+        prod: [] as string[],
+      }
+      const result = service['resolveMultipleAddresses'](addressObject)
+      expect(result).toBe('')
       expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
   })

@@ -876,6 +876,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > defaul
 {
   "podnet": {
     "fotografia": [],
+    "typPodnetu": "nespravneZaparkovana",
   },
 }
 `;
@@ -1025,6 +1026,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                 },
                 "ui:widget": "RadioGroup",
               },
+              "default": "nespravneZaparkovana",
               "enum": [
                 "nespravneZaparkovana",
                 "neschopnaPrevadzky",

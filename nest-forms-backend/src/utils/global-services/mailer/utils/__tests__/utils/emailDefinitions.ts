@@ -13,6 +13,7 @@ export const testEmailDefinitions: Record<string, SendEmailInputDto> = {
       firstName: 'John',
       slug: 'tsb-form',
       htmlData: '<p>This is a test submission.</p>',
+      formSentAt: new Date('2026-02-11T12:00:00.000Z'),
     },
   },
   test2: {
@@ -23,6 +24,7 @@ export const testEmailDefinitions: Record<string, SendEmailInputDto> = {
       messageSubject: 'New Submission Received',
       firstName: 'John',
       slug: 'tsb-form',
+      formSentAt: new Date('2026-02-11T12:00:00.000Z'),
       htmlData: `
       <table>
         <caption>Generated dataset — many rows and columns</caption>

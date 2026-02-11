@@ -13,6 +13,7 @@ export function middleware(request: NextRequest) {
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isNodeEnvDevelopment ? "'unsafe-eval'" : ''} https://slovensko.sk;
     style-src 'self' ${isNodeEnvDevelopment ? "'unsafe-inline'" : `'nonce-${nonce}'`};
+    connect-src 'self' https://faro.bratislava.sk https://cognito-identity.eu-central-1.amazonaws.com;
     img-src 'self' blob:;
     font-src 'self';
     object-src 'none';
@@ -27,14 +28,14 @@ export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
 
-  requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+  requestHeaders.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
 
   const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   })
-  response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+  response.headers.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
 
   return response
 }

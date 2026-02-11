@@ -25,9 +25,11 @@ interface IdentityCheckRejectedMailgunParams extends BaseMailgunParams {
   }
 }
 
-interface DeliveryMethodChangedToNotifyMailgunParams extends BaseMailgunParams {
+interface DeliveryMethodChangedMailgunParams extends BaseMailgunParams {
   variables: {
     firstName: string | null
+    year: string
+    type: 'CITY' | 'POSTAL' | 'EDESK'
   }
   attachment?: {
     data: Buffer
@@ -74,16 +76,16 @@ export class MailgunMessageBuilder {
     }
   }
 
-  async '2025-delivery-method-changed-notify'({
+  async '2025-delivery-method-changed'({
     to,
     variables,
     attachment,
-  }: DeliveryMethodChangedToNotifyMailgunParams): Promise<MailgunMessageData> {
+  }: DeliveryMethodChangedMailgunParams): Promise<MailgunMessageData> {
     return {
       from: MAILGUN.FROM_EMAIL,
       to,
-      subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil na oznámenie',
-      template: '2025-delivery-method-changed-notify',
+      subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
+      template: '2025-delivery-method-changed',
       'h:X-Mailgun-Variables': JSON.stringify(variables),
       ...(attachment && { attachment }),
     }

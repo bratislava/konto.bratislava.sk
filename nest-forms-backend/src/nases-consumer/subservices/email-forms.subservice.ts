@@ -11,6 +11,7 @@ import {
   extractEmailFormEmail,
   extractEmailFormName,
   extractFormSubjectPlain,
+  extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
@@ -287,6 +288,9 @@ export default class EmailFormsSubservice {
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
+    const technicalSubject = formDefinition.subject?.extractTechnical
+      ? extractFormSubjectTechnical(formDefinition, form.formDataJson)
+      : undefined
 
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail({
@@ -320,7 +324,7 @@ export default class EmailFormsSubservice {
             fileIdInfoMap,
           )
         : undefined,
-      subject: formDefinition.email.technicalEmailSubject,
+      subject: technicalSubject,
     })
 
     const userConfirmationEmail =

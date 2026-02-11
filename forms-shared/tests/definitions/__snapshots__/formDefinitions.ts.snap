@@ -981,7 +981,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                       "value": "bolt",
                     },
                     {
-                      "label": "Dott (Tier)",
+                      "label": "Dott",
                       "value": "dott",
                     },
                     {

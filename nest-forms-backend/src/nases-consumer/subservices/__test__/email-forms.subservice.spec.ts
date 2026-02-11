@@ -685,6 +685,37 @@ describe('EmailFormsSubservice', () => {
         subject: mockExtractedTechnicalSubject,
       })
     })
+
+    it('should append form ID to technical subject when enabled', async () => {
+      const formDefinitionWithSubjectAndId = {
+        ...mockFormDefinitionWithSendEmail,
+        subject: {
+          extractTechnical: {
+            type: 'schemaless' as const,
+            extractFn: () => mockExtractedTechnicalSubject,
+          },
+        },
+        email: {
+          ...mockFormDefinitionWithSendEmail.email,
+          technicalEmailSubjectAppendId: true,
+        },
+      }
+      jest
+        .spyOn(formDataExtractors, 'extractFormSubjectTechnical')
+        .mockReturnValue(mockExtractedTechnicalSubject)
+      jest
+        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
+        .mockReturnValue(formDefinitionWithSubjectAndId)
+
+      await service.sendEmailForm(formId, userEmail, userFirstName)
+
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.anything(),
+        emailFrom: expect.anything(),
+        attachments: expect.anything(),
+        subject: `${mockExtractedTechnicalSubject} [${formId}]`,
+      })
+    })
   })
 
   describe('resolveAddress', () => {

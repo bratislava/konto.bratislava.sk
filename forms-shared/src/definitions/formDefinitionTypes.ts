@@ -80,6 +80,7 @@ export type FormDefinitionEmail = FormDefinitionBase & {
     sendJsonDataAttachmentInTechnicalMail?: boolean
     extractEmail: SchemalessFormDataExtractor<any>
     extractName?: SchemalessFormDataExtractor<any>
+    technicalEmailSubjectAppendId?: boolean
   }
 }
 

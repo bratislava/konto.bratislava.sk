@@ -5,6 +5,8 @@ import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
 import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
 import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'
 
+const bratislavaTimezone = 'Europe/Bratislava'
+
 /**
  * Main task orchestration service that schedules and coordinates all cron jobs.
  * Delegates actual task execution to domain-specific subservices.
@@ -22,7 +24,7 @@ export class TasksService {
    * Cleans up both UserIdCardVerify and LegalPersonIcoIdCardVerify records.
    * Runs daily at 1:00 AM.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, { timeZone: 'Europe/Bratislava' })
+  @Cron(CronExpression.EVERY_DAY_AT_1AM, { timeZone: bratislavaTimezone })
   @HandleErrors('Cron Error')
   async deleteOldUserVerificationData() {
     return this.cleanupTasksSubservice.deleteOldUserVerificationData()
@@ -34,7 +36,7 @@ export class TasksService {
    * Runs every 5 minutes from February 2nd onwards during tax season.
    */
   @Cron(`*/5 * 2-31 ${process.env.MUNICIPAL_TAX_LOCK_MONTH}-12 *`, {
-    timeZone: 'Europe/Bratislava',
+    timeZone: bratislavaTimezone,
   })
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
@@ -46,7 +48,7 @@ export class TasksService {
    * Uses exponential backoff for retry logic on failures.
    * Processes up to 5 entities every 30 seconds.
    */
-  @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: 'Europe/Bratislava' })
+  @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async updateEdesk(): Promise<void> {
     return this.edeskTasksSubservice.updateEdesk()
@@ -57,7 +59,7 @@ export class TasksService {
    * Logs error messages with entity details for monitoring.
    * Runs daily at 9:00 AM.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: 'Europe/Bratislava' })
+  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async alertFailingEdeskUpdate(): Promise<void> {
     return this.edeskTasksSubservice.alertFailingEdeskUpdate()
@@ -68,7 +70,7 @@ export class TasksService {
    * Removes access, ID, and refresh tokens from expired records.
    * Runs every 5 minutes, ensuring codes are at most 10 minutes old.
    */
-  @Cron(CronExpression.EVERY_5_MINUTES, { timeZone: 'Europe/Bratislava' })
+  @Cron(CronExpression.EVERY_5_MINUTES, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async cleanupExpiredAuthorizationCodes(): Promise<void> {
     return this.cleanupTasksSubservice.cleanupExpiredAuthorizationCodes()
@@ -79,7 +81,7 @@ export class TasksService {
    * Removes both expired authorization codes and stale records.
    * Runs on the 1st day of each month at midnight.
    */
-  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, { timeZone: 'Europe/Bratislava' })
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async deleteOldOAuth2Data(): Promise<void> {
     return this.cleanupTasksSubservice.deleteOldOAuth2Data()
@@ -92,7 +94,7 @@ export class TasksService {
    * Runs once per year on MUNICIPAL_TAX_LOCK_DAY/MUNICIPAL_TAX_LOCK_MONTH.
    */
   @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`, {
-    timeZone: 'Europe/Bratislava',
+    timeZone: bratislavaTimezone,
   })
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {
@@ -105,7 +107,7 @@ export class TasksService {
    * Includes PDF attachments for city account activations.
    * Runs daily at 1:00 AM.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, { timeZone: 'Europe/Bratislava' })
+  @Cron(CronExpression.EVERY_DAY_AT_1AM, { timeZone: bratislavaTimezone })
   @HandleErrors('Cron')
   async sendDailyDeliveryMethodSummaries() {
     return this.taxDeliveryMethodsTasksSubservice.sendDailyDeliveryMethodSummaries()

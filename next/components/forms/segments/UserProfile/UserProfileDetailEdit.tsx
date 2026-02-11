@@ -1,23 +1,20 @@
-import { baPhoneNumberRegex } from 'forms-shared/form-utils/ajvFormats'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import Button from '@/components/forms/simple-components/Button'
 import InputField from '@/components/forms/widget-components/InputField/InputField'
-import cn from '@/frontend/cn'
-import { AccountType, Address, UserAttributes } from '@/frontend/dtos/accountDto'
+import { AccountType, UserAttributes } from '@/frontend/dtos/accountDto'
 import useHookForm from '@/frontend/hooks/useHookForm'
-import useJsonParseMemo from '@/frontend/hooks/useJsonParseMemo'
 
 interface Data {
   email?: string
   business_name?: string
   given_name?: string
   family_name?: string
-  phone_number?: string
-  street_address?: string
-  city?: string
-  postal_code?: string
+  // phone_number?: string
+  // street_address?: string
+  // city?: string
+  // postal_code?: string
 }
 
 // must use `minLength: 1` to implement required field
@@ -43,20 +40,20 @@ const foSchema = {
         format: 'account:auth.fields.email_format',
       },
     },
-    phone_number: {
-      type: 'string',
-    },
-    street_address: {
-      type: 'string',
-    },
-    city: {
-      type: 'string',
-    },
-    postal_code: {
-      type: 'string',
-      format: 'postalCode',
-      errorMessage: { format: 'account:auth.fields.postal_code_format' },
-    },
+    // phone_number: {
+    //   type: 'string',
+    // },
+    // street_address: {
+    //   type: 'string',
+    // },
+    // city: {
+    //   type: 'string',
+    // },
+    // postal_code: {
+    //   type: 'string',
+    //   format: 'postalCode',
+    //   errorMessage: { format: 'account:auth.fields.postal_code_format' },
+    // },
   },
   required: ['email', 'given_name', 'family_name'],
 }
@@ -76,75 +73,92 @@ const poSchema = {
         format: 'account:auth.fields.email_format',
       },
     },
-    phone_number: {
-      type: 'string',
-    },
-    street_address: {
-      type: 'string',
-    },
-    city: {
-      type: 'string',
-    },
-    postal_code: {
-      type: 'string',
-      format: 'postalCode',
-      errorMessage: { format: 'account:auth.fields.postal_code_format' },
-    },
+    // phone_number: {
+    //   type: 'string',
+    // },
+    // street_address: {
+    //   type: 'string',
+    // },
+    // city: {
+    //   type: 'string',
+    // },
+    // postal_code: {
+    //   type: 'string',
+    //   format: 'postalCode',
+    //   errorMessage: { format: 'account:auth.fields.postal_code_format' },
+    // },
   },
   required: ['email'],
 }
 
-const isValidPhoneNumber = (phoneNumber: string) => {
-  return baPhoneNumberRegex.test(phoneNumber)
-}
-interface UserProfileDetailEditProps {
+// const isValidPhoneNumber = (phoneNumber: string) => {
+//   return baPhoneNumberRegex.test(phoneNumber)
+// }
+
+type UserProfileDetailEditProps = {
   formId: string
   userAttributes: UserAttributes
   onEmailChange: () => void
   onSubmit: (newUserData: UserAttributes) => void
 }
 
-const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
-  const { formId, userAttributes, onEmailChange, onSubmit } = props
+// TODO: The phone_number and address are temporarily hidden. Remove completely if not used long-term.
+const UserProfileDetailEdit = ({
+  formId,
+  userAttributes,
+  onEmailChange,
+  onSubmit,
+}: UserProfileDetailEditProps) => {
   const { t } = useTranslation('account')
-  const { address, name, family_name, given_name, email, phone_number } = userAttributes
-  const isLegalEntity = userAttributes?.['custom:account_type'] !== AccountType.FyzickaOsoba
-  const parsedAddress = useJsonParseMemo<Address>(address)
-  const { handleSubmit, control, errors, setError } = useHookForm<Data>({
+
+  const {
+    name,
+    given_name,
+    family_name,
+    email,
+    // phone_number,
+    // address,
+    'custom:account_type': account_type,
+  } = userAttributes
+
+  const isLegalEntity = account_type !== AccountType.FyzickaOsoba
+  // const parsedAddress = useJsonParseMemo<Address>(address)
+
+  const { handleSubmit, control, errors } = useHookForm<Data>({
     schema: isLegalEntity ? poSchema : foSchema,
     defaultValues: {
       business_name: name,
       family_name,
       given_name,
       email,
-      phone_number,
-      street_address: parsedAddress?.street_address,
-      city: parsedAddress?.locality,
-      postal_code: parsedAddress?.postal_code,
+      // phone_number,
+      // street_address: parsedAddress?.street_address,
+      // city: parsedAddress?.locality,
+      // postal_code: parsedAddress?.postal_code,
     },
   })
 
   const handleSubmitCallback = (data: Data) => {
-    if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
-      const newUserData: UserAttributes = {
-        email: data.email,
-        name: data.business_name,
-        given_name: data.given_name,
-        family_name: data.family_name,
-        phone_number: data.phone_number || '',
-        address: JSON.stringify({
-          street_address: data.street_address,
-          locality: data.city,
-          postal_code: data.postal_code?.replaceAll(' ', ''),
-        }),
-      }
-      return onSubmit(newUserData)
+    // if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
+    const newUserData: UserAttributes = {
+      email: data.email,
+      name: data.business_name,
+      given_name: data.given_name,
+      family_name: data.family_name,
+      // phone_number: data.phone_number || '',
+      // address: JSON.stringify({
+      //   street_address: data.street_address,
+      //   locality: data.city,
+      //   postal_code: data.postal_code?.replaceAll(' ', ''),
+      // }),
     }
-
-    return setError('phone_number', {
-      type: 'manual',
-      message: 'account:auth.fields.phone_number_format',
-    })
+    return onSubmit(newUserData)
+    // }
+    //
+    // return setError('phone_number', {
+    //   type: 'manual',
+    //   message: 'account:auth.fields.phone_number_format',
+    // })
   }
 
   return (
@@ -213,6 +227,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             render={({ field }) => (
               <InputField
                 disabled
+                required
                 label={t('my_profile.profile_detail.email')}
                 autoComplete="username"
                 {...field}
@@ -221,75 +236,83 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="flex flex-col justify-end pt-1">
-          <Button variant="solid" onPress={onEmailChange} data-cy="change-email-button">
+        <div className="flex flex-col justify-end">
+          <Button
+            variant="outline"
+            onPress={onEmailChange}
+            data-cy="change-email-button"
+            // Set the same height as input
+            className="h-12"
+          >
             {t('my_profile.profile_detail.email_button')}
           </Button>
         </div>
       </div>
-      <div className="gap flex flex-row flex-wrap gap-x-6">
-        <div className="w-full grow md:w-fit">
-          <Controller
-            name="phone_number"
-            control={control}
-            render={({ field }) => (
-              <InputField
-                label={t('my_profile.profile_detail.phone_number')}
-                {...field}
-                placeholder={t('my_profile.profile_detail.phone_number_placeholder')}
-                errorMessage={errors.phone_number}
-              />
-            )}
-          />
-        </div>
-        <div className="invisible h-0 w-full grow md:w-fit">
-          <InputField label={t('my_profile.profile_detail.phone_number')} />
-        </div>
-      </div>
-      <div className="h-0 w-full border-b-2 border-gray-200" />
-      <h5 className="text-h5">{t('my_profile.profile_detail.address')}</h5>
-      <Controller
-        name="street_address"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            label={t('my_profile.profile_detail.street')}
-            capitalize
-            {...field}
-            errorMessage={errors.street_address}
-          />
-        )}
-      />
-      <div className="gap flex flex-row flex-wrap gap-6">
-        <div className="grow">
-          <Controller
-            name="city"
-            control={control}
-            render={({ field }) => (
-              <InputField
-                label={t('my_profile.profile_detail.city')}
-                capitalize
-                {...field}
-                errorMessage={errors.city}
-              />
-            )}
-          />
-        </div>
-        <div className={cn('w-full', 'md:w-52')}>
-          <Controller
-            name="postal_code"
-            control={control}
-            render={({ field }) => (
-              <InputField
-                tooltip={t('my_profile.profile_detail.postal_code_tooltip')}
-                label={t('my_profile.profile_detail.postal_code')}
-                {...field}
-                errorMessage={errors.postal_code}
-              />
-            )}
-          />
-        </div>
-      </div>
+
+      {/* TODO: Phone number and address are temporarily hidden. Remove if not used long-term. */}
+      {/* <div className="gap flex flex-row flex-wrap gap-x-6"> */}
+      {/*   <div className="w-full grow md:w-fit"> */}
+      {/*     <Controller */}
+      {/*       name="phone_number" */}
+      {/*       control={control} */}
+      {/*       render={({ field }) => ( */}
+      {/*         <InputField */}
+      {/*           label={t('my_profile.profile_detail.phone_number')} */}
+      {/*           {...field} */}
+      {/*           placeholder={t('my_profile.profile_detail.phone_number_placeholder')} */}
+      {/*           errorMessage={errors.phone_number} */}
+      {/*         /> */}
+      {/*       )} */}
+      {/*     /> */}
+      {/*   </div> */}
+      {/*   <div className="invisible h-0 w-full grow md:w-fit"> */}
+      {/*     <InputField label={t('my_profile.profile_detail.phone_number')} /> */}
+      {/*   </div> */}
+      {/* </div> */}
+      {/* <div className="h-0 w-full border-b-2 border-gray-200" /> */}
+      {/* <h5 className="text-h5">{t('my_profile.profile_detail.address')}</h5> */}
+      {/* <Controller */}
+      {/*   name="street_address" */}
+      {/*   control={control} */}
+      {/*   render={({ field }) => ( */}
+      {/*     <InputField */}
+      {/*       label={t('my_profile.profile_detail.street')} */}
+      {/*       capitalize */}
+      {/*       {...field} */}
+      {/*       errorMessage={errors.street_address} */}
+      {/*     /> */}
+      {/*   )} */}
+      {/* /> */}
+      {/* <div className="gap flex flex-row flex-wrap gap-6"> */}
+      {/*   <div className="grow"> */}
+      {/*     <Controller */}
+      {/*       name="city" */}
+      {/*       control={control} */}
+      {/*       render={({ field }) => ( */}
+      {/*         <InputField */}
+      {/*           label={t('my_profile.profile_detail.city')} */}
+      {/*           capitalize */}
+      {/*           {...field} */}
+      {/*           errorMessage={errors.city} */}
+      {/*         /> */}
+      {/*       )} */}
+      {/*     /> */}
+      {/*   </div> */}
+      {/*   <div className={cn('w-full', 'md:w-52')}> */}
+      {/*     <Controller */}
+      {/*       name="postal_code" */}
+      {/*       control={control} */}
+      {/*       render={({ field }) => ( */}
+      {/*         <InputField */}
+      {/*           tooltip={t('my_profile.profile_detail.postal_code_tooltip')} */}
+      {/*           label={t('my_profile.profile_detail.postal_code')} */}
+      {/*           {...field} */}
+      {/*           errorMessage={errors.postal_code} */}
+      {/*         /> */}
+      {/*       )} */}
+      {/*     /> */}
+      {/*   </div> */}
+      {/* </div> */}
 
       {/* Save button (mobile) */}
       <div className="py-2 md:hidden">

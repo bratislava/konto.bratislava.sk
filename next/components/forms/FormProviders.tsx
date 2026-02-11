@@ -13,13 +13,13 @@ import { FormStateProvider } from '@/components/forms/useFormState'
 import { FormValidatorRegistryProvider } from '@/components/forms/useFormValidatorRegistry'
 import { FormExportImportProvider } from '@/frontend/hooks/useFormExportImport'
 
-const FormProviders = ({ children }: PropsWithChildren) => {
+const FormProviders = ({ children, nonce }: PropsWithChildren<{ nonce?: string }>) => {
   return (
     <FormValidatorRegistryProvider>
       <FormFileUploadProvider>
         <FormLeaveProtectionProvider>
           <FormModalsProvider>
-            <FormSignerLoaderProvider>
+            <FormSignerLoaderProvider nonce={nonce}>
               <FormDataProvider>
                 <FormStateProvider>
                   <FormSignatureProvider>

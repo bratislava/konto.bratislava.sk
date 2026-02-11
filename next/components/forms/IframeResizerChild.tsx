@@ -19,6 +19,7 @@ export const useIframeResizerChildContext = () => {
 
 interface IframeResizerChildProps extends PropsWithChildren {
   enabled?: boolean
+  nonce?: string
 }
 
 /*
@@ -27,7 +28,7 @@ interface IframeResizerChildProps extends PropsWithChildren {
  *
  * It is possible to load the library with ES module import, however, this would always include it.
  */
-const IframeResizerChild = ({ children, enabled = false }: IframeResizerChildProps) => {
+const IframeResizerChild = ({ children, enabled = false, nonce }: IframeResizerChildProps) => {
   const cleanupRef = useRef<(() => void) | null>(null)
   const [parentProps, setParentProps] = useState<iframeResizer.ParentProps | null>(null)
 
@@ -63,7 +64,12 @@ const IframeResizerChild = ({ children, enabled = false }: IframeResizerChildPro
 
   return (
     <IframeResizerChildContext.Provider value={parentProps}>
-      <Script src={environment.iframeResizerPublicPath} async onLoad={handleScriptOnLoad} />
+      <Script
+        src={environment.iframeResizerPublicPath}
+        async
+        onLoad={handleScriptOnLoad}
+        nonce={nonce}
+      />
       {children}
     </IframeResizerChildContext.Provider>
   )

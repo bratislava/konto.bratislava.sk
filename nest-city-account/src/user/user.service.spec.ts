@@ -73,7 +73,7 @@ describe('UserService', () => {
       expect(result).toBe(false)
       expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).not.toHaveBeenCalled()
     })
-    
+
     it('should return true when user has no delivery method set at lock date, but selected CITY_ACCOUNT', async () => {
       databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates.mockResolvedValue({
         active: { deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT },
@@ -81,7 +81,9 @@ describe('UserService', () => {
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
-      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+        id: userId,
+      })
     })
 
     it('should return false when user has no delivery method set at lock date, but selected POSTAL', async () => {
@@ -91,9 +93,10 @@ describe('UserService', () => {
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(false)
-      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+        id: userId,
+      })
     })
-
     ;[DeliveryMethodEnum.CITY_ACCOUNT, DeliveryMethodEnum.POSTAL].forEach((deliveryMethod) => {
       it(`should return false when user has the same delivery method set at lock date: ${deliveryMethod}`, async () => {
         databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates.mockResolvedValue({
@@ -102,7 +105,9 @@ describe('UserService', () => {
         })
         const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
         expect(result).toBe(false)
-        expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+        expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+          id: userId,
+        })
       })
 
       it(`should return false when user has EDESK as active delivery method and ${deliveryMethod} at lock date`, async () => {
@@ -112,7 +117,9 @@ describe('UserService', () => {
         })
         const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
         expect(result).toBe(false)
-        expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+        expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+          id: userId,
+        })
       })
     })
 
@@ -123,7 +130,9 @@ describe('UserService', () => {
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(false)
-      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+        id: userId,
+      })
     })
 
     it('should return false when user has EDESK as active delivery method', async () => {
@@ -133,7 +142,9 @@ describe('UserService', () => {
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(false)
-      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+        id: userId,
+      })
     })
 
     it('should return true when user has CITY_ACCOUNT set at lock date and different delivery method', async () => {
@@ -143,7 +154,9 @@ describe('UserService', () => {
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
-      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+        id: userId,
+      })
     })
 
     it('should return true when user has POSTAL set at lock date and different delivery method', async () => {
@@ -153,7 +166,9 @@ describe('UserService', () => {
       })
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(true)
-      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({ id: userId })
+      expect(databaseSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
+        id: userId,
+      })
     })
   })
 })

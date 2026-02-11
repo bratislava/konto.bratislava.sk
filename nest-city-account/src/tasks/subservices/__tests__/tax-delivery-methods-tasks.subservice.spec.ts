@@ -22,6 +22,8 @@ type UserWithRelations = Prisma.UserGetPayload<{
   }
 }>
 
+const mockEmail = 'test@example.com'
+
 describe('TaxDeliveryMethodsTasksSubservice', () => {
   let service: TaxDeliveryMethodsTasksSubservice
   let throwerErrorGuard: ThrowerErrorGuard
@@ -509,7 +511,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: null,
         birthNumber: '1234567890',
       } as any)
@@ -531,7 +533,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: null,
       } as any)
@@ -563,7 +565,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: '1234567890',
         physicalEntity: {
@@ -583,7 +585,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // TODO: Currently commented out in implementation (line 432-436)
       // expect(sendEmailSpy).toHaveBeenCalledWith('placeholder-edesk-activated', {
-      //   to: 'user@example.com',
+      //   to: mockEmail,
       //   variables: { firstName: 'John' },
       // })
       expect(sendEmailSpy).not.toHaveBeenCalled()
@@ -609,7 +611,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: '1234567890',
         physicalEntity: {
@@ -629,7 +631,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // TODO: Currently commented out in implementation (line 458-462)
       // expect(sendEmailSpy).toHaveBeenCalledWith('placeholder-postal-activated', {
-      //   to: 'user@example.com',
+      //   to: mockEmail,
       //   variables: { firstName: 'John' },
       // })
       expect(sendEmailSpy).not.toHaveBeenCalled()
@@ -649,7 +651,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: '1234567890',
         physicalEntity: {
@@ -685,7 +687,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         'delivery-method-set-to-notification',
         'oznamenie.pdf',
         {
-          email: 'user@example.com',
+          email: mockEmail,
           name: 'John Doe',
           birthNumber: '1234567890',
           date: expect.any(String),
@@ -694,7 +696,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       )
 
       expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-notify', {
-        to: 'user@example.com',
+        to: mockEmail,
         variables: { firstName: 'John' },
         attachment: mockPdf,
       })
@@ -714,7 +716,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: '1234567890',
         physicalEntity: {
@@ -745,7 +747,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // TODO: Currently commented out in implementation (line 539-543)
       // expect(sendEmailSpy).toHaveBeenCalledWith('placeholder-postal-activated', {
-      //   to: 'user@example.com',
+      //   to: mockEmail,
       //   variables: { firstName: 'John' },
       // })
       expect(sendEmailSpy).not.toHaveBeenCalled()
@@ -768,7 +770,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: '1234567890',
         physicalEntity: {
@@ -798,7 +800,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: '1234567890',
         physicalEntity: {
@@ -930,7 +932,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       // User has active eDesk (changed yesterday) AND GDPR change yesterday
       prismaMock.user.findUnique.mockResolvedValue({
         id: 'user1',
-        email: 'user@example.com',
+        email: mockEmail,
         externalId: 'ext-123',
         birthNumber: '1234567890',
         physicalEntity: {

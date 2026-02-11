@@ -27,10 +27,16 @@ describe('CleanupTasksSubservice', () => {
         'deleteMany'
       )
 
-      const today = new Date()
-      const oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1))
+      const mockDate = new Date('2024-01-15T00:00:00.000Z')
+      jest.useFakeTimers()
+      jest.setSystemTime(mockDate)
+
+      const oneMonthAgo = new Date(mockDate)
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
 
       await service.deleteOldUserVerificationData()
+
+      jest.useRealTimers()
 
       expect(userIdCardVerifyDeleteSpy).toHaveBeenCalledWith({
         where: {
@@ -60,7 +66,13 @@ describe('CleanupTasksSubservice', () => {
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockExpiredRecords as OAuth2Data[])
       const updateManySpy = jest.spyOn(prismaMock.oAuth2Data, 'updateMany')
 
+      const mockDate = new Date('2024-01-15T00:00:00.000Z')
+      jest.useFakeTimers()
+      jest.setSystemTime(mockDate)
+
       await service.cleanupExpiredAuthorizationCodes()
+
+      jest.useRealTimers()
 
       expect(prismaMock.oAuth2Data.findMany).toHaveBeenCalledWith({
         where: {
@@ -112,7 +124,13 @@ describe('CleanupTasksSubservice', () => {
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockOldRecords as OAuth2Data[])
       const deleteManySpy = jest.spyOn(prismaMock.oAuth2Data, 'deleteMany')
 
+      const mockDate = new Date('2024-01-15T00:00:00.000Z')
+      jest.useFakeTimers()
+      jest.setSystemTime(mockDate)
+
       await service.deleteOldOAuth2Data()
+
+      jest.useRealTimers()
 
       expect(prismaMock.oAuth2Data.findMany).toHaveBeenCalledWith({
         where: {

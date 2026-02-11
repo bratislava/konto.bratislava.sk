@@ -644,7 +644,7 @@ export const formDefinitions: FormDefinition[] = [
         test: 'Mesto Bratislava <konto@bratislava.sk>',
       },
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.OLO_SENT_SUCCESS, // TODO: Implement Konto template
+      userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
       technicalEmailSubjectAppendId: true,
     },

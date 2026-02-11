@@ -37,6 +37,7 @@ const formId = 'test-form-id'
 const userEmail = 'test@example.com'
 const userFirstName = 'Test'
 const mockExtractedSubject = 'Mock Extracted Subject'
+const mockExtractedTechnicalSubject = 'Test technical Subject'
 const mockExtractedEmail = 'extracted@example.com'
 const mockExtractedName = 'Extracted Name'
 const mockExtractedOloEmail = 'extracted-olo@example.com'
@@ -662,11 +663,16 @@ describe('EmailFormsSubservice', () => {
     it('should use subject from the form definition if there is one', async () => {
       const formDefinitionWithSubject = {
         ...mockFormDefinitionWithSendEmail,
-        email: {
-          ...mockFormDefinitionWithSendEmail.email,
-          technicalEmailSubject: 'Test technical Subject',
+        subject: {
+          extractTechnical: {
+            type: 'schemaless' as const,
+            extractFn: () => mockExtractedTechnicalSubject,
+          },
         },
       }
+      jest
+        .spyOn(formDataExtractors, 'extractFormSubjectTechnical')
+        .mockReturnValue(mockExtractedTechnicalSubject)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(formDefinitionWithSubject)
@@ -676,7 +682,38 @@ describe('EmailFormsSubservice', () => {
         data: expect.anything(),
         emailFrom: expect.anything(),
         attachments: expect.anything(),
-        subject: 'Test technical Subject',
+        subject: mockExtractedTechnicalSubject,
+      })
+    })
+
+    it('should append form ID to technical subject when enabled', async () => {
+      const formDefinitionWithSubjectAndId = {
+        ...mockFormDefinitionWithSendEmail,
+        subject: {
+          extractTechnical: {
+            type: 'schemaless' as const,
+            extractFn: () => mockExtractedTechnicalSubject,
+          },
+        },
+        email: {
+          ...mockFormDefinitionWithSendEmail.email,
+          technicalEmailSubjectAppendId: true,
+        },
+      }
+      jest
+        .spyOn(formDataExtractors, 'extractFormSubjectTechnical')
+        .mockReturnValue(mockExtractedTechnicalSubject)
+      jest
+        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
+        .mockReturnValue(formDefinitionWithSubjectAndId)
+
+      await service.sendEmailForm(formId, userEmail, userFirstName)
+
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.anything(),
+        emailFrom: expect.anything(),
+        attachments: expect.anything(),
+        subject: `${mockExtractedTechnicalSubject} [${formId}]`,
       })
     })
   })

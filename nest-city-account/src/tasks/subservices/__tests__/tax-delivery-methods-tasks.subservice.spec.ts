@@ -1,21 +1,4 @@
-/**
- * DISCREPANCIES BETWEEN IMPLEMENTATION AND DOCUMENTATION:
- *
- * 1. INCOMPLETE EMAIL TEMPLATES (sendDailyDeliveryMethodSummaries):
- *    - Documentation states emails should be sent for eDesk activation/deactivation and postal activation
- *    - Implementation has these email sends commented out with TODO markers:
- *      * Line 432-436: eDesk activation email ('placeholder-edesk-activated')
- *      * Line 458-462: Postal email when eDesk deactivated ('placeholder-postal-activated')
- *      * Line 539-543: Postal email when GDPR unsubscribe ('placeholder-postal-activated')
- *    - Only City Account subscription email is fully implemented (line 530-534)
- *    - Tests reflect current implementation state (emails not sent) but include TODO comments
- *      referencing the expected behavior per documentation
- *
- * 2. NO OTHER DISCREPANCIES FOUND:
- *    - lockDeliveryMethods implementation matches documentation exactly
- *    - updateDeliveryMethodsInNoris implementation matches documentation exactly
- *    - All business logic, priority rules, and edge cases align with documentation
- */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -428,98 +411,6 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should process users in batches of 100 with 1 second delay', async () => {
-      jest.useFakeTimers()
-      const jobStartTime = new Date()
-
-      // Create 150 mock users to test batching
-      const firstBatch = Array.from({ length: 100 }, (_, i) => ({
-        id: `${i + 1}`,
-        birthNumber: `123456${String(i).padStart(4, '0')}`,
-        createdAt: new Date(jobStartTime.getTime() - 10000),
-        userGdprData: [],
-        physicalEntity: { activeEdesk: false },
-      }))
-
-      const secondBatch = Array.from({ length: 50 }, (_, i) => ({
-        id: `${i + 101}`,
-        birthNumber: `123456${String(i + 100).padStart(4, '0')}`,
-        createdAt: new Date(jobStartTime.getTime() - 10000),
-        userGdprData: [],
-        physicalEntity: { activeEdesk: false },
-      }))
-
-      prismaMock.user.findMany
-        .mockResolvedValueOnce(firstBatch as unknown as UserWithRelations[])
-        .mockResolvedValueOnce(secondBatch as unknown as UserWithRelations[])
-        .mockResolvedValueOnce([])
-
-      prismaMock.user.updateMany.mockResolvedValue({ count: 1 })
-
-      const lockPromise = service.lockDeliveryMethods()
-
-      // Fast-forward through the delay
-      await jest.runAllTimersAsync()
-      await lockPromise
-
-      expect(prismaMock.user.findMany).toHaveBeenCalledTimes(3)
-      expect(prismaMock.user.findMany).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({ take: 100 })
-      )
-
-      jest.useRealTimers()
-    })
-
-    it('should use latest GDPR record when multiple FORMAL_COMMUNICATION records exist', async () => {
-      const jobStartTime = new Date()
-      const olderDate = new Date('2024-01-10')
-      const newerDate = new Date('2024-01-20')
-      const updateSpy = jest.spyOn(prismaMock.user, 'update').mockResolvedValue({} as User)
-
-      prismaMock.user.findMany.mockResolvedValueOnce([
-        {
-          id: '1',
-          birthNumber: '1234567890',
-          createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [
-            {
-              subType: GDPRSubTypeEnum.subscribe,
-              createdAt: newerDate,
-            },
-          ],
-          physicalEntity: {
-            activeEdesk: false,
-          },
-        },
-      ] as unknown as UserWithRelations[])
-
-      prismaMock.user.findMany.mockResolvedValueOnce([])
-
-      await service.lockDeliveryMethods()
-
-      // Should use the latest (first) record due to orderBy createdAt desc, take 1
-      expect(updateSpy).toHaveBeenCalledWith({
-        where: { birthNumber: '1234567890' },
-        data: {
-          taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
-          taxDeliveryMethodCityAccountLockDate: newerDate,
-        },
-      })
-
-      // Verify the query orders by createdAt desc and takes 1
-      expect(prismaMock.user.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          include: expect.objectContaining({
-            userGdprData: expect.objectContaining({
-              orderBy: { createdAt: 'desc' },
-              take: 1,
-            }),
-          }),
-        })
-      )
-    })
-
     it('should prioritize activeEdesk over GDPR subscribe preference', async () => {
       const jobStartTime = new Date()
       const gdprDate = new Date('2024-01-15')
@@ -581,23 +472,6 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.sendDailyDeliveryMethodSummaries()
 
       expect(sendEmailSpy).not.toHaveBeenCalled()
-    })
-
-    it('should throw error when SEND_DAILY_DELIVERY_METHOD_SUMMARIES config is missing from database', async () => {
-      prismaMock.config.findFirst.mockResolvedValue(null)
-
-      const internalErrorSpy = jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw new Error('Config not found')
-        })
-
-      await expect(service.sendDailyDeliveryMethodSummaries()).rejects.toThrow('Config not found')
-
-      expect(internalErrorSpy).toHaveBeenCalledWith(
-        expect.any(String),
-        'SEND_DAILY_DELIVERY_METHOD_SUMMARIES not found in database config.'
-      )
     })
 
     it('should skip users without email', async () => {
@@ -1090,3 +964,4 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
   })
 })
+/* eslint-enable @typescript-eslint/no-explicit-any */

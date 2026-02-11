@@ -5,24 +5,23 @@ import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo } from 'react'
 
-import { ROUTES } from '../api/constants'
+import { ROUTES } from '@/frontend/api/constants'
+import { useOAuthParams } from '@/frontend/hooks/useOAuthParams'
 import {
-  clientIdQueryParam,
+  authRequestIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
   isHomeRedirect,
-  payloadQueryParam,
+  isIdentityVerificationRequiredQueryParam,
+  isOAuthQueryParam,
   redirectQueryParam,
-  redirectUriQueryParam,
-  stateQueryParam,
-} from '../utils/queryParamRedirect'
-import { useOAuthParams } from './useOAuthParams'
+} from '@/frontend/utils/queryParamRedirect'
 
 export const useQueryParamRedirect = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const { clientId, payload, redirectUri, state } = useOAuthParams()
+  const { isOAuth, authRequestId, isIdentityVerificationRequired } = useOAuthParams()
 
   const safeRedirect = useMemo(() => {
     const param = searchParams.get(redirectQueryParam)
@@ -36,12 +35,13 @@ export const useQueryParamRedirect = () => {
   const getRedirectQueryParams = useCallback(() => {
     return {
       ...(!isHomeRedirect(safeRedirect) && { [redirectQueryParam]: safeRedirect.url }),
-      ...(clientId && { [clientIdQueryParam]: clientId }),
-      ...(payload && { [payloadQueryParam]: payload }),
-      ...(redirectUri && { [redirectUriQueryParam]: redirectUri }),
-      ...(state && { [stateQueryParam]: state }),
+      ...(isOAuth && { [isOAuthQueryParam]: isOAuth }),
+      ...(authRequestId && { [authRequestIdQueryParam]: authRequestId }),
+      ...(isIdentityVerificationRequired && {
+        [isIdentityVerificationRequiredQueryParam]: isIdentityVerificationRequired,
+      }),
     }
-  }, [clientId, payload, redirectUri, safeRedirect, state])
+  }, [safeRedirect, isOAuth, authRequestId, isIdentityVerificationRequired])
 
   /**
    * If redirect param exists in the current URL the function appends it to the next route. Should be only used for

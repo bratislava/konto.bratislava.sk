@@ -4,20 +4,26 @@ import { AuthError, AuthSession } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
+import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 
-import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
-import type { GlobalAppProps } from '../../pages/_app'
-import { ROUTES } from '../api/constants'
-import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
-import { AmplifyServerContextSpec } from './amplifyTypes'
+import { cityAccountClient, LoginClientEnum } from '@/clients/city-account'
+import { ssrAuthContextPropKey, SsrAuthContextType } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { baRunWithAmplifyServerContext } from '@/frontend/utils/amplifyServerRunner'
+import { AmplifyServerContextSpec } from '@/frontend/utils/amplifyTypes'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import { isDefined } from '@/frontend/utils/general'
 import {
-  clientIdQueryParam,
+  authRequestIdQueryParam,
   getRedirectUrl,
   getSafeRedirect,
+  isIdentityVerificationRequiredQueryParam,
+  isOAuthQueryParam,
   redirectQueryParam,
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
-} from './queryParamRedirect'
+} from '@/frontend/utils/queryParamRedirect'
+import type { GlobalAppProps } from '@/pages/_app'
 
 /**
  * In Amplify V6, `getServerSideProps` must run in Amplify server context to execute Amplify operations. This is a
@@ -52,8 +58,10 @@ export const amplifyGetServerSideProps = <
   options?: {
     requiresSignIn?: boolean
     requiresSignOut?: boolean
+    isOAuthRedirect?: boolean
     skipSsrAuthContext?: boolean
     redirectQueryParam?: boolean
+    redirectOAuthParams?: boolean
   },
 ) => {
   const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
@@ -96,11 +104,57 @@ export const amplifyGetServerSideProps = <
           }
         }
 
+        let oAuthParams = ''
+        if (options?.redirectOAuthParams) {
+          // TODO rewrite in cleaner way
+          oAuthParams = context.query
+            ? [
+                context.query[isOAuthQueryParam]
+                  ? `${isOAuthQueryParam}=${context.query[isOAuthQueryParam]}`
+                  : undefined,
+                context.query[authRequestIdQueryParam]
+                  ? `${authRequestIdQueryParam}=${context.query[authRequestIdQueryParam]}`
+                  : undefined,
+                context.query[isIdentityVerificationRequiredQueryParam]
+                  ? `${isIdentityVerificationRequiredQueryParam}=${context.query[isIdentityVerificationRequiredQueryParam]}`
+                  : undefined,
+              ]
+                .filter(isDefined)
+                .join('&')
+            : ''
+        }
+
+        if (options?.isOAuthRedirect) {
+          if (!isSignedIn) {
+            return {
+              redirect: {
+                destination: `${ROUTES.LOGIN}?${oAuthParams}`,
+                permanent: false,
+              },
+            }
+          }
+
+          const clientInfo = await fetchClientInfo(context.query)
+
+          await cityAccountClient.userControllerUpsertUserAndRecordClient(
+            {
+              loginClient:
+                (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+                LoginClientEnum.CityAccount,
+            },
+            { authStrategy: 'authOnly', getSsrAuthSession: fetchAuthSessionFn },
+          )
+
+          return {
+            redirect: {
+              destination: `${ROUTES.OAUTH_CONFIRM}?${oAuthParams}`,
+              permanent: false,
+            },
+          }
+        }
+
         const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
-        // TODO OAuth: Double-check if this condition (checking if clientId exists) is enough
-        // Since fetchAuthSessionFn runs on server, it returns info about non-oauth sign-in flow, that we should ignore for oauth sign-in flow
-        const shouldRedirectNotSignedOut =
-          options?.requiresSignOut && isSignedIn && !context.query[clientIdQueryParam]
+        const shouldRedirectNotSignedOut = options?.requiresSignOut && isSignedIn
 
         if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
           if (options?.redirectQueryParam) {
@@ -110,6 +164,15 @@ export const amplifyGetServerSideProps = <
             return {
               redirect: {
                 destination,
+                permanent: false,
+              },
+            }
+          }
+
+          if (options?.redirectOAuthParams && shouldRedirectNotSignedIn) {
+            return {
+              redirect: {
+                destination: `${ROUTES.LOGIN}?${oAuthParams}`,
                 permanent: false,
               },
             }

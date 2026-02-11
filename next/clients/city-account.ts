@@ -1,7 +1,7 @@
 import { CityAccountClient, createCityAccountClient } from 'openapi-clients/city-account'
 
-import { environment } from '../environment'
-import { axiosInstance, ClientWithCustomConfig } from './axios-instance'
+import { axiosInstance, ClientWithCustomConfig } from '@/clients/axios-instance'
+import { environment } from '@/environment'
 
 export const cityAccountClient = createCityAccountClient({
   basePath: environment.cityAccountUrl,

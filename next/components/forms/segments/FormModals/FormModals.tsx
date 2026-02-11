@@ -1,16 +1,18 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import Button from '../../simple-components/ButtonNew'
-import { useFormModals } from '../../useFormModals'
-import { useFormRedirects } from '../../useFormRedirects'
-import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
-import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
-import RegistrationModal from '../RegistrationModal/RegistrationModal'
-import TaxFormPdfExportModal from '../TaxFormPdfExportModal/TaxFormPdfExportModal'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import IdentityVerificationModal from '@/components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
+import RegistrationModal from '@/components/forms/segments/RegistrationModal/RegistrationModal'
+import TaxFormPdfExportModal from '@/components/forms/segments/TaxFormPdfExportModal/TaxFormPdfExportModal'
+import Button from '@/components/forms/simple-components/Button'
+import { useFormModals } from '@/components/forms/useFormModals'
+import { useFormRedirects } from '@/components/forms/useFormRedirects'
+import MessageModal, {
+  MessageModalProps,
+} from '@/components/forms/widget-components/Modals/MessageModal'
+import { useFormExportImport } from '@/frontend/hooks/useFormExportImport'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 const FormModals = () => {
   const { t } = useTranslation('forms')
@@ -70,7 +72,7 @@ const FormModals = () => {
           {t('migration_required_modal.button_discard')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() => migrateForm()}
           fullWidthMobile
@@ -89,11 +91,11 @@ const FormModals = () => {
       type: 'error',
       title: t('concept_save_error_modal.title'),
       buttons: [
-        <Button variant="black-plain" onPress={() => setConceptSaveErrorModal(false)}>
-          {t('modals_close_button_title')}
+        <Button variant="plain" onPress={() => setConceptSaveErrorModal(false)}>
+          {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="category-solid"
+          variant="negative-solid"
           size="small"
           onPress={() => saveConcept(true)}
           isLoading={saveConceptIsPending}
@@ -111,14 +113,10 @@ const FormModals = () => {
       title: t('send_identity_missing_modal.title'),
       type: 'warning',
       buttons: [
-        <Button
-          variant="black-plain"
-          onPress={() => setSendIdentityMissingModal(false)}
-          fullWidthMobile
-        >
-          {t('modals_close_button_title')}
+        <Button variant="plain" onPress={() => setSendIdentityMissingModal(false)} fullWidthMobile>
+          {t('modal.close_button_label')}
         </Button>,
-        <Button variant="black-solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
+        <Button variant="solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
           {t('send_identity_missing_modal.button_title')}
         </Button>,
       ],
@@ -131,8 +129,8 @@ const FormModals = () => {
       title: t('send_files_uploading_modal.title'),
       type: 'warning',
       buttons: [
-        <Button variant="black-plain" onPress={() => setSendFilesUploadingModal(false)}>
-          {t('modals_close_button_title')}
+        <Button variant="plain" onPress={() => setSendFilesUploadingModal(false)}>
+          {t('modal.close_button_label')}
         </Button>,
       ],
       children: t('send_files_uploading_modal.content'),
@@ -144,8 +142,8 @@ const FormModals = () => {
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
       buttons: [
-        <Button variant="black-plain" onPress={() => setSendFilesScanningModal(false)}>
-          {t('modals_close_button_title')}
+        <Button variant="plain" onPress={() => setSendFilesScanningModal(false)}>
+          {t('modal.close_button_label')}
         </Button>,
       ],
       children: t('send_files_scanning_modal.content'),
@@ -162,15 +160,15 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationModal({ isOpen: false })}
           fullWidthMobile
           isDisabled={sendPending}
         >
-          {t('modals_close_button_title')}
+          {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.confirmCallback()}
           fullWidthMobile
@@ -196,15 +194,15 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
         >
-          {t('modals_close_button_title')}
+          {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             sendConfirmationEidModal.isOpen && sendConfirmationEidModal.confirmCallback()
@@ -237,15 +235,15 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
         >
-          {t('modals_close_button_title')}
+          {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.confirmCallback()
@@ -273,15 +271,15 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
           fullWidthMobile
           isDisabled={eidSendConfirmationModalIsPending}
         >
-          {t('modals_close_button_title')}
+          {t('modal.close_button_label')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
@@ -324,12 +322,12 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-solid"
+          variant="solid"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
           isDisabled={sendEidPending}
           fullWidthMobile
         >
-          {t('modals_close_button_title')}
+          {t('modal.close_button_label')}
         </Button>,
       ],
       isDismissable: !sendEidPending,
@@ -347,8 +345,8 @@ const FormModals = () => {
       title: t('concept_delete_modal.title'),
       type: 'error',
       buttons: [
-        <Button variant="black-plain" onPress={() => setDeleteConceptModal({ isOpen: false })}>
-          {t('modals_close_button_title')}
+        <Button variant="plain" onPress={() => setDeleteConceptModal({ isOpen: false })}>
+          {t('modal.close_button_label')}
         </Button>,
         <Button
           variant="negative-solid"
@@ -385,14 +383,14 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="plain"
           onPress={() => setXmlImportVersionConfirmationModal({ isOpen: false })}
           fullWidthMobile
         >
           {t('xml_import_version_confirmation_modal.button_cancel')}
         </Button>,
         <Button
-          variant="black-solid"
+          variant="solid"
           size="small"
           onPress={() =>
             xmlImportVersionConfirmationModal.isOpen &&

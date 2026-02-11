@@ -36,10 +36,7 @@ import {
   TokenRequestUnion,
 } from './dtos/requests.oauth2.dto'
 
-import {
-  AuthorizationPayloadGuard,
-  RequestWithAuthorizationPayload,
-} from './guards/authorization-payload.guard'
+import { AuthRequestIdGuard, RequestWithAuthorizationData } from './guards/auth-request-id.guard'
 import { ClientInfoResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
@@ -96,7 +93,7 @@ export class OAuth2Controller {
   }
 
   @Post('store')
-  @UseGuards(AuthorizationPayloadGuard)
+  @UseGuards(AuthRequestIdGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'OAuth2 Store Tokens Endpoint',
@@ -108,26 +105,25 @@ export class OAuth2Controller {
     description: 'Tokens successfully stored',
   })
   async storeTokens(@Body() body: StoreTokensRequestDto, @Req() req: Request): Promise<void> {
-    const request = req as RequestWithAuthorizationPayload
-    const authorizationRequest = request.authorizationPayload!
+    const request = req as RequestWithAuthorizationData
+    const authorizationRequest = request.authorizationRequestData!
 
     this.logger.debug('Store tokens request received', {
       client_id: authorizationRequest.client_id,
-      payload: body.payload,
-      hasTokens: !!(body.access_token && body.refresh_token),
+      authRequestId: body.authRequestId,
+      hasRefreshToken: !!body.refreshToken,
     })
 
     // Service stores tokens for the authorization request ID
     await this.oauth2Service.storeTokensForAuthRequest(
-      body.payload,
-      body.access_token,
-      body.id_token,
-      body.refresh_token
+      body.authRequestId,
+      authorizationRequest.client_id,
+      body.refreshToken
     )
   }
 
   @Get('continue')
-  @UseGuards(AuthorizationPayloadGuard)
+  @UseGuards(AuthRequestIdGuard)
   @ApiOperation({
     summary: 'OAuth2 Continue Endpoint',
     description:
@@ -143,17 +139,19 @@ export class OAuth2Controller {
     @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const request = req as RequestWithAuthorizationPayload
-    const authorizationRequest = request.authorizationPayload!
+    const request = req as RequestWithAuthorizationData
+    const authRequestData = request.authorizationRequestData!
 
     this.logger.debug('Continue complete request received', {
-      client_id: authorizationRequest.client_id,
-      payload: query.payload,
+      client_id: authRequestData.client_id,
+      authRequestId: query.authRequestId,
     })
 
     // Check if tokens are stored
-    const tokensStored = await this.oauth2Service.areTokensStoredForAuthRequest(query.payload)
-    if (!tokensStored) {
+    const areTokensStored = await this.oauth2Service.areTokensStoredForAuthRequest(
+      query.authRequestId
+    )
+    if (!areTokensStored) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
         'Authorization server error: unable to provide tokens for this authorization request'
@@ -162,13 +160,13 @@ export class OAuth2Controller {
 
     // Service generates authorization code and returns response DTO
     const authResponse = await this.oauth2Service.continueAuthorization(
-      query.payload,
-      authorizationRequest
+      query.authRequestId,
+      authRequestData
     )
 
     // Controller builds redirect URL using service builder function
     const redirectUrl = this.oauth2Service.buildAuthorizationResponseRedirectUrl(
-      authorizationRequest.redirect_uri,
+      authRequestData.redirect_uri,
       authResponse
     )
 
@@ -218,8 +216,8 @@ export class OAuth2Controller {
 
     // Normalize client credentials: extract from validated credentials in request (set by TokenRequestGuard)
     const request = req as RequestWithClientCredentials
-    if (request.oauth2ClientId && request.oauth2ClientSecret) {
-      body.client_id = request.oauth2ClientId
+    if (request.tokenClientId && request.oauth2ClientSecret) {
+      body.client_id = request.tokenClientId
       body.client_secret = request.oauth2ClientSecret
     }
 
@@ -227,11 +225,10 @@ export class OAuth2Controller {
   }
 
   @Get('info')
-  @UseGuards(AuthorizationPayloadGuard)
+  @UseGuards(AuthRequestIdGuard)
   @ApiOperation({
     summary: 'OAuth2 Client Info Endpoint',
-    description:
-      'Get client information (name and title) by client_id from authorization request for frontend display.',
+    description: 'Get client information (client id and client name) by authorization request id.',
   })
   @ApiResponse({
     status: 200,
@@ -247,14 +244,14 @@ export class OAuth2Controller {
     @Query() query: ClientInfoRequestDto,
     @Req() req: Request
   ): Promise<ClientInfoResponseDto> {
-    const request = req as RequestWithAuthorizationPayload
-    const authorizationRequest = request.authorizationPayload!
+    const request = req as RequestWithAuthorizationData
+    const authRequestData = request.authorizationRequestData!
 
     this.logger.debug('Info request received', {
-      client_id: authorizationRequest.client_id,
-      payload: query.payload,
+      client_id: authRequestData.client_id,
+      authRequestId: query.authRequestId,
     })
 
-    return this.oauth2Service.getClientInfo(authorizationRequest.client_id)
+    return this.oauth2Service.getClientInfo(authRequestData.client_id)
   }
 }

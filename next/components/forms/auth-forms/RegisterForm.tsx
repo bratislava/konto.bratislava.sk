@@ -4,19 +4,19 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import { environment } from '../../../environment'
-import { AccountType, UserAttributes } from '../../../frontend/dtos/accountDto'
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import { isBrowser } from '../../../frontend/utils/general'
-import logger from '../../../frontend/utils/logger'
-import { useAmplifyClientOAuthContext } from '../../../frontend/utils/useAmplifyClientOAuthContext'
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import Button from '../simple-components/ButtonNew'
-import InputField from '../widget-components/InputField/InputField'
-import PasswordField from '../widget-components/PasswordField/PasswordField'
-import Radio from '../widget-components/RadioButton/Radio'
-import RadioGroup from '../widget-components/RadioButton/RadioGroup'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import PasswordField from '@/components/forms/widget-components/PasswordField/PasswordField'
+import Radio from '@/components/forms/widget-components/RadioButton/Radio'
+import RadioGroup from '@/components/forms/widget-components/RadioButton/RadioGroup'
+import { environment } from '@/environment'
+import { AccountType, UserAttributes } from '@/frontend/dtos/accountDto'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import { isBrowser } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
+import { useAmplifyClientOAuthContext } from '@/frontend/utils/useAmplifyClientOAuthContext'
 
 interface Data {
   email: string
@@ -114,7 +114,7 @@ const schema = {
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const { t } = useTranslation('account')
 
-  const { currentClientId, clientInfo } = useAmplifyClientOAuthContext()
+  const { clientInfo } = useAmplifyClientOAuthContext()
 
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
@@ -162,8 +162,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           'custom:account_type': data.account_type,
           // Add client id and name only for registrations that happened through oauth
           ...(clientInfo && {
-            'custom:origin_client_id': currentClientId,
-            'custom:origin_client_name': clientInfo.name,
+            'custom:origin_client_id': clientInfo.clientId,
+            'custom:origin_client_name': clientInfo.clientName,
           }),
         }
         // force rerender on submit - captcha is valid only for single submit
@@ -320,7 +320,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           </>
         )}
       />
-      <Button variant="black-solid" type="submit" fullWidth isDisabled={isSubmitting}>
+      <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {t('auth.register_submit')}
       </Button>
     </form>

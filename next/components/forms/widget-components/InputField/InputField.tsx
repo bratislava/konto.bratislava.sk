@@ -1,13 +1,13 @@
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
-import cn from '../../../../frontend/cn'
-import ButtonNew from '../../simple-components/ButtonNew'
-import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
+import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/assets/ui-icons'
+import MailIcon from '@/assets/ui-icons/custom_mail.svg'
+import Button from '@/components/forms/simple-components/Button'
+import FieldWrapper, { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
+import cn from '@/frontend/cn'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
 export type InputType = 'text' | 'password' | 'email' | 'tel'
@@ -179,14 +179,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             data-cy={`input-${name}`}
           />
           {resetIcon && valueState && (
-            <ButtonNew
+            <Button
               onPress={resetIconHandler}
               variant="unstyled"
               className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             >
               <RemoveIcon />
               <span className="sr-only">{t('InputField.aria.reset')}</span>
-            </ButtonNew>
+            </Button>
           )}
           {endIcon}
         </div>

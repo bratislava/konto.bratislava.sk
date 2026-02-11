@@ -1,21 +1,26 @@
-import { ErrorIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
-import AccountMarkdown from '../forms/segments/AccountMarkdown/AccountMarkdown'
-import AccountVerificationPendingAlert from '../forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import Button from '../forms/simple-components/ButtonNew'
-import { useVerifyEid, VerificationStatus } from './useVerifyEid'
+import { ErrorIcon } from '@/assets/ui-icons'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import Button from '@/components/forms/simple-components/Button'
+import { useVerifyEid, VerificationStatus } from '@/components/verify/useVerifyEid'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
 
-const LegalPersonVerificationPageContent = () => {
+type Props = {
+  showSkipButton?: boolean
+}
+
+const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) => {
   const { t } = useTranslation('account')
   const { redirect } = useQueryParamRedirect()
 
   const { loginWithEid, verificationStatus } = useVerifyEid()
 
   return verificationStatus === VerificationStatus.VERIFYING ? (
-    <AccountVerificationPendingAlert
+    <AccountSuccessAlert
+      variant="loading"
       title={t('auth.identity_verification.fop_po_eid.pending.title')}
       description={t('auth.identity_verification.fop_po_eid.pending.content')}
     />
@@ -35,7 +40,7 @@ const LegalPersonVerificationPageContent = () => {
         variant="sm"
       />
 
-      <Button variant="black-solid" onPress={() => redirect()} fullWidth>
+      <Button variant="solid" onPress={() => redirect()} fullWidth>
         {t('auth.identity_verification.fop_po_eid.error.button_text')}
       </Button>
     </div>
@@ -47,7 +52,7 @@ const LegalPersonVerificationPageContent = () => {
         content={t('auth.identity_verification.fop_po_eid.init.content')}
       />
       <Button
-        variant="black-solid"
+        variant="solid"
         onPress={loginWithEid}
         fullWidth
         isLoading={verificationStatus === VerificationStatus.REDIRECTING}
@@ -55,9 +60,11 @@ const LegalPersonVerificationPageContent = () => {
       >
         {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
       </Button>
-      <Button variant="black-plain" fullWidth onPress={() => redirect()}>
-        {t('auth.identity_verification.common.skip_verification_button_text')}
-      </Button>
+      {showSkipButton ? (
+        <Button variant="plain" fullWidth onPress={() => redirect()}>
+          {t('auth.identity_verification.common.skip_verification_button_text')}
+        </Button>
+      ) : null}
     </div>
   )
 }

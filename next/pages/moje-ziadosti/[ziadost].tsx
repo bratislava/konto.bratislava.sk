@@ -1,16 +1,16 @@
-import { formsClient } from '@clients/forms'
-import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
-import logger from 'frontend/utils/logger'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
-import { patchApplicationFormIfNeeded } from '../../components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededClient'
-import { getEmailFormSlugs } from '../../components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
-import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
-import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
+import { formsClient } from '@/clients/forms'
+import MyApplicationDetails from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
+import { patchApplicationFormIfNeeded } from '@/components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededClient'
+import { getEmailFormSlugs } from '@/components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { modifyGinisDataForSchemaSlug } from '@/frontend/utils/ginis'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 type AccountMyApplicationsPageProps = {
   formDefinitionTitle: string
@@ -73,13 +73,13 @@ const AccountMyApplicationsPage = ({
   myApplicationGinisData,
 }: AccountMyApplicationsPageProps) => {
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <MyApplicationDetails
         formDefinitionTitle={formDefinitionTitle}
         ginisData={myApplicationGinisData}
         detailsData={myApplicationDetailsData}
       />
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

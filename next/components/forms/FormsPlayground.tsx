@@ -1,4 +1,3 @@
-import { DownloadIcon, UploadIcon } from '@assets/ui-icons'
 import Editor from '@monaco-editor/react'
 import Form from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
@@ -12,16 +11,22 @@ import { useQueryState } from 'nuqs'
 import React, { ContextType, createRef, useEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { downloadBlob } from '../../frontend/utils/general'
-import { ClientPlaygroundFormDefinition } from './clientFormDefinitions'
-import Button from './simple-components/ButtonNew'
-import ThemedForm from './ThemedForm'
-import { FormDataContext } from './useFormData'
-import { useFormErrorTranslations } from './useFormErrorTranslations'
-import { FormFileUploadContext } from './useFormFileUpload'
-import { FormValidatorRegistryProvider, useFormValidatorRegistry } from './useFormValidatorRegistry'
-import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
+import { DownloadIcon, UploadIcon } from '@/assets/ui-icons'
+import { ClientPlaygroundFormDefinition } from '@/components/forms/clientFormDefinitions'
+import Button from '@/components/forms/simple-components/Button'
+import ThemedForm from '@/components/forms/ThemedForm'
+import { FormDataContext } from '@/components/forms/useFormData'
+import { useFormErrorTranslations } from '@/components/forms/useFormErrorTranslations'
+import { FormFileUploadContext } from '@/components/forms/useFormFileUpload'
+import {
+  FormValidatorRegistryProvider,
+  useFormValidatorRegistry,
+} from '@/components/forms/useFormValidatorRegistry'
+import SelectField, {
+  SelectOption,
+} from '@/components/forms/widget-components/SelectField/SelectField'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { downloadBlob } from '@/frontend/utils/general'
 
 export type FormsPlaygroundProps = {
   formDefinitions: ClientPlaygroundFormDefinition[]
@@ -330,10 +335,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           />
 
           <div className="mt-4 flex gap-2">
-            <Button onPress={exportJson} variant="black-solid" startIcon={<DownloadIcon />}>
+            <Button onPress={exportJson} variant="solid" startIcon={<DownloadIcon />}>
               {t('menu_list.download_json')}
             </Button>
-            <Button onPress={triggerImportJson} variant="black-outline" startIcon={<UploadIcon />}>
+            <Button onPress={triggerImportJson} variant="outline" startIcon={<UploadIcon />}>
               {t('menu_list.upload_json')}
             </Button>
             <input
@@ -346,10 +351,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           </div>
 
           <div className="mt-4 flex gap-2">
-            <Button onPress={handleValidateForm} variant="black-outline">
+            <Button onPress={handleValidateForm} variant="outline">
               Validovať formulár
             </Button>
-            <Button onPress={forceReset} variant="black-outline">
+            <Button onPress={forceReset} variant="outline">
               Reštartovať formulár
             </Button>
           </div>

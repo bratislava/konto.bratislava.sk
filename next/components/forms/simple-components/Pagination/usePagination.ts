@@ -5,6 +5,7 @@ type ItemType = 'first' | 'previous' | 'start-ellipsis' | 'end-ellipsis' | 'next
 // https://dev.to/namirsab/comment/2050
 const range = (start: number, end: number) => {
   const length = end - start + 1
+
   return Array.from({ length }, (_, i) => start + i)
 }
 
@@ -13,6 +14,7 @@ const range = (start: number, end: number) => {
  *
  * https://github.com/mui/material-ui/blob/512896973499adbbda057e7f3685d1b23cc02de9/packages/mui-material/src/usePagination/usePagination.js
  */
+
 export default function usePagination(props: {
   boundaryCount?: number
   count?: number
@@ -77,7 +79,7 @@ export default function usePagination(props: {
     ...startPages,
 
     // Start ellipsis
-    // eslint-disable-next-line no-nested-ternary
+
     ...(siblingsStart > boundaryCount + 2
       ? ['start-ellipsis' as const]
       : boundaryCount + 1 < count - boundaryCount
@@ -88,7 +90,7 @@ export default function usePagination(props: {
     ...range(siblingsStart, siblingsEnd),
 
     // End ellipsis
-    // eslint-disable-next-line no-nested-ternary
+
     ...(siblingsEnd < count - boundaryCount - 1
       ? ['end-ellipsis' as const]
       : count - boundaryCount > boundaryCount
@@ -126,7 +128,6 @@ export default function usePagination(props: {
       ? {
           onPress: (event: PressEvent) => {
             handlePress(event, item)
-            window?.scrollTo({ top: 0 })
           },
           type: 'page',
           page: item,

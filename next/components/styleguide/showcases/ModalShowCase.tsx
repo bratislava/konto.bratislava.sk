@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
-import ButtonNew from '../../forms/simple-components/ButtonNew'
-import Modal from '../../forms/simple-components/Modal'
-import MessageModal from '../../forms/widget-components/Modals/MessageModal'
+import Button from '@/components/forms/simple-components/Button'
+import Modal from '@/components/forms/simple-components/Modal'
+import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
+
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
@@ -13,12 +14,12 @@ const ModalShowCase = () => {
   return (
     <Wrapper direction="column" title="Modal">
       <Stack direction="column">
-        <ButtonNew variant="black-solid" onPress={() => setSimpleModalOpen(true)}>
+        <Button variant="solid" onPress={() => setSimpleModalOpen(true)}>
           Open simple modal
-        </ButtonNew>
-        <ButtonNew variant="black-solid" onPress={() => setMessageModal(true)}>
+        </Button>
+        <Button variant="solid" onPress={() => setMessageModal(true)}>
           Open message modal
-        </ButtonNew>
+        </Button>
 
         {/* Simple Modal Example */}
         <Modal
@@ -35,12 +36,12 @@ const ModalShowCase = () => {
                 unknown printer took a galley of type and scrambled it to make a type specimen book.
               </div>
               <div className="mt-2 flex justify-between">
-                <ButtonNew variant="black-outline" onPress={() => setSimpleModalOpen(false)}>
+                <Button variant="outline" onPress={() => setSimpleModalOpen(false)}>
                   Cancel
-                </ButtonNew>
-                <ButtonNew variant="black-solid" onPress={() => setSimpleModalOpen(false)}>
+                </Button>
+                <Button variant="solid" onPress={() => setSimpleModalOpen(false)}>
                   Submit
-                </ButtonNew>
+                </Button>
               </div>
             </div>
           </div>
@@ -52,9 +53,9 @@ const ModalShowCase = () => {
           onOpenChange={setMessageModal}
           title="Lorem ipsum"
           buttons={[
-            <ButtonNew key="test-button" variant="black-plain">
+            <Button key="test-button" variant="plain">
               Test button
-            </ButtonNew>,
+            </Button>,
           ]}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.

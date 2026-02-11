@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ReactNode, useState } from 'react'
 
-import { CategoriesType, COLOR_VARIABLES, pageStyle } from '../../frontend/utils/page'
+import { CategoriesType, COLOR_VARIABLES, pageStyle } from '@/frontend/utils/page'
 
 type BrandCategoryString =
   | 'Mesto Bratislava'

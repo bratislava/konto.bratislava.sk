@@ -1,10 +1,10 @@
-import { LockIcon } from '@assets/ui-icons'
-import Button from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
 
-import { ROUTES } from '../../../../frontend/api/constants'
-import UserProfileSection from './UserProfileSection'
-import UserProfileSectionHeader from './UserProfileSectionHeader'
+import { LockIcon } from '@/assets/ui-icons'
+import UserProfileSection from '@/components/forms/segments/UserProfile/UserProfileSection'
+import UserProfileSectionHeader from '@/components/forms/segments/UserProfile/UserProfileSectionHeader'
+import Button from '@/components/forms/simple-components/Button'
+import { ROUTES } from '@/frontend/api/constants'
 
 const UserProfilePassword = () => {
   const { t } = useTranslation('account')
@@ -18,7 +18,7 @@ const UserProfilePassword = () => {
         childrenToColumn
       >
         <Button
-          variant="black-solid"
+          variant="solid"
           startIcon={<LockIcon />}
           href={ROUTES.PASSWORD_CHANGE}
           fullWidthMobile

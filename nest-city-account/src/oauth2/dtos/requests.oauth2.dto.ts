@@ -156,28 +156,12 @@ export class TokenRequestDto {
  */
 export class StoreTokensRequestDto {
   @ApiProperty({
-    description: 'Access token from user authentication (e.g., from Cognito)',
-    example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
-  })
-  @IsNotEmpty()
-  @IsString()
-  access_token!: string
-
-  @ApiPropertyOptional({
-    description: 'ID token from user authentication',
-    example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
-  })
-  @IsOptional()
-  @IsString()
-  id_token?: string
-
-  @ApiProperty({
     description: 'Refresh token from user authentication',
     example: 'def50200f3b2a7b4e8b1c...',
   })
   @IsNotEmpty()
   @IsString()
-  refresh_token!: string
+  refreshToken!: string
 
   @ApiProperty({
     description: 'UUID of the authorization request stored in the database',
@@ -185,90 +169,33 @@ export class StoreTokensRequestDto {
   })
   @IsNotEmpty()
   @IsUUID()
-  payload!: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request',
-    example: EXAMPLE_CLIENT_ID,
-  })
-  @IsOptional()
-  @IsString()
-  client_id?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request',
-    example: 'https://your-app.com/callback',
-  })
-  @IsOptional()
-  @IsString()
-  redirect_uri?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749',
-    example: 'xK8F2j9pL3mN7qR',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  state?: string
+  authRequestId!: string
 }
 
 /**
- * Base request DTO for endpoints that use authorization request payload
- * Contains the payload UUID and optional fallback parameters
+ * Base request DTO for endpoints that use authorization request ID
  */
-class AuthorizationPayloadRequestDto {
+class AuthorizationIdRequestDto {
   @ApiProperty({
     description: 'UUID of the authorization request stored in the database',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
   @IsNotEmpty()
   @IsUUID()
-  payload!: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request',
-    example: EXAMPLE_CLIENT_ID,
-  })
-  @IsOptional()
-  @IsString()
-  client_id?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request',
-    example: 'https://your-app.com/callback',
-  })
-  @IsOptional()
-  @IsString()
-  redirect_uri?: string
-
-  @ApiPropertyOptional({
-    description:
-      'Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749',
-    example: 'xK8F2j9pL3mN7qR',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  state?: string
+  authRequestId!: string
 }
 
 /**
  * Request DTO for OAuth2 Continue Endpoint (GET)
  * Called by frontend to complete authorization flow after tokens are stored via POST /oauth2/store
  */
-export class ContinueRequestDto extends AuthorizationPayloadRequestDto {}
+export class ContinueRequestDto extends AuthorizationIdRequestDto {}
 
 /**
  * Request DTO for OAuth2 Client Info Endpoint (GET)
- * Returns client information by client_id from authorization request
+ * Returns client information by authorization request id
  */
-export class ClientInfoRequestDto extends AuthorizationPayloadRequestDto {}
+export class ClientInfoRequestDto extends AuthorizationIdRequestDto {}
 
 /**
  * Request DTO for Token Refresh Endpoint

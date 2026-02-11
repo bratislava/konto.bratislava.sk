@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import cn from '../../frontend/cn'
+import cn from '@/frontend/cn'
 
 type StackProps = {
   bg?: 'white' | 'dark'

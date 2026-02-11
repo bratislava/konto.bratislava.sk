@@ -3,9 +3,9 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import { FileStatusType } from 'forms-shared/form-files/fileStatus'
 import React from 'react'
 
-import { FormContextProvider, FormServerContext } from '../components/forms/useFormContext'
-import { FormFileUploadProvider, useFormFileUpload } from '../components/forms/useFormFileUpload'
-import { uploadFile } from '../frontend/utils/formFileUpload'
+import { FormContextProvider, FormServerContext } from '@/components/forms/useFormContext'
+import { FormFileUploadProvider, useFormFileUpload } from '@/components/forms/useFormFileUpload'
+import { uploadFile } from '@/frontend/utils/formFileUpload'
 
 const queryClient = new QueryClient()
 

@@ -14,8 +14,6 @@ import {
   DeliveryMethodErrorsResponseEnum,
 } from '../../utils/guards/dtos/delivery-method.error'
 import { MailgunService } from '../../mailgun/mailgun.service'
-import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
-import { PdfGeneratorService } from '../../pdf-generator/pdf-generator.service'
 import { z } from 'zod'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
@@ -35,9 +33,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxSubservice: TaxSubservice,
-    private readonly mailgunService: MailgunService,
-    private readonly cognitoSubsevice: CognitoSubservice,
-    private readonly pdfGeneratorService: PdfGeneratorService
+    private readonly mailgunService: MailgunService
   ) {
     this.logger = new LineLoggerSubservice(TaxDeliveryMethodsTasksSubservice.name)
   }
@@ -369,82 +365,34 @@ export class TaxDeliveryMethodsTasksSubservice {
     return Array.from(new Set([...userIdsFromGdpr, ...userIdsFromEdesk]))
   }
 
-  private async handleEdeskActivation(
-    userId: string,
-    userEmail: string,
-    externalId: string
-  ): Promise<void> {
-    try {
-      const cognitoData = await this.cognitoSubsevice.getDataFromCognito(externalId)
-      const firstName = cognitoData.given_name
-
-      // TODO
-      // await this.mailgunService.sendEmail('placeholder-edesk-activated', {
-      //   to: userEmail,
-      //   variables: { firstName: firstName ?? null },
-      // })
-
-      this.logger.log(`Sent eDesk activation email to user ${userId}`)
-    } catch (err) {
-      this.logger.error(`Failed to send eDesk activation email for user ${userId}`, err)
-    }
-  }
-
-  private async handlePostalActivation(
+  private async sendDeliveryMethodChangedEmail(
     userId: string,
     userEmail: string,
     externalId: string,
-    reason: 'edesk-deactivated' | 'gdpr-change'
-  ): Promise<void> {
-    try {
-      const cognitoData = await this.cognitoSubsevice.getDataFromCognito(externalId)
-      const firstName = cognitoData.given_name
-
-      // TODO
-      // await this.mailgunService.sendEmail('placeholder-postal-activated', {
-      //   to: userEmail,
-      //   variables: { firstName: firstName ?? null },
-      // })
-
-      const logSuffix = reason === 'edesk-deactivated' ? ' (eDesk deactivated)' : ''
-      this.logger.log(`Sent postal activation email to user ${userId}${logSuffix}`)
-    } catch (err) {
-      this.logger.error(`Failed to send postal activation email for user ${userId}`, err)
+    deliveryMethod: 'edesk' | 'postal' | 'email',
+    options?: {
+      birthNumber?: string
+      reason?: 'edesk-deactivated' | 'gdpr-change'
     }
-  }
-
-  private async handleCityAccountActivation(
-    userId: string,
-    userEmail: string,
-    externalId: string,
-    birthNumber: string
   ): Promise<void> {
     try {
-      const cognitoData = await this.cognitoSubsevice.getDataFromCognito(externalId)
-      const firstName = cognitoData.given_name
-      const fullName = `${cognitoData.given_name ?? ''} ${cognitoData.family_name ?? ''}`.trim()
-
-      const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
-        'delivery-method-set-to-notification',
-        'oznamenie.pdf',
-        {
-          email: userEmail,
-          name: fullName,
-          birthNumber,
-          date: new Date().toLocaleDateString('sk'),
-        },
-        birthNumber
-      )
-
-      await this.mailgunService.sendEmail('2025-delivery-method-changed-notify', {
-        to: userEmail,
-        variables: { firstName: firstName ?? null },
-        attachment: pdfFile,
+      await this.mailgunService.sendEmail('2025-delivery-method-changed-from-user-data', {
+        userEmail,
+        externalId,
+        deliveryMethod,
+        ...(options?.birthNumber && { birthNumber: options.birthNumber }),
       })
 
-      this.logger.log(`Sent City Account activation email to user ${userId}`)
+      const deliveryMethodLabel = {
+        edesk: 'eDesk',
+        postal: 'postal',
+        email: 'City Account',
+      }[deliveryMethod]
+
+      const logSuffix = options?.reason === 'edesk-deactivated' ? ' (eDesk deactivated)' : ''
+      this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
     } catch (err) {
-      this.logger.error(`Failed to send email for user ${userId}`, err)
+      this.logger.error(`Failed to send ${deliveryMethod} email for user ${userId}`, err)
     }
   }
 
@@ -487,7 +435,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         this.logger.log(`Skipping user ${userId}: eDesk is active but didn't change yesterday.`)
         return
       }
-      await this.handleEdeskActivation(userId, user.email, user.externalId)
+      await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'edesk')
       return
     }
 
@@ -503,9 +451,13 @@ export class TaxDeliveryMethodsTasksSubservice {
       })
 
       if (latestGdprState?.subType === GDPRSubTypeEnum.subscribe) {
-        await this.handleCityAccountActivation(userId, user.email, user.externalId, user.birthNumber)
+        await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'email', {
+          birthNumber: user.birthNumber,
+        })
       } else {
-        await this.handlePostalActivation(userId, user.email, user.externalId, 'edesk-deactivated')
+        await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'postal', {
+          reason: 'edesk-deactivated',
+        })
       }
       return
     }
@@ -546,9 +498,13 @@ export class TaxDeliveryMethodsTasksSubservice {
 
     // Send appropriate email based on GDPR change
     if (currentSubType === GDPRSubTypeEnum.subscribe) {
-      await this.handleCityAccountActivation(userId, user.email, user.externalId, user.birthNumber)
+      await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'email', {
+        birthNumber: user.birthNumber,
+      })
     } else {
-      await this.handlePostalActivation(userId, user.email, user.externalId, 'gdpr-change')
+      await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'postal', {
+        reason: 'gdpr-change',
+      })
     }
   }
 

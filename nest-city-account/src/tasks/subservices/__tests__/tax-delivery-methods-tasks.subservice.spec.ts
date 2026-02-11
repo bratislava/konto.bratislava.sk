@@ -12,8 +12,6 @@ import { DeliveryMethodEnum, GDPRSubTypeEnum, Prisma, User } from '@prisma/clien
 import { DeliveryMethodNoris } from '../../../utils/types/tax.types'
 import { AxiosResponse } from 'axios'
 import { MailgunService } from '../../../mailgun/mailgun.service'
-import { CognitoSubservice } from '../../../utils/subservices/cognito.subservice'
-import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 
 type UserWithRelations = Prisma.UserGetPayload<{
   include: {
@@ -44,8 +42,6 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
-        { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
-        { provide: PdfGeneratorService, useValue: createMock<PdfGeneratorService>() },
       ],
     }).compile()
 
@@ -454,13 +450,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
   describe('sendDailyDeliveryMethodSummaries', () => {
     let mailgunService: MailgunService
-    let cognitoSubservice: CognitoSubservice
-    let pdfGeneratorService: PdfGeneratorService
 
     beforeEach(() => {
       mailgunService = service['mailgunService']
-      cognitoSubservice = service['cognitoSubsevice']
-      pdfGeneratorService = service['pdfGeneratorService']
     })
 
     it('should not send emails when SEND_DAILY_DELIVERY_METHOD_SUMMARIES config is disabled', async () => {
@@ -574,21 +566,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         },
       } as any)
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
-
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      // TODO: Currently commented out in implementation (line 432-436)
-      // expect(sendEmailSpy).toHaveBeenCalledWith('placeholder-edesk-activated', {
-      //   to: mockEmail,
-      //   variables: { firstName: 'John' },
-      // })
-      expect(sendEmailSpy).not.toHaveBeenCalled()
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: mockEmail,
+        externalId: 'ext-123',
+        deliveryMethod: 'edesk',
+      })
     })
 
     it('should send postal email when eDesk was deactivated yesterday', async () => {
@@ -620,21 +606,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         },
       } as any)
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
-
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      // TODO: Currently commented out in implementation (line 458-462)
-      // expect(sendEmailSpy).toHaveBeenCalledWith('placeholder-postal-activated', {
-      //   to: mockEmail,
-      //   variables: { firstName: 'John' },
-      // })
-      expect(sendEmailSpy).not.toHaveBeenCalled()
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: mockEmail,
+        externalId: 'ext-123',
+        deliveryMethod: 'postal',
+      })
     })
 
     it('should send City Account email with PDF when GDPR changed to subscribe yesterday', async () => {
@@ -667,38 +647,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         } as any)
         .mockResolvedValueOnce(null) // No previous GDPR state
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
-
-      const mockPdf = {
-        data: Buffer.from('mock-pdf'),
-        filename: 'mock.pdf',
-        contentType: 'application/pdf',
-      }
-      jest.spyOn(pdfGeneratorService, 'generateFromTemplate').mockResolvedValue(mockPdf)
-
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      expect(pdfGeneratorService.generateFromTemplate).toHaveBeenCalledWith(
-        'delivery-method-set-to-notification',
-        'oznamenie.pdf',
-        {
-          email: mockEmail,
-          name: 'John Doe',
-          birthNumber: '1234567890',
-          date: expect.any(String),
-        },
-        '1234567890'
-      )
-
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-notify', {
-        to: mockEmail,
-        variables: { firstName: 'John' },
-        attachment: mockPdf,
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: mockEmail,
+        externalId: 'ext-123',
+        birthNumber: '1234567890',
+        deliveryMethod: 'email',
       })
     })
 
@@ -736,21 +693,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           createdAt: new Date(yesterday.getTime() - 86400000),
         } as any)
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
-
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      // TODO: Currently commented out in implementation (line 539-543)
-      // expect(sendEmailSpy).toHaveBeenCalledWith('placeholder-postal-activated', {
-      //   to: mockEmail,
-      //   variables: { firstName: 'John' },
-      // })
-      expect(sendEmailSpy).not.toHaveBeenCalled()
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: mockEmail,
+        externalId: 'ext-123',
+        deliveryMethod: 'postal',
+      })
     })
 
     it('should skip users with active eDesk who had GDPR changes but no eDesk status change', async () => {
@@ -947,22 +898,16 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         createdAt: yesterday,
       } as any)
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
-
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
-      const generatePdfSpy = jest.spyOn(pdfGeneratorService, 'generateFromTemplate')
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      // Should NOT generate City Account PDF (which would happen for GDPR subscribe)
-      expect(generatePdfSpy).not.toHaveBeenCalled()
-
-      // TODO: Should send eDesk email instead, but it's commented out (line 432-436)
-      // expect(sendEmailSpy).toHaveBeenCalledWith('placeholder-edesk-activated', ...)
-      expect(sendEmailSpy).not.toHaveBeenCalled()
+      // Should send eDesk email (prioritizes eDesk over GDPR changes)
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: mockEmail,
+        externalId: 'ext-123',
+        deliveryMethod: 'edesk',
+      })
     })
   })
 })

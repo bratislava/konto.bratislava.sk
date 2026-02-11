@@ -17,7 +17,11 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         title: 'Typ podnetu',
         required: true,
         items: [
-          { value: 'nespravneZaparkovana', label: 'Nesprávne zaparkovaná kolobežka' },
+          {
+            value: 'nespravneZaparkovana',
+            label: 'Nesprávne zaparkovaná kolobežka',
+            isDefault: true,
+          },
           { value: 'neschopnaPrevadzky', label: 'Kolobežka neschopná prevádzky' },
           { value: 'ine', label: 'Iné' },
         ],

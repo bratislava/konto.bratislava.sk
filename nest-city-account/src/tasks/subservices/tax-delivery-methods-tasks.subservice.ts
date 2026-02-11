@@ -385,168 +385,165 @@ export class TaxDeliveryMethodsTasksSubservice {
 
     this.logger.log(`Found ${allUserIds.length} users with delivery method changes`)
 
-    for (const userId of allUserIds) {
-      // Get full user data with current state
-      const user = await this.prismaService.user.findUnique({
-        where: { id: userId },
-        select: {
-          id: true,
-          email: true,
-          externalId: true,
-          birthNumber: true,
-          physicalEntity: {
-            select: {
-              activeEdesk: true,
-              edeskStatusChangedAt: true,
+    await Promise.all(
+      allUserIds.map(async (userId) => {
+        // Get full user data with current state
+        const user = await this.prismaService.user.findUnique({
+          where: { id: userId },
+          select: {
+            id: true,
+            email: true,
+            externalId: true,
+            birthNumber: true,
+            physicalEntity: {
+              select: {
+                activeEdesk: true,
+                edeskStatusChangedAt: true,
+              },
             },
           },
-        },
-      })
+        })
 
-      if (!user || !user.email || !user.externalId || !user.birthNumber) {
-        this.logger.warn(`Skipping user ${userId}: Missing email, externalId or birth number.`)
-        continue
-      }
+        if (!user || !user.email || !user.externalId || !user.birthNumber) {
+          this.logger.warn(`Skipping user ${userId}: Missing email, externalId or birth number.`)
+          return
+        }
 
-      // Check if eDesk is currently active
-      const currentEdeskActive = user.physicalEntity?.activeEdesk
-
-      // If eDesk is currently active, it overrides everything - only check eDesk changes
-      if (currentEdeskActive === true) {
-        // Check if eDesk changed yesterday
         const edeskChangedYesterday =
           user.physicalEntity?.edeskStatusChangedAt &&
           user.physicalEntity.edeskStatusChangedAt >= yesterdayStart &&
           user.physicalEntity.edeskStatusChangedAt <= yesterdayEnd
+        // Check if eDesk is currently active
+        const currentEdeskActive = user.physicalEntity?.activeEdesk
 
-        if (!edeskChangedYesterday) {
-          this.logger.log(`Skipping user ${userId}: eDesk is active but didn't change yesterday.`)
-          continue
+        // If eDesk is currently active, it overrides everything - only check eDesk changes
+        if (currentEdeskActive === true) {
+          // Check if eDesk changed yesterday
+
+          if (!edeskChangedYesterday) {
+            this.logger.log(`Skipping user ${userId}: eDesk is active but didn't change yesterday.`)
+            return
+          }
+
+          // eDesk was activated yesterday, send eDesk activation email
+          try {
+            const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
+            const firstName = cognitoData.given_name
+
+            // TODO
+            // await this.mailgunService.sendEmail('placeholder-edesk-activated', {
+            //   to: user.email,
+            //   variables: { firstName: firstName ?? null },
+            // })
+
+            this.logger.log(`Sent eDesk activation email to user ${userId}`)
+          } catch (err) {
+            this.logger.error(`Failed to send eDesk activation email for user ${userId}`, err)
+          }
+          return
         }
 
-        // eDesk was activated yesterday, send eDesk activation email
-        try {
-          const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
-          const firstName = cognitoData.given_name
+        // eDesk is not active (false or null) - check if it changed yesterday
+        // The trigger skips null->false changes, so if edeskStatusChangedAt changed, it's meaningful
+        if (edeskChangedYesterday) {
+          // eDesk was deactivated (true -> false/null), send postal email
+          try {
+            const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
+            const firstName = cognitoData.given_name
 
-          // TODO
-          // await this.mailgunService.sendEmail('placeholder-edesk-activated', {
-          //   to: user.email,
-          //   variables: { firstName: firstName ?? null },
-          // })
+            // TODO
+            // await this.mailgunService.sendEmail('placeholder-postal-activated', {
+            //   to: user.email,
+            //   variables: { firstName: firstName ?? null },
+            // })
 
-          this.logger.log(`Sent eDesk activation email to user ${userId}`)
-        } catch (err) {
-          this.logger.error(`Failed to send eDesk activation email for user ${userId}`, err)
+            this.logger.log(`Sent postal activation email to user ${userId} (eDesk deactivated)`)
+          } catch (err) {
+            this.logger.error(`Failed to send postal activation email for user ${userId}`, err)
+          }
+          return
         }
-        continue
-      }
 
-      // eDesk is not active (false or null) - check if it changed yesterday
-      // The trigger skips null->false changes, so if edeskStatusChangedAt changed, it's meaningful
-      const edeskChangedYesterday =
-        user.physicalEntity?.edeskStatusChangedAt &&
-        user.physicalEntity.edeskStatusChangedAt >= yesterdayStart &&
-        user.physicalEntity.edeskStatusChangedAt <= yesterdayEnd
-
-      if (edeskChangedYesterday) {
-        // eDesk was deactivated (true -> false/null), send postal email
-        try {
-          const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
-          const firstName = cognitoData.given_name
-
-          // TODO
-          // await this.mailgunService.sendEmail('placeholder-postal-activated', {
-          //   to: user.email,
-          //   variables: { firstName: firstName ?? null },
-          // })
-
-          this.logger.log(`Sent postal activation email to user ${userId} (eDesk deactivated)`)
-        } catch (err) {
-          this.logger.error(`Failed to send postal activation email for user ${userId}`, err)
-        }
-        continue
-      }
-
-      // eDesk is not active and didn't change - check GDPR changes
-      const latestGdprChange = await this.prismaService.userGdprData.findFirst({
-        where: {
-          userId,
-          category: GDPRCategoryEnum.TAXES,
-          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          createdAt: {
-            gte: yesterdayStart,
-            lte: yesterdayEnd,
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-      })
-
-      if (!latestGdprChange) {
-        this.logger.log(`Skipping user ${userId}: No GDPR or eDesk changes yesterday.`)
-        continue
-      }
-
-      // Check previous GDPR state
-      const previousGdprState = await this.prismaService.userGdprData.findFirst({
-        where: {
-          userId,
-          category: GDPRCategoryEnum.TAXES,
-          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          createdAt: { lt: yesterdayStart },
-        },
-        orderBy: { createdAt: 'desc' },
-      })
-
-      const currentSubType = latestGdprChange.subType
-      const previousSubType = previousGdprState?.subType
-
-      // No change in GDPR state
-      if (currentSubType === previousSubType) {
-        this.logger.log(`Skipping user ${userId}: GDPR state unchanged (${currentSubType}).`)
-        continue
-      }
-
-      // Determine which email to send based on the change
-      try {
-        const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
-        const firstName = cognitoData.given_name
-        const fullName = `${cognitoData.given_name ?? ''} ${cognitoData.family_name ?? ''}`.trim()
-
-        if (currentSubType === GDPRSubTypeEnum.subscribe) {
-          // Changed to City Account
-          const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
-            'delivery-method-set-to-notification',
-            'oznamenie.pdf',
-            {
-              email: user.email,
-              name: fullName,
-              birthNumber: user.birthNumber,
-              date: new Date().toLocaleDateString('sk'),
+        // eDesk is not active and didn't change - check GDPR changes
+        const latestGdprChange = await this.prismaService.userGdprData.findFirst({
+          where: {
+            userId,
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            createdAt: {
+              gte: yesterdayStart,
+              lte: yesterdayEnd,
             },
-            user.birthNumber
-          )
+          },
+          orderBy: { createdAt: 'desc' },
+        })
 
-          await this.mailgunService.sendEmail('2025-delivery-method-changed-notify', {
-            to: user.email,
-            variables: { firstName: firstName ?? null },
-            attachment: pdfFile,
-          })
-
-          this.logger.log(`Sent City Account activation email to user ${userId}`)
-        } else {
-          // Changed to unsubscribe (Postal)
-          // TODO
-          // await this.mailgunService.sendEmail('placeholder-postal-activated', {
-          //   to: user.email,
-          //   variables: { firstName: firstName ?? null },
-          // })
-
-          this.logger.log(`Sent postal activation email to user ${userId}`)
+        if (!latestGdprChange) {
+          this.logger.log(`Skipping user ${userId}: No GDPR or eDesk changes yesterday.`)
+          return
         }
-      } catch (err) {
-        this.logger.error(`Failed to send email for user ${userId}`, err)
-      }
-    }
+
+        // Check previous GDPR state
+        const previousGdprState = await this.prismaService.userGdprData.findFirst({
+          where: {
+            userId,
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            createdAt: { lt: yesterdayStart },
+          },
+          orderBy: { createdAt: 'desc' },
+        })
+
+        const currentSubType = latestGdprChange.subType
+        const previousSubType = previousGdprState?.subType
+
+        // No change in GDPR state
+        if (currentSubType === previousSubType) {
+          this.logger.log(`Skipping user ${userId}: GDPR state unchanged (${currentSubType}).`)
+          return
+        }
+
+        // Determine which email to send based on the change
+        try {
+          const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
+          const firstName = cognitoData.given_name
+          const fullName = `${cognitoData.given_name ?? ''} ${cognitoData.family_name ?? ''}`.trim()
+
+          if (currentSubType === GDPRSubTypeEnum.subscribe) {
+            // Changed to City Account
+            const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
+              'delivery-method-set-to-notification',
+              'oznamenie.pdf',
+              {
+                email: user.email,
+                name: fullName,
+                birthNumber: user.birthNumber,
+                date: new Date().toLocaleDateString('sk'),
+              },
+              user.birthNumber
+            )
+
+            await this.mailgunService.sendEmail('2025-delivery-method-changed-notify', {
+              to: user.email,
+              variables: { firstName: firstName ?? null },
+              attachment: pdfFile,
+            })
+
+            this.logger.log(`Sent City Account activation email to user ${userId}`)
+          } else {
+            // Changed to unsubscribe (Postal)
+            // TODO
+            // await this.mailgunService.sendEmail('placeholder-postal-activated', {
+            //   to: user.email,
+            //   variables: { firstName: firstName ?? null },
+            // })
+
+            this.logger.log(`Sent postal activation email to user ${userId}`)
+          }
+        } catch (err) {
+          this.logger.error(`Failed to send email for user ${userId}`, err)
+        }
+      })
+    )
   }
 }

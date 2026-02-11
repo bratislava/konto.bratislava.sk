@@ -51,10 +51,13 @@ export class MailgunService {
       )
 
       // Use the injected factory instance to get the correct method
-
+      // TypeScript cannot properly narrow down the union type when using dynamic property access with generics.
+      // The type safety is preserved at the call site where sendEmail is invoked - the generic parameter T
+      // ensures that the templateKey and options are correctly matched. The 'as any' here is safe because
+      // we've already validated the types through the function signature.
       const factoryMethod = this.mailgunMessageBuilder[templateKey]
-
-      const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options as any)
 
       const response = await this.mg.messages.create(this.config.defaultMailgunDomain, messageData)
       this.logger.log('Mailgun response', response)

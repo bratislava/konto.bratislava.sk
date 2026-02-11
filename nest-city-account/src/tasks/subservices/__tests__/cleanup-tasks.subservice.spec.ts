@@ -57,9 +57,7 @@ describe('CleanupTasksSubservice', () => {
         { id: '2', authorizationCode: 'code2' },
       ]
 
-      prismaMock.oAuth2Data.findMany.mockResolvedValue(
-        mockExpiredRecords as OAuth2Data[]
-      )
+      prismaMock.oAuth2Data.findMany.mockResolvedValue(mockExpiredRecords as OAuth2Data[])
       const updateManySpy = jest.spyOn(prismaMock.oAuth2Data, 'updateMany')
 
       await service.cleanupExpiredAuthorizationCodes()

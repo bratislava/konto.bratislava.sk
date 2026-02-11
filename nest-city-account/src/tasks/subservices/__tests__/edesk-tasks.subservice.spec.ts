@@ -106,9 +106,7 @@ describe('EdeskTasksSubservice', () => {
         },
       ]
 
-      prismaMock.physicalEntity.findMany.mockResolvedValue(
-        mockFailedEntities as PhysicalEntity[]
-      )
+      prismaMock.physicalEntity.findMany.mockResolvedValue(mockFailedEntities as PhysicalEntity[])
 
       await service.alertFailingEdeskUpdate()
 

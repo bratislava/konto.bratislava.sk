@@ -199,6 +199,7 @@ describe('NasesUtilsService', () => {
           recipientId: null,
           archived: false,
           ginisState: 'CREATED',
+          formSentAt: new Date(),
         },
         { type: SendMessageNasesSenderType.Self },
       )
@@ -282,6 +283,7 @@ describe('NasesUtilsService', () => {
           recipientId: null,
           archived: false,
           ginisState: 'CREATED',
+          formSentAt: new Date(),
         },
         { type: SendMessageNasesSenderType.Self },
       )

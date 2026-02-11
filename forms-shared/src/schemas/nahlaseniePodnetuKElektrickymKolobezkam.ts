@@ -47,7 +47,7 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         required: true,
         items: [
           { value: 'bolt', label: 'Bolt' },
-          { value: 'dott', label: 'Dott (Tier)' },
+          { value: 'dott', label: 'Dott' },
           { value: 'svist', label: 'Svišť' },
         ],
       },

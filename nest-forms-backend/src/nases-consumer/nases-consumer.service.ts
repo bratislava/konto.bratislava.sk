@@ -173,6 +173,7 @@ export default class NasesConsumerService {
           ),
           firstName,
           slug: form.formDefinitionSlug,
+          formSentAt: form.formSentAt,
         },
       },
     })

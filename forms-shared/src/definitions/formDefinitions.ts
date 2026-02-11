@@ -645,7 +645,7 @@ export const formDefinitions: FormDefinition[] = [
       },
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.OLO_SENT_SUCCESS, // TODO: Implement Konto template
-      newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION, // TODO: Implement Konto template
+      newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
       technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,

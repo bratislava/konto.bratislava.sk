@@ -70,6 +70,7 @@ const mockForm = {
   archived: false,
   ginisState: 'CREATED',
   formDataBase64: null,
+  formSentAt: new Date(),
 } as Forms
 
 const mockFormWithOloDefinition = {

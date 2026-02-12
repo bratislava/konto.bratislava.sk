@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */
+
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunService } from './mailgun.service'
 import { MailgunMessageBuilder } from './mailgun-message.builder'
@@ -370,3 +372,5 @@ describe('MailgunService', () => {
     })
   })
 })
+
+/* eslint-enable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */

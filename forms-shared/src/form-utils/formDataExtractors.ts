@@ -1,6 +1,9 @@
 import { FormDefinition, FormDefinitionEmail } from '../definitions/formDefinitionTypes'
 import { GenericObjectType } from '@rjsf/utils'
-import { evaluateFormDataExtractor } from './evaluateFormDataExtractor'
+import {
+  evaluateFormDataExtractor,
+  SchemalessFormDataExtractor,
+} from './evaluateFormDataExtractor'
 
 export const extractFormSubjectPlain = (
   formDefinition: FormDefinition,
@@ -31,7 +34,12 @@ export const extractEmailFormEmail = (
   formDefinition: FormDefinitionEmail,
   formData: GenericObjectType,
 ) => {
-  return evaluateFormDataExtractor(formDefinition.email.extractEmail, formData)
+  const extractEmail = formDefinition.email.extractEmail
+  if (!extractEmail) {
+    return undefined
+  }
+
+  return evaluateFormDataExtractor(extractEmail, formData)
 }
 
 export const extractEmailFormName = (
@@ -44,4 +52,28 @@ export const extractEmailFormName = (
   }
 
   return evaluateFormDataExtractor(extractName, formData)
+}
+
+const evaluateRecipientEmailAddress = (
+  address: string | SchemalessFormDataExtractor<any>,
+  formData: GenericObjectType,
+) => {
+  if (typeof address === 'string') {
+    return address
+  }
+  return evaluateFormDataExtractor(address, formData)
+}
+
+export const extractEmailFormAddress = (
+  formDefinition: FormDefinitionEmail,
+  formData: GenericObjectType,
+) => {
+  return {
+    prod: formDefinition.email.address.prod.map((address) =>
+      evaluateRecipientEmailAddress(address, formData),
+    ),
+    test: formDefinition.email.address.test.map((address) =>
+      evaluateRecipientEmailAddress(address, formData),
+    ),
+  }
 }

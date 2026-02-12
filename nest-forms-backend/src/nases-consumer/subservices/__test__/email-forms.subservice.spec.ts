@@ -780,6 +780,28 @@ describe('EmailFormsSubservice', () => {
       expect(result).toBe('')
       expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
+
+    it('should join non-empty production addresses with comma separator', () => {
+      configService.get.mockReturnValue('production')
+      const addressObject = {
+        test: ['test-1@example.com', 'test-2@example.com'],
+        prod: ['prod-1@example.com', 'prod-2@example.com'],
+      }
+      const result = service['resolveMultipleAddresses'](addressObject)
+      expect(result).toBe('prod-1@example.com, prod-2@example.com')
+      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
+    })
+
+    it('should return single address unchanged when only one recipient exists', () => {
+      configService.get.mockReturnValue('production')
+      const addressObject = {
+        test: ['test-single@example.com'],
+        prod: ['prod-single@example.com'],
+      }
+      const result = service['resolveMultipleAddresses'](addressObject)
+      expect(result).toBe('prod-single@example.com')
+      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
+    })
   })
 })
 /* eslint-enable pii/no-email */

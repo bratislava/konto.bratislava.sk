@@ -20,6 +20,8 @@ describe('MailgunService', () => {
     process.env = { ...ORIGINAL_ENV }
     process.env.MAILGUN_API_KEY = 'test-mailgun-api-key'
     process.env.DEFAULT_MAILGUN_DOMAIN = 'test.example.com'
+    jest.spyOn(console, 'log').mockImplementation()
+    jest.spyOn(console, 'error').mockImplementation()
   })
 
   beforeEach(async () => {
@@ -50,6 +52,7 @@ describe('MailgunService', () => {
 
   afterAll(() => {
     process.env = ORIGINAL_ENV
+    jest.restoreAllMocks()
   })
 
   it('should be defined', () => {

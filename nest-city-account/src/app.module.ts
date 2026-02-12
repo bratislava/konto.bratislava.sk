@@ -15,6 +15,7 @@ import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
 import { OAuth2Module } from './oauth2/oauth2.module'
 import { DpbModule } from './dpb/dpb.module'
+import { SharedModule } from './utils/subservices/shared.module'
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { DpbModule } from './dpb/dpb.module'
     TasksModule,
     OAuth2Module,
     DpbModule,
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [TaxSubservice, ThrowerErrorGuard],

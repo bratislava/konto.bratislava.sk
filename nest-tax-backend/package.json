@@ -36,7 +36,7 @@
     "@nestjs/swagger": "^11.2.6",
     "@prisma/client": "6.17.1",
     "@types/mssql": "^9.1.9",
-    "axios": "^1.13.2",
+    "axios": "^1.13.5",
     "bysquare": "2.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",

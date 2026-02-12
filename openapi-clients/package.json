@@ -52,7 +52,7 @@
     "typescript": "5.9.3"
   },
   "peerDependencies": {
-    "axios": "^1.13.2"
+    "axios": "^1.13.5"
   },
   "engines": {
     "node": ">=20.19.x",

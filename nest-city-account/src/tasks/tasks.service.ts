@@ -1,596 +1,115 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DateTime } from 'luxon'
-import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
-import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
-import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import HandleErrors from '../utils/decorators/errorHandler.decorators'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { DeliveryMethodNoris } from '../utils/types/tax.types'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { TaxSubservice } from '../utils/subservices/tax.subservice'
-import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
-import {
-  DeliveryMethodEnum,
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
-  PhysicalEntity,
-} from '@prisma/client'
-import { DeliveryMethodCodec } from '../utils/norisCodec'
+import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
+import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
+import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'
 
-import {
-  DeliveryMethodErrorsEnum,
-  DeliveryMethodErrorsResponseEnum,
-} from '../utils/guards/dtos/delivery-method.error'
-import { MailgunService } from '../mailgun/mailgun.service'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
-import { z } from 'zod'
+const bratislavaTimezone = 'Europe/Bratislava'
 
-const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
-
-const LOCK_DELIVERY_METHODS_BATCH = 100
-const BATCH_DELAY_MS = 1000
-
-const EDESK_UPDATE_LOOK_BACK_HOURS = 96
-
-const DELIVERY_METHOD_EMAIL_KEY = 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES'
-
-const EmailConfigSchema = z.object({
-  active: z.boolean(),
-})
-
+/**
+ * Main task orchestration service that schedules and coordinates all cron jobs.
+ * Delegates actual task execution to domain-specific subservices.
+ */
 @Injectable()
 export class TasksService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
-    private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly taxSubservice: TaxSubservice,
-    private readonly physicalEntityService: PhysicalEntityService,
-    private readonly mailgunService: MailgunService,
-    private readonly cognitoSubsevice: CognitoSubservice,
-    private readonly pdfGeneratorService: PdfGeneratorService
-  ) {
-    this.logger = new LineLoggerSubservice(TasksService.name)
-  }
+    private readonly cleanupTasksSubservice: CleanupTasksSubservice,
+    private readonly edeskTasksSubservice: EdeskTasksSubservice,
+    private readonly taxDeliveryMethodsTasksSubservice: TaxDeliveryMethodsTasksSubservice
+  ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  /**
+   * Deletes user verification data older than 1 month.
+   * Cleans up both UserIdCardVerify and LegalPersonIcoIdCardVerify records.
+   * Runs daily at 1:02 AM.
+   */
+  @Cron('2 01 * * *', { timeZone: bratislavaTimezone })
   @HandleErrors('Cron Error')
   async deleteOldUserVerificationData() {
-    const today = new Date()
-    const oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1))
-
-    await this.prismaService.userIdCardVerify.deleteMany({
-      where: {
-        verifyStart: {
-          lt: oneMonthAgo,
-        },
-      },
-    })
-
-    await this.prismaService.legalPersonIcoIdCardVerify.deleteMany({
-      where: {
-        verifyStart: {
-          lt: oneMonthAgo,
-        },
-      },
-    })
+    return this.cleanupTasksSubservice.deleteOldUserVerificationData()
   }
 
-  @Cron(`*/5 * 2-31 ${process.env.MUNICIPAL_TAX_LOCK_MONTH}-12 *`) // Every 5 minutes from MUNICIPAL_TAX_LOCK_MONTH (February), starting from 2nd.
+  /**
+   * Updates delivery methods in Noris tax backend for users who haven't been updated this year.
+   * Processes users in batches and validates that users aren't deactivated during the update.
+   * Runs every 5 minutes from February 2nd onwards during tax season.
+   */
+  @Cron(`*/5 * 2-31 ${process.env.MUNICIPAL_TAX_LOCK_MONTH}-12 *`, {
+    timeZone: bratislavaTimezone,
+  })
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
-    const currentYear = new Date().getFullYear()
-    const taxDeadlineDate = getTaxDeadlineDate()
-
-    const users = await this.prismaService.user.findMany({
-      where: {
-        birthNumber: {
-          not: null,
-        },
-        taxDeliveryMethodAtLockDate: {
-          not: null,
-        },
-        OR: [
-          {
-            lastTaxDeliveryMethodsUpdateYear: {
-              not: currentYear,
-            },
-          },
-          {
-            lastTaxDeliveryMethodsUpdateYear: null,
-          },
-        ],
-        lastVerificationIdentityCard: {
-          not: null,
-          lt: taxDeadlineDate,
-        },
-        ...ACTIVE_USER_FILTER,
-      },
-      select: {
-        id: true,
-        birthNumber: true,
-        taxDeliveryMethodAtLockDate: true,
-        taxDeliveryMethodCityAccountLockDate: true,
-      },
-      take: UPLOAD_TAX_DELIVERY_METHOD_BATCH,
-      orderBy: {
-        lastTaxDeliveryMethodsUpdateTry: 'asc',
-      },
-    })
-
-    if (users.length === 0) {
-      return
-    }
-
-    const data = users.reduce<{ [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue }>(
-      (acc, user) => {
-        // We know that birthNumber is not null from the query.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const birthNumber: string = user.birthNumber!
-        const deliveryMethod = DeliveryMethodCodec.decode(user.taxDeliveryMethodAtLockDate)
-        const date: string | undefined = user.taxDeliveryMethodCityAccountLockDate
-          ? user.taxDeliveryMethodCityAccountLockDate.toISOString().substring(0, 10)
-          : undefined
-        if (date) {
-          acc[birthNumber] = { deliveryMethod, date }
-        } else {
-          if (deliveryMethod === DeliveryMethodNoris.CITY_ACCOUNT) {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-              DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-              undefined,
-              user
-            )
-          }
-
-          acc[birthNumber] = { deliveryMethod }
-        }
-        return acc
-      },
-      {}
-    )
-
-    const updateResponse = await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
-    const updatedBirthNumbers = updateResponse.data.birthNumbers.map((birthNumber) =>
-      birthNumber.replaceAll('/', '')
-    )
-
-    // Now we should check if some user was not deactivated during his update in Noris.
-    // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However, it is an edge case.
-    const deactivated = await this.prismaService.user.findMany({
-      select: {
-        id: true,
-      },
-      where: {
-        id: {
-          in: users.map((user) => user.id),
-        },
-        birthNumber: null,
-      },
-    })
-    // If someone was deactivated, we should log the error with their birth numbers.
-    if (deactivated.length > 0) {
-      const deactivatedIds = deactivated.map((user) => user.id)
-      const birthNumbersOfDeactivateUsers = users
-        .filter((user) => deactivatedIds.includes(user.id))
-        .map((user) => user.birthNumber)
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        `Some users were deactivated during the update of the delivery methods in Noris. Their birth numbers are: ${birthNumbersOfDeactivateUsers.join(
-          ', '
-        )}. Remove their delivery methods in Noris manually.`
-      )
-    }
-
-    // If OK, we should set the Users to have updated delivery methods in Noris for the current year. Otherwise the error will be thrown.
-    await this.prismaService.user.updateMany({
-      where: {
-        birthNumber: {
-          in: updatedBirthNumbers,
-        },
-      },
-      data: {
-        lastTaxDeliveryMethodsUpdateYear: currentYear,
-      },
-    })
-
-    // For all users, not only those who were updated, we should set the last timestamp of trying to update delivery methods in Noris.
-    await this.prismaService.user.updateMany({
-      where: {
-        id: {
-          in: users.map((user) => user.id),
-        },
-      },
-      data: {
-        lastTaxDeliveryMethodsUpdateTry: new Date(),
-      },
-    })
+    return this.taxDeliveryMethodsTasksSubservice.updateDeliveryMethodsInNoris()
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  /**
+   * Updates eDesk active status from UPVS for physical entities.
+   * Uses exponential backoff for retry logic on failures.
+   * Processes up to 5 entities every 30 seconds.
+   */
+  @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async updateEdesk(): Promise<void> {
-    const lookBackDate = new Date()
-    lookBackDate.setHours(lookBackDate.getHours() - EDESK_UPDATE_LOOK_BACK_HOURS)
-
-    const entitiesToUpdate = await this.prismaService.$queryRaw<PhysicalEntity[]>`
-      SELECT e.*
-      FROM "PhysicalEntity" e
-      WHERE "userId" IS NOT NULL
-        AND "uri" IS NOT NULL
-        AND ("activeEdeskUpdatedAt" IS NULL OR "activeEdeskUpdatedAt" < ${lookBackDate})
-        AND ("activeEdeskUpdateFailedAt" IS NULL OR
-             "activeEdeskUpdateFailCount" = 0 OR
-             ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate}))
-      
-      ORDER BY greatest("activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
-      LIMIT 5;
-    `
-
-    if (entitiesToUpdate.length === 0) {
-      this.logger.log('No physical entities to update edesk.')
-      return
-    }
-
-    await this.physicalEntityService.updateEdeskFromUpvs(entitiesToUpdate)
+    return this.edeskTasksSubservice.updateEdesk()
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_9AM)
+  /**
+   * Alerts on entities that have failed eDesk updates 7 or more times consecutively.
+   * Logs error messages with entity details for monitoring.
+   * Runs daily at 9:01 AM.
+   */
+  @Cron('1 09 * * *', { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async alertFailingEdeskUpdate(): Promise<void> {
-    const entitiesFailedToUpdate = await this.prismaService.physicalEntity.findMany({
-      where: { activeEdeskUpdateFailCount: { gte: 7 } },
-      select: {
-        id: true,
-        birthNumber: true,
-        activeEdeskUpdateFailCount: true,
-      },
-    })
-
-    if (entitiesFailedToUpdate.length === 0) {
-      return
-    }
-
-    this.logger.error('Entities that failed to update at least 7 times in a row: ', {
-      entities: entitiesFailedToUpdate,
-      alert: 1,
-    })
+    return this.edeskTasksSubservice.alertFailingEdeskUpdate()
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  /**
+   * Cleans up expired OAuth2 authorization codes older than 5 minutes.
+   * Removes access, ID, and refresh tokens from expired records.
+   * Runs every 5 minutes, ensuring codes are at most 10 minutes old.
+   */
+  @Cron(CronExpression.EVERY_5_MINUTES, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async cleanupExpiredAuthorizationCodes(): Promise<void> {
-    const fiveMinutesAgo = DateTime.now().minus({ minutes: 5 }).toJSDate()
-
-    const expiredRecords = await this.prismaService.oAuth2Data.findMany({
-      where: {
-        authorizationCodeCreatedAt: {
-          not: null,
-          lt: fiveMinutesAgo,
-        },
-        refreshTokenEnc: {
-          not: null,
-        },
-      },
-      select: {
-        id: true,
-        authorizationCode: true,
-      },
-    })
-
-    if (expiredRecords.length === 0) {
-      return
-    }
-
-    for (const record of expiredRecords) {
-      this.logger.warn(
-        `Cleaning up expired oAuth2 tokens with id: ${record.id} and authorization code: ${record.authorizationCode}`
-      )
-    }
-
-    await this.prismaService.oAuth2Data.updateMany({
-      where: {
-        id: {
-          in: expiredRecords.map((record) => record.id),
-        },
-      },
-      data: {
-        accessTokenEnc: null,
-        idTokenEnc: null,
-        refreshTokenEnc: null,
-      },
-    })
-
-    this.logger.debug(
-      `Cleaned up expired authorization codes for ${expiredRecords.length} oAuth2 records.`
-    )
+    return this.cleanupTasksSubservice.cleanupExpiredAuthorizationCodes()
   }
 
-  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+  /**
+   * Deletes OAuth2 data records older than 1 month.
+   * Removes both expired authorization codes and stale records.
+   * Runs on the 1st day of each month at midnight.
+   */
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async deleteOldOAuth2Data(): Promise<void> {
-    const oneMonthAgo = DateTime.now().minus({ months: 1 }).toJSDate()
-
-    const oldRecords = await this.prismaService.oAuth2Data.findMany({
-      where: {
-        OR: [
-          {
-            authorizationCodeCreatedAt: {
-              not: null,
-              lt: oneMonthAgo,
-            },
-          },
-          {
-            authorizationCodeCreatedAt: null,
-            createdAt: {
-              lt: oneMonthAgo,
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        authorizationCode: true,
-      },
-    })
-
-    if (oldRecords.length === 0) {
-      return
-    }
-
-    const recordsInfo = oldRecords.map((r) => `${r.id}/${r.authorizationCode}`).join(', ')
-    this.logger.log(`Deleting ${oldRecords.length} old oAuth2 records: ${recordsInfo}`)
-
-    await this.prismaService.oAuth2Data.deleteMany({
-      where: {
-        id: {
-          in: oldRecords.map((record) => record.id),
-        },
-      },
-    })
+    return this.cleanupTasksSubservice.deleteOldOAuth2Data()
   }
 
-  @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`)
+  /**
+   * Locks delivery methods for all users on the configured tax lock date.
+   * Determines delivery method based on eDesk status and GDPR preferences.
+   * Processes users in batches with delays to avoid overwhelming the database.
+   * Runs once per year on MUNICIPAL_TAX_LOCK_DAY/MUNICIPAL_TAX_LOCK_MONTH.
+   */
+  @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`, {
+    timeZone: bratislavaTimezone,
+  })
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {
-    this.logger.log('Starting lockDeliveryMethods task')
-    const jobStartTime = new Date()
-
-    let skip = 0
-    let processedCount = 0
-    let batchNumber = 1
-
-    while (true) {
-      const users = await this.prismaService.user.findMany({
-        where: {
-          birthNumber: { not: null },
-          // Ignore users who may sign up as this job runs
-          createdAt: { lt: jobStartTime },
-        },
-        include: {
-          userGdprData: {
-            orderBy: {
-              createdAt: 'desc',
-            },
-            where: {
-              category: GDPRCategoryEnum.TAXES,
-              type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-            },
-            take: 1,
-            select: {
-              subType: true,
-              createdAt: true,
-            },
-          },
-          physicalEntity: {
-            select: {
-              activeEdesk: true,
-            },
-          },
-        },
-        skip,
-        take: LOCK_DELIVERY_METHODS_BATCH,
-        orderBy: {
-          id: 'asc', // Ensure consistent ordering
-        },
-      })
-
-      if (users.length === 0) {
-        break
-      }
-
-      this.logger.log(`Processing batch ${batchNumber} with ${users.length} users`)
-
-      const data = users.map((user) => {
-        // We know that birthNumber is not null from the query.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const birthNumber: string = user.birthNumber!
-
-        if (user.physicalEntity?.activeEdesk) {
-          return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
-        }
-        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
-          return {
-            birthNumber,
-            deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
-            date: user.userGdprData[0].createdAt,
-          }
-        }
-        return { birthNumber, deliveryMethod: DeliveryMethodEnum.POSTAL, date: undefined }
-      })
-
-      // Group users by delivery method
-      const edeskUsers = data.filter((entry) => entry.deliveryMethod === DeliveryMethodEnum.EDESK)
-      const postalUsers = data.filter((entry) => entry.deliveryMethod === DeliveryMethodEnum.POSTAL)
-      const cityAccountUsers = data.filter(
-        (entry) => entry.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT
-      )
-
-      // Batch updates for users with same delivery method
-      const updatePromises = [
-        // EDESK users - all have undefined date
-        edeskUsers.length > 0 &&
-          this.prismaService.user.updateMany({
-            where: { birthNumber: { in: edeskUsers.map((u) => u.birthNumber) } },
-            data: {
-              taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
-              taxDeliveryMethodCityAccountLockDate: null,
-            },
-          }),
-
-        // POSTAL users - all have undefined date
-        postalUsers.length > 0 &&
-          this.prismaService.user.updateMany({
-            where: { birthNumber: { in: postalUsers.map((u) => u.birthNumber) } },
-            data: {
-              taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
-              taxDeliveryMethodCityAccountLockDate: null,
-            },
-          }),
-
-        // CITY_ACCOUNT users still need individual updates due to different dates
-        ...cityAccountUsers.map((entry) =>
-          this.prismaService.user.update({
-            where: { birthNumber: entry.birthNumber },
-            data: {
-              taxDeliveryMethodAtLockDate: entry.deliveryMethod,
-              taxDeliveryMethodCityAccountLockDate: entry.date,
-            },
-          })
-        ),
-        // If postalUsers.length > 0 or edeskUsers.length > 0 evaluates to false, we want to filter out this result
-      ].filter(Boolean)
-
-      await Promise.all(updatePromises)
-
-      processedCount += users.length
-      skip += LOCK_DELIVERY_METHODS_BATCH
-
-      this.logger.log(`Completed batch ${batchNumber}. Total processed: ${processedCount} users`)
-
-      // Break between batches (except for the last one)
-      if (users.length === LOCK_DELIVERY_METHODS_BATCH) {
-        this.logger.log(`Waiting ${BATCH_DELAY_MS}ms before next batch...`)
-        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
-        batchNumber++
-      }
-    }
-
-    this.logger.log(`Completed lockDeliveryMethods task. Total processed: ${processedCount} users`)
+    return this.taxDeliveryMethodsTasksSubservice.lockDeliveryMethods()
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  /**
+   * Sends email notifications to users whose delivery method changed yesterday.
+   * Handles both GDPR preference changes and eDesk status changes.
+   * Includes PDF attachments for city account activations.
+   * Runs daily at 1:01 AM.
+   */
+  @Cron('1 01 * * *', { timeZone: bratislavaTimezone })
   @HandleErrors('Cron')
   async sendDailyDeliveryMethodSummaries() {
-    const configDbResult = await this.prismaService.config.findFirst({
-      where: {
-        key: DELIVERY_METHOD_EMAIL_KEY,
-      },
-      select: {
-        value: true,
-      },
-    })
-    if (!configDbResult) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`
-      )
-    }
-    const active = EmailConfigSchema.parse(configDbResult.value).active
-    if (!active) {
-      return
-    }
-
-    const yesterdayStart = new Date()
-    yesterdayStart.setDate(yesterdayStart.getDate() - 1)
-    yesterdayStart.setHours(0, 0, 0, 0)
-
-    const yesterdayEnd = new Date()
-    yesterdayEnd.setDate(yesterdayEnd.getDate() - 1)
-    yesterdayEnd.setHours(23, 59, 59, 999)
-
-    this.logger.log(`Processing delivery method summaries for: ${yesterdayStart.toDateString()}`)
-
-    const latestChanges = await this.prismaService.userGdprData.findMany({
-      where: {
-        category: GDPRCategoryEnum.TAXES,
-        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-        subType: GDPRSubTypeEnum.subscribe,
-        createdAt: {
-          gte: yesterdayStart,
-          lte: yesterdayEnd,
-        },
-      },
-      distinct: ['userId'],
-      orderBy: {
-        createdAt: 'desc', // Get newest first
-      },
-      include: {
-        user: {
-          select: {
-            email: true,
-            externalId: true,
-            birthNumber: true,
-          },
-        },
-      },
-    })
-
-    for (const change of latestChanges) {
-      const { user, userId } = change
-
-      if (!user.email || !user.externalId || !user.birthNumber) {
-        this.logger.warn(`Skipping user ${userId}: Missing email, externalId or birth number.`)
-        continue
-      }
-
-      const previousState = await this.prismaService.userGdprData.findFirst({
-        where: {
-          userId,
-          category: GDPRCategoryEnum.TAXES,
-          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          createdAt: { lt: yesterdayStart },
-        },
-        orderBy: { createdAt: 'desc' },
-      })
-
-      if (previousState?.subType === GDPRSubTypeEnum.subscribe) {
-        this.logger.log(`Skipping user ${userId}: Already subscribed in previous state.`)
-        continue
-      }
-
-      try {
-        const cognitoData = await this.cognitoSubsevice.getDataFromCognito(user.externalId)
-
-        const firstName = cognitoData.given_name
-        const fullName = `${cognitoData.given_name ?? ''} ${cognitoData.family_name ?? ''}`.trim()
-
-        const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
-          'delivery-method-set-to-notification',
-          'oznamenie.pdf',
-          {
-            email: user.email,
-            name: fullName,
-            birthNumber: user.birthNumber,
-            date: new Date().toLocaleDateString('sk'),
-          },
-          user.birthNumber
-        )
-
-        await this.mailgunService.sendEmail('2025-delivery-method-changed-notify', {
-          to: user.email,
-          variables: { firstName: firstName ?? null },
-          attachment: pdfFile,
-        })
-      } catch (err) {
-        this.logger.error(err)
-      }
-    }
+    return this.taxDeliveryMethodsTasksSubservice.sendDailyDeliveryMethodSummaries()
   }
 }

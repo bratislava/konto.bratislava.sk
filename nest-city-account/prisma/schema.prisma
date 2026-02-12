@@ -127,6 +127,7 @@ model PhysicalEntity {
   ifo                        String?   @unique
   birthNumber                String?
   activeEdesk                Boolean?
+  edeskStatusChangedAt       DateTime? // Do not update, managed by database.
   activeEdeskUpdatedAt       DateTime?
   activeEdeskUpdateFailedAt  DateTime?
   activeEdeskUpdateFailCount Int       @default(0)

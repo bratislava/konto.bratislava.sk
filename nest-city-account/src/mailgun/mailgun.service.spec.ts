@@ -28,6 +28,10 @@ describe('MailgunService', () => {
     jest.resetAllMocks()
   })
 
+  afterAll(() => {
+    process.env = ORIGINAL_ENV
+  })
+
   it('should be defined', () => {
     expect(service).toBeDefined()
   })

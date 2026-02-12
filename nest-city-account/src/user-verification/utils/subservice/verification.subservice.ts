@@ -7,7 +7,7 @@ import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
 } from '../../dtos/requests.verification.dto'
-import { DatabaseSubserviceUser } from './database.subservice'
+import { VerificationDataSubservice } from './verification-data.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
@@ -21,7 +21,7 @@ export class VerificationSubservice {
 
   constructor(
     private magproxyService: MagproxyService,
-    private databaseSubservice: DatabaseSubserviceUser,
+    private databaseSubservice: VerificationDataSubservice,
     private physicalEntityService: PhysicalEntityService
   ) {
     this.logger = new LineLoggerSubservice(VerificationSubservice.name)

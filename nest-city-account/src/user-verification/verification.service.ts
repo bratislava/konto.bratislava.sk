@@ -31,7 +31,7 @@ import {
   ResponseVerificationIdentityCardMessageEnum,
   ResponseVerificationIdentityCardToQueueDto,
 } from './dtos/requests.verification.dto'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -45,7 +45,7 @@ export class VerificationService {
 
   constructor(
     private cognitoSubservice: CognitoSubservice,
-    private databaseSubservice: DatabaseSubserviceUser,
+    private databaseSubservice: VerificationDataSubservice,
     private nasesService: NasesService,
     private throwerErrorGuard: ThrowerErrorGuard,
     private mailgunService: MailgunService,

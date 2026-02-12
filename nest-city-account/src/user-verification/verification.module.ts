@@ -9,7 +9,7 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TurnstileSubservice } from '../utils/subservices/turnstile.subservice'
 import { RABBIT_MQ } from './constants'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { VerificationController } from './verification.controller'
 import { VerificationService } from './verification.service'
@@ -41,7 +41,7 @@ import TokenSubservice from 'src/user-verification/utils/subservice/token.subser
   ],
   providers: [
     VerificationService,
-    DatabaseSubserviceUser,
+    VerificationDataSubservice,
     CognitoSubservice,
     TurnstileSubservice,
     VerificationSubservice,

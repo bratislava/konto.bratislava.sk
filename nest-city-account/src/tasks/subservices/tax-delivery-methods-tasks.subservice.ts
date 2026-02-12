@@ -600,18 +600,16 @@ export class TaxDeliveryMethodsTasksSubservice {
     ])
 
     // Process all users with in-memory data
-    const emailPromises = users
-      .map((user) =>
-        this.processUserDeliveryMethodChange(
-          user,
-          latestGdprData.get(user.id),
-          previousGdprData.get(user.id),
-          yesterdayGdprChanges.get(user.id),
-          yesterdayStart,
-          yesterdayEnd
-        )
+    const emailPromises = users.map((user) =>
+      this.processUserDeliveryMethodChange(
+        user,
+        latestGdprData.get(user.id),
+        previousGdprData.get(user.id),
+        yesterdayGdprChanges.get(user.id),
+        yesterdayStart,
+        yesterdayEnd
       )
-      .filter((promise): promise is Promise<void> => promise !== null)
+    )
 
     await Promise.all(emailPromises)
   }

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunService } from './mailgun.service'
 import { MailgunMessageBuilder } from './mailgun-message.builder'
+import { noop } from 'lodash'
 
 describe('MailgunService', () => {
   let service: MailgunService
@@ -14,11 +15,17 @@ describe('MailgunService', () => {
   })
 
   beforeEach(async () => {
+    jest.spyOn(console, 'log').mockImplementation(noop)
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [MailgunService, MailgunMessageBuilder],
     }).compile()
 
     service = module.get<MailgunService>(MailgunService)
+  })
+
+  afterEach(async () => {
+    jest.resetAllMocks()
   })
 
   it('should be defined', () => {

@@ -15,6 +15,7 @@ import { PaymentResponseQueryDto } from '../dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from '../dtos/redirect.payent.dto'
 import { PaymentService } from '../payment.service'
 import { GpWebpaySubservice } from '../subservices/gpwebpay.subservice'
+import noop from 'lodash/noop'
 
 describe('PaymentService', () => {
   let service: PaymentService
@@ -26,6 +27,7 @@ describe('PaymentService', () => {
 
   beforeEach(async () => {
     jest.resetModules()
+    jest.spyOn(console, 'log').mockImplementation(noop)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -80,6 +82,10 @@ describe('PaymentService', () => {
             return 'mock-value'
         }
       })
+  })
+
+  afterEach(async () => {
+    jest.resetAllMocks()
   })
 
   describe('trackPaymentInBloomreach', () => {

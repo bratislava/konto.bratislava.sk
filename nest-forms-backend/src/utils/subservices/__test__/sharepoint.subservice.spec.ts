@@ -22,6 +22,7 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import SharepointSubservice from '../sharepoint.subservice'
+import { noop } from 'lodash'
 
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
@@ -30,7 +31,7 @@ describe('SharepointSubservice', () => {
   let service: SharepointSubservice
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    jest.spyOn(console, 'log').mockImplementation(noop)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -59,6 +60,10 @@ describe('SharepointSubservice', () => {
     }).compile()
 
     service = module.get<SharepointSubservice>(SharepointSubservice)
+  })
+
+  afterEach(async () => {
+    jest.resetAllMocks()
   })
 
   it('should be defined', () => {

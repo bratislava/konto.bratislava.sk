@@ -13,8 +13,8 @@ import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
 @Module({
   imports: [PassportModule, PrismaModule, BloomreachModule],
-  exports: [],
   providers: [UserService, UserDataSubservice, ThrowerErrorGuard, AdminStrategy, CognitoSubservice],
+  exports: [UserService],
   controllers: [UserController, UserIntegrationController],
 })
 export class UserModule {}

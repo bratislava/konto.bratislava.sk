@@ -455,9 +455,14 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
   describe('sendDailyDeliveryMethodSummaries', () => {
     let mailgunService: MailgunService
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    yesterday.setHours(12, 0, 0, 0)
 
     beforeEach(() => {
       mailgunService = service['mailgunService']
+      // Reset all mocks before each test
+      jest.clearAllMocks()
     })
 
     it('should not send emails when SEND_DAILY_DELIVERY_METHOD_SUMMARIES config is disabled', async () => {
@@ -471,69 +476,49 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.sendDailyDeliveryMethodSummaries()
 
       expect(sendEmailSpy).not.toHaveBeenCalled()
+      // Should not query for changes if disabled
+      expect(prismaMock.userGdprData.findMany).not.toHaveBeenCalled()
+      expect(prismaMock.physicalEntity.findMany).not.toHaveBeenCalled()
     })
 
-    it('should skip users without email', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-
+    it('should skip users without email, externalId, or birthNumber', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
+      // Mock initial query for users with changes
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }, { userId: 'user3' }] as any)
+        .mockResolvedValueOnce([]) // Latest GDPR data
+        .mockResolvedValueOnce([]) // Previous GDPR data
+        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: null,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-      } as any)
-
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
-
-      await service.sendDailyDeliveryMethodSummaries()
-
-      expect(sendEmailSpy).not.toHaveBeenCalled()
-    })
-
-    it('should skip users without externalId', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
-
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
-      prismaMock.physicalEntity.findMany.mockResolvedValue([])
-
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: null,
-        birthNumber: '1234567890',
-      } as any)
-
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
-
-      await service.sendDailyDeliveryMethodSummaries()
-
-      expect(sendEmailSpy).not.toHaveBeenCalled()
-    })
-
-    it('should skip users without birthNumber', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
-
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
-      prismaMock.physicalEntity.findMany.mockResolvedValue([])
-
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: null,
-      } as any)
+      // Mock batch fetch returning users with missing data
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: null, // Missing email
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: null,
+        },
+        {
+          id: 'user2',
+          email: mockEmail,
+          externalId: null, // Missing externalId
+          birthNumber: '1234567890',
+          physicalEntity: null,
+        },
+        {
+          id: 'user3',
+          email: mockEmail,
+          externalId: 'ext-456',
+          birthNumber: null, // Missing birthNumber
+          physicalEntity: null,
+        },
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -543,15 +528,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should send eDesk activation email when eDesk was activated yesterday', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
-
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([])
+      // Mock initial query for users with eDesk changes
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([]) // Initial query - no GDPR changes
+        .mockResolvedValueOnce([]) // Latest GDPR data
+        .mockResolvedValueOnce([]) // Previous GDPR data
+        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+
       prismaMock.physicalEntity.findMany.mockResolvedValue([
         {
           userId: 'user1',
@@ -560,16 +547,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         },
       ] as any)
 
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        physicalEntity: {
-          activeEdesk: true,
-          edeskStatusChangedAt: yesterday,
+      // Mock batch fetch
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: true,
+            edeskStatusChangedAt: yesterday,
+          },
         },
-      } as any)
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -582,16 +572,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should send postal email when eDesk was deactivated yesterday', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
-
+    it('should send postal email when eDesk was deactivated yesterday (no GDPR subscription)', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([])
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([]) // Initial query - no GDPR changes
+        .mockResolvedValueOnce([]) // Latest GDPR data - no subscription
+        .mockResolvedValueOnce([]) // Previous GDPR data
+        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+
       prismaMock.physicalEntity.findMany.mockResolvedValue([
         {
           userId: 'user1',
@@ -600,16 +591,18 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         },
       ] as any)
 
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        physicalEntity: {
-          activeEdesk: false,
-          edeskStatusChangedAt: yesterday,
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: false,
+            edeskStatusChangedAt: yesterday,
+          },
         },
-      } as any)
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -622,35 +615,96 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should send City Account email with PDF when GDPR changed to subscribe yesterday', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
-
+    it('should send City Account email when eDesk was deactivated yesterday and user has GDPR subscription', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
-      prismaMock.physicalEntity.findMany.mockResolvedValue([])
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([]) // Initial query - no GDPR changes
+        .mockResolvedValueOnce([
+          // Latest GDPR data - user has subscription
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: new Date(yesterday.getTime() - 86400000), // Day before yesterday
+          },
+        ] as any)
+        .mockResolvedValueOnce([]) // Previous GDPR data
+        .mockResolvedValueOnce([]) // Yesterday GDPR changes
 
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        physicalEntity: {
+      prismaMock.physicalEntity.findMany.mockResolvedValue([
+        {
+          userId: 'user1',
           activeEdesk: false,
+          edeskStatusChangedAt: yesterday,
         },
+      ] as any)
+
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: false,
+            edeskStatusChangedAt: yesterday,
+          },
+        },
+      ] as any)
+
+      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+
+      await service.sendDailyDeliveryMethodSummaries()
+
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: mockEmail,
+        externalId: 'ext-123',
+        deliveryMethod: 'email',
+        birthNumber: '1234567890',
+      })
+    })
+
+    it('should send City Account email when GDPR changed to subscribe yesterday', async () => {
+      prismaMock.config.findFirst.mockResolvedValue({
+        value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findFirst
-        .mockResolvedValueOnce({
-          userId: 'user1',
-          subType: GDPRSubTypeEnum.subscribe,
-          createdAt: yesterday,
-        } as any)
-        .mockResolvedValueOnce(null) // No previous GDPR state
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - user has GDPR change
+        .mockResolvedValueOnce([
+          // Latest GDPR data
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+        .mockResolvedValueOnce([]) // Previous GDPR data - no previous state
+        .mockResolvedValueOnce([
+          // Yesterday GDPR changes
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+
+      prismaMock.physicalEntity.findMany.mockResolvedValue([])
+
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: false,
+            edeskStatusChangedAt: null,
+          },
+        },
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -665,38 +719,53 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should send postal email when GDPR changed to unsubscribe yesterday', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
+      const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
+        .mockResolvedValueOnce([
+          // Latest GDPR data
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.unsubscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+        .mockResolvedValueOnce([
+          // Previous GDPR data
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: twoDaysAgo,
+          },
+        ] as any)
+        .mockResolvedValueOnce([
+          // Yesterday GDPR changes
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.unsubscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        physicalEntity: {
-          activeEdesk: false,
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: false,
+            edeskStatusChangedAt: null,
+          },
         },
-      } as any)
-
-      prismaMock.userGdprData.findFirst
-        .mockResolvedValueOnce({
-          userId: 'user1',
-          subType: GDPRSubTypeEnum.unsubscribe,
-          createdAt: yesterday,
-        } as any)
-        .mockResolvedValueOnce({
-          userId: 'user1',
-          subType: GDPRSubTypeEnum.subscribe,
-          createdAt: new Date(yesterday.getTime() - 86400000),
-        } as any)
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -710,30 +779,38 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should skip users with active eDesk who had GDPR changes but no eDesk status change', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
-
-      const twoDaysAgo = new Date(yesterday)
-      twoDaysAgo.setDate(twoDaysAgo.getDate() - 1)
+      const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - GDPR change
+        .mockResolvedValueOnce([
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        physicalEntity: {
-          activeEdesk: true,
-          edeskStatusChangedAt: twoDaysAgo, // Changed 2 days ago, not yesterday
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: true,
+            edeskStatusChangedAt: twoDaysAgo, // Changed 2 days ago, not yesterday
+          },
         },
-      } as any)
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -743,39 +820,53 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should skip users when GDPR subType did not change from previous state', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
+      const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
+        .mockResolvedValueOnce([
+          // Latest GDPR data - subscribe
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+        .mockResolvedValueOnce([
+          // Previous GDPR data - also subscribe (no change)
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: twoDaysAgo,
+          },
+        ] as any)
+        .mockResolvedValueOnce([
+          // Yesterday GDPR changes
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        physicalEntity: {
-          activeEdesk: false,
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: false,
+            edeskStatusChangedAt: null,
+          },
         },
-      } as any)
-
-      // Both current and previous are subscribe - no change
-      prismaMock.userGdprData.findFirst
-        .mockResolvedValueOnce({
-          userId: 'user1',
-          subType: GDPRSubTypeEnum.subscribe,
-          createdAt: yesterday,
-        } as any)
-        .mockResolvedValueOnce({
-          userId: 'user1',
-          subType: GDPRSubTypeEnum.subscribe,
-          createdAt: new Date(yesterday.getTime() - 86400000),
-        } as any)
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -785,19 +876,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should combine both GDPR and eDesk changes and deduplicate by userId', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
-
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      // User appears in both GDPR changes and eDesk changes
-      prismaMock.userGdprData.findMany.mockResolvedValue([
-        { userId: 'user1' },
-        { userId: 'user2' },
-      ] as any)
+      // User1 and User2 have GDPR changes, User1 and User3 have eDesk changes
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([
+          { userId: 'user1' },
+          { userId: 'user2' },
+        ] as any)
+        .mockResolvedValueOnce([]) // Latest GDPR data
+        .mockResolvedValueOnce([]) // Previous GDPR data
+        .mockResolvedValueOnce([]) // Yesterday GDPR changes
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
         {
@@ -812,16 +903,46 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         },
       ] as any)
 
-      let callCount = 0
-      prismaMock.user.findUnique.mockImplementation(() => {
-        callCount++
-        // Should be called for user1, user2, user3 (3 unique users)
-        return Promise.resolve(null) as any
-      })
+      // Mock batch fetch - should fetch all 3 unique users
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: null, // Will be skipped
+          externalId: 'ext-1',
+          birthNumber: '1234567890',
+          physicalEntity: null,
+        },
+        {
+          id: 'user2',
+          email: null, // Will be skipped
+          externalId: 'ext-2',
+          birthNumber: '1234567890',
+          physicalEntity: null,
+        },
+        {
+          id: 'user3',
+          email: null, // Will be skipped
+          externalId: 'ext-3',
+          birthNumber: '1234567890',
+          physicalEntity: null,
+        },
+      ] as any)
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      expect(callCount).toBe(3) // user1, user2, user3 (deduplicated)
+      // Verify batch fetch was called with deduplicated user IDs
+      expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: { in: expect.arrayContaining(['user1', 'user2', 'user3']) } },
+        })
+      )
+      expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: { in: expect.any(Array) } },
+        })
+      )
+      const calledWith = (prismaMock.user.findMany as jest.Mock).mock.calls[0][0]
+      expect(calledWith.where.id.in).toHaveLength(3) // Deduplicated
     })
 
     it('should only process users with changes between yesterday start (00:00:00) and end (23:59:59)', async () => {
@@ -829,23 +950,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([])
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([]) // Initial query
+        .mockResolvedValueOnce([]) // Latest GDPR data
+        .mockResolvedValueOnce([]) // Previous GDPR data
+        .mockResolvedValueOnce([]) // Yesterday GDPR changes
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
+      prismaMock.user.findMany.mockResolvedValue([])
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      // Verify GDPR query uses correct date range
-      expect(prismaMock.userGdprData.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            createdAt: {
-              gte: expect.any(Date),
-              lte: expect.any(Date),
-            },
-          }),
-        })
-      )
-
+      // Verify GDPR initial query uses correct date range
       const gdprCall = (prismaMock.userGdprData.findMany as jest.Mock).mock.calls[0][0]
       const gdprStart = gdprCall.where.createdAt.gte
       const gdprEnd = gdprCall.where.createdAt.lte
@@ -874,34 +989,38 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should prioritize eDesk status over GDPR changes when eDesk is active', async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      yesterday.setHours(12, 0, 0, 0)
-
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany.mockResolvedValue([{ userId: 'user1' }] as any)
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - GDPR change
+        .mockResolvedValueOnce([
+          // Latest GDPR data
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+        .mockResolvedValueOnce([]) // Previous GDPR data
+        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
       // User has active eDesk (changed yesterday) AND GDPR change yesterday
-      prismaMock.user.findUnique.mockResolvedValue({
-        id: 'user1',
-        email: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        physicalEntity: {
-          activeEdesk: true,
-          edeskStatusChangedAt: yesterday,
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          physicalEntity: {
+            activeEdesk: true,
+            edeskStatusChangedAt: yesterday,
+          },
         },
-      } as any)
-
-      prismaMock.userGdprData.findFirst.mockResolvedValue({
-        userId: 'user1',
-        subType: GDPRSubTypeEnum.subscribe,
-        createdAt: yesterday,
-      } as any)
+      ] as any)
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -911,6 +1030,120 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
         userEmail: mockEmail,
         externalId: 'ext-123',
+        deliveryMethod: 'edesk',
+      })
+    })
+
+    it('should process multiple users in batch with different delivery method changes', async () => {
+      prismaMock.config.findFirst.mockResolvedValue({
+        value: { active: true },
+      } as any)
+
+      const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
+
+      prismaMock.userGdprData.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any) // Initial query
+        .mockResolvedValueOnce([
+          // Latest GDPR data
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+          {
+            userId: 'user2',
+            subType: GDPRSubTypeEnum.unsubscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+        .mockResolvedValueOnce([
+          // Previous GDPR data
+          {
+            userId: 'user2',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: twoDaysAgo,
+          },
+        ] as any)
+        .mockResolvedValueOnce([
+          // Yesterday GDPR changes
+          {
+            userId: 'user1',
+            subType: GDPRSubTypeEnum.subscribe,
+            createdAt: yesterday,
+          },
+          {
+            userId: 'user2',
+            subType: GDPRSubTypeEnum.unsubscribe,
+            createdAt: yesterday,
+          },
+        ] as any)
+
+      prismaMock.physicalEntity.findMany.mockResolvedValue([
+        {
+          userId: 'user3',
+          activeEdesk: true,
+          edeskStatusChangedAt: yesterday,
+        },
+      ] as any)
+
+      prismaMock.user.findMany.mockResolvedValue([
+        {
+          id: 'user1',
+          email: 'user1@example.com',
+          externalId: 'ext-1',
+          birthNumber: '1111111111',
+          physicalEntity: {
+            activeEdesk: false,
+            edeskStatusChangedAt: null,
+          },
+        },
+        {
+          id: 'user2',
+          email: 'user2@example.com',
+          externalId: 'ext-2',
+          birthNumber: '2222222222',
+          physicalEntity: {
+            activeEdesk: false,
+            edeskStatusChangedAt: null,
+          },
+        },
+        {
+          id: 'user3',
+          email: 'user3@example.com',
+          externalId: 'ext-3',
+          birthNumber: '3333333333',
+          physicalEntity: {
+            activeEdesk: true,
+            edeskStatusChangedAt: yesterday,
+          },
+        },
+      ] as any)
+
+      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+
+      await service.sendDailyDeliveryMethodSummaries()
+
+      expect(sendEmailSpy).toHaveBeenCalledTimes(3)
+
+      // User1: GDPR subscribe (new)
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: 'user1@example.com',
+        externalId: 'ext-1',
+        birthNumber: '1111111111',
+        deliveryMethod: 'email',
+      })
+
+      // User2: GDPR unsubscribe (changed from subscribe)
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: 'user2@example.com',
+        externalId: 'ext-2',
+        deliveryMethod: 'postal',
+      })
+
+      // User3: eDesk activated
+      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
+        userEmail: 'user3@example.com',
+        externalId: 'ext-3',
         deliveryMethod: 'edesk',
       })
     })

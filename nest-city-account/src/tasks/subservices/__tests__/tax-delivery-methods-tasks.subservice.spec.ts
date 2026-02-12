@@ -39,7 +39,14 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     jest.restoreAllMocks()
   })
 
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   beforeEach(async () => {
+    jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] })
+    jest.setSystemTime(new Date('2024-02-15T12:00:00.000Z'))
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TaxDeliveryMethodsTasksSubservice,
@@ -455,14 +462,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
   describe('sendDailyDeliveryMethodSummaries', () => {
     let mailgunService: MailgunService
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    yesterday.setHours(12, 0, 0, 0)
+    let yesterday: Date
 
     beforeEach(() => {
       mailgunService = service['mailgunService']
       // Reset all mocks before each test
       jest.clearAllMocks()
+
+      // Calculate yesterday based on fake timer
+      yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      yesterday.setHours(12, 0, 0, 0)
     })
 
     it('should not send emails when SEND_DAILY_DELIVERY_METHOD_SUMMARIES config is disabled', async () => {

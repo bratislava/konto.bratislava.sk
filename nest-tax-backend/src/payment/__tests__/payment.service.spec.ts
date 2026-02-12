@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, TaxPaymentSource, TaxType } from '@prisma/client'
+import noop from 'lodash/noop'
 
 import prismaMock from '../../../test/singleton'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -15,7 +16,6 @@ import { PaymentResponseQueryDto } from '../dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from '../dtos/redirect.payent.dto'
 import { PaymentService } from '../payment.service'
 import { GpWebpaySubservice } from '../subservices/gpwebpay.subservice'
-import noop from 'lodash/noop'
 
 describe('PaymentService', () => {
   let service: PaymentService

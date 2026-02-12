@@ -20,12 +20,11 @@ const UserProfileDetailsButtons = ({
 
   return (
     // first button is to fix bug with autofocus of button 'cancel edit'
-
-    <div className="flex flex-row items-center gap-5">
+    <div className="flex items-center gap-6">
       {isEditing ? (
         <>
           {/* Cancel button */}
-          <Button className="max-md:hidden" variant="outline" onPress={onCancelEditing}>
+          <Button className="max-md:hidden" variant="plain" onPress={onCancelEditing}>
             {t('my_profile.profile_detail.discard_changes_button')}
           </Button>
           <Button

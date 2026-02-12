@@ -56,7 +56,8 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
         'fixed inset-0 top-(--main-scroll-top-margin) z-50': isEditing,
       })}
     >
-      {!tierStatus.isIdentityVerified && (
+      {/* TODO: Proper positioning of edit view. Now, alert is hidden to show edit view on top of the page, otherwise is was pushed down.  */}
+      {!tierStatus.isIdentityVerified && !isEditing && (
         <div className="flex w-full items-center justify-center bg-white p-3 md:px-8 md:py-3">
           <div className="md:max-w-(--breakpoint-lg)">
             <Alert
@@ -99,7 +100,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           <div
             className={cn('flex flex-col gap-8 p-4', 'md:flex-row md:flex-wrap md:gap-16 md:p-8')}
           >
-            <div className={cn({ 'hidden md:block': isEditing })}>
+            <div>
               <UserProfilePhoto userAttributes={userAttributes ?? {}} />
             </div>
             {isEditing ? (

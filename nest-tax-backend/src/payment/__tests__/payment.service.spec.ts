@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, TaxPaymentSource, TaxType } from '@prisma/client'
+import noop from 'lodash/noop'
 
 import prismaMock from '../../../test/singleton'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -26,6 +27,7 @@ describe('PaymentService', () => {
 
   beforeEach(async () => {
     jest.resetModules()
+    jest.spyOn(console, 'log').mockImplementation(noop)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -80,6 +82,10 @@ describe('PaymentService', () => {
             return 'mock-value'
         }
       })
+  })
+
+  afterEach(async () => {
+    jest.resetAllMocks()
   })
 
   describe('trackPaymentInBloomreach', () => {

@@ -6,6 +6,7 @@ import { MailgunMessageBuilder } from './mailgun-message.builder'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { createMock } from '@golevelup/ts-jest'
+import { noop } from 'lodash'
 
 describe('MailgunService', () => {
   let service: MailgunService
@@ -27,6 +28,8 @@ describe('MailgunService', () => {
   beforeEach(async () => {
     jest.clearAllMocks()
     mockCreate.mockResolvedValue({ id: 'mock-message-id', message: 'Queued' })
+
+    jest.spyOn(console, 'log').mockImplementation(noop)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -53,6 +56,14 @@ describe('MailgunService', () => {
   afterAll(() => {
     process.env = ORIGINAL_ENV
     jest.restoreAllMocks()
+  })
+
+  afterEach(async () => {
+    jest.resetAllMocks()
+  })
+
+  afterAll(() => {
+    process.env = ORIGINAL_ENV
   })
 
   it('should be defined', () => {

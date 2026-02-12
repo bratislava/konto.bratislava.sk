@@ -30,7 +30,7 @@ describe('SharepointSubservice', () => {
   let service: SharepointSubservice
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    jest.spyOn(console, 'log').mockImplementation(() => {})
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -59,6 +59,10 @@ describe('SharepointSubservice', () => {
     }).compile()
 
     service = module.get<SharepointSubservice>(SharepointSubservice)
+  })
+
+  afterEach(async () => {
+    jest.resetAllMocks()
   })
 
   it('should be defined', () => {

@@ -9,7 +9,6 @@ import { createMock } from '@golevelup/ts-jest'
 
 describe('MailgunService', () => {
   let service: MailgunService
-  let mailgunMessageBuilder: MailgunMessageBuilder
   let cognitoSubservice: CognitoSubservice
   let pdfGeneratorService: PdfGeneratorService
 
@@ -37,7 +36,6 @@ describe('MailgunService', () => {
     }).compile()
 
     service = module.get<MailgunService>(MailgunService)
-    mailgunMessageBuilder = module.get<MailgunMessageBuilder>(MailgunMessageBuilder)
     cognitoSubservice = module.get<CognitoSubservice>(CognitoSubservice)
     pdfGeneratorService = module.get<PdfGeneratorService>(PdfGeneratorService)
 

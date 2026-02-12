@@ -127,13 +127,13 @@ describe('MailgunService', () => {
         },
       }
 
-      await service.sendEmail('2025-delivery-method-changed', options)
+      await service.sendEmail('2025-delivery-method-changed-notify', options)
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
         from: expect.any(String),
         to: 'test@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-        template: '2025-delivery-method-changed',
+        template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify(options.variables),
       })
     })
@@ -148,13 +148,13 @@ describe('MailgunService', () => {
         },
       }
 
-      await service.sendEmail('2025-delivery-method-changed', options)
+      await service.sendEmail('2025-delivery-method-changed-notify', options)
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
         from: expect.any(String),
         to: 'test@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-        template: '2025-delivery-method-changed',
+        template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify(options.variables),
       })
     })
@@ -176,13 +176,13 @@ describe('MailgunService', () => {
         attachment: mockAttachment,
       }
 
-      await service.sendEmail('2025-delivery-method-changed', options)
+      await service.sendEmail('2025-delivery-method-changed-notify', options)
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
         from: expect.any(String),
         to: 'test@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-        template: '2025-delivery-method-changed',
+        template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify(options.variables),
         attachment: mockAttachment,
       })
@@ -243,7 +243,7 @@ describe('MailgunService', () => {
         from: expect.any(String),
         to: 'test@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-        template: '2025-delivery-method-changed',
+        template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'John',
           year: new Date().getFullYear().toString(),
@@ -270,7 +270,7 @@ describe('MailgunService', () => {
         from: expect.any(String),
         to: 'jane@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-        template: '2025-delivery-method-changed',
+        template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'Jane',
           year: new Date().getFullYear().toString(),
@@ -316,7 +316,7 @@ describe('MailgunService', () => {
         from: expect.any(String),
         to: 'alice@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-        template: '2025-delivery-method-changed',
+        template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'Alice',
           year: new Date().getFullYear().toString(),
@@ -344,7 +344,7 @@ describe('MailgunService', () => {
         from: expect.any(String),
         to: 'bob@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-        template: '2025-delivery-method-changed',
+        template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'Bob',
           year: new Date().getFullYear().toString(),

@@ -90,7 +90,7 @@ export class MailgunMessageBuilder {
     }
   }
 
-  async '2025-delivery-method-changed'({
+  async '2025-delivery-method-changed-notify'({
     to,
     variables,
     attachment,
@@ -99,7 +99,7 @@ export class MailgunMessageBuilder {
       from: MAILGUN.FROM_EMAIL,
       to,
       subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-      template: '2025-delivery-method-changed',
+      template: '2025-delivery-method-changed-notify',
       'h:X-Mailgun-Variables': JSON.stringify(variables),
       ...(attachment && { attachment }),
     }
@@ -124,7 +124,7 @@ export class MailgunMessageBuilder {
       from: MAILGUN.FROM_EMAIL,
       to: userEmail,
       subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
-      template: '2025-delivery-method-changed',
+      template: '2025-delivery-method-changed-notify',
       'h:X-Mailgun-Variables': JSON.stringify(variables),
     }
 

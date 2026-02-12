@@ -22,9 +22,9 @@ export class TasksService {
   /**
    * Deletes user verification data older than 1 month.
    * Cleans up both UserIdCardVerify and LegalPersonIcoIdCardVerify records.
-   * Runs daily at 1:00 AM.
+   * Runs daily at 1:02 AM.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, { timeZone: bratislavaTimezone })
+  @Cron('2 01 * * *', { timeZone: bratislavaTimezone })
   @HandleErrors('Cron Error')
   async deleteOldUserVerificationData() {
     return this.cleanupTasksSubservice.deleteOldUserVerificationData()
@@ -57,9 +57,9 @@ export class TasksService {
   /**
    * Alerts on entities that have failed eDesk updates 7 or more times consecutively.
    * Logs error messages with entity details for monitoring.
-   * Runs daily at 9:00 AM.
+   * Runs daily at 9:01 AM.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: bratislavaTimezone })
+  @Cron('1 09 * * *', { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async alertFailingEdeskUpdate(): Promise<void> {
     return this.edeskTasksSubservice.alertFailingEdeskUpdate()
@@ -105,9 +105,9 @@ export class TasksService {
    * Sends email notifications to users whose delivery method changed yesterday.
    * Handles both GDPR preference changes and eDesk status changes.
    * Includes PDF attachments for city account activations.
-   * Runs daily at 1:00 AM.
+   * Runs daily at 1:01 AM.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, { timeZone: bratislavaTimezone })
+  @Cron('1 01 * * *', { timeZone: bratislavaTimezone })
   @HandleErrors('Cron')
   async sendDailyDeliveryMethodSummaries() {
     return this.taxDeliveryMethodsTasksSubservice.sendDailyDeliveryMethodSummaries()

@@ -20,7 +20,7 @@ import {
   LegalPersonContactAndIdInfoResponseDto,
   UserContactAndIdInfoResponseDto,
 } from './dtos/user-contact-info.dto'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 import { DeliveryMethodEnum, GDPRSubTypeEnum } from '@prisma/client'
 import {
   CognitoGetUserData,
@@ -34,7 +34,7 @@ import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 @Injectable()
 export class UserService {
   constructor(
-    private databaseSubservice: DatabaseSubserviceUser,
+    private databaseSubservice: UserDataSubservice,
     private prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
     private bloomreachService: BloomreachService,

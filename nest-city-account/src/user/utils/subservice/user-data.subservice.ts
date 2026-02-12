@@ -28,7 +28,7 @@ import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/clie
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 
 @Injectable()
-export class DatabaseSubserviceUser {
+export class UserDataSubservice {
   private readonly logger: LineLoggerSubservice
 
   constructor(
@@ -36,7 +36,7 @@ export class DatabaseSubserviceUser {
     private bloomreachService: BloomreachService,
     private throwerErrorGuard: ThrowerErrorGuard
   ) {
-    this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
+    this.logger = new LineLoggerSubservice(UserDataSubservice.name)
   }
 
   /**

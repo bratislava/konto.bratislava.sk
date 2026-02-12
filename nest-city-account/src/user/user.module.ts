@@ -9,18 +9,12 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { UserController } from './user.controller'
 import { UserIntegrationController } from './user.integration.controller'
 import { UserService } from './user.service'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
 @Module({
   imports: [PassportModule, PrismaModule, BloomreachModule],
-  providers: [
-    UserService,
-    DatabaseSubserviceUser,
-    ThrowerErrorGuard,
-    AdminStrategy,
-    CognitoSubservice,
-  ],
   exports: [],
+  providers: [UserService, UserDataSubservice, ThrowerErrorGuard, AdminStrategy, CognitoSubservice],
   controllers: [UserController, UserIntegrationController],
 })
 export class UserModule {}

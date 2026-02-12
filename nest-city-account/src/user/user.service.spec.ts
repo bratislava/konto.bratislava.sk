@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { createMock } from '@golevelup/ts-jest'
 import { UserService } from './user.service'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -14,15 +14,15 @@ jest.mock('../utils/constants/tax-deadline')
 
 describe('UserService', () => {
   let service: UserService
-  let databaseSubservice: jest.Mocked<DatabaseSubserviceUser>
+  let databaseSubservice: jest.Mocked<UserDataSubservice>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
         {
-          provide: DatabaseSubserviceUser,
-          useValue: createMock<DatabaseSubserviceUser>(),
+          provide: UserDataSubservice,
+          useValue: createMock<UserDataSubservice>(),
         },
         {
           provide: PrismaService,
@@ -44,7 +44,7 @@ describe('UserService', () => {
     }).compile()
 
     service = module.get<UserService>(UserService)
-    databaseSubservice = module.get(DatabaseSubserviceUser)
+    databaseSubservice = module.get(UserDataSubservice)
   })
 
   afterEach(() => {

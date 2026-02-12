@@ -217,7 +217,9 @@ describe('MailgunService', () => {
         },
       }
 
-      await expect(service.sendEmail('2023-registration-successful', options)).resolves.not.toThrow()
+      await expect(
+        service.sendEmail('2023-registration-successful', options)
+      ).resolves.not.toThrow()
     })
   })
 
@@ -363,13 +365,16 @@ describe('MailgunService', () => {
         deliveryMethod: 'edesk',
       })
 
-      expect(mockCreate).toHaveBeenCalledWith('test.example.com', expect.objectContaining({
-        'h:X-Mailgun-Variables': JSON.stringify({
-          firstName: null,
-          year: new Date().getFullYear().toString(),
-          deliveryMethod: 'edesk',
-        }),
-      }))
+      expect(mockCreate).toHaveBeenCalledWith(
+        'test.example.com',
+        expect.objectContaining({
+          'h:X-Mailgun-Variables': JSON.stringify({
+            firstName: null,
+            year: new Date().getFullYear().toString(),
+            deliveryMethod: 'edesk',
+          }),
+        })
+      )
     })
   })
 })

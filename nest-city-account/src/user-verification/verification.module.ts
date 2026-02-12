@@ -16,6 +16,7 @@ import { VerificationService } from './verification.service'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { MailgunModule } from '../mailgun/mailgun.module'
 import TokenSubservice from 'src/user-verification/utils/subservice/token.subservice'
+import { UserModule } from '../user/user.module'
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import TokenSubservice from 'src/user-verification/utils/subservice/token.subser
     PhysicalEntityModule,
     BloomreachModule,
     MailgunModule,
+    UserModule,
   ],
   providers: [
     VerificationService,

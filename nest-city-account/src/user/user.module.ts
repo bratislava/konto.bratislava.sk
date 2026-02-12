@@ -10,11 +10,19 @@ import { UserController } from './user.controller'
 import { UserIntegrationController } from './user.integration.controller'
 import { UserService } from './user.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
+import { UserTierService } from './user-tier.service'
 
 @Module({
   imports: [PassportModule, PrismaModule, BloomreachModule],
-  providers: [UserService, UserDataSubservice, ThrowerErrorGuard, AdminStrategy, CognitoSubservice],
-  exports: [UserService],
+  providers: [
+    UserService,
+    UserDataSubservice,
+    UserTierService,
+    ThrowerErrorGuard,
+    AdminStrategy,
+    CognitoSubservice,
+  ],
+  exports: [UserService, UserTierService],
   controllers: [UserController, UserIntegrationController],
 })
 export class UserModule {}

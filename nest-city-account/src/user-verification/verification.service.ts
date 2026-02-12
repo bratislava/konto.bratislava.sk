@@ -38,6 +38,7 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { VerificationReturnType } from './types'
 import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
+import { UserTierService } from '../user/user-tier.service'
 
 @Injectable()
 export class VerificationService {
@@ -53,7 +54,8 @@ export class VerificationService {
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
     private readonly bloomreachService: BloomreachService,
-    private readonly tokenSubservice: TokenSubservice
+    private readonly tokenSubservice: TokenSubservice,
+    private readonly userTierService: UserTierService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -80,7 +82,7 @@ export class VerificationService {
       }
     } else {
       try {
-        await this.cognitoSubservice.changeTier(
+        await this.userTierService.changeTier(
           user.idUser,
           CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
           user['custom:account_type']
@@ -129,8 +131,9 @@ export class VerificationService {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto
         const throwerErrorGuard: ThrowerErrorGuard = new ThrowerErrorGuard()
         const prismaService = new PrismaService()
-        const cognitoSubservice = new CognitoSubservice(throwerErrorGuard, prismaService)
-        await cognitoSubservice.changeTier(
+        const cognitoSubservice = new CognitoSubservice(throwerErrorGuard)
+        const userTierService = new UserTierService(cognitoSubservice, prismaService)
+        await userTierService.changeTier(
           data.msg.user.idUser,
           CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
           data.msg.type
@@ -175,7 +178,7 @@ export class VerificationService {
   }
 
   private async handleVerificationSuccess(data: RabbitMessageDto) {
-    await this.cognitoSubservice.changeTier(
+    await this.userTierService.changeTier(
       data.msg.user.idUser,
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       data.msg.type
@@ -230,7 +233,7 @@ export class VerificationService {
     data: RabbitMessageDto,
     verification: { success: false; reason: CustomErrorEnums }
   ) {
-    await this.cognitoSubservice.changeTier(
+    await this.userTierService.changeTier(
       data.msg.user.idUser,
       CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
       data.msg.type
@@ -393,7 +396,7 @@ export class VerificationService {
       }
     }
 
-    await this.cognitoSubservice.changeTier(
+    await this.userTierService.changeTier(
       user.idUser,
       CognitoUserAttributesTierEnum.EID,
       user['custom:account_type']

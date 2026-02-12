@@ -40,6 +40,7 @@ import {
 } from './utils/account-deactivate.utils'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 import { UserService } from '../user/user.service'
+import { UserTierService } from '../user/user-tier.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -59,7 +60,8 @@ export class AdminService {
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
     private readonly taxSubservice: TaxSubservice,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly userTierService: UserTierService
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -274,7 +276,7 @@ export class AdminService {
     await this.cognitoSubservice.deactivateCognitoMail(externalId, cognitoUser.email)
 
     // We also need to change the account to unverified, since we delete birthNumber from database
-    await this.cognitoSubservice.changeTier(
+    await this.userTierService.changeTier(
       externalId,
       CognitoUserAttributesTierEnum.NEW,
       cognitoUser['custom:account_type']
@@ -520,7 +522,7 @@ export class AdminService {
 
     // Update cognito
     const cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-    await this.cognitoSubservice.changeTier(
+    await this.userTierService.changeTier(
       user.externalId,
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       cognitoUser['custom:account_type']

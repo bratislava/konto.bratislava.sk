@@ -72,8 +72,9 @@ describe('RF01 -', { testIsolation: false }, () => {
         describe('A02 - change email and password', { testIsolation: false }, () => {
           it('1. Logging in.', () => {
             cy.logInUser(device, emailHash, password)
-            cy.get('[data-cy=add-phone-number]', { timeout: 10000 })
-            cy.get('[data-cy=close-modal]').click({ multiple: true })
+            // PhoneNumberModal is temporarily hidden.
+            // cy.get('[data-cy=add-phone-number]', { timeout: 10000 })
+            // cy.get('[data-cy=close-modal]').click({ multiple: true })
           })
 
           it('2. Changing email.', () => {

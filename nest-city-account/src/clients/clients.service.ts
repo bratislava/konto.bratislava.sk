@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import {
-  createMagproxyClient,
-  type MagproxyClient,
-} from 'openapi-clients/magproxy'
-import {
-  createSlovenskoSkClient,
-  type SlovenskoSkClient,
-} from 'openapi-clients/slovensko-sk'
+import { createMagproxyClient, type MagproxyClient } from 'openapi-clients/magproxy'
+import { createSlovenskoSkClient, type SlovenskoSkClient } from 'openapi-clients/slovensko-sk'
 import { createTaxClient, type TaxClient } from 'openapi-clients/tax'
 
 @Injectable()

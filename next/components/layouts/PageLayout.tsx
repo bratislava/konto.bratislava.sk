@@ -1,0 +1,58 @@
+import AuthNavBar from 'components/forms/segments/NavBar/AuthNavBar'
+import NavBar from 'components/forms/segments/NavBar/NavBar'
+import { useNavbarHeight } from 'components/layouts/useNavbarHeight'
+import cn from 'frontend/cn'
+import { ReactNode } from 'react'
+
+declare module 'react' {
+  interface CSSProperties {
+    '--main-scroll-top-margin'?: string
+  }
+}
+
+type Props = {
+  children: ReactNode
+  variant?: 'default' | 'auth'
+  hideNavMenu?: boolean
+  hideBackButton?: boolean
+  className?: string
+}
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21361&m=dev
+ */
+
+const PageLayout = ({ variant = "default", className, children, hideNavMenu, hideBackButton }: Props) => {
+  const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
+
+  return (
+    <div className={cn('min-h-screen', className)}>
+      {/* 'contents' class in header enables sticky elements inside it to work */}
+      <header className="relative z-30 contents">
+        {variant === 'auth' ?
+          <AuthNavBar
+            backButtonHidden={hideBackButton}
+            desktopNavbarRef={desktopNavbarRef}
+            mobileNavbarRef={mobileNavbarRef}
+          /> :
+          <NavBar
+            hideNavMenu={hideNavMenu}
+            desktopNavbarRef={desktopNavbarRef}
+            mobileNavbarRef={mobileNavbarRef}
+          />}
+      </header>
+      <main
+        style={{
+          '--main-scroll-top-margin': `${navbarHeight}px`,
+        }}
+        className={cn("relative min-h-[calc(100vh-var(--main-scroll-top-margin))] **:scroll-mt-(--main-scroll-top-margin", {
+          "md:gap-6 md:bg-background-passive-primary md:py-8": variant === "auth"
+        })}
+      >
+        {children}
+      </main>
+    </div>
+  )
+}
+
+export default PageLayout

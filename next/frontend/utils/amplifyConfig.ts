@@ -1,6 +1,7 @@
 import type { LibraryOptions } from '@aws-amplify/core'
 import type { ResourcesConfig } from 'aws-amplify'
-import { environment } from 'environment'
+
+import { environment } from '@/environment'
 
 export const amplifyConfig = {
   Auth: {

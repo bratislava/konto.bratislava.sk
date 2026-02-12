@@ -1,7 +1,8 @@
-import Tag from 'components/forms/simple-components/Tag'
 import { useState } from 'react'
 
-import logger from '../../../frontend/utils/logger'
+import Tag from '@/components/forms/simple-components/Tag'
+import logger from '@/frontend/utils/logger'
+
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

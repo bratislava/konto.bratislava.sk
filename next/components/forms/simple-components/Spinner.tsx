@@ -1,4 +1,4 @@
-import cn from '../../../frontend/cn'
+import cn from '@/frontend/cn'
 
 type SpinnerBase = {
   size?: 'lg' | 'md' | 'sm'

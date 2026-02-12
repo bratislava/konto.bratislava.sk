@@ -1,6 +1,6 @@
-import { formsClient } from '@clients/forms'
-import { useSsrAuth } from 'frontend/hooks/useSsrAuth'
-import logger from 'frontend/utils/logger'
+import { formsClient } from '@/clients/forms'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import logger from '@/frontend/utils/logger'
 
 type MigrationContext = 'sign-in' | 'sign-up'
 

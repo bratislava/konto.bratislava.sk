@@ -1,18 +1,18 @@
-import { formsClient } from '@clients/forms'
-import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { useMutation } from '@tanstack/react-query'
-import { isDefined } from 'frontend/utils/general'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ROUTES } from '../../frontend/api/constants'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import AccountPageLayout from '../layouts/AccountPageLayout'
-import { ClientLandingPageFormDefinition } from './clientFormDefinitions'
-import FormLandingPageCard from './info-components/FormLandingPageCard'
-import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
+import { formsClient } from '@/clients/forms'
+import { FormWithLandingPageFragment } from '@/clients/graphql-strapi/api'
+import { ClientLandingPageFormDefinition } from '@/components/forms/clientFormDefinitions'
+import FormLandingPageCard from '@/components/forms/info-components/FormLandingPageCard'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import PageLayout from '@/components/layouts/PageLayout'
+import { ROUTES } from '@/frontend/api/constants'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { isDefined } from '@/frontend/utils/general'
 
 export type FormWithLandingPageRequiredFragment = Omit<
   FormWithLandingPageFragment,
@@ -58,7 +58,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
   })
 
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <div className="relative flex flex-col">
         <div className="size-full bg-gray-50 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
           <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
@@ -96,7 +96,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           </div>
         </div>
       </div>
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

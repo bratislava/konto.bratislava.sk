@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react'
 
-import cn from '../../../frontend/cn'
+import cn from '@/frontend/cn'
 
 type CloseIconProps = {
   type: 'error' | 'success' | 'info' | 'warning'

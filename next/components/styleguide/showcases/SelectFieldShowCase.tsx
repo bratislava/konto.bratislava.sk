@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { GroupBase } from 'react-select'
 
-import SelectField, { SelectOption } from '../../forms/widget-components/SelectField/SelectField'
+import SelectField, {
+  SelectOption,
+} from '@/components/forms/widget-components/SelectField/SelectField'
+
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

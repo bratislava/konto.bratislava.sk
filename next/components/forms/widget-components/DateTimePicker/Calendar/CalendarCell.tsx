@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { useCalendarCell } from 'react-aria'
 import { CalendarState } from 'react-stately'
 
-import cn from '../../../../../frontend/cn'
+import cn from '@/frontend/cn'
 
 type CalendarCellBase = {
   state: CalendarState

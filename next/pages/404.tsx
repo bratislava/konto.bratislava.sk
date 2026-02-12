@@ -1,10 +1,10 @@
-import Button from 'components/forms/simple-components/ButtonNew'
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import Button from '@/components/forms/simple-components/Button'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 export const getStaticProps: GetStaticProps = async () => {
   return {
@@ -29,7 +29,7 @@ const NotFoundPage = () => {
           <div className="max-w-xs pb-10 text-center text-p1 lg:text-left">
             {t('404.sorryNoResultsFound')}
           </div>
-          <Button href="/" variant="black-solid">
+          <Button href="/" variant="solid">
             {t('404.toTheMainPage')}
           </Button>
         </div>

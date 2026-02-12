@@ -1,10 +1,10 @@
-import { CopyIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import { useCopyToClipboard } from 'usehooks-ts'
 
-import useSnackbar from '../../../frontend/hooks/useSnackbar'
-import logger from '../../../frontend/utils/logger'
-import ButtonNew from './ButtonNew'
+import { CopyIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import logger from '@/frontend/utils/logger'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()
@@ -18,10 +18,10 @@ const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   }
 
   return (
-    <ButtonNew onPress={handleCopy} variant="unstyled">
+    <Button onPress={handleCopy} variant="unstyled">
       <CopyIcon />
       <span className="sr-only">{t('ClipboardCopy.aria.copyToClipboard')}</span>
-    </ButtonNew>
+    </Button>
   )
 }
 

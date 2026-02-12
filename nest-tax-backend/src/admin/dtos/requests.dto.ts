@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -15,7 +16,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/utils/noris.types'
+import { DeliveryMethod } from '../../noris/types/noris.enums'
 
 // eslint-disable-next-line no-secrets/no-secrets
 /**
@@ -72,6 +73,15 @@ export class RequestPostNorisLoadDataDto {
   @IsArray()
   @IsNotEmpty({ each: true })
   birthNumbers: string[]
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
 
   @ApiPropertyOptional({
     description: 'Options for the tax import',
@@ -257,6 +267,13 @@ export class RequestAdminCreateTestingTaxNorisData {
   @Type(() => Date)
   @IsOptional()
   dateTaxRuling: Date | null
+
+  @ApiProperty({
+    description: 'Indicates if tax is cancelled',
+    default: false,
+  })
+  @IsBoolean()
+  isCancelled: boolean
 }
 
 export class RequestAdminCreateTestingTaxDto {
@@ -289,6 +306,22 @@ export class RequestAdminDeleteTaxDto {
   })
   @IsString()
   birthNumber: string
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class RequestPostReportingSendReport {

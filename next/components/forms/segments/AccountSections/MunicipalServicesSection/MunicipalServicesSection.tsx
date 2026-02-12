@@ -1,17 +1,17 @@
-import {
-  MunicipalServiceCategoryEntityFragment,
-  MunicipalServiceEntityFragment,
-} from '@clients/graphql-strapi/api'
-import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
-import Pagination from 'components/forms/simple-components/Pagination/Pagination'
-import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
-import { SelectOption } from '../../../widget-components/SelectField/SelectField'
-import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
+import {
+  MunicipalServiceCategoryEntityFragment,
+  MunicipalServiceEntityFragment,
+} from '@/clients/graphql-strapi/api'
+import MunicipalServicesSectionHeader from '@/components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
+import MunicipalServiceCard from '@/components/forms/segments/MunicipalServiceCard/MunicipalServiceCard'
+import Pagination from '@/components/forms/simple-components/Pagination/Pagination'
+import { SelectOption } from '@/components/forms/widget-components/SelectField/SelectField'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { isDefined } from '@/frontend/utils/general'
 
 export type MunicipalServicesSectionProps = {
   services: MunicipalServiceEntityFragment[]
@@ -19,6 +19,10 @@ export type MunicipalServicesSectionProps = {
   servicesLegalPerson: MunicipalServiceEntityFragment[]
   categoriesLegalPerson: MunicipalServiceCategoryEntityFragment[]
 }
+
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-94617
+ */
 
 const MunicipalServicesSection = ({
   services,
@@ -94,9 +98,9 @@ const MunicipalServicesSection = ({
         </div>
         <div className="my-4 lg:my-8">
           <Pagination
-            count={Math.ceil(filteredServices.length / ITEMS_PER_PAGE)}
-            selectedPage={currentPage}
-            onChange={setCurrentPage}
+            totalCount={Math.ceil(filteredServices.length / ITEMS_PER_PAGE)}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
           />
         </div>
       </div>

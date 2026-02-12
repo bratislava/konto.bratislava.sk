@@ -1,4 +1,4 @@
-import { CalendarIcon } from '@assets/ui-icons'
+import { CalendarIcon } from '@/assets/ui-icons'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

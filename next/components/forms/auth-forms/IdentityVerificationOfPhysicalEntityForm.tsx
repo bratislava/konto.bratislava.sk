@@ -1,19 +1,19 @@
-import { ArrowRightIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import { environment } from '../../../environment'
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import { useQueryParamRedirect } from '../../../frontend/hooks/useQueryParamRedirect'
-import { isBrowser } from '../../../frontend/utils/general'
-import logger from '../../../frontend/utils/logger'
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import Button from '../simple-components/ButtonNew'
-import InputField from '../widget-components/InputField/InputField'
+import { ArrowRightIcon } from '@/assets/ui-icons'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import { environment } from '@/environment'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { isBrowser } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
 
 export interface IdentityVerificationOfPhysicalEntityFormData {
   rc: string
@@ -24,6 +24,7 @@ export interface IdentityVerificationOfPhysicalEntityFormData {
 interface Props {
   onSubmit: (data: IdentityVerificationOfPhysicalEntityFormData) => void
   error?: Error | null
+  showSkipButton?: boolean
 }
 
 // must use `minLength: 1` to implement required field
@@ -56,7 +57,11 @@ const foSchema = {
   required: ['rc', 'idCard', 'turnstileToken'],
 }
 
-const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) => {
+const IdentityVerificationOfPhysicalEntityForm = ({
+  onSubmit,
+  error,
+  showSkipButton = true,
+}: Props) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
@@ -151,17 +156,16 @@ const IdentityVerificationOfPhysicalEntityForm = ({ onSubmit, error }: Props) =>
           </>
         )}
       />
-      <Button variant="black-solid" fullWidth type="submit" isLoading={isSubmitting}>
-        {t('auth.identity_verification.fo.init.submit_button_text')}
-      </Button>
-      <Button
-        variant="black-plain"
-        fullWidth
-        onPress={() => redirect()}
-        endIcon={<ArrowRightIcon />}
-      >
-        {t('auth.identity_verification.common.skip_verification_button_text')}
-      </Button>
+      <div className="flex flex-col gap-3 lg:gap-4">
+        <Button variant="solid" fullWidth type="submit" isLoading={isSubmitting}>
+          {t('auth.identity_verification.fo.init.submit_button_text')}
+        </Button>
+        {showSkipButton ? (
+          <Button variant="plain" fullWidth onPress={() => redirect()} endIcon={<ArrowRightIcon />}>
+            {t('auth.identity_verification.common.skip_verification_button_text')}
+          </Button>
+        ) : null}
+      </div>
     </form>
   )
 }

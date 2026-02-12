@@ -57,6 +57,12 @@ export class UserService {
       return false
     }
 
+    // If the user was verified after the deadline, his locked delivery method will be NULL. Default delivery method is POSTAL.
+    // Therefore, if the user has selected POSTAL as delivery method, we should not consider it as a change.
+    if (active?.deliveryMethod === DeliveryMethodEnum.POSTAL && !locked?.deliveryMethod) {
+      return false
+    }
+
     if (active?.deliveryMethod !== locked?.deliveryMethod) {
       return true
     }

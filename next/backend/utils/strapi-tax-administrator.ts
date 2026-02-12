@@ -1,8 +1,8 @@
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import axios from 'axios'
 
-import { environment } from '../../environment'
-import { AmplifyServerContextSpec } from '../../frontend/utils/amplifyTypes'
+import { environment } from '@/environment'
+import { AmplifyServerContextSpec } from '@/frontend/utils/amplifyTypes'
 
 const axiosInstance = axios.create()
 

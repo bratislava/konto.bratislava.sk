@@ -1,11 +1,11 @@
 import React from 'react'
 import { Button as AriaButton } from 'react-aria-components'
 
-import cn from '../../../frontend/cn'
-import { FormStepIndex, FormStepperStep } from '../types/Steps'
-import { useFormState } from '../useFormState'
-import StepperViewRow from './StepperViewRow'
-import { useFormSummary } from './Summary/useFormSummary'
+import StepperViewRow from '@/components/forms/steps/StepperViewRow'
+import { useFormSummary } from '@/components/forms/steps/Summary/useFormSummary'
+import { FormStepIndex, FormStepperStep } from '@/components/forms/types/Steps'
+import { useFormState } from '@/components/forms/useFormState'
+import cn from '@/frontend/cn'
 
 type StepperViewListProps = {
   onSkipToStep: (stepIndex: FormStepIndex) => void

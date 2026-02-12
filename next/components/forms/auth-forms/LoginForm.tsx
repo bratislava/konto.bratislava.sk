@@ -1,12 +1,13 @@
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import AccountLink from '../segments/AccountLink/AccountLink'
-import Button from '../simple-components/ButtonNew'
-import InputField from '../widget-components/InputField/InputField'
-import PasswordField from '../widget-components/PasswordField/PasswordField'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import AccountLink from '@/components/forms/segments/AccountLink/AccountLink'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import PasswordField from '@/components/forms/widget-components/PasswordField/PasswordField'
+import useHookForm from '@/frontend/hooks/useHookForm'
+import { useAmplifyClientOAuthContext } from '@/frontend/utils/useAmplifyClientOAuthContext'
 
 interface Data {
   email: string
@@ -42,6 +43,7 @@ const schema = {
 
 const LoginForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
+  const { isOAuthLogin, clientTitle } = useAmplifyClientOAuthContext()
 
   const {
     handleSubmit,
@@ -89,13 +91,15 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       />
       <AccountLink variant="forgotten-password" />
       <Button
-        variant="black-solid"
+        variant="solid"
         type="submit"
         fullWidth
         isDisabled={isSubmitting}
         data-cy="login-button"
       >
-        {t('auth.login_submit')}
+        {isOAuthLogin && clientTitle
+          ? t('auth.login_page.continue_to_oauth_origin', { clientTitle })
+          : t('auth.login_submit')}
       </Button>
     </form>
   )

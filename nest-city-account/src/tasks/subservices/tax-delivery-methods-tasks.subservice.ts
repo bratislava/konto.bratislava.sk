@@ -323,7 +323,10 @@ export class TaxDeliveryMethodsTasksSubservice {
     return EmailConfigSchema.parse(configDbResult.value).active
   }
 
-  private async findUsersWithDeliveryMethodChanges(yesterdayStart: Date, yesterdayEnd: Date) {
+  private async findUsersWithDeliveryMethodChanges(
+    yesterdayStart: Date,
+    yesterdayEnd: Date
+  ): Promise<string[]> {
     const [gdprChanges, edeskChanges] = await Promise.all([
       // Find all users with GDPR changes yesterday (excluding those with active eDesk)
       this.prismaService.userGdprData.findMany({
@@ -365,6 +368,101 @@ export class TaxDeliveryMethodsTasksSubservice {
     return Array.from(new Set([...userIdsFromGdpr, ...userIdsFromEdesk]))
   }
 
+  private async fetchUsersWithPhysicalEntityData(userIds: string[]) {
+    return this.prismaService.user.findMany({
+      where: { id: { in: userIds } },
+      select: {
+        id: true,
+        email: true,
+        externalId: true,
+        birthNumber: true,
+        physicalEntity: {
+          select: {
+            activeEdesk: true,
+            edeskStatusChangedAt: true,
+          },
+        },
+      },
+    })
+  }
+
+  private async fetchGdprDataForUsers(userIds: string[], yesterdayStart: Date, yesterdayEnd: Date) {
+    const [latestGdprDataArray, previousGdprDataArray, yesterdayGdprChangesArray] =
+      await Promise.all([
+        // Latest GDPR state for all users (all time)
+        this.prismaService.userGdprData.findMany({
+          where: {
+            userId: { in: userIds },
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+          },
+          orderBy: { createdAt: 'desc' },
+          distinct: ['userId'],
+          select: {
+            userId: true,
+            subType: true,
+            createdAt: true,
+          },
+        }),
+
+        // Previous GDPR state (before yesterday) for all users
+        this.prismaService.userGdprData.findMany({
+          where: {
+            userId: { in: userIds },
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            createdAt: { lt: yesterdayStart },
+          },
+          orderBy: { createdAt: 'desc' },
+          distinct: ['userId'],
+          select: {
+            userId: true,
+            subType: true,
+            createdAt: true,
+          },
+        }),
+
+        // GDPR changes from yesterday only
+        this.prismaService.userGdprData.findMany({
+          where: {
+            userId: { in: userIds },
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            createdAt: { gte: yesterdayStart, lte: yesterdayEnd },
+          },
+          orderBy: { createdAt: 'desc' },
+          distinct: ['userId'],
+          select: {
+            userId: true,
+            subType: true,
+            createdAt: true,
+          },
+        }),
+      ])
+
+    // Convert to Maps for O(1) lookup
+    const latestGdprData = new Map(
+      latestGdprDataArray.map((gdpr) => [
+        gdpr.userId,
+        { subType: gdpr.subType, createdAt: gdpr.createdAt },
+      ])
+    )
+    const previousGdprData = new Map(
+      previousGdprDataArray.map((gdpr) => [
+        gdpr.userId,
+        { subType: gdpr.subType, createdAt: gdpr.createdAt },
+      ])
+    )
+    const yesterdayGdprChanges = new Map(
+      yesterdayGdprChangesArray.map((gdpr) => [
+        gdpr.userId,
+        { subType: gdpr.subType, createdAt: gdpr.createdAt },
+      ])
+    )
+
+    return { latestGdprData, previousGdprData, yesterdayGdprChanges }
+  }
+
   private async sendDeliveryMethodChangedEmail(
     userId: string,
     userEmail: string,
@@ -401,28 +499,24 @@ export class TaxDeliveryMethodsTasksSubservice {
   }
 
   private async processUserDeliveryMethodChange(
-    userId: string,
+    user: {
+      id: string
+      email: string | null
+      externalId: string | null
+      birthNumber: string | null
+      physicalEntity: {
+        activeEdesk: boolean | null
+        edeskStatusChangedAt: Date | null
+      } | null
+    },
+    latestGdprData: { subType: GDPRSubTypeEnum | null; createdAt: Date } | undefined,
+    previousGdprData: { subType: GDPRSubTypeEnum | null; createdAt: Date } | undefined,
+    yesterdayGdprChange: { subType: GDPRSubTypeEnum | null; createdAt: Date } | undefined,
     yesterdayStart: Date,
     yesterdayEnd: Date
   ): Promise<void> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        externalId: true,
-        birthNumber: true,
-        physicalEntity: {
-          select: {
-            activeEdesk: true,
-            edeskStatusChangedAt: true,
-          },
-        },
-      },
-    })
-
-    if (!user || !user.email || !user.externalId || !user.birthNumber) {
-      this.logger.warn(`Skipping user ${userId}: Missing email, externalId or birth number.`)
+    if (!user.email || !user.externalId || !user.birthNumber) {
+      this.logger.warn(`Skipping user ${user.id}: Missing email, externalId or birth number.`)
       return
     }
 
@@ -436,30 +530,21 @@ export class TaxDeliveryMethodsTasksSubservice {
     // Handle eDesk active state
     if (currentEdeskActive === true) {
       if (!edeskChangedYesterday) {
-        this.logger.log(`Skipping user ${userId}: eDesk is active but didn't change yesterday.`)
+        this.logger.log(`Skipping user ${user.id}: eDesk is active but didn't change yesterday.`)
         return
       }
-      await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'edesk')
+      await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'edesk')
       return
     }
 
     // Handle eDesk deactivation - check current GDPR preference
     if (edeskChangedYesterday) {
-      const latestGdprState = await this.prismaService.userGdprData.findFirst({
-        where: {
-          userId,
-          category: GDPRCategoryEnum.TAXES,
-          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-        },
-        orderBy: { createdAt: 'desc' },
-      })
-
-      if (latestGdprState?.subType === GDPRSubTypeEnum.subscribe) {
-        await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'email', {
+      if (latestGdprData?.subType === GDPRSubTypeEnum.subscribe) {
+        await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'email', {
           birthNumber: user.birthNumber,
         })
       } else {
-        await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'postal', {
+        await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'postal', {
           reason: 'edesk-deactivated',
         })
       }
@@ -467,46 +552,27 @@ export class TaxDeliveryMethodsTasksSubservice {
     }
 
     // Handle GDPR changes (when eDesk didn't change)
-    const latestGdprChange = await this.prismaService.userGdprData.findFirst({
-      where: {
-        userId,
-        category: GDPRCategoryEnum.TAXES,
-        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-        createdAt: { gte: yesterdayStart, lte: yesterdayEnd },
-      },
-      orderBy: { createdAt: 'desc' },
-    })
 
-    if (!latestGdprChange) {
-      this.logger.log(`Skipping user ${userId}: No GDPR or eDesk changes yesterday.`)
+    if (!yesterdayGdprChange) {
+      this.logger.log(`Skipping user ${user.id}: No GDPR or eDesk changes yesterday.`)
       return
     }
 
-    const previousGdprState = await this.prismaService.userGdprData.findFirst({
-      where: {
-        userId,
-        category: GDPRCategoryEnum.TAXES,
-        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-        createdAt: { lt: yesterdayStart },
-      },
-      orderBy: { createdAt: 'desc' },
-    })
-
-    const currentSubType = latestGdprChange.subType
-    const previousSubType = previousGdprState?.subType
+    const currentSubType = yesterdayGdprChange.subType
+    const previousSubType = previousGdprData?.subType
 
     if (currentSubType === previousSubType) {
-      this.logger.log(`Skipping user ${userId}: GDPR state unchanged (${currentSubType}).`)
+      this.logger.log(`Skipping user ${user.id}: GDPR state unchanged (${currentSubType}).`)
       return
     }
 
     // Send appropriate email based on GDPR change
     if (currentSubType === GDPRSubTypeEnum.subscribe) {
-      await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'email', {
+      await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'email', {
         birthNumber: user.birthNumber,
       })
     } else {
-      await this.sendDeliveryMethodChangedEmail(userId, user.email, user.externalId, 'postal', {
+      await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'postal', {
         reason: 'gdpr-change',
       })
     }
@@ -522,14 +588,31 @@ export class TaxDeliveryMethodsTasksSubservice {
 
     this.logger.log(`Processing delivery method summaries for: ${yesterdayStart.toDateString()}`)
 
+    // Fetch all userIds with detected delivery method change during the previous day.
     const allUserIds = await this.findUsersWithDeliveryMethodChanges(yesterdayStart, yesterdayEnd)
 
     this.logger.log(`Found ${allUserIds.length} users with delivery method changes`)
 
-    await Promise.all(
-      allUserIds.map((userId) =>
-        this.processUserDeliveryMethodChange(userId, yesterdayStart, yesterdayEnd)
+    // Batch fetch all required data
+    const [users, { latestGdprData, previousGdprData, yesterdayGdprChanges }] = await Promise.all([
+      this.fetchUsersWithPhysicalEntityData(allUserIds),
+      this.fetchGdprDataForUsers(allUserIds, yesterdayStart, yesterdayEnd),
+    ])
+
+    // Process all users with in-memory data
+    const emailPromises = users
+      .map((user) =>
+        this.processUserDeliveryMethodChange(
+          user,
+          latestGdprData.get(user.id),
+          previousGdprData.get(user.id),
+          yesterdayGdprChanges.get(user.id),
+          yesterdayStart,
+          yesterdayEnd
+        )
       )
-    )
+      .filter((promise): promise is Promise<void> => promise !== null)
+
+    await Promise.all(emailPromises)
   }
 }

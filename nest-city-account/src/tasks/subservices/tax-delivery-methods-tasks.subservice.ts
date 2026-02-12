@@ -389,7 +389,11 @@ export class TaxDeliveryMethodsTasksSubservice {
         email: 'City Account',
       }[deliveryMethod]
 
-      const logSuffix = options?.reason === 'edesk-deactivated' ? ' (eDesk deactivated)' : ''
+      const logSuffixMap = {
+        'edesk-deactivated': ' (eDesk deactivated)',
+        'gdpr-change': ' (GDPR change)',
+      }
+      const logSuffix = options?.reason ? (logSuffixMap[options.reason] ?? '') : ''
       this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
     } catch (err) {
       this.logger.error(`Failed to send ${deliveryMethod} email for user ${userId}`, err)

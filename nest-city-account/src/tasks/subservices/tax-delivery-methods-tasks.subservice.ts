@@ -523,7 +523,9 @@ export class TaxDeliveryMethodsTasksSubservice {
     this.logger.log(`Found ${allUserIds.length} users with delivery method changes`)
 
     await Promise.all(
-      allUserIds.map((userId) => this.processUserDeliveryMethodChange(userId, yesterdayStart, yesterdayEnd))
+      allUserIds.map((userId) =>
+        this.processUserDeliveryMethodChange(userId, yesterdayStart, yesterdayEnd)
+      )
     )
   }
 }

@@ -56,7 +56,7 @@ export class MailgunService {
       // ensures that the templateKey and options are correctly matched. The 'as any' here is safe because
       // we've already validated the types through the function signature.
       const factoryMethod = this.mailgunMessageBuilder[templateKey]
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options as any)
 
       const response = await this.mg.messages.create(this.config.defaultMailgunDomain, messageData)

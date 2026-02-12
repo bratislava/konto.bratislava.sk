@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { isDefined } from '@/frontend/utils/general'
+
 import { environment } from './environment'
+
+const slovenskoSkLoginUrlOrigin = new URL(environment.slovenskoSkLoginUrl).origin
 
 // Setting up Content Security Policy with csp header and nonce. Following official docs and our security training
 // recommendations. Note that we removed `data:` from `img-src`.
@@ -9,11 +13,24 @@ export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const isNodeEnvDevelopment = environment.nodeEnv === 'development'
 
+  const connectSrc = [
+    'https://faro.bratislava.sk',
+    'https://cognito-identity.eu-central-1.amazonaws.com',
+    environment.formsUrl,
+    environment.cityAccountUrl,
+    environment.taxesUrl,
+    slovenskoSkLoginUrlOrigin,
+    environment.bratislavaStrapiUrl,
+    environment.cityAccountStrapiUrl,
+  ]
+    .filter(isDefined)
+    .join(' ')
+
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isNodeEnvDevelopment ? "'unsafe-eval'" : ''} https://slovensko.sk;
     style-src 'self' ${isNodeEnvDevelopment ? "'unsafe-inline'" : `'nonce-${nonce}'`};
-    connect-src 'self' https://faro.bratislava.sk https://cognito-identity.eu-central-1.amazonaws.com;
+    connect-src 'self' ${connectSrc};
     img-src 'self' blob:;
     font-src 'self';
     object-src 'none';

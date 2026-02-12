@@ -359,6 +359,22 @@ export default class EmailFormsSubservice {
         formDefinition,
         userName,
       )
+    } else if (formDefinition.email.extractEmail) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'No valid user confirmation email available (provided or extracted).',
+          {
+            formId,
+            emailSource: userEmail == null ? 'extracted' : 'provided',
+            userEmail,
+            userFirstName,
+            userName,
+            formDefinitionSlug: formDefinition.slug,
+            formDataJson: form.formDataJson,
+          },
+        ),
+      )
     }
 
     // Update form state to FINISHED

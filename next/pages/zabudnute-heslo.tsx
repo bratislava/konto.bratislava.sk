@@ -1,25 +1,25 @@
 import { confirmResetPassword, resetPassword } from 'aws-amplify/auth'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
-import ForgottenPasswordForm from '../components/forms/auth-forms/ForgottenPasswordForm'
-import NewPasswordForm from '../components/forms/auth-forms/NewPasswordForm'
-import HorizontalDivider from '../components/forms/HorizontalDivider'
-import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import logger from '../frontend/utils/logger'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps } from './prihlasenie'
+import ForgottenPasswordForm from '@/components/forms/auth-forms/ForgottenPasswordForm'
+import NewPasswordForm from '@/components/forms/auth-forms/NewPasswordForm'
+import HorizontalDivider from '@/components/forms/HorizontalDivider'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountLink from '@/components/forms/segments/AccountLink/AccountLink'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
+import { AmplifyClientOAuthProvider } from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 enum ForgotPasswordStatus {
   INIT = 'INIT',
@@ -111,8 +111,9 @@ const ForgottenPasswordPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout
-        backButtonHidden={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
+      <PageLayout
+        variant="auth"
+        hideBackButton={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
           {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
@@ -143,7 +144,7 @@ const ForgottenPasswordPage = ({ clientInfo }: AuthPageCommonProps) => {
             />
           )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

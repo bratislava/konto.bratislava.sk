@@ -1,25 +1,25 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
-import { prefetchUserQuery } from '../frontend/hooks/useUser'
-import { useSignOut } from '../frontend/utils/amplifyClient'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { prefetchUserQuery } from '@/frontend/hooks/useUser'
+import { useSignOut } from '@/frontend/utils/amplifyClient'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
-} from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps } from './prihlasenie'
+} from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 type PageProps = AuthPageCommonProps & {
   dehydratedState: DehydratedState
@@ -82,7 +82,7 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-        <LoginRegisterLayout backButtonHidden>
+        <PageLayout variant="auth" hideBackButton>
           <AccountContainer>
             <AccountSuccessAlert
               title={t('auth.oauth_page.title')}
@@ -109,7 +109,7 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
               cancelIsLoading={isLoading}
             />
           </AccountContainer>
-        </LoginRegisterLayout>
+        </PageLayout>
       </AmplifyClientOAuthProvider>
     </HydrationBoundary>
   )

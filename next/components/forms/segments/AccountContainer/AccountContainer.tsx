@@ -1,6 +1,6 @@
 import React, { forwardRef, PropsWithChildren } from 'react'
 
-import cn from '../../../../frontend/cn'
+import cn from '@/frontend/cn'
 
 type AccountContainerProps = {
   className?: string

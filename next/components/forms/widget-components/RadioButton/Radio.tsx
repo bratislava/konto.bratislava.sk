@@ -3,8 +3,9 @@ import * as React from 'react'
 import { useContext, useRef } from 'react'
 import { useRadio } from 'react-aria'
 
-import cn from '../../../../frontend/cn'
-import BATooltip from '../../info-components/Tooltip/BATooltip'
+import BATooltip from '@/components/forms/info-components/Tooltip/BATooltip'
+import cn from '@/frontend/cn'
+
 import { RadioContext } from './RadioGroup'
 
 type RadioProps = {

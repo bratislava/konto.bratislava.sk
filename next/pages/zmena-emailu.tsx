@@ -1,4 +1,3 @@
-import { cityAccountClient } from '@clients/city-account'
 import {
   AuthError,
   confirmUserAttribute,
@@ -6,25 +5,26 @@ import {
   updatePassword,
   updateUserAttributes,
 } from 'aws-amplify/auth'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
-import EmailChangeForm from '../components/forms/auth-forms/EmailChangeForm'
-import EmailVerificationForm from '../components/forms/auth-forms/EmailVerificationForm'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import logger from '../frontend/utils/logger'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps } from './prihlasenie'
+import { cityAccountClient } from '@/clients/city-account'
+import EmailChangeForm from '@/components/forms/auth-forms/EmailChangeForm'
+import EmailVerificationForm from '@/components/forms/auth-forms/EmailVerificationForm'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
+import { AmplifyClientOAuthProvider } from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 enum EmailChangeStatus {
   INIT = 'INIT',
@@ -191,8 +191,9 @@ const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout
-        backButtonHidden={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+      <PageLayout
+        variant="auth"
+        hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef}>
           {emailChangeStatus === EmailChangeStatus.INIT ? (
@@ -213,7 +214,7 @@ const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
             />
           )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

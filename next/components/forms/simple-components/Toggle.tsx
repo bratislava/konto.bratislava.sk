@@ -1,9 +1,10 @@
-import { CheckIcon, CrossIcon } from '@assets/ui-icons'
-import cn from 'frontend/cn'
 import * as React from 'react'
 import { useId, useRef } from 'react'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import { ToggleState, useToggleState } from 'react-stately'
+
+import { CheckIcon, CrossIcon } from '@/assets/ui-icons'
+import cn from '@/frontend/cn'
 
 type ToggleBase = {
   className?: string

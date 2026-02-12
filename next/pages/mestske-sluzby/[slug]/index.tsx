@@ -1,23 +1,23 @@
-import { formsClient } from '@clients/forms'
-import { strapiClient } from '@clients/graphql-strapi'
-import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
-import FormCreatedSplitPage, {
-  FormCreatedSplitPageProps,
-} from 'components/forms/FormCreatedSplitPage'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
-import { makeClientLandingPageFormDefinition } from '../../../components/forms/clientFormDefinitions'
-import { FormWithLandingPageRequiredFragment } from '../../../components/forms/FormLandingPage'
-import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
-import { ROUTES } from '../../../frontend/api/constants'
-import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import { formsClient } from '@/clients/forms'
+import { strapiClient } from '@/clients/graphql-strapi'
+import { FormWithLandingPageFragment } from '@/clients/graphql-strapi/api'
+import { makeClientLandingPageFormDefinition } from '@/components/forms/clientFormDefinitions'
+import FormCreatedSplitPage, {
+  FormCreatedSplitPageProps,
+} from '@/components/forms/FormCreatedSplitPage'
+import { FormWithLandingPageRequiredFragment } from '@/components/forms/FormLandingPage'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
 import {
   EMBEDDED_FORM_QUERY_PARAM,
   EMBEDDED_FORM_QUERY_PARAM_TRUE_VALUE,
   handleEmbeddedFormRequest,
-} from '../../../frontend/utils/embeddedFormsHelpers'
-import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
+} from '@/frontend/utils/embeddedFormsHelpers'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 type Params = {
   slug: string

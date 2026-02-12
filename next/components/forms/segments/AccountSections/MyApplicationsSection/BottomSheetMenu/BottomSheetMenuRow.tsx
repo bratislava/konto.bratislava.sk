@@ -1,8 +1,8 @@
-import Button from 'components/forms/simple-components/ButtonNew'
-import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Link from 'next/link'
 
-import cn from '../../../../../../frontend/cn'
+import Button from '@/components/forms/simple-components/Button'
+import { MenuItemBase } from '@/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import cn from '@/frontend/cn'
 
 interface BottomSheetMenuRowProps extends MenuItemBase {
   onLinkClick: () => void

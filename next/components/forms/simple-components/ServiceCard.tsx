@@ -1,9 +1,9 @@
-import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { ReactNode } from 'react'
 
-import cn from '../../../frontend/cn'
-import ButtonNew from './ButtonNew'
-import { LinkPlausibleProps } from './MLinkNew'
+import { ArrowRightIcon, ExportIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import { LinkPlausibleProps } from '@/components/forms/simple-components/MLink'
+import cn from '@/frontend/cn'
 
 type ServiceCardBase = {
   title: string
@@ -61,15 +61,15 @@ const ServiceCard = ({
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
-          <ButtonNew
+          <Button
             href={href}
-            variant="black-link"
+            variant="link"
             className="text-p2-semibold"
             stretched
             plausibleProps={plausibleProps}
           >
             {buttonText}
-          </ButtonNew>
+          </Button>
           {buttonText && (
             <span className="flex size-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
               {href?.includes('http') ? (

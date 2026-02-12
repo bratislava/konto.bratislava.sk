@@ -1,4 +1,3 @@
-import { cityAccountClient, LoginClientEnum } from '@clients/city-account'
 import {
   AuthError,
   fetchUserAttributes,
@@ -6,11 +5,6 @@ import {
   resendSignUpCode,
   signIn,
 } from 'aws-amplify/auth'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import logger from 'frontend/utils/logger'
-import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import {
   ClientInfoResponseDto,
@@ -18,24 +12,30 @@ import {
 } from 'openapi-clients/city-account'
 import { useRef, useState } from 'react'
 
-import LoginForm from '../components/forms/auth-forms/LoginForm'
-import HorizontalDivider from '../components/forms/HorizontalDivider'
-import AccountLink from '../components/forms/segments/AccountLink/AccountLink'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
-import { Tier } from '../frontend/dtos/accountDto'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
+import { cityAccountClient, LoginClientEnum } from '@/clients/city-account'
+import LoginForm from '@/components/forms/auth-forms/LoginForm'
+import HorizontalDivider from '@/components/forms/HorizontalDivider'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountLink from '@/components/forms/segments/AccountLink/AccountLink'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { Tier } from '@/frontend/dtos/accountDto'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
 import {
   removeAllCookiesAndClearLocalStorage,
   removeAmplifyGuestIdentityIdCookies,
-} from '../frontend/utils/amplifyClient'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+} from '@/frontend/utils/amplifyClient'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
-} from '../frontend/utils/useAmplifyClientOAuthContext'
+} from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { usePrepareFormMigration } from '@/frontend/utils/usePrepareFormMigration'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {
@@ -176,13 +176,13 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout backButtonHidden>
+      <PageLayout variant="auth" hideBackButton>
         <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
           <LoginForm onSubmit={onLogin} error={loginError} />
           <HorizontalDivider />
           <AccountLink variant="registration" />
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

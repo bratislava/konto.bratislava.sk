@@ -1,13 +1,13 @@
-import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
-import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
-import { getEmailFormSlugs } from '../../components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
-import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
-import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
+import { getDraftApplications } from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
+import MyApplicationsSection from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
+import { getEmailFormSlugs } from '@/components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 type AccountMyApplicationsPageProps = {
   applications: GetFormsResponseDto
@@ -63,14 +63,14 @@ const AccountMyApplicationsPage = ({
   emailFormSlugs,
 }: AccountMyApplicationsPageProps) => {
   return (
-    <AccountPageLayout>
+    <PageLayout>
       <MyApplicationsSection
         selectedSection={selectedSection}
         applications={applications}
         formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
         emailFormSlugs={emailFormSlugs}
       />
-    </AccountPageLayout>
+    </PageLayout>
   )
 }
 

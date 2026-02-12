@@ -1,29 +1,28 @@
-import { cityAccountClient } from '@clients/city-account'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
+import { cityAccountClient } from '@/clients/city-account'
 import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
-} from '../components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import LegalPersonVerificationPageContent from '../components/verify/LegalPersonVerificationPageContent'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import logger from '../frontend/utils/logger'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+} from '@/components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import LegalPersonVerificationPageContent from '@/components/verify/LegalPersonVerificationPageContent'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { useRefreshServerSideProps } from '@/frontend/hooks/useRefreshServerSideProps'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
-} from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps } from './prihlasenie'
+} from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {
@@ -109,7 +108,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout backButtonHidden>
+      <PageLayout variant="auth" hideBackButton>
         <AccountContainer ref={accountContainerRef}>
           {(tierStatus.isIdentityVerificationNotYetAttempted ||
             tierStatus.isNotVerifiedIdentityCard) && (
@@ -128,7 +127,8 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
             </>
           )}
           {tierStatus.isInQueue && (
-            <AccountVerificationPendingAlert
+            <AccountSuccessAlert
+              variant="pending"
               title={t('auth.identity_verification.fo.pending.title')}
               {...(isOAuthLogin
                 ? {
@@ -164,6 +164,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
           )}
           {tierStatus.isIdentityVerified && (
             <AccountSuccessAlert
+              variant="success"
               title={t('auth.identity_verification.common.success.title')}
               description={
                 isLegalEntity
@@ -191,7 +192,7 @@ const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
             />
           )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

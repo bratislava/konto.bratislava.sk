@@ -1,5 +1,6 @@
-import SearchField from 'components/forms/widget-components/SearchField/SearchField'
 import React from 'react'
+
+import SearchField from '@/components/forms/widget-components/SearchField/SearchField'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

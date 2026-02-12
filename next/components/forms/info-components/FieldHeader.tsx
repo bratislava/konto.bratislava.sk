@@ -3,9 +3,9 @@ import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
 
-import cn from '../../../frontend/cn'
-import FieldHelptext from './FieldHelptext'
-import BATooltip from './Tooltip/BATooltip'
+import FieldHelptext from '@/components/forms/info-components/FieldHelptext'
+import BATooltip from '@/components/forms/info-components/Tooltip/BATooltip'
+import cn from '@/frontend/cn'
 
 export type FieldHeaderProps = {
   label: string

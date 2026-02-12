@@ -1,34 +1,38 @@
-import { StrapiTaxAdministrator } from '@backend/utils/strapi-tax-administrator'
-import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
-import useSnackbar from 'frontend/hooks/useSnackbar'
-import { base64ToArrayBuffer, downloadBlob } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ResponseTaxSummaryDetailDto } from 'openapi-clients/tax'
-import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
+import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
+import React, { createContext, PropsWithChildren, useContext } from 'react'
+
+import { StrapiTaxAdministrator } from '@/backend/utils/strapi-tax-administrator'
+import { taxClient } from '@/clients/tax'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { base64ToArrayBuffer, downloadBlob } from '@/frontend/utils/general'
+import logger from '@/frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
-  taxData: ResponseTaxSummaryDetailDto
+  taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
 const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProviderProps) => {
-  const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
-    useState(false)
-
+  const { t } = useTranslation('account')
   const router = useRouter()
+
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
-  const { t } = useTranslation('account')
 
   const { mutate: redirectToFullPaymentMutate, isPending: redirectToFullPaymentIsPending } =
     useMutation({
       mutationFn: () =>
-        taxClient.paymentControllerGenerateFullPaymentLink(taxData.year, {
-          authStrategy: 'authOnly',
-        }),
+        taxClient.paymentControllerGenerateFullPaymentLink(
+          taxData.year,
+          taxData.type,
+          taxData.order,
+          {
+            authStrategy: 'authOnly',
+          },
+        ),
       networkMode: 'always',
       onSuccess: async (response) => {
         closeSnackbarInfo()
@@ -48,9 +52,14 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     isPending: redirectToInstallmentPaymentIsPending,
   } = useMutation({
     mutationFn: () =>
-      taxClient.paymentControllerGenerateInstallmentPaymentLink(taxData.year, {
-        authStrategy: 'authOnly',
-      }),
+      taxClient.paymentControllerGenerateInstallmentPaymentLink(
+        taxData.year,
+        taxData.type,
+        taxData.order,
+        {
+          authStrategy: 'authOnly',
+        },
+      ),
     networkMode: 'always',
     onSuccess: async (response) => {
       closeSnackbarInfo()
@@ -70,7 +79,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     const arrayBuffer = base64ToArrayBuffer(taxData.oneTimePayment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),
-      'QR-dan-z-nehnutelnosti-zvysna-suma.png',
+      `QR-${taxData.type}-${taxData.year}-${taxData.order}-zvysna-suma.png`,
     )
   }
   const downloadQrCodeInstallmentPayment = async () => {
@@ -78,7 +87,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     const arrayBuffer = base64ToArrayBuffer(taxData.installmentPayment.activeInstallment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),
-      'QR-dan-z-nehnutelnosti-splatka.png',
+      `QR-${taxData.type}-${taxData.year}-${taxData.order}-splatka.png`,
     )
   }
 
@@ -90,8 +99,6 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeSectionProvide
     redirectToInstallmentPaymentIsPending,
     downloadQrCodeOneTimePayment,
     downloadQrCodeInstallmentPayment,
-    officialCorrespondenceChannelModalOpen,
-    setOfficialCorrespondenceChannelModalOpen,
     strapiTaxAdministrator,
   }
 }

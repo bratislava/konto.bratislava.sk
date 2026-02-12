@@ -18,6 +18,7 @@ export enum VerificationErrorsEnum {
   IFO_NOT_PROVIDED = 'IFO_NOT_PROVIDED',
   EMPTY_RFO_RESPONSE = 'EMPTY_RFO_RESPONSE',
   EMPTY_RPO_RESPONSE = 'EMPTY_RPO_RESPONSE',
+  NAMES_NOT_MATCHING = 'NAMES_NOT_MATCHING',
 }
 
 export enum VerificationErrorsResponseEnum {

@@ -1,14 +1,14 @@
 import 'yet-another-react-lightbox/styles.css'
 
-import { CrossIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren, useState } from 'react'
 import { Button as AriaButton } from 'react-aria-components'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
-import ButtonNew from '../simple-components/ButtonNew'
-import Spinner from '../simple-components/Spinner'
+import { CrossIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
+import Spinner from '@/components/forms/simple-components/Spinner'
 
 type FormLightboxModalProps = { imageUrl: string }
 
@@ -18,9 +18,9 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
 
   return (
     <>
-      <ButtonNew onPress={() => setIsOpen(true)} variant="black-link">
+      <Button onPress={() => setIsOpen(true)} variant="link">
         {children}
-      </ButtonNew>
+      </Button>
 
       <Lightbox
         className="[&_.yarl\_\_container]:bg-gray-800/40"

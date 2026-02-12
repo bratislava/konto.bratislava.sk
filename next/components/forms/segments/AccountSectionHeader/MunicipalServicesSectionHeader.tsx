@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction } from 'react'
 
-import SelectFieldNew, { SelectOption } from '../../widget-components/SelectField/SelectField'
+import SelectFieldNew, {
+  SelectOption,
+} from '@/components/forms/widget-components/SelectField/SelectField'
 
 type MunicipalServicesSectionHeaderBase = {
   title: string

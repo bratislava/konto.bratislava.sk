@@ -1,22 +1,22 @@
 import { updatePassword } from 'aws-amplify/auth'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
-import PasswordChangeForm from '../components/forms/auth-forms/PasswordChangeForm'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { fetchClientInfo } from '../frontend/utils/fetchClientInfo'
-import logger from '../frontend/utils/logger'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { AmplifyClientOAuthProvider } from '../frontend/utils/useAmplifyClientOAuthContext'
-import { AuthPageCommonProps } from './prihlasenie'
+import PasswordChangeForm from '@/components/forms/auth-forms/PasswordChangeForm'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import { ROUTES } from '@/frontend/api/constants'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
+import { AmplifyClientOAuthProvider } from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 enum PasswordChangeStatus {
   INIT = 'INIT',
@@ -83,8 +83,9 @@ const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <LoginRegisterLayout
-        backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+      <PageLayout
+        variant="auth"
+        hideBackButton={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
       >
         <AccountContainer ref={accountContainerRef}>
           {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
@@ -97,7 +98,7 @@ const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
             <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
           )}
         </AccountContainer>
-      </LoginRegisterLayout>
+      </PageLayout>
     </AmplifyClientOAuthProvider>
   )
 }

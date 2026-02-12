@@ -65,18 +65,22 @@ import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoSha
 import objednavkaInformativnehoZakresuSieti, {
   objednavkaInformativnehoZakresuSietiExtractEmail,
   objednavkaInformativnehoZakresuSietiExtractName,
+  objednavkaInformativnehoZakresuSietiExtractTechnicalSubject,
 } from '../schemas/tsb/objednavkaInformativnehoZakresuSieti'
 import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia, {
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
+  objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractTechnicalSubject,
 } from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
 import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia, {
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
 } from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
 import ziadostOStanoviskoKProjektovejDokumentacii, {
   ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
+  ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject,
 } from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
@@ -451,6 +455,9 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.1',
     schema: objednavkaInformativnehoZakresuSieti,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical: objednavkaInformativnehoZakresuSietiExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeQNdJ',
@@ -466,7 +473,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_ORDER_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject: 'tsb-objednavka-informativneho-zakresu-sieti',
     },
   },
   {
@@ -476,6 +482,10 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical:
+        objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeYNBT',
@@ -491,7 +501,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_ORDER_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject: 'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
     },
   },
   {
@@ -501,6 +510,9 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.1',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical: ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeC4TS',
@@ -516,7 +528,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_REQUEST_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
     },
   },
   {
@@ -526,6 +537,10 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical:
+        ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
@@ -541,8 +556,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_REQUEST_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject:
-        'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
     },
   },
   {

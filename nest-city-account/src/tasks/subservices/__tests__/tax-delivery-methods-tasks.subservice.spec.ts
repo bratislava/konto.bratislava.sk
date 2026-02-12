@@ -488,7 +488,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // Mock initial query for users with changes
       prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }, { userId: 'user3' }] as any)
+        .mockResolvedValueOnce([
+          { userId: 'user1' },
+          { userId: 'user2' },
+          { userId: 'user3' },
+        ] as any)
         .mockResolvedValueOnce([]) // Latest GDPR data
         .mockResolvedValueOnce([]) // Previous GDPR data
         .mockResolvedValueOnce([]) // Yesterday GDPR changes
@@ -882,10 +886,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // User1 and User2 have GDPR changes, User1 and User3 have eDesk changes
       prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([
-          { userId: 'user1' },
-          { userId: 'user2' },
-        ] as any)
+        .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any)
         .mockResolvedValueOnce([]) // Latest GDPR data
         .mockResolvedValueOnce([]) // Previous GDPR data
         .mockResolvedValueOnce([]) // Yesterday GDPR changes

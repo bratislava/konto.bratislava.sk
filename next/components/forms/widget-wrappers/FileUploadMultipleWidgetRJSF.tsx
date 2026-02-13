@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { FileUploadUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
@@ -9,6 +9,7 @@ import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
 interface FileUploadMultipleWidgetRJSFProps extends WidgetProps {
   options: FileUploadUiOptions
   value: string[] | undefined
+  schema: StrictRJSFSchema
   onChange: (value?: string[] | undefined) => void
 }
 
@@ -18,6 +19,7 @@ const FileUploadMultipleWidgetRJSF = ({
   label,
   required,
   value,
+  schema: { maxItems },
   disabled,
   onChange,
   rawErrors,
@@ -40,9 +42,15 @@ const FileUploadMultipleWidgetRJSF = ({
   const constraints = { supportedFormats, maxFileSize: sizeLimit }
 
   const formFileUpload = useFormFileUpload()
+  const filesCount = value?.length ?? 0
+  const hasMaxItems = typeof maxItems === 'number'
+  const remainingSlots = hasMaxItems ? Math.max(0, maxItems - filesCount) : Infinity
+  const isAtMaxItems = hasMaxItems && remainingSlots === 0
+  const allowsMultipleSelection = !hasMaxItems || remainingSlots > 1
 
   const handleUpload = (files: File[]) => {
-    const ids = formFileUpload.uploadFiles(files, constraints)
+    const acceptedFiles = files.slice(0, remainingSlots)
+    const ids = formFileUpload.uploadFiles(acceptedFiles, constraints)
     if (ids.length === 0) {
       return
     }
@@ -77,7 +85,7 @@ const FileUploadMultipleWidgetRJSF = ({
         type={type}
         label={label}
         required={required}
-        multiple
+        multiple={allowsMultipleSelection}
         className={className}
         helptext={helptext}
         helptextMarkdown={helptextMarkdown}
@@ -86,6 +94,7 @@ const FileUploadMultipleWidgetRJSF = ({
         sizeLimit={sizeLimit}
         supportedFormats={supportedFormats}
         disabled={disabled || readonly}
+        uploadDisabled={isAtMaxItems}
         onUpload={handleUpload}
         onFileRemove={handleFileRemove}
         onFileRetry={handleFileRetry}

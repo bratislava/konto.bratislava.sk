@@ -357,6 +357,85 @@ exports[`getSummaryJson > komunitneZahradyExample summary JSON should match snap
 }
 `;
 
+exports[`getSummaryJson > nahlaseniePodnetuKElektrickymKolobezkamExample summary JSON should match snapshot 1`] = `
+{
+  "id": "root",
+  "steps": [
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Nesprávne zaparkovaná kolobežka",
+            },
+          ],
+          "id": "root_podnet_typPodnetu",
+          "label": "Typ podnetu",
+          "type": "Field",
+          "value": "nespravneZaparkovana",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bolt",
+            },
+          ],
+          "id": "root_podnet_poskytovatel",
+          "label": "Poskytovateľ kolobežky",
+          "type": "Field",
+          "value": "bolt",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Námestie SNP 1, Bratislava",
+            },
+          ],
+          "id": "root_podnet_miestoPodnetu",
+          "label": "Miesto podnetu",
+          "type": "Field",
+          "value": "Námestie SNP 1, Bratislava",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "BT-8745692",
+            },
+          ],
+          "id": "root_podnet_identifikacnyKod",
+          "label": "Identifikačný kód kolobežky",
+          "type": "Field",
+          "value": "BT-8745692",
+        },
+        {
+          "displayValues": [
+            {
+              "id": "b1feb5ae-da31-4619-a735-c3389dc9e17b",
+              "type": "File",
+            },
+          ],
+          "id": "root_podnet_fotografia",
+          "label": "Fotografia podnetu",
+          "type": "Field",
+          "value": [
+            "b1feb5ae-da31-4619-a735-c3389dc9e17b",
+          ],
+        },
+      ],
+      "id": "root_podnet",
+      "title": "Podnet",
+      "type": "Step",
+    },
+  ],
+  "title": "Nahlásenie podnetu k elektrickým kolobežkám",
+  "type": "Form",
+}
+`;
+
 exports[`getSummaryJson > oloDocistenieStanovistaZbernychNadobExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",

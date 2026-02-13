@@ -618,6 +618,7 @@ describe('NasesService', () => {
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
         formSummary: mockSummary,
+        formSentAt: expect.any(Date),
       })
     })
 

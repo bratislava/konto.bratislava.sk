@@ -89,6 +89,11 @@ import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPris
 import ziadostOUzemnoplanovaciuInformaciu, {
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
+import nahlaseniePodnetuKElektrickymKolobezkam, {
+  nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
+} from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -614,5 +619,35 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
+    title: 'Nahlásenie podnetu k elektrickým kolobežkám',
+    jsonVersion: '1.0.0',
+    schema: nahlaseniePodnetuKElektrickymKolobezkam,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
+    subject: {
+      extractTechnical: nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+    },
+    email: {
+      address: {
+        prod: [
+          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
+          nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+          'mikromobilita@bratislava.sk',
+        ],
+        test: ['inovacie.bratislava@gmail.com'],
+      },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
+      mailer: 'mailgun',
+      userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
+      newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
+      technicalEmailSubjectAppendId: true,
+    },
+    termsAndConditions: generalTermsAndConditions,
   },
 ]

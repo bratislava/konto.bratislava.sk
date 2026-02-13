@@ -314,6 +314,7 @@ export default class NasesService {
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
       formSummary,
+      formSentAt: new Date(),
       ...(shouldBumpJsonVersion
         ? { jsonVersion: formDefinition.jsonVersion }
         : undefined),
@@ -436,6 +437,7 @@ export default class NasesService {
     await this.formsService.updateForm(id, {
       mainUri: nasesUser.sub,
       actorUri: nasesUser.actor.sub,
+      formSentAt: new Date(),
     })
 
     const data: RabbitPayloadDto = {

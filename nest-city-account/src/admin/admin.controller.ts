@@ -1,25 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpException,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common'
-import {
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiResponse,
-  ApiSecurity,
-  ApiTags,
-} from '@nestjs/swagger'
+import { Body, Controller, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger'
 
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { AdminGuard } from '../auth/guards/admin.guard'
@@ -27,17 +7,11 @@ import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
   MarkDeceasedAccountRequestDto,
-  RequestBatchNewUserBirthNumbers,
-  RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
-  RequestQueryUserByBirthNumberDto,
   RequestValidatePhysicalEntityRfoDto,
 } from './dtos/requests.admin.dto'
 import {
-  GetNewVerifiedUsersBirthNumbersResponseDto,
-  GetUserDataByBirthNumbersBatchResponseDto,
   OnlySuccessDto,
-  ResponseUserByBirthNumberDto,
   ResponseValidatePhysicalEntityRfoDto,
   UserVerifyState,
   ValidateEdeskForUserIdsResponseDto,
@@ -59,52 +33,12 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get user data',
-    description: 'Get user data by birthnumber',
-  })
-  @ApiNotFoundResponse({
-    description: 'User by birth number not found',
-    type: HttpException,
-  })
-  @UseGuards(AdminGuard)
-  @Get('userdata')
-  // FIXME: used in Tax Backend
-  async getUserDataByBirthNumber(
-    @Query() query: RequestQueryUserByBirthNumberDto
-  ): Promise<ResponseUserByBirthNumberDto> {
-    const result = await this.adminService.getUserDataByBirthNumber(query.birthNumber)
-    return result
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Get user data',
-    description: 'Get user data by birthnumbers in batch.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Success.',
-    type: GetUserDataByBirthNumbersBatchResponseDto,
-  })
-  @UseGuards(AdminGuard)
-  @Post('userdata-batch')
-  // FIXME: used in Tax Backend
-  async getUserDataByBirthNumbersBatch(
-    @Body() query: RequestBatchQueryUsersByBirthNumbersDto
-  ): Promise<GetUserDataByBirthNumbersBatchResponseDto> {
-    const result = await this.adminService.getUsersDataByBirthNumbers(query.birthNumbers)
-    return { users: result }
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
     summary: 'Will activate one time sync of all users from cognito to db at 3am ',
     description:
       'This endpoint is intended to be used manually to trigger a sync of all users from cognito and then call getOrCreate for each user.',
   })
   @UseGuards(AdminGuard)
   @Get('activate-sync-cognito-to-db')
-  // NOTE: stays in Admin Controller
   async syncCognitoToDb(): Promise<void> {
     await this.adminService.activateSyncCognitoToDb()
   }
@@ -119,7 +53,6 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('status/user/:email')
-  // NOTE: stays in Admin Controller
   async checkUserVerifyState(@Param('email') email: string): Promise<UserVerifyState> {
     const result = await this.adminService.checkUserVerifyState(email.toLowerCase())
     return result
@@ -132,7 +65,6 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('deactivate/:externalId')
-  // NOTE: stays in Admin Controller
   async deactivateAccount(
     @Param('externalId') externalId: string
   ): Promise<DeactivateAccountResponseDto> {
@@ -148,7 +80,6 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Patch('mark-deceased')
-  // NOTE: stays in Admin Controller
   async markAccountsAsDeceasedByBirthnumber(
     @Body() data: MarkDeceasedAccountRequestDto
   ): Promise<MarkDeceasedAccountResponseDto> {
@@ -169,7 +100,6 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('user/id-card-verification-data/:email')
-  // NOTE: stays in Admin Controller
   async getVerificationDataForUser(
     @Param('email') email: string
   ): Promise<VerificationDataForUserResponseDto> {
@@ -190,7 +120,6 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('user/verify-manually/:email')
-  // NOTE: stays in Admin Controller
   async verifyUserManually(
     @Param('email') email: string,
     @Body() data: ManuallyVerifyUserRequestDto
@@ -213,7 +142,6 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('validate-edesk-by-cognito-where-first-try')
-  // NOTE: stays in Admin Controller
   async validateEdeskForUserIds(@Body() data: RequestBodyValidateEdeskForUserIdsDto) {
     return this.adminService.validateEdeskWithUriFromCognito(data.offset || 0)
   }
@@ -229,30 +157,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('validate-physical-entity-rfo')
-  // NOTE: stays in Admin Controller
   async validatePhysicalEntityRfo(@Body() data: RequestValidatePhysicalEntityRfoDto) {
     return this.physicalEntityService.updateFromRFO(data.physicalEntityId)
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Get birth numbers of newly verified users.',
-    description:
-      'Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns list of birth numbers for new verified users.',
-    type: GetNewVerifiedUsersBirthNumbersResponseDto,
-  })
-  @UseGuards(AdminGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
-  @Post('get-verified-users-birth-numbers-batch')
-  // FIXME: used in Tax Backend
-  async getNewVerifiedUsersBirthNumbers(
-    @Body() data: RequestBatchNewUserBirthNumbers
-  ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
-    const result = await this.adminService.getNewVerifiedUsersBirthNumbers(data.since, data.take)
-    return result
   }
 }

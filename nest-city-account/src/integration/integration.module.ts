@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { IntegrationController } from './integration.controller'
 import { IntegrationService } from './integration.service'
+import { UserModule } from '../user/user.module'
 
 /**
  * IntegrationModule - Backend-to-Backend Integration APIs
@@ -9,7 +10,7 @@ import { IntegrationService } from './integration.service'
  * It acts as a thin layer that exposes functionality from domain modules (User, Verification, PhysicalEntity).
  */
 @Module({
-  imports: [],
+  imports: [UserModule],
   providers: [IntegrationService],
   controllers: [IntegrationController],
   exports: [],

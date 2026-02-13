@@ -35,10 +35,6 @@ import {
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LoginClientEnum } from '@prisma/client'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
-import {
-  GetNewVerifiedUsersBirthNumbersResponseDto,
-  ResponseUserByBirthNumberDto,
-} from '../admin/dtos/responses.admin.dto'
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 import {
   DeactivateAccountResponseDto,
@@ -51,6 +47,10 @@ import {
   CustomErrorAdminTypesEnum,
   CustomErrorAdminTypesResponseEnum,
 } from '../admin/dtos/error.dto'
+import {
+  GetNewVerifiedUsersBirthNumbersResponseDto,
+  ResponseUserByBirthNumberDto,
+} from '../integration/dtos/integration-response.dto'
 
 const USER_REQUEST_LIMIT = 100
 

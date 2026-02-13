@@ -4,10 +4,7 @@ import { Module } from '@nestjs/common'
 import { MagproxyModule } from 'src/magproxy/magproxy.module'
 import { NasesModule } from '../nases/nases.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { TurnstileSubservice } from '../utils/subservices/turnstile.subservice'
 import { RABBIT_MQ } from './constants'
 import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
@@ -44,10 +41,7 @@ import { UserModule } from '../user/user.module'
   providers: [
     VerificationService,
     VerificationDataSubservice,
-    CognitoSubservice,
-    TurnstileSubservice,
     VerificationSubservice,
-    ThrowerErrorGuard,
     TokenSubservice,
   ],
   exports: [VerificationService],

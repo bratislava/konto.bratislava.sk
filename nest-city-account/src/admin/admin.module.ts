@@ -10,7 +10,6 @@ import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
 import { AdminCronSubservice } from './subservices/admin-cron.subservice'
 import { UserModule } from '../user/user.module'
-import { SharedModule } from '../utils/subservices/shared.module'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 
 /**
@@ -30,7 +29,6 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
     PhysicalEntityModule,
     UserModule,
     VerificationModule,
-    SharedModule,
     BloomreachModule,
   ],
   providers: [AdminService, AdminStrategy, AdminCronSubservice],

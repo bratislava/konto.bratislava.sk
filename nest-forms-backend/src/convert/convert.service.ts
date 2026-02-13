@@ -134,13 +134,18 @@ export default class ConvertService {
     if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND}`,
+        { slug: form.formDefinitionSlug },
       )
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        {
+          formDefinitionType: formDefinition.type,
+          slug: form.formDefinitionSlug,
+        },
       )
     }
     const formDataJson = formDataJsonOverride ?? form.formDataJson
@@ -199,7 +204,11 @@ export default class ConvertService {
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        {
+          formDefinitionType: formDefinition.type,
+          slug: form.formDefinitionSlug,
+        },
       )
     }
 
@@ -381,7 +390,8 @@ export default class ConvertService {
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+        { slug: form.formDefinitionSlug },
       )
     }
 

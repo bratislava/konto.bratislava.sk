@@ -1,8 +1,8 @@
 import { AuthSession } from 'aws-amplify/auth'
 import qs from 'qs'
 
-import { environment } from '../../environment'
-import { ROUTES } from '../api/constants'
+import { environment } from '@/environment'
+import { ROUTES } from '@/frontend/api/constants'
 
 export enum SafeRedirectType {
   Local = 'local',
@@ -10,10 +10,9 @@ export enum SafeRedirectType {
 }
 
 export const redirectQueryParam = 'from'
-export const clientIdQueryParam = 'client_id'
-export const payloadQueryParam = 'payload'
-export const redirectUriQueryParam = 'redirect_uri'
-export const stateQueryParam = 'state'
+export const isOAuthQueryParam = 'isOAuth'
+export const authRequestIdQueryParam = 'authRequestId'
+export const isIdentityVerificationRequiredQueryParam = 'isIdentityVerificationRequired'
 
 export type SafeRedirect = {
   url: string

@@ -1,4 +1,3 @@
-import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
@@ -14,24 +13,25 @@ import React, {
   useRef,
 } from 'react'
 
-import { environment } from '../../environment'
-import { AccountType } from '../../frontend/dtos/accountDto'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
-import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
+import { formsClient } from '@/clients/forms'
+import { RegistrationModalType } from '@/components/forms/segments/RegistrationModal/RegistrationModal'
+import { useFormSignature } from '@/components/forms/signer/useFormSignature'
+import { useFormSummary } from '@/components/forms/steps/Summary/useFormSummary'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormData } from '@/components/forms/useFormData'
+import { useFormLeaveProtection } from '@/components/forms/useFormLeaveProtection'
+import { useFormModals } from '@/components/forms/useFormModals'
+import { useFormSent } from '@/components/forms/useFormSent'
+import { environment } from '@/environment'
+import { AccountType } from '@/frontend/dtos/accountDto'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { isFormSubmitDisabled } from '@/frontend/utils/formSummary'
 import {
   NASES_TOKEN_QUERY_KEY,
   popSendEidMetadata,
   setSendEidMetadata,
-} from '../../frontend/utils/metadataStorage'
-import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
-import { useFormSignature } from './signer/useFormSignature'
-import { useFormSummary } from './steps/Summary/useFormSummary'
-import { useFormContext } from './useFormContext'
-import { useFormData } from './useFormData'
-import { useFormLeaveProtection } from './useFormLeaveProtection'
-import { useFormModals } from './useFormModals'
-import { useFormSent } from './useFormSent'
+} from '@/frontend/utils/metadataStorage'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.

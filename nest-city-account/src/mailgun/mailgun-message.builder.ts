@@ -1,6 +1,8 @@
 import { MAILGUN } from '../user-verification/constants'
 import { MailgunMessageData } from 'mailgun.js/definitions'
 import { Injectable } from '@nestjs/common'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 
 interface BaseMailgunParams {
   to: string
@@ -25,19 +27,20 @@ interface IdentityCheckRejectedMailgunParams extends BaseMailgunParams {
   }
 }
 
-interface DeliveryMethodChangedToNotifyMailgunParams extends BaseMailgunParams {
-  variables: {
-    firstName: string | null
-  }
-  attachment?: {
-    data: Buffer
-    filename: string
-    contentType: string
-  }
+export interface DeliveryMethodChangedWithUserDataParams {
+  userEmail: string
+  externalId: string
+  birthNumber?: string
+  deliveryMethod: 'email' | 'edesk' | 'postal'
 }
 
 @Injectable()
 export class MailgunMessageBuilder {
+  constructor(
+    private readonly cognitoSubservice: CognitoSubservice,
+    private readonly pdfGeneratorService: PdfGeneratorService
+  ) {}
+
   async '2023-registration-successful'({
     to,
     variables,
@@ -74,19 +77,49 @@ export class MailgunMessageBuilder {
     }
   }
 
-  async '2025-delivery-method-changed-notify'({
-    to,
-    variables,
-    attachment,
-  }: DeliveryMethodChangedToNotifyMailgunParams): Promise<MailgunMessageData> {
-    return {
+  async '2025-delivery-method-changed-from-user-data'({
+    userEmail,
+    externalId,
+    birthNumber,
+    deliveryMethod,
+  }: DeliveryMethodChangedWithUserDataParams): Promise<MailgunMessageData> {
+    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
+    const firstName = cognitoData.given_name
+
+    const variables = {
+      firstName: firstName ?? null,
+      year: new Date().getFullYear().toString(),
+      deliveryMethod,
+    }
+
+    const baseMessage: MailgunMessageData = {
       from: MAILGUN.FROM_EMAIL,
-      to,
-      subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil na oznámenie',
+      to: userEmail,
+      subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
       template: '2025-delivery-method-changed-notify',
       'h:X-Mailgun-Variables': JSON.stringify(variables),
-      ...(attachment && { attachment }),
     }
+
+    // Only generate PDF attachment for 'email' delivery method (CITY_ACCOUNT)
+    if (deliveryMethod === 'email' && birthNumber) {
+      const fullName = `${cognitoData.given_name ?? ''} ${cognitoData.family_name ?? ''}`.trim()
+
+      const pdfFile = await this.pdfGeneratorService.generateFromTemplate(
+        'delivery-method-set-to-notification',
+        'oznamenie.pdf',
+        {
+          email: userEmail,
+          name: fullName,
+          birthNumber,
+          date: new Date().toLocaleDateString('sk'),
+        },
+        birthNumber
+      )
+
+      baseMessage.attachment = pdfFile
+    }
+
+    return baseMessage
   }
 }
 

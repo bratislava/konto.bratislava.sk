@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
-import MyApplicationsList, {
-  getDraftApplications,
-} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
-import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { ApplicationsListVariant, sections } from 'pages/moje-ziadosti'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
+
+import MyApplicationsList, {
+  getDraftApplications,
+} from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
+import logger from '@/frontend/utils/logger'
 
 type HeaderNavigationItemBase = {
   title: string

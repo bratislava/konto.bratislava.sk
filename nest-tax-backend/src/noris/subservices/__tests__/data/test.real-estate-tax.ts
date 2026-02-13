@@ -1,8 +1,7 @@
 import { NorisRealEstateTax } from '../../../types/noris.types'
 
 export const testRealEstateTax1: NorisRealEstateTax = {
-  adresa_tp_sidlo: 'Hlavná ulica, Testovacia Obec, 12345',
-  sposob_dorucenia: 'E',
+  stav_dokladu: 'Z',
   cislo_poradace: 12_561,
   cislo_subjektu: 139_431_111,
   cislo_konania: '1/25/019623-36/21/925188',
@@ -12,8 +11,6 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   rok: 2025,
   ulica_tb_cislo: 'Hlavná ulica 20',
   psc_ref_tb: '12345',
-  psc_naz_tb: 'Testovacia Obec 57',
-  stat_nazov_plny: 'Slovensko',
   obec_nazev_tb: 'Testovacia Obec',
   akt_datum: '07.04.2025',
   datum_platnosti: new Date('2025-05-07T00:00:00.000Z'),
@@ -75,9 +72,6 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   det_stavba_ZAKLAD_jI: '0,00',
   det_stavba_DAN_H: '0,00',
   det_stavba_ZAKLAD_H: '0,00',
-  TXT_MENO: 'Meno a priezvisko:',
-  TXT_UL: 'Adresa trvalého pobytu:',
-  TYP_USER: 'Rodné číslo:',
   ICO_RC: '123456/7890',
   TXTSPL1: '',
   SPL1: '',
@@ -92,13 +86,11 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   SPL4_3: '37,96',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: '1234567890',
   uhrazeno: 113.9,
 }
 
 export const testRealEstateTax2: NorisRealEstateTax = {
-  adresa_tp_sidlo: null,
-  sposob_dorucenia: null,
+  stav_dokladu: 'Z',
   cislo_poradace: 98_765,
   cislo_subjektu: 234_567_890,
   cislo_konania: null,
@@ -108,8 +100,6 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   rok: 2024,
   ulica_tb_cislo: null,
   psc_ref_tb: null,
-  psc_naz_tb: null,
-  stat_nazov_plny: null,
   obec_nazev_tb: null,
   akt_datum: null,
   datum_platnosti: null,
@@ -171,9 +161,6 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   det_stavba_ZAKLAD_jI: '0,00',
   det_stavba_DAN_H: '0,00',
   det_stavba_ZAKLAD_H: '0,00',
-  TXT_MENO: 'Meno a priezvisko:',
-  TXT_UL: 'Adresa trvalého pobytu:',
-  TYP_USER: 'IČO:',
   ICO_RC: '9876543210',
   TXTSPL1: 'Jednorazová platba:',
   SPL1: '250,50',
@@ -185,13 +172,11 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   SPL4_3: '',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: null,
   uhrazeno: 250.5,
 }
 
 export const testRealEstateTax3 = {
-  adresa_tp_sidlo: 'Druhá ulica, Mesto Test, 54321',
-  sposob_dorucenia: 'P',
+  stav_dokladu: 'Z',
   cislo_poradace: 54_321,
   cislo_subjektu: 345_678_901,
   cislo_konania: '2/26/028734-45/22/836299',
@@ -201,8 +186,6 @@ export const testRealEstateTax3 = {
   rok: 2025,
   ulica_tb_cislo: 'Druhá ulica 15',
   psc_ref_tb: '54321',
-  psc_naz_tb: 'Mesto Test 12',
-  stat_nazov_plny: 'Slovensko',
   obec_nazev_tb: 'Mesto Test',
   akt_datum: '15.03.2025',
   datum_platnosti: new Date('2025-04-15T00:00:00.000Z'),
@@ -264,9 +247,6 @@ export const testRealEstateTax3 = {
   det_stavba_ZAKLAD_jI: '0,00',
   det_stavba_DAN_H: '0,00',
   det_stavba_ZAKLAD_H: '0,00',
-  TXT_MENO: 'Meno a priezvisko:',
-  TXT_UL: 'Adresa trvalého pobytu:',
-  TYP_USER: 'Rodné číslo:',
   ICO_RC: '987654/3210',
   TXTSPL1: '',
   SPL1: '',
@@ -281,7 +261,6 @@ export const testRealEstateTax3 = {
   SPL4_3: '150,25',
   TXTSPL4_4: '',
   SPL4_4: '',
-  specificky_symbol: '9876543210',
   uhrazeno: '450.75',
 }
 

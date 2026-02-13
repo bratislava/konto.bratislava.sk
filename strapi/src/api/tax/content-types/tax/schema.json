@@ -22,11 +22,14 @@
     "channelChangeEffectiveNextYearText": {
       "type": "richtext"
     },
-    "paymentSuccessFeedbackLink": {
-      "type": "string"
-    },
     "paymentAlertText": {
       "type": "richtext"
+    },
+    "feedbackLinkDzn": {
+      "type": "string"
+    },
+    "feedbackLinkKo": {
+      "type": "string"
     }
   }
 }

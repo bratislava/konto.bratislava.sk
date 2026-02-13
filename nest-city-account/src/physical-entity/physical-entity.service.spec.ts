@@ -31,6 +31,7 @@ const mockPhysicalEntity: PhysicalEntity = {
   activeEdeskUpdatedAt: null,
   activeEdeskUpdateFailedAt: null,
   activeEdeskUpdateFailCount: 0,
+  edeskStatusChangedAt: null,
 }
 
 const RfoIdentityListMockData: RfoIdentityList = [
@@ -144,6 +145,7 @@ describe('PhysicalEntityService', () => {
         activeEdeskUpdatedAt: null,
         activeEdeskUpdateFailedAt: null,
         activeEdeskUpdateFailCount: 0,
+        edeskStatusChangedAt: null,
       }
       const updateSpy = jest.spyOn(service, 'update').mockResolvedValue(mockUpdated)
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
@@ -188,6 +190,7 @@ describe('PhysicalEntityService', () => {
           activeEdeskUpdatedAt: null,
           activeEdeskUpdateFailedAt: null,
           activeEdeskUpdateFailCount: 0,
+          edeskStatusChangedAt: null,
         },
         {
           id: 'mock-entity-id2',
@@ -201,6 +204,7 @@ describe('PhysicalEntityService', () => {
           activeEdeskUpdatedAt: null,
           activeEdeskUpdateFailedAt: null,
           activeEdeskUpdateFailCount: 0,
+          edeskStatusChangedAt: null,
         },
       ]
 
@@ -396,6 +400,7 @@ describe('PhysicalEntityService', () => {
         activeEdeskUpdatedAt: null,
         activeEdeskUpdateFailedAt: null,
         activeEdeskUpdateFailCount: 0,
+        edeskStatusChangedAt: null,
       })
       jest.spyOn(prismaMock.physicalEntity, 'findMany').mockResolvedValue([])
 
@@ -434,6 +439,7 @@ describe('PhysicalEntityService', () => {
         activeEdeskUpdatedAt: null,
         activeEdeskUpdateFailedAt: null,
         activeEdeskUpdateFailCount: 0,
+        edeskStatusChangedAt: null,
       })
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 

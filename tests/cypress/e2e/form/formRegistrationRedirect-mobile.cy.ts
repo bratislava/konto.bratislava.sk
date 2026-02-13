@@ -84,8 +84,6 @@ describe('F04 -', { testIsolation: false }, () => {
             )
 
             cy.wrap(Cypress.$('[data-cy=input-password]', form)).type(password)
-
-            cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form)).type(password)
           })
         })
 

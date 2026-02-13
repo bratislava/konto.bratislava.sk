@@ -65,18 +65,18 @@ export class TokenResponseDto {
 
 /**
  * Response DTO for OAuth2 Info Endpoint
- * Returns client name and title for frontend display
+ * Returns client id and client name for the specified authorization request
  */
 export class ClientInfoResponseDto {
+  @ApiProperty({
+    description: 'Client ID of the oAuth2 client',
+    example: 'a1b2c3d4e5f67890abcdef1234567890',
+  })
+  clientId!: string
+
   @ApiProperty({
     description: 'Human-readable name for the client (prefix from OAUTH2_CLIENT_LIST)',
     example: 'DPB',
   })
-  name!: string
-
-  @ApiPropertyOptional({
-    description: 'Human-readable title for the client (for frontend display)',
-    example: 'DPB Application',
-  })
-  title?: string
+  clientName!: string
 }

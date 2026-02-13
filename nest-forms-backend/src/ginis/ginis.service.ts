@@ -44,9 +44,7 @@ import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
@@ -127,10 +125,13 @@ export default class GinisService {
       await this.updateSuccessfulRegistration(formId, documentId)
       return true
     } catch (error) {
-      alertError(
-        `ERROR registerGinisDocument - error while registering the document. Form id: ${formId}`,
-        this.logger,
-        error,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `ERROR registerGinisDocument - error while registering the document`,
+          { formId },
+          error,
+        ),
       )
       await this.updateFailedRegistration(formId)
     }
@@ -188,10 +189,13 @@ export default class GinisService {
 
       await this.updateSuccessfulAttachmentUpload(file.id)
     } catch (error) {
-      alertError(
-        `ERROR uploadAttachments - error upload file to ginis. Form id: ${file.formId}; Ginis id: ${ginisDocumentId}; File id: ${file.id}`,
-        this.logger,
-        error,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'ERROR uploadAttachments - error upload file to ginis.',
+          { formId: file.formId, ginisDocumentId, fileId: file.id },
+          error,
+        ),
       )
       await this.updateFailedAttachmentUpload(file.id)
     }
@@ -208,9 +212,12 @@ export default class GinisService {
     })
 
     if (!form.ginisDocumentId) {
-      alertError(
-        `ERROR uploadAttachments - missing ginisDocumentId. Form id: ${form.id}`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `ERROR uploadAttachments - missing ginisDocumentId.`,
+          { formId: form.id },
+        ),
       )
       return
     }
@@ -281,10 +288,13 @@ export default class GinisService {
       await this.updateSuccessfulAssignment(ginisDocumentId)
       this.logger.debug('---- assigned in ginis ----')
     } catch (error) {
-      alertError(
-        `ERROR assignSubmission - error assigning document in ginis. Ginis id: ${ginisDocumentId}`,
-        this.logger,
-        error,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'ERROR assignSubmission - error assigning document in ginis.',
+          { ginisDocumentId },
+          error,
+        ),
       )
       await this.updateFailedAssignment(ginisDocumentId)
     }
@@ -323,9 +333,12 @@ export default class GinisService {
 
     // checks on form
     if (!form) {
-      alertError(
-        `ERROR - form not exists in Ginis consumption queue. Form id: ${data.formId}`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'ERROR - form not exists in Ginis consumption queue.',
+          { formId: data.formId },
+        ),
       )
       await this.ginisHelper.setFormToError(data.formId)
       return new Nack(false)
@@ -341,7 +354,8 @@ export default class GinisService {
     if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
+        `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        { formDefinitionType: formDefinition.type, formId: form.id },
       )
     }
 
@@ -382,9 +396,12 @@ export default class GinisService {
       filesToUpload.length > 0
     ) {
       if (!form.ginisDocumentId) {
-        alertError(
-          `ERROR uploadAttachments - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
-          this.logger,
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'ERROR uploadAttachments - ginisDocumentId does not exists in form - Ginis consumption queue.',
+            { formId: form.id },
+          ),
         )
         return this.nackTrueWithWait(20_000)
       }
@@ -412,9 +429,12 @@ export default class GinisService {
     // Assign submission
     if (form.ginisState === GinisState.ATTACHMENTS_UPLOADED) {
       if (!form.ginisDocumentId) {
-        alertError(
-          `ERROR assignSubmission - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
-          this.logger,
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'ERROR assignSubmission - ginisDocumentId does not exists in form - Ginis consumption queue.',
+            { formId: form.id },
+          ),
         )
         return this.nackTrueWithWait(20_000)
       }
@@ -472,7 +492,15 @@ export default class GinisService {
 
       return new Nack(false)
     }
-    return this.nackTrueWithWait(20_000)
+
+    this.logger.error(
+      this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `ERROR onQueueConsumption - ginis state ${form.ginisState} not supported in form ${form.id}`,
+        { formId: form.id, ginisState: form.ginisState },
+      ),
+    )
+    return new Nack(false)
   }
 
   private async sendToSharepoint(formId: string): Promise<void> {

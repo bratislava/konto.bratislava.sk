@@ -1,16 +1,16 @@
-import { formsClient } from '@clients/forms'
 import { AuthSession } from 'aws-amplify/auth'
-import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
-import Pagination from 'components/forms/simple-components/Pagination/Pagination'
-import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-clients/forms'
 import { ApplicationsListVariant } from 'pages/moje-ziadosti'
 import React from 'react'
 
-import MyApplicationsCard from './MyApplicationsCard'
-import { patchApplicationFormIfNeeded } from './patchApplicationFormIfNeededClient'
+import { formsClient } from '@/clients/forms'
+import MyApplicationCardsPlaceholder from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
+import MyApplicationsCard from '@/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
+import { patchApplicationFormIfNeeded } from '@/components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededClient'
+import Pagination from '@/components/forms/simple-components/Pagination/Pagination'
+import { useRefreshServerSideProps } from '@/frontend/hooks/useRefreshServerSideProps'
+import logger from '@/frontend/utils/logger'
 
 // must be string due to typing
 const PAGE_SIZE = '10'
@@ -91,9 +91,9 @@ const MyApplicationsList = ({
           </ul>
           <div className="my-4 lg:my-8">
             <Pagination
-              count={totalPagesCount}
-              selectedPage={currentPage}
-              onChange={(page) =>
+              totalCount={totalPagesCount}
+              currentPage={currentPage}
+              onPageChange={(page) =>
                 router
                   .push(
                     {

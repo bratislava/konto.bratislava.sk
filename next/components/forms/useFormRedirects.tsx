@@ -1,16 +1,16 @@
-import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
-import { ROUTES } from '../../frontend/api/constants'
-import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { useFormSignature } from './signer/useFormSignature'
-import { useFormContext } from './useFormContext'
-import { useFormData } from './useFormData'
-import { useFormLeaveProtection } from './useFormLeaveProtection'
+import { formsClient } from '@/clients/forms'
+import { useFormSignature } from '@/components/forms/signer/useFormSignature'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormData } from '@/components/forms/useFormData'
+import { useFormLeaveProtection } from '@/components/forms/useFormLeaveProtection'
+import { ROUTES } from '@/frontend/api/constants'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import useSnackbar from '@/frontend/hooks/useSnackbar'
 
 const useGetContext = () => {
   const router = useRouter()
@@ -40,12 +40,12 @@ const useGetContext = () => {
     },
     onMutate: () => {
       // TODO: Wording.
-      openSnackbarInfo(t('concept_save_and_redirect'))
+      openSnackbarInfo(t('useFormRedirects.save_concept.on_mutate_snackbar_message'))
       turnOffLeaveProtection()
     },
     onError: () => {
       // Maybe different wording for this case.
-      openSnackbarError(t('unable_to_save_concept_and_redirect'))
+      openSnackbarError(t('useFormRedirects.save_concept.on_error_snackbar_message'))
     },
   })
 

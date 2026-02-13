@@ -106,16 +106,3 @@ export class LineLoggerSubservice implements LoggerService {
     this.printLog('VERBOSE', message, optionalParams, '')
   }
 }
-
-// TODO use ThrowerErrorGuard instead ()
-export default function alertError(
-  message: string,
-  logger: LineLoggerSubservice,
-  error?: unknown,
-): void {
-  if (error instanceof Error) {
-    logger.error({ alertMessage: message, alert: 1 }, error)
-  } else {
-    logger.error({ alertMessage: message, alert: 1 }, <string>error)
-  }
-}

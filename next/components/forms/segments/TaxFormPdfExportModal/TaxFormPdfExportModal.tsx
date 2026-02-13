@@ -1,15 +1,15 @@
-import { CheckIcon } from '@assets/ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { mergeProps } from 'react-aria'
 
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import ButtonNew from '../../simple-components/ButtonNew'
-import Modal, { ModalProps } from '../../simple-components/Modal'
-import Spinner from '../../simple-components/Spinner'
-import { useFormContext } from '../../useFormContext'
-import { useFormRedirects } from '../../useFormRedirects'
-import { TaxFormPdfExportModalState } from './TaxFormPdfExportModalState'
+import { CheckIcon } from '@/assets/ui-icons'
+import { TaxFormPdfExportModalState } from '@/components/forms/segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
+import Button from '@/components/forms/simple-components/Button'
+import Modal, { ModalProps } from '@/components/forms/simple-components/Modal'
+import Spinner from '@/components/forms/simple-components/Spinner'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { useFormRedirects } from '@/components/forms/useFormRedirects'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 type TaxFormPdfExportModalProps = {
   state: TaxFormPdfExportModalState | null
@@ -37,11 +37,28 @@ const SuccessContent = () => {
   } = useFormContext()
   const { isSignedIn } = useSsrAuth()
 
+  // TODO Translations - cleanup
   const actions = [
-    'tax_form_pdf_export_modal.action_1',
-    'tax_form_pdf_export_modal.action_2',
-    'tax_form_pdf_export_modal.action_3',
-    'tax_form_pdf_export_modal.action_4',
+    <Trans
+      ns="forms"
+      i18nKey="tax_form_pdf_export_modal.action_1"
+      components={{ strong: <strong className="font-semibold" /> }}
+    />,
+    <Trans
+      ns="forms"
+      i18nKey="tax_form_pdf_export_modal.action_2"
+      components={{ strong: <strong className="font-semibold" /> }}
+    />,
+    <Trans
+      ns="forms"
+      i18nKey="tax_form_pdf_export_modal.action_3"
+      components={{ strong: <strong className="font-semibold" /> }}
+    />,
+    <Trans
+      ns="forms"
+      i18nKey="tax_form_pdf_export_modal.action_4"
+      components={{ strong: <strong className="font-semibold" /> }}
+    />,
   ]
 
   const advantages = [
@@ -63,18 +80,12 @@ const SuccessContent = () => {
         </div>
         <div className="flex flex-col items-center gap-1">
           <ol className="flex flex-col gap-6 [counter-reset:list-number-styling]">
-            {actions.map((key, index) => (
+            {actions.map((translation, index) => (
               <li
                 key={index}
                 className="flex text-p1 [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border-2 before:border-gray-400 before:text-h-xs before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8"
               >
-                <span>
-                  <Trans
-                    ns="forms"
-                    i18nKey={key}
-                    components={{ strong: <strong className="font-semibold" /> }}
-                  />
-                </span>
+                <span>{translation}</span>
               </li>
             ))}
           </ol>
@@ -82,23 +93,27 @@ const SuccessContent = () => {
         {feedbackLink ? (
           <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
             <h3 className="text-left text-h3">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
-            <ButtonNew variant="black-solid" className="w-full" href={feedbackLink} target="_blank">
+            <Button variant="solid" className="w-full" href={feedbackLink} target="_blank">
               {t('tax_form_pdf_export_modal.feedback_button')}
-            </ButtonNew>
+            </Button>
           </div>
         ) : null}
         <div className="h-0.5 w-full bg-gray-200" />
         <h3 className="text-h3">{t('tax_form_pdf_export_modal.how_to_pay_tax')}</h3>
         <p className="text-p1">
-          <Trans
-            ns="forms"
-            i18nKey={
-              isSignedIn
-                ? 'tax_form_pdf_export_modal.tax_assessed_statement_authenticated'
-                : 'tax_form_pdf_export_modal.tax_assessed_statement'
-            }
-            components={{ strong: <strong className="font-semibold" /> }}
-          />
+          {isSignedIn ? (
+            <Trans
+              ns="forms"
+              i18nKey="tax_form_pdf_export_modal.tax_assessed_statement_authenticated"
+              components={{ strong: <strong className="font-semibold" /> }}
+            />
+          ) : (
+            <Trans
+              ns="forms"
+              i18nKey="tax_form_pdf_export_modal.tax_assessed_statement"
+              components={{ strong: <strong className="font-semibold" /> }}
+            />
+          )}
         </p>
         {!isSignedIn && (
           // Copied from RegistrationModal
@@ -123,14 +138,14 @@ const SuccessContent = () => {
                 </ul>
               </div>
               <div className="rounded-b-lg bg-gray-100 px-4 pb-4 lg:px-0 lg:pb-0">
-                <ButtonNew
-                  variant="black-solid"
+                <Button
+                  variant="solid"
                   fullWidth
                   className="rounded-lg px-5 py-2 text-p1-semibold leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}
-                </ButtonNew>
+                </Button>
               </div>
             </div>
           </>

@@ -1,28 +1,36 @@
-import { cityAccountClient } from '@clients/city-account'
-import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
+import { cityAccountClient } from '@/clients/city-account'
 import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
-} from '../components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
-import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import LegalPersonVerificationPageContent from '../components/verify/LegalPersonVerificationPageContent'
-import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import logger from '../frontend/utils/logger'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+} from '@/components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
+import AccountContainer from '@/components/forms/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import PageLayout from '@/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
+import LegalPersonVerificationPageContent from '@/components/verify/LegalPersonVerificationPageContent'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
+import { useRefreshServerSideProps } from '@/frontend/hooks/useRefreshServerSideProps'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import { fetchClientInfo } from '@/frontend/utils/fetchClientInfo'
+import logger from '@/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '@/frontend/utils/useAmplifyClientOAuthContext'
+import { AuthPageCommonProps } from '@/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
+  async ({ context }) => {
+    const clientInfo = await fetchClientInfo(context.query)
+
     return {
       props: {
+        clientInfo,
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -30,11 +38,14 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true, redirectQueryParam: true },
 )
 
-const IdentityVerificationPage = () => {
+const IdentityVerificationPage = ({ clientInfo }: AuthPageCommonProps) => {
   const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const [lastRc, setLastRc] = useState('')
   const [lastIdCard, setLastIdCard] = useState('')
+
+  const { isOAuthLogin, clientTitle, storeTokensAndRedirect, isIdentityVerificationRequired } =
+    useOAuthGetContext(clientInfo)
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   // TODO fix is legal entity
@@ -96,54 +107,93 @@ const IdentityVerificationPage = () => {
   }
 
   return (
-    <LoginRegisterLayout backButtonHidden>
-      <AccountContainer ref={accountContainerRef}>
-        {(tierStatus.isIdentityVerificationNotYetAttempted ||
-          tierStatus.isNotVerifiedIdentityCard) && (
-          <>
-            {isLegalEntity ? (
-              <LegalPersonVerificationPageContent />
-            ) : (
-              <IdentityVerificationOfPhysicalEntityForm
-                onSubmit={verifyIdentityAndRefreshUserData}
-                error={identityVerificationError}
-              />
-            )}
-          </>
-        )}
-        {tierStatus.isInQueue && (
-          <AccountVerificationPendingAlert
-            title={t('auth.identity_verification.fo.pending.title')}
-            description={
-              lastRc && lastIdCard
-                ? t('auth.identity_verification.fo.pending.content', {
-                    rc: lastRc,
-                    idCard: lastIdCard,
-                  })
-                : t('auth.identity_verification.fo.pending.content_without_data')
-            }
-            confirmLabel={t('auth.continue_to_account')}
-            onConfirm={() => redirect()}
-          />
-        )}
-        {tierStatus.isIdentityVerified && (
-          <AccountSuccessAlert
-            title={t('auth.identity_verification.common.success.title')}
-            // TODO legal entity text (lastRc && lastIdCard is used only for FO)
-            description={
-              lastRc &&
-              lastIdCard &&
-              t('auth.identity_verification.fo.success.content', {
-                rc: lastRc,
-                idCard: lastIdCard,
-              })
-            }
-            confirmLabel={t('auth.continue_to_account')}
-            onConfirm={() => redirect()}
-          />
-        )}
-      </AccountContainer>
-    </LoginRegisterLayout>
+    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+      <PageLayout variant="auth" hideBackButton>
+        <AccountContainer ref={accountContainerRef}>
+          {(tierStatus.isIdentityVerificationNotYetAttempted ||
+            tierStatus.isNotVerifiedIdentityCard) && (
+            <>
+              {isLegalEntity ? (
+                <LegalPersonVerificationPageContent
+                  showSkipButton={!isIdentityVerificationRequired}
+                />
+              ) : (
+                <IdentityVerificationOfPhysicalEntityForm
+                  onSubmit={verifyIdentityAndRefreshUserData}
+                  error={identityVerificationError}
+                  showSkipButton={!isIdentityVerificationRequired}
+                />
+              )}
+            </>
+          )}
+          {tierStatus.isInQueue && (
+            <AccountSuccessAlert
+              variant="pending"
+              title={t('auth.identity_verification.fo.pending.title')}
+              {...(isOAuthLogin
+                ? {
+                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                    onConfirm: () => {
+                      // TODO OAuth: What to do here whe identity verification is pending?
+                    },
+                    description:
+                      lastRc && lastIdCard
+                        ? t('auth.identity_verification.fo.pending_oauth.content', {
+                            rc: lastRc,
+                            idCard: lastIdCard,
+                            clientTitle,
+                          })
+                        : t('auth.identity_verification.fo.pending_oauth.content_without_data', {
+                            clientTitle,
+                          }),
+                  }
+                : {
+                    confirmLabel: t('auth.continue_to_account'),
+                    onConfirm: () => {
+                      redirect()
+                    },
+                    description:
+                      lastRc && lastIdCard
+                        ? t('auth.identity_verification.fo.pending.content', {
+                            rc: lastRc,
+                            idCard: lastIdCard,
+                          })
+                        : t('auth.identity_verification.fo.pending.content_without_data'),
+                  })}
+            />
+          )}
+          {tierStatus.isIdentityVerified && (
+            <AccountSuccessAlert
+              variant="success"
+              title={t('auth.identity_verification.common.success.title')}
+              description={
+                isLegalEntity
+                  ? t('auth.identity_verification.fop_po_eid.success.content')
+                  : lastRc &&
+                    lastIdCard &&
+                    t('auth.identity_verification.fo.success.content', {
+                      rc: lastRc,
+                      idCard: lastIdCard,
+                    })
+              }
+              {...(isOAuthLogin
+                ? {
+                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                    onConfirm: () => {
+                      storeTokensAndRedirect()
+                    },
+                  }
+                : {
+                    confirmLabel: t('auth.continue_to_account'),
+                    onConfirm: () => {
+                      redirect()
+                    },
+                  })}
+            />
+          )}
+        </AccountContainer>
+      </PageLayout>
+    </AmplifyClientOAuthProvider>
   )
 }
 

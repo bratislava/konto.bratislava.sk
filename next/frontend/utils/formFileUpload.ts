@@ -1,4 +1,3 @@
-import { formsClient } from '@clients/forms'
 import { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios'
 import {
   ClientFileInfo,
@@ -15,9 +14,10 @@ import {
 } from 'openapi-clients/forms'
 import { v4 as createUuid } from 'uuid'
 
-import { environment } from '../../environment'
-import { FormFileUploadConstraints } from '../types/formFileUploadTypes'
-import { isDefined } from './general'
+import { formsClient } from '@/clients/forms'
+import { environment } from '@/environment'
+import { FormFileUploadConstraints } from '@/frontend/types/formFileUploadTypes'
+import { isDefined } from '@/frontend/utils/general'
 
 export const uploadFile = async ({
   formId,

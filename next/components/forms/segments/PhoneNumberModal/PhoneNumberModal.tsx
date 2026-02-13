@@ -2,26 +2,26 @@ import { updateUserAttributes } from 'aws-amplify/auth'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import { UserAttributes } from '../../../../frontend/dtos/accountDto'
-import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
-import { GENERIC_ERROR_MESSAGE, isError } from '../../../../frontend/utils/errors'
-import logger from '../../../../frontend/utils/logger'
-import PhoneNumberForm, { PhoneNumberData } from '../../auth-forms/PhoneNumberForm'
-import MessageModal from '../../widget-components/Modals/MessageModal'
+import PhoneNumberForm, { PhoneNumberData } from '@/components/forms/auth-forms/PhoneNumberForm'
+import MessageModal from '@/components/forms/widget-components/Modals/MessageModal'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
+import { GENERIC_ERROR_MESSAGE, isError } from '@/frontend/utils/errors'
+import logger from '@/frontend/utils/logger'
 
-const getInitialOpen = (userAttributes: UserAttributes | null) => {
-  // Signed out
-  if (!userAttributes) {
-    return false
-  }
+// const getInitialOpen = (userAttributes: UserAttributes | null) => {
+//   // Signed out
+//   if (!userAttributes) {
+//     return false
+//   }
+//
+//   return userAttributes.phone_number == null && userAttributes['custom:hide_phone_modal'] !== 'true'
+// }
 
-  return userAttributes.phone_number == null && userAttributes['custom:hide_phone_modal'] !== 'true'
-}
-
+// TODO: Phone number modal is temporarily hidden. Remove completely if not use in long-term.
 const PhoneNumberModal = () => {
   const { t } = useTranslation('account')
   const { userAttributes } = useSsrAuth()
-  const [isOpen, setIsOpen] = useState(getInitialOpen(userAttributes))
+  const [isOpen, setIsOpen] = useState(false) // useState(getInitialOpen(userAttributes))
   const [phoneNumberError, setPhoneNumberError] = useState<Error | null>(null)
 
   const handleOpenChange = async (open: boolean) => {

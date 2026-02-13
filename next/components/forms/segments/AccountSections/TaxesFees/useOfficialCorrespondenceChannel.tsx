@@ -1,5 +1,6 @@
-import { useUser } from 'frontend/hooks/useUser'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
+
+import { useUser } from '@/frontend/hooks/useUser'
 
 export const useOfficialCorrespondenceChannel = () => {
   const { userData } = useUser()
@@ -7,7 +8,7 @@ export const useOfficialCorrespondenceChannel = () => {
   if (
     !('officialCorrespondenceChannel' in userData) ||
     !('showEmailCommunicationBanner' in userData) ||
-    !('wasVerifiedBeforeTaxDeadline' in userData)
+    !('hasChangedDeliveryMethodAfterDeadline' in userData)
   ) {
     throw new Error('This hook must be only used when the user is a physical person.')
   }
@@ -15,18 +16,10 @@ export const useOfficialCorrespondenceChannel = () => {
   const {
     officialCorrespondenceChannel,
     showEmailCommunicationBanner,
-    wasVerifiedBeforeTaxDeadline,
+    hasChangedDeliveryMethodAfterDeadline,
   } = userData
 
-  // TODO: this logic is only considering user that recently verified their birth number, but it should be considering user that was verified before
-  // TODO: Move this logic to BE
-  // https://github.com/bratislava/private-konto.bratislava.sk/issues/1029
-
-  const isChannelChangeEffectiveNextYear =
-    !wasVerifiedBeforeTaxDeadline &&
-    officialCorrespondenceChannel === UserOfficialCorrespondenceChannelEnum.Email
-
-  const channelEffectiveInCurrentYear = isChannelChangeEffectiveNextYear
+  const channelEffectiveInCurrentYear = hasChangedDeliveryMethodAfterDeadline
     ? UserOfficialCorrespondenceChannelEnum.Postal
     : officialCorrespondenceChannel
 
@@ -36,7 +29,7 @@ export const useOfficialCorrespondenceChannel = () => {
   return {
     channel: officialCorrespondenceChannel,
     channelEffectiveInCurrentYear,
-    isChannelChangeEffectiveNextYear,
+    hasChangedDeliveryMethodAfterDeadline,
     canUserChangeChannel,
     showChannelNeededBanner: showEmailCommunicationBanner,
   }

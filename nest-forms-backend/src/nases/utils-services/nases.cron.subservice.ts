@@ -12,9 +12,7 @@ import BaConfigService from '../../config/ba-config.service'
 import { ClusterEnv } from '../../config/environment-variables'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { ValidateFormRegistrationsResultDto } from '../dtos/responses.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
 import FormRegistrationStatusRepository from './form-registration-status.repository'
@@ -130,9 +128,12 @@ export default class NasesCronSubservice {
       result['not-published'].length > 0 ||
       result.error.length > 0
     ) {
-      alertError(
-        `Some form definitions are not correctly registered in slovensko.sk. Result of validation: ${JSON.stringify(result)}`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
+          'Some form definitions are not correctly registered in slovensko.sk.',
+          { validationResult: result },
+        ),
       )
     } else {
       this.logger.log(

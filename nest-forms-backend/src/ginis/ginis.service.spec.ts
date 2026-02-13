@@ -206,7 +206,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
 
       await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
-        'onQueueConsumption: Got unsupported type of FormDefinition.: SlovenskoSkTax, form id: id1',
+        'onQueueConsumption: Got unsupported type of FormDefinition.',
       )
     })
 

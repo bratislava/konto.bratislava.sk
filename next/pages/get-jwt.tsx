@@ -1,9 +1,9 @@
-import { Wrapper } from 'components/styleguide/Wrapper'
 import React from 'react'
 
-import ClipboardCopy from '../components/forms/simple-components/ClipboardCopy'
-import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import ClipboardCopy from '@/components/forms/simple-components/ClipboardCopy'
+import { Wrapper } from '@/components/styleguide/Wrapper'
+import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '@/frontend/utils/slovakServerSideTranslations'
 
 type GetJwtProps = {
   accessToken: string | null

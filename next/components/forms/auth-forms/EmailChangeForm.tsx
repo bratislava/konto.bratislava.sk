@@ -1,11 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import useHookForm from '../../../frontend/hooks/useHookForm'
-import AccountErrorAlert from '../segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '../simple-components/ButtonNew'
-import InputField from '../widget-components/InputField/InputField'
-import PasswordField from '../widget-components/PasswordField/PasswordField'
+import AccountErrorAlert from '@/components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import Button from '@/components/forms/simple-components/Button'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import PasswordField from '@/components/forms/widget-components/PasswordField/PasswordField'
+import useHookForm from '@/frontend/hooks/useHookForm'
 
 interface Data {
   newEmail: string
@@ -59,7 +59,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
       data-cy="change-email-form"
     >
       <h1 className="text-h3">{t('auth.email_change_title')}</h1>
-      <p className="text-p3 lg:text-p2">{t('auth.new_email_text')}</p>
+      <p className="text-p3 lg:text-p2">{t('auth.email_change_description')}</p>
       <AccountErrorAlert error={error} />
       <Controller
         name="newEmail"
@@ -88,13 +88,13 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         )}
       />
       <Button
-        variant="black-solid"
+        variant="solid"
         type="submit"
         fullWidth
         isDisabled={isSubmitting}
         data-cy="change-email-submit"
       >
-        {t('auth.new_email_submit')}
+        {t('auth.email_change_submit')}
       </Button>
     </form>
   )

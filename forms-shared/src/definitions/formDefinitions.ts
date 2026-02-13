@@ -65,18 +65,22 @@ import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoSha
 import objednavkaInformativnehoZakresuSieti, {
   objednavkaInformativnehoZakresuSietiExtractEmail,
   objednavkaInformativnehoZakresuSietiExtractName,
+  objednavkaInformativnehoZakresuSietiExtractTechnicalSubject,
 } from '../schemas/tsb/objednavkaInformativnehoZakresuSieti'
 import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia, {
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
+  objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractTechnicalSubject,
 } from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
 import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia, {
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
 } from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
 import ziadostOStanoviskoKProjektovejDokumentacii, {
   ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
+  ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject,
 } from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
@@ -243,7 +247,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: mimoriadnyOdvozAZhodnotenieOdpadu,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
       extractName: mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
@@ -262,7 +266,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: energetickeZhodnotenieOdpaduVZevo,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: zevoExtractEmail,
       extractName: zevoExtractName,
@@ -281,7 +285,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: uzatvorenieZmluvyONakladaniSOdpadom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: zevoExtractEmail,
       extractName: zevoExtractName,
@@ -300,7 +304,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: docisteniStanovistaZbernychNadob,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: docisteniStanovistaZbernychNadobExtractEmail,
       extractName: docisteniStanovistaZbernychNadobExtractName,
@@ -319,7 +323,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
       extractName: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
@@ -338,7 +342,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: koloTaxi,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'kolo@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['kolo@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'kolo@olo.sk', test: 'kolo@olo.sk' },
       extractEmail: koloTaxiExtractEmail,
       extractName: koloTaxiExtractName,
@@ -357,7 +361,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: oloTaxi,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: oloTaxiExtractEmail,
       extractName: oloTaxiExtractName,
@@ -376,7 +380,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: podnetyAPochvalyObcanov,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: podnetyAPochvalyObcanovExtractEmail,
       extractName: podnetyAPochvalyObcanovExtractName,
@@ -395,7 +399,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: odvozObjemnehoOdpaduValnikom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: odvozObjemnehoOdpaduValnikomExtractEmail,
       extractName: odvozObjemnehoOdpaduValnikomExtractName,
@@ -414,7 +418,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['obchod@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
       extractName: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
@@ -433,7 +437,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
-      address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['zakazka@olo.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
       extractName: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
@@ -451,11 +455,14 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.1',
     schema: objednavkaInformativnehoZakresuSieti,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical: objednavkaInformativnehoZakresuSietiExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeQNdJ',
     email: {
-      address: { prod: 'wf-izs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-izs@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -466,7 +473,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_ORDER_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject: 'tsb-objednavka-informativneho-zakresu-sieti',
     },
   },
   {
@@ -476,11 +482,15 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical:
+        objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeYNBT',
     email: {
-      address: { prod: 'wf-vs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-vs@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -491,7 +501,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_ORDER_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject: 'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
     },
   },
   {
@@ -501,11 +510,14 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.1',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical: ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeC4TS',
     email: {
-      address: { prod: 'wf-oskpd@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-oskpd@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -516,7 +528,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_REQUEST_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
     },
   },
   {
@@ -526,11 +537,15 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
+    subject: {
+      extractTechnical:
+        ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
+    },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
     email: {
-      address: { prod: 'wf-ouz@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: ['wf-ouz@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
@@ -541,8 +556,6 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_REQUEST_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
-      technicalEmailSubject:
-        'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
     },
   },
   {

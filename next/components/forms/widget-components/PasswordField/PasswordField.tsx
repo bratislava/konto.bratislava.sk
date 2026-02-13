@@ -1,9 +1,8 @@
-import { EyeIcon } from '@assets/ui-icons'
-import InputField from 'components/forms/widget-components/InputField/InputField'
-import { forwardRef, useRef, useState } from 'react'
-import { useButton } from 'react-aria'
+import { forwardRef, useState } from 'react'
 
-import { FieldWrapperProps } from '../FieldWrapper'
+import { FieldWrapperProps } from '@/components/forms/widget-components/FieldWrapper'
+import InputField from '@/components/forms/widget-components/InputField/InputField'
+import PasswordEyeButton from '@/components/forms/widget-components/PasswordField/PasswordEyeButton'
 
 type Props = FieldWrapperProps & {
   value?: string
@@ -34,26 +33,11 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
     },
     ref,
   ) => {
-    const [type, setType] = useState<'password' | 'text'>('password')
-    const buttonRef = useRef<HTMLButtonElement>(null)
-
-    const { buttonProps } = useButton(
-      {
-        elementType: 'button',
-        isDisabled: disabled,
-        onPressStart() {
-          setType('text')
-        },
-        onPressEnd() {
-          setType('password')
-        },
-      },
-      buttonRef,
-    )
+    const [isPasswordHidden, setIsPasswordHidden] = useState(true)
 
     return (
       <InputField
-        type={type}
+        type={isPasswordHidden ? 'password' : 'text'}
         label={label}
         placeholder={placeholder}
         errorMessage={errorMessage}
@@ -70,14 +54,12 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         ref={ref}
         autoComplete={autoComplete}
         endIcon={
-          <button
-            type="button"
-            ref={buttonRef}
-            className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
-            {...buttonProps}
-          >
-            <EyeIcon />
-          </button>
+          <PasswordEyeButton
+            isPasswordHidden={isPasswordHidden}
+            onToggle={setIsPasswordHidden}
+            isDisabled={disabled}
+            className="absolute inset-y-1/2 right-1 aspect-square h-full -translate-y-2/4"
+          />
         }
         {...rest}
       />

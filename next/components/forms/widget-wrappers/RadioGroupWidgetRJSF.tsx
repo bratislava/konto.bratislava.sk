@@ -1,12 +1,12 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
 import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { RadioGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { ReactNode, useMemo } from 'react'
 
-import Radio from '../widget-components/RadioButton/Radio'
-import RadioGroup from '../widget-components/RadioButton/RadioGroup'
+import Radio from '@/components/forms/widget-components/RadioButton/Radio'
+import RadioGroup from '@/components/forms/widget-components/RadioButton/RadioGroup'
+import WidgetWrapper from '@/components/forms/widget-wrappers/WidgetWrapper'
 
 type ValueType = string | boolean | undefined
 

@@ -1,8 +1,8 @@
 import Link, { LinkProps } from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { ROUTES } from '../../../../frontend/api/constants'
-import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
+import { ROUTES } from '@/frontend/api/constants'
+import { useQueryParamRedirect } from '@/frontend/hooks/useQueryParamRedirect'
 
 type Props = {
   variant: 'login' | 'registration' | 'forgotten-password'
@@ -35,14 +35,11 @@ const AccountLink = ({ variant }: Props) => {
     >
   )[variant]
 
-  // TODO OAuth revisit data-cy attribute and href.toString()
-  // const name = typeof href === 'string' ? href.replaceAll('/', '') : href.href?.replaceAll('/', '')
   return (
     <div className="flex flex-col justify-between md:flex-row">
       <div className="text-16-semibold text-gray-800">{description}</div>
       <Link
         href={href}
-        // data-cy={`${name}-button`}
         className="font-semibold text-gray-700 underline hover:text-gray-600 focus:text-gray-800"
       >
         {label}

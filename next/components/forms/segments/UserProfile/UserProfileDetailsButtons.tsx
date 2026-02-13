@@ -1,6 +1,7 @@
-import { CrossIcon, EditIcon } from '@assets/ui-icons'
-import Button from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
+
+import { CrossIcon, EditIcon } from '@/assets/ui-icons'
+import Button from '@/components/forms/simple-components/Button'
 
 interface UserProfileDetailsButtonsProps {
   formId: string
@@ -19,12 +20,11 @@ const UserProfileDetailsButtons = ({
 
   return (
     // first button is to fix bug with autofocus of button 'cancel edit'
-
-    <div className="flex flex-row items-center gap-5">
+    <div className="flex items-center gap-6">
       {isEditing ? (
         <>
           {/* Cancel button */}
-          <Button className="max-md:hidden" variant="black-outline" onPress={onCancelEditing}>
+          <Button className="max-md:hidden" variant="plain" onPress={onCancelEditing}>
             {t('my_profile.profile_detail.discard_changes_button')}
           </Button>
           <Button
@@ -38,7 +38,7 @@ const UserProfileDetailsButtons = ({
 
           {/* Save button (desktop) */}
           <Button
-            variant="black-solid"
+            variant="solid"
             className="max-md:hidden"
             type="submit"
             form={formId}
@@ -51,7 +51,7 @@ const UserProfileDetailsButtons = ({
         <>
           {/* Edit button */}
           <Button
-            variant="black-solid"
+            variant="solid"
             className="max-md:hidden"
             startIcon={<EditIcon />}
             onPress={() => onChangeIsEditing(true)}

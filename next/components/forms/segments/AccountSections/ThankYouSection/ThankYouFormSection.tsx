@@ -1,13 +1,13 @@
-import BratislavaIcon from '@assets/images/bratislava-footer.svg'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
-import Button from 'components/forms/simple-components/ButtonNew'
 import { useTranslation } from 'next-i18next'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
-import cn from '../../../../../frontend/cn'
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
-import { useFormContext } from '../../../useFormContext'
+import BratislavaIcon from '@/assets/images/bratislava-footer.svg'
+import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import ThankYouCard from '@/components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
+import Button from '@/components/forms/simple-components/Button'
+import { useFormContext } from '@/components/forms/useFormContext'
+import { ROUTES } from '@/frontend/api/constants'
+import cn from '@/frontend/cn'
+import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
 const useThankYouFormSection = () => {
   const {
@@ -81,7 +81,7 @@ const ThankYouFormSection = () => {
           firstButtonTitle={firstButtonTitle}
           secondButtonTitle={secondButtonTitle}
           content={content}
-          feedbackLink={feedbackLink}
+          firstButtonLink={feedbackLink}
           feedbackTitle={feedbackTitle}
         />
         {displayAccountLinks ? (
@@ -93,10 +93,10 @@ const ThankYouFormSection = () => {
               />
             </span>
             <div className="mt-4 flex flex-col gap-3 md:mt-6">
-              <Button variant="black-link" href={ROUTES.HELP}>
+              <Button variant="link" href={ROUTES.HELP}>
                 {t('thank_you.button_faq_text')}
               </Button>
-              <Button variant="black-link" href="https://bratislava.sk/ochrana-osobnych-udajov">
+              <Button variant="link" href="https://bratislava.sk/ochrana-osobnych-udajov">
                 {t('thank_you.button_privacy_text')}
               </Button>
             </div>

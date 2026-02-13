@@ -581,15 +581,13 @@ export default class NasesService {
 
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
-        `${NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES} Received form id: ${
-          form.id
-        }, info: ${JSON.stringify({
-          type: 'Unable send form to nases',
+        NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
+        {
           status: sendData.status,
           formId: data.formId,
           error: FormError.NASES_SEND_ERROR,
           sendData: sendData.data,
-        })}`,
+        },
       )
     }
 

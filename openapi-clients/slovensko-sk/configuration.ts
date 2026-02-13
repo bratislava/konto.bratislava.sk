@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * slovensko.sk API
  * slovensko.sk API je proxy REST API komponent k službám www.slovensko.sk (Ústredný portál verejnej správy – ÚPVS), pomocou ktorých je možné:  **Komunitná verzia** (EUPL 1.2 licencia) - uskutočniť prihlásenie pomocou ÚPVS (pomocou elektronického občianskeho preukazu) a získať údaje o prihlásenom subjekte, - manipulovať s obsahom el. schránky a preberať poštu do vlastných rúk, - podávať podania v mene subjektu, ktorý sa prihlásil cez ÚPVS alebo pomocou technického účtu, - vyhľadávať subjekty (právnické a fyzické osoby) za účelom zasielania správ (dostupné len pre OVM), - skontrolovať či je daná správa vo formáte SKTalk validná voči aktuálnej definícii formuláru (podporná funkcia).  **Prémium verzia** (komerčná licencia) - ukladať záznamy do dlhodobého úložiska registratúrnych záznamov, - zverejnovať dokumenty na centrálnej úradnej tabuli (dostupné len pre OVM), - podpisovať správy pomocou kvalifikovanej pečate uloženej v úložisku na slovensko.sk, - pridávať kvalifikované časové pečiatky elektronicky podpísaným dokumentom, - informatívne overovať podpisy na elektronicky podpísaných dokumentoch, - získať informácie o type a forme podpisov elektronicky podpísaných dokumentov.
@@ -11,6 +10,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+
+interface AWSv4Configuration {
+  options?: {
+    region?: string
+    service?: string
+  }
+  credentials?: {
+    accessKeyId?: string
+    secretAccessKey?: string
+    sessionToken?: string
+  }
+}
 
 export interface ConfigurationParameters {
   apiKey?:
@@ -25,6 +36,7 @@ export interface ConfigurationParameters {
     | Promise<string>
     | ((name?: string, scopes?: string[]) => string)
     | ((name?: string, scopes?: string[]) => Promise<string>)
+  awsv4?: AWSv4Configuration
   basePath?: string
   serverIndex?: number
   baseOptions?: any
@@ -60,6 +72,17 @@ export class Configuration {
     | ((name?: string, scopes?: string[]) => string)
     | ((name?: string, scopes?: string[]) => Promise<string>)
   /**
+   * parameter for aws4 signature security
+   * @param {Object} AWS4Signature - AWS4 Signature security
+   * @param {string} options.region - aws region
+   * @param {string} options.service - name of the service.
+   * @param {string} credentials.accessKeyId - aws access key id
+   * @param {string} credentials.secretAccessKey - aws access key
+   * @param {string} credentials.sessionToken - aws session token
+   * @memberof Configuration
+   */
+  awsv4?: AWSv4Configuration
+  /**
    * override base path
    */
   basePath?: string
@@ -85,6 +108,7 @@ export class Configuration {
     this.username = param.username
     this.password = param.password
     this.accessToken = param.accessToken
+    this.awsv4 = param.awsv4
     this.basePath = param.basePath
     this.serverIndex = param.serverIndex
     this.baseOptions = {

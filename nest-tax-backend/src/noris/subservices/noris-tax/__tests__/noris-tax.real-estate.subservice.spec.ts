@@ -53,7 +53,6 @@ describe('NorisTaxRealEstateSubservice', () => {
 
   const mockNorisData: NorisRealEstateTax[] = [
     {
-      adresa_tp_sidlo: 'Test Address',
       stav_dokladu: 'Z',
       cislo_poradace: 1,
       cislo_subjektu: 123,
@@ -64,8 +63,6 @@ describe('NorisTaxRealEstateSubservice', () => {
       rok: 2023,
       ulica_tb_cislo: 'Test Street 1',
       psc_ref_tb: '12345',
-      psc_naz_tb: 'Test City',
-      stat_nazov_plny: 'Slovakia',
       obec_nazev_tb: 'Test City',
       akt_datum: '2023-01-01',
       datum_platnosti: new Date('2023-12-31'),
@@ -127,9 +124,6 @@ describe('NorisTaxRealEstateSubservice', () => {
       det_stavba_ZAKLAD_jI: '0.00',
       det_stavba_DAN_H: '0.00',
       det_stavba_ZAKLAD_H: '0.00',
-      TXT_MENO: 'Test Name',
-      TXT_UL: 'Test Street',
-      TYP_USER: 'N',
       ICO_RC: '123456/7890',
       TXTSPL1: 'Test spl 1',
       SPL1: '1',

@@ -52,11 +52,7 @@ export const createTestingRealEstateTaxMock = (
     dan_stavby_SPOLU: '0',
     ulica_tb_cislo: 'test ulica cislo',
     psc_ref_tb: 'test psc',
-    psc_naz_tb: 'test psc nazov',
-    stat_nazov_plny: 'test stat',
     obec_nazev_tb: 'test obec',
-    TXT_UL: 'test ulica txt',
-    TXT_MENO: 'test meno txt',
 
     // splátky (installments) data
     TXTSPL1: 'TEST: Daň za rok je splatná do xx.yy',
@@ -126,10 +122,6 @@ export const createTestingRealEstateTaxMock = (
     dan_stavby: '600,50',
     dan_stavby_viac: '300,25',
     dan_byty: norisData.taxTotal,
-    adresa_tp_sidlo: 'test sidlo',
-
-    // user type
-    TYP_USER: 'FO',
   }
 }
 
@@ -180,15 +172,9 @@ export const createTestingCommunalWasteTaxMock = (
     subjekt_refer: '123456789',
     ulica_tb_cislo: 'test ulica cislo',
     psc_ref_tb: 'test psc',
-    psc_naz_tb: 'test psc nazov',
-    stat_nazov_plny: 'test stat',
     obec_nazev_tb: 'test obec',
-    TXT_UL: 'test ulica txt',
-    TXT_MENO: 'test meno txt',
-    adresa_tp_sidlo: 'test sidlo',
     cislo_subjektu: 123_456,
     akt_datum: new Date().toISOString().split('T')[0],
-    TYP_USER: 'FO',
 
     // splátky (installments) data
     TXTSPL1: 'TEST: Poplatok za rok je splatný do xx.yy',

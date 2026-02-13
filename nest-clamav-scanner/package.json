@@ -34,7 +34,7 @@
     "@nestjs/swagger": "^11.2.6",
     "@prisma/client": "6.17.1",
     "await-exec": "^0.1.2",
-    "axios": "^1.13.2",
+    "axios": "^1.13.5",
     "base64url": "^3.0.1",
     "clamdjs": "^1.0.2",
     "class-transformer": "^0.5.1",

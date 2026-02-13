@@ -5,7 +5,6 @@ import { AdminStrategy } from '../auth/strategies/admin.strategy'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
 import { PrismaModule } from '../prisma/prisma.module'
-import { UpvsIdentityByUriModule } from '../upvs-identity-by-uri/upvs-identity-by-uri.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { AdminController } from './admin.controller'
@@ -21,7 +20,6 @@ import { DatabaseSubserviceUser } from '../user/utils/subservice/database.subser
   imports: [
     PassportModule,
     PrismaModule,
-    UpvsIdentityByUriModule,
     PhysicalEntityModule,
     BloomreachModule,
     ClientsModule,

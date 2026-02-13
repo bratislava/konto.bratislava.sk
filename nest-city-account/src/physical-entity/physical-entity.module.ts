@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common'
 import { PrismaModule } from '../prisma/prisma.module'
 
-import { UpvsIdentityByUriModule } from '../upvs-identity-by-uri/upvs-identity-by-uri.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PhysicalEntityService } from './physical-entity.service'
 import { MagproxyModule } from '../magproxy/magproxy.module'
+import { NasesModule } from '../nases/nases.module'
 
 @Module({
-  imports: [PrismaModule, UpvsIdentityByUriModule, MagproxyModule],
+  imports: [PrismaModule, MagproxyModule, NasesModule],
   providers: [PhysicalEntityService, ThrowerErrorGuard],
   exports: [PhysicalEntityService],
   controllers: [],

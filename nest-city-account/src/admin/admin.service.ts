@@ -26,14 +26,23 @@ import { VerificationDataForUserResponseDto } from '../user-verification/dtos/ve
 /**
  * AdminService - Thin delegation layer for administrative operations
  *
- * This service delegates to domain services (UserService, VerificationService, PhysicalEntityService).
- * It provides a consistent interface for AdminController while keeping business logic in domain modules.
+ * @description
+ * This service acts as a facade between AdminController and domain services. It provides
+ * a consistent interface for administrative endpoints while keeping business logic in domain modules.
  *
- * Note: This service has been refactored from a 695-line "God Service" to a thin delegation layer.
- * Functionality has been moved to appropriate domain services:
- * - User lookup/batch/deactivation → UserService ✅
- * - Verification state/data/manual → VerificationService ✅
- * - Edesk validation → PhysicalEntityService (TODO)
+ * @remarks
+ * **Before adding code here, please note:**
+ *
+ * Business logic does NOT belong in this service. Implement functionality in the appropriate
+ * domain service (UserService, VerificationService, PhysicalEntityService, etc.) and delegate
+ * from here.
+ *
+ * Methods in this service should either:
+ * 1. Simply delegate to a domain service (most common)
+ * 2. Implement purely administrative functionality that doesn't belong to any domain (rare exception)
+ *
+ * If your functionality relates to a specific domain (users, verification, entities, etc.),
+ * it belongs in that domain's service, not here.
  */
 @Injectable()
 export class AdminService {

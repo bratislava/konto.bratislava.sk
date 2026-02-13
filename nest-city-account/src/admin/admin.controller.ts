@@ -79,6 +79,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('userdata')
+  // FIXME: used in Tax Backend
   async getUserDataByBirthNumber(
     @Query() query: RequestQueryUserByBirthNumberDto
   ): Promise<ResponseUserByBirthNumberDto> {
@@ -98,6 +99,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('userdata-batch')
+  // FIXME: used in Tax Backend
   async getUserDataByBirthNumbersBatch(
     @Body() query: RequestBatchQueryUsersByBirthNumbersDto
   ): Promise<GetUserDataByBirthNumbersBatchResponseDto> {
@@ -113,6 +115,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('activate-sync-cognito-to-db')
+  // NOTE: stays in Admin Controller
   async syncCognitoToDb(): Promise<void> {
     await this.adminService.activateSyncCognitoToDb()
   }
@@ -127,6 +130,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('status/user/:email')
+  // NOTE: stays in Admin Controller
   async checkUserVerifyState(@Param('email') email: string): Promise<UserVerifyState> {
     const result = await this.adminService.checkUserVerifyState(email.toLowerCase())
     return result
@@ -139,6 +143,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('deactivate/:externalId')
+  // NOTE: stays in Admin Controller
   async deactivateAccount(
     @Param('externalId') externalId: string
   ): Promise<DeactivateAccountResponseDto> {
@@ -154,6 +159,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Patch('mark-deceased')
+  // NOTE: stays in Admin Controller
   async markAccountsAsDeceasedByBirthnumber(
     @Body() data: MarkDeceasedAccountRequestDto
   ): Promise<MarkDeceasedAccountResponseDto> {
@@ -174,6 +180,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('user/id-card-verification-data/:email')
+  // NOTE: stays in Admin Controller
   async getVerificationDataForUser(
     @Param('email') email: string
   ): Promise<VerificationDataForUserResponseDto> {
@@ -194,6 +201,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('user/verify-manually/:email')
+  // NOTE: stays in Admin Controller
   async verifyUserManually(
     @Param('email') email: string,
     @Body() data: ManuallyVerifyUserRequestDto
@@ -215,6 +223,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('validated-users-to-physical-entities')
+  // NOTE: stays in Admin Controller
   async validatedUsersToPhysicalEntities() {
     const users = await this.prismaService.user.findMany({
       where: {
@@ -316,6 +325,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('validate-edesk-by-cognito-where-first-try')
+  // NOTE: stays in Admin Controller
   async validateEdeskForUserIds(@Body() data: RequestBodyValidateEdeskForUserIdsDto) {
     return this.adminService.validateEdeskWithUriFromCognito(data.offset || 0)
   }
@@ -331,6 +341,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('validate-physical-entity-rfo')
+  // NOTE: stays in Admin Controller
   async validatePhysicalEntityRfo(@Body() data: RequestValidatePhysicalEntityRfoDto) {
     return this.physicalEntityService.updateFromRFO(data.physicalEntityId)
   }
@@ -349,6 +360,7 @@ export class AdminController {
   @UseGuards(AdminGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('get-verified-users-birth-numbers-batch')
+  // FIXME: used in Tax Backend
   async getNewVerifiedUsersBirthNumbers(
     @Body() data: RequestBatchNewUserBirthNumbers
   ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {

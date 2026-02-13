@@ -20,6 +20,7 @@ import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
 import ThrowerErrorGuard from './utils/guards/thrower-error.guard'
 import SharepointSubservice from './utils/subservices/sharepoint.subservice'
+import WebhookModule from './webhook/webhook.module'
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
     GinisModule,
     TaxModule,
     SignerModule,
+    WebhookModule,
   ],
   controllers: [AppController],
   providers: [AppService, SharepointSubservice, ThrowerErrorGuard],

@@ -75466,6 +75466,124 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
 }
 `;
 
+exports[`Form definitions > webhook-showcase > default form state should match snapshot 1`] = `
+{
+  "fileUploads": {
+    "buttonUpload": [],
+    "dragAndDrop": [],
+  },
+  "textInputs": {},
+}
+`;
+
+exports[`Form definitions > webhook-showcase > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "textInputs": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "text-inputs",
+            },
+          },
+          "properties": {
+            "basicText": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Basic text input example",
+                  "inputType": "text",
+                  "placeholder": "Enter text here",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Basic Text Input",
+              "type": "string",
+            },
+          },
+          "required": [
+            "basicText",
+          ],
+          "title": "Text Inputs",
+          "type": "object",
+        },
+      },
+      "required": [
+        "textInputs",
+      ],
+      "type": "object",
+    },
+    {
+      "properties": {
+        "fileUploads": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "file-uploads",
+            },
+          },
+          "properties": {
+            "buttonUpload": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Click button to upload files",
+                  "type": "button",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "minItems": 1,
+              "title": "Button Upload",
+              "type": "array",
+            },
+            "dragAndDrop": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "accept": ".pdf,.jpg,.png",
+                  "helptext": "Drag files here or click to upload",
+                  "sizeLimit": 5000000,
+                  "type": "dragAndDrop",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "minItems": 1,
+              "title": "Drag and Drop Upload",
+              "type": "array",
+            },
+          },
+          "required": [
+            "buttonUpload",
+            "dragAndDrop",
+          ],
+          "title": "File Uploads",
+          "type": "object",
+        },
+      },
+      "required": [
+        "fileUploads",
+      ],
+      "type": "object",
+    },
+  ],
+  "title": "Webhook showcase",
+}
+`;
+
 exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > default form state should match snapshot 1`] = `
 {
   "prilohy": {

@@ -2,10 +2,10 @@ import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { Channel, ConsumeMessage } from 'amqplib'
 
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import { NasesService } from '../nases/nases.service'
-import { PrismaService } from '../prisma/prisma.service'
-import { encryptData } from '../utils/crypto'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
+import { decryptData, encryptData } from '../utils/crypto'
 import TokenSubservice from './utils/subservice/token.subservice'
 import {
   CognitoGetUserData,
@@ -39,6 +39,10 @@ import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { VerificationReturnType } from './types'
 import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
 import { UserTierService } from '../user/user-tier.service'
+import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.dto'
+import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
+import { VerificationDataForUserResponseDto } from './dtos/verification-response.dto'
 
 @Injectable()
 export class VerificationService {
@@ -481,5 +485,260 @@ export class VerificationService {
         ico: icoEncrypted,
       },
     })
+  }
+
+  async checkUserVerifyState(email: string): Promise<UserVerifyState> {
+    const result: UserVerifyState = {
+      isInDatabase: false,
+      isInCognito: false,
+      cognitoTier: CognitoUserAttributesTierEnum.NEW,
+      isVerified: false,
+    }
+
+    // Try if this is legal person. If yes go to legal person state.
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: {
+        email,
+      },
+    })
+    if (legalPerson !== null) {
+      return this.checkLegalPersonVerifyState(email)
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+        ...ACTIVE_USER_FILTER,
+      },
+    })
+    if (user !== null) {
+      result.isInDatabase = true
+
+      if (user.birthnumberAlreadyExistsLast)
+        result.birthNumberAlreadyExists = user.birthnumberAlreadyExistsLast
+      result.externalId = user.externalId
+
+      if (user.externalId) {
+        try {
+          const cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
+          result.isInCognito = true
+          result.cognitoTier = cognitoUser['custom:tier']
+          result.type = cognitoUser['custom:account_type']
+
+          if (
+            result.cognitoTier === CognitoUserAttributesTierEnum.EID ||
+            result.cognitoTier === CognitoUserAttributesTierEnum.IDENTITY_CARD
+          ) {
+            result.isVerified = true
+          }
+        } catch (error) {
+          result.isInCognito = false
+        }
+      }
+    }
+
+    return result
+  }
+
+  // ========== Verification State (delegates to VerificationService) ==========
+  async checkLegalPersonVerifyState(email: string): Promise<UserVerifyState> {
+    const result: UserVerifyState = {
+      isInDatabase: false,
+      isInCognito: false,
+      cognitoTier: CognitoUserAttributesTierEnum.NEW,
+      isVerified: false,
+    }
+
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: {
+        email,
+      },
+    })
+    if (legalPerson !== null) {
+      result.isInDatabase = true
+
+      if (legalPerson.birthnumberIcoAlreadyExistsLast)
+        result.birthNumberIcoAlreadyExists = legalPerson.birthnumberIcoAlreadyExistsLast
+      result.externalId = legalPerson.externalId
+
+      if (legalPerson.externalId) {
+        try {
+          const cognitoUser = await this.cognitoSubservice.getDataFromCognito(
+            legalPerson.externalId
+          )
+          result.isInCognito = true
+          result.cognitoTier = cognitoUser['custom:tier']
+          result.type = cognitoUser['custom:account_type']
+
+          if (
+            result.cognitoTier === CognitoUserAttributesTierEnum.EID ||
+            result.cognitoTier === CognitoUserAttributesTierEnum.IDENTITY_CARD
+          ) {
+            result.isVerified = true
+          }
+        } catch (error) {
+          result.isInCognito = false
+        }
+      }
+    }
+
+    return result
+  }
+
+  async getVerificationDataForUser(email: string): Promise<VerificationDataForUserResponseDto> {
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: {
+        email,
+      },
+    })
+    if (legalPerson) {
+      return this.getVerificationDataForLegalPerson(legalPerson)
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+        ...ACTIVE_USER_FILTER,
+      },
+    })
+
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
+    }
+
+    const verifyData = await this.prisma.userIdCardVerify.findMany({
+      where: {
+        userId: user.id,
+      },
+      orderBy: {
+        verifyStart: 'desc',
+      },
+    })
+    const verifyDataDecrypted = verifyData.map((record) => ({
+      ...record,
+      idCard: decryptData(record.idCard),
+      birthNumber: decryptData(record.birthNumber),
+    }))
+
+    return {
+      externalId: user.externalId,
+      email,
+      verificationDataLastMonth: verifyDataDecrypted,
+    }
+  }
+
+  private async getVerificationDataForLegalPerson(
+    legalPerson: LegalPerson
+  ): Promise<VerificationDataForUserResponseDto> {
+    const verifyData = await this.prisma.legalPersonIcoIdCardVerify.findMany({
+      where: {
+        legalPersonId: legalPerson.id,
+      },
+      orderBy: {
+        verifyStart: 'desc',
+      },
+    })
+    const verifyDataDecrypted = verifyData.map((record) => ({
+      ...record,
+      idCard: decryptData(record.idCard),
+      birthNumber: decryptData(record.birthNumber),
+      ico: decryptData(record.ico),
+      userId: record.legalPersonId,
+      legalPersonId: undefined,
+    }))
+
+    return {
+      externalId: legalPerson.externalId,
+      email: legalPerson.email,
+      verificationDataLastMonth: verifyDataDecrypted,
+    }
+  }
+
+  async manuallyVerifyUser(
+    email: string,
+    data: ManuallyVerifyUserRequestDto
+  ): Promise<OnlySuccessDto> {
+    let isLegalPerson = true
+    let user: LegalPerson | User | null = await this.prisma.legalPerson.findUnique({
+      where: {
+        email,
+      },
+    })
+    if (!user) {
+      isLegalPerson = false
+      user = await this.prisma.user.findUnique({
+        where: {
+          email,
+          ...ACTIVE_USER_FILTER,
+        },
+      })
+    }
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
+    }
+
+    if (!user.externalId) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        UserErrorsEnum.NO_EXTERNAL_ID,
+        UserErrorsResponseEnum.NO_EXTERNAL_ID
+      )
+    }
+
+    // Update the database
+    if (isLegalPerson) {
+      if (!data.ico) {
+        throw this.throwerErrorGuard.BadRequestException(
+          VerificationErrorsEnum.ICO_NOT_PROVIDED,
+          VerificationErrorsResponseEnum.ICO_NOT_PROVIDED
+        )
+      }
+
+      await this.prisma.legalPerson.update({
+        where: {
+          email,
+        },
+        data: {
+          ico: data.ico,
+          birthNumber: data.birthNumber,
+          lastVerificationAttempt: new Date(),
+        },
+      })
+    } else {
+      if (!data.ifo) {
+        throw this.throwerErrorGuard.BadRequestException(
+          VerificationErrorsEnum.IFO_NOT_PROVIDED,
+          VerificationErrorsResponseEnum.IFO_NOT_PROVIDED
+        )
+      }
+
+      await this.prisma.user.update({
+        where: {
+          email,
+          ...ACTIVE_USER_FILTER,
+        },
+        data: {
+          ifo: data.ifo,
+          birthNumber: data.birthNumber,
+          lastVerificationIdentityCard: new Date(),
+        },
+      })
+    }
+
+    // Update cognito
+    const cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
+    await this.userTierService.changeTier(
+      user.externalId,
+      CognitoUserAttributesTierEnum.IDENTITY_CARD,
+      cognitoUser['custom:account_type']
+    )
+    await this.bloomreachService.trackCustomer(user.externalId)
+
+    return { success: true }
   }
 }

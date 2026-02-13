@@ -9,6 +9,8 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { DeliveryMethodEnum } from '@prisma/client'
 import prismaMock from '../../test/singleton'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+import { UserTierService } from './user-tier.service'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
 
 jest.mock('../utils/constants/tax-deadline')
 
@@ -20,6 +22,7 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        UserTierService,
         {
           provide: UserDataSubservice,
           useValue: createMock<UserDataSubservice>(),
@@ -39,6 +42,10 @@ describe('UserService', () => {
         {
           provide: CognitoSubservice,
           useValue: createMock<CognitoSubservice>(),
+        },
+        {
+          provide: TaxSubservice,
+          useValue: createMock<TaxSubservice>(),
         },
       ],
     }).compile()

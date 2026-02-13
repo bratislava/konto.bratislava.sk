@@ -38,20 +38,22 @@ import {
   RequestValidatePhysicalEntityRfoDto,
 } from './dtos/requests.admin.dto'
 import {
-  DeactivateAccountResponseDto,
   GetNewVerifiedUsersBirthNumbersResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
-  MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
   ResponseValidatePhysicalEntityRfoDto,
   UserVerifyState,
   ValidatedUsersToPhysicalEntitiesResponseDto,
   ValidateEdeskForUserIdsResponseDto,
-  VerificationDataForUserResponseDto,
 } from './dtos/responses.admin.dto'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import {
+  DeactivateAccountResponseDto,
+  MarkDeceasedAccountResponseDto,
+} from '../user/dtos/user-modification-response.dto'
+import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
 
 @ApiTags('ADMIN')
 @Controller('admin')

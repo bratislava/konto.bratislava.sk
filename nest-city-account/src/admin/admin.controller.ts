@@ -21,12 +21,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import * as _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { AdminGuard } from '../auth/guards/admin.guard'
-import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
@@ -44,11 +40,8 @@ import {
   ResponseUserByBirthNumberDto,
   ResponseValidatePhysicalEntityRfoDto,
   UserVerifyState,
-  ValidatedUsersToPhysicalEntitiesResponseDto,
   ValidateEdeskForUserIdsResponseDto,
 } from './dtos/responses.admin.dto'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   DeactivateAccountResponseDto,
   MarkDeceasedAccountResponseDto,
@@ -59,12 +52,8 @@ import { VerificationDataForUserResponseDto } from '../user-verification/dtos/ve
 @Controller('admin')
 @ApiSecurity('apiKey')
 export class AdminController {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminController.name)
-
   constructor(
     private readonly adminService: AdminService,
-    private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly physicalEntityService: PhysicalEntityService
   ) {}
 
@@ -208,107 +197,6 @@ export class AdminController {
   ): Promise<OnlySuccessDto> {
     const result = await this.adminService.manuallyVerifyUser(email, data)
     return result
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Create physicalEntity records for validated users',
-    description:
-      'Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Return data from cognito',
-    type: ValidatedUsersToPhysicalEntitiesResponseDto,
-  })
-  @UseGuards(AdminGuard)
-  @Post('validated-users-to-physical-entities')
-  // NOTE: stays in Admin Controller
-  async validatedUsersToPhysicalEntities() {
-    const users = await this.prismaService.user.findMany({
-      where: {
-        birthNumber: { not: null },
-        physicalEntity: null,
-        ...ACTIVE_USER_FILTER,
-      },
-      take: 1000,
-    })
-
-    if (users.length === 0) {
-      this.logger.log('No users with birth number and no physicalEntity id found')
-      return
-    } else {
-      this.logger.log(`Found ${users.length} users with birth number and no physicalEntity id`)
-    }
-
-    // link existing physicalEntities to users where they exist, link by birth number, don't transfer other data
-    // ignoring the problems with duplicate birth numbers, we should resolve these manually
-    const existingPhysicalEntities = await this.prismaService.physicalEntity.findMany({
-      where: {
-        birthNumber: {
-          in: users
-            .map((user) => user.birthNumber)
-            .filter((birthNumber) => birthNumber !== null) as string[],
-        },
-        userId: null,
-      },
-    })
-
-    const physicalEntitiesByBirthNumber = _.keyBy(existingPhysicalEntities, 'birthNumber')
-    const usersByBirthNumber = _.keyBy(users, 'birthNumber')
-
-    if (Object.values(physicalEntitiesByBirthNumber).length !== existingPhysicalEntities.length) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        'Duplicate birth numbers in existing physicalEntities'
-      )
-    }
-    if (Object.values(usersByBirthNumber).length !== users.length) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        'Duplicate birth numbers in existing physicalEntities'
-      )
-    }
-
-    if (existingPhysicalEntities.length !== 0) {
-      this.logger.log(
-        `Found ${existingPhysicalEntities.length} existing physicalEntities for unlinked users`
-      )
-      for (const physicalEntity of existingPhysicalEntities) {
-        const user = physicalEntity.birthNumber
-          ? usersByBirthNumber[physicalEntity.birthNumber]
-          : null
-        if (user) {
-          this.logger.log(`Linking user ${user.id} to physicalEntity ${physicalEntity.id}`)
-          await this.prismaService.physicalEntity.update({
-            where: { id: physicalEntity.id },
-            data: { userId: user.id },
-          })
-        }
-      }
-    }
-
-    // create physicalEntities for the rest of the users
-    const usersWithoutPhysicalEntity = users.filter(
-      (user) => !user.birthNumber || physicalEntitiesByBirthNumber[user.birthNumber] === undefined
-    )
-    if (usersWithoutPhysicalEntity.length !== 0) {
-      this.logger.log(
-        `Creating ${usersWithoutPhysicalEntity.length} new physicalEntities for users`
-      )
-      for (const user of usersWithoutPhysicalEntity) {
-        await this.prismaService.physicalEntity.create({
-          data: { userId: user.id, birthNumber: user.birthNumber },
-        })
-      }
-    }
-
-    return {
-      existingPhysicalEntitiesUpdated: existingPhysicalEntities.length,
-      newPhysicalEntitiesCreated: usersWithoutPhysicalEntity.length,
-    }
   }
 
   // TODO take 100 physicalEntities without any attempts to validate uri and tyr using cognito data to validate

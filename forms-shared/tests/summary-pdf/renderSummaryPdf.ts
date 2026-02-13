@@ -15,7 +15,7 @@ describe('getSummaryJson', () => {
     test(
       `${exampleForm.name} summary PDF should match snapshot`,
       async () => {
-        filterConsole(
+        const restore = filterConsole(
           'error',
           (message) =>
             typeof message === 'string' &&
@@ -49,6 +49,8 @@ describe('getSummaryJson', () => {
         })
 
         await expectPdfToMatchSnapshot(pdfBuffer)
+
+        restore()
       },
       screenshotTestTimeout,
     )

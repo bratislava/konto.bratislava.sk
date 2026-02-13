@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from 'vitest'
+import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
 import { filterConsole } from '../../test-utils/filterConsole'
@@ -14,6 +14,10 @@ describe('omitExtraData', () => {
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   test('should omit extra data for simple schema', () => {

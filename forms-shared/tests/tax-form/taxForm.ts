@@ -45,7 +45,7 @@ describe('taxForm', () => {
       test(
         `should match snapshot for generated PDF ${exampleForm.name}`,
         async () => {
-          filterConsole(
+          const restore = filterConsole(
             'log',
             (message) =>
               message ===
@@ -55,6 +55,7 @@ describe('taxForm', () => {
           const base64Pdf = await generateTaxPdf({ formData: exampleForm.formData })
 
           await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)
+          restore()
         },
         screenshotTestTimeout,
       )

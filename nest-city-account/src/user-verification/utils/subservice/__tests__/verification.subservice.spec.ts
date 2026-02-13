@@ -6,7 +6,7 @@ import { PhysicalEntityService } from '../../../../physical-entity/physical-enti
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
-import { DatabaseSubserviceUser } from '../database.subservice'
+import { VerificationDataSubservice } from '../verification-data.subservice'
 import { VerificationSubservice } from '../verification.subservice'
 
 const IDENTITY_CARD = 'Občiansky preukaz'
@@ -21,8 +21,8 @@ describe('VerificationSubservice', () => {
         ThrowerErrorGuard,
         { provide: MagproxyService, useValue: createMock<MagproxyService>() },
         {
-          provide: DatabaseSubserviceUser,
-          useValue: createMock<DatabaseSubserviceUser>(),
+          provide: VerificationDataSubservice,
+          useValue: createMock<VerificationDataSubservice>(),
         },
         {
           provide: PhysicalEntityService,

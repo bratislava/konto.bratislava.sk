@@ -1152,11 +1152,11 @@ export interface UserVerifyState {
    */
   cognitoTier?: UserVerifyStateCognitoTierEnum
   /**
-   * If set, then this number was used for verifiying, but is already in our database for other user.
+   * If set, then this number was used for verifying, but is already in our database for other user.
    */
   birthNumberAlreadyExists?: string
   /**
-   * If set, then this number was used for verifiying, but is already in our database for other user.
+   * If set, then this number was used for verifying, but is already in our database for other user.
    */
   birthNumberIcoAlreadyExists?: string
   /**
@@ -1197,10 +1197,6 @@ export interface ValidateEdeskForUserIdsResponseDto {
    * Temp debug data
    */
   enitites: object
-}
-export interface ValidatedUsersToPhysicalEntitiesResponseDto {
-  existingPhysicalEntitiesUpdated: number
-  newPhysicalEntitiesCreated: number
 }
 export interface VerificationDataForUser {
   /**
@@ -1330,159 +1326,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-     * @summary Get birth numbers of newly verified users.
-     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetNewVerifiedUsersBirthNumbers: async (
-      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestBatchNewUserBirthNumbers' is not null or undefined
-      assertParamExists(
-        'adminControllerGetNewVerifiedUsersBirthNumbers',
-        'requestBatchNewUserBirthNumbers',
-        requestBatchNewUserBirthNumbers,
-      )
-      const localVarPath = `/admin/get-verified-users-birth-numbers-batch`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestBatchNewUserBirthNumbers,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Get user data by birthnumber
-     * @summary Get user data
-     * @param {string} birthNumber userBirthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumber: async (
-      birthNumber: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'birthNumber' is not null or undefined
-      assertParamExists('adminControllerGetUserDataByBirthNumber', 'birthNumber', birthNumber)
-      const localVarPath = `/admin/userdata`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      if (birthNumber !== undefined) {
-        localVarQueryParameter['birthNumber'] = birthNumber
-      }
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Get user data by birthnumbers in batch.
-     * @summary Get user data
-     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumbersBatch: async (
-      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestBatchQueryUsersByBirthNumbersDto' is not null or undefined
-      assertParamExists(
-        'adminControllerGetUserDataByBirthNumbersBatch',
-        'requestBatchQueryUsersByBirthNumbersDto',
-        requestBatchQueryUsersByBirthNumbersDto,
-      )
-      const localVarPath = `/admin/userdata-batch`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestBatchQueryUsersByBirthNumbersDto,
-        localVarRequestOptions,
-        configuration,
-      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1732,45 +1575,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-     * @summary Create physicalEntity records for validated users
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatedUsersToPhysicalEntities: async (
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/admin/validated-users-to-physical-entities`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
      * @summary Manually verify user.
      * @param {string} email
@@ -1887,105 +1691,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ADMINApi.adminControllerDeactivateAccount']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-     * @summary Get birth numbers of newly verified users.
-     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerGetNewVerifiedUsersBirthNumbers(
-      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerGetNewVerifiedUsersBirthNumbers(
-          requestBatchNewUserBirthNumbers,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerGetNewVerifiedUsersBirthNumbers']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Get user data by birthnumber
-     * @summary Get user data
-     * @param {string} birthNumber userBirthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerGetUserDataByBirthNumber(
-      birthNumber: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerGetUserDataByBirthNumber(
-          birthNumber,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumber']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Get user data by birthnumbers in batch.
-     * @summary Get user data
-     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerGetUserDataByBirthNumbersBatch(
-      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerGetUserDataByBirthNumbersBatch(
-          requestBatchQueryUsersByBirthNumbersDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumbersBatch']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -2145,35 +1850,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-     * @summary Create physicalEntity records for validated users
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerValidatedUsersToPhysicalEntities(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<ValidatedUsersToPhysicalEntitiesResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerValidatedUsersToPhysicalEntities(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerValidatedUsersToPhysicalEntities']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
      * @summary Manually verify user.
      * @param {string} email
@@ -2248,54 +1924,6 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-     * @summary Get birth numbers of newly verified users.
-     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetNewVerifiedUsersBirthNumbers(
-      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto> {
-      return localVarFp
-        .adminControllerGetNewVerifiedUsersBirthNumbers(requestBatchNewUserBirthNumbers, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Get user data by birthnumber
-     * @summary Get user data
-     * @param {string} birthNumber userBirthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumber(
-      birthNumber: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseUserByBirthNumberDto> {
-      return localVarFp
-        .adminControllerGetUserDataByBirthNumber(birthNumber, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Get user data by birthnumbers in batch.
-     * @summary Get user data
-     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumbersBatch(
-      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto> {
-      return localVarFp
-        .adminControllerGetUserDataByBirthNumbersBatch(
-          requestBatchQueryUsersByBirthNumbersDto,
-          options,
-        )
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
      * @summary Get verification data for user.
      * @param {string} email
@@ -2367,19 +1995,6 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-     * @summary Create physicalEntity records for validated users
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatedUsersToPhysicalEntities(
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ValidatedUsersToPhysicalEntitiesResponseDto> {
-      return localVarFp
-        .adminControllerValidatedUsersToPhysicalEntities(options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
      * @summary Manually verify user.
      * @param {string} email
@@ -2426,57 +2041,6 @@ export class ADMINApi extends BaseAPI {
   public adminControllerDeactivateAccount(externalId: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerDeactivateAccount(externalId, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-   * @summary Get birth numbers of newly verified users.
-   * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerGetNewVerifiedUsersBirthNumbers(
-    requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerGetNewVerifiedUsersBirthNumbers(requestBatchNewUserBirthNumbers, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Get user data by birthnumber
-   * @summary Get user data
-   * @param {string} birthNumber userBirthNumber
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerGetUserDataByBirthNumber(
-    birthNumber: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerGetUserDataByBirthNumber(birthNumber, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Get user data by birthnumbers in batch.
-   * @summary Get user data
-   * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerGetUserDataByBirthNumbersBatch(
-    requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerGetUserDataByBirthNumbersBatch(
-        requestBatchQueryUsersByBirthNumbersDto,
-        options,
-      )
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2550,18 +2114,6 @@ export class ADMINApi extends BaseAPI {
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerValidatePhysicalEntityRfo(requestValidatePhysicalEntityRfoDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-   * @summary Create physicalEntity records for validated users
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerValidatedUsersToPhysicalEntities(options?: RawAxiosRequestConfig) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerValidatedUsersToPhysicalEntities(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2808,6 +2360,398 @@ export class AuthApi extends BaseAPI {
   public authControllerLogin(options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
       .authControllerLogin(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * BackendIntegrationAPIApi - axios parameter creator
+ */
+export const BackendIntegrationAPIApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
+     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetNewVerifiedUsersBirthNumbers: async (
+      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestBatchNewUserBirthNumbers' is not null or undefined
+      assertParamExists(
+        'integrationControllerGetNewVerifiedUsersBirthNumbers',
+        'requestBatchNewUserBirthNumbers',
+        requestBatchNewUserBirthNumbers,
+      )
+      const localVarPath = `/integration/get-verified-users-birth-numbers-batch`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestBatchNewUserBirthNumbers,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Get user data by birthnumber
+     * @summary Get user data
+     * @param {string} birthNumber userBirthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumber: async (
+      birthNumber: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'birthNumber' is not null or undefined
+      assertParamExists('integrationControllerGetUserDataByBirthNumber', 'birthNumber', birthNumber)
+      const localVarPath = `/integration/userdata`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      if (birthNumber !== undefined) {
+        localVarQueryParameter['birthNumber'] = birthNumber
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumbersBatch: async (
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestBatchQueryUsersByBirthNumbersDto' is not null or undefined
+      assertParamExists(
+        'integrationControllerGetUserDataByBirthNumbersBatch',
+        'requestBatchQueryUsersByBirthNumbersDto',
+        requestBatchQueryUsersByBirthNumbersDto,
+      )
+      const localVarPath = `/integration/userdata-batch`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestBatchQueryUsersByBirthNumbersDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * BackendIntegrationAPIApi - functional programming interface
+ */
+export const BackendIntegrationAPIApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = BackendIntegrationAPIApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
+     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async integrationControllerGetNewVerifiedUsersBirthNumbers(
+      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.integrationControllerGetNewVerifiedUsersBirthNumbers(
+          requestBatchNewUserBirthNumbers,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'BackendIntegrationAPIApi.integrationControllerGetNewVerifiedUsersBirthNumbers'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Get user data by birthnumber
+     * @summary Get user data
+     * @param {string} birthNumber userBirthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async integrationControllerGetUserDataByBirthNumber(
+      birthNumber: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.integrationControllerGetUserDataByBirthNumber(
+          birthNumber,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'BackendIntegrationAPIApi.integrationControllerGetUserDataByBirthNumber'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async integrationControllerGetUserDataByBirthNumbersBatch(
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.integrationControllerGetUserDataByBirthNumbersBatch(
+          requestBatchQueryUsersByBirthNumbersDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'BackendIntegrationAPIApi.integrationControllerGetUserDataByBirthNumbersBatch'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * BackendIntegrationAPIApi - factory interface
+ */
+export const BackendIntegrationAPIApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = BackendIntegrationAPIApiFp(configuration)
+  return {
+    /**
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
+     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetNewVerifiedUsersBirthNumbers(
+      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+      return localVarFp
+        .integrationControllerGetNewVerifiedUsersBirthNumbers(
+          requestBatchNewUserBirthNumbers,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Get user data by birthnumber
+     * @summary Get user data
+     * @param {string} birthNumber userBirthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumber(
+      birthNumber: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseUserByBirthNumberDto> {
+      return localVarFp
+        .integrationControllerGetUserDataByBirthNumber(birthNumber, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumbersBatch(
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto> {
+      return localVarFp
+        .integrationControllerGetUserDataByBirthNumbersBatch(
+          requestBatchQueryUsersByBirthNumbersDto,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * BackendIntegrationAPIApi - object-oriented interface
+ */
+export class BackendIntegrationAPIApi extends BaseAPI {
+  /**
+   * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+   * @summary Get birth numbers of newly verified users.
+   * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public integrationControllerGetNewVerifiedUsersBirthNumbers(
+    requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return BackendIntegrationAPIApiFp(this.configuration)
+      .integrationControllerGetNewVerifiedUsersBirthNumbers(
+        requestBatchNewUserBirthNumbers,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get user data by birthnumber
+   * @summary Get user data
+   * @param {string} birthNumber userBirthNumber
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public integrationControllerGetUserDataByBirthNumber(
+    birthNumber: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return BackendIntegrationAPIApiFp(this.configuration)
+      .integrationControllerGetUserDataByBirthNumber(birthNumber, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get user data by birthnumbers in batch.
+   * @summary Get user data
+   * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public integrationControllerGetUserDataByBirthNumbersBatch(
+    requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return BackendIntegrationAPIApiFp(this.configuration)
+      .integrationControllerGetUserDataByBirthNumbersBatch(
+        requestBatchQueryUsersByBirthNumbersDto,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath))
   }
 }

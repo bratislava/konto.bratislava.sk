@@ -9,21 +9,16 @@ import { AuthRequestIdGuard } from './guards/auth-request-id.guard'
 import { OAuth2AccessGuard } from './guards/oauth2-access.guard'
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 import { OAuth2ClientSubservice } from './subservices/oauth2-client.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
-import { PrismaService } from '../prisma/prisma.service'
 import { NoCacheMiddleware } from '../utils/middlewares/no-cache.middleware'
 import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
 import { OAuth2ErrorThrower } from './oauth2-error.thrower'
+import { PrismaModule } from '../prisma/prisma.module'
 
 @Module({
-  imports: [PassportModule],
+  imports: [PassportModule, PrismaModule],
   providers: [
     OAuth2Service,
-    PrismaService,
-    CognitoSubservice,
-    ThrowerErrorGuard,
     OAuth2ErrorThrower,
     OAuth2ClientSubservice,
     OAuth2ValidationSubservice,

@@ -12,7 +12,7 @@ import {
 import { VerificationReturnType } from '../../types'
 
 @Injectable()
-export class DatabaseSubserviceUser implements IHasThrowerErrorGuard {
+export class VerificationDataSubservice implements IHasThrowerErrorGuard {
   constructor(
     private prisma: PrismaService,
     public readonly throwerErrorGuard: ThrowerErrorGuard

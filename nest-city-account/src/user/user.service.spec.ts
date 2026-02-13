@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { createMock } from '@golevelup/ts-jest'
 import { UserService } from './user.service'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -9,20 +9,23 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { DeliveryMethodEnum } from '@prisma/client'
 import prismaMock from '../../test/singleton'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+import { UserTierService } from './user-tier.service'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
 
 jest.mock('../utils/constants/tax-deadline')
 
 describe('UserService', () => {
   let service: UserService
-  let databaseSubservice: jest.Mocked<DatabaseSubserviceUser>
+  let databaseSubservice: jest.Mocked<UserDataSubservice>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        UserTierService,
         {
-          provide: DatabaseSubserviceUser,
-          useValue: createMock<DatabaseSubserviceUser>(),
+          provide: UserDataSubservice,
+          useValue: createMock<UserDataSubservice>(),
         },
         {
           provide: PrismaService,
@@ -40,11 +43,15 @@ describe('UserService', () => {
           provide: CognitoSubservice,
           useValue: createMock<CognitoSubservice>(),
         },
+        {
+          provide: TaxSubservice,
+          useValue: createMock<TaxSubservice>(),
+        },
       ],
     }).compile()
 
     service = module.get<UserService>(UserService)
-    databaseSubservice = module.get(DatabaseSubserviceUser)
+    databaseSubservice = module.get(UserDataSubservice)
   })
 
   afterEach(() => {

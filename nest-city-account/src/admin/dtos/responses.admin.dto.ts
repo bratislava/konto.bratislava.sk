@@ -1,66 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '@prisma/client'
-import {
-  IsArray,
-  IsBoolean,
-  IsDate,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsString,
-  IsUUID,
-} from 'class-validator'
-import { Type } from 'class-transformer'
-import { AnonymizeResponse } from '../../bloomreach/bloomreach.dto'
-import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
-import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
-import {
-  CognitoGetUserData,
-  CognitoUserAccountTypesEnum,
-} from '../../utils/global-dtos/cognito.dto'
-
-export class ResponseUserByBirthNumberDto {
-  @ApiProperty({
-    description: 'userBirthNumber',
-    default: '8808080000',
-  })
-  birthNumber!: string | null
-
-  @ApiProperty({
-    description: 'email',
-    default: 'brtaislavcan@bratislava.sk',
-  })
-  email!: string | null
-
-  @ApiProperty({
-    description: 'Cognito Id',
-    default: 'd18cbd7c-daad-4d5d-a1d7-8e47f845baab',
-  })
-  externalId!: string | null
-
-  @ApiProperty({
-    description: 'Special user attribute for user segmentation',
-    default: UserAttributeEnum.TAX2023,
-  })
-  userAttribute: string | UserAttributeEnum | null
-
-  @ApiProperty({
-    description: 'Tier from cognito',
-    default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
-  })
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  cognitoAttributes?: CognitoGetUserData | {}
-
-  @ApiPropertyOptional({
-    description: 'Delivery method for tax documents at lock date',
-    example: DeliveryMethodEnum.EDESK,
-    enum: DeliveryMethodEnum,
-  })
-  @IsEnum(DeliveryMethodEnum)
-  taxDeliveryMethodAtLockDate: DeliveryMethodEnum | null
-}
+import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator'
+import { CognitoUserAccountTypesEnum } from '../../utils/global-dtos/cognito.dto'
 
 export class UserVerifyState {
   @ApiPropertyOptional({
@@ -100,7 +41,7 @@ export class UserVerifyState {
 
   @ApiProperty({
     description:
-      'If set, then this number was used for verifiying, but is already in our database for other user.',
+      'If set, then this number was used for verifying, but is already in our database for other user.',
     example: '7902301011',
   })
   @IsString()
@@ -108,7 +49,7 @@ export class UserVerifyState {
 
   @ApiProperty({
     description:
-      'If set, then this number was used for verifiying, but is already in our database for other user.',
+      'If set, then this number was used for verifying, but is already in our database for other user.',
     example: '7902301011',
   })
   @IsString()
@@ -136,143 +77,6 @@ export class OnlySuccessDto {
   })
   @IsBoolean()
   success!: boolean
-}
-
-export class DeactivateAccountResponseDto {
-  @ApiProperty({
-    description: 'Marks if the operation has been successful',
-    example: true,
-  })
-  @IsBoolean()
-  success!: boolean
-
-  @ApiProperty({
-    description: 'Status of the anonymization of user in bloomreach',
-    example: AnonymizeResponse.SUCCESS,
-    enum: AnonymizeResponse,
-  })
-  @IsEnum(AnonymizeResponse)
-  bloomreachRemoved!: AnonymizeResponse
-
-  @ApiProperty({
-    description:
-      'Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.',
-    example: true,
-  })
-  @IsBoolean()
-  taxDeliveryMethodsRemoved!: boolean
-}
-
-export class MarkDeceasedAccountResponseItemDto {
-  @ApiProperty({
-    description: 'Birth number of the deceased person',
-    example: '1234567890',
-  })
-  @IsString()
-  birthNumber!: string
-
-  @ApiProperty({
-    description: 'Whether the user was successfully marked as deceased in the database',
-    example: true,
-  })
-  @IsBoolean()
-  databaseMarked!: boolean
-
-  @ApiProperty({
-    description: 'Whether the user was successfully archived in Cognito / mail was changed.',
-    example: true,
-  })
-  @IsBoolean()
-  cognitoArchived!: boolean
-
-  @ApiProperty({
-    description: 'Status of the anonymization of user in Bloomreach',
-    example: AnonymizeResponse.SUCCESS,
-    enum: AnonymizeResponse,
-  })
-  @IsEnum(AnonymizeResponse)
-  bloomreachRemoved?: AnonymizeResponse
-}
-
-export class MarkDeceasedAccountResponseDto {
-  @ApiProperty({
-    description: 'List of birth numbers with success marked for each data storage.',
-    type: [MarkDeceasedAccountResponseItemDto],
-  })
-  @IsObject({ each: true })
-  results!: MarkDeceasedAccountResponseItemDto[]
-}
-
-export class VerificationDataForUser {
-  @ApiProperty({
-    description: 'Id of the user in cognito.',
-    example: 'a86bdfb7-7134-4dc2-b49b-1bc051d3825b',
-  })
-  @IsString()
-  @IsUUID()
-  userId!: string
-
-  @ApiProperty({
-    description: 'userBirthNumber',
-    default: '8808080000',
-  })
-  @IsNotEmpty()
-  @IsBirthNumber({
-    message: 'Text must be birthnumber without slash (9 or 10 characters) and Only numbers ',
-  })
-  birthNumber!: string
-
-  @ApiProperty({
-    description: 'Id card used for verification.',
-    example: 'AA123123',
-  })
-  @IsString()
-  idCard!: string
-
-  @ApiPropertyOptional({
-    description: 'Ico used for verification.',
-    example: '65451354',
-  })
-  @IsString()
-  ico?: string
-
-  @ApiProperty({
-    description: 'Created timestamp',
-    default: '2023-02-10T10:31:49.247Z',
-  })
-  verifyStart!: Date
-}
-
-export class VerificationDataForUserResponseDto {
-  @ApiProperty({
-    description: 'Id of the user in cognito.',
-    example: 'a86bdfb7-7134-4dc2-b49b-1bc051d3825b',
-  })
-  @IsString()
-  @IsNotEmpty()
-  externalId!: string | null
-
-  @ApiProperty({
-    description: 'Email of the user.',
-    example: 'test@bratislava.sk',
-  })
-  @IsEmail()
-  email!: string | null
-
-  @ApiProperty({
-    type: [VerificationDataForUser],
-    description:
-      'Verification data for the user in the last month. Ordered by start date descending.',
-  })
-  verificationDataLastMonth!: VerificationDataForUser[]
-}
-
-export class ValidatedUsersToPhysicalEntitiesResponseDto {
-  @IsNumber()
-  existingPhysicalEntitiesUpdated!: number
-
-  @IsNumber()
-  newPhysicalEntitiesCreated!: number
 }
 
 export class ValidateEdeskForUserIdsResponseDto {
@@ -312,37 +116,4 @@ export class ResponseValidatePhysicalEntityRfoDto {
   })
   //TODO: add types
   upvsResult: unknown
-}
-
-export class GetUserDataByBirthNumbersBatchResponseDto {
-  @ApiProperty({
-    description: 'A record of users keyed by their birth number',
-    type: 'object',
-    additionalProperties: { type: 'ResponseUserByBirthNumberDto' },
-  })
-  @IsObject()
-  users: Record<string, ResponseUserByBirthNumberDto>
-}
-
-export class GetNewVerifiedUsersBirthNumbersResponseDto {
-  @ApiProperty({
-    description: 'List of birth numbers',
-    type: String,
-    isArray: true,
-    example: ['0123456789', '1234567890', '234567890'],
-  })
-  @IsArray()
-  @IsString({ each: true })
-  @IsBirthNumber({ each: true })
-  birthNumbers: string[]
-
-  @ApiProperty({
-    description: 'Next date to query.',
-    example: '2023-04-13T14:39:49.004Z',
-    format: 'date-time',
-    type: 'string',
-  })
-  @IsDate()
-  @Type(() => Date)
-  nextSince: Date
 }

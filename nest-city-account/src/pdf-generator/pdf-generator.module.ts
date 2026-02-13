@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common'
 import { PdfGeneratorService } from './pdf-generator.service'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { SharedModule } from '../utils/subservices/shared.module'
 
 @Module({
-  providers: [PdfGeneratorService, ThrowerErrorGuard],
+  imports: [SharedModule],
+  providers: [PdfGeneratorService],
   exports: [PdfGeneratorService],
 })
 export class PdfGeneratorModule {}

@@ -14,6 +14,10 @@ import cn from '@/frontend/cn'
 import useSnackbar from '@/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/frontend/hooks/useSsrAuth'
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21643-15659&t=9VxOW0GxS2SEYDIL-4
+ */
+
 const FormVersionCompareAction = () => {
   const {
     formId,

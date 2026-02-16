@@ -1,3 +1,4 @@
+import Footer from 'components/forms/segments/Footer/Footer'
 import AuthNavBar from 'components/forms/segments/NavBar/AuthNavBar'
 import NavBar from 'components/forms/segments/NavBar/NavBar'
 import { useNavbarHeight } from 'components/layouts/useNavbarHeight'
@@ -51,6 +52,7 @@ const PageLayout = ({ variant = "default", className, children, hideNavMenu, hid
       >
         {children}
       </main>
+      <Footer />
     </div>
   )
 }

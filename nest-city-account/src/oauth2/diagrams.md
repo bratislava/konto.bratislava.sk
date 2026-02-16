@@ -28,7 +28,7 @@ sequenceDiagram
     participant COG as COG<br/>(Cognito / Upstream IdP)
 
     rect rgba(245, 158, 11, 0.16)
-        Note over DPB, CAB: OAuth 2.0 Authorization Request (RFC 6749) + PKCE (RFC 7636)
+        Note over DPB, CAF: OAuth 2.0 Authorization Request (RFC 6749) + PKCE (RFC 7636)
         DPB ->> UA: Redirect to CAB /oauth2/authorize (link/redirect)
         UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri&state&code_challenge&code_challenge_method
         CAB -->> UA: 303 See Other → CAF /login with payload
@@ -42,7 +42,7 @@ sequenceDiagram
     end
 
     rect rgba(56, 189, 248, 0.14)
-        Note over CAF, CAB: Non-standard "token staging" bridge
+        Note over UA, CAF: Non-standard "token staging" bridge
         CAF ->> CAB: POST /oauth2/store<br/>{ payload, access_token, id_token?, refresh_token }
         CAB -->> CAF: 200 OK
         CAF ->> CAB: GET /oauth2/continue?payload=…

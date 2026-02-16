@@ -30,22 +30,34 @@ sequenceDiagram
     rect rgba(245, 158, 11, 0.16)
         Note over DPB, CAF: OAuth 2.0 Authorization Request (RFC 6749) + PKCE (RFC 7636)
         DPB ->> UA: Redirect to CAB /oauth2/authorize (link/redirect)
-        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri&state&code_challenge&code_challenge_method
-        CAB -->> UA: 303 See Other → CAF /login with payload
-        UA ->> CAF: GET /login?client_id=…&payload=…&redirect_uri=…&state=…
+        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri&state&code_challenge&code_challenge_method&scope
+        CAB -->> UA: 303 See Other → CAF /oauth with authRequestId
+        UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true<br>&isIdentityVerificationRequired=… (if scope is 'identity:verified')
+    end
+
+    rect rgba(18, 167, 31, 0.16)
+        Note over CAB, CAF: OAuth2 Client Info Retrieval
+        CAF ->> CAB: GET /oauth2/info?authRequestId=…
+        CAB -->> CAF: 200 OK (clientId, clientName)
     end
 
     rect rgba(139, 92, 246, 0.16)
-        Note over CAF, COG: OpenID Connect login
+        Note over CAF, COG: SSO OpenID Connect login<br>(only if not already logged in)
         CAF ->> COG: Start Cognito login
-        COG -->> CAF: Tokens (access_token / id_token / refresh_token)
+        COG -->> CAF: Tokens (accessToken / idToken / refreshToken)
+    end
+
+    rect rgba(18, 167, 31, 0.16)
+        Note over CAB, CAF: Identity Verification<br/>(if isIdentityVerificationRequired is true)<br/>(if user is not verified)
     end
 
     rect rgba(56, 189, 248, 0.14)
-        Note over UA, CAF: Non-standard "token staging" bridge
-        CAF ->> CAB: POST /oauth2/store<br/>{ payload, access_token, id_token?, refresh_token }
+        Note over UA, COG: Non-standard "token staging" bridge
+        CAF ->> CAB: POST /oauth2/store<br/>{ authRequestId, refreshToken }
+        CAB ->> COG: send InitiateAuthCommand (refreshToken)
+        COG -->> CAB: Tokens (accessToken / idToken)
         CAB -->> CAF: 200 OK
-        CAF ->> CAB: GET /oauth2/continue?payload=…
+        CAF ->> CAB: GET /oauth2/continue?authRequestId=…
         CAB -->> UA: 303 See Other → DPB redirect_uri?code=…&state=…
     end
 

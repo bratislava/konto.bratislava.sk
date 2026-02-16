@@ -8,7 +8,7 @@ export default schema(
     title: 'Webhook showcase',
   },
   [
-    step('textInputs', { title: 'Text Inputs' }, [
+    step('inputShowcase', { title: 'Input Showcase' }, [
       input(
         'basicText',
         {
@@ -21,8 +21,6 @@ export default schema(
           helptext: 'Basic text input example',
         },
       ),
-    ]),
-    step('fileUploads', { title: 'File Uploads' }, [
       fileUploadMultiple(
         'buttonUpload',
         {
@@ -32,19 +30,6 @@ export default schema(
         {
           type: 'button',
           helptext: 'Click button to upload files',
-        },
-      ),
-      fileUploadMultiple(
-        'dragAndDrop',
-        {
-          title: 'Drag and Drop Upload',
-          required: true,
-        },
-        {
-          type: 'dragAndDrop',
-          accept: '.pdf,.jpg,.png',
-          sizeLimit: 5000000,
-          helptext: 'Drag files here or click to upload',
         },
       ),
     ]),

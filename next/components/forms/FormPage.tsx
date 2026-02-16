@@ -15,6 +15,10 @@ import { FormSentProvider, useFormSent } from '@/components/forms/useFormSent'
 import PageLayout from '@/components/layouts/PageLayout'
 import cn from '@/frontend/cn'
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=17622-2066&t=9VxOW0GxS2SEYDIL-4
+ */
+
 const FormPageContent = () => {
   const { isEmbedded, versionCompareContinueAction } = useFormContext()
   const { formSent } = useFormSent()

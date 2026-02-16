@@ -11,6 +11,7 @@ import UploadFilesList from './UploadFilesList'
 type UploadProps = FieldWrapperProps & {
   type: 'button' | 'dragAndDrop'
   multiple?: boolean
+  uploadDisabled?: boolean
   value?: string | string[] | null
   sizeLimit?: number
   supportedFormats?: string[]
@@ -29,6 +30,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
       label,
       required,
       multiple,
+      uploadDisabled = false,
       value,
       helptext,
       helptextMarkdown,
@@ -72,7 +74,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
                 ref={ref}
                 sizeLimit={sizeLimit}
                 supportedFormats={supportedFormats}
-                disabled={disabled}
+                disabled={disabled || uploadDisabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
                 errorMessage={errorMessage}
@@ -83,7 +85,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
                 ref={ref}
                 sizeLimit={sizeLimit}
                 supportedFormats={supportedFormats}
-                disabled={disabled}
+                disabled={disabled || uploadDisabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
                 errorMessage={errorMessage}

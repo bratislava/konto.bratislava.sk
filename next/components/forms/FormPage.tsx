@@ -26,13 +26,13 @@ const FormPageContent = () => {
     <IframeResizerChild enabled={isEmbedded}>
       <ConditionalWrap
         condition={!isEmbedded}
-        wrap={(childrenToWrap) => (
+        wrap={(children) => (
           <PageLayout
             className={cn({
               'bg-gray-0 md:bg-gray-50': isFormOutdated || isFormSent,
             })}
           >
-            {childrenToWrap}
+            {children}
           </PageLayout>
         )}
       >

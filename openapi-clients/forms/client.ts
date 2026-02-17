@@ -10,6 +10,7 @@ import {
   NasesApiFactory,
   SignerApiFactory,
   StatusesApiFactory,
+  WebhookApiFactory,
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
 import type { AxiosInstance } from 'axios'
@@ -42,5 +43,6 @@ export const createFormsClient = ({
     ...NasesApiFactory(...args),
     ...SignerApiFactory(...args),
     ...StatusesApiFactory(...args),
+    ...WebhookApiFactory(...args),
   }
 }

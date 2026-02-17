@@ -31,11 +31,12 @@ sequenceDiagram
     rect rgb(127, 75, 68)
         Note over OAC, CAF: OAuth 2.0 Authorization Request (RFC 6749) + PKCE (RFC 7636)
         OAC ->> UA: Redirect to CAB<br/>/oauth2/authorize (link/redirect)
-        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri<br/>&state&code_challenge&code_challenge_method&scope
-        CAB -->> UA: 303 See Other → CAF /oauth with authRequestId
+        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri&state<br/>&code_challenge&code_challenge_method&scope
         alt if scope is 'identity:verified'
+            CAB -->> UA: 303 See Other → redirect CAF<br/>/oauth?authRequestId=…&isOAuth=true<br/>&isIdentityVerificationRequired=true
             UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true&isIdentityVerificationRequired=true
         else if scope is empty
+            CAB -->> UA: 303 See Other → redirect CAF<br/>/oauth?authRequestId=…&isOAuth=true
             UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true
         end
     end
@@ -75,7 +76,7 @@ sequenceDiagram
         CAB ->> COG: send InitiateAuthCommand (refreshToken)
         COG -->> CAB: Tokens (accessToken / idToken)
         rect rgb(101, 92, 40)
-            CAB -->> CAB: Compute and store tokens for client.<br/>Tokens are formed using the original Cognito token,<br/>clientID and computed using encryption.<br/>The tokens are opaque for the client.
+            CAB -->> CAB: Compute and store tokens for client in DB.<br/>Tokens are formed using the original Cognito token,<br/>clientID and computed using encryption.<br/>The tokens are opaque for the client.
         end
         CAB -->> CAF: 200 OK
         CAF ->> CAB: GET /oauth2/continue?authRequestId=…
@@ -86,7 +87,10 @@ sequenceDiagram
         Note over OAC, CAB: OAuth 2.0 Token Exchange (RFC 6749) + PKCE verification (RFC 7636)
         UA ->> OAC: Load redirect_uri with code (+ state)
         OAC ->> CAB: POST /oauth2/token<br/>grant_type=authorization_code, code, redirect_uri,code_verifier, client auth
-        CAB -->> OAC: 200 OK<br/>(token response: computed token)
+        rect rgb(101, 92, 40)
+            CAB ->> CAB: Load and delete stored tokens from DB.
+        end
+        CAB -->> OAC: 200 OK<br/>(token response: the tokens from DB)
         Note over OAC: Tokens are OPAQUE to client.<br/>Client uses them as is.<br/>Only CAB can decrypt and validate.
     end
 ```

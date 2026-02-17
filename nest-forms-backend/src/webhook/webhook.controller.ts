@@ -1,7 +1,6 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Post } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
-import { NotProductionGuard } from '../auth/guards/not-production.guard'
 import WebhookDto from '../nases-consumer/subservices/dtos/webhook.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
@@ -17,7 +16,6 @@ export default class WebhookController {
     summary: 'Receive webhook data',
     description: 'Endpoint to receive webhook data and log it',
   })
-  @UseGuards(NotProductionGuard)
   @Post()
   async receiveWebhook(@Body() data: WebhookDto): Promise<void> {
     this.logger.log('Received webhook data succesfully', {

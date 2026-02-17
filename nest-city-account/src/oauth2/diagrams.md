@@ -35,7 +35,7 @@ sequenceDiagram
         CAB -->> UA: 303 See Other → CAF /oauth with authRequestId
         alt if scope is 'identity:verified'
             UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true&isIdentityVerificationRequired=true
-        else
+        else if scope is empty
             UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true
         end
     end
@@ -59,12 +59,12 @@ sequenceDiagram
 
     rect rgb(109, 77, 116)
         alt isIdentityVerificationRequired is true
-            alt user is NOT verified
+            alt user NOT verified
                 Note over CAB, CAF: Identity Verification<br/>(if isIdentityVerificationRequired is true)<br/>(if user is not verified)
-            else User
+            else User IS verified
                 Note over CAF: Skip (already verified)
             end
-        else
+        else isIdentityVerificationRequired is false or not defined
             Note over CAF: Skip (verification not required)
         end
     end

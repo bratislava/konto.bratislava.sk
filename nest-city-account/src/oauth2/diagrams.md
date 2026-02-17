@@ -60,7 +60,7 @@ sequenceDiagram
     rect rgb(109, 77, 116)
         alt isIdentityVerificationRequired is true
             alt user NOT verified
-                Note over CAB, CAF: Identity Verification<br/>(if isIdentityVerificationRequired is true)<br/>(if user is not verified)
+                Note over CAB, CAF: Identity Verification
             else User IS verified
                 Note over CAF: Skip (already verified)
             end
@@ -75,7 +75,7 @@ sequenceDiagram
         CAB ->> COG: send InitiateAuthCommand (refreshToken)
         COG -->> CAB: Tokens (accessToken / idToken)
         rect rgb(101, 92, 40)
-            CAB -->> CAB: Compute and store tokens for client<br/>Tokens are formed using the original Cognito token,<br/>clientID and computed using encryption<br/>The tokens are opaque for the client
+            CAB -->> CAB: Compute and store tokens for client.<br/>Tokens are formed using the original Cognito token,<br/>clientID and computed using encryption.<br/>The tokens are opaque for the client.
         end
         CAB -->> CAF: 200 OK
         CAF ->> CAB: GET /oauth2/continue?authRequestId=…

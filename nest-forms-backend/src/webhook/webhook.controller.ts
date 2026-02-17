@@ -19,7 +19,9 @@ export default class WebhookController {
   })
   @UseGuards(NotProductionGuard)
   @Post()
-  async receiveWebhook(@Body() webhookDto: WebhookDto): Promise<void> {
-    this.logger.log('Received webhook data', JSON.stringify(webhookDto))
+  async receiveWebhook(@Body() data: WebhookDto): Promise<void> {
+    this.logger.log('Received webhook data succesfully', {
+      formId: data.formId,
+    })
   }
 }

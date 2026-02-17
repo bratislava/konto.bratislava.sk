@@ -87,6 +87,6 @@ sequenceDiagram
         UA ->> OAC: Load redirect_uri with code (+ state)
         OAC ->> CAB: POST /oauth2/token<br/>grant_type=authorization_code, code, redirect_uri,code_verifier, client auth
         CAB -->> OAC: 200 OK<br/>(token response: computed token)
-        Note over OAC: Tokens are OPAQUE to client<br/>Client uses them as is<br/>Only CAB can decrypt and validate
+        Note over OAC: Tokens are OPAQUE to client.<br/>Client uses them as is.<br/>Only CAB can decrypt and validate.
     end
 ```

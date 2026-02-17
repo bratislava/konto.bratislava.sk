@@ -21,18 +21,22 @@ config:
 ---
 sequenceDiagram
     autonumber
-    participant DPB as DPB<br/>(OAuth2 Client)
+    participant OAC as OAC<br/>(OAuth2 Client)
     actor UA as User Agent<br/>(Browser)
     participant CAB as CAB<br/>(City Account Back End)
     participant CAF as CAF<br/>(City Account Front End)
     participant COG as COG<br/>(Cognito / Upstream IdP)
 
     rect rgba(127, 75, 68)
-        Note over DPB, CAF: OAuth 2.0 Authorization Request (RFC 6749) + PKCE (RFC 7636)
-        DPB ->> UA: Redirect to CAB<br>/oauth2/authorize (link/redirect)
-        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri&state&code_challenge&code_challenge_method&scope
+        Note over OAC, CAF: OAuth 2.0 Authorization Request (RFC 6749) + PKCE (RFC 7636)
+        OAC ->> UA: Redirect to CAB<br>/oauth2/authorize (link/redirect)
+        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri<br>&state&code_challenge&code_challenge_method&scope
         CAB -->> UA: 303 See Other → CAF /oauth with authRequestId
-        UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true<br>&isIdentityVerificationRequired=… (if scope is 'identity:verified')
+        alt if scope is 'identity:verified'
+            UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true&isIdentityVerificationRequired=true
+        else
+            UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true
+        end
     end
 
     rect rgba(64, 102, 65)
@@ -69,15 +73,16 @@ sequenceDiagram
         CAF ->> CAB: POST /oauth2/store<br/>{ authRequestId, refreshToken }
         CAB ->> COG: send InitiateAuthCommand (refreshToken)
         COG -->> CAB: Tokens (accessToken / idToken)
+        CAB ->> CAB: Compute and store tokens for client<br>The tokens are opaque for the client
         CAB -->> CAF: 200 OK
         CAF ->> CAB: GET /oauth2/continue?authRequestId=…
         CAB -->> UA: 303 See Other → DPB redirect_uri?code=…&state=…
     end
 
     rect rgba(124, 73, 89)
-        Note over DPB, CAB: OAuth 2.0 Token Exchange (RFC 6749) + PKCE verification (RFC 7636)
-        UA ->> DPB: Load redirect_uri with code (+ state)
-        DPB ->> CAB: POST /oauth2/token<br/>grant_type=authorization_code, code, redirect_uri,code_verifier, client auth
-        CAB -->> DPB: 200 OK<br/>(token response: encrypted stored tokens originally from Cognito)
+        Note over OAC, CAB: OAuth 2.0 Token Exchange (RFC 6749) + PKCE verification (RFC 7636)
+        UA ->> OAC: Load redirect_uri with code (+ state)
+        OAC ->> CAB: POST /oauth2/token<br/>grant_type=authorization_code, code, redirect_uri,code_verifier, client auth
+        CAB -->> OAC: 200 OK<br/>(token response: encrypted stored tokens originally from Cognito)
     end
 ```

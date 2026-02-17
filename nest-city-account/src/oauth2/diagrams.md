@@ -3,9 +3,10 @@
 config:
   theme: 'dark'
   sequence:
-    mirrorActors: false
+    mirrorActors: true
     noteMargin: 15
-    boxTextMargin: 5
+    boxTextMargin: 7
+    bottomMarginAdj: 30
   themeVariables:
     fontFamily: "Inter, Segoe UI, Roboto, Arial"
     noteBkgColor: "#081127"
@@ -29,8 +30,8 @@ sequenceDiagram
 
     rect rgba(127, 75, 68)
         Note over OAC, CAF: OAuth 2.0 Authorization Request (RFC 6749) + PKCE (RFC 7636)
-        OAC ->> UA: Redirect to CAB<br>/oauth2/authorize (link/redirect)
-        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri<br>&state&code_challenge&code_challenge_method&scope
+        OAC ->> UA: Redirect to CAB<br/>/oauth2/authorize (link/redirect)
+        UA ->> CAB: GET /oauth2/authorize<br/>response_type=code&client_id&redirect_uri<br/>&state&code_challenge&code_challenge_method&scope
         CAB -->> UA: 303 See Other → CAF /oauth with authRequestId
         alt if scope is 'identity:verified'
             UA ->> CAF: GET /oauth?authRequestId=…&isOAuth=true&isIdentityVerificationRequired=true
@@ -47,12 +48,12 @@ sequenceDiagram
 
     rect rgba(40, 98, 123)
         alt User NOT logged in
-            Note over CAF, COG: SSO OpenID Connect login<br>(only if not already logged in)
+            Note over CAF, COG: SSO OpenID Connect login<br/>(only if not already logged in)
             CAF ->> COG: Start Cognito login
-            COG -->> CAF: Tokens<br>(accessToken / idToken / refreshToken)
+            COG -->> CAF: Tokens<br/>(accessToken / idToken / refreshToken)
         else user IS logged in
-            Note over CAF: Existing SSO session<br>skip login
-            CAF -->> CAF: SKIP<br>(using already existing refresh token)
+            Note over CAF: Existing SSO session<br/>skip login
+            CAF -->> CAF: SKIP<br/>(using already existing refresh token)
         end
     end
 
@@ -73,7 +74,7 @@ sequenceDiagram
         CAF ->> CAB: POST /oauth2/store<br/>{ authRequestId, refreshToken }
         CAB ->> COG: send InitiateAuthCommand (refreshToken)
         COG -->> CAB: Tokens (accessToken / idToken)
-        CAB ->> CAB: Compute and store tokens for client<br>The tokens are opaque for the client
+        CAB ->> CAB: Compute and store tokens for client<br/>The tokens are opaque for the client
         CAB -->> CAF: 200 OK
         CAF ->> CAB: GET /oauth2/continue?authRequestId=…
         CAB -->> UA: 303 See Other → DPB redirect_uri?code=…&state=…

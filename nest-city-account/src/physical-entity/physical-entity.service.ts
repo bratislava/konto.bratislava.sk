@@ -6,26 +6,16 @@ import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import {
+  NasesService,
   UpvsCreateManyResult,
-  UpvsIdentityByUriService,
   UpvsIdentityByUriServiceCreateManyParam,
-} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+} from '../nases/nases.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { VerificationReturnType } from '../user-verification/types'
 import { UserErrorsEnum } from '../user/user.error.enum'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
-
-// In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
-
-export type UpdateFromRFOResult = {
-  physicalEntity: PhysicalEntity
-  rfoData: RfoIdentityList | null
-  upvsInput?: { uri: string; physicalEntityId: string }
-  upvsResult?: ApiIamIdentitiesIdGet200Response
-}
 
 @Injectable()
 export class PhysicalEntityService {
@@ -34,7 +24,7 @@ export class PhysicalEntityService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
+    private readonly nasesService: NasesService,
     private readonly cognitoSubservice: CognitoSubservice
   ) {
     this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
@@ -107,7 +97,7 @@ export class PhysicalEntityService {
   }> {
     let upvsResult: UpvsCreateManyResult | null = null
     try {
-      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
+      upvsResult = await this.nasesService.createMany(upvsInput)
     } catch (error) {
       this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
     }

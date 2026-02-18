@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { PrismaModule } from '../prisma/prisma.module'
 
-import { UpvsIdentityByUriModule } from '../upvs-identity-by-uri/upvs-identity-by-uri.module'
 import { PhysicalEntityService } from './physical-entity.service'
+import { NasesModule } from '../nases/nases.module'
 
 @Module({
-  imports: [PrismaModule, UpvsIdentityByUriModule],
+  imports: [PrismaModule, NasesModule],
   providers: [PhysicalEntityService],
   exports: [PhysicalEntityService],
   controllers: [],

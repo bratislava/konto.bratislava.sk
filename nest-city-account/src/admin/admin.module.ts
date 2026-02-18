@@ -4,7 +4,6 @@ import { PassportModule } from '@nestjs/passport'
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
 import { PrismaModule } from '../prisma/prisma.module'
-import { UpvsIdentityByUriModule } from '../upvs-identity-by-uri/upvs-identity-by-uri.module'
 import { VerificationModule } from '../user-verification/verification.module'
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
@@ -26,7 +25,6 @@ import { MagproxyModule } from '../magproxy/magproxy.module'
   imports: [
     PassportModule,
     PrismaModule,
-    UpvsIdentityByUriModule,
     PhysicalEntityModule,
     UserModule,
     VerificationModule,

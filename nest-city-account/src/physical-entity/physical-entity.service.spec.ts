@@ -2,10 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../test/singleton'
 import { PrismaService } from '../prisma/prisma.service'
-import {
-  UpvsCreateManyResult,
-  UpvsIdentityByUriService,
-} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import { UpvsCreateManyResult, NasesService } from '../nases/nases.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PhysicalEntityService } from './physical-entity.service'
 import { RfoIdentityList } from '../rfo-by-birthnumber/dtos/rfoSchema'
@@ -95,7 +92,7 @@ const RfoIdentityListMockData: RfoIdentityList = [
 describe('PhysicalEntityService', () => {
   let service: PhysicalEntityService
   const MagproxyServiceMock = createMock<MagproxyService>()
-  let upvsIdentityByUriService: UpvsIdentityByUriService
+  let nasesService: NasesService
   let consoleSpy: jest.SpyInstance
   beforeEach(async () => {
     jest.clearAllTimers()
@@ -104,14 +101,14 @@ describe('PhysicalEntityService', () => {
       providers: [
         PhysicalEntityService,
         ThrowerErrorGuard,
-        { provide: UpvsIdentityByUriService, useValue: createMock<UpvsIdentityByUriService>() },
+        { provide: NasesService, useValue: createMock<NasesService>() },
         { provide: PrismaService, useValue: prismaMock },
         { provide: MagproxyService, useValue: MagproxyServiceMock },
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
       ],
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)
-    upvsIdentityByUriService = module.get<UpvsIdentityByUriService>(UpvsIdentityByUriService)
+    nasesService = module.get<NasesService>(NasesService)
     consoleSpy = jest.spyOn(console, 'log')
     consoleSpy.mockImplementation(() => {})
   })
@@ -148,7 +145,7 @@ describe('PhysicalEntityService', () => {
         edeskStatusChangedAt: null,
       }
       const updateSpy = jest.spyOn(service, 'update').mockResolvedValue(mockUpdated)
-      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
+      jest.spyOn(nasesService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
@@ -208,7 +205,7 @@ describe('PhysicalEntityService', () => {
         },
       ]
 
-      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
+      jest.spyOn(nasesService, 'createMany').mockResolvedValue(mockUpvsResult)
       const updateSpy = jest
         .spyOn(service, 'update')
         .mockResolvedValueOnce(mockUpdatedEntities[0])
@@ -233,7 +230,7 @@ describe('PhysicalEntityService', () => {
 
     it('should return only failed if all UPVS results failed', async () => {
       const mockUpvsResult = { success: [], failed: mockUpvsInput }
-      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
+      jest.spyOn(nasesService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
@@ -244,9 +241,7 @@ describe('PhysicalEntityService', () => {
     })
 
     it('should log an error if an exception is thrown during createMany', async () => {
-      jest
-        .spyOn(upvsIdentityByUriService, 'createMany')
-        .mockRejectedValue(new Error('Test Exception'))
+      jest.spyOn(nasesService, 'createMany').mockRejectedValue(new Error('Test Exception'))
 
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
@@ -328,32 +323,30 @@ describe('PhysicalEntityService', () => {
         .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
         .mockResolvedValue({ success: true, data: RfoIdentityListMockData })
 
-      const upvsIdentityByUriServiceSpy = jest
-        .spyOn(upvsIdentityByUriService, 'createMany')
-        .mockResolvedValue({
-          success: [
-            {
-              physicalEntityId: mockEntityID,
+      const upvsIdentityByUriServiceSpy = jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+        success: [
+          {
+            physicalEntityId: mockEntityID,
+            uri: 'forcefullyTypedResult.uri',
+            data: {
+              ids: [],
               uri: 'forcefullyTypedResult.uri',
-              data: {
-                ids: [],
-                uri: 'forcefullyTypedResult.uri',
-                en: mockString,
-                type: 'natural_person',
-                status: 'verified',
-                name: mockString,
-                suffix: mockString,
-                various_ids: [],
-                upvs: {},
-                natural_person: {},
-                addresses: [],
-                emails: [],
-                phones: [],
-              },
+              en: mockString,
+              type: 'natural_person',
+              status: 'verified',
+              name: mockString,
+              suffix: mockString,
+              various_ids: [],
+              upvs: {},
+              natural_person: {},
+              addresses: [],
+              emails: [],
+              phones: [],
             },
-          ],
-          failed: [],
-        })
+          },
+        ],
+        failed: [],
+      })
 
       expect(
         await service.createFromBirthNumber(mockBirthNumber, {

@@ -251,7 +251,6 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
     },
   },
   BRATISLAVA_NEW_SUBMISSION: {
-    // TODO: Implement template
     template: '2026-bratislava-new-submission',
     subject: 'Bratislavské konto: Nové podanie',
     variables: {
@@ -267,14 +266,9 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
         type: MailgunConfigVariableType.PARAMETER,
         value: '{{formSentAt}}',
       },
-      formId: {
-        type: MailgunConfigVariableType.PARAMETER,
-        value: '{{formId}}',
-      },
     },
   },
   BRATISLAVA_SENT_SUCCESS: {
-    // TODO: Implement template
     template: '2026-bratislava-form-success',
     subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
     variables: {
@@ -293,14 +287,6 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
       formSentAt: {
         type: MailgunConfigVariableType.PARAMETER,
         value: '{{formSentAt}}',
-      },
-      formId: {
-        type: MailgunConfigVariableType.PARAMETER,
-        value: '{{formId}}',
-      },
-      htmlData: {
-        type: MailgunConfigVariableType.PARAMETER,
-        value: '{{htmlData}}',
       },
     },
   },

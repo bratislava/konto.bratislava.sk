@@ -209,7 +209,6 @@ export default class EmailFormsSubservice {
     form: EmailFormChecked,
     formDefinition: FormDefinitionEmail,
     userName: string | null,
-    renderedSummary: string,
   ): Promise<void> {
     try {
       // Generate confirmation pdf
@@ -239,8 +238,6 @@ export default class EmailFormsSubservice {
             firstName: userName,
             slug: formDefinition.slug,
             formSentAt: form.formSentAt,
-            // eslint-disable-next-line xss/no-mixed-html
-            htmlData: renderedSummary,
           },
         },
         emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
@@ -366,7 +363,6 @@ export default class EmailFormsSubservice {
         form,
         formDefinition,
         userName,
-        renderedSummary,
       )
     } else if (formDefinition.email.extractEmail) {
       this.logger.error(

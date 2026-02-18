@@ -50,7 +50,7 @@ export class VerificationService {
 
   constructor(
     private cognitoSubservice: CognitoSubservice,
-    private databaseSubservice: VerificationDataSubservice,
+    private verificationDataSubservice: VerificationDataSubservice,
     private nasesService: NasesService,
     private throwerErrorGuard: ThrowerErrorGuard,
     private mailgunService: MailgunService,
@@ -102,7 +102,7 @@ export class VerificationService {
       }
 
       try {
-        await this.databaseSubservice.createVerificationUserInQueue(user)
+        await this.verificationDataSubservice.createVerificationUserInQueue(user)
         await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.ROUTING_KEY, {
           msg: { data, user, type },
         })
@@ -194,7 +194,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
     ) {
       this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', data.msg.user)
-      const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
+      const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
       const delay = rabbitmqRequeueDelay(userFromDb.requeuedInVerification)
@@ -249,7 +249,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
     ) {
       this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', data.msg.user)
-      const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
+      const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
       const delay = rabbitmqRequeueDelay(userFromDb.requeuedInVerification)
@@ -296,7 +296,7 @@ export class VerificationService {
     reason?: CustomErrorEnums
   }) {
     this.logger.error({ options })
-    const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
+    const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
       options.data.msg.user
     )
     const delay = rabbitmqRequeueDelay(userFromDb.requeuedInVerification)
@@ -362,7 +362,7 @@ export class VerificationService {
     }
 
     if (type === 'rc') {
-      const response = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+      const response = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
         user,
         null,
         birthNumber,
@@ -386,11 +386,12 @@ export class VerificationService {
           'Failed to retrieve ico from URI'
         )
       }
-      const response = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-        user,
-        ico,
-        birthNumber
-      )
+      const response =
+        await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+          user,
+          ico,
+          birthNumber
+        )
       if (!response.success) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,

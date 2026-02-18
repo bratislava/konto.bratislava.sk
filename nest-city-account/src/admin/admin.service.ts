@@ -18,7 +18,6 @@ import {
 } from '../user/dtos/user-modification-response.dto'
 import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
 import { MagproxyService } from '../magproxy/magproxy.service'
-import { UpdateFromRFOResult } from '../physical-entity/physical-entity.service'
 
 /**
  * AdminService - Thin delegation layer for administrative operations
@@ -124,27 +123,5 @@ export class AdminService {
     data: ManuallyVerifyUserRequestDto
   ): Promise<OnlySuccessDto> {
     return await this.verificationService.manuallyVerifyUser(email, data)
-  }
-
-  async validateEdeskWithUriFromCognito(offset: number) {
-    return await this.physicalEntityService.validateEdeskWithUriFromCognito(offset)
-  }
-
-  async validatePhysicalEntityRfo(physicalEntityId: string): Promise<UpdateFromRFOResult> {
-    // Get the physical entity to extract birth number
-    const entity = await this.prismaService.physicalEntity.findUnique({
-      where: { id: physicalEntityId },
-    })
-
-    if (!entity?.birthNumber) {
-      throw this.throwerErrorGuard.BadRequestException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND
-      )
-    }
-
-    const rfoData = await this.magproxyService.rfoBirthNumberList(entity.birthNumber)
-
-    return await this.physicalEntityService.updateFromRFO(physicalEntityId, rfoData)
   }
 }

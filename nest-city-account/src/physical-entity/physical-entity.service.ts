@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { PhysicalEntity, Prisma } from '@prisma/client'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
-import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import {
@@ -15,8 +14,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { VerificationReturnType } from '../user-verification/types'
-import _ from 'lodash'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
+import { UserErrorsEnum } from '../user/user.error.enum'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 
@@ -164,7 +162,7 @@ export class PhysicalEntityService {
   async createFromBirthNumber(
     birthNumber: string,
     rfoData: VerificationReturnType<RfoIdentityList>
-  ): Promise<VerificationReturnType<RfoIdentityList>> {
+  ): Promise<VerificationReturnType> {
     // Creates PhysicalEntity record before user is verified / created. The new record does not have
     // userID set.
 
@@ -193,7 +191,7 @@ export class PhysicalEntityService {
     const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
 
     if (!upvsInput) {
-      return rfoData
+      return { success: false, reason: UserErrorsEnum.USER_NOT_FOUND }
     }
 
     try {
@@ -201,75 +199,7 @@ export class PhysicalEntityService {
     } catch (error) {
       this.logger.error(error)
     }
-    return rfoData
-  }
-
-  async updateFromRFO(
-    physicalEntityId: string,
-    rfoData: VerificationReturnType<RfoIdentityList>
-  ): Promise<UpdateFromRFOResult> {
-    // gets physicalEntity record by id, looks for existing birthnumber stored in it, creates RfoByBirthnumberRequest and parses data form it into columns
-    // this can be called on demand or scheduled / ran periodically
-    const entity = await this.prismaService.physicalEntity.findUnique({
-      where: { id: physicalEntityId },
-    })
-    if (!entity) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        `PhysicalEntity with id ${physicalEntityId} not found`
-      )
-    }
-    if (!entity.birthNumber) {
-      throw this.throwerErrorGuard.NotFoundException(
-        AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
-        AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
-      )
-    }
-
-    if (!rfoData.success || !Array.isArray(rfoData.data) || rfoData.data.length === 0) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        `Incorrect or no data returned from RFO for birthnumber ${entity.birthNumber} entityId: ${entity.id}, data: ${rfoData}`
-      )
-    }
-
-    if (rfoData.data.length > 1) {
-      this.logger.error(
-        `Found multiple RFO records for birthnumber ${entity.birthNumber} entityId: ${entity.id}`
-      )
-      return {
-        physicalEntity: entity,
-        rfoData: rfoData.data,
-      }
-    }
-
-    const singleRfoRecord = rfoData.data[0]
-
-    const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
-
-    if (!upvsInput) {
-      return {
-        physicalEntity: entity,
-        rfoData: rfoData.data,
-      }
-    }
-
-    const { updatedEntities, upvsResult } = await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
-
-    const updatedPhysicalEntity = updatedEntities.find(
-      (updatedEntity) => updatedEntity.id === physicalEntityId
-    )
-    const upvsResultSingle = upvsResult.success.find(
-      (result) => result.physicalEntityId === physicalEntityId
-    )
-
-    return {
-      physicalEntity: updatedPhysicalEntity ?? entity,
-      rfoData: rfoData.data,
-      upvsInput,
-      upvsResult: upvsResultSingle,
-    }
+    return { success: true }
   }
 
   async updateEdeskFromUpvs(where: Prisma.PhysicalEntityWhereInput): Promise<void>
@@ -307,7 +237,7 @@ export class PhysicalEntityService {
   }
 
   // TODO either change or cleanup and use db directly
-  async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
+  private async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
     if (!data.id) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
@@ -331,109 +261,5 @@ export class PhysicalEntityService {
       data: dataWithEdeskMetadata,
     })
     return physicalEntity
-  }
-
-  async validateEdeskWithUriFromCognito(offset: number) {
-    const physicalEntitiesWithoutUriVerificationAttempts =
-      await this.prismaService.physicalEntity.findMany({
-        where: {
-          userId: { not: null },
-          uri: null,
-          activeEdeskUpdatedAt: null,
-          activeEdeskUpdateFailCount: 0,
-          activeEdeskUpdateFailedAt: null,
-        },
-        take: 100,
-        skip: offset,
-      })
-
-    const physicalEntitiesByBirthNumber = _.keyBy(
-      physicalEntitiesWithoutUriVerificationAttempts,
-      'birthNumber'
-    )
-    const physicalEntitiesByUserId = _.keyBy(
-      physicalEntitiesWithoutUriVerificationAttempts,
-      'userId'
-    )
-
-    if (
-      Object.values(physicalEntitiesByBirthNumber).length !==
-      physicalEntitiesWithoutUriVerificationAttempts.length
-    ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        'Duplicate birth numbers in this batch, aborting'
-      )
-    }
-
-    const users = await this.prismaService.user.findMany({
-      where: {
-        id: {
-          in: physicalEntitiesWithoutUriVerificationAttempts
-            .map((physicalEntity) => physicalEntity.userId)
-            .filter((id) => id !== null) as string[],
-        },
-        externalId: {
-          not: null,
-        },
-        ...ACTIVE_USER_FILTER,
-      },
-    })
-
-    const cognitoUsers = await Promise.all(
-      users.map(async (user) => {
-        if (!user.externalId) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            UserErrorsEnum.NO_EXTERNAL_ID,
-            UserErrorsResponseEnum.NO_EXTERNAL_ID
-          )
-        }
-        return await this.cognitoSubservice.getDataFromCognito(user.externalId)
-      })
-    )
-    const usersMappedToTheirPhysicalEntities = users.map(
-      (user) => physicalEntitiesByUserId[user.id]
-    )
-    const dbAndCognitoData = _.zip(usersMappedToTheirPhysicalEntities, cognitoUsers)
-    const upvsIdentityByUriData = dbAndCognitoData
-      .map(([dbData, cognitoData]) => {
-        if (!cognitoData?.family_name || !cognitoData?.given_name) return null
-        const processedFamilyName = cognitoData?.family_name
-          .replace(/,.*/, '')
-          .trim()
-          .normalize('NFD')
-          .replace(/\p{Diacritic}/gu, '')
-          .toLowerCase()
-        const processedGivenName = cognitoData?.given_name
-          .replace(/,.*/, '')
-          .trim()
-          .normalize('NFD')
-          .replace(/\p{Diacritic}/gu, '')
-          .toLowerCase()
-        const processedBirthNumber = dbData?.birthNumber?.replaceAll('/', '')
-        return {
-          physicalEntityId: dbData?.id,
-          uri: `rc://sk/${processedBirthNumber}_${processedFamilyName}_${processedGivenName}`,
-        }
-      })
-      .filter((data) => data !== null)
-      .filter(_.identity) as UpvsIdentityByUriServiceCreateManyParam
-
-    // TODO move this into physicalEntityService function and call that from here
-    const result = await this.upvsIdentityByUriService.createMany(upvsIdentityByUriData)
-    for (const success of result.success) {
-      if (!success.physicalEntityId) continue
-      await this.update({
-        id: success.physicalEntityId,
-        uri: success.uri,
-        activeEdesk: success.data.upvs?.edesk_status === 'deliverable',
-      })
-    }
-
-    return {
-      validatedUsers: result.success.length,
-      entities: result,
-    }
   }
 }

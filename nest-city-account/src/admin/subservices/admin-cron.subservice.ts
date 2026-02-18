@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Config } from '@prisma/client'
 import { AdminService } from 'src/admin/admin.service'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import * as z from 'zod'
@@ -10,17 +9,7 @@ import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import {
-  COGNITO_SYNC_CONFIG_DB_KEY,
-  EDESK_COGNITO_CONFIG_DB_KEY,
-  EDESK_RFO_CONFIG_DB_KEY,
-} from '../utils/constants'
-import { UpvsIdentityByUriSuccessType } from '../../upvs-identity-by-uri/upvs-identity-by-uri.service'
-
-const ValidateEdeskConfigValueSchema = z.object({
-  active: z.boolean(),
-  offset: z.number(),
-})
+import { COGNITO_SYNC_CONFIG_DB_KEY } from '../utils/constants'
 
 const SyncCognitoToDbConfigValueSchema = z.object({
   active: z.boolean(),

@@ -7,15 +7,8 @@ import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
   MarkDeceasedAccountRequestDto,
-  RequestBodyValidateEdeskForUserIdsDto,
-  RequestValidatePhysicalEntityRfoDto,
 } from './dtos/requests.admin.dto'
-import {
-  OnlySuccessDto,
-  ResponseValidatePhysicalEntityRfoDto,
-  UserVerifyState,
-  ValidateEdeskForUserIdsResponseDto,
-} from './dtos/responses.admin.dto'
+import { OnlySuccessDto, UserVerifyState } from './dtos/responses.admin.dto'
 import {
   DeactivateAccountResponseDto,
   MarkDeceasedAccountResponseDto,
@@ -126,38 +119,5 @@ export class AdminController {
   ): Promise<OnlySuccessDto> {
     const result = await this.adminService.manuallyVerifyUser(email, data)
     return result
-  }
-
-  // TODO take 100 physicalEntities without any attempts to validate uri and tyr using cognito data to validate
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Validate edesk for physicalEntities',
-    description:
-      'Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Return data from cognito',
-    type: ValidateEdeskForUserIdsResponseDto,
-  })
-  @UseGuards(AdminGuard)
-  @Post('validate-edesk-by-cognito-where-first-try')
-  async validateEdeskForUserIds(@Body() data: RequestBodyValidateEdeskForUserIdsDto) {
-    return this.adminService.validateEdeskWithUriFromCognito(data.offset || 0)
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Manually update entity data against RFO (and UPVS) if possible',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Return data from db, RFO and UPVS if available',
-    type: ResponseValidatePhysicalEntityRfoDto,
-  })
-  @UseGuards(AdminGuard)
-  @Post('validate-physical-entity-rfo')
-  async validatePhysicalEntityRfo(@Body() data: RequestValidatePhysicalEntityRfoDto) {
-    return this.adminService.validatePhysicalEntityRfo(data.physicalEntityId)
   }
 }

@@ -14,7 +14,6 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { VerificationReturnType } from '../user-verification/types'
 import { UserErrorsEnum } from '../user/user.error.enum'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 
 @Injectable()
@@ -24,8 +23,7 @@ export class PhysicalEntityService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nasesService: NasesService,
-    private readonly cognitoSubservice: CognitoSubservice
+    private readonly nasesService: NasesService
   ) {
     this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
   }

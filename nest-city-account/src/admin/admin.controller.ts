@@ -158,6 +158,6 @@ export class AdminController {
   @UseGuards(AdminGuard)
   @Post('validate-physical-entity-rfo')
   async validatePhysicalEntityRfo(@Body() data: RequestValidatePhysicalEntityRfoDto) {
-    return this.physicalEntityService.updateFromRFO(data.physicalEntityId)
+    return this.adminService.validatePhysicalEntityRfo(data.physicalEntityId)
   }
 }

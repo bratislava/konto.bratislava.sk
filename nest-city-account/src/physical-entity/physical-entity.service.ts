@@ -13,12 +13,12 @@ import {
 } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { MagproxyService } from '../magproxy/magproxy.service'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { VerificationReturnType } from '../user-verification/types'
 import _ from 'lodash'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 
 // In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
 
@@ -36,7 +36,6 @@ export class PhysicalEntityService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly magproxyService: MagproxyService,
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private readonly cognitoSubservice: CognitoSubservice
   ) {
@@ -163,26 +162,22 @@ export class PhysicalEntityService {
   }
 
   async createFromBirthNumber(
-    birthNumber: string
+    birthNumber: string,
+    rfoData: VerificationReturnType<RfoIdentityList>
   ): Promise<VerificationReturnType<RfoIdentityList>> {
     // Creates PhysicalEntity record before user is verified / created. The new record does not have
     // userID set.
 
-    // Get data from magproxyService
-    // const data = await this.magproxyService.rfoBirthNumberList(birthNumber)
-
     const entity = await this.getOrCreateEmptyFromBirthNumber(birthNumber)
 
-    // Get rfo data
-    const rfoData = await this.magproxyService.rfoBirthNumberList(birthNumber)
     if (!entity) {
-      return rfoData
+      return { success: false, reason: UserErrorsEnum.USER_NOT_FOUND }
     }
 
     // No data present, return
     if (!rfoData.success || rfoData.data.length == 0) {
       this.logger.error(`PhysicalEntity ${birthNumber} not created. No entries from magproxy.`)
-      return rfoData
+      return { success: false, reason: UserErrorsEnum.USER_NOT_FOUND }
     }
 
     // Multiple data present
@@ -190,7 +185,7 @@ export class PhysicalEntityService {
       this.logger.error(
         `PhysicalEntity ${birthNumber} not created. Multiple entries from magproxy.`
       )
-      return rfoData
+      return { success: false, reason: MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE }
     }
 
     const singleRfoRecord = rfoData.data[0]
@@ -201,11 +196,18 @@ export class PhysicalEntityService {
       return rfoData
     }
 
-    await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
+    try {
+      await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
+    } catch (error) {
+      this.logger.error(error)
+    }
     return rfoData
   }
 
-  async updateFromRFO(physicalEntityId: string): Promise<UpdateFromRFOResult> {
+  async updateFromRFO(
+    physicalEntityId: string,
+    rfoData: VerificationReturnType<RfoIdentityList>
+  ): Promise<UpdateFromRFOResult> {
     // gets physicalEntity record by id, looks for existing birthnumber stored in it, creates RfoByBirthnumberRequest and parses data form it into columns
     // this can be called on demand or scheduled / ran periodically
     const entity = await this.prismaService.physicalEntity.findUnique({
@@ -224,8 +226,6 @@ export class PhysicalEntityService {
       )
     }
 
-    // const rfoData = JSON.parse(result.data.toString()) as RfoIdentityList
-    const rfoData = await this.magproxyService.rfoBirthNumberList(entity.birthNumber)
     if (!rfoData.success || !Array.isArray(rfoData.data) || rfoData.data.length === 0) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -243,8 +243,6 @@ export class PhysicalEntityService {
         rfoData: rfoData.data,
       }
     }
-
-    // TODO if we're storing other data about entity from RFO, do it here
 
     const singleRfoRecord = rfoData.data[0]
 
@@ -384,14 +382,14 @@ export class PhysicalEntityService {
     })
 
     const cognitoUsers = await Promise.all(
-      users.map((user) => {
+      users.map(async (user) => {
         if (!user.externalId) {
           throw this.throwerErrorGuard.UnprocessableEntityException(
             UserErrorsEnum.NO_EXTERNAL_ID,
             UserErrorsResponseEnum.NO_EXTERNAL_ID
           )
         }
-        return this.cognitoSubservice.getDataFromCognito(user.externalId).catch(() => undefined)
+        return await this.cognitoSubservice.getDataFromCognito(user.externalId)
       })
     )
     const usersMappedToTheirPhysicalEntities = users.map(

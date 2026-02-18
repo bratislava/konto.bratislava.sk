@@ -21,7 +21,7 @@ export class VerificationSubservice {
 
   constructor(
     private magproxyService: MagproxyService,
-    private databaseSubservice: VerificationDataSubservice,
+    private verificationDataSubservice: VerificationDataSubservice,
     private physicalEntityService: PhysicalEntityService
   ) {
     this.logger = new LineLoggerSubservice(VerificationSubservice.name)
@@ -223,13 +223,14 @@ export class VerificationSubservice {
       const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
       let databaseResult: VerificationReturnType
       if (ico) {
-        databaseResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-          user,
-          ico,
-          birthNumber
-        )
+        databaseResult =
+          await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+            user,
+            ico,
+            birthNumber
+          )
       } else {
-        databaseResult = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+        databaseResult = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
           user,
           rfoDataSingle.ifo || null,
           birthNumber,
@@ -242,7 +243,7 @@ export class VerificationSubservice {
       }
 
       if (!ico) {
-        const dbUser = await this.databaseSubservice.findUserByEmailOrExternalId(
+        const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
           user.email,
           user.idUser
         )
@@ -285,13 +286,14 @@ export class VerificationSubservice {
     const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
     let dbResultDcom: { success: boolean }
     if (ico) {
-      dbResultDcom = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-        user,
-        ico,
-        birthNumber
-      )
+      dbResultDcom =
+        await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+          user,
+          ico,
+          birthNumber
+        )
     } else {
-      dbResultDcom = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+      dbResultDcom = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
         user,
         rfoDataDcom.data.ifo || null,
         birthNumber,

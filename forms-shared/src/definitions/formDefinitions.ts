@@ -91,9 +91,9 @@ import ziadostOUzemnoplanovaciuInformaciu, {
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 import webhookShowcase from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
-  nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress,
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
-  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
@@ -645,8 +645,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: {
         prod: [
-          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress,
-          nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress,
+          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
+          nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress,
           'mikromobilita@bratislava.sk',
         ],
         test: ['inovacie.bratislava@gmail.com'],

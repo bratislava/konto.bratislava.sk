@@ -102,7 +102,7 @@ type ExtractProviderFormData = {
   }
 }
 
-export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderAddress: SchemalessFormDataExtractor<ExtractProviderFormData> =
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress: SchemalessFormDataExtractor<ExtractProviderFormData> =
   {
     type: 'schemaless',
     extractFn: (formData) => {
@@ -123,7 +123,7 @@ type ExtractMunicipalityFormData = {
   }
 }
 
-export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityAddress: SchemalessFormDataExtractor<ExtractMunicipalityFormData> =
+export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress: SchemalessFormDataExtractor<ExtractMunicipalityFormData> =
   {
     type: 'schemaless',
     extractFn: (formData) => {

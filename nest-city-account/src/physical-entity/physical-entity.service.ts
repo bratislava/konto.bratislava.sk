@@ -237,7 +237,7 @@ export class PhysicalEntityService {
   }
 
   // TODO either change or cleanup and use db directly
-  private async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
+  async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
     if (!data.id) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,

@@ -355,9 +355,13 @@ describe('PhysicalEntityService', () => {
           failed: [],
         })
 
-      expect(await service.createFromBirthNumber(mockBirthNumber)).toEqual({
+      expect(
+        await service.createFromBirthNumber(mockBirthNumber, {
+          success: true,
+          data: RfoIdentityListMockData,
+        })
+      ).toEqual({
         success: true,
-        data: RfoIdentityListMockData,
       })
 
       expect(prismaMock.physicalEntity.create).toHaveBeenCalledWith({
@@ -383,11 +387,7 @@ describe('PhysicalEntityService', () => {
       })
     })
 
-    it('should fail after getting empty rfo data, but should return them', async () => {
-      const rfoSpy = jest
-        .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
-        .mockResolvedValue({ success: true, data: [] })
-
+    it('should fail after getting empty rfo data', async () => {
       const prismaSpyCreate = jest.spyOn(prismaMock.physicalEntity, 'create').mockResolvedValue({
         id: mockEntityID,
         createdAt: new Date('2024-06-24 14:59:40.524'),
@@ -409,10 +409,12 @@ describe('PhysicalEntityService', () => {
       const prismaSpyUpdate = jest.spyOn(prismaMock.physicalEntity, 'update')
       const prismaSpyFindMany = jest.spyOn(prismaMock.physicalEntity, 'findMany')
 
-      const result = await service.createFromBirthNumber(mockBirthNumber)
+      const result = await service.createFromBirthNumber(mockBirthNumber, {
+        success: true,
+        data: [],
+      })
 
-      expect(result).toEqual({ data: [], success: true })
-      expect(rfoSpy).toHaveBeenCalledTimes(1)
+      expect(result).toEqual({ success: false, reason: 'USER_NOT_FOUND' })
       expect(prismaSpyCreate).toHaveBeenCalledTimes(1)
       expect(prismaSpyUpdate).toHaveBeenCalledTimes(0)
       expect(prismaSpyFindMany).toHaveBeenCalledTimes(1)
@@ -421,7 +423,7 @@ describe('PhysicalEntityService', () => {
       )
     })
 
-    it('should fail after getting multiple RFO entries, but should return them.', async () => {
+    it('should fail after getting multiple RFO entries.', async () => {
       const mockData = RfoIdentityListMockData.concat(RfoIdentityListMockData)
       jest
         .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
@@ -443,8 +445,11 @@ describe('PhysicalEntityService', () => {
       })
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
-      expect(await service.createFromBirthNumber(mockBirthNumber, mockData)).toEqual({
-        success: true,
+      expect(
+        await service.createFromBirthNumber(mockBirthNumber, { success: true, data: mockData })
+      ).toEqual({
+        success: false,
+        reason: 'RFO_UNEXPECTED_RESPONSE',
       })
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledTimes(1)
       expect(loggerSpy).toHaveBeenCalledWith(

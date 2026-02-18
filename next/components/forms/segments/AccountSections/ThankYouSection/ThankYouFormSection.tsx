@@ -1,6 +1,5 @@
 import { useTranslation } from 'next-i18next'
 
-import BratislavaIcon from '@/assets/images/bratislava-footer.svg'
 import AccountMarkdown from '@/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from '@/components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from '@/components/forms/simple-components/Button'
@@ -15,8 +14,8 @@ const useThankYouFormSection = () => {
     formDefinition: { feedbackLink },
     isEmbedded,
   } = useFormContext()
-  const { isSignedIn } = useSsrAuth()
   const { t } = useTranslation('account')
+  const { isSignedIn } = useSsrAuth()
 
   if (isTaxForm) {
     return {
@@ -30,6 +29,7 @@ const useThankYouFormSection = () => {
       displayAccountLinks: true,
     }
   }
+
   if (isEmbedded) {
     return {
       title: t('thank_you.form_submit.title'),
@@ -54,6 +54,10 @@ const useThankYouFormSection = () => {
   }
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21637-5313&t=9VxOW0GxS2SEYDIL-4
+ */
+
 const ThankYouFormSection = () => {
   const {
     title,
@@ -70,7 +74,7 @@ const ThankYouFormSection = () => {
   return (
     <div
       className={cn(
-        'flex flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28',
+        'flex flex-col justify-between pt-16 md:pt-28',
         largePadding ? 'pt-16 md:pt-28' : 'pt-6 md:pt-16',
       )}
     >
@@ -102,20 +106,6 @@ const ThankYouFormSection = () => {
             </div>
           </div>
         ) : null}
-      </div>
-
-      <div
-        className={cn(
-          'mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex',
-          {
-            'mt-10': !displayAccountLinks,
-          },
-        )}
-      >
-        <BratislavaIcon />
-        <p className="text-p2">
-          {t('thank_you.footer_text', { currentYear: new Date().getFullYear() })}
-        </p>
       </div>
     </div>
   )

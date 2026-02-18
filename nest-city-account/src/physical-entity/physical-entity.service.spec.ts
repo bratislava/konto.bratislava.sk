@@ -14,6 +14,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 const mockBirthNumber = '123456/7890'
 const mockString = 'mockString'
@@ -108,6 +109,7 @@ describe('PhysicalEntityService', () => {
         { provide: UpvsIdentityByUriService, useValue: createMock<UpvsIdentityByUriService>() },
         { provide: PrismaService, useValue: prismaMock },
         { provide: MagproxyService, useValue: MagproxyServiceMock },
+        { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
       ],
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)

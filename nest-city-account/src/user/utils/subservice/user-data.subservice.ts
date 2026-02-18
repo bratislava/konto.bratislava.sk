@@ -15,20 +15,22 @@ import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.sub
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 import {
+  DeliveryMethodEnum,
+  DeliveryMethodUserEnum,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
   LegalPerson,
   LoginClientEnum,
+  Prisma,
   User,
 } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
-import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma } from '@prisma/client'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 
 @Injectable()
-export class DatabaseSubserviceUser {
+export class UserDataSubservice {
   private readonly logger: LineLoggerSubservice
 
   constructor(
@@ -36,7 +38,7 @@ export class DatabaseSubserviceUser {
     private bloomreachService: BloomreachService,
     private throwerErrorGuard: ThrowerErrorGuard
   ) {
-    this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
+    this.logger = new LineLoggerSubservice(UserDataSubservice.name)
   }
 
   /**
@@ -500,5 +502,82 @@ export class DatabaseSubserviceUser {
       legalPerson.id,
       true
     )
+  }
+
+  async removePhysicalEntityUserIdRelation(userId: string): Promise<void> {
+    const physicalEntity = await this.prisma.physicalEntity.findUnique({
+      where: {
+        userId,
+      },
+    })
+    if (physicalEntity) {
+      await this.prisma.physicalEntity.update({
+        where: {
+          userId,
+        },
+        data: {
+          userId: null,
+        },
+      })
+    }
+  }
+
+  async removeUserDataFromDatabase(externalId: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        externalId,
+      },
+    })
+    if (user) {
+      await this.prisma.user.update({
+        where: {
+          externalId,
+        },
+        data: {
+          email: null,
+          birthNumber: null,
+          ifo: null,
+          birthnumberAlreadyExistsCounter: 0,
+          birthnumberAlreadyExistsLast: null,
+          userIdCardVerify: {
+            deleteMany: {
+              userId: user.id,
+            },
+          },
+        },
+      })
+
+      await this.removePhysicalEntityUserIdRelation(user.id)
+    }
+
+    return user
+  }
+
+  async removeLegalPersonDataFromDatabase(externalId: string): Promise<void> {
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: {
+        externalId,
+      },
+    })
+
+    if (legalPerson) {
+      await this.prisma.legalPerson.update({
+        where: {
+          externalId,
+        },
+        data: {
+          email: null,
+          birthNumber: null,
+          ico: null,
+          birthnumberIcoAlreadyExistsCounter: 0,
+          birthnumberIcoAlreadyExistsLast: null,
+          legalPersonIcoIdCardVerify: {
+            deleteMany: {
+              legalPersonId: legalPerson.id,
+            },
+          },
+        },
+      })
+    }
   }
 }

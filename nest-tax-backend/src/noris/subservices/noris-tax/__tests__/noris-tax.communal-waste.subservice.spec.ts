@@ -585,7 +585,6 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         // Check that base fields are present
         expect(result[0]).toHaveProperty('cislo_poradace')
         expect(result[0]).toHaveProperty('cislo_subjektu')
-        expect(result[0]).toHaveProperty('adresa_tp_sidlo')
         expect(result[0]).toHaveProperty('cislo_konania')
         expect(result[0]).toHaveProperty('datum_platnosti')
         expect(result[0]).toHaveProperty('variabilny_symbol')

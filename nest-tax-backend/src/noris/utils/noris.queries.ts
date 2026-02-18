@@ -4,7 +4,6 @@ SELECT
     subjekt_doklad.cislo_poradace,
     lcs.dane21_doklad.stav_dokladu as stav_dokladu,
     lcs.dane21_doklad.cislo_subjektu,
-    subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
     subjekt_doklad.reference_subjektu cislo_konania , 
     lcs.dane21_doklad.datum_platnosti,
     lcs.dane21_doklad.variabilny_symbol, 
@@ -15,10 +14,8 @@ SELECT
     subjekt_doklad_sub.reference_subjektu subjekt_refer, 
     ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
     lcs.dane21_priznanie.rok, 
-    a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_priznanie.adr_tp_sup_cislo, lcs.dane21_priznanie.adr_tp_or_cislo), '') as ulica_tb_cislo, 
+    a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, org_cudz.adr_tp_sup_cislo, org_cudz.adr_tp_or_cislo), '') as ulica_tb_cislo, 
     a_tb.psc_refer as psc_ref_tb,
-    a_tb.psc_nazev as psc_naz_tb, 
-    a_tb.stat_nazov_plny, 
     a_tb.obec_nazev obec_nazev_tb, 
     CONVERT(char(10), lcs.dane21_doklad.datum_realizacie, 104) akt_datum, 
     lcs.fn21_meno_osoby_org(lcs.dane21_doklad.vybavuje, null) vyb_nazov, 
@@ -79,18 +76,6 @@ SELECT
     lcs.fn21_dec2string(dsum.det_stavba_j_ZAKLAD_I , 2) det_stavba_ZAKLAD_jI, 
     lcs.fn21_dec2string(dsum.det_stavba_DAN_H , 2) det_stavba_DAN_H, 
     lcs.fn21_dec2string(dsum.det_stavba_ZAKLAD_H, 2) det_stavba_ZAKLAD_H   /*zmena 31032008 z DP_conf.typ_priznania='F' na lcs.dane21_priznanie.podnikatel='N'*/, 
-    (case 
-        when lcs.dane21_priznanie.podnikatel='N' then 'Meno a priezvisko:' 
-        else 'Obchodné meno:' 
-    end  ) TXT_MENO, 
-    (case 
-        when lcs.dane21_priznanie.podnikatel='N' then 'Adresa trvalého pobytu:' 
-        else 'Sídlo:'
-    end  ) TXT_UL, 
-    (case 
-        when lcs.dane21_priznanie.podnikatel='N' then 'Rodné číslo:' 
-        else 'IČO/DIČ:' 
-    end  ) TYP_USER, 
     (case 
         when lcs.dane21_priznanie.podnikatel='N' then lcs.dane21_priznanie.rodne_cislo 
         else  isnull(lcs.dane21_priznanie.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
@@ -223,9 +208,9 @@ LEFT OUTER JOIN
         z_vybav.cislo_subjektu=dp_conf.vybavuje  
 
 LEFT OUTER JOIN 
-    lcs.subjekty subjekt_tp_adresa  
-    ON 
-        lcs.dane21_priznanie.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu  
+    lcs.organizace org_cudz  
+    ON
+        lcs.dane21_doklad.subjekt=org_cudz.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.subjekty subjekty_e1  
@@ -255,7 +240,7 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN 
     lcs.dane_21_adresa_view a_tb  
     ON 
-        lcs.dane21_priznanie.adresa_tp_sidlo=a_tb.cislo_subjektu  
+        org_cudz.adresa_tp_sidlo=a_tb.cislo_subjektu  
 
 LEFT OUTER JOIN 
     lcs.dane_21_adresa_view a_pb  
@@ -356,11 +341,6 @@ LEFT OUTER JOIN
     lcs.zamestnanci z_opravneny_podpisat  
     ON
         lcs.dane21_druh_dokladu.opravneny_podpisat=z_opravneny_podpisat.cislo_subjektu  
-
-LEFT OUTER JOIN 
-    lcs.organizace org_cudz  
-    ON
-        lcs.dane21_doklad.subjekt=org_cudz.cislo_subjektu  
 
 LEFT OUTER JOIN
     lcs.evidence_dic ev_dic_cudz  
@@ -557,7 +537,6 @@ export const getCommunalWasteTaxesFromNoris = `
         subjekt_doklad.cislo_poradace,
         doklad.stav_dokladu as stav_dokladu,
         doklad.cislo_subjektu,
-        subjekt_tp_adresa.nazev_subjektu adresa_tp_sidlo,
         subjekt_doklad.reference_subjektu cislo_konania,
         doklad.datum_platnosti,
         doklad.variabilny_symbol,
@@ -641,26 +620,12 @@ export const getCommunalWasteTaxesFromNoris = `
         /* --------- Texty splátok výmeru end ----------------------------*/
 
         (case 
-            when poplatok.podnikatel='N' then 'Meno a priezvisko:' 
-            else 'Obchodné meno:' 
-        end  ) TXT_MENO, 
-        (case 
-            when poplatok.podnikatel='N' then 'Adresa trvalého pobytu:' 
-            else 'Sídlo:'
-        end  ) TXT_UL, 
-        (case 
-            when poplatok.podnikatel='N' then 'Rodné číslo:' 
-            else 'IČO/DIČ:' 
-        end  ) TYP_USER, 
-        (case 
             when poplatok.podnikatel='N' then poplatok.rodne_cislo 
             else  isnull(poplatok.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
         end) ICO_RC, 
 
-        a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, poplatok.adr_tp_sup_cislo, poplatok.adr_tp_or_cislo), '') as ulica_tb_cislo, 
+        a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, org_cudz.adr_tp_sup_cislo, org_cudz.adr_tp_or_cislo), '') as ulica_tb_cislo, 
         a_tb.psc_refer as psc_ref_tb,
-        a_tb.psc_nazev as psc_naz_tb, 
-        a_tb.stat_nazov_plny, 
         a_tb.obec_nazev obec_nazev_tb, 
 
         z_vybav.telefon_prace vyb_telefon_prace, 
@@ -731,10 +696,10 @@ export const getCommunalWasteTaxesFromNoris = `
         ON 
             doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu
 
-    JOIN 
-        lcs.subjekty subjekt_tp_adresa  
-        ON 
-            poplatok.adresa_tp_sidlo=subjekt_tp_adresa.cislo_subjektu
+    LEFT OUTER JOIN 
+        lcs.organizace org_cudz  
+        ON
+            doklad.subjekt=org_cudz.cislo_subjektu  
 
     JOIN 
         lcs.subjekty subjekt_doklad_sub  
@@ -745,11 +710,6 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.dane_21_sum_pko_popl_celkom dsum  
         ON
             dsum.cs_dan_prizn=poplatok.cislo_subjektu
-
-    LEFT OUTER JOIN 
-        lcs.organizace org_cudz  
-        ON
-            doklad.subjekt=org_cudz.cislo_subjektu  
 
     LEFT OUTER JOIN
         lcs.evidence_dic ev_dic_cudz  
@@ -764,7 +724,7 @@ export const getCommunalWasteTaxesFromNoris = `
     JOIN 
         lcs.dane_21_adresa_view a_tb  
         ON 
-            poplatok.adresa_tp_sidlo=a_tb.cislo_subjektu
+            org_cudz.adresa_tp_sidlo=a_tb.cislo_subjektu
     WHERE 
         poplatok.rodne_cislo IN (@birth_numbers) AND
         nadoba.druh_odpadu IS NULL AND

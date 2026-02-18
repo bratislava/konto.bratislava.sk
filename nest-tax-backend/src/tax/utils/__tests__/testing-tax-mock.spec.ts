@@ -115,16 +115,6 @@ describe('testing-tax-mock', () => {
       expect(result.cislo_konania).toBe('abcd1234')
     })
 
-    it('should set user type to FO', () => {
-      const result = createTestingRealEstateTaxMock(
-        mockNorisData,
-        mockTaxAdministrator,
-        2024,
-      )
-
-      expect(result.TYP_USER).toBe('FO')
-    })
-
     describe('installment calculations', () => {
       it('should split tax total into 3 installments that sum correctly', () => {
         mockNorisData.taxTotal = '150.00'
@@ -216,12 +206,7 @@ describe('testing-tax-mock', () => {
 
         expect(result.ulica_tb_cislo).toBe('test ulica cislo')
         expect(result.psc_ref_tb).toBe('test psc')
-        expect(result.psc_naz_tb).toBe('test psc nazov')
-        expect(result.stat_nazov_plny).toBe('test stat')
         expect(result.obec_nazev_tb).toBe('test obec')
-        expect(result.TXT_UL).toBe('test ulica txt')
-        expect(result.TXT_MENO).toBe('test meno txt')
-        expect(result.adresa_tp_sidlo).toBe('test sidlo')
       })
 
       it('should set numeric fields with correct values', () => {
@@ -485,22 +470,7 @@ describe('testing-tax-mock', () => {
 
         expect(result.ulica_tb_cislo).toBe('test ulica cislo')
         expect(result.psc_ref_tb).toBe('test psc')
-        expect(result.psc_naz_tb).toBe('test psc nazov')
-        expect(result.stat_nazov_plny).toBe('test stat')
         expect(result.obec_nazev_tb).toBe('test obec')
-        expect(result.TXT_UL).toBe('test ulica txt')
-        expect(result.TXT_MENO).toBe('test meno txt')
-        expect(result.adresa_tp_sidlo).toBe('test sidlo')
-      })
-
-      it('should set user type to FO', () => {
-        const result = createTestingCommunalWasteTaxMock(
-          mockNorisData,
-          mockTaxAdministrator,
-          2024,
-        )
-
-        expect(result.TYP_USER).toBe('FO')
       })
 
       it('should set numeric fields with correct values', () => {
@@ -564,7 +534,6 @@ describe('testing-tax-mock', () => {
       expect(realEstate.subjekt_nazev).toBe(communalWaste.subjekt_nazev)
       expect(realEstate.dan_spolu).toBe(communalWaste.dan_spolu)
       expect(realEstate.vyb_id).toBe(communalWaste.vyb_id)
-      expect(realEstate.TYP_USER).toBe(communalWaste.TYP_USER)
     })
 
     it('should use same randomBytes call for case number generation', () => {

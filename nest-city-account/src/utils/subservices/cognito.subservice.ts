@@ -17,13 +17,10 @@ import { plainToInstance } from 'class-transformer'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import {
   CognitoGetUserAttributesData,
   CognitoGetUserData,
-  CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
-  CognitoUserAttributesValuesDateDto,
   CognitoUserStatusEnum,
 } from '../global-dtos/cognito.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
@@ -32,16 +29,18 @@ import {
   SendToQueueErrorsResponseEnum,
 } from '../../user-verification/verification.errors.enum'
 
+/**
+ * Service responsible for Cognito API interactions only.
+ * Does not contain business logic or database operations.
+ * For tier management with database synchronization, use UserTierService.
+ */
 @Injectable()
 export class CognitoSubservice {
   private readonly cognitoClient: CognitoIdentityProviderClient
 
   private readonly config
 
-  constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly prisma: PrismaService
-  ) {
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     if (
       !process.env.AWS_COGNITO_ACCESS ||
       !process.env.AWS_COGNITO_SECRET ||
@@ -146,67 +145,19 @@ export class CognitoSubservice {
     }
   }
 
-  async changeTier(
-    userId: string,
-    newTier: CognitoUserAttributesTierEnum,
-    accountType: CognitoUserAccountTypesEnum
-  ): Promise<void> {
-    await this.changeCognitoTier(userId, [
-      {
-        Name: CognitoUserAttributesEnum.TIER,
-        Value: newTier,
-      },
-    ])
-
-    // i don't think this (cognito.subservice) is the right place for
-    // calling bloomreach service as well as database update
-
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          externalId: userId,
-          ...ACTIVE_USER_FILTER,
-        },
-      })
-      if (!user) {
-        return
-      }
-
-      await this.prisma.user.update({
-        where: {
-          externalId: userId,
-        },
-        data: {
-          cognitoTier: newTier,
-        },
-      })
-    } else {
-      const legalPerson = await this.prisma.legalPerson.findUnique({
-        where: {
-          externalId: userId,
-        },
-      })
-      if (!legalPerson) {
-        return
-      }
-
-      await this.prisma.legalPerson.update({
-        where: {
-          externalId: userId,
-        },
-        data: {
-          cognitoTier: newTier,
-        },
-      })
-    }
-  }
-
-  private async changeCognitoTier(
-    userId: string,
-    userAttributes: CognitoUserAttributesValuesDateDto[]
-  ) {
+  /**
+   * Updates user tier in Cognito only.
+   * Note: This does NOT update the database. For coordinated tier changes with database sync,
+   * use UserTierService.changeTier() instead.
+   */
+  async changeTier(userId: string, newTier: CognitoUserAttributesTierEnum): Promise<void> {
     const inputParams = {
-      UserAttributes: userAttributes,
+      UserAttributes: [
+        {
+          Name: CognitoUserAttributesEnum.TIER,
+          Value: newTier,
+        },
+      ],
       UserPoolId: this.config.cognitoUserPoolId,
       Username: userId,
     }

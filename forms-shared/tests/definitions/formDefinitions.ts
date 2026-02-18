@@ -24,7 +24,7 @@ describe('Form definitions', () => {
       })
 
       test('default form state should match snapshot', () => {
-        filterConsole(
+        const restore = filterConsole(
           'warn',
           (message) =>
             typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
@@ -33,6 +33,8 @@ describe('Form definitions', () => {
         expect(
           baGetDefaultFormState(formDefinition.schema, {}, testValidatorRegistry),
         ).toMatchSnapshot()
+
+        restore()
       })
 
       if (!formDefinition.exampleFormNotRequired) {

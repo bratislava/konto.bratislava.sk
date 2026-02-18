@@ -19,7 +19,7 @@ import cn from '@/frontend/cn'
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=17622-2066&t=9VxOW0GxS2SEYDIL-4
  */
 
-const FormPageContent = () => {
+const FormPageContent = ({ nonce }: { nonce?: string }) => {
   const { isEmbedded, versionCompareContinueAction } = useFormContext()
   const { formSent } = useFormSent()
 
@@ -27,7 +27,7 @@ const FormPageContent = () => {
   const isFormOutdated = versionCompareContinueAction !== VersionCompareContinueAction.None
 
   return (
-    <IframeResizerChild enabled={isEmbedded}>
+    <IframeResizerChild enabled={isEmbedded} nonce={nonce}>
       <ConditionalWrap
         condition={!isEmbedded}
         wrap={(children) => (
@@ -56,13 +56,14 @@ const FormPageContent = () => {
 
 export type FormPageProps = {
   formServerContext: FormServerContext
+  nonce?: string
 }
 
-const FormPage = ({ formServerContext }: FormPageProps) => {
+const FormPage = ({ formServerContext, nonce }: FormPageProps) => {
   return (
     <FormContextProvider formServerContext={formServerContext}>
       <FormSentProvider initialFormSent={formServerContext.initialFormSent}>
-        <FormPageContent />
+        <FormPageContent nonce={nonce} />
       </FormSentProvider>
     </FormContextProvider>
   )

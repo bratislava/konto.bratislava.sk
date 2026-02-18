@@ -1,22 +1,35 @@
 import { vi } from 'vitest'
 
 /**
- * Filters console method calls based on a matching function in Vitest tests.
+ * Creates a console filter for Vitest that suppresses selected `console.*` calls.
+ *
+ * The filter intercepts calls to the given console `method` and runs `matchFn`:
+ * - `matchFn(...args) === true`  → the call is suppressed (ignored)
+ * - `matchFn(...args) === false` → the call is forwarded to the original console method
+ *
+ * Returns a restore function that removes the spy and restores the original console method.
  *
  * @example
  * ```typescript
- * filterConsole('log', (message) => message.includes('ignore'));
- * console.log('This will be logged');
- * console.log('This will be ignored');
+ * const restore = filterConsole('log', (message) => String(message).includes('ignore'))
+ *
+ * console.log('This will be logged')
+ * console.log('This will be ignored')
+ *
+ * restore()
  * ```
  */
 export function filterConsole(
   method: 'log' | 'warn' | 'error',
   matchFn: (...args: any[]) => boolean,
-): void {
-  vi.spyOn(console, method).mockImplementation((...args) => {
+) {
+  const original = console[method].bind(console)
+
+  const spy = vi.spyOn(console, method).mockImplementation((...args) => {
     if (!matchFn(...args)) {
-      return console[method](...args)
+      original(...args)
     }
   })
+
+  return () => spy.mockRestore()
 }

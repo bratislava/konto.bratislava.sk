@@ -338,6 +338,7 @@ const calculateInstallmentPaymentDetails = (options: {
   }
   numberOfInstallments: number
   iban: string
+  isCancelled: boolean
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
@@ -353,6 +354,7 @@ const calculateInstallmentPaymentDetails = (options: {
     variableSymbol,
     numberOfInstallments,
     iban,
+    isCancelled,
   } = options
 
   // Calculate due dates for all installments
@@ -384,6 +386,15 @@ const calculateInstallmentPaymentDetails = (options: {
       CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
     )
+  }
+
+  if (isCancelled) {
+    return {
+      isPossible: false,
+      reasonNotPossible:
+        InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED,
+      dueDateLastPayment: dueDateLastPayment.toDate(),
+    }
   }
 
   if (overallAmount - overallPaid <= 0) {
@@ -477,14 +488,29 @@ const calculateOneTimePaymentDetails = (options: {
   dueDate?: Date
   variableSymbol: string
   iban: string
+  isCancelled: boolean
 }): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
-  const { overallPaid, overallBalance, dueDate, variableSymbol, iban } = options
+  const {
+    overallPaid,
+    overallBalance,
+    dueDate,
+    variableSymbol,
+    iban,
+    isCancelled,
+  } = options
   if (overallBalance <= 0) {
     return {
       isPossible: false,
       reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
     }
   }
+  if (isCancelled) {
+    return {
+      isPossible: false,
+      reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.TAX_IS_CANCELLED,
+    }
+  }
+
   return {
     isPossible: true,
     type:
@@ -522,6 +548,7 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     taxPayments,
     deliveryMethod,
     createdAt,
+    isCancelled,
   } = options
 
   let overallPaid = 0
@@ -549,6 +576,7 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     dueDate: dueDate?.toDate(),
     variableSymbol,
     iban: taxDefinition.iban,
+    isCancelled,
   })
 
   const installmentPayment = calculateInstallmentPaymentDetails({
@@ -563,6 +591,7 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     variableSymbol,
     numberOfInstallments: taxDefinition.numberOfInstallments,
     iban: taxDefinition.iban,
+    isCancelled,
   })
 
   const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
@@ -633,6 +662,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   }[]
   deliveryMethod: DeliveryMethodNamed | null
   createdAt: Date
+  isCancelled: boolean
 }): PaymentGateURLGeneratorDto => {
   const {
     taxType,
@@ -646,6 +676,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     taxPayments,
     deliveryMethod,
     createdAt,
+    isCancelled,
   } = options
   const {
     paymentCalendarThreshold,
@@ -680,6 +711,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     installmentDueDates,
     numberOfInstallments,
     iban,
+    isCancelled,
   })
 
   // Check if installment payment is possible

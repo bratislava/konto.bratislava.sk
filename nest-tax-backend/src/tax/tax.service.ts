@@ -301,6 +301,7 @@ export class TaxService {
       taxPayments: tax.taxPayments,
       deliveryMethod: tax.deliveryMethod,
       createdAt: tax.createdAt,
+      isCancelled: tax.isCancelled,
     })
 
     let oneTimePaymentQrCode: string | undefined
@@ -426,6 +427,7 @@ export class TaxService {
       taxPayments: tax.taxPayments,
       deliveryMethod: tax.deliveryMethod,
       createdAt: tax.createdAt,
+      isCancelled: tax.isCancelled,
     })
   }
 }

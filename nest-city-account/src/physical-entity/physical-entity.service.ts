@@ -3,7 +3,7 @@ import { PhysicalEntity, Prisma } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 
-import { PrismaService } from '../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import {
@@ -16,6 +16,9 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 import { VerificationReturnType } from '../user-verification/types'
+import _ from 'lodash'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 // In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
 
@@ -34,7 +37,8 @@ export class PhysicalEntityService {
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly magproxyService: MagproxyService,
-    private readonly upvsIdentityByUriService: UpvsIdentityByUriService
+    private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
+    private readonly cognitoSubservice: CognitoSubservice
   ) {
     this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
   }
@@ -329,5 +333,109 @@ export class PhysicalEntityService {
       data: dataWithEdeskMetadata,
     })
     return physicalEntity
+  }
+
+  async validateEdeskWithUriFromCognito(offset: number) {
+    const physicalEntitiesWithoutUriVerificationAttempts =
+      await this.prismaService.physicalEntity.findMany({
+        where: {
+          userId: { not: null },
+          uri: null,
+          activeEdeskUpdatedAt: null,
+          activeEdeskUpdateFailCount: 0,
+          activeEdeskUpdateFailedAt: null,
+        },
+        take: 100,
+        skip: offset,
+      })
+
+    const physicalEntitiesByBirthNumber = _.keyBy(
+      physicalEntitiesWithoutUriVerificationAttempts,
+      'birthNumber'
+    )
+    const physicalEntitiesByUserId = _.keyBy(
+      physicalEntitiesWithoutUriVerificationAttempts,
+      'userId'
+    )
+
+    if (
+      Object.values(physicalEntitiesByBirthNumber).length !==
+      physicalEntitiesWithoutUriVerificationAttempts.length
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.DATABASE_ERROR,
+        ErrorsResponseEnum.DATABASE_ERROR,
+        'Duplicate birth numbers in this batch, aborting'
+      )
+    }
+
+    const users = await this.prismaService.user.findMany({
+      where: {
+        id: {
+          in: physicalEntitiesWithoutUriVerificationAttempts
+            .map((physicalEntity) => physicalEntity.userId)
+            .filter((id) => id !== null) as string[],
+        },
+        externalId: {
+          not: null,
+        },
+        ...ACTIVE_USER_FILTER,
+      },
+    })
+
+    const cognitoUsers = await Promise.all(
+      users.map((user) => {
+        if (!user.externalId) {
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            UserErrorsEnum.NO_EXTERNAL_ID,
+            UserErrorsResponseEnum.NO_EXTERNAL_ID
+          )
+        }
+        return this.cognitoSubservice.getDataFromCognito(user.externalId).catch(() => undefined)
+      })
+    )
+    const usersMappedToTheirPhysicalEntities = users.map(
+      (user) => physicalEntitiesByUserId[user.id]
+    )
+    const dbAndCognitoData = _.zip(usersMappedToTheirPhysicalEntities, cognitoUsers)
+    const upvsIdentityByUriData = dbAndCognitoData
+      .map(([dbData, cognitoData]) => {
+        if (!cognitoData?.family_name || !cognitoData?.given_name) return null
+        const processedFamilyName = cognitoData?.family_name
+          .replace(/,.*/, '')
+          .trim()
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu, '')
+          .toLowerCase()
+        const processedGivenName = cognitoData?.given_name
+          .replace(/,.*/, '')
+          .trim()
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu, '')
+          .toLowerCase()
+        const processedBirthNumber = dbData?.birthNumber?.replaceAll('/', '')
+        return {
+          physicalEntityId: dbData?.id,
+          uri: `rc://sk/${processedBirthNumber}_${processedFamilyName}_${processedGivenName}`,
+        }
+      })
+      .filter((data) => data !== null)
+      .filter(_.identity) as UpvsIdentityByUriServiceCreateManyParam
+
+    // TODO move this into physicalEntityService function and call that from here
+    const result = await this.upvsIdentityByUriService.createMany(upvsIdentityByUriData)
+    for (const success of result.success) {
+      if (!success.physicalEntityId) continue
+      await this.update({
+        id: success.physicalEntityId,
+        uri: success.uri,
+        activeEdesk: success.data.upvs?.edesk_status === 'deliverable',
+      })
+    }
+
+    return {
+      validatedUsers: result.success.length,
+      entities: result,
+    }
   }
 }

@@ -24,7 +24,7 @@ export class CityAccountSubservice {
     const birthNumberWithoutSlash = birthNumber.replace('/', '')
     try {
       const user =
-        await this.clientsService.cityAccountApi.adminControllerGetUserDataByBirthNumber(
+        await this.clientsService.cityAccountApi.integrationControllerGetUserDataByBirthNumber(
           birthNumberWithoutSlash,
           {
             headers: {
@@ -65,7 +65,7 @@ export class CityAccountSubservice {
       birthNumber.replaceAll('/', ''),
     )
     const userDataResult =
-      await this.clientsService.cityAccountApi.adminControllerGetUserDataByBirthNumbersBatch(
+      await this.clientsService.cityAccountApi.integrationControllerGetUserDataByBirthNumbersBatch(
         { birthNumbers: birthNumbersWithoutSlash },
         {
           headers: {
@@ -89,7 +89,7 @@ export class CityAccountSubservice {
   ): Promise<{ birthNumbers: string[]; nextSince: Date }> {
     try {
       const requestResult =
-        await this.clientsService.cityAccountApi.adminControllerGetNewVerifiedUsersBirthNumbers(
+        await this.clientsService.cityAccountApi.integrationControllerGetNewVerifiedUsersBirthNumbers(
           { since: since.toISOString(), take },
           {
             headers: {

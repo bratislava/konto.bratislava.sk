@@ -75466,6 +75466,78 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
 }
 `;
 
+exports[`Form definitions > webhook-showcase > default form state should match snapshot 1`] = `
+{
+  "inputShowcase": {
+    "buttonUpload": [],
+  },
+}
+`;
+
+exports[`Form definitions > webhook-showcase > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "inputShowcase": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "input-showcase",
+            },
+          },
+          "properties": {
+            "basicText": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Basic text input example",
+                  "inputType": "text",
+                  "placeholder": "Enter text here",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Basic Text Input",
+              "type": "string",
+            },
+            "buttonUpload": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Click button to upload files",
+                  "type": "button",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "minItems": 1,
+              "title": "Button Upload",
+              "type": "array",
+            },
+          },
+          "required": [
+            "basicText",
+            "buttonUpload",
+          ],
+          "title": "Input Showcase",
+          "type": "object",
+        },
+      },
+      "required": [
+        "inputShowcase",
+      ],
+      "type": "object",
+    },
+  ],
+  "title": "Webhook showcase",
+}
+`;
+
 exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > default form state should match snapshot 1`] = `
 {
   "prilohy": {

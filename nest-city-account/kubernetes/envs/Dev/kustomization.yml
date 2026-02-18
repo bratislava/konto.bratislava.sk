@@ -2,6 +2,7 @@ resources:
   - ../../base
   - secrets/database.secret.yml
   - ./secrets/cognito.secret.yml
+  - ./secrets/azure-magproxy.secret.yml
   - ./secrets/oauth2-dpb.secret.yml
   - ./secrets/oauth2-paas-mpa.secret.yml
 

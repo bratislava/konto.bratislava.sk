@@ -4,6 +4,7 @@ resources:
   - ./secrets/reporting.secret.yml
   - ./secrets/email.secret.yml
   - ./secrets/admin.secret.yml
+  - ./secrets/payment-communal-waste.secret.yml
 
 generatorOptions:
   disableNameSuffixHash: true

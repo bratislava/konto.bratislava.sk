@@ -49,14 +49,11 @@ describe('convertCurrencyToInt', () => {
 describe('mapNorisToTaxPayerData', () => {
   const mockNorisData: NorisRealEstateTax = {
     ICO_RC: '1234567890',
-    adresa_tp_sidlo: 'Test Address',
     subjekt_refer: 'EXT123',
     subjekt_nazev: 'Test Subject',
     ulica_tb_cislo: 'Test Street 1',
     psc_ref_tb: '12345',
-    TXT_UL: 'Test Street Text',
     obec_nazev_tb: 'Test City',
-    TXT_MENO: 'Test Name',
   } as NorisRealEstateTax
 
   it('should map Noris data to TaxPayer data correctly', () => {
@@ -64,14 +61,11 @@ describe('mapNorisToTaxPayerData', () => {
 
     expect(result).toEqual({
       birthNumber: '1234567890',
-      permanentResidenceAddress: 'Test Address',
       externalId: 'EXT123',
       name: 'Test Subject',
       permanentResidenceStreet: 'Test Street 1',
       permanentResidenceZip: '12345',
-      permanentResidenceStreetTxt: 'Test Street Text',
       permanentResidenceCity: 'Test City',
-      nameTxt: 'Test Name',
     })
   })
 })

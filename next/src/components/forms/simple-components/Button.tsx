@@ -79,8 +79,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       icon,
       startIcon,
       endIcon,
-      // TODO: default true
-      hasLinkIcon,
+      hasLinkIcon = true,
       fullWidth,
       fullWidthMobile,
       isLoading,

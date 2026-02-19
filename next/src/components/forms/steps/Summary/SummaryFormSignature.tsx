@@ -70,11 +70,7 @@ const SummaryFormSignature = () => {
           message={
             <>
               Platforma, na ktorej sa nachádzate nie je podporovaná. Pozrite si{' '}
-              <Button
-                href="https://www.slovensko.sk/sk/na-stiahnutie"
-                target="_blank"
-                variant="link"
-              >
+              <Button href="https://www.slovensko.sk/sk/na-stiahnutie" variant="link">
                 zoznam podporovaných aplikácií.
               </Button>
             </>

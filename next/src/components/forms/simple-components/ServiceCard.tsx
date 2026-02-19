@@ -64,6 +64,7 @@ const ServiceCard = ({
           <Button
             href={href}
             variant="link"
+            hasLinkIcon={false}
             className="text-p2-semibold"
             stretched
             analyticsProps={analyticsProps}

@@ -21,6 +21,7 @@ const UserProfilePassword = () => {
           variant="solid"
           startIcon={<LockIcon />}
           href={ROUTES.PASSWORD_CHANGE}
+          hasLinkIcon={false}
           fullWidthMobile
           data-cy="change-password-button"
         >

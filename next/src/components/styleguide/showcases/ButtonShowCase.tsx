@@ -73,8 +73,8 @@ const ButtonShowCase = () => {
   return (
     <Wrapper direction="column" title="Button">
       <div>
-        For link buttons, you can use <code>hasLinkIcon</code> to automatically add endIcon
-        (ArrowRight or ExternalLink icon).
+        Link buttons show an end icon by default (ArrowRight for internal links, Export for external
+        links, ArrowDown for anchors). Use <code>hasLinkIcon=&#123;false&#125;</code> to hide it.
       </div>
       <div>
         Icon Button should use <code>icon</code> and <code>aria-label</code> props instead of{' '}
@@ -124,22 +124,22 @@ const ButtonShowCase = () => {
         <div key={variant}>
           <strong>variant=&quot;{variant}&quot;</strong>
           <Stack>
-            <Button variant={variant} href="#" hasLinkIcon>
+            <Button variant={variant} href="#">
               Link
             </Button>
-            <Button variant={variant} href="#" size="small" hasLinkIcon>
+            <Button variant={variant} href="#" size="small">
               Link small
             </Button>
-            <Button variant={variant} href="https://bratislava.sk" hasLinkIcon>
+            <Button variant={variant} href="https://bratislava.sk">
               External link
             </Button>
-            <Button variant={variant} href="https://bratislava.sk" size="small" hasLinkIcon>
+            <Button variant={variant} href="https://bratislava.sk" size="small">
               External small
             </Button>
-            <Button variant={variant} href="#anchor" hasLinkIcon>
+            <Button variant={variant} href="#anchor">
               Anchor link
             </Button>
-            <Button variant={variant} href="#anchor" size="small" hasLinkIcon>
+            <Button variant={variant} href="#anchor" size="small">
               Anchor small
             </Button>
           </Stack>

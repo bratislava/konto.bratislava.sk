@@ -60,18 +60,18 @@ const ThankYouCard = ({
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
                   <h3 className="text-left text-h3">{feedbackTitle}</h3>
-                  <Button href={firstButtonLink} variant="solid" fullWidth>
+                  <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
                     {firstButtonTitle}
                   </Button>
                 </div>
               ) : (
-                <Button href={firstButtonLink} variant="solid" fullWidth>
+                <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
                   {firstButtonTitle}
                 </Button>
               )
             ) : null}
             {secondButtonTitle ? (
-              <Button href={secondButtonLink} variant="outline" fullWidth>
+              <Button href={secondButtonLink} variant="outline" fullWidth hasLinkIcon={false}>
                 {secondButtonTitle}
               </Button>
             ) : null}
@@ -79,12 +79,12 @@ const ThankYouCard = ({
         ) : (
           <>
             {firstButtonTitle ? (
-              <Button href={firstButtonLink} variant="solid" fullWidth>
+              <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
                 {firstButtonTitle}
               </Button>
             ) : null}
             {secondButtonTitle ? (
-              <Button href={secondButtonLink} variant="outline" fullWidth>
+              <Button href={secondButtonLink} variant="outline" fullWidth hasLinkIcon={false}>
                 {secondButtonTitle}
               </Button>
             ) : null}

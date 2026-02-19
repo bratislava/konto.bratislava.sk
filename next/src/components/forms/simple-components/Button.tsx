@@ -5,7 +5,7 @@ import NextLink from 'next/link'
 import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
 
-import { ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
+import { ArrowDownIcon, ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
 import MLink, { LinkPlausibleProps } from '@/src/components/forms/simple-components/MLink'
 import Spinner from '@/src/components/forms/simple-components/Spinner'
 import cn from '@/src/frontend/cn'
@@ -208,12 +208,22 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               '[&>svg]:h-6 [&>svg]:w-6': size === 'large',
             },
             stretchedStyle,
-            className,
-          )
-
+          ),
+      stretchedStyle,
+      className,
+    )
     if (rest.href) {
       const isExternal = rest.href.startsWith('http')
-      const linkIcon = hasLinkIcon ? isExternal ? <ExportIcon /> : <ArrowRightIcon /> : null
+      const isAnchor = rest.href.startsWith('#') && rest.href !== '#'
+      const linkIcon = hasLinkIcon ? (
+        isExternal ? (
+          <ExportIcon className="shrink-0" />
+        ) : isAnchor ? (
+          <ArrowDownIcon className="shrink-0" />
+        ) : (
+          <ArrowRightIcon className="shrink-0" />
+        )
+      ) : null
 
       return (
         <MLink

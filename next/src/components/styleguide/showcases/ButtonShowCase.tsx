@@ -243,6 +243,12 @@ const ButtonShowCase = () => {
         <Button variant="link" href="https://bratislava.sk" size="small" hasLinkIcon>
           External link
         </Button>
+        <Button variant="link" href="#foo" hasLinkIcon>
+          Anchor link
+        </Button>
+        <Button variant="link" href="#foo" size="small" hasLinkIcon>
+          Anchor link
+        </Button>
       </Stack>
 
       <Stack>

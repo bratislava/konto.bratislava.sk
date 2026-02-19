@@ -1,9 +1,10 @@
 /* eslint-disable sonarjs/no-duplicate-string */
+
 import { useObjectRef } from '@react-aria/utils'
-import { LinkButtonProps } from '@react-types/button'
 import NextLink from 'next/link'
-import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref } from 'react'
+import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref, RefObject } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
+import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-components'
 
 import { ArrowDownIcon, ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
 import MLink, { LinkPlausibleProps } from '@/src/components/forms/simple-components/MLink'
@@ -41,14 +42,16 @@ type ButtonBase = {
   fullWidth?: boolean
   fullWidthMobile?: boolean
   isLoading?: boolean
+  // TODO: change to loadingText
   isLoadingText?: string
 } & ButtonOrIconButton
 
-export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps | 'children'> &
+export type ButtonProps = Omit<RACButtonProps, 'className' | 'style'> &
   ButtonBase & {
     href?: never
     target?: never
     hasLinkIcon?: never
+    // TODO: change to analyticsProps
     plausibleProps?: never
   }
 
@@ -57,6 +60,7 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
   Pick<ComponentProps<typeof NextLink>, 'target' | 'replace' | 'prefetch'> & {
     stretched?: boolean
     hasLinkIcon?: boolean
+    // TODO: change to analyticsProps
     plausibleProps?: LinkPlausibleProps
   }
 
@@ -73,6 +77,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       icon,
       startIcon,
       endIcon,
+      // TODO: default true
       hasLinkIcon,
       fullWidth,
       fullWidthMobile,
@@ -212,6 +217,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       stretchedStyle,
       className,
     )
+
     if (rest.href) {
       const isExternal = rest.href.startsWith('http')
       const isAnchor = rest.href.startsWith('#') && rest.href !== '#'
@@ -251,16 +257,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     }
 
     return (
-      <button
-        type="button"
-        ref={ref as Ref<HTMLButtonElement>}
-        // following conventions from react-aria-components, slightly changed for easier styling of hovered state
-        data-pressed={isPressed || undefined}
-        data-hovered={(isHovered && !isPressed) || (isFocusVisible && !isPressed) || undefined}
-        data-focused={isFocused || undefined}
-        data-focus-visible={isFocusVisible || undefined}
+      <RACButton
+        ref={ref as RefObject<HTMLButtonElement | null>}
+        isDisabled={isLoadingOrDisabled}
         className={styles}
-        {...mergeProps(buttonProps, focusProps, hoverProps)}
         {...rest}
       >
         {!isLoading && startIcon}
@@ -273,8 +273,32 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           (icon ?? children)
         )}
         {!isLoading && endIcon}
-      </button>
+      </RACButton>
     )
+      // <button
+      //   type="button"
+      //   ref={ref as Ref<HTMLButtonElement>}
+      //   // following conventions from react-aria-components, slightly changed for easier styling of hovered state
+      //   data-pressed={isPressed || undefined}
+      //   data-hovered={(isHovered && !isPressed) || (isFocusVisible && !isPressed) || undefined}
+      //   data-focused={isFocused || undefined}
+      //   data-focus-visible={isFocusVisible || undefined}
+      //   className={styles}
+      //   {...mergeProps(buttonProps, focusProps, hoverProps)}
+      //   {...rest}
+      // >
+      //   {!isLoading && startIcon}
+      //   {isLoading ? (
+      //     <>
+      //       {isLoadingText}
+      //       <Spinner size="sm" />
+      //     </>
+      //   ) : (
+      //     (icon ?? children)
+      //   )}
+      //   {!isLoading && endIcon}
+      // </button>
+      // )
   },
 )
 

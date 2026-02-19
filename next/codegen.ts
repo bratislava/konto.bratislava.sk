@@ -3,9 +3,9 @@ import { CodegenConfig } from '@graphql-codegen/cli'
 
 const codegenConfig: CodegenConfig = {
   schema: 'http://localhost:1337/graphql',
-  documents: './clients/graphql-strapi/queries/**/*.{gql,graphql}',
+  documents: './src/clients/graphql-strapi/queries/**/*.{gql,graphql}',
   generates: {
-    './clients/graphql-strapi/api.ts': {
+    './src/clients/graphql-strapi/api.ts': {
       plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
     },
   },

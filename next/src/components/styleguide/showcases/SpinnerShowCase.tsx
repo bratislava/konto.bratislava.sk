@@ -1,0 +1,20 @@
+import React from 'react'
+
+import Spinner from '@/src/components/forms/simple-components/Spinner'
+
+import { Stack } from '../Stack'
+import { Wrapper } from '../Wrapper'
+
+const SpinnerShowCase = () => {
+  return (
+    <Wrapper direction="column" title="Spinner">
+      <Stack direction="row">
+        <Spinner size="sm" />
+        <Spinner size="md" />
+        <Spinner size="lg" />
+      </Stack>
+    </Wrapper>
+  )
+}
+
+export default SpinnerShowCase

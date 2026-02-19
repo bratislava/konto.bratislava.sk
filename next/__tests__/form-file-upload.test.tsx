@@ -3,14 +3,14 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import { FileStatusType } from 'forms-shared/form-files/fileStatus'
 import React from 'react'
 
-import { FormContextProvider, FormServerContext } from '@/components/forms/useFormContext'
-import { FormFileUploadProvider, useFormFileUpload } from '@/components/forms/useFormFileUpload'
-import { uploadFile } from '@/frontend/utils/formFileUpload'
+import { FormContextProvider, FormServerContext } from '@/src/components/forms/useFormContext'
+import { FormFileUploadProvider, useFormFileUpload } from '@/src/components/forms/useFormFileUpload'
+import { uploadFile } from '@/src/frontend/utils/formFileUpload'
 
 const queryClient = new QueryClient()
 
-jest.mock('../frontend/utils/formFileUpload', () => ({
-  ...jest.requireActual('../frontend/utils/formFileUpload'),
+jest.mock('@/src/frontend/utils/formFileUpload', () => ({
+  ...jest.requireActual('@/src/frontend/utils/formFileUpload'),
   uploadFile: jest.fn(),
 }))
 

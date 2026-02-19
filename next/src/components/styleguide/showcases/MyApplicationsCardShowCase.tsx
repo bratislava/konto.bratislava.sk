@@ -30,7 +30,7 @@ const formDefinitionSlugTitleMap = {
 
 const MyApplicationsCardShowCase = () => {
   return (
-    <Wrapper direction="column" title="Service Card">
+    <Wrapper direction="column" title="My Applications Card">
       <Stack>
         <div className="flex flex-1 flex-col">
           Unfinished draft

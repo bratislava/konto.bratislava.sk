@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useFormMenuItems } from '@/src/components/forms/useFormMenuItems'
 import cn from '@/src/frontend/cn'
 
-const MenuList = () => {
+const FormBottomMenu = () => {
   const menuItems = useFormMenuItems()
 
   return (
@@ -33,4 +33,4 @@ const MenuList = () => {
   )
 }
 
-export default MenuList
+export default FormBottomMenu

@@ -37,9 +37,9 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
         {...rest}
         onClick={onClick}
         className={cn(
-          'flex cursor-pointer items-center gap-3 rounded-lg border-b-2 border-transparent p-4 text-p2-semibold transition-all hover:bg-main-100 hover:text-main-700',
+          'text-p2-semibold flex cursor-pointer items-center gap-3 rounded-lg border-b-2 border-transparent p-4 transition-all hover:bg-gray-100',
           {
-            'bg-main-100 text-main-700': isSelected,
+            'bg-gray-100': isSelected,
           },
         )}
         data-cy={`${menuItem.url.replaceAll('/', '')}-menu-item`}
@@ -51,6 +51,10 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
     ) : null
   },
 )
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=CNuSyEBQeFkOyug9-4
+ */
 
 export const HamburgerMenu = ({ menuSections, menuItems, closeMenu }: Props) => {
   const router = useRouter()
@@ -68,7 +72,7 @@ export const HamburgerMenu = ({ menuSections, menuItems, closeMenu }: Props) => 
   return (
     <div
       className={cn(
-        'fixed top-16 left-0 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
+        'fixed left-0 top-16 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
       )}
       style={{ height: 'calc(100vh - 60px)' }}
     >
@@ -101,7 +105,7 @@ export const HamburgerMenu = ({ menuSections, menuItems, closeMenu }: Props) => 
                 <NavigationMenu.Item key={sectionItem.id}>
                   <NavigationMenu.Trigger
                     className={cn(
-                      'flex w-full cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 text-p2-semibold transition-all hover:bg-main-100 hover:text-main-700',
+                      'text-p2-semibold hover:bg-main-100 hover:text-main-700 flex w-full cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 transition-all',
                     )}
                     data-cy={`${sectionItem.url ? sectionItem.url.replaceAll('/', '') : sectionItem.title.replaceAll(' ', '-')}-menu-item`}
                     onClick={() => {

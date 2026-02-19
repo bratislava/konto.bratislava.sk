@@ -1,8 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 
-import { useObjectRef } from '@react-aria/utils'
 import NextLink from 'next/link'
-import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref, RefObject } from 'react'
+import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, RefObject } from 'react'
 import { AriaButtonProps } from 'react-aria'
 import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-components'
 
@@ -63,6 +62,10 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
 
 export type PolymorphicProps = ButtonProps | AnchorProps
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-52741&m=dev
+ */
+
 const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProps>(
   (
     {
@@ -80,12 +83,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       fullWidthMobile,
       isLoading,
       loadingText,
-      onPress,
       ...rest
     },
-    forwardedRef,
+    ref,
   ) => {
-    const ref = useObjectRef(forwardedRef)
     const isLoadingOrDisabled = isLoading || isDisabled
 
     const isSolidVariant = variant.endsWith('solid')
@@ -98,7 +99,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     const isIconButton = Boolean(icon)
 
     /* TODO
-     *   - examine why `text-button` interferes with `text-[color]` and therefore is sometimes ignored
      *   - border should render inside button, not outside
      *   - focus text color for 'culture' and 'social' category should be -800
      */
@@ -117,15 +117,13 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             },
 
             {
-              // NOTE: there are some style overrides for link variants below in "twMerge"
-
-              'font-medium underline': isLinkVariant,
+              'font-medium underline underline-offset-2': isLinkVariant,
 
               // disabled or loading
               'opacity-50': isLoadingOrDisabled,
 
-              // TODO consider applying this to unstyled as well
               // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
+              // TODO consider applying this to unstyled as well
               'after:absolute after:inset-0': 'stretched' in rest && rest.stretched,
 
               // width or fullwidth
@@ -218,7 +216,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         <MLink
           href={rest.href}
           target={isExternal ? '_blank' : '_self'}
-          ref={ref as Ref<HTMLAnchorElement>}
+          ref={ref as RefObject<HTMLAnchorElement | null>}
           className={styles}
           analyticsProps={rest.analyticsProps}
           {...rest}

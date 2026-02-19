@@ -29,7 +29,7 @@ const ServiceCard = ({
   plausibleProps,
 }: ServiceCardBase) => {
   const style = cn(
-    'group relative flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
+    'group relative flex w-full flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
     className,
     { 'cursor-pointer': buttonText },
     { 'cursor-default': !buttonText },

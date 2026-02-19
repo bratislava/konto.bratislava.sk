@@ -100,10 +100,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       variant === 'icon-wrapped' || variant === 'icon-wrapped-negative-margin'
     const isIconButton = Boolean(icon)
 
-    // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
-    const stretchedStyle =
-      'stretched' in rest && rest.stretched ? 'after:absolute after:inset-0' : ''
-
     /* TODO
      *   - examine why `text-button` interferes with `text-[color]` and therefore is sometimes ignored
      *   - border should render inside button, not outside
@@ -200,9 +196,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               '[&>svg]:h-5 [&>svg]:w-5': size === 'small',
               '[&>svg]:h-6 [&>svg]:w-6': size === 'large',
             },
-            stretchedStyle,
           ),
-      stretchedStyle,
       className,
     )
 

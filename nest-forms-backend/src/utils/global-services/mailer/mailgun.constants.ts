@@ -262,10 +262,6 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
         type: MailgunConfigVariableType.PARAMETER,
         value: '{{htmlData}}',
       },
-      formSentAt: {
-        type: MailgunConfigVariableType.PARAMETER,
-        value: '{{formSentAt}}',
-      },
     },
   },
   BRATISLAVA_SENT_SUCCESS: {
@@ -283,10 +279,6 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
       firstName: {
         type: MailgunConfigVariableType.PARAMETER,
         value: '{{firstName}}',
-      },
-      formSentAt: {
-        type: MailgunConfigVariableType.PARAMETER,
-        value: '{{formSentAt}}',
       },
     },
   },

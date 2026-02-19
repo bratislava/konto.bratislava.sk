@@ -34,7 +34,7 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 const Styleguide = () => {
   /**
    * Always create new component for adding showcase in StyleGuide
-   * Path to StyleGuide showcase components should be ./next/components/styleguide/showcases
+   * Path to StyleGuide showcase components should be ./next/src/components/styleguide/showcases
    * */
   return (
     <>

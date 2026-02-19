@@ -25,6 +25,7 @@ type ButtonOrIconButton =
     } & PropsWithChildren)
 
 type ButtonBase = {
+// When adding a new variant, include it also in is...Variant booleans below
   variant?:
     | 'unstyled'
     | 'icon-wrapped'
@@ -115,16 +116,19 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
      *   - border should render inside button, not outside
      *   - focus text color for 'culture' and 'social' category should be -800
      */
-    const styles =
+    const styles = cn(
+      'base-focus-ring',
       variant === 'unstyled'
-        ? cn(stretchedStyle, className)
+        ? ''
         : cn(
             // TODO text-button interferes with text-[color], as quickfix we set size and color here by arbitrary values
             'inline-flex h-auto items-center justify-center gap-2 text-[1rem] leading-[1.5rem] font-semibold transition',
-            // we use isFocusVisible to show focus ring only on keyboard navigation
-            isFocused ? 'outline-2 outline-offset-4' : 'outline-hidden',
+
             // we change rounded corners for link focus ring
-            isLinkVariant ? 'rounded-xs max-lg:gap-1' : 'rounded-lg',
+            {
+              'rounded-xs max-lg:gap-1': isLinkVariant,
+              'rounded-lg': !isLinkVariant,
+            },
 
             {
               // NOTE: there are some style overrides for link variants below in "twMerge"

@@ -28,6 +28,7 @@ import { SharedModule } from './utils/subservices/shared.module'
     IntegrationModule,
     SharedModule,
     ScheduleModule.forRoot(),
+    SharedModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule,
     TasksModule,

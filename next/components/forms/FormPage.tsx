@@ -15,25 +15,16 @@ import { FormSentProvider, useFormSent } from '@/components/forms/useFormSent'
 import PageLayout from '@/components/layouts/PageLayout'
 import cn from '@/frontend/cn'
 
-const FormStateRouter = ({ nonce }: { nonce?: string }) => {
-  const { formSent } = useFormSent()
-  const { versionCompareContinueAction } = useFormContext()
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=17622-2066&t=9VxOW0GxS2SEYDIL-4
+ */
 
-  if (formSent) {
-    return <ThankYouFormSection />
-  }
-
-  // It is not possible to display outdated form in any meaningful way, user needs to first make an action (if possible)
-  if (versionCompareContinueAction !== VersionCompareContinueAction.None) {
-    return <FormVersionCompareAction />
-  }
-
-  return <FormContent nonce={nonce} />
-}
-
-const FormLayoutContainer = ({ nonce }: { nonce?: string }) => {
+const FormPageContent = ({ nonce }: { nonce?: string }) => {
   const { isEmbedded, versionCompareContinueAction } = useFormContext()
   const { formSent } = useFormSent()
+
+  const isFormSent = formSent
+  const isFormOutdated = versionCompareContinueAction !== VersionCompareContinueAction.None
 
   return (
     <IframeResizerChild enabled={isEmbedded} nonce={nonce}>
@@ -42,16 +33,22 @@ const FormLayoutContainer = ({ nonce }: { nonce?: string }) => {
         wrap={(children) => (
           <PageLayout
             className={cn({
-              'bg-gray-50': formSent,
-              'bg-gray-0 md:bg-gray-50':
-                !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,
+              'bg-gray-0 md:bg-gray-50': isFormOutdated || isFormSent,
             })}
           >
             {children}
           </PageLayout>
         )}
       >
-        <FormStateRouter />
+        {isFormSent ? (
+          <ThankYouFormSection />
+        ) : isFormOutdated ? (
+          // It is not possible to display outdated form in any meaningful way,
+          // se the user needs to first make an action (if possible)
+          <FormVersionCompareAction />
+        ) : (
+          <FormContent />
+        )}
       </ConditionalWrap>
     </IframeResizerChild>
   )
@@ -66,7 +63,7 @@ const FormPage = ({ formServerContext, nonce }: FormPageProps) => {
   return (
     <FormContextProvider formServerContext={formServerContext}>
       <FormSentProvider initialFormSent={formServerContext.initialFormSent}>
-        <FormLayoutContainer nonce={nonce} />
+        <FormPageContent nonce={nonce} />
       </FormSentProvider>
     </FormContextProvider>
   )

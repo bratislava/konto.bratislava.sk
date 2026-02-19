@@ -2,7 +2,7 @@ import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefi
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 
 import { makeClientFormDefinition } from '@/components/forms/clientFormDefinitions'
-import FormPageWrapper, { FormPageProps } from '@/components/forms/FormPage'
+import FormPage, { FormPageProps } from '@/components/forms/FormPage'
 import { SsrAuthProviderHOC } from '@/components/logic/SsrAuthContext'
 import { environment } from '@/environment'
 import { amplifyGetServerSideProps } from '@/frontend/utils/amplifyServer'
@@ -69,4 +69,4 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
   },
 )
 
-export default SsrAuthProviderHOC(FormPageWrapper)
+export default SsrAuthProviderHOC(FormPage)

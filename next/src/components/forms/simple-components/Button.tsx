@@ -3,7 +3,7 @@
 import { useObjectRef } from '@react-aria/utils'
 import NextLink from 'next/link'
 import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref, RefObject } from 'react'
-import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
+import { AriaButtonProps } from 'react-aria'
 import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-components'
 
 import { ArrowDownIcon, ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
@@ -90,18 +90,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
   ) => {
     const ref = useObjectRef(forwardedRef)
     const isLoadingOrDisabled = isLoading || isDisabled
-
-    const { buttonProps, isPressed } = useButton(
-      {
-        ...rest,
-        onPress,
-        elementType: rest.href ? 'a' : 'button',
-        isDisabled: isLoadingOrDisabled,
-      },
-      ref,
-    )
-    const { focusProps, isFocused, isFocusVisible } = useFocusRing()
-    const { hoverProps, isHovered } = useHover({ isDisabled: isLoadingOrDisabled })
 
     const isSolidVariant = variant.endsWith('solid')
     const isOutlineVariant = variant.endsWith('outline')
@@ -234,19 +222,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       return (
         <MLink
           href={rest.href}
+          target={isExternal ? '_blank' : '_self'}
           ref={ref as Ref<HTMLAnchorElement>}
-          // following conventions from react-aria-components, slightly changed for easier styling of hovered state
-          data-pressed={isPressed || undefined}
-          data-hovered={(isHovered && !isPressed) || (isFocusVisible && !isPressed) || undefined}
-          data-focused={isFocused || undefined}
-          data-focus-visible={isFocusVisible || undefined}
           className={styles}
           plausibleProps={rest.plausibleProps}
-          {...mergeProps(
-            { ...buttonProps, role: undefined, target: isExternal ? '_blank' : undefined },
-            focusProps,
-            hoverProps,
-          )}
           {...rest}
         >
           {startIcon}
@@ -275,30 +254,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {!isLoading && endIcon}
       </RACButton>
     )
-      // <button
-      //   type="button"
-      //   ref={ref as Ref<HTMLButtonElement>}
-      //   // following conventions from react-aria-components, slightly changed for easier styling of hovered state
-      //   data-pressed={isPressed || undefined}
-      //   data-hovered={(isHovered && !isPressed) || (isFocusVisible && !isPressed) || undefined}
-      //   data-focused={isFocused || undefined}
-      //   data-focus-visible={isFocusVisible || undefined}
-      //   className={styles}
-      //   {...mergeProps(buttonProps, focusProps, hoverProps)}
-      //   {...rest}
-      // >
-      //   {!isLoading && startIcon}
-      //   {isLoading ? (
-      //     <>
-      //       {isLoadingText}
-      //       <Spinner size="sm" />
-      //     </>
-      //   ) : (
-      //     (icon ?? children)
-      //   )}
-      //   {!isLoading && endIcon}
-      // </button>
-      // )
   },
 )
 

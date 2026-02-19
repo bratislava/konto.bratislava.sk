@@ -5,6 +5,8 @@ import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
+import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
+import ResponsiveCarousel from '@/src/components/forms/ResponsiveCarousel'
 import AccountSectionHeader from '@/src/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Announcements from '@/src/components/forms/segments/AccountSections/IntroSection/Announcements/Announcements'
 import MunicipalServiceCard from '@/src/components/forms/segments/MunicipalServiceCard/MunicipalServiceCard'
@@ -32,10 +34,6 @@ const IntroSection = ({
 
   const name = isLegalEntity ? userAttributes?.name : userAttributes?.given_name
 
-  const bannerContent = `<span className='text-p2'>${t(
-    'account_section_intro.banner_content',
-  )}</span>`
-
   const servicesByPersonType = isLegalEntity ? servicesLegalPerson : services
 
   return (
@@ -57,7 +55,10 @@ const IntroSection = ({
             announcements={announcements}
             announcementsLegalPerson={announcementsLegalPerson}
           />
-          <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
+
+          {/* TODO remove custom spacing on respo when proper layout is introduced */}
+          <HorizontalDivider className="max-lg:mx-4" />
+
           <div className="flex flex-col gap-6 py-6 lg:py-16">
             <div className="flex w-full flex-col gap-2 px-4 md:flex-row md:items-center md:justify-between lg:px-0">
               <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
@@ -65,17 +66,19 @@ const IntroSection = ({
                 {t('account_section_intro.all_services')}
               </Button>
             </div>
-            <div className="scrollbar-hide flex gap-3 overflow-x-scroll px-4 lg:gap-8 lg:px-0">
-              {servicesByPersonType.map((service) => (
+            <ResponsiveCarousel
+              desktop={4}
+              items={servicesByPersonType.map((service) => (
                 <MunicipalServiceCard key={service.id} service={service} />
               ))}
-            </div>
+              hasVerticalPadding={false}
+            />
           </div>
         </div>
         <div className="bg-gray-50 py-0 lg:py-16">
           <Banner
             title={t('account_section_intro.banner_title')}
-            content={bannerContent}
+            content={t('account_section_intro.banner_content')}
             buttonText={t('account_section_intro.banner_button_text')}
             href={ROUTES.HELP}
             image={BannerImage}

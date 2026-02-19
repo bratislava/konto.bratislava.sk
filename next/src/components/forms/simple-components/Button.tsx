@@ -132,7 +132,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'w-fit': !fullWidth && !fullWidthMobile,
 
               // border width
-              'border-2': isSolidOrOutlineVariant,
+              border: isSolidOrOutlineVariant,
 
               // padding - link variants
               'p-0': isLinkVariant,
@@ -141,13 +141,13 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'p-2 outline-offset-0': isIconButton && isIconWrappedVariant,
               '-m-2': isIconButton && variant === 'icon-wrapped-negative-margin',
 
-              // padding - filled and outlined variants
+              // padding - solid and outlined variants
               'px-4 py-2 lg:py-3':
                 size === 'responsive' && !isIconButton && isSolidOrOutlineVariant,
               'px-4 py-2': size === 'small' && !isIconButton && isSolidOrOutlineVariant,
               'px-4 py-3': size === 'large' && !isIconButton && isSolidOrOutlineVariant,
 
-              // padding - filled and outlined variants with "icon"
+              // padding - solid and outlined variants with "icon"
               'p-2.5 lg:p-3': size === 'responsive' && isIconButton && isSolidOrOutlineVariant,
               'p-2.5': size === 'small' && isIconButton && isSolidOrOutlineVariant,
               'p-3': size === 'large' && isIconButton && isSolidOrOutlineVariant,
@@ -191,7 +191,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'data-hovered:text-gray-600': variant === 'link',
 
               // svg icons
-              '[&>svg]:h-5 [&>svg]:w-5 lg:[&>svg]:h-6 lg:[&>svg]:w-6': size === 'responsive',
+              '[&>svg]:h-5 [&>svg]:w-5 [&>svg]:lg:h-6 [&>svg]:lg:w-6': size === 'responsive',
               '[&>svg]:h-5 [&>svg]:w-5': size === 'small',
               '[&>svg]:h-6 [&>svg]:w-6': size === 'large',
             },

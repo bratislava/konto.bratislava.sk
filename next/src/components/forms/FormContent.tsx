@@ -5,8 +5,8 @@ import FormControls from '@/src/components/forms/FormControls'
 import FormProviders from '@/src/components/forms/FormProviders'
 import FormUploadXmlJson from '@/src/components/forms/FormUploadXmlJson'
 import FormModals from '@/src/components/forms/segments/FormModals/FormModals'
+import FormBottomMenu from '@/src/components/forms/simple-components/FormBottomMenu'
 import FormHeader from '@/src/components/forms/simple-components/FormHeader'
-import MenuList from '@/src/components/forms/steps/MenuList'
 import StepperView from '@/src/components/forms/steps/StepperView'
 import FormSummary from '@/src/components/forms/steps/Summary/FormSummary'
 import ThemedForm from '@/src/components/forms/ThemedForm'
@@ -74,13 +74,13 @@ const FormContentInner = () => {
       <FormUploadXmlJson />
       {displayHeaderAndMenu && <FormHeader />}
       <div
-        className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-10 pt-0 pb-6 lg:flex-row lg:gap-20 lg:py-10"
+        className="max-w-(--breakpoint-lg) mx-auto flex w-full flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10"
         data-cy="form-container"
       >
         <StepperView />
         <div className="grow px-4 lg:px-0">
           {currentStepperStep.index === 'summary' ? <FormSummary /> : <FormStep />}
-          {displayHeaderAndMenu && <MenuList />}
+          {displayHeaderAndMenu && <FormBottomMenu />}
         </div>
       </div>
     </>

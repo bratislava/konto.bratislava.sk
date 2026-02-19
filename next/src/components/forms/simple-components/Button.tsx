@@ -165,35 +165,51 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'p-1.5': size === 'small' && isIconButton && isPlainVariant,
               'p-2': size === 'large' && isIconButton && isPlainVariant,
 
-              // TODO: Add styles for solid-inverted and link-inverted
-
-              // colors - bg, border, text - idle & focus
-              'border-gray-700 bg-gray-700 text-white data-pressed:border-gray-800 data-pressed:bg-gray-800':
+              // colors - bg, border, content - variant solid (figma: boxed primary)
+              'border-border-active-primary-default bg-background-active-primary-default text-content-active-primary-inverted-default':
                 variant === 'solid',
-              'border-gray-200 bg-transparent text-gray-700 data-pressed:border-gray-300 data-pressed:text-gray-800':
+              'hover:border-border-active-primary-hover hover:bg-background-active-primary-hover hover:text-content-active-primary-inverted-hover active:border-border-active-primary-pressed active:bg-background-active-primary-pressed active:text-content-active-primary-inverted-pressed':
+                variant === 'solid' && !isLoadingOrDisabled,
+
+              // colors - bg, border, content - variant solid-inverted (figma: boxed primary inverted)
+              'border-border-active-primary-inverted-default bg-background-active-primary-inverted-default text-content-active-primary-default':
+                variant === 'solid-inverted',
+              'hover:border-border-active-primary-inverted-hover hover:bg-background-active-primary-inverted-hover hover:text-content-active-primary-hover active:border-border-active-primary-inverted-pressed active:bg-background-active-primary-inverted-pressed active:text-content-active-primary-pressed':
+                variant === 'solid-inverted' && !isLoadingOrDisabled,
+
+              // colors - bg, border, content - variant outline (figma: boxed secondary)
+              'bg-background-active-secondary-default text-content-active-secondary-default border-border-active-secondary-default':
                 variant === 'outline',
-              'border-negative-700 bg-negative-700 text-white data-pressed:border-negative-800 data-pressed:bg-negative-800':
-                variant === 'negative-solid',
+              'hover:bg-background-active-secondary-hover hover:text-content-active-secondary-hover active:bg-background-active-secondary-pressed active:text-content-active-secondary-pressed hover:border-border-active-secondary-hover active:border-border-active-secondary-pressed':
+                variant === 'outline' && !isLoadingOrDisabled,
 
-              'text-gray-700 data-pressed:bg-gray-200 data-pressed:text-gray-800':
+              // colors - bg, border, content - variant plain (figma: plain default)
+              'text-content-active-secondary-default bg-background-active-primary-soft-inverted-default':
                 variant === 'plain',
-              'text-negative-700 data-pressed:bg-negative-200 data-pressed:text-negative-800':
-                variant === 'negative-plain',
+              'hover:bg-background-active-primary-soft-hover hover:text-content-active-primary-hover active:bg-background-active-primary-soft-pressed active:text-content-active-primary-pressed':
+                variant === 'plain' && !isLoadingOrDisabled,
 
-              'text-gray-700 data-pressed:text-gray-800': variant === 'link',
-
-              // colors:hover - bg, border, text
-              // using custom `data-hovered:` because `hover:` is not working with `disabled` state
-              'data-hovered:border-gray-600 data-hovered:bg-gray-600': variant === 'solid',
-              'data-hovered:border-gray-200 data-hovered:text-gray-600': variant === 'outline',
-              'data-hovered:bg-gray-100 data-hovered:text-gray-600': variant === 'plain',
-
-              'data-hovered:border-negative-600 data-hovered:bg-negative-600':
+              // colors - bg, border, content - variant negative-solid
+              'border-border-error bg-background-error-default text-white':
                 variant === 'negative-solid',
-              'data-hovered:bg-negative-100 data-hovered:text-negative-600':
-                variant === 'negative-plain',
+              'hover:border-border-error-hover hover:bg-background-error-hover active:border-border-error-pressed active:bg-background-error-pressed':
+                variant === 'negative-solid' && !isLoadingOrDisabled,
 
-              'data-hovered:text-gray-600': variant === 'link',
+              // colors - bg, border, content - variant negative-plain
+              'text-content-error-default': variant === 'negative-plain',
+              'hover:bg-background-error-soft-default hover:text-content-error-hover active:bg-background-error-soft-pressed active:text-content-error-pressed':
+                variant === 'negative-plain' && !isLoadingOrDisabled,
+
+              // colors - bg, border, content - variant link
+              'text-content-active-primary-default': variant === 'link',
+              'hover:text-content-active-primary-hover active:text-content-active-primary-pressed':
+                variant === 'link' && !isDisabled,
+
+              // colors - bg, border, content - variant link-inverted
+              'text-content-active-primary-inverted-default': variant === 'link-inverted',
+              'hover:text-content-active-primary-inverted-hover': variant === 'link-inverted',
+              'active:text-content-active-primary-inverted-pressed':
+                variant === 'link-inverted' && !isLoadingOrDisabled,
 
               // svg icons
               '[&>svg]:h-5 [&>svg]:w-5 [&>svg]:lg:h-6 [&>svg]:lg:w-6': size === 'responsive',

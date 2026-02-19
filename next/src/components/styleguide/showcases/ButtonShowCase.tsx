@@ -1,6 +1,7 @@
 import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
 import type { PolymorphicProps } from '@/src/components/forms/simple-components/Button'
 import Button from '@/src/components/forms/simple-components/Button'
+import cn from '@/src/frontend/cn'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
@@ -88,7 +89,11 @@ const ButtonShowCase = () => {
       {variants.basic.map((variant) => (
         <div key={variant}>
           <strong>variant=&quot;{variant}&quot;</strong>
-          <Stack>
+          <Stack
+            className={cn({
+              'bg-background-passive-inverted-base': variant === 'solid-inverted',
+            })}
+          >
             {basicButtonExamples['size-default'].map((buttonExample, index) => (
               <StackableButton key={index} variant={variant} buttonExample={buttonExample} />
             ))}

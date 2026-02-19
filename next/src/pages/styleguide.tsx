@@ -42,11 +42,11 @@ const Styleguide = () => {
 
       <StyleGuideWrapper>
         {/* HERE ADD SHOWCASES */}
+        <ButtonShowCase />
         <IconShowCase />
         <TagShowCase />
         <TooltipShowCase />
         <FieldHeaderShowCase />
-        <ButtonShowCase />
         <SpinnerShowCase />
         <InputFieldShowCase />
         <DatePickerShowCase />

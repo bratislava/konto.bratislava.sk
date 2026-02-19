@@ -122,8 +122,8 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             {
               'font-medium underline underline-offset-2': isLinkVariant,
 
-              // disabled or loading
-              'opacity-50': isLoadingOrDisabled,
+              // disabled
+              'opacity-50': isDisabled,
 
               // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
               // TODO consider applying this to unstyled as well

@@ -62,8 +62,6 @@ export class LineLoggerSubservice implements LoggerService {
     const messageInLogFmt = [
       colorStart,
       [
-        `process="[Nest]"`,
-        `processPID="${process.pid}"`,
         `datetime="${getCurrentDateTime()}"`,
         `severity="${severity}"`,
         formattedContext,
@@ -85,12 +83,105 @@ export class LineLoggerSubservice implements LoggerService {
     console.log(messageInLogFmt)
   }
 
+  private wrapLineWithAnsi(line: string, maxWidth: number): string[] {
+    const result: string[] = []
+
+    // Calculate left padding based on first colon position (for continuation lines)
+    const cleanLine = line.replace(/\u001B\[\d+m/g, '')
+    const firstLineColonIndex = cleanLine.indexOf(': ')
+    const continuationPadding = firstLineColonIndex >= 0 ? firstLineColonIndex + 2 : 0
+
+    let pos = 0
+    let visibleChars = 0
+    let currentLine = ''
+    let activeAnsiCodes = ''
+    let inAnsiSequence = false
+    let ansiBuffer = ''
+
+    // Safety guard: prevent endless loops
+    const maxIterations = line.length * 2
+    let iterations = 0
+
+    while (pos < line.length) {
+      if (++iterations > maxIterations) {
+        // Failsafe: just push remaining content and break
+        currentLine += line.substring(pos)
+        break
+      }
+
+      const char = line[pos]
+      const next = line[pos + 1]
+
+      if (char === '\u001B' && next === '[') {
+        inAnsiSequence = true
+        ansiBuffer = char
+        currentLine += char
+        pos++
+        continue
+      }
+
+      if (inAnsiSequence) {
+        ansiBuffer += char
+        currentLine += char
+
+        if (char === 'm') {
+          inAnsiSequence = false
+          activeAnsiCodes += ansiBuffer
+          ansiBuffer = ''
+        }
+        pos++
+        continue
+      }
+
+      if (char === '\\' && next === 'n') {
+        result.push(currentLine)
+
+        currentLine = ' '.repeat(continuationPadding) + activeAnsiCodes
+        visibleChars = continuationPadding
+
+        pos += 2 // Skip both \ and n
+        continue
+      }
+
+      if (char === '\n') {
+        result.push(currentLine)
+
+        currentLine = ' '.repeat(continuationPadding) + activeAnsiCodes
+        visibleChars = continuationPadding
+
+        pos++
+        continue
+      }
+
+      if (visibleChars >= maxWidth) {
+        result.push(currentLine)
+
+        currentLine = ' '.repeat(continuationPadding) + activeAnsiCodes
+        visibleChars = continuationPadding
+
+        // Don't increment pos - process current char on next line
+        continue
+      }
+
+      currentLine += char
+      visibleChars++
+      pos++
+    }
+
+    // Push final line if any content remains
+    if (currentLine.trim().length > 0) {
+      result.push(currentLine)
+    }
+
+    return result.length > 0 ? result : [line]
+  }
+
   private fancyPrint(messageInLogFmt: string, colorStart: string, colorEnd: string) {
     // Clean up and prepare
     const formatted = messageInLogFmt
       .replace(colorStart, '')
       .replace(colorEnd, '')
-      .replace(/\\n/g, '\n')
+      //.replace(/\\n/g, '\n')
       .replace(/\u001B\[\d+m/g, '')
       .replace(/ (?=\w+=)/g, '\n')
       .replace(/(\w+)=/g, `${FANCY_KEY_COLOR}$1${ANSI_RESET}: `)
@@ -99,51 +190,16 @@ export class LineLoggerSubservice implements LoggerService {
     // Split into separate lines
     const lineArr = formatted.split('\n')
 
-    // Wrap long lines after '='
+    // Wrap long lines using state machine
     const wrappedLines: string[] = []
-    let lastPadding = 0
     lineArr.forEach((line) => {
       const cleanLine = line.replace(/\u001B\[\d+m/g, '')
-      const colonIndex = cleanLine.indexOf(': ')
-      if (colonIndex !== -1) {
-        lastPadding = colonIndex + 2
-      }
 
       if (cleanLine.length <= MAX_LINE_WIDTH) {
         wrappedLines.push(line)
       } else {
-        const padding = colonIndex !== -1 ? colonIndex + 2 : lastPadding
-        let remaining = colonIndex !== -1 ? line : ' '.repeat(padding).concat(line)
-
-        while (remaining.length > 0) {
-          const cleanRemaining = remaining.replace(/\u001B\[\d+m/g, '')
-          if (cleanRemaining.length <= MAX_LINE_WIDTH) {
-            wrappedLines.push(remaining)
-            break
-          }
-
-          // Find the last `: ` within MAX_LINE_WIDTH
-          const chunk = remaining.substring(0, MAX_LINE_WIDTH)
-          const lastEqualIndex = chunk.indexOf(': ')
-
-          if (lastEqualIndex > 0) {
-            // Count ANSI codes up to the split point to adjust position
-            const ansiMatches = [...chunk.matchAll(/\u001B\[\d+m/g)]
-            let actualIndex = lastEqualIndex + 1
-            for (const match of ansiMatches) {
-              if (match.index! <= actualIndex) {
-                actualIndex += match[0].length
-              }
-            }
-            wrappedLines.push(remaining.substring(0, actualIndex))
-            remaining = remaining.substring(actualIndex)
-          } else {
-            // No `: ` found, just break at MAX_LINE_WIDTH
-            wrappedLines.push(remaining.substring(0, MAX_LINE_WIDTH))
-            remaining = remaining.substring(MAX_LINE_WIDTH)
-          }
-          remaining = ' '.repeat(padding).concat(remaining)
-        }
+        const wrapped = this.wrapLineWithAnsi(line, MAX_LINE_WIDTH)
+        wrappedLines.push(...wrapped)
       }
     })
 
@@ -155,8 +211,8 @@ export class LineLoggerSubservice implements LoggerService {
     console.log(`${colorStart}┌${border}┐${colorEnd}`)
 
     wrappedLines.forEach((line) => {
-      const padding = ' '.repeat(maxLength - line.replace(/\u001B\[\d+m/g, '').length)
-      console.log(`${colorStart}│${colorEnd} ${line}${padding} ${colorStart}│${colorEnd}`)
+      const rightPadding = ' '.repeat(maxLength - line.replace(/\u001B\[\d+m/g, '').length)
+      console.log(`${colorStart}│${colorEnd} ${line}${rightPadding} ${colorStart}│${colorEnd}`)
     })
 
     // Bottom border

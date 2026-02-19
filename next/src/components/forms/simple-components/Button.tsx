@@ -26,7 +26,7 @@ type ButtonOrIconButton =
     } & PropsWithChildren)
 
 type ButtonBase = {
-// When adding a new variant, include it also in is...Variant booleans below
+  // When adding a new variant, include it also in is...Variant booleans below
   variant?:
     | 'unstyled'
     | 'icon-wrapped'
@@ -43,7 +43,7 @@ type ButtonBase = {
   fullWidthMobile?: boolean
   isLoading?: boolean
   // TODO: change to loadingText
-  isLoadingText?: string
+  loadingText?: string
 } & ButtonOrIconButton
 
 export type ButtonProps = Omit<RACButtonProps, 'className' | 'style'> &
@@ -52,7 +52,7 @@ export type ButtonProps = Omit<RACButtonProps, 'className' | 'style'> &
     target?: never
     hasLinkIcon?: never
     // TODO: change to analyticsProps
-    plausibleProps?: never
+    analyticsProps?: never
   }
 
 export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
@@ -61,7 +61,7 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
     stretched?: boolean
     hasLinkIcon?: boolean
     // TODO: change to analyticsProps
-    plausibleProps?: LinkPlausibleProps
+    analyticsProps?: LinkPlausibleProps
   }
 
 export type PolymorphicProps = ButtonProps | AnchorProps
@@ -82,7 +82,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       fullWidth,
       fullWidthMobile,
       isLoading,
-      isLoadingText,
+      loadingText,
       onPress,
       ...rest
     },
@@ -126,6 +126,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
 
               // disabled or loading
               'opacity-50': isLoadingOrDisabled,
+
               // TODO consider applying this to unstyled as well
               // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
               'after:absolute after:inset-0': 'stretched' in rest && rest.stretched,
@@ -222,7 +223,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           target={isExternal ? '_blank' : '_self'}
           ref={ref as Ref<HTMLAnchorElement>}
           className={styles}
-          plausibleProps={rest.plausibleProps}
+          plausibleProps={rest.analyticsProps}
           {...rest}
         >
           {startIcon}
@@ -242,7 +243,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {!isLoading && startIcon}
         {isLoading ? (
           <>
-            {isLoadingText}
+            {loadingText}
             <Spinner size="sm" />
           </>
         ) : (

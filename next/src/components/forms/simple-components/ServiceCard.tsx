@@ -66,7 +66,7 @@ const ServiceCard = ({
             variant="link"
             className="text-p2-semibold"
             stretched
-            plausibleProps={plausibleProps}
+            analyticsProps={plausibleProps}
           >
             {buttonText}
           </Button>

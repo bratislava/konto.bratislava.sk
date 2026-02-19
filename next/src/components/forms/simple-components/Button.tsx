@@ -126,6 +126,9 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
 
               // disabled or loading
               'opacity-50': isLoadingOrDisabled,
+              // TODO consider applying this to unstyled as well
+              // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
+              'after:absolute after:inset-0': 'stretched' in rest && rest.stretched,
 
               // width or fullwidth
               'w-full': fullWidth,

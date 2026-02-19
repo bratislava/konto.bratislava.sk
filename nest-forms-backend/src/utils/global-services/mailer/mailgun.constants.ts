@@ -250,5 +250,45 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
       },
     },
   },
+  BRATISLAVA_NEW_SUBMISSION: {
+    template: '2026-bratislava-new-submission',
+    subject: 'Bratislavské konto: Nové podanie',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      htmlData: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{htmlData}}',
+      },
+      formSentAt: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{formSentAt}}',
+      },
+    },
+  },
+  BRATISLAVA_SENT_SUCCESS: {
+    template: '2026-bratislava-form-success',
+    subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      feHost: {
+        type: MailgunConfigVariableType.STRING,
+        value: process.env.FRONTEND_URL || 'https://konto.bratislava.sk',
+      },
+      firstName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{firstName}}',
+      },
+      formSentAt: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{formSentAt}}',
+      },
+    },
+  },
 }
 /* eslint-enable no-secrets/no-secrets */

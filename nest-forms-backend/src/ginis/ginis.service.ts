@@ -484,6 +484,7 @@ export default class GinisService {
                 form.formDataJson,
               ),
               slug: form.formDefinitionSlug,
+              formSentAt: form.formSentAt,
             },
             to: data.userData.email,
           },

@@ -24,6 +24,7 @@ import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample from './examples/
 import ziadostOSlobodnyPristupKInformaciamExample from './examples/ziadostOSlobodnyPristupKInformaciamExample'
 import priznanieKDaniZNehnutelnostiExample5NoCalculators from './examples/priznanieKDaniZNehnutelnostiExample5NoCalculators'
 import ziadostOUzemnoplanovaciuInformaciuExample from './examples/ziadostOUzemnoplanovaciuInformaciuExample'
+import nahlaseniePodnetuKElektrickymKolobezkamExample from './examples/nahlaseniePodnetuKElektrickymKolobezkamExample'
 
 export const exampleForms: Record<string, ExampleForm[]> = {
   'stanovisko-k-investicnemu-zameru': [stanoviskoKInvesticnemuZameruExample],
@@ -61,6 +62,7 @@ export const exampleForms: Record<string, ExampleForm[]> = {
   ],
   'ziadost-o-slobodny-pristup-k-informaciam': [ziadostOSlobodnyPristupKInformaciamExample],
   'ziadost-o-uzemnoplanovaciu-informaciu': [ziadostOUzemnoplanovaciuInformaciuExample],
+  'nahlasenie-podnetu-k-elektrickym-kolobezkam': [nahlaseniePodnetuKElektrickymKolobezkamExample],
 }
 
 export const exampleDevForms: Record<string, ExampleForm[]> = {}

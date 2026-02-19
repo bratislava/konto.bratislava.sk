@@ -8,6 +8,7 @@ export interface SendEmailInputDto {
     messageSubject: string
     firstName: string | null
     slug: string
+    formSentAt: Date | null
     htmlData?: string
   }
 }

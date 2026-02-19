@@ -179,6 +179,16 @@ export class FormUpdateBodyDto {
   @IsObject()
   @ValidateNested()
   formSignature?: FormSignatureDto
+
+  @ApiPropertyOptional({
+    description: 'Date time, when form was sent',
+    nullable: true,
+    example: '2026-02-11T12:00:00.000Z',
+  })
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  formSentAt?: Date | null
 }
 
 /* eslint-enable pii/no-phone-number */

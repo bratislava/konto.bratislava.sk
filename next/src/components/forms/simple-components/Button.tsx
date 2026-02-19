@@ -31,11 +31,13 @@ type ButtonBase = {
     | 'icon-wrapped'
     | 'icon-wrapped-negative-margin'
     | 'solid'
+    | 'solid-inverted'
     | 'outline'
     | 'plain'
     | 'negative-solid'
     | 'negative-plain'
     | 'link'
+    | 'link-inverted'
   size?: 'responsive' | 'large' | 'small'
   className?: string
   fullWidth?: boolean
@@ -89,14 +91,15 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
   ) => {
     const isLoadingOrDisabled = isLoading || isDisabled
 
-    const isSolidVariant = variant.endsWith('solid')
-    const isOutlineVariant = variant.endsWith('outline')
+    const isSolidVariant =
+      variant === 'solid' || variant === 'negative-solid' || variant === 'solid-inverted'
+    const isOutlineVariant = variant === 'outline'
     const isSolidOrOutlineVariant = isSolidVariant || isOutlineVariant
-    const isPlainVariant = variant.endsWith('plain')
-    const isLinkVariant = variant.endsWith('link')
+    const isPlainVariant = variant === 'plain' || variant === 'negative-plain'
     const isIconWrappedVariant =
       variant === 'icon-wrapped' || variant === 'icon-wrapped-negative-margin'
     const isIconButton = Boolean(icon)
+    const isLinkVariant = variant === 'link' || variant === 'link-inverted'
 
     /* TODO
      *   - border should render inside button, not outside
@@ -161,6 +164,8 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               'p-1.5 lg:p-2': size === 'responsive' && isIconButton && isPlainVariant,
               'p-1.5': size === 'small' && isIconButton && isPlainVariant,
               'p-2': size === 'large' && isIconButton && isPlainVariant,
+
+              // TODO: Add styles for solid-inverted and link-inverted
 
               // colors - bg, border, text - idle & focus
               'border-gray-700 bg-gray-700 text-white data-pressed:border-gray-800 data-pressed:bg-gray-800':

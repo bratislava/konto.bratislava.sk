@@ -7,7 +7,7 @@ import { AriaButtonProps } from 'react-aria'
 import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-components'
 
 import { ArrowDownIcon, ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
-import MLink, { LinkPlausibleProps } from '@/src/components/forms/simple-components/MLink'
+import MLink, { LinkAnalyticsProps } from '@/src/components/forms/simple-components/MLink'
 import Spinner from '@/src/components/forms/simple-components/Spinner'
 import cn from '@/src/frontend/cn'
 
@@ -42,7 +42,6 @@ type ButtonBase = {
   fullWidth?: boolean
   fullWidthMobile?: boolean
   isLoading?: boolean
-  // TODO: change to loadingText
   loadingText?: string
 } & ButtonOrIconButton
 
@@ -51,7 +50,6 @@ export type ButtonProps = Omit<RACButtonProps, 'className' | 'style'> &
     href?: never
     target?: never
     hasLinkIcon?: never
-    // TODO: change to analyticsProps
     analyticsProps?: never
   }
 
@@ -60,8 +58,7 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
   Pick<ComponentProps<typeof NextLink>, 'target' | 'replace' | 'prefetch'> & {
     stretched?: boolean
     hasLinkIcon?: boolean
-    // TODO: change to analyticsProps
-    analyticsProps?: LinkPlausibleProps
+    analyticsProps?: LinkAnalyticsProps
   }
 
 export type PolymorphicProps = ButtonProps | AnchorProps
@@ -223,7 +220,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           target={isExternal ? '_blank' : '_self'}
           ref={ref as Ref<HTMLAnchorElement>}
           className={styles}
-          plausibleProps={rest.analyticsProps}
+          analyticsProps={rest.analyticsProps}
           {...rest}
         >
           {startIcon}

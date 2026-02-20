@@ -35,15 +35,31 @@ const TaxFeePaymentMethods = () => {
         <TaxFeePaymentMethodsItem
           title={
             taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? (
+              taxData.type === TaxType.Dzn ? (
+                // temporary hide payment by card for KO, so translations are different
+                <Trans
+                  ns="account"
+                  i18nKey="tax_detail_section.tax_payment_rest.dzn"
+                  components={{ strong: <strong className="font-semibold" /> }}
+                />
+              ) : (
+                <Trans
+                  ns="account"
+                  i18nKey="tax_detail_section.tax_payment_rest.ko"
+                  components={{ strong: <strong className="font-semibold" /> }}
+                />
+              )
+            ) : taxData.type === TaxType.Dzn ? (
+              // temporary hide payment by card for KO, so translations are different
               <Trans
                 ns="account"
-                i18nKey="tax_detail_section.tax_payment_rest"
+                i18nKey="tax_detail_section.tax_payment_full.dzn"
                 components={{ strong: <strong className="font-semibold" /> }}
               />
             ) : (
               <Trans
                 ns="account"
-                i18nKey="tax_detail_section.tax_payment_full"
+                i18nKey="tax_detail_section.tax_payment_full.ko"
                 components={{ strong: <strong className="font-semibold" /> }}
               />
             )
@@ -70,11 +86,20 @@ const TaxFeePaymentMethods = () => {
           installmentPayment.activeInstallment?.remainingAmount !== undefined && (
             <TaxFeePaymentMethodsItem
               title={
-                <Trans
-                  ns="account"
-                  i18nKey="tax_detail_section.tax_payment_installment"
-                  components={{ strong: <strong className="font-semibold" /> }}
-                />
+                taxData.type === TaxType.Dzn ? (
+                  // temporary hide payment by card for KO, so translations are different
+                  <Trans
+                    ns="account"
+                    i18nKey="tax_detail_section.tax_payment_installment.dzn"
+                    components={{ strong: <strong className="font-semibold" /> }}
+                  />
+                ) : (
+                  <Trans
+                    ns="account"
+                    i18nKey="tax_detail_section.tax_payment_installment.ko"
+                    components={{ strong: <strong className="font-semibold" /> }}
+                  />
+                )
               }
               subtitle={
                 installmentPayment.activeInstallment?.dueDate

@@ -17,7 +17,7 @@ import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { parseBirthNumberFromUri } from '../utils/upvs'
 import _ from 'lodash'
 
-export type UpvsIdentityByUriServiceCreateManyParam = {
+export type CreateManyParam = {
   physicalEntityId?: string
   uri: string
 }[]
@@ -66,7 +66,7 @@ export class NasesService {
   }
 
   // copied from nest-forms-backend
-  createTechnicalAccountJwtToken(): string {
+  private createTechnicalAccountJwtToken(): string {
     const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
     const header = {
       alg: 'RS256',
@@ -115,7 +115,7 @@ export class NasesService {
   // multiple uris with same birthnumber can be passed in, but these should always be assigned to the same physicalEntityId
   // for successful requests, the uri that was returned by UPVS is saved - this might be different from the one that was requested (i.e. when the surname changes)
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  async createMany(inputs: UpvsIdentityByUriServiceCreateManyParam): Promise<UpvsCreateManyResult> {
+  async createMany(inputs: CreateManyParam): Promise<UpvsCreateManyResult> {
     if (inputs.length === 0 || inputs.length > 100) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,

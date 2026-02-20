@@ -3,7 +3,7 @@ import { InstallmentPaidStatusEnum } from 'openapi-clients/tax'
 import React, { Fragment } from 'react'
 
 import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
-import { useTaxFeeSection } from '@/src/components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
+import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import cn from '@/src/frontend/cn'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 import { formatDate } from '@/src/frontend/utils/general'
@@ -15,7 +15,7 @@ import { formatDate } from '@/src/frontend/utils/general'
 const PaymentSchedule = () => {
   const { t } = useTranslation('account')
 
-  const { taxData } = useTaxFeeSection()
+  const { taxData } = useTaxFee()
 
   return (
     <ul className="flex w-full flex-col rounded-lg border-2 border-gray-200 px-4 lg:px-6">

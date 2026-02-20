@@ -1,11 +1,11 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
-import { getDraftApplications } from '@/src/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
-import MyApplicationsSection from '@/src/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
-import { getEmailFormSlugs } from '@/src/components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
+import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
+import { getEmailFormSlugs } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededServer'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
@@ -64,7 +64,7 @@ const AccountMyApplicationsPage = ({
 }: AccountMyApplicationsPageProps) => {
   return (
     <PageLayout>
-      <MyApplicationsSection
+      <MyApplicationsPageContent
         selectedSection={selectedSection}
         applications={applications}
         formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}

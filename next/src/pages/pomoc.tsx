@@ -1,8 +1,8 @@
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { HelpPageFragment } from '@/src/clients/graphql-strapi/api'
-import HelpSection from '@/src/components/forms/segments/AccountSections/HelpSection/HelpSection'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import HelpPageContent from '@/src/components/page-contents/HelpPageContent/HelpPageContent'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
@@ -31,7 +31,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountHelpPageProps
 const AccountHelpPage = ({ helpPage }: AccountHelpPageProps) => {
   return (
     <PageLayout>
-      <HelpSection helpPage={helpPage} />
+      <HelpPageContent helpPage={helpPage} />
     </PageLayout>
   )
 }

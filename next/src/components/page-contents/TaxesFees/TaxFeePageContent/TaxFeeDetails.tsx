@@ -7,7 +7,7 @@ import TaxFeeAccordions from '@/src/components/page-contents/TaxesFees/TaxFeePag
 import TaxFeePaymentSummary from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentSummary'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Button from '@/src/components/simple-components/Button'
-import { EXTERNAL_LINKS } from '@/src/frontend/api/constants'
+import { EXTERNAL_LINKS } from '@/src/utils/routes'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20611-9194&t=Ccb3STSCmoifklgW-4

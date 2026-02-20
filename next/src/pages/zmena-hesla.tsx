@@ -8,7 +8,6 @@ import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -17,6 +16,7 @@ import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 import { AuthPageCommonProps } from '@/src/pages/prihlasenie'
+import { ROUTES } from '@/src/utils/routes'
 
 enum PasswordChangeStatus {
   INIT = 'INIT',

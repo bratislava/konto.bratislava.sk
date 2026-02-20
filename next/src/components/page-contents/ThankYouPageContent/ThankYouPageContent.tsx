@@ -7,8 +7,8 @@ import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapi
 import ThankYouCard, {
   ThankYouCardBase,
 } from '@/src/components/page-contents/ThankYouPageContent/ThankYouCard'
-import { ROUTES } from '@/src/frontend/api/constants'
 import logger from '@/src/frontend/utils/logger'
+import { ROUTES } from '@/src/utils/routes'
 
 // TODO use the nuqs library to get query params
 // example: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/sections/ArticlesSection/ArticlesAll/useArticlesFilters.tsx

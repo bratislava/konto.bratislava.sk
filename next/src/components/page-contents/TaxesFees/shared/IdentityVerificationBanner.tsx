@@ -3,7 +3,7 @@ import React from 'react'
 
 import ImageMestskeKontoSituacia from '@/src/assets/images/mestske-konto-situacia.png'
 import AnnouncementBlock from '@/src/components/page-contents/IntroPageContent/Announcements/AnnouncementBlock'
-import { ROUTES } from '@/src/frontend/api/constants'
+import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   variant: 'verification-needed' | 'verification-in-process'

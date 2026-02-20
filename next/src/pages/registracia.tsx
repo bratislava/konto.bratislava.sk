@@ -16,7 +16,6 @@ import AccountActivator from '@/src/components/segments/AccountActivator/Account
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 import {
   AmplifyClientOAuthProvider,
@@ -34,6 +33,7 @@ import {
   AuthPageCommonProps,
   loginConfirmSignUpEmailHiddenQueryParam,
 } from '@/src/pages/prihlasenie'
+import { ROUTES } from '@/src/utils/routes'
 
 enum RegistrationStatus {
   INIT = 'INIT',

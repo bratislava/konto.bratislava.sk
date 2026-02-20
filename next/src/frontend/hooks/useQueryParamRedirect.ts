@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo } from 'react'
 
-import { ROUTES } from '@/src/frontend/api/constants'
 import { useOAuthParams } from '@/src/frontend/hooks/useOAuthParams'
 import {
   authRequestIdQueryParam,
@@ -16,6 +15,7 @@ import {
   isOAuthQueryParam,
   redirectQueryParam,
 } from '@/src/frontend/utils/queryParamRedirect'
+import { ROUTES } from '@/src/utils/routes'
 
 export const useQueryParamRedirect = () => {
   const router = useRouter()

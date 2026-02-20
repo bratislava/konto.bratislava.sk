@@ -10,9 +10,9 @@ import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
-import { ROUTES } from '@/src/frontend/api/constants'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { isDefined } from '@/src/frontend/utils/general'
+import { ROUTES } from '@/src/utils/routes'
 
 export type FormWithLandingPageRequiredFragment = Omit<
   FormWithLandingPageFragment,

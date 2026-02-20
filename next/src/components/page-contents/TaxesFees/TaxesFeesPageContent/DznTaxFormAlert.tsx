@@ -4,7 +4,7 @@ import React from 'react'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
 import MLink from '@/src/components/simple-components/MLink'
-import { ROUTES } from '@/src/frontend/api/constants'
+import { ROUTES } from '@/src/utils/routes'
 
 const DznTaxFormAlert = () => {
   const { t } = useTranslation('account')

@@ -2,10 +2,10 @@ import { useQueryClient } from '@tanstack/react-query'
 import { signOut as amplifySignOut } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 
-import { ROUTES } from '@/src/frontend/api/constants'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import logger from '@/src/frontend/utils/logger'
+import { ROUTES } from '@/src/utils/routes'
 
 // Attempts to fix https://github.com/aws-amplify/amplify-js/issues/13182
 export const removeAllCookiesAndClearLocalStorage = () => {

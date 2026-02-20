@@ -19,7 +19,6 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { Tier } from '@/src/frontend/dtos/accountDto'
 import {
   AmplifyClientOAuthProvider,
@@ -36,6 +35,7 @@ import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
+import { ROUTES } from '@/src/utils/routes'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {

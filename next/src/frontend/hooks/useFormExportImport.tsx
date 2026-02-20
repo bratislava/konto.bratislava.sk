@@ -16,12 +16,12 @@ import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
 import { environment } from '@/src/environment'
-import { ROUTES } from '@/src/frontend/api/constants'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { createSerializableFile } from '@/src/frontend/utils/formExportImport'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
+import { ROUTES } from '@/src/utils/routes'
 
 export const useGetContext = () => {
   const { isSignedIn } = useSsrAuth()

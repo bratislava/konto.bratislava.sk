@@ -13,8 +13,8 @@ import Banner from '@/src/components/simple-components/Banner'
 import Button from '@/src/components/simple-components/Button'
 import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   services: MunicipalServiceCardEntityFragment[]

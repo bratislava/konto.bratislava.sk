@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PrismaService } from '../prisma/prisma.service'
@@ -199,3 +200,5 @@ describe('UpvsQueueService', () => {
     })
   })
 })
+
+/* eslint-enable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */

@@ -3,8 +3,8 @@ import 'dotenv/config'
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
-import { Prisma, PrismaClient } from '../../prisma/generated/prisma/client'
 
+import { Prisma, PrismaClient } from '../../prisma/generated/prisma/client'
 import { escapeForLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 

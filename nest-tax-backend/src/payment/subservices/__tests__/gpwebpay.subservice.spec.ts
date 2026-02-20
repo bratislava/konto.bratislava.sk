@@ -2,8 +2,8 @@ import crypto from 'node:crypto'
 
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '../../../../prisma/generated/prisma/enums'
 
+import { TaxType } from '../../../../prisma/generated/prisma/enums'
 import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,

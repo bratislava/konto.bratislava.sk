@@ -1,14 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import dayjs from 'dayjs'
+import pLimit from 'p-limit'
+
+import { Prisma } from '../../prisma/generated/prisma/client'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
   TaxType,
 } from '../../prisma/generated/prisma/enums'
-import dayjs from 'dayjs'
-import pLimit from 'p-limit'
-
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
@@ -36,7 +37,6 @@ import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
-import { Prisma } from '../../prisma/generated/prisma/client'
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
@@ -376,7 +376,7 @@ export class TasksService {
   async sendAlertsIfHolidaysAreNotSet() {
     const nextYear = dayjs().year() + 1
 
-    const stateHolidaysForNextYear = !!stateHolidays[nextYear]
+    const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
 
     if (!stateHolidaysForNextYear) {
       this.throwerErrorGuard.InternalServerErrorException(

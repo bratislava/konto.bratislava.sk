@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '../../../../prisma/generated/prisma/enums'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 
+import { TaxType } from '../../../../prisma/generated/prisma/enums'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
@@ -112,7 +112,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get communal waste tax data from Noris',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : error as string,
           error instanceof Error ? error : undefined,
         )
       },
@@ -263,7 +263,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     }
 
     const results = await Promise.all(
-      norisData.map((norisItem) => updateTaxRecord(norisItem)),
+      norisData.map(async (norisItem) => updateTaxRecord(norisItem)),
     )
     count = results.filter(Boolean).length
 

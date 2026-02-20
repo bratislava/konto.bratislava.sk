@@ -2,6 +2,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import {
@@ -26,7 +27,6 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
 } from '../dtos/response.tax.dto'
-import { DeliveryMethodNamed, PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

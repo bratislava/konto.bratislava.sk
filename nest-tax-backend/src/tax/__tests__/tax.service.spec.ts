@@ -2,6 +2,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
+import { TaxPayerGetPayload } from '../../../prisma/generated/prisma/models'
 import prismaMock from '../../../test/singleton'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { PaymentService } from '../../payment/payment.service'
@@ -15,8 +17,6 @@ import {
 import { TaxAvailabilityStatus, TaxStatusEnum } from '../dtos/response.tax.dto'
 import { TaxService } from '../tax.service'
 import * as unifiedTaxUtil from '../utils/unified-tax.util'
-import { PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
-import { TaxPayerGetPayload } from '../../../prisma/generated/prisma/models'
 
 jest.mock('../utils/helpers/tax.helper', () => {
   const actual = jest.requireActual('../utils/helpers/tax.helper')

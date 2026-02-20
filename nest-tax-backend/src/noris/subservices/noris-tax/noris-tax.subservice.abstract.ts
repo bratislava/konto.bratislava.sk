@@ -2,6 +2,9 @@ import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
+import { Tax } from '../../../../prisma/generated/prisma/client'
+import { TaxType } from '../../../../prisma/generated/prisma/enums'
+import { TaxWhereUniqueInput, TransactionClient } from '../../../../prisma/generated/prisma/internal/prismaNamespace'
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
@@ -26,9 +29,6 @@ import {
   mapNorisToTaxPayerData,
 } from '../../utils/mapping.helper'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
-import { TaxType } from '../../../../prisma/generated/prisma/enums'
-import { Tax } from '../../../../prisma/generated/prisma/client'
-import { TaxWhereUniqueInput, TransactionClient } from '../../../../prisma/generated/prisma/internal/prismaNamespace'
 
 export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   protected readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
@@ -180,7 +180,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     year: number,
     options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    const birthNumbersResult: Set<string> = new Set()
+    const birthNumbersResult = new Set<string>()
     const { prepareOnly = false, ignoreBatchLimit = false } = options
 
     this.logger.log(

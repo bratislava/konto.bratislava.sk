@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import noop from 'lodash/noop'
 
+import { PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
 import prismaMock from '../../../test/singleton'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../../card-payment-reporting/card-payment-reporting.service'
@@ -22,10 +23,9 @@ import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from '../subservices/config.subservice'
 import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
 import { TasksService } from '../tasks.service'
-import { PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
 
 // Mock p-limit to return a function that executes the passed function immediately
-const mockPLimitFn = (fn: () => Promise<any>) => fn()
+const mockPLimitFn = async (fn: () => Promise<any>) => fn()
 jest.mock('p-limit', () => {
   return jest.fn(() => mockPLimitFn)
 })

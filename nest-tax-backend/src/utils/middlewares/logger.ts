@@ -13,7 +13,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     response.locals.middlewareUsed = 'true'
 
     const { send } = response
-    response.send = (exitData: string | object | Buffer | Array<any>) => {
+    response.send = (exitData: string | object | Buffer | any[]) => {
       response.locals.middlewareUsed = undefined
 
       const { responseData, logData, returnExitData } = this.parseExitData(
@@ -80,7 +80,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
   private parseExitData(
     response: Response,
-    exitData: string | object | Buffer | Array<any>,
+    exitData: string | object | Buffer | any[],
   ): {
     returnExitData: typeof exitData
     responseData: string
@@ -93,7 +93,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
         .includes('application/json')
     ) {
       return {
-        responseData: <string>exitData,
+        responseData: exitData as string,
         returnExitData: exitData,
         logData: {},
       }

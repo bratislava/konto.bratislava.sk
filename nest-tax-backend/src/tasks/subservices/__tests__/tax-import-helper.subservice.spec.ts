@@ -1,7 +1,7 @@
 /* eslint-disable no-secrets/no-secrets */
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '../../../../prisma/generated/prisma/enums'
 
+import { TaxType } from '../../../../prisma/generated/prisma/enums'
 import prismaMock from '../../../../test/singleton'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { NorisService } from '../../../noris/noris.service'

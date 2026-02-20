@@ -1,8 +1,8 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { DeliveryMethodNamed, PaymentStatus, TaxType } from '../../../../prisma/generated/prisma/enums'
 import noop from 'lodash/noop'
 
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '../../../../prisma/generated/prisma/enums'
 import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
@@ -863,7 +863,7 @@ describe('UnifiedTaxUtil', () => {
       }
 
       // eslint-disable-next-line unicorn/no-array-reduce
-      const combinations = Object.entries(testInputArrays).reduce(
+      const combinations = Object.entries(testInputArrays).reduce<Partial<typeof defaultInputRealEstate>[]>(
         (acc, [key, values]) => {
           if (acc.length === 0) {
             return values.map((value) => ({ [key]: value }))
@@ -872,7 +872,7 @@ describe('UnifiedTaxUtil', () => {
             values.map((value) => ({ ...combo, [key]: value })),
           )
         },
-        [] as Array<Partial<typeof defaultInputRealEstate>>,
+        [],
       )
 
       test.each(combinations.map((combination) => [combination]))(
@@ -1402,7 +1402,7 @@ describe('UnifiedTaxUtil', () => {
         }
 
         // eslint-disable-next-line unicorn/no-array-reduce
-        const combinations = Object.entries(testInputArrays).reduce(
+        const combinations = Object.entries(testInputArrays).reduce<Partial<typeof defaultInput4Installments>[]>(
           (acc, [key, values]) => {
             if (acc.length === 0) {
               return values.map((value) => ({ [key]: value }))
@@ -1411,7 +1411,7 @@ describe('UnifiedTaxUtil', () => {
               values.map((value) => ({ ...combo, [key]: value })),
             )
           },
-          [] as Array<Partial<typeof defaultInput4Installments>>,
+          [],
         )
 
         test.each(combinations.map((combination) => [combination]))(
@@ -1786,4 +1786,4 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
   })
 })
 
-/* eslint-enable no-param-reassign */
+

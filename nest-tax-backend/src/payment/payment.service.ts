@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import formurlencoded from 'form-urlencoded'
+
+import { Prisma, TaxPayment } from '../../prisma/generated/prisma/client'
 import {
   PaymentStatus,
   TaxPaymentSource,
   TaxType,
 } from '../../prisma/generated/prisma/enums'
-import formurlencoded from 'form-urlencoded'
-
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { TaxService } from '../tax/tax.service'
@@ -28,7 +29,6 @@ import {
   GP_WEBPAY_CONFIG_KEY_MAP,
   GpWebpaySubservice,
 } from './subservices/gpwebpay.subservice'
-import { Prisma, TaxPayment } from '../../prisma/generated/prisma/client'
 
 interface GpWebpayProcessingStrategy {
   dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
@@ -333,7 +333,7 @@ export class PaymentService {
 
       if (nextStatus === PaymentStatus.SUCCESS) {
         const user = await this.retryService.retryWithDelay(
-          () =>
+          async () =>
             this.cityAccountSubservice.getUserDataAdmin(
               taxPaymentWithTax.tax.taxPayer.birthNumber,
             ),

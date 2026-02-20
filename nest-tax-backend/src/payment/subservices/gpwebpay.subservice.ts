@@ -2,8 +2,8 @@ import crypto from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { TaxType } from '../../../prisma/generated/prisma/enums'
 
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,
@@ -39,7 +39,7 @@ export class GpWebpaySubservice {
   constructor(private readonly configService: ConfigService) { }
 
   private readonly getDataToSign = (data: CreateOrderData): string => {
-    const digestData: Array<keyof CreateOrderData> = [
+    const digestData: (keyof CreateOrderData)[] = [
       'MERCHANTNUMBER',
       'OPERATION',
       'ORDERNUMBER',

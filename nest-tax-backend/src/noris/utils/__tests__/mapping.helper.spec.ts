@@ -1,6 +1,5 @@
 /* eslint-disable no-secrets/no-secrets */
 import { TaxType } from '../../../../prisma/generated/prisma/enums'
-
 import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,

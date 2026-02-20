@@ -1,11 +1,11 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxAdministrator, TaxPayer, } from '../../../../../prisma/generated/prisma/client'
-import { TaxType } from '../../../../../prisma/generated/prisma/enums'
+import noop from 'lodash/noop'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
+import { TaxAdministrator, TaxPayer, } from '../../../../../prisma/generated/prisma/client'
+import { TaxType } from '../../../../../prisma/generated/prisma/enums'
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
@@ -243,7 +243,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -273,7 +273,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -301,7 +301,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -370,14 +370,14 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(() => { })
+        .mockImplementation(noop)
     })
 
     it('should process Noris tax data and return birth numbers', async () => {
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
         .mockImplementation(
-          async (taxDefinition, birthNumbersResult, norisItem) => {
+          (taxDefinition, birthNumbersResult, norisItem) => {
             ; (birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
           },
         )
@@ -472,7 +472,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             deleteMany: jest.fn().mockResolvedValue({}),
           },
         }
-        return callback(mockTx as any)
+        return await callback(mockTx as any)
       })
 
       jest.spyOn(service as any, 'insertTaxDataToDatabase').mockResolvedValue({
@@ -590,7 +590,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -618,7 +618,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -665,7 +665,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(() => { })
+        .mockImplementation(noop)
 
       await service.processNorisTaxData(mockNorisData, 2023, {})
 
@@ -707,7 +707,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             deleteMany: jest.fn().mockResolvedValue({}),
           },
         }
-        return callback(mockTx as any)
+        return await callback(mockTx as any)
       })
     })
 
@@ -801,7 +801,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       beforeEach(() => {
-        // eslint-disable-next-line prefer-destructuring
+
         const qrCodeSubservice = service['qrCodeSubservice']
         qrCodeSubservice.createQrCode = jest.fn().mockResolvedValue('qr-code')
 
@@ -923,7 +923,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       let bloomreachService: any
 
       beforeEach(() => {
-        // eslint-disable-next-line prefer-destructuring
+
         const qrCodeSubservice = service['qrCodeSubservice']
         qrCodeSubservice.createQrCode = jest.fn().mockResolvedValue('qr-code')
 
@@ -961,7 +961,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               createMany: jest.fn().mockResolvedValue({}),
             },
           }
-          return callback(mockTx as any)
+          return await callback(mockTx as any)
         })
       })
 
@@ -1068,5 +1068,3 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

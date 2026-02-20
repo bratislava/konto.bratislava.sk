@@ -13,7 +13,7 @@ export default class DatabaseSubservice {
 
   async getConfigByKeys<T extends string>(
     requiredKeys: T[],
-  ): Promise<{ [K in T]: string }> {
+  ): Promise<Record<T, string>> {
     let constants: Record<string, string>
     try {
       const result = await this.prismaService.config.findMany({
@@ -59,7 +59,7 @@ export default class DatabaseSubservice {
       }
     })
 
-    return constants as { [K in T]: string }
+    return constants as Record<T, string>
   }
 
   async getVariableSymbolsByOrderIds(

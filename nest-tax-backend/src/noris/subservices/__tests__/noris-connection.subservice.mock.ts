@@ -26,7 +26,7 @@ export const createNorisConnectionSubserviceMock = () => {
 // Mock dependencies
 export const mockConfigService = {
   getOrThrow: jest.fn((key: string) => {
-    const mockEnvs: { [key: string]: string } = {
+    const mockEnvs: Record<string, string> = {
       MSSQL_HOST: 'localhost',
       MSSQL_DB: 'test_db',
       MSSQL_USERNAME: 'test_user',

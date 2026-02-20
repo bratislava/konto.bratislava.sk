@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
@@ -240,4 +239,3 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
   })
 })
 
-/* eslint-enable no-secrets/no-secrets */

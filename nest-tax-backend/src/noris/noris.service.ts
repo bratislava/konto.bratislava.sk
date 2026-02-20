@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '../../prisma/generated/prisma/enums'
 
+import { TaxType } from '../../prisma/generated/prisma/enums'
 import {
   DateRangeDto,
   RequestPostNorisLoadDataOptionsDto,
@@ -24,13 +24,13 @@ export class NorisService {
   ) { }
 
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
-    return this.paymentSubservice.getPaymentDataFromNoris(data)
+    return await this.paymentSubservice.getPaymentDataFromNoris(data)
   }
 
   async getPaymentDataFromNorisByVariableSymbols(
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
-    return this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(data)
+    return await this.paymentSubservice.getPaymentDataFromNorisByVariableSymbols(data)
   }
 
   async updateOverpaymentsDataFromNorisByDateRange(
@@ -39,7 +39,7 @@ export class NorisService {
       suppressEmail?: boolean
     },
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return this.paymentSubservice.updateOverpaymentsDataFromNorisByDateRange(
+    return await this.paymentSubservice.updateOverpaymentsDataFromNorisByDateRange(
       data,
       bloomreachSettings,
     )
@@ -51,7 +51,7 @@ export class NorisService {
     birthNumbers: string[],
     options: RequestPostNorisLoadDataOptionsDto = {},
   ): Promise<CreateBirthNumbersResponseDto> {
-    return this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
+    return await this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
       taxType,
       year,
       birthNumbers,
@@ -62,7 +62,7 @@ export class NorisService {
   async updatePaymentsFromNorisWithData(
     norisPaymentData: NorisTaxPayment[],
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return this.paymentSubservice.updatePaymentsFromNorisWithData(
+    return await this.paymentSubservice.updatePaymentsFromNorisWithData(
       norisPaymentData,
     )
   }
@@ -73,7 +73,7 @@ export class NorisService {
     year: number,
     options: RequestPostNorisLoadDataOptionsDto = {},
   ) {
-    return this.taxSubservice.processNorisTaxData(
+    return await this.taxSubservice.processNorisTaxData(
       taxType,
       norisData,
       year,
@@ -86,7 +86,7 @@ export class NorisService {
     year: number,
     birthNumbers: string[],
   ) {
-    return this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    return await this.taxSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       taxType,
       year,
       birthNumbers,
@@ -96,11 +96,11 @@ export class NorisService {
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
-    return this.deliveryMethodSubservice.updateDeliveryMethods({ data })
+    return await this.deliveryMethodSubservice.updateDeliveryMethods({ data })
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    return this.deliveryMethodSubservice.removeDeliveryMethodsFromNoris(
+    await this.deliveryMethodSubservice.removeDeliveryMethodsFromNoris(
       birthNumber,
     )
   }

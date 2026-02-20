@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus } from '../../../prisma/generated/prisma/enums'
-import { TaxPayment } from '../../../prisma/generated/prisma/client'
 import currency from 'currency.js'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
+import { TaxPayment } from '../../../prisma/generated/prisma/client'
+import { PaymentStatus } from '../../../prisma/generated/prisma/enums'
 import {
   DateRangeDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
@@ -63,14 +63,14 @@ export class NorisPaymentSubservice {
         request.input('overPayments', mssql.TinyInt, overPayments ? 1 : 0)
         request.input('years', mssql.Int, year)
 
-        return request.query(queryPaymentsFromNorisByFromToDate)
+        return await request.query(queryPaymentsFromNorisByFromToDate)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get payment data from Noris by date range.',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : error as string,
           error instanceof Error ? error : undefined,
         )
       },
@@ -128,7 +128,7 @@ export class NorisPaymentSubservice {
           )
         })
 
-        return request.query(
+        return await request.query(
           queryPaymentsFromNorisByVariableSymbols
             .replaceAll('@years', yearPlaceholders)
             .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
@@ -139,7 +139,7 @@ export class NorisPaymentSubservice {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get payment data from Noris by variable symbols.',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : error as string,
           error instanceof Error ? error : undefined,
         )
       },
@@ -163,14 +163,14 @@ export class NorisPaymentSubservice {
         request.input('fromDate', mssql.SmallDateTime, data.fromDate)
         request.input('toDate', mssql.SmallDateTime, data.toDate ?? new Date())
 
-        return request.query(queryOverpaymentsFromNorisByDateRange)
+        return await request.query(queryOverpaymentsFromNorisByDateRange)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get overpayments data from Noris by date range.',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : error as string,
           error instanceof Error ? error : undefined,
         )
       },
@@ -181,7 +181,7 @@ export class NorisPaymentSubservice {
         NorisTaxPaymentSchema,
         overpaymentsData.recordset,
       )
-    return this.updatePaymentsFromNorisWithData(
+    return await this.updatePaymentsFromNorisWithData(
       validatedOverpaymentsData,
       bloomreachSettings,
     )
@@ -195,7 +195,6 @@ export class NorisPaymentSubservice {
         variableSymbol: {
           in: norisPaymentData
             .map((item) => item.variabilny_symbol)
-            .filter((item) => item !== null && item !== undefined),
         },
       },
       include: {
@@ -257,9 +256,9 @@ export class NorisPaymentSubservice {
     },
   ) {
     // Step 1: Process each payment separately with a concurrency limit
-    const paymentProcesses = norisPaymentData.map((norisPayment) =>
+    const paymentProcesses = norisPaymentData.map(async (norisPayment) =>
       this.concurrencyLimit(async () =>
-        this.processIndividualPayment(
+        await this.processIndividualPayment(
           norisPayment,
           taxesDataByVsMap,
           userDataFromCityAccount,
@@ -269,7 +268,7 @@ export class NorisPaymentSubservice {
     )
 
     // Step 2: Execute all payment processes with limited concurrency
-    return Promise.all(paymentProcesses)
+    return await Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(
@@ -362,6 +361,7 @@ export class NorisPaymentSubservice {
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
           tax_type: taxData.type,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           order: taxData.order!, // non-null by DB trigger and constraint
           suppress_email: bloomreachSettings?.suppressEmail ?? false,
         },

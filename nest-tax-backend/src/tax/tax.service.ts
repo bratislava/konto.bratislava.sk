@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { PaymentStatus, TaxType } from '../../prisma/generated/prisma/enums'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { PaymentStatus, TaxType } from '../../prisma/generated/prisma/enums'
+import { TaxGetPayload, TaxInclude, TaxPayerWhereUniqueInput, TaxWhereUniqueInput } from '../../prisma/generated/prisma/models'
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
@@ -33,7 +34,6 @@ import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
-import { TaxGetPayload, TaxInclude, TaxPayerWhereUniqueInput, TaxWhereUniqueInput } from '../../prisma/generated/prisma/models'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

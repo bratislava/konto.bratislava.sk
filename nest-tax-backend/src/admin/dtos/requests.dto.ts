@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxType } from '../../../prisma/generated/prisma/enums'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -16,9 +15,9 @@ import {
   ValidateNested,
 } from 'class-validator'
 
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import { DeliveryMethod } from '../../noris/types/noris.enums'
 
-// eslint-disable-next-line no-secrets/no-secrets
 /**
  * Options for processing Noris tax data.
  *
@@ -160,11 +159,8 @@ export class DateRangeDto {
   toDate?: Date
 }
 
-export type RequestUpdateNorisDeliveryMethodsData = {
-  [key: string]:
-  | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
-  | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
-}
+export type RequestUpdateNorisDeliveryMethodsData = Record<string, | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
+  | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }>;
 
 export class RequestUpdateNorisDeliveryMethodsDto {
   @ApiProperty({

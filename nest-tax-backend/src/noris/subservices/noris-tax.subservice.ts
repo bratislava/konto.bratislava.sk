@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '../../../prisma/generated/prisma/enums'
 
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import { RequestPostNorisLoadDataOptionsDto } from '../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
 import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes'
@@ -13,7 +13,7 @@ import {
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 
-type TaxTypeToNorisSubservice = {
+interface TaxTypeToNorisSubservice {
   [TaxType.DZN]: NorisTaxRealEstateSubservice
   [TaxType.KO]: NorisTaxCommunalWasteSubservice
 }

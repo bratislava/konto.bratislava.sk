@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '../../../prisma/generated/prisma/enums'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { Prisma } from '../../../prisma/generated/prisma/client'
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { Prisma } from '../../../prisma/generated/prisma/client'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -105,7 +105,7 @@ export default class TaxImportHelperSubservice {
   async getPrioritizedBirthNumbersWithMetadata(
     taxType: TaxType,
     year: number,
-    isImportPhase: boolean = true,
+    isImportPhase = true,
   ): Promise<{
     birthNumbers: string[]
     newlyCreated: string[]

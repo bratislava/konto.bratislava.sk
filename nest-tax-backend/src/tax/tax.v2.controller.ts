@@ -16,9 +16,9 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
-import { TaxType } from '../../prisma/generated/prisma/enums'
 import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
+import { TaxType } from '../../prisma/generated/prisma/enums'
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
 import { Tiers } from '../utils/decorators/tier.decorator'

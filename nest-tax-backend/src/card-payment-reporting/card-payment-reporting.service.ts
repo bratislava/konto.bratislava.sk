@@ -37,7 +37,7 @@ export type CsvColumnsWithVariableSymbol = CsvRecord & {
   variableSymbol: string
 }
 
-export type OutputFile = {
+export interface OutputFile {
   filename: string
   content: string
   debet: number
@@ -52,7 +52,7 @@ export class CardPaymentReportingService {
     private readonly mailSubservice: EmailSubservice,
     private readonly sftpFileSubservice: SftpFileSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
-  ) {}
+  ) { }
 
   private generatePrice(price: number, fill: number): string {
     const adjustedFill = price >= 0 ? fill + 3 : fill + 2
@@ -90,7 +90,7 @@ export class CardPaymentReportingService {
     return csvData.map((row) => {
       const vsMatch =
         variableSymbols.find((item) =>
-          item.orderIds.includes((+row.orderId).toString()),
+          item.orderIds.includes(Number(row.orderId).toString()),
         )?.variableSymbol || ''
       return { ...row, variableSymbol: vsMatch }
     })
@@ -101,7 +101,7 @@ export class CardPaymentReportingService {
       delimiter: ';',
       fromLine: 2, // Skip first line
       relaxColumnCountLess: true,
-    }) as string[][]
+    })
 
     return rows.map((row: string[]) => {
       const rowData: CsvRecord = {} as CsvRecord
@@ -112,14 +112,14 @@ export class CardPaymentReportingService {
     })
   }
 
-  async generateHeader(
+  private generateHeader(
     dateInfo: { today_DDMMYYYY: string },
     constants: {
       REPORTING_VARIABLE_SYMBOL: string
       REPORTING_SPECIFIC_SYMBOL: string
       REPORTING_CONSTANT_SYMBOL: string
     },
-  ): Promise<string> {
+  ): string {
     return [
       '4',
       dateInfo.today_DDMMYYYY,
@@ -142,11 +142,11 @@ export class CardPaymentReportingService {
     ].join('')
   }
 
-  private async generateFileBody(
+  private generateFileBody(
     finalData: CsvColumnsWithVariableSymbol[],
     yesterday_DDMMYYYY: string,
     constants: { REPORTING_USER_CONSTANT_SYMBOL: string },
-  ): Promise<string> {
+  ): string {
     let body = ''
     finalData.forEach((row) => {
       if (row.orderId.length === 0) {
@@ -233,8 +233,8 @@ export class CardPaymentReportingService {
       'REPORTING_SPECIFIC_SYMBOL',
       'REPORTING_CONSTANT_SYMBOL',
     ])
-    const head = await this.generateHeader(dateInfo, constants)
-    const body = await this.generateFileBody(
+    const head = this.generateHeader(dateInfo, constants)
+    const body = this.generateFileBody(
       finalData,
       dateInfo.yesterday_DDMMYYYY,
       constants,
@@ -278,7 +278,7 @@ export class CardPaymentReportingService {
         // Extract variable symbols with all orderIds belonging to each VS
         const variableSymbols =
           await this.databaseSubservice.getVariableSymbolsByOrderIds(
-            csvData.map((row) => (+row.orderId).toString()),
+            csvData.map((row) => Number(row.orderId).toString()),
           )
 
         // Find a matching variable symbol for each row
@@ -295,7 +295,6 @@ export class CardPaymentReportingService {
         const processedFileFileName = this.createFileName(dateInfo.today_YYMMDD)
 
         // Count debet
-        // eslint-disable-next-line unicorn/no-array-reduce
         const debet = finalData.reduce((sum, row) => {
           const value = parseFloat(row.totalPrice.replace(',', '.'))
           return value < 0 ? sum - value : sum

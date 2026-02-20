@@ -1,6 +1,6 @@
-import { TaxType } from '../../../prisma/generated/prisma/enums'
 import currency from 'currency.js'
 
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import {
   CommunalWasteTaxDetail,
   RealEstateTaxAreaType,
@@ -29,7 +29,7 @@ export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   }
 }
 
-type NorisTaxAdministratorData = {
+interface NorisTaxAdministratorData {
   email: string
   externalId: string
   id: number
@@ -51,7 +51,7 @@ export const mapNorisToTaxAdministratorData = (
     : undefined
 }
 
-export type DatabaseBaseTaxData = {
+export interface DatabaseBaseTaxData {
   amount: number
   year: number
   taxPayerId: number
@@ -62,7 +62,7 @@ export type DatabaseBaseTaxData = {
   isCancelled: boolean
 }
 
-type TaxInstallment = {
+interface TaxInstallment {
   taxId: number
   amount: number
   text: string | null

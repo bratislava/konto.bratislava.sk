@@ -1,9 +1,8 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '../../../../../prisma/generated/prisma/enums'
 import * as mssql from 'mssql'
 
+import { TaxType } from '../../../../../prisma/generated/prisma/enums'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
@@ -229,7 +228,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -257,7 +256,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -283,7 +282,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -311,7 +310,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -351,7 +350,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -377,7 +376,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -407,7 +406,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -719,5 +718,3 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

@@ -6,11 +6,11 @@ import {
 } from 'openapi-clients/tax'
 import React from 'react'
 
+import { formatDate } from '@/src/components/formatting/FormatDate'
 import TaxFeePaymentMethodsItem from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Alert from '@/src/components/simple-components/Alert'
-import { ROUTES } from '@/src/frontend/api/constants'
-import { formatDate } from '@/src/frontend/utils/general'
+import { ROUTES } from '@/src/utils/routes'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20611-9839&t=u3JLgxW8MYc6kzxt-4
@@ -53,7 +53,7 @@ const TaxFeePaymentMethods = () => {
             // how date calculation works for PKO is not yet determined same in PaymentSchedule
             oneTimePayment.dueDate
               ? t('tax_detail_section.tax_payment_rest_subtitle', {
-                  date: formatDate(oneTimePayment.dueDate || ''),
+                  date: formatDate(oneTimePayment.dueDate),
                 })
               : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
           }
@@ -79,7 +79,7 @@ const TaxFeePaymentMethods = () => {
               subtitle={
                 installmentPayment.activeInstallment?.dueDate
                   ? t('tax_detail_section.tax_payment_installment_subtitle', {
-                      date: formatDate(installmentPayment.activeInstallment?.dueDate || ''),
+                      date: formatDate(installmentPayment.activeInstallment?.dueDate),
                     })
                   : t('tax_detail_section.tax_payment_installment_subtitle_not_available')
               }

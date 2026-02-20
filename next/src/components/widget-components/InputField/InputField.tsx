@@ -7,7 +7,7 @@ import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/src/as
 import MailIcon from '@/src/assets/ui-icons/custom_mail.svg'
 import Button from '@/src/components/simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
 export type InputType = 'text' | 'password' | 'email' | 'tel'

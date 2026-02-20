@@ -4,7 +4,7 @@ import { useContext, useRef } from 'react'
 import { useRadio } from 'react-aria'
 
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 import { RadioContext } from './RadioGroup'
 

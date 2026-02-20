@@ -22,7 +22,7 @@ import {
 import Button from '@/src/components/simple-components/Button'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
 import ProgressBar from '@/src/components/simple-components/ProgressBar'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type UploadedFileProps = {
   fileInfo: FileInfo

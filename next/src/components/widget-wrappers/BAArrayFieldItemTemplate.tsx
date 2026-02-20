@@ -9,7 +9,7 @@ import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import { RemoveIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type BAArrayFieldItemTemplateAdditionalProps = {
   parentUiOptions: ArrayFieldUiOptions

@@ -2,10 +2,10 @@ import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
+import { useCurrencyFromCentsFormatter } from '@/src/components/formatting/formatCurrency'
 import DznAccordionTableTaxContent from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/DznAccordionTableTaxContent'
 import KoAccordionTableTaxContent from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/KoAccordionTableTaxContent'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
-import { useCurrencyFromCentsFormatter } from '@/src/frontend/utils/formatCurrency'
 
 const TaxFeeAccordions = () => {
   const { taxData } = useTaxFee()

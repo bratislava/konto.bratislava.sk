@@ -11,7 +11,7 @@ import {
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string

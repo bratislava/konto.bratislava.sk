@@ -2,7 +2,7 @@ import { RefObject, useState } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { useEventListener } from 'usehooks-ts'
 
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 /**
  * Copied from: https://github.com/bratislava/marianum.sk/blob/master/next/utils/useHorizontalScrollFade.ts

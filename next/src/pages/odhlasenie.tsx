@@ -5,12 +5,12 @@ import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSignOut } from '@/src/frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import { AmplifyClientOAuthProvider } from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 import { AuthPageCommonProps } from '@/src/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(

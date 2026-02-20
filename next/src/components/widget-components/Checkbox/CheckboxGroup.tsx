@@ -3,7 +3,7 @@ import { useCheckboxGroup } from 'react-aria'
 import { CheckboxGroupState, useCheckboxGroupState } from 'react-stately'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export const CheckboxGroupContext = React.createContext({} as CheckboxGroupState)
 

@@ -9,9 +9,9 @@ import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentP
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
+import { ROUTES } from '@/src/utils/routes'
 
 // query param "sposob-uhrady" could have "zvysna suma" split to "zvysna-suma" and "jednorazova-uhrada"
 // but only thing that is affecting is title of the page

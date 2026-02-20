@@ -3,7 +3,7 @@ import slugify from 'slugify'
 
 import { LinkVariantIcon } from '@/src/assets/ui-icons'
 import MLink from '@/src/components/simple-components/MLink'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type WrapperProps = {
   title?: string

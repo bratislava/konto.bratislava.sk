@@ -8,8 +8,8 @@ import remarkGfm from 'remark-gfm'
 
 // eslint-disable-next-line import/no-cycle
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
-import cn from '@/src/frontend/cn'
 import { isDefined } from '@/src/frontend/utils/general'
+import cn from '@/src/utils/cn'
 
 type AccountMarkdownBase = {
   className?: string

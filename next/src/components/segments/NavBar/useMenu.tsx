@@ -13,11 +13,11 @@ import {
 } from '@/src/assets/ui-icons'
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { useSignOut } from '@/src/frontend/utils/amplifyClient'
 import { isDefined } from '@/src/frontend/utils/general'
+import { ROUTES } from '@/src/utils/routes'
 
 export type MenuSectionBase = {
   id: number

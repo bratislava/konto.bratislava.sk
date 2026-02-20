@@ -3,7 +3,7 @@ import { ComponentProps } from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Button, { AnchorProps, ButtonProps } from '@/src/components/simple-components/Button'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type AnnouncementBlockProps = {
   announcementContent?: string

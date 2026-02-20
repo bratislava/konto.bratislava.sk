@@ -6,7 +6,7 @@ import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
 import { useDateFieldState } from 'react-stately'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 import DateTimeSegment from './DateTimeSegment'
 

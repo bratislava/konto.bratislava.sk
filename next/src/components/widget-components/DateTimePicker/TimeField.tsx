@@ -5,7 +5,7 @@ import { useTimeFieldState } from 'react-stately'
 
 import DateTimeSegment from '@/src/components/widget-components/DateTimePicker/DateTimeSegment'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type TimeFieldProps = FieldWrapperProps & {
   children?: ReactNode

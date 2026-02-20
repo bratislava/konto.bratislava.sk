@@ -13,7 +13,7 @@ import { FormSentProvider, useFormSent } from '@/src/components/forms/useFormSen
 import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import ThankYouFormPageContent from '@/src/components/page-contents/ThankYouPageContent/ThankYouFormPageContent'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=17622-2066&t=9VxOW0GxS2SEYDIL-4

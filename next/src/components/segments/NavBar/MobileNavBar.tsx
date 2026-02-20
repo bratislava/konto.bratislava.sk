@@ -8,7 +8,7 @@ import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
 import Brand from '@/src/components/simple-components/Brand'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
-import { ROUTES } from '@/src/frontend/api/constants'
+import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   menuSections?: MenuSectionBase[]

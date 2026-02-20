@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
 import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type Props = {
   menuSections: MenuSectionBase[]

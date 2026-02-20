@@ -2,10 +2,10 @@ import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
 
+import { formatZip } from '@/src/components/formatting/formatZip'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
-import { formatZip } from '@/src/frontend/utils/formatZip'
 import { isDefined } from '@/src/frontend/utils/general'
 
 const displayStrings = (strings: (string | undefined | null)[], separator: string) =>

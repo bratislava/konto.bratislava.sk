@@ -22,11 +22,11 @@ import MenuDropdown, {
   MenuItemBase,
 } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
-import { ROUTES } from '@/src/frontend/api/constants'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
+import { ROUTES } from '@/src/utils/routes'
 
 export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 

@@ -1,16 +1,16 @@
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import React, { PropsWithChildren, useRef } from 'react'
 
+import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
-import cn from '@/src/frontend/cn'
-import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 import { isDefined } from '@/src/frontend/utils/general'
-import { useHorizontalScrollFade } from '@/src/frontend/utils/useHorizontalScrollFade'
+import cn from '@/src/utils/cn'
+import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
 
 type TableDataType = ResponseCommunalWasteTaxItemizedAddressDto[]
 type TableHeaderDataType = TableDataType[0]
 
-type AccordionTableTaxContentProps = {
+type KoAccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   data: TableDataType
@@ -100,7 +100,7 @@ const KoAccordionTableTaxContent = ({
   title,
   secondTitle,
   data,
-}: AccordionTableTaxContentProps) => {
+}: KoAccordionTableTaxContentProps) => {
   return (
     <AccordionV2
       title={

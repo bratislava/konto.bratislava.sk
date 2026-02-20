@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type Props = {
   className?: string

@@ -4,7 +4,7 @@ import { useNavbarHeight } from '@/src/components/layouts/useNavbarHeight'
 import Footer from '@/src/components/segments/Footer/Footer'
 import AuthNavBar from '@/src/components/segments/NavBar/AuthNavBar'
 import NavBar from '@/src/components/segments/NavBar/NavBar'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 declare module 'react' {
   interface CSSProperties {

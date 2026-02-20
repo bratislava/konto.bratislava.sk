@@ -3,7 +3,7 @@ import React, { ReactNode, useRef, useState } from 'react'
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type AllowedVisibleCount = 1 | 2 | 3 | 4
 

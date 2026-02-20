@@ -6,8 +6,8 @@ import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import Button from '@/src/components/simple-components/Button'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
+import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
-import { useAmplifyClientOAuthContext } from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 
 interface Data {
   email: string

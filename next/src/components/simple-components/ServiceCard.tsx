@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
 import { LinkAnalyticsProps } from '@/src/components/simple-components/MLink'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type ServiceCardBase = {
   title: string

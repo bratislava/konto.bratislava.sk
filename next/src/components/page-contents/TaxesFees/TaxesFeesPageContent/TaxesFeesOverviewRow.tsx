@@ -3,11 +3,12 @@ import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-cli
 import React from 'react'
 
 import { ChevronRightIcon } from '@/src/assets/ui-icons'
+import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
+import { formatDate } from '@/src/components/formatting/FormatDate'
 import MLink from '@/src/components/simple-components/MLink'
-import { ROUTES } from '@/src/frontend/api/constants'
-import cn from '@/src/frontend/cn'
-import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
-import { formatDate, isDefined } from '@/src/frontend/utils/general'
+import { isDefined } from '@/src/frontend/utils/general'
+import cn from '@/src/utils/cn'
+import { ROUTES } from '@/src/utils/routes'
 
 type TaxesFeesOverviewRowProps = {
   taxData: ResponseGetTaxesListBodyDto

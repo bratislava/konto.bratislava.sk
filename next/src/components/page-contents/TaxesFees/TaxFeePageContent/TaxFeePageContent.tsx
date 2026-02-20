@@ -11,7 +11,7 @@ import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import Alert from '@/src/components/simple-components/Alert'
 import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
-import { ROUTES } from '@/src/frontend/api/constants'
+import { ROUTES } from '@/src/utils/routes'
 
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1608&t=fznV5maoQK8a2irI-4

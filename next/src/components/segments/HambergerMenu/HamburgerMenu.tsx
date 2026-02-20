@@ -10,9 +10,9 @@ import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
-import { ROUTES } from '@/src/frontend/api/constants'
-import cn from '@/src/frontend/cn'
 import logger from '@/src/frontend/utils/logger'
+import cn from '@/src/utils/cn'
+import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   menuSections?: MenuSectionBase[]

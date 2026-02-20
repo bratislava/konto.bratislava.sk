@@ -13,7 +13,7 @@ import Select, {
 import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
 import CheckboxIcon from '@/src/components/icon-components/CheckboxIcon'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type SelectOption = { value: string; label: string; description?: string }
 

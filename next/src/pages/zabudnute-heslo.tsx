@@ -11,15 +11,15 @@ import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
-import { ROUTES } from '@/src/frontend/api/constants'
+import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import { AmplifyClientOAuthProvider } from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 import { AuthPageCommonProps } from '@/src/pages/prihlasenie'
+import { ROUTES } from '@/src/utils/routes'
 
 enum ForgotPasswordStatus {
   INIT = 'INIT',

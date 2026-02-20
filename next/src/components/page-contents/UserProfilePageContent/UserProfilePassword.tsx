@@ -4,7 +4,7 @@ import { LockIcon } from '@/src/assets/ui-icons'
 import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'
 import BoxedSectionHeader from '@/src/components/page-contents/UserProfilePageContent/BoxedSectionHeader'
 import Button from '@/src/components/simple-components/Button'
-import { ROUTES } from '@/src/frontend/api/constants'
+import { ROUTES } from '@/src/utils/routes'
 
 const UserProfilePassword = () => {
   const { t } = useTranslation('account')

@@ -6,10 +6,10 @@ import {
 } from 'openapi-clients/tax'
 import React, { useRef } from 'react'
 
+import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
-import cn from '@/src/frontend/cn'
-import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
-import { useHorizontalScrollFade } from '@/src/frontend/utils/useHorizontalScrollFade'
+import cn from '@/src/utils/cn'
+import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
 
 const tableHeaderData = {
   subject: <span>Predmet dane</span>,
@@ -25,7 +25,7 @@ const matchHeader = {
   APARTMENT: [tableHeaderData.baseMetric, tableHeaderData.total],
 }
 
-type AccordionTableTaxContentProps = {
+type DznAccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   dataType: string
@@ -167,12 +167,12 @@ const Table = ({
     </div>
   )
 }
-const AccordionTableTaxContent = ({
+const DznAccordionTableTaxContent = ({
   title,
   secondTitle,
   dataType,
   data,
-}: AccordionTableTaxContentProps) => {
+}: DznAccordionTableTaxContentProps) => {
   return (
     <AccordionV2
       title={
@@ -190,4 +190,4 @@ const AccordionTableTaxContent = ({
   )
 }
 
-export default AccordionTableTaxContent
+export default DznAccordionTableTaxContent

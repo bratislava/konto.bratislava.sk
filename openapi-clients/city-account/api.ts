@@ -492,12 +492,6 @@ export interface RequestBatchQueryUsersByBirthNumbersDto {
    */
   birthNumbers: Array<string>
 }
-export interface RequestBodyValidateEdeskForUserIdsDto {
-  /**
-   * How many records to skip
-   */
-  offset?: number
-}
 export interface RequestBodyVerifyIdentityCardDto {
   /**
    * Birth number for check
@@ -538,12 +532,6 @@ export interface RequestBodyVerifyWithRpoDto {
 }
 export interface RequestGdprDataDto {
   gdprData: Array<GdprDataDto>
-}
-export interface RequestValidatePhysicalEntityRfoDto {
-  /**
-   * Id of the physical entity object in db
-   */
-  physicalEntityId: string
 }
 export interface ResponseCustomErrorVerificationEidDto {
   /**
@@ -863,20 +851,6 @@ export interface ResponseUserDataDto {
   gdprData: Array<ResponseGdprUserDataDto>
 }
 
-export interface ResponseValidatePhysicalEntityRfoDto {
-  /**
-   * Entity data (updated if new info was found in state registry)
-   */
-  physicalEntity: object
-  /**
-   * Data received from RFO
-   */
-  rfoData: object
-  /**
-   * Data received from UPVS
-   */
-  upvsResult: object
-}
 export interface ResponseVerificationDto {
   /**
    * number of status code
@@ -1188,16 +1162,6 @@ export const UserVerifyStateCognitoTierEnum = {
 export type UserVerifyStateCognitoTierEnum =
   (typeof UserVerifyStateCognitoTierEnum)[keyof typeof UserVerifyStateCognitoTierEnum]
 
-export interface ValidateEdeskForUserIdsResponseDto {
-  /**
-   * Number of users that were validated
-   */
-  validatedUsers: number
-  /**
-   * Temp debug data
-   */
-  enitites: object
-}
 export interface VerificationDataForUser {
   /**
    * Id of the user in cognito.
@@ -1469,112 +1433,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-     * @summary Validate edesk for physicalEntities
-     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidateEdeskForUserIds: async (
-      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestBodyValidateEdeskForUserIdsDto' is not null or undefined
-      assertParamExists(
-        'adminControllerValidateEdeskForUserIds',
-        'requestBodyValidateEdeskForUserIdsDto',
-        requestBodyValidateEdeskForUserIdsDto,
-      )
-      const localVarPath = `/admin/validate-edesk-by-cognito-where-first-try`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestBodyValidateEdeskForUserIdsDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary Manually update entity data against RFO (and UPVS) if possible
-     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatePhysicalEntityRfo: async (
-      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestValidatePhysicalEntityRfoDto' is not null or undefined
-      assertParamExists(
-        'adminControllerValidatePhysicalEntityRfo',
-        'requestValidatePhysicalEntityRfoDto',
-        requestValidatePhysicalEntityRfoDto,
-      )
-      const localVarPath = `/admin/validate-physical-entity-rfo`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestValidatePhysicalEntityRfoDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
      * @summary Manually verify user.
      * @param {string} email
@@ -1785,71 +1643,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-     * @summary Validate edesk for physicalEntities
-     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerValidateEdeskForUserIds(
-      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ValidateEdeskForUserIdsResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerValidateEdeskForUserIds(
-          requestBodyValidateEdeskForUserIdsDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerValidateEdeskForUserIds']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
-     * @summary Manually update entity data against RFO (and UPVS) if possible
-     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerValidatePhysicalEntityRfo(
-      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<ResponseValidatePhysicalEntityRfoDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerValidatePhysicalEntityRfo(
-          requestValidatePhysicalEntityRfoDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerValidatePhysicalEntityRfo']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
      * @summary Manually verify user.
      * @param {string} email
@@ -1965,36 +1758,6 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-     * @summary Validate edesk for physicalEntities
-     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidateEdeskForUserIds(
-      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ValidateEdeskForUserIdsResponseDto> {
-      return localVarFp
-        .adminControllerValidateEdeskForUserIds(requestBodyValidateEdeskForUserIdsDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary Manually update entity data against RFO (and UPVS) if possible
-     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatePhysicalEntityRfo(
-      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseValidatePhysicalEntityRfoDto> {
-      return localVarFp
-        .adminControllerValidatePhysicalEntityRfo(requestValidatePhysicalEntityRfoDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
      * @summary Manually verify user.
      * @param {string} email
@@ -2082,38 +1845,6 @@ export class ADMINApi extends BaseAPI {
   public adminControllerSyncCognitoToDb(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerSyncCognitoToDb(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-   * @summary Validate edesk for physicalEntities
-   * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerValidateEdeskForUserIds(
-    requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerValidateEdeskForUserIds(requestBodyValidateEdeskForUserIdsDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Manually update entity data against RFO (and UPVS) if possible
-   * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerValidatePhysicalEntityRfo(
-    requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerValidatePhysicalEntityRfo(requestValidatePhysicalEntityRfoDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

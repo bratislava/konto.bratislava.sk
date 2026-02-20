@@ -2,18 +2,13 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../test/singleton'
 import { PrismaService } from '../prisma/prisma.service'
-import {
-  UpvsCreateManyResult,
-  UpvsIdentityByUriService,
-} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import { UpvsCreateManyResult, NasesService } from '../nases/nases.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PhysicalEntityService } from './physical-entity.service'
 import { RfoIdentityList } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { PhysicalEntity } from '@prisma/client'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 const mockBirthNumber = '123456/7890'
@@ -97,7 +92,7 @@ const RfoIdentityListMockData: RfoIdentityList = [
 describe('PhysicalEntityService', () => {
   let service: PhysicalEntityService
   const MagproxyServiceMock = createMock<MagproxyService>()
-  let upvsIdentityByUriService: UpvsIdentityByUriService
+  let nasesService: NasesService
   let consoleSpy: jest.SpyInstance
   beforeEach(async () => {
     jest.clearAllTimers()
@@ -106,14 +101,14 @@ describe('PhysicalEntityService', () => {
       providers: [
         PhysicalEntityService,
         ThrowerErrorGuard,
-        { provide: UpvsIdentityByUriService, useValue: createMock<UpvsIdentityByUriService>() },
+        { provide: NasesService, useValue: createMock<NasesService>() },
         { provide: PrismaService, useValue: prismaMock },
         { provide: MagproxyService, useValue: MagproxyServiceMock },
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
       ],
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)
-    upvsIdentityByUriService = module.get<UpvsIdentityByUriService>(UpvsIdentityByUriService)
+    nasesService = module.get<NasesService>(NasesService)
     consoleSpy = jest.spyOn(console, 'log')
     consoleSpy.mockImplementation(() => {})
   })
@@ -150,7 +145,7 @@ describe('PhysicalEntityService', () => {
         edeskStatusChangedAt: null,
       }
       const updateSpy = jest.spyOn(service, 'update').mockResolvedValue(mockUpdated)
-      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
+      jest.spyOn(nasesService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
@@ -210,7 +205,7 @@ describe('PhysicalEntityService', () => {
         },
       ]
 
-      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
+      jest.spyOn(nasesService, 'createMany').mockResolvedValue(mockUpvsResult)
       const updateSpy = jest
         .spyOn(service, 'update')
         .mockResolvedValueOnce(mockUpdatedEntities[0])
@@ -235,7 +230,7 @@ describe('PhysicalEntityService', () => {
 
     it('should return only failed if all UPVS results failed', async () => {
       const mockUpvsResult = { success: [], failed: mockUpvsInput }
-      jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
+      jest.spyOn(nasesService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
@@ -246,9 +241,7 @@ describe('PhysicalEntityService', () => {
     })
 
     it('should log an error if an exception is thrown during createMany', async () => {
-      jest
-        .spyOn(upvsIdentityByUriService, 'createMany')
-        .mockRejectedValue(new Error('Test Exception'))
+      jest.spyOn(nasesService, 'createMany').mockRejectedValue(new Error('Test Exception'))
 
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
@@ -330,36 +323,38 @@ describe('PhysicalEntityService', () => {
         .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
         .mockResolvedValue({ success: true, data: RfoIdentityListMockData })
 
-      const upvsIdentityByUriServiceSpy = jest
-        .spyOn(upvsIdentityByUriService, 'createMany')
-        .mockResolvedValue({
-          success: [
-            {
-              physicalEntityId: mockEntityID,
+      const upvsIdentityByUriServiceSpy = jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+        success: [
+          {
+            physicalEntityId: mockEntityID,
+            uri: 'forcefullyTypedResult.uri',
+            data: {
+              ids: [],
               uri: 'forcefullyTypedResult.uri',
-              data: {
-                ids: [],
-                uri: 'forcefullyTypedResult.uri',
-                en: mockString,
-                type: 'natural_person',
-                status: 'verified',
-                name: mockString,
-                suffix: mockString,
-                various_ids: [],
-                upvs: {},
-                natural_person: {},
-                addresses: [],
-                emails: [],
-                phones: [],
-              },
+              en: mockString,
+              type: 'natural_person',
+              status: 'verified',
+              name: mockString,
+              suffix: mockString,
+              various_ids: [],
+              upvs: {},
+              natural_person: {},
+              addresses: [],
+              emails: [],
+              phones: [],
             },
-          ],
-          failed: [],
-        })
+          },
+        ],
+        failed: [],
+      })
 
-      expect(await service.createFromBirthNumber(mockBirthNumber)).toEqual({
+      expect(
+        await service.createFromBirthNumber(mockBirthNumber, {
+          success: true,
+          data: RfoIdentityListMockData,
+        })
+      ).toEqual({
         success: true,
-        data: RfoIdentityListMockData,
       })
 
       expect(prismaMock.physicalEntity.create).toHaveBeenCalledWith({
@@ -385,11 +380,7 @@ describe('PhysicalEntityService', () => {
       })
     })
 
-    it('should fail after getting empty rfo data, but should return them', async () => {
-      const rfoSpy = jest
-        .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
-        .mockResolvedValue({ success: true, data: [] })
-
+    it('should fail after getting empty rfo data', async () => {
       const prismaSpyCreate = jest.spyOn(prismaMock.physicalEntity, 'create').mockResolvedValue({
         id: mockEntityID,
         createdAt: new Date('2024-06-24 14:59:40.524'),
@@ -411,10 +402,12 @@ describe('PhysicalEntityService', () => {
       const prismaSpyUpdate = jest.spyOn(prismaMock.physicalEntity, 'update')
       const prismaSpyFindMany = jest.spyOn(prismaMock.physicalEntity, 'findMany')
 
-      const result = await service.createFromBirthNumber(mockBirthNumber)
+      const result = await service.createFromBirthNumber(mockBirthNumber, {
+        success: true,
+        data: [],
+      })
 
-      expect(result).toEqual({ data: [], success: true })
-      expect(rfoSpy).toHaveBeenCalledTimes(1)
+      expect(result).toEqual({ success: false, reason: 'USER_NOT_FOUND' })
       expect(prismaSpyCreate).toHaveBeenCalledTimes(1)
       expect(prismaSpyUpdate).toHaveBeenCalledTimes(0)
       expect(prismaSpyFindMany).toHaveBeenCalledTimes(1)
@@ -423,7 +416,7 @@ describe('PhysicalEntityService', () => {
       )
     })
 
-    it('should fail after getting multiple RFO entries, but should return them.', async () => {
+    it('should fail after getting multiple RFO entries.', async () => {
       const mockData = RfoIdentityListMockData.concat(RfoIdentityListMockData)
       jest
         .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
@@ -445,116 +438,16 @@ describe('PhysicalEntityService', () => {
       })
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
-      expect(await service.createFromBirthNumber(mockBirthNumber)).toEqual({
-        data: mockData,
-        success: true,
+      expect(
+        await service.createFromBirthNumber(mockBirthNumber, { success: true, data: mockData })
+      ).toEqual({
+        success: false,
+        reason: 'RFO_UNEXPECTED_RESPONSE',
       })
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledTimes(1)
       expect(loggerSpy).toHaveBeenCalledWith(
         `PhysicalEntity ${mockBirthNumber} not created. Multiple entries from magproxy.`
       )
-    })
-  })
-
-  describe('updateFromRFO', () => {
-    it('should throw BadRequestException if entity with the given ID does not exist', async () => {
-      jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue(null)
-
-      await expect(service.updateFromRFO('non-existent-id')).rejects.toThrow(
-        new ThrowerErrorGuard().BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          'PhysicalEntity with id non-existent-id not found'
-        )
-      )
-    })
-
-    it('should throw NotFoundException if entity does not have a birthNumber', async () => {
-      jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue({
-        ...mockPhysicalEntity,
-        birthNumber: null,
-      })
-
-      await expect(service.updateFromRFO(mockEntityID)).rejects.toThrow(
-        new ThrowerErrorGuard().NotFoundException(
-          AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
-          AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
-        )
-      )
-    })
-
-    it('should throw InternalServerErrorException if RFO data is incorrect or empty', async () => {
-      jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue(mockPhysicalEntity)
-      jest
-        .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
-        .mockResolvedValue({ success: true, data: [] })
-
-      await expect(service.updateFromRFO(mockEntityID)).rejects.toThrow(
-        new ThrowerErrorGuard().InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          `Incorrect or no data returned from RFO for birthnumber ${mockBirthNumber} entityId: ${mockEntityID}, data: []`
-        )
-      )
-    })
-
-    it('should successfully update physical entity with data from RFO', async () => {
-      jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue(mockPhysicalEntity)
-      jest
-        .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
-        .mockResolvedValue({ success: true, data: RfoIdentityListMockData })
-
-      const upvsSpy = jest.spyOn(service, 'checkUriAndUpdateEdeskFromUpvs').mockResolvedValue({
-        updatedEntities: [{ ...mockPhysicalEntity, uri: 'mock-uri', activeEdesk: true }],
-        upvsResult: {
-          success: [
-            {
-              uri: 'mock-uri',
-              physicalEntityId: mockEntityID,
-              data: {},
-            },
-          ],
-          failed: [],
-        },
-      })
-
-      const result = await service.updateFromRFO(mockEntityID)
-
-      expect(result.physicalEntity).toEqual({
-        ...mockPhysicalEntity,
-        uri: 'mock-uri',
-        activeEdesk: true,
-      })
-      expect(result.rfoData).toEqual(RfoIdentityListMockData)
-      expect(upvsSpy).toHaveBeenCalledTimes(1)
-    })
-
-    it('should log an error and return multiple RFO entries if found', async () => {
-      const mockData = RfoIdentityListMockData.concat(RfoIdentityListMockData)
-      jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue(mockPhysicalEntity)
-      jest
-        .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
-        .mockResolvedValue({ success: true, data: mockData })
-      const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
-
-      const result = await service.updateFromRFO(mockEntityID)
-
-      expect(result.physicalEntity).toEqual(mockPhysicalEntity)
-      expect(result.rfoData).toEqual(mockData)
-      expect(loggerSpy).toHaveBeenCalledWith(
-        `Found multiple RFO records for birthnumber ${mockBirthNumber} entityId: ${mockEntityID}`
-      )
-    })
-
-    it('should handle parsing failure gracefully and return the entity and RFO data', async () => {
-      jest.spyOn(prismaMock.physicalEntity, 'findUnique').mockResolvedValue(mockPhysicalEntity)
-      jest
-        .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
-        .mockResolvedValue({ success: true, data: RfoIdentityListMockData })
-
-      const result = await service.updateFromRFO(mockEntityID)
-
-      expect(result.physicalEntity).toEqual(mockPhysicalEntity)
-      expect(result.rfoData).toEqual(RfoIdentityListMockData)
     })
   })
 })

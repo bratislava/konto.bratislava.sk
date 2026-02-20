@@ -3,11 +3,11 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 import { useState } from 'react'
 
 import { MailIcon, SettingsIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/forms/simple-components/Button'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import Button from '@/src/components/simple-components/Button'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4

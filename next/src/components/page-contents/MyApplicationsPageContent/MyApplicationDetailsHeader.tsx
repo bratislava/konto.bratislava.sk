@@ -4,8 +4,8 @@ import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clie
 
 import { ChevronLeftIcon, DownloadIcon } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
-import Button from '@/src/components/forms/simple-components/Button'
-import FormatDate from '@/src/components/forms/simple-components/FormatDate'
+import Button from '@/src/components/simple-components/Button'
+import FormatDate from '@/src/components/simple-components/FormatDate'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { downloadBlob } from '@/src/frontend/utils/general'

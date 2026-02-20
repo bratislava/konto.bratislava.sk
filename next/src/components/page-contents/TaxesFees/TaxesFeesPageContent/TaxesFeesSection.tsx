@@ -3,7 +3,6 @@ import { TaxType } from 'openapi-clients/tax'
 import React, { useState } from 'react'
 import { Key } from 'react-aria-components'
 
-import AccountSectionHeader from '@/src/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelInformation from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
 import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
@@ -14,6 +13,7 @@ import TaxesFeesTabs, {
 } from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesTabs'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxesFees } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
+import AccountSectionHeader from '@/src/components/segments/AccountSectionHeader/AccountSectionHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 
 /**

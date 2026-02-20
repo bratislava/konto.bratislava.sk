@@ -2,10 +2,10 @@ import { useTranslation } from 'next-i18next'
 
 import BannerPhone from '@/src/assets/images/help-page-banner-image.png'
 import { HelpPageFragment } from '@/src/clients/graphql-strapi/api'
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
-import AccountSectionHeader from '@/src/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import AccordionV2 from '@/src/components/forms/simple-components/AccordionV2'
-import Banner from '@/src/components/forms/simple-components/Banner'
+import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountSectionHeader from '@/src/components/segments/AccountSectionHeader/AccountSectionHeader'
+import AccordionV2 from '@/src/components/simple-components/AccordionV2'
+import Banner from '@/src/components/simple-components/Banner'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {

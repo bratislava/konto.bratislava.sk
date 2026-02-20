@@ -1,11 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
-import MLink from '@/src/components/forms/simple-components/MLink'
-import SummaryRowSimple from '@/src/components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from '@/src/components/forms/steps/Summary/SummaryRow'
 import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetailsHeader'
 import MyApplicationHistory from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationHistory'
+import MLink from '@/src/components/simple-components/MLink'
+import SummaryRowSimple from '@/src/components/simple-components/SummaryRowSimple'
 
 type MyApplicationsDetailsBase = {
   formDefinitionTitle: string

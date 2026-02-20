@@ -2,9 +2,9 @@ import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { RegistrationModalType } from '@/src/components/forms/segments/RegistrationModal/RegistrationModal'
-import { TaxFormPdfExportModalState } from '@/src/components/forms/segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import { RegistrationModalType } from '@/src/components/segments/RegistrationModal/RegistrationModal'
+import { TaxFormPdfExportModalState } from '@/src/components/segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { NASES_TOKEN_QUERY_KEY } from '@/src/frontend/utils/metadataStorage'
 
 type ModalWithConfirmCallback =

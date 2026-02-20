@@ -4,7 +4,6 @@ import React from 'react'
 import FormContent from '@/src/components/forms/FormContent'
 import FormVersionCompareAction from '@/src/components/forms/FormVersionCompareAction'
 import IframeResizerChild from '@/src/components/forms/IframeResizerChild'
-import ConditionalWrap from '@/src/components/forms/simple-components/ConditionalWrap'
 import {
   FormContextProvider,
   FormServerContext,
@@ -13,6 +12,7 @@ import {
 import { FormSentProvider, useFormSent } from '@/src/components/forms/useFormSent'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import ThankYouFormPageContent from '@/src/components/page-contents/ThankYouPageContent/ThankYouFormPageContent'
+import ConditionalWrap from '@/src/components/simple-components/ConditionalWrap'
 import cn from '@/src/frontend/cn'
 
 /**

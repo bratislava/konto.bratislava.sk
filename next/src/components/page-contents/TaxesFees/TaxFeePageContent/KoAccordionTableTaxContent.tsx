@@ -1,7 +1,7 @@
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import React, { PropsWithChildren, useRef } from 'react'
 
-import AccordionV2 from '@/src/components/forms/simple-components/AccordionV2'
+import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import cn from '@/src/frontend/cn'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 import { isDefined } from '@/src/frontend/utils/general'

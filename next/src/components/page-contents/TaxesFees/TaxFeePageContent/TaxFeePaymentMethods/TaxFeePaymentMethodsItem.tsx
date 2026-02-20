@@ -1,4 +1,4 @@
-import Button, { ButtonProps } from '@/src/components/forms/simple-components/Button'
+import Button, { ButtonProps } from '@/src/components/simple-components/Button'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 
 interface TaxFeePaymentMethodsItemProps {

@@ -2,10 +2,10 @@ import { useTranslation } from 'next-i18next'
 import { TaxAvailabilityStatus, TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
 
-import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
 import DznTaxFormAlert from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/DznTaxFormAlert'
 import TaxesFeesOverviewBanner from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesOverviewBanner'
 import TaxesFeesOverviewRow from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesOverviewRow'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { TaxesData } from '@/src/pages/dane-a-poplatky'
 
 type Props = {

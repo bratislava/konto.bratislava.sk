@@ -6,9 +6,9 @@ import {
 } from 'openapi-clients/tax'
 import React from 'react'
 
-import Alert from '@/src/components/forms/info-components/Alert'
 import TaxFeePaymentMethodsItem from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import Alert from '@/src/components/simple-components/Alert'
 import { ROUTES } from '@/src/frontend/api/constants'
 import { formatDate } from '@/src/frontend/utils/general'
 

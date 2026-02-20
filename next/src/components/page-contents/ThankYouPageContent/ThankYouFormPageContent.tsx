@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next'
 
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from '@/src/components/forms/simple-components/Button'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import ThankYouCard from '@/src/components/page-contents/ThankYouPageContent/ThankYouCard'
+import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/src/components/simple-components/Button'
 import { ROUTES } from '@/src/frontend/api/constants'
 import cn from '@/src/frontend/cn'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'

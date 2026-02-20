@@ -2,8 +2,8 @@ import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React, { Fragment } from 'react'
 
-import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import cn from '@/src/frontend/cn'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 

@@ -1,6 +1,6 @@
 import { Placement } from 'react-aria'
 
-import BATooltip from '@/src/components/forms/info-components/Tooltip/BATooltip'
+import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

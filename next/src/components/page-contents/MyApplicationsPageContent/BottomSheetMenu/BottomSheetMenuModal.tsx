@@ -2,8 +2,8 @@ import { useTranslation } from 'next-i18next'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
-import { MenuItemBase } from '@/src/components/forms/simple-components/MenuDropdown/MenuDropdown'
 import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
+import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 
 type BottomSheetMenuModalProps = {
   isOpen: boolean

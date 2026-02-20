@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-import Button from '@/src/components/forms/simple-components/Button'
-import { MenuItemBase } from '@/src/components/forms/simple-components/MenuDropdown/MenuDropdown'
+import Button from '@/src/components/simple-components/Button'
+import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import cn from '@/src/frontend/cn'
 
 interface BottomSheetMenuRowProps extends MenuItemBase {

@@ -3,7 +3,7 @@ import { Button as AriaButton } from 'react-aria-components'
 
 import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
-import { FormStepIndex, FormStepperStep } from '@/src/components/forms/types/Steps'
+import { FormStepIndex, FormStepperStep } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
 import cn from '@/src/frontend/cn'
 

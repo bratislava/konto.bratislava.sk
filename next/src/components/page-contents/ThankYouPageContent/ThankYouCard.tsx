@@ -1,6 +1,6 @@
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from '@/src/components/forms/simple-components/Button'
+import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/frontend/cn'
 
 export type ThankYouCardBase = {

@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
 
 const SummaryFormLegalText = () => {
   const {

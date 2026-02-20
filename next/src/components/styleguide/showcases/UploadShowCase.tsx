@@ -6,10 +6,10 @@ import {
 import React, { ComponentProps, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
-import Checkbox from '@/src/components/forms/widget-components/Checkbox/Checkbox'
-import CheckboxGroup from '@/src/components/forms/widget-components/Checkbox/CheckboxGroup'
-import Upload from '@/src/components/forms/widget-components/Upload/Upload'
-import UploadFileCard from '@/src/components/forms/widget-components/Upload/UploadFileCard'
+import Checkbox from '@/src/components/widget-components/Checkbox/Checkbox'
+import CheckboxGroup from '@/src/components/widget-components/Checkbox/CheckboxGroup'
+import Upload from '@/src/components/widget-components/Upload/Upload'
+import UploadFileCard from '@/src/components/widget-components/Upload/UploadFileCard'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

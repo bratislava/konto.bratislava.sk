@@ -4,10 +4,10 @@ import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-client
 import React from 'react'
 
 import { formsClient } from '@/src/clients/forms'
-import Pagination from '@/src/components/forms/simple-components/Pagination/Pagination'
 import MyApplicationCardsPlaceholder from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationCardsPlaceholder'
 import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard'
 import { patchApplicationFormIfNeeded } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededClient'
+import Pagination from '@/src/components/simple-components/Pagination/Pagination'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
 import logger from '@/src/frontend/utils/logger'
 import { ApplicationsListVariant } from '@/src/pages/moje-ziadosti'

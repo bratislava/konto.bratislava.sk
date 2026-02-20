@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import Icon from '@/src/assets/images/mestske-konto-situacia-2-1.svg'
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
 
 const MyApplicationCardsPlaceholder = () => {
   const { t } = useTranslation('account')

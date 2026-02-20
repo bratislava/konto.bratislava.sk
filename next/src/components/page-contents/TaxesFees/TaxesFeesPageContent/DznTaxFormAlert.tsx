@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import Alert from '@/src/components/forms/info-components/Alert'
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
-import MLink from '@/src/components/forms/simple-components/MLink'
+import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import Alert from '@/src/components/simple-components/Alert'
+import MLink from '@/src/components/simple-components/MLink'
 import { ROUTES } from '@/src/frontend/api/constants'
 
 const DznTaxFormAlert = () => {

@@ -6,10 +6,10 @@ import {
   MunicipalServiceCategoryEntityFragment,
   MunicipalServiceEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
-import MunicipalServicesSectionHeader from '@/src/components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
-import MunicipalServiceCard from '@/src/components/forms/segments/MunicipalServiceCard/MunicipalServiceCard'
-import Pagination from '@/src/components/forms/simple-components/Pagination/Pagination'
-import { SelectOption } from '@/src/components/forms/widget-components/SelectField/SelectField'
+import MunicipalServicesSectionHeader from '@/src/components/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
+import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
+import Pagination from '@/src/components/simple-components/Pagination/Pagination'
+import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { isDefined } from '@/src/frontend/utils/general'
 

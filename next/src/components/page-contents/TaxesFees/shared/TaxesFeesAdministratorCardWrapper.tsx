@@ -4,7 +4,7 @@ import React from 'react'
 
 import { ClockIcon, MailIcon, PhoneIcon } from '@/src/assets/ui-icons'
 import { StrapiTaxAdministrator } from '@/src/backend/utils/strapi-tax-administrator'
-import MLink from '@/src/components/forms/simple-components/MLink'
+import MLink from '@/src/components/simple-components/MLink'
 import { EXTERNAL_LINKS } from '@/src/frontend/api/constants'
 
 type Props = {

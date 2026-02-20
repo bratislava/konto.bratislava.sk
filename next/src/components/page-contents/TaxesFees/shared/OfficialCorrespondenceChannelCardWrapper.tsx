@@ -3,8 +3,8 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 import React from 'react'
 
 import { MailIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
+import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
 import { ROUTES } from '@/src/frontend/api/constants'
 import cn from '@/src/frontend/cn'
 

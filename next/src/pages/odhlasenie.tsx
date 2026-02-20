@@ -1,10 +1,10 @@
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import AccountContainer from '@/src/components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from '@/src/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import AccountContainer from '@/src/components/segments/AccountContainer/AccountContainer'
+import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSignOut } from '@/src/frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'

@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 
-import { NavMenuContextProvider } from '@/src/components/forms/segments/NavBar/navMenuContext'
+import { NavMenuContextProvider } from '@/src/components/segments/NavBar/navMenuContext'
 import { environment } from '@/src/environment'
 import { removeAllCookiesAndClearLocalStorage } from '@/src/frontend/utils/amplifyClient'
 import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'

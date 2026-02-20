@@ -3,7 +3,7 @@ import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-cli
 import React from 'react'
 
 import { ChevronRightIcon } from '@/src/assets/ui-icons'
-import MLink from '@/src/components/forms/simple-components/MLink'
+import MLink from '@/src/components/simple-components/MLink'
 import { ROUTES } from '@/src/frontend/api/constants'
 import cn from '@/src/frontend/cn'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'

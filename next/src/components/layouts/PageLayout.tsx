@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import Footer from '@/src/components/forms/segments/Footer/Footer'
-import AuthNavBar from '@/src/components/forms/segments/NavBar/AuthNavBar'
-import NavBar from '@/src/components/forms/segments/NavBar/NavBar'
 import { useNavbarHeight } from '@/src/components/layouts/useNavbarHeight'
+import Footer from '@/src/components/segments/Footer/Footer'
+import AuthNavBar from '@/src/components/segments/NavBar/AuthNavBar'
+import NavBar from '@/src/components/segments/NavBar/NavBar'
 import cn from '@/src/frontend/cn'
 
 declare module 'react' {

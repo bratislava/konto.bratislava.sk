@@ -14,14 +14,14 @@ import {
   PdfIcon,
 } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
-import Button from '@/src/components/forms/simple-components/Button'
-import ConditionalWrap from '@/src/components/forms/simple-components/ConditionalWrap'
-import FormatDate from '@/src/components/forms/simple-components/FormatDate'
+import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
+import Button from '@/src/components/simple-components/Button'
+import ConditionalWrap from '@/src/components/simple-components/ConditionalWrap'
+import FormatDate from '@/src/components/simple-components/FormatDate'
 import MenuDropdown, {
   MenuItemBase,
-} from '@/src/components/forms/simple-components/MenuDropdown/MenuDropdown'
-import MessageModal from '@/src/components/forms/widget-components/Modals/MessageModal'
-import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
+} from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 import { ROUTES } from '@/src/frontend/api/constants'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'

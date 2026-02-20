@@ -2,15 +2,15 @@ import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
-import Alert from '@/src/components/forms/info-components/Alert'
-import ResponsiveCarousel from '@/src/components/forms/ResponsiveCarousel'
-import TaxFeeSectionHeader from '@/src/components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import OfficialCorrespondenceChannelCardWrapper from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
 import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxFeeDetails from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeDetails'
 import TaxFeePaymentMethods from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethods'
 import TaxFeeSubjectInformation from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeSubjectInformation'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import TaxFeeSectionHeader from '@/src/components/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import Alert from '@/src/components/simple-components/Alert'
+import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
 import { ROUTES } from '@/src/frontend/api/constants'
 
 /**

@@ -12,12 +12,12 @@ import {
   PaymentHandIcon,
   QrCodeIcon,
 } from '@/src/assets/ui-icons'
-import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
-import Alert from '@/src/components/forms/info-components/Alert'
-import Button from '@/src/components/forms/simple-components/Button'
-import ClipboardCopy from '@/src/components/forms/simple-components/ClipboardCopy'
-import PaymentSchedule from '@/src/components/forms/simple-components/PaymentSchedule'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import Alert from '@/src/components/simple-components/Alert'
+import Button from '@/src/components/simple-components/Button'
+import ClipboardCopy from '@/src/components/simple-components/ClipboardCopy'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
+import PaymentSchedule from '@/src/components/simple-components/PaymentSchedule'
 import { useUser } from '@/src/frontend/hooks/useUser'
 import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'

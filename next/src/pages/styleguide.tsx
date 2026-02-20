@@ -1,5 +1,5 @@
-import { StatusBar } from '@/src/components/forms/info-components/StatusBar'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
 import BannerShowCase from '@/src/components/styleguide/showcases/BannerShowCase'

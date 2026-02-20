@@ -5,14 +5,14 @@ import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
-import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
-import ResponsiveCarousel from '@/src/components/forms/ResponsiveCarousel'
-import AccountSectionHeader from '@/src/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import MunicipalServiceCard from '@/src/components/forms/segments/MunicipalServiceCard/MunicipalServiceCard'
-import PhoneNumberModal from '@/src/components/forms/segments/PhoneNumberModal/PhoneNumberModal'
-import Banner from '@/src/components/forms/simple-components/Banner'
-import Button from '@/src/components/forms/simple-components/Button'
 import Announcements from '@/src/components/page-contents/IntroPageContent/Announcements/Announcements'
+import AccountSectionHeader from '@/src/components/segments/AccountSectionHeader/AccountSectionHeader'
+import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
+import PhoneNumberModal from '@/src/components/segments/PhoneNumberModal/PhoneNumberModal'
+import Banner from '@/src/components/simple-components/Banner'
+import Button from '@/src/components/simple-components/Button'
+import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { ROUTES } from '@/src/frontend/api/constants'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 

@@ -1,10 +1,10 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next'
 
-import AccountSectionHeader from '@/src/components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import UserProfileView from '@/src/components/forms/segments/UserProfile/UserProfileView'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import AccountSectionHeader from '@/src/components/segments/AccountSectionHeader/AccountSectionHeader'
+import UserProfileView from '@/src/components/segments/UserProfile/UserProfileView'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'

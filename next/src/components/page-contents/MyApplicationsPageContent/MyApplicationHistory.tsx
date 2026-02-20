@@ -2,7 +2,7 @@ import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
-import FormatDate from '@/src/components/forms/simple-components/FormatDate'
+import FormatDate from '@/src/components/simple-components/FormatDate'
 
 interface MyApplicationHistoryProps {
   // TODO fix the types in OpenAPI (BE)

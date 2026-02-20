@@ -69,7 +69,7 @@ module.exports = {
   ignorePatterns: [
     '*.config.*',
     '.eslintrc.js',
-    '/clients/openapi-*/*.ts',
-    '/clients/graphql-*/*.ts',
+    '/src/clients/openapi-*/*.ts',
+    '/src/clients/graphql-*/*.ts',
   ],
 }

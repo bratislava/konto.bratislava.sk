@@ -90,6 +90,10 @@ import ziadostOUzemnoplanovaciuInformaciu, {
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 import webhookShowcase from '../schemas/webhookShowcase'
+import nahlaseniePodnetuKElektrickymKolobezkam, {
+  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
+} from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -626,5 +630,35 @@ export const formDefinitions: FormDefinition[] = [
     webhookUrl: 'https://nest-forms-backend.staging.bratislava.sk/webhook',
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
+    title: 'Nahlásenie podnetu k elektrickým kolobežkám',
+    jsonVersion: '1.0.0',
+    schema: nahlaseniePodnetuKElektrickymKolobezkam,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
+    subject: {
+      extractTechnical: nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+    },
+    email: {
+      address: {
+        prod: [
+          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
+          // nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress, TODO: implement municipality email extraction by address field
+          'mikromobilita@bratislava.sk',
+        ],
+        test: ['inovacie.bratislava@gmail.com'],
+      },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
+      mailer: 'mailgun',
+      userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
+      newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
+      technicalEmailSubjectAppendId: true,
+    },
+    termsAndConditions: generalTermsAndConditions,
   },
 ]

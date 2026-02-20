@@ -109,6 +109,8 @@ describe('MailgunHelper', () => {
   })
 
   describe('createEmailVariables', () => {
+    const mockFormSentAt = new Date('2026-02-11T12:00:00.000Z')
+
     it('should process PARAMETER type variables correctly', () => {
       const input: SendEmailInputDto = {
         to: 'user@example.com',
@@ -118,6 +120,7 @@ describe('MailgunHelper', () => {
           messageSubject: 'Test Application',
           firstName: 'John',
           slug: 'test-form',
+          formSentAt: mockFormSentAt,
         },
       }
 
@@ -136,6 +139,7 @@ describe('MailgunHelper', () => {
           messageSubject: 'Test Application',
           firstName: 'John',
           slug: 'stanovisko-k-investicnemu-zameru',
+          formSentAt: mockFormSentAt,
         },
       }
 
@@ -155,6 +159,7 @@ describe('MailgunHelper', () => {
           messageSubject: 'Test Application',
           firstName: 'John',
           slug: 'non-existent-form',
+          formSentAt: mockFormSentAt,
         },
       }
 
@@ -173,6 +178,7 @@ describe('MailgunHelper', () => {
           firstName: null,
           slug: 'olo-form',
           htmlData: '<p>Form HTML data</p>',
+          formSentAt: mockFormSentAt,
         },
       }
 
@@ -192,6 +198,7 @@ describe('MailgunHelper', () => {
           messageSubject: 'Virus Detected',
           firstName: 'Jane',
           slug: 'form-with-virus',
+          formSentAt: mockFormSentAt,
         },
       }
 

@@ -237,6 +237,7 @@ export default class EmailFormsSubservice {
             ),
             firstName: userName,
             slug: formDefinition.slug,
+            formSentAt: form.formSentAt,
           },
         },
         emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
@@ -310,6 +311,13 @@ export default class EmailFormsSubservice {
       }
     }
 
+    const renderedSummary = await renderSummaryEmail({
+      formSummary: form.formSummary,
+      serverFiles: form.files,
+      fileIdInfoMap,
+      validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+    })
+
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail({
       data: {
@@ -323,12 +331,9 @@ export default class EmailFormsSubservice {
           ),
           firstName: null,
           slug: formDefinition.slug,
-          htmlData: await renderSummaryEmail({
-            formSummary: form.formSummary,
-            serverFiles: form.files,
-            fileIdInfoMap,
-            validatorRegistry: this.formValidatorRegistryService.getRegistry(),
-          }),
+          // eslint-disable-next-line xss/no-mixed-html
+          htmlData: renderedSummary,
+          formSentAt: form.formSentAt,
         },
       },
       emailFrom: this.resolveAddress(formDefinition.email.fromAddress),

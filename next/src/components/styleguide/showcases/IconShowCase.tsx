@@ -3,7 +3,7 @@ import { CalendarIcon } from '@/src/assets/ui-icons'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-const StatusBarShowCase = () => {
+const IconShowCase = () => {
   return (
     <Wrapper direction="column" title="Icon">
       <div>See comments in the code for more details how to resize icon.</div>
@@ -29,4 +29,4 @@ const StatusBarShowCase = () => {
   )
 }
 
-export default StatusBarShowCase
+export default IconShowCase

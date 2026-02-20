@@ -2,8 +2,8 @@ import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { CheckboxUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
-import Checkbox from '@/src/components/widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '@/src/components/widget-components/Checkbox/CheckboxGroup'
+import CheckboxGroupItem from '@/src/components/widget-components/Checkbox/CheckboxGroupItem'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 interface CheckboxRJSFProps extends WidgetProps {
@@ -59,9 +59,9 @@ const CheckboxWidgetRJSF = ({
         helptextFooterMarkdown={helptextFooterMarkdown}
         displayOptionalLabel
       >
-        <Checkbox value="true" variant={variant} isDisabled={readonly}>
+        <CheckboxGroupItem value="true" variant={variant} isDisabled={readonly}>
           {checkboxLabel}
-        </Checkbox>
+        </CheckboxGroupItem>
       </CheckboxGroup>
     </WidgetWrapper>
   )

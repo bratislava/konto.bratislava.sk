@@ -25,7 +25,7 @@ const matchHeader = {
   APARTMENT: [tableHeaderData.baseMetric, tableHeaderData.total],
 }
 
-type AccordionTableTaxContentProps = {
+type DznAccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   dataType: string
@@ -167,12 +167,12 @@ const Table = ({
     </div>
   )
 }
-const AccordionTableTaxContent = ({
+const DznAccordionTableTaxContent = ({
   title,
   secondTitle,
   dataType,
   data,
-}: AccordionTableTaxContentProps) => {
+}: DznAccordionTableTaxContentProps) => {
   return (
     <AccordionV2
       title={
@@ -190,4 +190,4 @@ const AccordionTableTaxContent = ({
   )
 }
 
-export default AccordionTableTaxContent
+export default DznAccordionTableTaxContent

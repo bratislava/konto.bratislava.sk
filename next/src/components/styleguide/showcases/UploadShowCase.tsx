@@ -6,8 +6,8 @@ import {
 import React, { ComponentProps, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
-import Checkbox from '@/src/components/widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '@/src/components/widget-components/Checkbox/CheckboxGroup'
+import CheckboxGroupItem from '@/src/components/widget-components/Checkbox/CheckboxGroupItem'
 import Upload from '@/src/components/widget-components/Upload/Upload'
 import UploadFileCard from '@/src/components/widget-components/Upload/UploadFileCard'
 
@@ -217,7 +217,7 @@ const UploadShowCase = () => {
       </Stack>
       <Stack>
         <CheckboxGroup value={checkboxValue} onChange={setCheckboxValue} label="Is multiple?">
-          <Checkbox value="multiple">Multiple</Checkbox>
+          <CheckboxGroupItem value="multiple">Multiple</CheckboxGroupItem>
         </CheckboxGroup>
       </Stack>
       <Stack>

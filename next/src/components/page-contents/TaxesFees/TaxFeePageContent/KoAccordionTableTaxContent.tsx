@@ -10,7 +10,7 @@ import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
 type TableDataType = ResponseCommunalWasteTaxItemizedAddressDto[]
 type TableHeaderDataType = TableDataType[0]
 
-type AccordionTableTaxContentProps = {
+type KoAccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   data: TableDataType
@@ -100,7 +100,7 @@ const KoAccordionTableTaxContent = ({
   title,
   secondTitle,
   data,
-}: AccordionTableTaxContentProps) => {
+}: KoAccordionTableTaxContentProps) => {
   return (
     <AccordionV2
       title={

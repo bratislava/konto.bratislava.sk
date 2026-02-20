@@ -4,8 +4,8 @@ import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { CheckboxGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { useMemo } from 'react'
 
-import Checkbox from '@/src/components/widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '@/src/components/widget-components/Checkbox/CheckboxGroup'
+import CheckboxGroupItem from '@/src/components/widget-components/Checkbox/CheckboxGroupItem'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 interface CheckboxGroupRJSFProps extends WidgetProps {
@@ -68,14 +68,14 @@ const CheckboxGroupWidgetRJSF = ({
       >
         {mergedOptions.map((option) => {
           return (
-            <Checkbox
+            <CheckboxGroupItem
               key={option.value}
               value={option.value}
               variant={variant}
               isDisabled={isDisabled(option.value) || readonly}
             >
               {option.label}
-            </Checkbox>
+            </CheckboxGroupItem>
           )
         })}
       </CheckboxGroup>

@@ -48,6 +48,9 @@ module.exports = {
     /** Please use logger **/
     'no-console': 'error',
 
+    // Disabled after migrating to ESM, because of dayjs and lodash
+    'import/extensions': 'off',
+
     // TODO: discuss these rules in nest-prisma-template repo
     'max-classes-per-file': 'off',
     'const-case/uppercase': 'off',

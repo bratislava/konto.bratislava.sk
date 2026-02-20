@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import * as mssql from 'mssql'
 import type { config, ConnectionPool } from 'mssql'
+import * as mssql from 'mssql'
 
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto.js'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'

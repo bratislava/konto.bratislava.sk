@@ -2,7 +2,7 @@ import crypto from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 
 import {
   CreateOrderData,
@@ -36,7 +36,7 @@ export const GP_WEBPAY_CONFIG_KEY_MAP: Record<
 
 @Injectable()
 export class GpWebpaySubservice {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) { }
 
   private readonly getDataToSign = (data: CreateOrderData): string => {
     const digestData: Array<keyof CreateOrderData> = [

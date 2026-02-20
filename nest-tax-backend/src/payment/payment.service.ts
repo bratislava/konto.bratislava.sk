@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {
   PaymentStatus,
-  Prisma,
-  TaxPayment,
   TaxPaymentSource,
   TaxType,
-} from '@prisma/client'
+} from '../../prisma/generated/prisma/enums'
 import formurlencoded from 'form-urlencoded'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -30,6 +28,7 @@ import {
   GP_WEBPAY_CONFIG_KEY_MAP,
   GpWebpaySubservice,
 } from './subservices/gpwebpay.subservice'
+import { Prisma, TaxPayment } from '../../prisma/generated/prisma/client'
 
 interface GpWebpayProcessingStrategy {
   dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
@@ -50,7 +49,7 @@ export class PaymentService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxService: TaxService,
     private readonly retryService: RetryService,
-  ) {}
+  ) { }
 
   private getRedirectUrl(taxType: TaxType) {
     const redirectUrl = this.configService.getOrThrow<string>(

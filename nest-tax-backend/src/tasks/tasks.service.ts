@@ -4,9 +4,8 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
-  Prisma,
   TaxType,
-} from '@prisma/client'
+} from '../../prisma/generated/prisma/enums'
 import dayjs from 'dayjs'
 import pLimit from 'p-limit'
 
@@ -37,6 +36,7 @@ import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
+import { Prisma } from '../../prisma/generated/prisma/client'
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
@@ -499,15 +499,15 @@ export class TasksService {
       )
       await (importPhase
         ? this.taxImportHelperSubservice.importTaxes(
-            taxType,
-            birthNumbers,
-            year,
-          )
+          taxType,
+          birthNumbers,
+          year,
+        )
         : this.taxImportHelperSubservice.prepareTaxes(
-            taxType,
-            birthNumbers,
-            year,
-          ))
+          taxType,
+          birthNumbers,
+          year,
+        ))
     }
 
     if (birthNumbers.length === 0 && newlyCreated.length === 0) {

@@ -1,7 +1,8 @@
 /* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
+import { TaxAdministrator, TaxPayer, } from '../../../../../prisma/generated/prisma/client'
+import { TaxType } from '../../../../../prisma/generated/prisma/enums'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
@@ -202,7 +203,7 @@ describe('NorisTaxRealEstateSubservice', () => {
     cityAccountSubservice = module.get(CityAccountSubservice)
     paymentSubservice = module.get(NorisPaymentSubservice)
     throwerErrorGuard = module.get(ThrowerErrorGuard)
-    ;(getTaxDefinitionByType as jest.Mock).mockReturnValue(mockTaxDefinition)
+      ; (getTaxDefinitionByType as jest.Mock).mockReturnValue(mockTaxDefinition)
 
     Object.defineProperty(service, 'logger', {
       value: {
@@ -246,9 +247,9 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+        ; (Request as unknown as jest.Mock).mockImplementation(
+          () => mockRequest as any,
+        )
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2023, [
         '123456/7890',
@@ -304,9 +305,9 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+        ; (Request as unknown as jest.Mock).mockImplementation(
+          () => mockRequest as any,
+        )
 
       const birthNumbers = ['123456/7890', '987654/3210']
       await service['getTaxDataByYearAndBirthNumber'](2023, birthNumbers)
@@ -369,7 +370,7 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
     })
 
     it('should process Noris tax data and return birth numbers', async () => {
@@ -377,7 +378,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         .spyOn(service as any, 'processTaxRecordFromNoris')
         .mockImplementation(
           async (taxDefinition, birthNumbersResult, norisItem) => {
-            ;(birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
+            ; (birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
           },
         )
 
@@ -664,7 +665,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
 
       await service.processNorisTaxData(mockNorisData, 2023, {})
 

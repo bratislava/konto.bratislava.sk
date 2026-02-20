@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../../prisma/generated/prisma/enums'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'

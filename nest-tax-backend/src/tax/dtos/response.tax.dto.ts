@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import { Type } from 'class-transformer'
 import {
   IsArray,

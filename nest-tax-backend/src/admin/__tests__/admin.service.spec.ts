@@ -2,7 +2,6 @@
 
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
 import isArray from 'lodash/isArray'
 
 import prismaMock from '../../../test/singleton'
@@ -19,6 +18,7 @@ import {
   RequestAdminCreateTestingTaxDto,
   RequestAdminCreateTestingTaxNorisData,
 } from '../dtos/requests.dto'
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 
 describe('AdminService', () => {
   let adminService: AdminService
@@ -217,8 +217,8 @@ describe('AdminService', () => {
       expect(taxTypeCalled).toBe(TaxType.DZN)
       expect(
         parseFloat(norisDataCalled[0].SPL4_1.replace(',', '.')) +
-          parseFloat(norisDataCalled[0].SPL4_2.replace(',', '.')) +
-          parseFloat(norisDataCalled[0].SPL4_3.replace(',', '.')),
+        parseFloat(norisDataCalled[0].SPL4_2.replace(',', '.')) +
+        parseFloat(norisDataCalled[0].SPL4_3.replace(',', '.')),
       ).toEqual(parseFloat(mockNorisData.taxTotal.replace(',', '.')))
       expect(isArray(norisDataCalled)).toBe(true)
       expect(yearCalled).toBe(1970)
@@ -250,9 +250,9 @@ describe('AdminService', () => {
       expect(taxTypeCalled).toBe(TaxType.KO)
       expect(
         parseFloat(norisDataCalled[0].SPL4_1.replace(',', '.')) +
-          parseFloat(norisDataCalled[0].SPL4_2.replace(',', '.')) +
-          parseFloat(norisDataCalled[0].SPL4_3.replace(',', '.')) +
-          parseFloat(norisDataCalled[0].SPL4_4.replace(',', '.')),
+        parseFloat(norisDataCalled[0].SPL4_2.replace(',', '.')) +
+        parseFloat(norisDataCalled[0].SPL4_3.replace(',', '.')) +
+        parseFloat(norisDataCalled[0].SPL4_4.replace(',', '.')),
       ).toEqual(parseFloat(mockNorisData.taxTotal.replace(',', '.')))
       expect(parseFloat(norisDataCalled[0].SPL4_4.replace(',', '.'))).not.toBe(
         0,
@@ -530,7 +530,7 @@ describe('AdminService', () => {
 
       const loggerErrorSpy = jest
         .spyOn(adminService['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
 
       await adminService.deleteTax({
         birthNumber: mockBirthNumber,

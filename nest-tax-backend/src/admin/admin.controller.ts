@@ -16,7 +16,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../prisma/generated/prisma/enums'
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
@@ -39,7 +39,7 @@ import {
 @Controller('admin')
 @ApiSecurity('apiKey')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @HttpCode(200)
   @ApiOperation({

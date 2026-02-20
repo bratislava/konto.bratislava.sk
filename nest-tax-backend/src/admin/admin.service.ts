@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../prisma/generated/prisma/enums'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
@@ -69,8 +69,8 @@ export class AdminService {
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
-            norisRequest.data,
-          )
+          norisRequest.data,
+        )
     return this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
   }
 

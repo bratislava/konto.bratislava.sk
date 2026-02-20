@@ -7,9 +7,11 @@ import {
 
 @Injectable()
 export default class ClientsService {
-  constructor(private readonly configService: ConfigService) {}
+  public readonly cityAccountApi: CityAccountClient
 
-  public readonly cityAccountApi: CityAccountClient = createCityAccountClient({
-    basePath: this.configService.getOrThrow('CITY_ACCOUNT_API_URL'),
-  })
+  constructor(private readonly configService: ConfigService) {
+    this.cityAccountApi = createCityAccountClient({
+      basePath: this.configService.getOrThrow('CITY_ACCOUNT_API_URL'),
+    })
+  }
 }

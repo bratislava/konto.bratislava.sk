@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus, TaxPayment } from '@prisma/client'
+import { PaymentStatus } from '../../../prisma/generated/prisma/enums'
+import { TaxPayment } from '../../../prisma/generated/prisma/client'
 import currency from 'currency.js'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -46,7 +47,7 @@ export class NorisPaymentSubservice {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
-  ) {}
+  ) { }
 
   async getPaymentDataFromNoris(
     data: RequestPostNorisPaymentDataLoadDto,

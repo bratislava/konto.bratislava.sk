@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -162,8 +162,8 @@ export class DateRangeDto {
 
 export type RequestUpdateNorisDeliveryMethodsData = {
   [key: string]:
-    | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
-    | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
+  | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
+  | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
 }
 
 export class RequestUpdateNorisDeliveryMethodsDto {
@@ -343,12 +343,12 @@ export class RequestPostReportingSendReport {
 
 export type NorisRequestGeneral =
   | {
-      type: 'fromToDate'
+    type: 'fromToDate'
 
-      data: RequestPostNorisPaymentDataLoadDto
-    }
+    data: RequestPostNorisPaymentDataLoadDto
+  }
   | {
-      type: 'variableSymbols'
+    type: 'variableSymbols'
 
-      data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto
-    }
+    data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto
+  }

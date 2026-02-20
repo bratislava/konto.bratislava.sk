@@ -16,7 +16,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../prisma/generated/prisma/enums'
 import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
@@ -38,7 +38,7 @@ import { TaxService } from './tax.service'
 @ApiBearerAuth()
 @Controller({ path: 'tax', version: '2' })
 export class TaxControllerV2 {
-  constructor(private readonly taxService: TaxService) {}
+  constructor(private readonly taxService: TaxService) { }
 
   @HttpCode(200)
   @ApiOperation({

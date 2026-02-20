@@ -1,4 +1,3 @@
-import { Prisma, Tax, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -27,6 +26,9 @@ import {
   mapNorisToTaxPayerData,
 } from '../../utils/mapping.helper'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
+import { TaxType } from '../../../../prisma/generated/prisma/enums'
+import { Tax } from '../../../../prisma/generated/prisma/client'
+import { TaxWhereUniqueInput, TransactionClient } from '../../../../prisma/generated/prisma/internal/prismaNamespace'
 
 export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   protected readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
@@ -42,7 +44,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly logger: LineLoggerSubservice,
     protected readonly cityAccountSubservice: CityAccountSubservice,
     protected readonly paymentSubservice: NorisPaymentSubservice,
-  ) {}
+  ) { }
 
   /**
    * Gets the tax definition for this tax type.
@@ -130,15 +132,15 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     const taxDefinition = this.getTaxDefinition()
     const selectQuery = taxDefinition.isUnique
       ? {
-          taxPayer: {
-            select: {
-              birthNumber: true,
-            },
+        taxPayer: {
+          select: {
+            birthNumber: true,
           },
-        }
+        },
+      }
       : {
-          variableSymbol: true,
-        }
+        variableSymbol: true,
+      }
     const taxesExist = await this.prismaService.tax.findMany({
       select: selectQuery,
       where: {
@@ -345,18 +347,18 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     taxDefinition: TaxDefinition<TTaxType>,
     dataFromNoris: TaxTypeToNorisData[TTaxType],
     year: number,
-    transaction: Prisma.TransactionClient,
+    transaction: TransactionClient,
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
   ): Promise<TaxWithTaxPayer> {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
     const taxAdministrator = taxAdministratorData
       ? await transaction.taxAdministrator.upsert({
-          where: {
-            id: taxAdministratorData.id,
-          },
-          create: taxAdministratorData,
-          update: taxAdministratorData,
-        })
+        where: {
+          id: taxAdministratorData.id,
+        },
+        create: taxAdministratorData,
+        update: taxAdministratorData,
+      })
       : undefined
 
     const taxPayerData = mapNorisToTaxPayerData(dataFromNoris)
@@ -396,19 +398,19 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
 
     const taxDetails = taxDefinition.mapNorisToTaxDetailData(dataFromNoris)
 
-    const whereUnique: Prisma.TaxWhereUniqueInput = {
+    const whereUnique: TaxWhereUniqueInput = {
       ...(taxDefinition.isUnique
         ? {
-            taxPayerId_year_type_order: {
-              taxPayerId: taxPayer.id,
-              year,
-              type: taxDefinition.type,
-              order: 1,
-            },
-          }
+          taxPayerId_year_type_order: {
+            taxPayerId: taxPayer.id,
+            year,
+            type: taxDefinition.type,
+            order: 1,
+          },
+        }
         : {
-            variableSymbol: dataFromNoris.variabilny_symbol,
-          }),
+          variableSymbol: dataFromNoris.variabilny_symbol,
+        }),
     }
     const tax = await transaction.tax.upsert({
       where: whereUnique,

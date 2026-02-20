@@ -1,4 +1,4 @@
-import { DeliveryMethodNamed, TaxPaymentSource, TaxType } from '@prisma/client'
+import { DeliveryMethodNamed, TaxPaymentSource, TaxType } from '../../prisma/generated/prisma/enums'
 
 export enum BloomreachEventNameEnum {
   TAX = 'tax',

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../../prisma/generated/prisma/enums'
 import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'

@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import noop from 'lodash/noop'
 
@@ -23,6 +22,7 @@ import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from '../subservices/config.subservice'
 import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
 import { TasksService } from '../tasks.service'
+import { PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
 
 // Mock p-limit to return a function that executes the passed function immediately
 const mockPLimitFn = (fn: () => Promise<any>) => fn()

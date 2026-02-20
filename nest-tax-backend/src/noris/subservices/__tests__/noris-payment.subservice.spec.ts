@@ -1,7 +1,8 @@
 /* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, Tax } from '@prisma/client'
+import { Tax } from '../../../../prisma/generated/prisma/client'
+import { PaymentStatus } from '../../../../prisma/generated/prisma/enums'
 import * as mssql from 'mssql'
 
 import prismaMock from '../../../../test/singleton'

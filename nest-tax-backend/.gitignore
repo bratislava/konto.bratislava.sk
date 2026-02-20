@@ -46,6 +46,9 @@ eslint-report.json
 .env.local
 .scannerwork
 
+# prisma generated files
+prisma/generated/
+
 /certs
 kubernetes/envs/Dev/secrets/database.yml
 kubernetes/envs/Prod/secrets/database.yml

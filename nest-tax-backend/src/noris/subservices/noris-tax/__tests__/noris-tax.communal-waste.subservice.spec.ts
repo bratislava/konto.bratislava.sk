@@ -1,7 +1,7 @@
 /* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../../../prisma/generated/prisma/enums'
 import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
@@ -233,9 +233,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+        ; (Request as unknown as jest.Mock).mockImplementation(
+          () => mockRequest as any,
+        )
 
       const result = await service[
         'getCommunalWasteTaxDataByBirthNumberAndYear'
@@ -261,9 +261,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+        ; (Request as unknown as jest.Mock).mockImplementation(
+          () => mockRequest as any,
+        )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
         '123456/7890',
@@ -287,9 +287,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+        ; (Request as unknown as jest.Mock).mockImplementation(
+          () => mockRequest as any,
+        )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
         '123456/7890',
@@ -315,9 +315,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+        ; (Request as unknown as jest.Mock).mockImplementation(
+          () => mockRequest as any,
+        )
 
       const birthNumbers = ['123456/7890', '987654/3210', '111111/1111']
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](
@@ -355,9 +355,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+        ; (Request as unknown as jest.Mock).mockImplementation(
+          () => mockRequest as any,
+        )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
         '123456/7890',

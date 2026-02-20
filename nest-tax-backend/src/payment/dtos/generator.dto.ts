@@ -1,4 +1,4 @@
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 
 export interface PaymentGateURLGeneratorDto {
   amount: number

@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, TaxPaymentSource, TaxType } from '@prisma/client'
+import { PaymentStatus, TaxPaymentSource, TaxType } from '../../../prisma/generated/prisma/enums'
 import noop from 'lodash/noop'
 
 import prismaMock from '../../../test/singleton'

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
+import { PaymentStatus, TaxType } from '../../prisma/generated/prisma/enums'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -33,6 +33,7 @@ import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
+import { TaxGetPayload, TaxInclude, TaxPayerWhereUniqueInput, TaxWhereUniqueInput } from '../../prisma/generated/prisma/models'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -48,7 +49,7 @@ export class TaxService {
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
-  ) {}
+  ) { }
 
   private async getAmountsAlreadyPaidByTaxIds(
     taxIds: number[],
@@ -204,13 +205,13 @@ export class TaxService {
    * @param order - Order of the tax
    * @returns Tax data from database
    */
-  private async fetchTaxData<T extends Prisma.TaxInclude>(
-    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+  private async fetchTaxData<T extends TaxInclude>(
+    taxPayerWhereUniqueInput: TaxPayerWhereUniqueInput,
     include: T,
     year: number,
     type: TaxType,
     order: number,
-  ): Promise<Prisma.TaxGetPayload<{ include: T }>> {
+  ): Promise<TaxGetPayload<{ include: T }>> {
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: taxPayerWhereUniqueInput,
       select: { id: true },
@@ -224,7 +225,7 @@ export class TaxService {
     }
 
     const tax = await this.prisma.tax.findUnique<{
-      where: Prisma.TaxWhereUniqueInput
+      where: TaxWhereUniqueInput
       include: T
     }>({
       where: {
@@ -320,18 +321,18 @@ export class TaxService {
       activeInstallment: detailWithoutQrCode.installmentPayment
         .activeInstallment
         ? {
-            remainingAmount:
-              detailWithoutQrCode.installmentPayment.activeInstallment
-                .remainingAmount,
-            variableSymbol:
-              detailWithoutQrCode.installmentPayment.activeInstallment
-                .variableSymbol,
-            dueDate:
-              detailWithoutQrCode.installmentPayment.activeInstallment.dueDate,
-            qrCode: await this.qrCodeSubservice.createQrCode(
-              detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
-            ),
-          }
+          remainingAmount:
+            detailWithoutQrCode.installmentPayment.activeInstallment
+              .remainingAmount,
+          variableSymbol:
+            detailWithoutQrCode.installmentPayment.activeInstallment
+              .variableSymbol,
+          dueDate:
+            detailWithoutQrCode.installmentPayment.activeInstallment.dueDate,
+          qrCode: await this.qrCodeSubservice.createQrCode(
+            detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
+          ),
+        }
         : undefined,
     }
 
@@ -364,7 +365,7 @@ export class TaxService {
   }
 
   async getOneTimePaymentGenerator(
-    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    taxPayerWhereUniqueInput: TaxPayerWhereUniqueInput,
     year: number,
     type: TaxType,
     order: number,
@@ -393,7 +394,7 @@ export class TaxService {
   }
 
   async getInstallmentPaymentGenerator(
-    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    taxPayerWhereUniqueInput: TaxPayerWhereUniqueInput,
     year: number,
     taxType: TaxType,
     order: number,

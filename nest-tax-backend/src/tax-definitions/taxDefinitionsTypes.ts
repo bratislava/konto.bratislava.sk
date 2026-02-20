@@ -1,9 +1,9 @@
+import { TaxAdministrator } from '../../prisma/generated/prisma/client'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
-  TaxAdministrator,
   TaxType,
-} from '@prisma/client'
+} from '../../prisma/generated/prisma/enums'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
 import {

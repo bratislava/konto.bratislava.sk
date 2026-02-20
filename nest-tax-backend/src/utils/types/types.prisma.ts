@@ -1,12 +1,12 @@
-import { Prisma } from '@prisma/client'
+import { TaxGetPayload, TaxPaymentGetPayload, TaxSelect } from "../../../prisma/generated/prisma/models"
 
 export type TaxPaymentWithTaxInfo<
-  TTaxSelect extends Prisma.TaxSelect = {
+  TTaxSelect extends TaxSelect = {
     year: true
     type: true
     order: true
   },
-> = Prisma.TaxPaymentGetPayload<{
+> = TaxPaymentGetPayload<{
   include: {
     tax: {
       select: TTaxSelect
@@ -14,7 +14,7 @@ export type TaxPaymentWithTaxInfo<
   }
 }>
 
-export type TaxPaymentWithTaxAndTaxPayer = Prisma.TaxPaymentGetPayload<{
+export type TaxPaymentWithTaxAndTaxPayer = TaxPaymentGetPayload<{
   include: {
     tax: {
       include: {
@@ -24,7 +24,7 @@ export type TaxPaymentWithTaxAndTaxPayer = Prisma.TaxPaymentGetPayload<{
   }
 }>
 
-export type TaxWithTaxPayer = Prisma.TaxGetPayload<{
+export type TaxWithTaxPayer = TaxGetPayload<{
   include: {
     taxPayer: true
   }

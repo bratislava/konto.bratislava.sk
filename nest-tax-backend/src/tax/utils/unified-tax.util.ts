@@ -1,4 +1,3 @@
-import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -27,6 +26,7 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
 } from '../dtos/response.tax.dto'
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '../../../prisma/generated/prisma/enums'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -368,17 +368,17 @@ const calculateInstallmentPaymentDetails = (options: {
     dayjs.Dayjs,
     ...dayjs.Dayjs[],
   ] = [
-    // First installment due date is calculated from dateOfValidity
-    dueDate,
-    // Second installment:
-    parseInstallmentDueDate(installmentDueDates.second),
-    // Third installment:
-    parseInstallmentDueDate(installmentDueDates.third),
-    // Fourth installment (if exists):
-    ...(installmentDueDates.fourth
-      ? [parseInstallmentDueDate(installmentDueDates.fourth)]
-      : []),
-  ]
+      // First installment due date is calculated from dateOfValidity
+      dueDate,
+      // Second installment:
+      parseInstallmentDueDate(installmentDueDates.second),
+      // Third installment:
+      parseInstallmentDueDate(installmentDueDates.third),
+      // Fourth installment (if exists):
+      ...(installmentDueDates.fourth
+        ? [parseInstallmentDueDate(installmentDueDates.fourth)]
+        : []),
+    ]
 
   const dueDateLastPayment = installmentDueDatesParsed.at(-1)
   if (!dueDateLastPayment) {

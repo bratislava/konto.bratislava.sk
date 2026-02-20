@@ -1,4 +1,4 @@
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../../prisma/generated/prisma/enums'
 import currency from 'currency.js'
 
 import {
@@ -42,12 +42,12 @@ export const mapNorisToTaxAdministratorData = (
 ): NorisTaxAdministratorData | undefined => {
   return data.vyb_id && data.vyb_telefon_prace && data.vyb_email
     ? {
-        email: data.vyb_email,
-        externalId: data.cislo_poradace.toString(),
-        id: data.vyb_id,
-        name: data.vyb_nazov,
-        phoneNumber: data.vyb_telefon_prace,
-      }
+      email: data.vyb_email,
+      externalId: data.cislo_poradace.toString(),
+      id: data.vyb_id,
+      name: data.vyb_nazov,
+      phoneNumber: data.vyb_telefon_prace,
+    }
     : undefined
 }
 
@@ -245,8 +245,8 @@ export const mapNorisToRealEstateDatabaseDetail = (
         amount: convertCurrencyToInt(data[amountKey] as string),
         area: valueTaxConfig.area
           ? (data[
-              `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisRealEstateTax
-            ] as string)
+            `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisRealEstateTax
+          ] as string)
           : undefined,
       }
 

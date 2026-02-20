@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '../../../../prisma/generated/prisma/enums'
 import noop from 'lodash/noop'
 
 import {
@@ -257,10 +257,10 @@ describe('UnifiedTaxUtil', () => {
       '../../../tax-definitions/getTaxDefinitionByType',
     )
 
-    // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
-      actualModule.getTaxDefinitionByType,
-    )
+      // Reset and setup default mock to use actual implementation
+      ; (getTaxDefinitionByType as jest.Mock).mockImplementation(
+        actualModule.getTaxDefinitionByType,
+      )
   })
 
   afterEach(() => {
@@ -1535,10 +1535,10 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       '../../../tax-definitions/getTaxDefinitionByType',
     )
 
-    // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
-      actualModule.getTaxDefinitionByType,
-    )
+      // Reset and setup default mock to use actual implementation
+      ; (getTaxDefinitionByType as jest.Mock).mockImplementation(
+        actualModule.getTaxDefinitionByType,
+      )
   })
 
   afterEach(() => {
@@ -1624,10 +1624,10 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     )
     const actualDefinition = actualModule.getTaxDefinitionByType(TaxType.DZN)
 
-    ;(getTaxDefinitionByType as jest.Mock).mockReturnValue({
-      ...actualDefinition,
-      paymentCalendarThreshold: 0,
-    })
+      ; (getTaxDefinitionByType as jest.Mock).mockReturnValue({
+        ...actualDefinition,
+        paymentCalendarThreshold: 0,
+      })
 
     const options = {
       ...baseOptionsRealEstate,

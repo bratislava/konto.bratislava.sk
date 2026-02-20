@@ -4,15 +4,15 @@ import React from 'react'
 import FormContent from '@/src/components/forms/FormContent'
 import FormVersionCompareAction from '@/src/components/forms/FormVersionCompareAction'
 import IframeResizerChild from '@/src/components/forms/IframeResizerChild'
-import ThankYouFormSection from '@/src/components/forms/segments/AccountSections/ThankYouSection/ThankYouFormSection'
-import ConditionalWrap from '@/src/components/forms/simple-components/ConditionalWrap'
 import {
   FormContextProvider,
   FormServerContext,
   useFormContext,
 } from '@/src/components/forms/useFormContext'
 import { FormSentProvider, useFormSent } from '@/src/components/forms/useFormSent'
+import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import ThankYouFormPageContent from '@/src/components/page-contents/ThankYouPageContent/ThankYouFormPageContent'
 import cn from '@/src/frontend/cn'
 
 /**
@@ -41,7 +41,7 @@ const FormPageContent = ({ nonce }: { nonce?: string }) => {
         )}
       >
         {isFormSent ? (
-          <ThankYouFormSection />
+          <ThankYouFormPageContent />
         ) : isFormOutdated ? (
           // It is not possible to display outdated form in any meaningful way,
           // se the user needs to first make an action (if possible)

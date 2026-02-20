@@ -1,6 +1,6 @@
 import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
-import type { PolymorphicProps } from '@/src/components/forms/simple-components/Button'
-import Button from '@/src/components/forms/simple-components/Button'
+import type { PolymorphicProps } from '@/src/components/simple-components/Button'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/frontend/cn'
 
 import { Stack } from '../Stack'

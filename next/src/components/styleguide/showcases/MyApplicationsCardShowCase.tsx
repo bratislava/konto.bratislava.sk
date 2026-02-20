@@ -5,7 +5,7 @@ import {
 } from 'openapi-clients/forms'
 import React from 'react'
 
-import MyApplicationsCard from '@/src/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
+import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ClipboardCopy from '@/src/components/forms/simple-components/ClipboardCopy'
+import ClipboardCopy from '@/src/components/simple-components/ClipboardCopy'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'

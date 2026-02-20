@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import Button from '@/src/components/forms/simple-components/Button'
+import Button from '@/src/components/simple-components/Button'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
 export const getStaticProps: GetStaticProps = async () => {

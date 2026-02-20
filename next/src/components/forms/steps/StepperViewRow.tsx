@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
-import { FormStepperStep } from '@/src/components/forms/types/Steps'
+import { FormStepperStep } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
 import cn from '@/src/frontend/cn'
 

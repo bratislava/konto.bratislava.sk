@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import Tag from '@/src/components/forms/simple-components/Tag'
+import Tag from '@/src/components/simple-components/Tag'
 import logger from '@/src/frontend/utils/logger'
 
 import { Stack } from '../Stack'

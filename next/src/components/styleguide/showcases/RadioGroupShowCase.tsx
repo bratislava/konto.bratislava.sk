@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Radio from '@/src/components/forms/widget-components/RadioButton/Radio'
-import RadioGroup from '@/src/components/forms/widget-components/RadioButton/RadioGroup'
+import Radio from '@/src/components/widget-components/RadioButton/Radio'
+import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

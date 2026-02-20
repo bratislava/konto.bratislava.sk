@@ -11,9 +11,9 @@ import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormData } from '@/src/components/forms/useFormData'
 import ConditionalFormMarkdown from '@/src/components/info-components/ConditionalFormMarkdown'
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
 import cn from '@/src/frontend/cn'
 
 /**

@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import { ArrowLeftIcon } from '@/src/assets/ui-icons'
-import OAuthInfo from '@/src/components/segments/OAuthConfigure/OAuthInfo'
+import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { ROUTES } from '@/src/frontend/api/constants'
@@ -84,7 +84,7 @@ export const AuthNavBar = ({
               }
             />
           </div>
-          <OAuthInfo />
+          <OAuthLogo />
         </div>
       </div>
       {/* Mobile */}
@@ -109,7 +109,7 @@ export const AuthNavBar = ({
               }
             />
           </div>
-          <OAuthInfo />
+          <OAuthLogo />
         </div>
       </div>
       <div className="lg:hidden">

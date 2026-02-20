@@ -1,6 +1,6 @@
 import React from 'react'
-import { DpbLogoSvg, PaasMpaLogoSvg } from 'src/components/segments/OAuthConfigure/logos'
 
+import { DpbLogoSvg, PaasMpaLogoSvg } from '@/src/components/segments/OAuthLogo/logos'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 
@@ -15,7 +15,7 @@ const OAuthClientLogo = ({ clientName }: { clientName: string }) => {
   }
 }
 
-const OAuthInfo = () => {
+const OAuthLogo = () => {
   const { isOAuthLogin, clientInfo } = useAmplifyClientOAuthContext()
 
   return isProductionDeployment() ? null : isOAuthLogin && clientInfo?.clientName ? (
@@ -25,4 +25,4 @@ const OAuthInfo = () => {
   ) : null
 }
 
-export default OAuthInfo
+export default OAuthLogo

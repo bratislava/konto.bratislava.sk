@@ -1,12 +1,12 @@
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
-import UserProfileDetailEdit from '@/src/components/segments/UserProfile/UserProfileDetailEdit'
-import UserProfileDetailsButtons from '@/src/components/segments/UserProfile/UserProfileDetailsButtons'
-import UserProfileDetailView from '@/src/components/segments/UserProfile/UserProfileDetailView'
-import UserProfilePhoto from '@/src/components/segments/UserProfile/UserProfilePhoto'
-import UserProfileSection from '@/src/components/segments/UserProfile/UserProfileSection'
-import UserProfileSectionHeader from '@/src/components/segments/UserProfile/UserProfileSectionHeader'
+import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'
+import BoxedSectionHeader from '@/src/components/page-contents/UserProfilePageContent/BoxedSectionHeader'
+import UserProfileDetailEdit from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetailEdit'
+import UserProfileDetailsButtons from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetailsButtons'
+import UserProfileDetailView from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetailView'
+import UserProfilePhoto from '@/src/components/page-contents/UserProfilePageContent/UserProfilePhoto'
 import Alert from '@/src/components/simple-components/Alert'
 import cn from '@/src/frontend/cn'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
@@ -75,8 +75,8 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           </div>
         </div>
       )}
-      <UserProfileSection>
-        <UserProfileSectionHeader
+      <BoxedSection>
+        <BoxedSectionHeader
           title={t('my_profile.profile_detail.title')}
           text={t('my_profile.profile_detail.text')}
           isEditing={isEditing}
@@ -89,7 +89,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
             onChangeIsEditing={onChangeIsEditing}
             onCancelEditing={onCancelEditing}
           />
-        </UserProfileSectionHeader>
+        </BoxedSectionHeader>
         <div className="flex flex-col">
           {/* Alert only for alertType === error */}
           {isAlertOpened && (
@@ -115,7 +115,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
             )}
           </div>
         </div>
-      </UserProfileSection>
+      </BoxedSection>
     </div>
   )
 }

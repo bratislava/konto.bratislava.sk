@@ -6,8 +6,8 @@ import {
   MunicipalServiceCategoryEntityFragment,
   MunicipalServiceEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
-import MunicipalServicesSectionHeader from '@/src/components/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
+import MunicipalServicesPageHeader from '@/src/components/segments/PageHeader/MunicipalServicesPageHeader'
 import Pagination from '@/src/components/simple-components/Pagination/Pagination'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -77,7 +77,7 @@ const MunicipalServicesPageContent = ({
 
   return (
     <div className="flex flex-col">
-      <MunicipalServicesSectionHeader
+      <MunicipalServicesPageHeader
         enumOptions={enumOptions}
         setSelectorValue={handleCategoryChange}
         selectorValue={selectorValue}

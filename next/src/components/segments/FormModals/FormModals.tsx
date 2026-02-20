@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormModals } from '@/src/components/forms/useFormModals'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '@/src/components/segments/IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '@/src/components/segments/RegistrationModal/RegistrationModal'
 import TaxFormPdfExportModal from '@/src/components/segments/TaxFormPdfExportModal/TaxFormPdfExportModal'

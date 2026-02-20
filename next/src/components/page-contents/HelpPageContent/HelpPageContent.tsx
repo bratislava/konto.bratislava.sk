@@ -2,8 +2,8 @@ import { useTranslation } from 'next-i18next'
 
 import BannerPhone from '@/src/assets/images/help-page-banner-image.png'
 import { HelpPageFragment } from '@/src/clients/graphql-strapi/api'
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
-import AccountSectionHeader from '@/src/components/segments/AccountSectionHeader/AccountSectionHeader'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import Banner from '@/src/components/simple-components/Banner'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -21,7 +21,7 @@ const HelpPageContent = ({ helpPage }: Props) => {
 
   return (
     <div className="flex flex-col">
-      <AccountSectionHeader title={t('account_section_help.navigation')} />
+      <PageHeader title={t('account_section_help.navigation')} />
       <div className="mx-auto w-full max-w-(--breakpoint-lg) py-6 lg:py-16">
         <h2 className="flex justify-start px-4 text-h2 lg:px-0">
           {t('account_section_help.faq.title')}

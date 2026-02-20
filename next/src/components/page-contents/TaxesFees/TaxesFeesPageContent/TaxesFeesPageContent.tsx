@@ -13,14 +13,14 @@ import TaxesFeesTabs, {
 } from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesTabs'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxesFees } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
-import AccountSectionHeader from '@/src/components/segments/AccountSectionHeader/AccountSectionHeader'
+import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1475&t=fznV5maoQK8a2irI-4
  */
 
-const TaxesFeesSection = () => {
+const TaxesFeesPageContent = () => {
   const { t } = useTranslation('account')
 
   const {
@@ -44,7 +44,7 @@ const TaxesFeesSection = () => {
 
   return (
     <>
-      <AccountSectionHeader
+      <PageHeader
         title={t('account_section_payment.title')}
         // not the best solution, but for proper one we need to rewrite components in Figma (pages, UserProfileView, HelpSection, IntroSection)
         titleWrapperClassName="pb-0 pt-8 lg:py-0"
@@ -56,7 +56,7 @@ const TaxesFeesSection = () => {
           onSelectionChange={handleTabChange}
           items={taxTypeTabOptions}
         />
-      </AccountSectionHeader>
+      </PageHeader>
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-4 p-4 lg:gap-8 lg:px-0 lg:py-12">
         {!isIdentityVerified &&
           (isInQueue ? (
@@ -84,4 +84,4 @@ const TaxesFeesSection = () => {
   )
 }
 
-export default TaxesFeesSection
+export default TaxesFeesPageContent

@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import AccountContainer from '@/src/components/segments/AccountContainer/AccountContainer'
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import AccountContainer from '@/src/components/layouts/AccountContainer'
 import Button from '@/src/components/simple-components/Button'
 
 const AccountActivator = () => {

@@ -8,7 +8,7 @@ import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-con
 import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/PaymentData'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
-import TaxFeeSectionHeader from '@/src/components/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import { ROUTES } from '@/src/frontend/api/constants'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
@@ -56,7 +56,7 @@ const TaxFeePaymentPageContent = () => {
 
   return (
     <div className="flex flex-col">
-      <TaxFeeSectionHeader
+      <TaxFeePageHeader
         title={getTitle()}
         breadcrumbs={[
           { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },

@@ -4,7 +4,7 @@ import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'rea
 
 import { HelpIcon } from '@/src/assets/ui-icons'
 // eslint-disable-next-line import/no-cycle
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import HorizontalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-vertical-arrow.svg'
 import cn from '@/src/frontend/cn'

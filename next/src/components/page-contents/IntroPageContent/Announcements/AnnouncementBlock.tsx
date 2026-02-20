@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { ComponentProps } from 'react'
 
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Button, { AnchorProps, ButtonProps } from '@/src/components/simple-components/Button'
 import cn from '@/src/frontend/cn'
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
-import type { BreadcrumbsProps } from 'src/components/segments/AccountSectionHeader/Breadcrumbs'
 
 import { ChevronRightIcon, HomeIcon } from '@/src/assets/ui-icons'
+import type { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
 import MLink from '@/src/components/simple-components/MLink'
 
 /**

@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 
-import UserConsent from '@/src/components/segments/UserProfile/UserConsent'
-import UserProfileSection from '@/src/components/segments/UserProfile/UserProfileSection'
+import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'
+import UserConsent from '@/src/components/page-contents/UserProfilePageContent/UserConsent'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useUserSubscription } from '@/src/frontend/hooks/useUser'
 
@@ -37,7 +37,7 @@ const UserProfileConsents = () => {
   }
 
   return (
-    <UserProfileSection>
+    <BoxedSection>
       <div className="px-4 md:px-8">
         <UserConsent
           consent={{
@@ -50,7 +50,7 @@ const UserProfileConsents = () => {
           onChange={handleOnChangeConsent}
         />
       </div>
-    </UserProfileSection>
+    </BoxedSection>
   )
 }
 

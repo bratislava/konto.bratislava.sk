@@ -1,6 +1,6 @@
 import React from 'react'
 
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 
 import { Stack } from '../Stack'

@@ -8,7 +8,7 @@ import TaxFeeDetails from '@/src/components/page-contents/TaxesFees/TaxFeePageCo
 import TaxFeePaymentMethods from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethods'
 import TaxFeeSubjectInformation from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeSubjectInformation'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
-import TaxFeeSectionHeader from '@/src/components/segments/AccountSectionHeader/TaxFeeSectionHeader'
+import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import Alert from '@/src/components/simple-components/Alert'
 import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
 import { ROUTES } from '@/src/frontend/api/constants'
@@ -55,7 +55,7 @@ const TaxFeePageContent = () => {
 
   return (
     <div className="flex flex-col">
-      <TaxFeeSectionHeader title={pageTitle} breadcrumbs={breadcrumbs} />
+      <TaxFeePageHeader title={pageTitle} breadcrumbs={breadcrumbs} />
       <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-10 lg:py-10">
         {showTaxFeePaidAlert && <Alert type="success" fullWidth message={paymentSuccessMessage} />}
         {showTaxFeeCancelledAlert && (

@@ -6,8 +6,8 @@ import {
   MunicipalServiceCardEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
 import Announcements from '@/src/components/page-contents/IntroPageContent/Announcements/Announcements'
-import AccountSectionHeader from '@/src/components/segments/AccountSectionHeader/AccountSectionHeader'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
+import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import PhoneNumberModal from '@/src/components/segments/PhoneNumberModal/PhoneNumberModal'
 import Banner from '@/src/components/simple-components/Banner'
 import Button from '@/src/components/simple-components/Button'
@@ -41,7 +41,7 @@ const IntroPageContent = ({
       <PhoneNumberModal />
       <div className="flex flex-col">
         <h1 className="sr-only">{t('common.bratislava_account')}</h1>
-        <AccountSectionHeader
+        <PageHeader
           title={
             name
               ? `${t('account_section_intro.header_title')} ${name}.`

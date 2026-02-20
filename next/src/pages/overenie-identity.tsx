@@ -6,9 +6,9 @@ import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
 } from '@/src/components/auth-forms/IdentityVerificationOfPhysicalEntityForm'
 import LegalPersonVerificationPageContent from '@/src/components/auth-forms/LegalPersonVerificationPageContent'
+import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import AccountContainer from '@/src/components/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'

@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import UserProfileDetailViewRow from '@/src/components/segments/UserProfile/UserProfileDetailViewRow'
+import UserProfileDetailViewRow from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetailViewRow'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
 
 type UserProfileDetailViewProps = {

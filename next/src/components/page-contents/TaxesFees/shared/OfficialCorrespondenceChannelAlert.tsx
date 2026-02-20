@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { TaxFragment } from '@/src/clients/graphql-strapi/api'
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
 
 type Props = {

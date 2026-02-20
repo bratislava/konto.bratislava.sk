@@ -1,4 +1,4 @@
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Toggle from '@/src/components/simple-components/Toggle'
 
 interface Consent {

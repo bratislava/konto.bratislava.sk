@@ -4,7 +4,7 @@ interface UserProfileSectionProps {
   children?: React.ReactNode
 }
 
-const UserProfileSection = ({ children }: UserProfileSectionProps) => {
+const BoxedSection = ({ children }: UserProfileSectionProps) => {
   return (
     <div className="flex grow flex-col items-center overflow-y-auto bg-white md:px-8 md:py-3">
       <div className="w-full rounded-lg border-gray-200 md:max-w-(--breakpoint-lg) md:border-2">
@@ -14,4 +14,4 @@ const UserProfileSection = ({ children }: UserProfileSectionProps) => {
   )
 }
 
-export default UserProfileSection
+export default BoxedSection

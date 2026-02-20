@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Button from '@/src/components/simple-components/Button'
 import Spinner from '@/src/components/simple-components/Spinner'
 import cn from '@/src/frontend/cn'

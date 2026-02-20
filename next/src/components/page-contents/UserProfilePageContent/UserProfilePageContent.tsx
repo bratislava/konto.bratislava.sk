@@ -6,9 +6,9 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
-import UserProfileConsents from '@/src/components/segments/UserProfile/UserProfileConsents'
-import UserProfileDetail from '@/src/components/segments/UserProfile/UserProfileDetail'
-import UserProfilePassword from '@/src/components/segments/UserProfile/UserProfilePassword'
+import UserProfileConsents from '@/src/components/page-contents/UserProfilePageContent/UserProfileConsents'
+import UserProfileDetail from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetail'
+import UserProfilePassword from '@/src/components/page-contents/UserProfilePageContent/UserProfilePassword'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
@@ -17,7 +17,7 @@ import { useUserUpdateBloomreachData } from '@/src/frontend/hooks/useUser'
 import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import logger from '@/src/frontend/utils/logger'
 
-const UserProfileView = () => {
+const UserProfilePageContent = () => {
   const { t } = useTranslation('account')
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isAlertOpened, setIsAlertOpened] = useState(false)
@@ -96,4 +96,4 @@ const UserProfileView = () => {
   )
 }
 
-export default UserProfileView
+export default UserProfilePageContent

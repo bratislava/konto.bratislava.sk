@@ -4,7 +4,7 @@ import SelectFieldNew, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
 
-type MunicipalServicesSectionHeaderBase = {
+type Props = {
   title: string
   selectorValue: SelectOption
   setSelectorValue: (val: SelectOption) => void
@@ -12,13 +12,13 @@ type MunicipalServicesSectionHeaderBase = {
   enumOptions: SelectOption[]
 }
 
-const MunicipalServicesSectionHeader = ({
+const MunicipalServicesPageHeader = ({
   title,
   enumOptions,
   selectorValue,
   setCurrentPage,
   setSelectorValue,
-}: MunicipalServicesSectionHeaderBase) => {
+}: Props) => {
   return (
     <div className="bg-gray-50">
       <div className="m-auto flex size-full max-w-(--breakpoint-lg) flex-col justify-end pt-6 pb-4 pl-4 lg:px-0 lg:pt-16 lg:pb-8">
@@ -40,4 +40,4 @@ const MunicipalServicesSectionHeader = ({
   )
 }
 
-export default MunicipalServicesSectionHeader
+export default MunicipalServicesPageHeader

@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
 import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from '@/src/frontend/utils/errors'
 import logger from '@/src/frontend/utils/logger'

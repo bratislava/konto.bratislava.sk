@@ -13,7 +13,7 @@ import { TaxFragment } from '@/src/clients/graphql-strapi/api'
 import { taxClient } from '@/src/clients/tax'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import TaxesFeesSection from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesSection'
+import TaxesFeesPageContent from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesPageContent'
 import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
 import { TaxesFeesProvider } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
@@ -109,7 +109,7 @@ const AccountTaxesFeesPage = ({
       <PageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
           <TaxesFeesProvider taxesData={taxesData} strapiTaxAdministrator={strapiTaxAdministrator}>
-            <TaxesFeesSection />
+            <TaxesFeesPageContent />
           </TaxesFeesProvider>
         </StrapiTaxProvider>
       </PageLayout>

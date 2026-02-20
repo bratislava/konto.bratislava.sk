@@ -1,12 +1,10 @@
-import Breadcrumbs, {
-  BreadcrumbsProps,
-} from '@/src/components/segments/AccountSectionHeader/Breadcrumbs'
+import Breadcrumbs, { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
 
-type TaxFeeSectionHeaderProps = {
+type Props = {
   title: string
 } & BreadcrumbsProps
 
-const TaxFeeSectionHeader = ({ title, breadcrumbs }: TaxFeeSectionHeaderProps) => {
+const TaxFeePageHeader = ({ title, breadcrumbs }: Props) => {
   return (
     <div className="h-full bg-gray-50 px-4 lg:px-0">
       <div className="m-auto flex max-w-(--breakpoint-lg) flex-col gap-4 pb-8">
@@ -17,4 +15,4 @@ const TaxFeeSectionHeader = ({ title, breadcrumbs }: TaxFeeSectionHeaderProps) =
   )
 }
 
-export default TaxFeeSectionHeader
+export default TaxFeePageHeader

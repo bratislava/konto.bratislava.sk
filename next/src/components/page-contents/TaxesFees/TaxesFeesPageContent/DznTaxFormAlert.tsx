@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import AccountMarkdown from '@/src/components/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
 import MLink from '@/src/components/simple-components/MLink'
 import { ROUTES } from '@/src/frontend/api/constants'

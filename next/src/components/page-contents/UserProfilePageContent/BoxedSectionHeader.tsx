@@ -15,7 +15,7 @@ interface UserProfileSectionHeaderProps {
   childrenToColumn?: boolean
 }
 
-const UserProfileSectionHeader = ({
+const BoxedSectionHeader = ({
   title,
   text,
   underline,
@@ -63,4 +63,4 @@ const UserProfileSectionHeader = ({
   )
 }
 
-export default UserProfileSectionHeader
+export default BoxedSectionHeader

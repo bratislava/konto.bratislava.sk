@@ -13,7 +13,7 @@ type AccountSectionHeaderBase = PropsWithChildren<{
   wrapperClassName?: string
 }>
 
-const AccountSectionHeader = (props: AccountSectionHeaderBase) => {
+const PageHeader = (props: AccountSectionHeaderBase) => {
   const { title, text, titleAsParagraph, titleWrapperClassName, wrapperClassName, children } = props
   return (
     <div className="bg-gray-50">
@@ -39,4 +39,4 @@ const AccountSectionHeader = (props: AccountSectionHeaderBase) => {
   )
 }
 
-export default AccountSectionHeader
+export default PageHeader

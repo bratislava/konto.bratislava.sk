@@ -1,11 +1,12 @@
 import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import React, { forwardRef } from 'react'
-import UploadButton from 'src/components/widget-components/Upload/UploadButton'
-import UploadDropArea from 'src/components/widget-components/Upload/UploadDropArea'
-import UploadFilesList from 'src/components/widget-components/Upload/UploadFilesList'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/frontend/cn'
+
+import UploadButton from './UploadButton'
+import UploadDropArea from './UploadDropArea'
+import UploadFilesList from './UploadFilesList'
 
 type UploadProps = FieldWrapperProps & {
   type: 'button' | 'dragAndDrop'

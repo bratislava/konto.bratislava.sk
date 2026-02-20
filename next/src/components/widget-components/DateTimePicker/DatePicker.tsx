@@ -6,12 +6,13 @@ import { forwardRef, useMemo } from 'react'
 import { useDatePicker } from 'react-aria'
 import { Dialog, Popover } from 'react-aria-components'
 import { useDatePickerState } from 'react-stately'
-import Calendar from 'src/components/widget-components/DateTimePicker/Calendar/Calendar'
-import DateField from 'src/components/widget-components/DateTimePicker/DateField'
 
 import { CalendarIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
 import { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
+
+import Calendar from './Calendar/Calendar'
+import DateField from './DateField'
 
 export type DatePickerProps = FieldWrapperProps & {
   value?: string | null

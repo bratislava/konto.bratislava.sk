@@ -1,11 +1,12 @@
 /* eslint-disable switch-case/no-case-curly */
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
-import usePagination from 'src/components/simple-components/Pagination/usePagination'
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/frontend/cn'
+
+import usePagination from './usePagination'
 
 type PaginationProps = {
   currentPage: number

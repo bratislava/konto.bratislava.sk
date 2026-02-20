@@ -2,9 +2,10 @@
 import { parseTime } from '@internationalized/date'
 import { useControlledState } from '@react-stately/utils'
 import { forwardRef, useMemo } from 'react'
-import TimeField from 'src/components/widget-components/DateTimePicker/TimeField'
 
 import { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
+
+import TimeField from './TimeField'
 
 function removeSecondsFromTime(time: string): string {
   const parts = time.split(':')

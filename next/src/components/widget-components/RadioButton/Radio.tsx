@@ -2,10 +2,11 @@ import { AriaRadioProps } from '@react-types/radio'
 import * as React from 'react'
 import { useContext, useRef } from 'react'
 import { useRadio } from 'react-aria'
-import { RadioContext } from 'src/components/widget-components/RadioButton/RadioGroup'
 
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import cn from '@/src/frontend/cn'
+
+import { RadioContext } from './RadioGroup'
 
 type RadioProps = {
   variant?: 'basic' | 'boxed' | 'card'

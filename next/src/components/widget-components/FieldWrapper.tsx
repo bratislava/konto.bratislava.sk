@@ -1,9 +1,10 @@
 import React, { PropsWithChildren } from 'react'
-import { FieldSize } from 'src/components/widget-components/FieldBase'
 
 import FieldFooter, { FieldFooterProps } from '@/src/components/widget-components/FieldFooter'
 import FieldHeader, { FieldHeaderProps } from '@/src/components/widget-components/FieldHeader'
 import cn from '@/src/frontend/cn'
+
+import { FieldSize } from './FieldBase'
 
 export type FieldWrapperProps = FieldHeaderProps & FieldFooterProps & { size?: FieldSize }
 

@@ -2,10 +2,11 @@ import { createCalendar } from '@internationalized/date'
 import { useRef } from 'react'
 import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
-import CalendarGrid from 'src/components/widget-components/DateTimePicker/Calendar/CalendarGrid'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
+
+import CalendarGrid from './CalendarGrid'
 
 type CalendarBase = {
   onConfirm?: () => void

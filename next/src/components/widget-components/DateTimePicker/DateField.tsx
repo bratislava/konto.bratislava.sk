@@ -4,10 +4,11 @@ import { DateValue } from '@react-types/datepicker'
 import React, { forwardRef, ReactNode } from 'react'
 import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
 import { useDateFieldState } from 'react-stately'
-import DateTimeSegment from 'src/components/widget-components/DateTimePicker/DateTimeSegment'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/frontend/cn'
+
+import DateTimeSegment from './DateTimeSegment'
 
 type DateFieldProps = FieldWrapperProps & {
   children?: ReactNode

@@ -1,7 +1,8 @@
 import { CalendarDate, DateDuration, endOfMonth, getWeeksInMonth } from '@internationalized/date'
 import { useCalendarGrid, useLocale } from 'react-aria'
 import { CalendarState } from 'react-stately'
-import CalendarCell from 'src/components/widget-components/DateTimePicker/Calendar/CalendarCell'
+
+import CalendarCell from './CalendarCell'
 
 type CalendarGridBase = {
   state: CalendarState

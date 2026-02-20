@@ -4,8 +4,8 @@ import React, { PropsWithChildren, useRef } from 'react'
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import { isDefined } from '@/src/frontend/utils/general'
-import { useHorizontalScrollFade } from '@/src/frontend/utils/useHorizontalScrollFade'
 import cn from '@/src/utils/cn'
+import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
 
 type TableDataType = ResponseCommunalWasteTaxItemizedAddressDto[]
 type TableHeaderDataType = TableDataType[0]

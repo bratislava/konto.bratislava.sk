@@ -21,6 +21,11 @@ import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { ROUTES } from '@/src/frontend/api/constants'
 import { Tier } from '@/src/frontend/dtos/accountDto'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
+import { usePrepareFormMigration } from '@/src/frontend/hooks/usePrepareFormMigration'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import {
   removeAllCookiesAndClearLocalStorage,
@@ -31,11 +36,6 @@ import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import {
-  AmplifyClientOAuthProvider,
-  useOAuthGetContext,
-} from '@/src/frontend/utils/useAmplifyClientOAuthContext'
-import { usePrepareFormMigration } from '@/src/frontend/utils/usePrepareFormMigration'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {

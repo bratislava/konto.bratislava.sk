@@ -7,8 +7,8 @@ import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { ROUTES } from '@/src/frontend/api/constants'
+import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { getLanguageKey } from '@/src/frontend/utils/general'
-import { useAmplifyClientOAuthContext } from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 import cn from '@/src/utils/cn'
 
 type Props = {

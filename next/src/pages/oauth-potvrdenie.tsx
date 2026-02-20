@@ -18,7 +18,7 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
-} from '@/src/frontend/utils/useAmplifyClientOAuthContext'
+} from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { AuthPageCommonProps } from '@/src/pages/prihlasenie'
 
 type PageProps = AuthPageCommonProps & {

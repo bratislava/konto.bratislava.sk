@@ -13,10 +13,10 @@ import Radio from '@/src/components/widget-components/RadioButton/Radio'
 import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 import { environment } from '@/src/environment'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
+import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import { isBrowser } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
-import { useAmplifyClientOAuthContext } from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 
 interface Data {
   email: string

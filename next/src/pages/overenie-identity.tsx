@@ -10,6 +10,10 @@ import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -18,10 +22,6 @@ import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/ut
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import {
-  AmplifyClientOAuthProvider,
-  useOAuthGetContext,
-} from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 import { AuthPageCommonProps } from '@/src/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(

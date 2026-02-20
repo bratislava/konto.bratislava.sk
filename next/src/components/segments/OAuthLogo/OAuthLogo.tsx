@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { DpbLogoSvg, PaasMpaLogoSvg } from '@/src/components/segments/OAuthLogo/logos'
+import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
-import { useAmplifyClientOAuthContext } from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 
 const OAuthClientLogo = ({ clientName }: { clientName: string }) => {
   switch (clientName) {

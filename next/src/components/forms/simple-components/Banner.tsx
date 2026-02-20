@@ -40,19 +40,7 @@ const Banner = ({
           <AccountMarkdown content={content} variant="sm" className="text-p2 text-gray-200" />
         </div>
         <div className="flex flex-col gap-4 lg:flex-row">
-          <Button
-            href={href}
-            variant="solid"
-            onPress={onPress}
-            fullWidthMobile
-            // TODO use solid-inverted variant when implemented
-            className={cn(
-              'border-background-active-primary-inverted-default bg-background-active-primary-inverted-default text-content-active-primary-default',
-              'data-pressed:border-background-active-primary-inverted-pressed data-pressed:bg-background-active-primary-inverted-pressed',
-              'data-hovered:border-background-active-primary-inverted-hover data-hovered:bg-background-active-primary-inverted-hover',
-              'ring-white ring-offset-border-active-primary-default',
-            )}
-          >
+          <Button href={href} variant="solid-inverted" onPress={onPress} fullWidthMobile>
             {buttonText}
           </Button>
           {mobileNumber && (

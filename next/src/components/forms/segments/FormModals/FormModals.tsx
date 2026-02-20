@@ -77,7 +77,7 @@ const FormModals = () => {
           onPress={() => migrateForm()}
           fullWidthMobile
           isLoading={migrateFormIsPending}
-          isLoadingText={t('migration_required_modal.button_title_loading')}
+          loadingText={t('migration_required_modal.button_title_loading')}
         >
           {t('migration_required_modal.button_title')}
         </Button>,
@@ -99,7 +99,7 @@ const FormModals = () => {
           size="small"
           onPress={() => saveConcept(true)}
           isLoading={saveConceptIsPending}
-          isLoadingText={t('concept_save_error_modal.button_title_loading')}
+          loadingText={t('concept_save_error_modal.button_title_loading')}
         >
           {t('concept_save_error_modal.button_title')}
         </Button>,
@@ -173,7 +173,7 @@ const FormModals = () => {
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.confirmCallback()}
           fullWidthMobile
           isLoading={sendPending}
-          isLoadingText={t('send_confirmation_modal.button_title_loading')}
+          loadingText={t('send_confirmation_modal.button_title_loading')}
         >
           {t('send_confirmation_modal.button_title')}
         </Button>,
@@ -209,7 +209,7 @@ const FormModals = () => {
           }
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
-          isLoadingText={t('send_confirmation_eid_modal.button_title_loading')}
+          loadingText={t('send_confirmation_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_eid_modal.button_title')}
         </Button>,
@@ -249,7 +249,7 @@ const FormModals = () => {
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.confirmCallback()
           }
           isLoading={eidSendConfirmationModalIsPending}
-          isLoadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
+          loadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
           fullWidthMobile
         >
           {t('send_confirmation_eid_legal_modal.button_title')}
@@ -287,7 +287,7 @@ const FormModals = () => {
           }
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
-          isLoadingText={t('send_confirmation_non_authenticated_eid_modal.button_title_loading')}
+          loadingText={t('send_confirmation_non_authenticated_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_non_authenticated_eid_modal.button_title')}
         </Button>,

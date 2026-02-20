@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/forms/simple-components/Button'
-import { LinkPlausibleProps } from '@/src/components/forms/simple-components/MLink'
+import { LinkAnalyticsProps } from '@/src/components/forms/simple-components/MLink'
 import cn from '@/src/frontend/cn'
 
 type ServiceCardBase = {
@@ -14,7 +14,7 @@ type ServiceCardBase = {
   href: string
   tags?: string[]
   tagStyle?: string
-  plausibleProps?: LinkPlausibleProps
+  analyticsProps?: LinkAnalyticsProps
 }
 
 const ServiceCard = ({
@@ -26,7 +26,7 @@ const ServiceCard = ({
   tagStyle,
   icon,
   href,
-  plausibleProps,
+  analyticsProps,
 }: ServiceCardBase) => {
   const style = cn(
     'group relative flex w-full flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
@@ -64,9 +64,10 @@ const ServiceCard = ({
           <Button
             href={href}
             variant="link"
+            hasLinkIcon={false}
             className="text-p2-semibold"
             stretched
-            plausibleProps={plausibleProps}
+            analyticsProps={analyticsProps}
           >
             {buttonText}
           </Button>

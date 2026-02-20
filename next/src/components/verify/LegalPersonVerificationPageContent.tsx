@@ -56,7 +56,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         onPress={loginWithEid}
         fullWidth
         isLoading={verificationStatus === VerificationStatus.REDIRECTING}
-        isLoadingText={t('auth.identity_verification.fop_po_eid.init.redirecting_button_text')}
+        loadingText={t('auth.identity_verification.fop_po_eid.init.redirecting_button_text')}
       >
         {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
       </Button>

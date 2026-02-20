@@ -14,7 +14,7 @@ const Brand = ({ className, title, url }: BrandProps) => {
   return (
     <div className={cn('flex', className)} aria-label="brand">
       {url ? (
-        <Button className="flex items-center space-x-3" href={url}>
+        <Button className="flex items-center space-x-3" href={url} hasLinkIcon={false}>
           <BALogo className="size-8 lg:h-6" />
           {title && <div>{title}</div>}
         </Button>

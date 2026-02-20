@@ -178,7 +178,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                       onPress={handleRedirectToPayment}
                       isLoading={isLoading}
                       endIcon={<ArrowRightIcon />}
-                      isLoadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
+                      loadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
                       className="max-lg:w-full"
                     >
                       {t('taxes.payment.to_pay')}

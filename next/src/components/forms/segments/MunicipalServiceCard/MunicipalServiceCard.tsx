@@ -130,7 +130,7 @@ const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
         service.attributes.tags?.data?.map((tag) => tag.attributes?.title).filter(isDefined) ?? []
       }
       tagStyle={getTagStyle(service.attributes.color)}
-      plausibleProps={{ id: `Mestské služby: ${service.attributes.title}` }}
+      analyticsProps={{ id: `Mestské služby: ${service.attributes.title}` }}
     />
   )
 }

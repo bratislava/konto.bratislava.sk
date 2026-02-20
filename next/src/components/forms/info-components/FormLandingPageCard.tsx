@@ -17,7 +17,13 @@ export type FormLandingPageCardProps =
 const FormLandingPageButton = (props: FormLandingPageCardProps) => {
   if (props.__typename === 'ComponentBlocksFormLandingPageLinkCta') {
     return (
-      <Button variant="outline" href={props.url} target="_blank" fullWidthMobile>
+      <Button
+        variant="outline"
+        href={props.url}
+        hasLinkIcon={false}
+        target="_blank"
+        fullWidthMobile
+      >
         {props.buttonLabel}
       </Button>
     )

@@ -4,7 +4,7 @@ import { ComponentProps, forwardRef } from 'react'
 
 import cn from '@/src/frontend/cn'
 
-export type LinkPlausibleProps = { id: string }
+export type LinkAnalyticsProps = { id: string }
 
 export type MLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref'> & {
   /**
@@ -12,7 +12,7 @@ export type MLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref'
    * @default unstyled
    */
   variant?: 'unstyled' | 'standard' | 'underlined' | 'underlined-medium'
-  plausibleProps?: LinkPlausibleProps
+  analyticsProps?: LinkAnalyticsProps
   /**
    * Similar to this:
    * https://getbootstrap.com/docs/4.3/utilities/stretched-link/
@@ -22,13 +22,13 @@ export type MLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref'
 
 const MLink = forwardRef<HTMLAnchorElement, MLinkProps>(
   (
-    { href, children, className, variant = 'unstyled', stretched = false, plausibleProps, ...rest },
+    { href, children, className, variant = 'unstyled', stretched = false, analyticsProps, ...rest },
     ref,
   ) => {
     const plausible = usePlausible()
 
     const styles = cn(
-      'underline-offset-2 transition',
+      'base-focus-ring rounded-xs underline-offset-2 transition',
       {
         'max-lg:underline lg:hover:underline': variant === 'standard',
         'underline hover:opacity-80': variant === 'underlined' || variant === 'underlined-medium',
@@ -47,8 +47,11 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkProps>(
         ref={ref}
         {...rest}
         className={styles}
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        onClick={() => plausible('Link click', { props: plausibleProps })}
+        onClick={() => {
+          if (analyticsProps) {
+            plausible('Link click', { props: analyticsProps })
+          }
+        }}
       >
         {children}
       </NextLink>

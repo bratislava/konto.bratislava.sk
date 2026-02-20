@@ -73,10 +73,10 @@ const ThankYouFormSection = () => {
 
   return (
     <div
-      className={cn(
-        'flex flex-col justify-between pt-16 md:pt-28',
-        largePadding ? 'pt-16 md:pt-28' : 'pt-6 md:pt-16',
-      )}
+      className={cn('flex flex-col justify-between', {
+        'py-6 md:py-16': !largePadding,
+        'py-16 md:py-28': largePadding,
+      })}
     >
       <div className="flex flex-col">
         <ThankYouCard

@@ -106,32 +106,31 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
      */
     const styles = cn(
       'base-focus-ring',
+      {
+        // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
+        'after:absolute after:inset-0': 'stretched' in rest && rest.stretched,
+
+        // width or fullwidth
+        'w-full': fullWidth,
+        'w-full md:w-fit': fullWidthMobile,
+        'w-fit': !fullWidth && !fullWidthMobile,
+      },
       variant === 'unstyled'
         ? ''
         : cn(
             // TODO text-button interferes with text-[color], as quickfix we set size and color here by arbitrary values
             'inline-flex h-auto items-center justify-center gap-2 text-[1rem] leading-[1.5rem] font-semibold transition',
 
-            // we change rounded corners for link focus ring
             {
-              'rounded-xs max-lg:gap-1': isLinkVariant,
+              // rounded corners (links recieve rounded corners so their focus ring is rounded similar to buttons)
               'rounded-lg': !isLinkVariant,
-            },
+              'rounded-xs': isLinkVariant,
 
-            {
-              'font-medium underline underline-offset-2': isLinkVariant,
+              // link styles
+              'font-medium underline underline-offset-2 max-lg:gap-1': isLinkVariant,
 
               // disabled
               'opacity-50': isDisabled,
-
-              // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
-              // TODO consider applying this to unstyled as well
-              'after:absolute after:inset-0': 'stretched' in rest && rest.stretched,
-
-              // width or fullwidth
-              'w-full': fullWidth,
-              'w-full md:w-fit': fullWidthMobile,
-              'w-fit': !fullWidth && !fullWidthMobile,
 
               // border width
               border: isSolidOrOutlineVariant,

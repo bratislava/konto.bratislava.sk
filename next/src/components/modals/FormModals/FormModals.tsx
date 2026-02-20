@@ -2,11 +2,11 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
-import { useFormModals } from '@/src/components/forms/useFormModals'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
-import IdentityVerificationModal from '@/src/components/segments/IdentityVerificationModal/IdentityVerificationModal'
-import RegistrationModal from '@/src/components/segments/RegistrationModal/RegistrationModal'
-import TaxFormPdfExportModal from '@/src/components/segments/TaxFormPdfExportModal/TaxFormPdfExportModal'
+import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
+import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
+import RegistrationModal from '@/src/components/modals/RegistrationModal'
+import TaxFormPdfExportModal from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModal'
 import Button from '@/src/components/simple-components/Button'
 import MessageModal, {
   MessageModalProps,

@@ -5,10 +5,10 @@ import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
+import PhoneNumberModal from '@/src/components/modals/PhoneNumberModal'
 import Announcements from '@/src/components/page-contents/IntroPageContent/Announcements/Announcements'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
-import PhoneNumberModal from '@/src/components/segments/PhoneNumberModal/PhoneNumberModal'
 import Banner from '@/src/components/simple-components/Banner'
 import Button from '@/src/components/simple-components/Button'
 import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'

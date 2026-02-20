@@ -6,11 +6,11 @@ import { FormSummaryProvider } from '@/src/components/forms/steps/Summary/useFor
 import { FormDataProvider } from '@/src/components/forms/useFormData'
 import { FormFileUploadProvider } from '@/src/components/forms/useFormFileUpload'
 import { FormLeaveProtectionProvider } from '@/src/components/forms/useFormLeaveProtection'
-import { FormModalsProvider } from '@/src/components/forms/useFormModals'
 import { FormRedirectsProvider } from '@/src/components/forms/useFormRedirects'
 import { FormSendProvider } from '@/src/components/forms/useFormSend'
 import { FormStateProvider } from '@/src/components/forms/useFormState'
 import { FormValidatorRegistryProvider } from '@/src/components/forms/useFormValidatorRegistry'
+import { FormModalsProvider } from '@/src/components/modals/FormModals/useFormModals'
 import { FormExportImportProvider } from '@/src/frontend/hooks/useFormExportImport'
 
 const FormProviders = ({ children, nonce }: PropsWithChildren<{ nonce?: string }>) => {

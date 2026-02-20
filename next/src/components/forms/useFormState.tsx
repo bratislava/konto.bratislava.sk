@@ -19,8 +19,8 @@ import { useFormCurrentStepIndex } from '@/src/components/forms/useFormCurrentSt
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormFileUpload } from '@/src/components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
-import { useFormModals } from '@/src/components/forms/useFormModals'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
+import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import {
   getEvaluatedStepsSchemas,
   getStepperData,

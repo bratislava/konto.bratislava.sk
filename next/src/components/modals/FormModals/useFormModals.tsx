@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import { useFormContext } from '@/src/components/forms/useFormContext'
-import { RegistrationModalType } from '@/src/components/segments/RegistrationModal/RegistrationModal'
-import { TaxFormPdfExportModalState } from '@/src/components/segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
+import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
+import { TaxFormPdfExportModalState } from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { NASES_TOKEN_QUERY_KEY } from '@/src/frontend/utils/metadataStorage'
 
 type ModalWithConfirmCallback =

@@ -12,7 +12,7 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormErrorTranslations } from '@/src/components/forms/useFormErrorTranslations'
 import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
-import FormModals from '@/src/components/segments/FormModals/FormModals'
+import FormModals from '@/src/components/modals/FormModals/FormModals'
 import FormBottomMenu from '@/src/components/simple-components/FormBottomMenu'
 import FormHeader from '@/src/components/simple-components/FormHeader'
 

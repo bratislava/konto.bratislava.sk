@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 
 import { BinIcon, ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'
-import { useFormModals } from '@/src/components/forms/useFormModals'
+import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 import { isDefined } from '@/src/frontend/utils/general'

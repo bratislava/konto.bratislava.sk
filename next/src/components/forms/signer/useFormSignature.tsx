@@ -18,7 +18,7 @@ import { SignerDeploymentStatus, useFormSigner } from '@/src/components/forms/si
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
-import { useFormModals } from '@/src/components/forms/useFormModals'
+import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 
 const useGetContext = () => {

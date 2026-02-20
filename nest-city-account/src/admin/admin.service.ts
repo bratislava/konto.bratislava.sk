@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
@@ -17,7 +16,6 @@ import {
   MarkDeceasedAccountResponseDto,
 } from '../user/dtos/user-modification-response.dto'
 import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
-import { MagproxyService } from '../magproxy/magproxy.service'
 
 /**
  * AdminService - Thin delegation layer for administrative operations
@@ -48,10 +46,8 @@ export class AdminService {
     private cognitoSubservice: CognitoSubservice,
     private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
-    private physicalEntityService: PhysicalEntityService,
     private readonly userService: UserService,
-    private readonly verificationService: VerificationService,
-    private readonly magproxyService: MagproxyService
+    private readonly verificationService: VerificationService
   ) {}
 
   /**

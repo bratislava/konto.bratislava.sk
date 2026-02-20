@@ -1,8 +1,6 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { AdminService } from 'src/admin/admin.service'
-import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import * as z from 'zod'
 import { PrismaService } from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
@@ -22,7 +20,6 @@ export class AdminCronSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
-    private readonly physicalEntityService: PhysicalEntityService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 

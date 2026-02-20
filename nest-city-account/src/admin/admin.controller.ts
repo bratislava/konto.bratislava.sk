@@ -1,7 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger'
 
-import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { AdminService } from './admin.service'
 import {
@@ -19,10 +18,7 @@ import { VerificationDataForUserResponseDto } from '../user-verification/dtos/ve
 @Controller('admin')
 @ApiSecurity('apiKey')
 export class AdminController {
-  constructor(
-    private readonly adminService: AdminService,
-    private readonly physicalEntityService: PhysicalEntityService
-  ) {}
+  constructor(private readonly adminService: AdminService) {}
 
   @HttpCode(200)
   @ApiOperation({

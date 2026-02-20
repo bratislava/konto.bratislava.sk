@@ -16,7 +16,13 @@ const formats = {
 
 type CDateFormat = keyof typeof formats
 
-export const formatDate = (isoString: string, locale = 'sk', format: CDateFormat = 'default') => {
+export const formatDate = (
+  isoString: string | null | undefined,
+  locale = 'sk',
+  format: CDateFormat = 'default',
+) => {
+  if (!isoString) return ''
+
   const localeMapped = ({ sk: 'sk-SK', en: 'en-IE' } as const)[locale] ?? 'sk-SK'
 
   const date = new Date(isoString)

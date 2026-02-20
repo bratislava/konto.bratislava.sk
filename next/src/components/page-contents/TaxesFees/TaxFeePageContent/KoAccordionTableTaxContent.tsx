@@ -1,8 +1,8 @@
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import React, { PropsWithChildren, useRef } from 'react'
 
+import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
-import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 import { isDefined } from '@/src/frontend/utils/general'
 import { useHorizontalScrollFade } from '@/src/frontend/utils/useHorizontalScrollFade'
 import cn from '@/src/utils/cn'

@@ -12,6 +12,7 @@ import {
   PaymentHandIcon,
   QrCodeIcon,
 } from '@/src/assets/ui-icons'
+import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Alert from '@/src/components/simple-components/Alert'
 import Button from '@/src/components/simple-components/Button'
@@ -20,7 +21,6 @@ import HorizontalDivider from '@/src/components/simple-components/HorizontalDivi
 import PaymentSchedule from '@/src/components/simple-components/PaymentSchedule'
 import { useUser } from '@/src/frontend/hooks/useUser'
 import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
-import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 import { isDefined, isProductionDeployment } from '@/src/frontend/utils/general'
 
 type Props = {

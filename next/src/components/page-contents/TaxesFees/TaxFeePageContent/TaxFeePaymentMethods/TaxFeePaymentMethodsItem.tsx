@@ -1,5 +1,5 @@
+import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import Button, { ButtonProps } from '@/src/components/simple-components/Button'
-import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 
 interface TaxFeePaymentMethodsItemProps {
   title: React.ReactNode

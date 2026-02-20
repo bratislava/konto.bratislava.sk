@@ -9,7 +9,7 @@ import {
 
 import Button from '@/src/components/simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)
 

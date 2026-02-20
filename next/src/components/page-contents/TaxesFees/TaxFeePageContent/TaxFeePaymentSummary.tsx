@@ -4,8 +4,8 @@ import React, { Fragment } from 'react'
 
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
-import cn from '@/src/frontend/cn'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
+import cn from '@/src/utils/cn'
 
 const TaxFeePaymentSummary = () => {
   const { taxData } = useTaxFee()

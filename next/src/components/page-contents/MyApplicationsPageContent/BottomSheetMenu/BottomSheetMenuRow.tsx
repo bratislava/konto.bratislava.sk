@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import Button from '@/src/components/simple-components/Button'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 interface BottomSheetMenuRowProps extends MenuItemBase {
   onLinkClick: () => void

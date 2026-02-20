@@ -6,7 +6,7 @@ import { MailIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { ROUTES } from '@/src/frontend/api/constants'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 // TODO unify with TaxesFeesAdministratorCardWrapper
 const OfficialCorrespondenceChannelCardWrapper = () => {

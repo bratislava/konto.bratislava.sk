@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { ToggleButton as RACToggleButton, ToggleButtonProps } from 'react-aria-components'
 
 import { EyeHiddenIcon, EyeIcon } from '@/src/assets/ui-icons'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type Props = {
   isPasswordHidden: boolean

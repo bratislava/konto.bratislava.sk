@@ -5,7 +5,7 @@ import { DOMAttributes } from 'react'
 
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import FieldHelptext from '@/src/components/widget-components/FieldHelptext'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type FieldHeaderProps = {
   label: string

@@ -12,9 +12,9 @@ import MenuDropdown, {
   MenuItemBase,
 } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { ROUTES } from '@/src/frontend/api/constants'
-import cn from '@/src/frontend/cn'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import cn from '@/src/utils/cn'
 
 type Props = {
   menuItems: MenuItemBase[]

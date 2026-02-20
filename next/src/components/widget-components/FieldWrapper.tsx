@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react'
 
 import FieldFooter, { FieldFooterProps } from '@/src/components/widget-components/FieldFooter'
 import FieldHeader, { FieldHeaderProps } from '@/src/components/widget-components/FieldHeader'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 import { FieldSize } from './FieldBase'
 

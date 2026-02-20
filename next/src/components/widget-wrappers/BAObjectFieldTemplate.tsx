@@ -4,7 +4,7 @@ import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/core/src/components/templates/ObjectFieldTemplate.tsx

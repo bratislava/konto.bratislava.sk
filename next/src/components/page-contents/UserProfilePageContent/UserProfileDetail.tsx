@@ -8,9 +8,9 @@ import UserProfileDetailsButtons from '@/src/components/page-contents/UserProfil
 import UserProfileDetailView from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetailView'
 import UserProfilePhoto from '@/src/components/page-contents/UserProfilePageContent/UserProfilePhoto'
 import Alert from '@/src/components/simple-components/Alert'
-import cn from '@/src/frontend/cn'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import cn from '@/src/utils/cn'
 
 interface UserProfileDetailProps {
   userAttributes?: UserAttributes | null

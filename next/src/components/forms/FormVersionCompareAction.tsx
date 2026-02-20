@@ -10,9 +10,9 @@ import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Button from '@/src/components/simple-components/Button'
 import { ROUTES } from '@/src/frontend/api/constants'
-import cn from '@/src/frontend/cn'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import cn from '@/src/utils/cn'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21643-15659&t=9VxOW0GxS2SEYDIL-4

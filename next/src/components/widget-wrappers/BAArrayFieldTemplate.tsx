@@ -18,7 +18,7 @@ import Button from '@/src/components/simple-components/Button'
 import FieldErrorMessage from '@/src/components/widget-components/FieldErrorMessage'
 import type { BAArrayFieldItemTemplateAdditionalProps } from '@/src/components/widget-wrappers/BAArrayFieldItemTemplate'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldTemplate/ArrayFieldTemplate.tsx

@@ -7,7 +7,7 @@ import { HelpIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import HorizontalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-vertical-arrow.svg'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type InnerTooltipProps = Omit<TooltipProps, 'children'> & {
   children: string

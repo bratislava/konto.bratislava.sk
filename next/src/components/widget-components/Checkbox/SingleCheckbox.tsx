@@ -4,7 +4,7 @@ import { useToggleState } from 'react-stately'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type CheckBoxBase = {
   variant?: 'basic' | 'boxed'

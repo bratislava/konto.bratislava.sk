@@ -2,7 +2,7 @@ import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 import { Tab, TabList, Tabs, TabsProps } from 'react-aria-components'
 
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type TaxTypeTabOptions = {
   title: string

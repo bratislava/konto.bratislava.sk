@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useDateSegment } from 'react-aria'
 import { DateFieldState, DateSegment } from 'react-stately'
 
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type DateSegmentBase = {
   segment: DateSegment

@@ -8,7 +8,7 @@ import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-c
 import { ArrowDownIcon, ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
 import MLink, { LinkAnalyticsProps } from '@/src/components/simple-components/MLink'
 import Spinner from '@/src/components/simple-components/Spinner'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type ButtonOrIconButton =
   | {

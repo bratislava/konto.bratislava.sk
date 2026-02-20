@@ -4,11 +4,11 @@ import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
 
 import { UploadIcon } from '@/src/assets/ui-icons'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
-import cn from '@/src/frontend/cn'
 import {
   getDisplaySupportedFileExtensions,
   getSupportedFileExtensions,
 } from '@/src/frontend/utils/formFileUpload'
+import cn from '@/src/utils/cn'
 
 interface UploadButtonProps {
   disabled?: boolean

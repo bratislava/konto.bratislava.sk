@@ -5,7 +5,7 @@ import NavBarHeader from '@/src/components/segments/NavBar/NavBarHeader'
 import NavMenu from '@/src/components/segments/NavBar/NavMenu'
 import useMenu from '@/src/components/segments/NavBar/useMenu'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type Props = {
   desktopNavbarRef: RefObject<HTMLDivElement | null>

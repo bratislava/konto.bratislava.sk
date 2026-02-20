@@ -5,8 +5,8 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import ThankYouCard from '@/src/components/page-contents/ThankYouPageContent/ThankYouCard'
 import Button from '@/src/components/simple-components/Button'
 import { ROUTES } from '@/src/frontend/api/constants'
-import cn from '@/src/frontend/cn'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import cn from '@/src/utils/cn'
 
 const useThankYouFormPageContent = () => {
   const {

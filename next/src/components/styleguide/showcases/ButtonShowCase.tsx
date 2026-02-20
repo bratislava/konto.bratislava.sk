@@ -1,7 +1,7 @@
 import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
 import type { PolymorphicProps } from '@/src/components/simple-components/Button'
 import Button from '@/src/components/simple-components/Button'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

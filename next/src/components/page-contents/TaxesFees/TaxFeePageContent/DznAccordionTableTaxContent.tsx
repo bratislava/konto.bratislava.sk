@@ -7,9 +7,9 @@ import {
 import React, { useRef } from 'react'
 
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
-import cn from '@/src/frontend/cn'
 import { FormatCurrencyFromCents } from '@/src/frontend/utils/formatCurrency'
 import { useHorizontalScrollFade } from '@/src/frontend/utils/useHorizontalScrollFade'
+import cn from '@/src/utils/cn'
 
 const tableHeaderData = {
   subject: <span>Predmet dane</span>,

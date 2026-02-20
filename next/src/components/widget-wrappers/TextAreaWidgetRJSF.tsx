@@ -5,7 +5,7 @@ import React from 'react'
 import FieldBlurWrapper from '@/src/components/widget-components/FieldBlurWrapper/FieldBlurWrapper'
 import TextAreaField from '@/src/components/widget-components/TextAreaField/TextAreaField'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 interface TextAreaWidgetRJSFProps extends WidgetProps {
   value: string | undefined

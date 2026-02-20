@@ -4,7 +4,7 @@ import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import { ToggleState, useToggleState } from 'react-stately'
 
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type ToggleBase = {
   className?: string

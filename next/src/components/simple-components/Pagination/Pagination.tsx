@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 import usePagination from './usePagination'
 

@@ -14,7 +14,7 @@ import { useNumberFormatter } from 'react-aria'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 import { useFormData } from '@/src/components/forms/useFormData'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 /**
  * Extracts the path of the RJSF component position, e.g.

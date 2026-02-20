@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import { useFormMenuItems } from '@/src/components/forms/useFormMenuItems'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 const FormBottomMenu = () => {
   const menuItems = useFormMenuItems()

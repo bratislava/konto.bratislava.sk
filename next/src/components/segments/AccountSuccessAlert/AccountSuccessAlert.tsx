@@ -4,7 +4,7 @@ import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/sr
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Button from '@/src/components/simple-components/Button'
 import Spinner from '@/src/components/simple-components/Spinner'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 interface Props {
   title: string

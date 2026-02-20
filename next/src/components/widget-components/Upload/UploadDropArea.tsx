@@ -10,13 +10,13 @@ import {
 
 import { UploadIcon } from '@/src/assets/ui-icons'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
-import cn from '@/src/frontend/cn'
 import {
   getDisplayMaxFileSize,
   getDisplaySupportedFileExtensions,
   getSupportedFileExtensions,
 } from '@/src/frontend/utils/formFileUpload'
 import { isDefined } from '@/src/frontend/utils/general'
+import cn from '@/src/utils/cn'
 
 interface UploadDropAreaProps {
   disabled?: boolean

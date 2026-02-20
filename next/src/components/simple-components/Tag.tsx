@@ -1,7 +1,7 @@
 import { FC, useState } from 'react'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 interface TagProps {
   text: string

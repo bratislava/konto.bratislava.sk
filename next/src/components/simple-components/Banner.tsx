@@ -4,7 +4,7 @@ import Image from 'next/legacy/image'
 import { PhoneIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Button from '@/src/components/simple-components/Button'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type BannerBase = {
   title: string

@@ -5,7 +5,7 @@ import InfoIcon from '@/src/components/icon-components/InfoIcon'
 import SuccessIcon from '@/src/components/icon-components/SuccessIcon'
 import WarningIcon from '@/src/components/icon-components/WarningIcon'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 export type MessageModalProps = PropsWithChildren<{
   type: 'warning' | 'info' | 'error' | 'success'

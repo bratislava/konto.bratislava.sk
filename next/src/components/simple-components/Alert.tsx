@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
 import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@/src/assets/ui-icons'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type AlertButtonBase = {
   title: string

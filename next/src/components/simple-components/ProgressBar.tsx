@@ -1,7 +1,7 @@
 import { useId } from 'react'
 import { useProgressBar } from 'react-aria'
 
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type ProgressBarBase = {
   type?: 'success' | 'default'

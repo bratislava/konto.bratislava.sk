@@ -4,7 +4,7 @@ import Carousel, {
   AllowedVisibleCount,
   CarouselProps,
 } from '@/src/components/simple-components/Carousel/Carousel'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type Props = {
   mobile?: AllowedVisibleCount

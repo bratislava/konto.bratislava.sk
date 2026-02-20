@@ -1,6 +1,10 @@
 /* eslint-disable no-secrets/no-secrets */
 
-import { createMock } from '@golevelup/ts-jest'
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createMock } from '@golevelup/ts-vitest';
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 import isArray from 'lodash/isArray'
@@ -53,7 +57,7 @@ describe('AdminService', () => {
   })
 
   afterEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should be defined', () => {
@@ -72,7 +76,7 @@ describe('AdminService', () => {
         },
       }
 
-      const getPaymentDataFromNorisSpy = jest
+      const getPaymentDataFromNorisSpy = vi
         .spyOn(norisService, 'getPaymentDataFromNoris')
         .mockResolvedValue([
           {
@@ -81,7 +85,7 @@ describe('AdminService', () => {
           },
         ])
 
-      const getPaymentDataFromNorisByVariableSymbolsSpy = jest
+      const getPaymentDataFromNorisByVariableSymbolsSpy = vi
         .spyOn(norisService, 'getPaymentDataFromNorisByVariableSymbols')
         .mockResolvedValue([
           {
@@ -90,7 +94,7 @@ describe('AdminService', () => {
           },
         ])
 
-      const updatePaymentsFromNorisWithDataSpy = jest.spyOn(
+      const updatePaymentsFromNorisWithDataSpy = vi.spyOn(
         norisService,
         'updatePaymentsFromNorisWithData',
       )
@@ -116,7 +120,7 @@ describe('AdminService', () => {
         },
       }
 
-      const getPaymentDataFromNorisSpy = jest
+      const getPaymentDataFromNorisSpy = vi
         .spyOn(norisService, 'getPaymentDataFromNoris')
         .mockResolvedValue([
           {
@@ -125,7 +129,7 @@ describe('AdminService', () => {
           },
         ])
 
-      const getPaymentDataFromNorisByVariableSymbolsSpy = jest
+      const getPaymentDataFromNorisByVariableSymbolsSpy = vi
         .spyOn(norisService, 'getPaymentDataFromNorisByVariableSymbols')
         .mockResolvedValue([
           {
@@ -134,7 +138,7 @@ describe('AdminService', () => {
           },
         ])
 
-      const updatePaymentsFromNorisWithDataSpy = jest.spyOn(
+      const updatePaymentsFromNorisWithDataSpy = vi.spyOn(
         norisService,
         'updatePaymentsFromNorisWithData',
       )
@@ -158,7 +162,7 @@ describe('AdminService', () => {
         fromDate: new Date('1970-1-1'),
         toDate: new Date('1970-1-2'),
       }
-      const norisUpdateOverpaymentsDataFromNorisByDateRangeSpy = jest.spyOn(
+      const norisUpdateOverpaymentsDataFromNorisByDateRangeSpy = vi.spyOn(
         norisService,
         'updateOverpaymentsDataFromNorisByDateRange',
       )
@@ -198,7 +202,7 @@ describe('AdminService', () => {
 
     it('should create testing tax successfully for DZN type', async () => {
       prismaMock.tax.findFirst.mockResolvedValue(null)
-      const processNorisTaxData = jest.spyOn(
+      const processNorisTaxData = vi.spyOn(
         norisService,
         'processNorisTaxData',
       )
@@ -231,7 +235,7 @@ describe('AdminService', () => {
 
     it('should create testing tax successfully for KO type', async () => {
       prismaMock.tax.findFirst.mockResolvedValue(null)
-      const processNorisTaxData = jest.spyOn(
+      const processNorisTaxData = vi.spyOn(
         norisService,
         'processNorisTaxData',
       )
@@ -268,7 +272,7 @@ describe('AdminService', () => {
     it('should throw InternalServerErrorException when no tax administrator found', async () => {
       prismaMock.taxAdministrator.findFirst.mockResolvedValue(null)
 
-      const internalServerErrorSpy = jest.spyOn(
+      const internalServerErrorSpy = vi.spyOn(
         adminService['throwerErrorGuard'],
         'InternalServerErrorException',
       )
@@ -296,7 +300,7 @@ describe('AdminService', () => {
         variableSymbol: mockNorisData.variableSymbol,
       } as any)
 
-      const internalServerErrorSpy = jest.spyOn(
+      const internalServerErrorSpy = vi.spyOn(
         adminService['throwerErrorGuard'],
         'InternalServerErrorException',
       )
@@ -357,11 +361,11 @@ describe('AdminService', () => {
       prismaMock.tax.findUnique.mockResolvedValue(mockTax as any)
       prismaMock.tax.delete.mockResolvedValue(mockTax as any)
 
-      const getUserDataAdminSpy = jest
+      const getUserDataAdminSpy = vi
         .spyOn(adminService['cityAccountSubservice'], 'getUserDataAdmin')
         .mockResolvedValue(mockCityAccountUser as any)
 
-      const trackEventTaxSpy = jest
+      const trackEventTaxSpy = vi
         .spyOn(adminService['bloomreachService'], 'trackEventTax')
         .mockResolvedValue(true)
 
@@ -417,7 +421,7 @@ describe('AdminService', () => {
     it('should throw InternalServerErrorException when tax payer not found', async () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(null)
 
-      const internalServerErrorSpy = jest.spyOn(
+      const internalServerErrorSpy = vi.spyOn(
         adminService['throwerErrorGuard'],
         'InternalServerErrorException',
       )
@@ -450,7 +454,7 @@ describe('AdminService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer as any)
       prismaMock.tax.findUnique.mockResolvedValue(null)
 
-      const internalServerErrorSpy = jest.spyOn(
+      const internalServerErrorSpy = vi.spyOn(
         adminService['throwerErrorGuard'],
         'InternalServerErrorException',
       )
@@ -494,11 +498,11 @@ describe('AdminService', () => {
       prismaMock.tax.findUnique.mockResolvedValue(mockTax as any)
       prismaMock.tax.delete.mockResolvedValue(mockTax as any)
 
-      const getUserDataAdminSpy = jest
+      const getUserDataAdminSpy = vi
         .spyOn(adminService['cityAccountSubservice'], 'getUserDataAdmin')
         .mockResolvedValue(null)
 
-      const trackEventTaxSpy = jest.spyOn(
+      const trackEventTaxSpy = vi.spyOn(
         adminService['bloomreachService'],
         'trackEventTax',
       )
@@ -520,15 +524,15 @@ describe('AdminService', () => {
       prismaMock.tax.findUnique.mockResolvedValue(mockTax as any)
       prismaMock.tax.delete.mockResolvedValue(mockTax as any)
 
-      jest
+      vi
         .spyOn(adminService['cityAccountSubservice'], 'getUserDataAdmin')
         .mockResolvedValue(mockCityAccountUser as any)
 
-      jest
+      vi
         .spyOn(adminService['bloomreachService'], 'trackEventTax')
         .mockResolvedValue(false)
 
-      const loggerErrorSpy = jest
+      const loggerErrorSpy = vi
         .spyOn(adminService['logger'], 'error')
         .mockImplementation(() => {})
 
@@ -553,11 +557,11 @@ describe('AdminService', () => {
         externalId: null,
       }
 
-      jest
+      vi
         .spyOn(adminService['cityAccountSubservice'], 'getUserDataAdmin')
         .mockResolvedValue(cityAccountUserWithoutExternalId as any)
 
-      const trackEventTaxSpy = jest
+      const trackEventTaxSpy = vi
         .spyOn(adminService['bloomreachService'], 'trackEventTax')
         .mockResolvedValue(true)
 
@@ -585,7 +589,7 @@ describe('AdminService', () => {
       prismaMock.tax.findUnique.mockResolvedValue(mockTax as any)
       prismaMock.tax.delete.mockResolvedValue(mockTax as any)
 
-      jest
+      vi
         .spyOn(adminService['cityAccountSubservice'], 'getUserDataAdmin')
         .mockResolvedValue(null)
 
@@ -619,11 +623,11 @@ describe('AdminService', () => {
       prismaMock.tax.findUnique.mockResolvedValue(mockTax as any)
       prismaMock.tax.delete.mockResolvedValue(mockTax as any)
 
-      jest
+      vi
         .spyOn(adminService['cityAccountSubservice'], 'getUserDataAdmin')
         .mockResolvedValue(mockCityAccountUser as any)
 
-      const trackEventTaxSpy = jest
+      const trackEventTaxSpy = vi
         .spyOn(adminService['bloomreachService'], 'trackEventTax')
         .mockResolvedValue(true)
 

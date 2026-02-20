@@ -1,23 +1,25 @@
+import { beforeEach } from "vitest";
+import { beforeEach, vi } from "vitest";
 export const mockNorisConnectionSubservice = {
-  createConnection: jest.fn(),
-  createOptimizedConnection: jest.fn(),
-  waitForConnection: jest.fn(),
+  createConnection: vi.fn(),
+  createOptimizedConnection: vi.fn(),
+  waitForConnection: vi.fn(),
 }
 
 // Mock for ConnectionPool
 export const mockConnectionPool = {
   connected: true,
-  close: jest.fn(),
-  request: jest.fn(),
+  close: vi.fn(),
+  request: vi.fn(),
 }
 
 // Complete mock setup for testing
 export const createNorisConnectionSubserviceMock = () => {
   const mock = {
-    createConnection: jest.fn().mockResolvedValue(mockConnectionPool),
-    createOptimizedConnection: jest.fn().mockResolvedValue(mockConnectionPool),
+    createConnection: vi.fn().mockResolvedValue(mockConnectionPool),
+    createOptimizedConnection: vi.fn().mockResolvedValue(mockConnectionPool),
     // eslint-disable-next-line unicorn/no-useless-undefined
-    waitForConnection: jest.fn().mockResolvedValue(undefined),
+    waitForConnection: vi.fn().mockResolvedValue(undefined),
   }
 
   return mock
@@ -25,7 +27,7 @@ export const createNorisConnectionSubserviceMock = () => {
 
 // Mock dependencies
 export const mockConfigService = {
-  getOrThrow: jest.fn((key: string) => {
+  getOrThrow: vi.fn((key: string) => {
     const mockEnvs: { [key: string]: string } = {
       MSSQL_HOST: 'localhost',
       MSSQL_DB: 'test_db',
@@ -37,7 +39,7 @@ export const mockConfigService = {
 }
 
 export const mockThrowerErrorGuard = {
-  InternalServerErrorException: jest
+  InternalServerErrorException: vi
     .fn()
     .mockImplementation((error, message) => {
       return new Error(message)
@@ -49,7 +51,7 @@ export const setupNorisConnectionSubserviceTest = () => {
   const mockService = createNorisConnectionSubserviceMock()
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     // Reset connection pool state
     mockConnectionPool.connected = true
   })

@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { addSlashToBirthNumber } from '../birthNumber.js'
 
 // eslint-disable-next-line no-secrets/no-secrets

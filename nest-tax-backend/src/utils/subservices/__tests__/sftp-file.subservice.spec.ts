@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileInfo } from 'ssh2-sftp-client'
@@ -7,21 +9,21 @@ import ThrowerErrorGuard from '../../guards/errors.guard.js'
 import SftpFileSubservice from '../sftp-file.subservice.js'
 
 // Mock SFTPClient
-jest.mock('ssh2-sftp-client')
+vi.mock('ssh2-sftp-client')
 
 // Mock dependencies
 const mockPrismaService = {
   csvFile: {
-    findMany: jest.fn(),
+    findMany: vi.fn(),
   },
 }
 
 const mockConfigService = {
-  getOrThrow: jest.fn(),
+  getOrThrow: vi.fn(),
 }
 
 const mockThrowerErrorGuard = {
-  InternalServerErrorException: jest.fn(),
+  InternalServerErrorException: vi.fn(),
 }
 
 describe('SftpFileSubservice', () => {
@@ -41,7 +43,7 @@ describe('SftpFileSubservice', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('filterAlreadyReportedFiles should filter out already reported files', async () => {

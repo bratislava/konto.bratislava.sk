@@ -1,6 +1,10 @@
 /* eslint-disable no-param-reassign */
 
-import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
+import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
+
+import { afterEach, beforeEach, describe, expect, it, test, vi } from "vitest";
+
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client';
 import noop from 'lodash/noop'
 
 import {
@@ -31,7 +35,7 @@ import {
 } from '../unified-tax.util.js'
 
 // Add this mock at the top after imports
-jest.mock('../../../tax-definitions/getTaxDefinitionByType')
+vi.mock('../../../tax-definitions/getTaxDefinitionByType')
 
 const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
   type: TaxType.DZN,
@@ -251,9 +255,9 @@ function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
 }
 
 describe('UnifiedTaxUtil', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual(
+    const actualModule = await vi.importActual(
       '../../../tax-definitions/getTaxDefinitionByType',
     )
 
@@ -264,7 +268,7 @@ describe('UnifiedTaxUtil', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('RealEstate', () => {
@@ -1529,9 +1533,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     isCancelled: false,
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual(
+    const actualModule = await vi.importActual(
       '../../../tax-definitions/getTaxDefinitionByType',
     )
 
@@ -1542,7 +1546,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should generate payment for the first installment', () => {
@@ -1617,9 +1621,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     )
   })
 
-  it('should work when threshold is 0', () => {
+  it('should work when threshold is 0', async () => {
     // Get the actual implementation and override just paymentCalendarThreshold
-    const actualModule = jest.requireActual(
+    const actualModule = await vi.importActual(
       '../../../tax-definitions/getTaxDefinitionByType',
     )
     const actualDefinition = actualModule.getTaxDefinitionByType(TaxType.DZN)

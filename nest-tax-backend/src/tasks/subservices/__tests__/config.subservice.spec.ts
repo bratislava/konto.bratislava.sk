@@ -1,3 +1,5 @@
+import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton.js'
@@ -22,12 +24,12 @@ describe('TasksConfigSubservice', () => {
 
     service = module.get<TasksConfigSubservice>(TasksConfigSubservice)
 
-    jest.spyOn(LineLoggerSubservice.prototype, 'log').mockImplementation()
+    vi.spyOn(LineLoggerSubservice.prototype, 'log').mockImplementation()
   })
 
   describe('resetOverpaymentsLookbackDays', () => {
     it('should reset lookback days to default value', async () => {
-      const updateManyMock = jest
+      const updateManyMock = vi
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockResolvedValue({ count: 1 })
 
@@ -45,7 +47,7 @@ describe('TasksConfigSubservice', () => {
 
     it('should handle database errors gracefully', async () => {
       const error = new Error('Database connection failed')
-      const updateManyMock = jest
+      const updateManyMock = vi
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockRejectedValue(error)
 
@@ -68,10 +70,10 @@ describe('TasksConfigSubservice', () => {
   describe('incrementOverpaymentsLookbackDays', () => {
     it('should increment lookback days by 1 when config exists', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '5' }
-      const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(mockConfig)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
+      vi
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
           const tx = {
@@ -96,10 +98,10 @@ describe('TasksConfigSubservice', () => {
 
     it('should increment lookback days by custom value', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '10' }
-      const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(mockConfig)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
+      vi
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
           const tx = {
@@ -120,10 +122,10 @@ describe('TasksConfigSubservice', () => {
     })
 
     it('should handle case when config does not exist', async () => {
-      const mockFindFirst = jest.fn().mockResolvedValue(null)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(null)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
+      vi
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
           const tx = {
@@ -145,7 +147,7 @@ describe('TasksConfigSubservice', () => {
 
     it('should handle database errors', async () => {
       const error = new Error('Database error')
-      jest
+      vi
         .spyOn(service['prismaService'], '$transaction')
         .mockRejectedValue(error)
 
@@ -156,10 +158,10 @@ describe('TasksConfigSubservice', () => {
 
     it('should handle invalid configuration', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: 'invalid' }
-      const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(mockConfig)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
+      vi
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
           const tx = {

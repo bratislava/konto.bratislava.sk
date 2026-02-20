@@ -1,4 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
+import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 
@@ -16,7 +18,7 @@ describe('NorisTaxSubservice', () => {
   let norisTaxCommunalWasteSubservice: jest.Mocked<NorisTaxCommunalWasteSubservice>
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -62,7 +64,7 @@ describe('NorisTaxSubservice', () => {
 
     it('should throw InternalServerErrorException for unsupported tax type', () => {
       const mockError = new Error('Mock error')
-      jest
+      vi
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw mockError
@@ -191,7 +193,7 @@ describe('NorisTaxSubservice', () => {
 
     it('should throw for unknown tax type', async () => {
       const mockError = new Error('Unknown tax type')
-      jest
+      vi
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw mockError
@@ -316,7 +318,7 @@ describe('NorisTaxSubservice', () => {
 
     it('should throw if getImplementationByType throws for unsupported tax type', async () => {
       const mockError = new Error('Implementation not found')
-      jest
+      vi
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw mockError
@@ -387,7 +389,7 @@ describe('NorisTaxSubservice', () => {
 
     it('should throw if getImplementationByType throws for unsupported tax type', async () => {
       const mockError = new Error('Implementation not found')
-      jest
+      vi
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw mockError

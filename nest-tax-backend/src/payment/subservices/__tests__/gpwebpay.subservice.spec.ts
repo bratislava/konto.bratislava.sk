@@ -1,3 +1,5 @@
+import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import crypto from 'node:crypto'
 
 import { ConfigService } from '@nestjs/config'
@@ -14,7 +16,7 @@ describe('GpWebpaySubservice', () => {
   let service: GpWebpaySubservice
 
   const mockConfigService = {
-    getOrThrow: jest.fn((key: string) => {
+    getOrThrow: vi.fn((key: string) => {
       switch (key) {
         case 'PAYGATE_SIGN_CERT':
           return 'mock-cert'
@@ -104,10 +106,10 @@ describe('GpWebpaySubservice', () => {
 
   describe('getSignedData', () => {
     it('should return signed data with digest', () => {
-      jest.spyOn(crypto, 'createSign').mockReturnValue({
-        write: jest.fn(),
-        end: jest.fn(),
-        sign: jest.fn().mockReturnValue('mock-signature'),
+      vi.spyOn(crypto, 'createSign').mockReturnValue({
+        write: vi.fn(),
+        end: vi.fn(),
+        sign: vi.fn().mockReturnValue('mock-signature'),
       } as any)
 
       const mockData: CreateOrderData = {
@@ -130,10 +132,10 @@ describe('GpWebpaySubservice', () => {
 
   describe('verifyData', () => {
     it('should verify data with digest', () => {
-      jest.spyOn(crypto, 'createVerify').mockReturnValue({
-        write: jest.fn(),
-        end: jest.fn(),
-        verify: jest.fn().mockReturnValue(true),
+      vi.spyOn(crypto, 'createVerify').mockReturnValue({
+        write: vi.fn(),
+        end: vi.fn(),
+        verify: vi.fn().mockReturnValue(true),
       } as any)
 
       const result = service.verifyData(TaxType.DZN, 'test-data', 'test-digest')

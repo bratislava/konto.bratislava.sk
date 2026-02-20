@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, test, vi } from "vitest";
 import noop from 'lodash/noop'
 
 import { LineLoggerSubservice } from '../line-logger.subservice.js'
@@ -8,7 +10,7 @@ describe('LineLoggerService', () => {
 
   beforeEach(() => {
     service = new LineLoggerSubservice('LineLogger TEST')
-    consoleSpy = jest.spyOn(console, 'log')
+    consoleSpy = vi.spyOn(console, 'log')
     consoleSpy.mockImplementation(noop)
   })
 

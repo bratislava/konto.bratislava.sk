@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import noop from 'lodash/noop'
 
 import { ErrorsEnum } from '../../guards/dtos/error.dto.js'
@@ -8,7 +10,7 @@ describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
 
   beforeEach(async () => {
-    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(noop)
+    consoleErrorMock = vi.spyOn(console, 'log').mockImplementation(noop)
   })
 
   afterEach(() => {

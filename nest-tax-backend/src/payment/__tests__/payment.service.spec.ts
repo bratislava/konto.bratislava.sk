@@ -1,4 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createMock } from '@golevelup/ts-vitest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, TaxPaymentSource, TaxType } from '@prisma/client'
@@ -26,8 +28,8 @@ describe('PaymentService', () => {
   let configService: ConfigService
 
   beforeEach(async () => {
-    jest.resetModules()
-    jest.spyOn(console, 'log').mockImplementation(noop)
+    vi.resetModules()
+    vi.spyOn(console, 'log').mockImplementation(noop)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -68,7 +70,7 @@ describe('PaymentService', () => {
     retryService = module.get<RetryService>(RetryService)
     configService = module.get<ConfigService>(ConfigService)
 
-    jest
+    vi
       .spyOn(configService, 'getOrThrow')
       .mockImplementation((key: string) => {
         switch (key) {
@@ -85,7 +87,7 @@ describe('PaymentService', () => {
   })
 
   afterEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   describe('trackPaymentInBloomreach', () => {
@@ -103,8 +105,8 @@ describe('PaymentService', () => {
 
     it('should update bloomreachEventSent flag and track event when externalId is provided and tracking succeeds', async () => {
       const externalId = 'external-id-123'
-      const mockUpdate = jest.fn()
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockUpdate = vi.fn()
+      const mockTransaction = vi.fn().mockImplementation(async (callback) => {
         const mockTx = {
           taxPayment: {
             update: mockUpdate,
@@ -113,8 +115,8 @@ describe('PaymentService', () => {
         return callback(mockTx)
       })
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
-      jest
+      vi.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi
         .spyOn(bloomreachService, 'trackEventTaxPayment')
         .mockResolvedValue(true)
 
@@ -146,17 +148,17 @@ describe('PaymentService', () => {
         source: null,
       } as TaxPaymentWithTaxInfo
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = vi.fn().mockImplementation(async (callback) => {
         const mockTx = {
           taxPayment: {
-            update: jest.fn(),
+            update: vi.fn(),
           },
         }
         return callback(mockTx)
       })
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
-      jest
+      vi.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi
         .spyOn(bloomreachService, 'trackEventTaxPayment')
         .mockResolvedValue(true)
 
@@ -179,8 +181,8 @@ describe('PaymentService', () => {
     })
 
     it('should only update bloomreachEventSent flag when externalId is not provided', async () => {
-      const mockUpdate = jest.fn()
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockUpdate = vi.fn()
+      const mockTransaction = vi.fn().mockImplementation(async (callback) => {
         const mockTx = {
           taxPayment: {
             update: mockUpdate,
@@ -189,7 +191,7 @@ describe('PaymentService', () => {
         return callback(mockTx)
       })
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
 
       await service.trackPaymentInBloomreach(mockTaxPayment)
 
@@ -205,20 +207,20 @@ describe('PaymentService', () => {
     it('should throw InternalServerErrorException when tracking fails (returns false)', async () => {
       const externalId = 'external-id-123'
       const mockInternalServerError = new Error('Internal Server Error')
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = vi.fn().mockImplementation(async (callback) => {
         const mockTx = {
           taxPayment: {
-            update: jest.fn(),
+            update: vi.fn(),
           },
         }
         return callback(mockTx)
       })
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
-      jest
+      vi.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi
         .spyOn(bloomreachService, 'trackEventTaxPayment')
         .mockResolvedValue(false)
-      jest
+      vi
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
         .mockReturnValue(mockInternalServerError as any)
 
@@ -232,10 +234,10 @@ describe('PaymentService', () => {
     it('should rollback transaction when tracking fails', async () => {
       const externalId = 'external-id-123'
       let transactionThrow = false
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = vi.fn().mockImplementation(async (callback) => {
         const mockTx = {
           taxPayment: {
-            update: jest.fn(),
+            update: vi.fn(),
           },
         }
         try {
@@ -247,11 +249,11 @@ describe('PaymentService', () => {
         }
       })
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
-      jest
+      vi.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi
         .spyOn(bloomreachService, 'trackEventTaxPayment')
         .mockResolvedValue(false)
-      jest
+      vi
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw new Error('Internal Server Error')
@@ -314,21 +316,21 @@ describe('PaymentService', () => {
     ])(
       'should not update TaxPayment for PRCODE $prCode (KEEP_CURRENT dbStatus)',
       async ({ prCode, expectedState }) => {
-        jest
+        vi
           .spyOn(gpWebpaySubservice, 'getDataToVerify')
           .mockReturnValue('data')
-        jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-        jest
+        vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
+        vi
           .spyOn(prismaMock.taxPayment, 'findUnique')
           .mockResolvedValue(mockTaxPayment as any)
-        jest
+        vi
           .spyOn(retryService, 'retryWithDelay')
           .mockResolvedValue({ externalId: 'ext-123' } as any)
-        const trackSpy = jest
+        const trackSpy = vi
           .spyOn(service, 'trackPaymentInBloomreach')
           .mockResolvedValue()
 
-        const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
+        const updateSpy = vi.spyOn(prismaMock.taxPayment, 'update')
 
         const result = await service.processPaymentResponse(TaxType.DZN, {
           ...mockQuery,
@@ -342,7 +344,7 @@ describe('PaymentService', () => {
     )
 
     it('should return FAILED_TO_VERIFY if ORDERNUMBER is missing', async () => {
-      const trackSpy = jest
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -358,12 +360,12 @@ describe('PaymentService', () => {
     })
 
     it('should return FAILED_TO_VERIFY if DIGEST verification fails', async () => {
-      jest
+      vi
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(false)
-      const trackSpy = jest
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(false)
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -379,10 +381,10 @@ describe('PaymentService', () => {
     })
 
     it('should return PAYMENT_FAILED if payment is not found in database', async () => {
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-      jest.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue(null)
-      const trackSpy = jest
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
+      vi.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue(null)
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -398,12 +400,12 @@ describe('PaymentService', () => {
     })
 
     it('should process successful payment (PRCODE 0)', async () => {
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-      jest
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
+      vi
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
-      jest.spyOn(prismaMock.taxPayment, 'update').mockResolvedValue({
+      vi.spyOn(prismaMock.taxPayment, 'update').mockResolvedValue({
         ...mockTaxPayment,
         status: PaymentStatus.SUCCESS,
         tax: {
@@ -412,10 +414,10 @@ describe('PaymentService', () => {
           order: 1,
         },
       } as any)
-      jest
+      vi
         .spyOn(retryService, 'retryWithDelay')
         .mockResolvedValue({ externalId: 'ext-123' })
-      const trackSpy = jest
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -440,16 +442,16 @@ describe('PaymentService', () => {
     })
 
     it('should handle "Already Paid" response (PRCODE 14)', async () => {
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-      jest
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
+      vi
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
-      jest
+      vi
         .spyOn(retryService, 'retryWithDelay')
         .mockResolvedValue({ externalId: 'ext-123' } as any)
-      const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
-      const trackSpy = jest
+      const updateSpy = vi.spyOn(prismaMock.taxPayment, 'update')
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -466,16 +468,16 @@ describe('PaymentService', () => {
     })
 
     it('should handle Digest mismatch (PRCODE 31)', async () => {
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-      const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
-      jest
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
+      const updateSpy = vi.spyOn(prismaMock.taxPayment, 'update')
+      vi
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
-      jest
+      vi
         .spyOn(retryService, 'retryWithDelay')
         .mockResolvedValue({ externalId: 'ext-123' } as any)
-      const trackSpy = jest
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -492,12 +494,12 @@ describe('PaymentService', () => {
     })
 
     it('should transition NEW to FAIL for technical errors (PRCODE 1)', async () => {
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-      jest
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
+      vi
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
-      jest.spyOn(prismaMock.taxPayment, 'update').mockResolvedValue({
+      vi.spyOn(prismaMock.taxPayment, 'update').mockResolvedValue({
         ...mockTaxPayment,
         status: PaymentStatus.FAIL,
         tax: {
@@ -506,10 +508,10 @@ describe('PaymentService', () => {
           order: 1,
         },
       } as any)
-      jest
+      vi
         .spyOn(retryService, 'retryWithDelay')
         .mockResolvedValue({ externalId: 'ext-123' } as any)
-      const trackSpy = jest
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -530,20 +532,20 @@ describe('PaymentService', () => {
     })
 
     it('should not transition to FAIL for technical errors (PRCODE 1) when current status is not NEW', async () => {
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
-      jest.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue({
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockReturnValue(true)
+      vi.spyOn(prismaMock.taxPayment, 'findUnique').mockResolvedValue({
         ...mockTaxPayment,
         status: PaymentStatus.SUCCESS, // anything other than NEW
       } as any)
-      jest
+      vi
         .spyOn(retryService, 'retryWithDelay')
         .mockResolvedValue({ externalId: 'ext-123' } as any)
-      const trackSpy = jest
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
-      const updateSpy = jest.spyOn(prismaMock.taxPayment, 'update')
+      const updateSpy = vi.spyOn(prismaMock.taxPayment, 'update')
 
       const result = await service.processPaymentResponse(TaxType.DZN, {
         ...mockQuery,
@@ -558,18 +560,18 @@ describe('PaymentService', () => {
     })
 
     it('should throw UnprocessableEntityException on unexpected error', async () => {
-      jest
+      vi
         .spyOn(prismaMock.taxPayment, 'findUnique')
         .mockResolvedValue(mockTaxPayment as any)
-      jest.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
-      jest.spyOn(gpWebpaySubservice, 'verifyData').mockImplementation(() => {
+      vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      vi.spyOn(gpWebpaySubservice, 'verifyData').mockImplementation(() => {
         throw new Error('Unexpected')
       })
       const mockError = new Error('Mapped Error')
-      jest
+      vi
         .spyOn(throwerErrorGuard, 'UnprocessableEntityException')
         .mockReturnValue(mockError as any)
-      const trackSpy = jest
+      const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue()
 
@@ -583,7 +585,7 @@ describe('PaymentService', () => {
 
   describe('getRedirectUrl', () => {
     it('should append taxType to base URL without trailing slash', () => {
-      jest
+      vi
         .spyOn(configService, 'getOrThrow')
         .mockImplementation((key: string) => {
           if (key === 'PAYGATE_REDIRECT_URL') {
@@ -598,7 +600,7 @@ describe('PaymentService', () => {
     })
 
     it('should append taxType to base URL with trailing slash', () => {
-      jest
+      vi
         .spyOn(configService, 'getOrThrow')
         .mockImplementation((key: string) => {
           if (key === 'PAYGATE_REDIRECT_URL') {
@@ -613,7 +615,7 @@ describe('PaymentService', () => {
     })
 
     it('should handle different TaxType values', () => {
-      jest
+      vi
         .spyOn(configService, 'getOrThrow')
         .mockImplementation((key: string) => {
           if (key === 'PAYGATE_REDIRECT_URL') {
@@ -630,7 +632,7 @@ describe('PaymentService', () => {
     })
 
     it('should handle base URL with query parameters', () => {
-      jest
+      vi
         .spyOn(configService, 'getOrThrow')
         .mockImplementation((key: string) => {
           if (key === 'PAYGATE_REDIRECT_URL') {
@@ -645,7 +647,7 @@ describe('PaymentService', () => {
     })
 
     it('should handle base URL with hash', () => {
-      jest
+      vi
         .spyOn(configService, 'getOrThrow')
         .mockImplementation((key: string) => {
           if (key === 'PAYGATE_REDIRECT_URL') {
@@ -660,7 +662,7 @@ describe('PaymentService', () => {
     })
 
     it('should handle base URL with port number', () => {
-      jest
+      vi
         .spyOn(configService, 'getOrThrow')
         .mockImplementation((key: string) => {
           if (key === 'PAYGATE_REDIRECT_URL') {
@@ -675,7 +677,7 @@ describe('PaymentService', () => {
     })
 
     it('should handle base URL ending with multiple slashes', () => {
-      jest
+      vi
         .spyOn(configService, 'getOrThrow')
         .mockImplementation((key: string) => {
           if (key === 'PAYGATE_REDIRECT_URL') {

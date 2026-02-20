@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { RetryService } from '../retry.service.js'
@@ -18,17 +20,17 @@ describe('RetryService', () => {
 
   describe('retryWithDelay', () => {
     beforeEach(() => {
-      jest.clearAllMocks()
-      jest.useFakeTimers()
+      vi.clearAllMocks()
+      vi.useFakeTimers()
     })
 
     afterEach(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should succeed on first attempt without retry', async () => {
-      const mockFn = jest.fn().mockResolvedValue('success')
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const mockFn = vi.fn().mockResolvedValue('success')
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const result = await service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
@@ -38,18 +40,18 @@ describe('RetryService', () => {
     })
 
     it('should retry specified number of times before succeeding', async () => {
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValueOnce(new Error('First attempt failed'))
         .mockRejectedValueOnce(new Error('Second attempt failed'))
         .mockResolvedValue('success')
 
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(2000)
 
       const result = await resultPromise
 
@@ -59,9 +61,9 @@ describe('RetryService', () => {
     })
 
     it('should throw error if all retries fail', async () => {
-      jest.useRealTimers()
+      vi.useRealTimers()
 
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValue(new Error('First attempt failed'))
         .mockRejectedValue(new Error('Second attempt failed'))
@@ -73,7 +75,7 @@ describe('RetryService', () => {
     })
 
     it('should use default retry count and delay when not specified', async () => {
-      const mockFn = jest.fn().mockResolvedValue('success')
+      const mockFn = vi.fn().mockResolvedValue('success')
 
       const result = await service['retryWithDelay'](mockFn, 'test')
 
@@ -83,8 +85,8 @@ describe('RetryService', () => {
 
     it('should handle zero retries correctly', async () => {
       const error = new Error('Immediate failure')
-      const mockFn = jest.fn().mockRejectedValue(error)
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const mockFn = vi.fn().mockRejectedValue(error)
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       await expect(
         service['retryWithDelay'](mockFn, 'test', 0, 1000),
@@ -95,17 +97,17 @@ describe('RetryService', () => {
     })
 
     it('should handle different delay values correctly', async () => {
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValueOnce(new Error('First attempt failed'))
         .mockResolvedValue('success')
 
-      jest.spyOn(service['logger'], 'warn').mockImplementation()
+      vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const resultPromise = service['retryWithDelay'](mockFn, 'test', 2, 5000)
 
       // Fast-forward through the delay
-      await jest.advanceTimersByTimeAsync(5000)
+      await vi.advanceTimersByTimeAsync(5000)
 
       const result = await resultPromise
 
@@ -114,17 +116,17 @@ describe('RetryService', () => {
     })
 
     it('should handle very small delay values', async () => {
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValueOnce(new Error('First attempt failed'))
         .mockResolvedValue('success')
 
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const resultPromise = service['retryWithDelay'](mockFn, 'test', 2, 100)
 
       // Fast-forward through the delay
-      await jest.advanceTimersByTimeAsync(100)
+      await vi.advanceTimersByTimeAsync(100)
 
       const result = await resultPromise
 
@@ -139,18 +141,18 @@ describe('RetryService', () => {
     it('should handle function that throws different types of errors', async () => {
       const error1 = new TypeError('Type error')
       const error2 = new ReferenceError('Reference error')
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValueOnce(error1)
         .mockRejectedValueOnce(error2)
         .mockResolvedValue('success')
 
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(2000)
 
       const result = await resultPromise
 
@@ -160,18 +162,18 @@ describe('RetryService', () => {
     })
 
     it('should handle function that throws non-Error objects', async () => {
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValueOnce('String error')
         .mockRejectedValueOnce({ message: 'Object error' })
         .mockResolvedValue('success')
 
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(2000)
 
       const result = await resultPromise
 
@@ -181,18 +183,18 @@ describe('RetryService', () => {
     })
 
     it('should handle function that throws null or undefined', async () => {
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValueOnce(null)
         .mockRejectedValueOnce(null)
         .mockResolvedValue('success')
 
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const resultPromise = service['retryWithDelay'](mockFn, 'test', 3, 1000)
 
       // Fast-forward through the delays
-      await jest.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(2000)
 
       const result = await resultPromise
 
@@ -202,19 +204,19 @@ describe('RetryService', () => {
     })
 
     it('should handle recursive retry calls correctly', async () => {
-      const mockFn = jest
+      const mockFn = vi
         .fn()
         .mockRejectedValueOnce(new Error('First attempt failed'))
         .mockRejectedValueOnce(new Error('Second attempt failed'))
         .mockRejectedValueOnce(new Error('Third attempt failed'))
         .mockResolvedValue('success')
 
-      const logMock = jest.spyOn(service['logger'], 'warn').mockImplementation()
+      const logMock = vi.spyOn(service['logger'], 'warn').mockImplementation()
 
       const resultPromise = service['retryWithDelay'](mockFn, 'test', 4, 1000)
 
       // Fast-forward through all delays
-      await jest.advanceTimersByTimeAsync(3000)
+      await vi.advanceTimersByTimeAsync(3000)
 
       const result = await resultPromise
 

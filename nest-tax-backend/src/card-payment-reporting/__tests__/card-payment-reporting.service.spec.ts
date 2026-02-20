@@ -1,5 +1,9 @@
 /* eslint-disable no-secrets/no-secrets */
-import { ConfigService } from '@nestjs/config'
+import { beforeEach, describe, expect, it } from "vitest";
+
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -44,44 +48,44 @@ describe('CardPaymentReportingService', () => {
           provide: PrismaService,
           useValue: {
             tax: {
-              findMany: jest.fn(),
+              findMany: vi.fn(),
             },
             config: {
-              findMany: jest.fn(),
+              findMany: vi.fn(),
             },
             csvFile: {
-              createMany: jest.fn(),
+              createMany: vi.fn(),
             },
           },
         },
         {
           provide: ConfigService,
           useValue: {
-            getOrThrow: jest.fn(),
+            getOrThrow: vi.fn(),
           },
         },
         {
           provide: ThrowerErrorGuard,
           useValue: {
-            InternalServerErrorException: jest.fn(),
+            InternalServerErrorException: vi.fn(),
           },
         },
         {
           provide: EmailSubservice,
           useValue: {
-            send: jest.fn(),
+            send: vi.fn(),
           },
         },
         {
           provide: SftpFileSubservice,
           useValue: {
-            getNewFiles: jest.fn(),
+            getNewFiles: vi.fn(),
           },
         },
         {
           provide: DatabaseSubservice,
           useValue: {
-            getVariableSymbolsByOrderIds: jest.fn(),
+            getVariableSymbolsByOrderIds: vi.fn(),
           },
         },
       ],

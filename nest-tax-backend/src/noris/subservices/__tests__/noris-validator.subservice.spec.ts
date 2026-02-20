@@ -1,3 +1,5 @@
+import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import noop from 'lodash/noop'
@@ -257,7 +259,7 @@ describe('NorisValidatorSubservice', () => {
 
   describe('validateNorisData with array', () => {
     it('should validate all payments, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
+      const errorLogSpy = vi
         .spyOn(service['logger'], 'error')
         .mockImplementation(noop)
       const result = service.validateNorisData(NorisTaxPaymentSchema, [
@@ -284,7 +286,7 @@ describe('NorisValidatorSubservice', () => {
     })
 
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
+      const errorLogSpy = vi
         .spyOn(service['logger'], 'error')
         .mockImplementation(noop)
       const result = service.validateNorisData(
@@ -316,7 +318,7 @@ describe('NorisValidatorSubservice', () => {
     })
 
     it('should validate all communal waste taxes, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
+      const errorLogSpy = vi
         .spyOn(service['logger'], 'error')
         .mockImplementation(noop)
       const result = service.validateNorisData(

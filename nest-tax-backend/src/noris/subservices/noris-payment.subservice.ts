@@ -9,27 +9,27 @@ import {
   DateRangeDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
-} from '../../admin/dtos/requests.dto'
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
-import { PrismaService } from '../../prisma/prisma.service'
+} from '../../admin/dtos/requests.dto.js'
+import { BloomreachService } from '../../bloomreach/bloomreach.service.js'
+import { PrismaService } from '../../prisma/prisma.service.js'
 import {
   ErrorsEnum,
   ErrorsResponseEnum,
-} from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
-import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
-import { NorisTaxPaymentSchema } from '../types/noris.schema'
-import { NorisTaxPayment } from '../types/noris.types'
-import { convertCurrencyToInt } from '../utils/mapping.helper'
+} from '../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice.js'
+import { TaxWithTaxPayer } from '../../utils/types/types.prisma.js'
+import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto.js'
+import { NorisTaxPaymentSchema } from '../types/noris.schema.js'
+import { NorisTaxPayment } from '../types/noris.types.js'
+import { convertCurrencyToInt } from '../utils/mapping.helper.js'
 import {
   queryOverpaymentsFromNorisByDateRange,
   queryPaymentsFromNorisByFromToDate,
   queryPaymentsFromNorisByVariableSymbols,
-} from '../utils/noris.queries'
-import { NorisConnectionSubservice } from './noris-connection.subservice'
-import { NorisValidatorSubservice } from './noris-validator.subservice'
+} from '../utils/noris.queries.js'
+import { NorisConnectionSubservice } from './noris-connection.subservice.js'
+import { NorisValidatorSubservice } from './noris-validator.subservice.js'
 
 @Injectable()
 export class NorisPaymentSubservice {

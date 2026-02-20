@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common'
 
-import { AdminStrategy } from '../auth/strategies/admin.strategy'
-import { BloomreachModule } from '../bloomreach/bloomreach.module'
-import ClientsModule from '../clients/clients.module'
-import { NorisModule } from '../noris/noris.module'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
-import { AdminController } from './admin.controller'
-import { AdminService } from './admin.service'
+import { AdminStrategy } from '../auth/strategies/admin.strategy.js'
+import { BloomreachModule } from '../bloomreach/bloomreach.module.js'
+import ClientsModule from '../clients/clients.module.js'
+import { NorisModule } from '../noris/noris.module.js'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice.js'
+import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice.js'
+import { AdminController } from './admin.controller.js'
+import { AdminService } from './admin.service.js'
 
 @Module({
   imports: [BloomreachModule, NorisModule, ClientsModule],

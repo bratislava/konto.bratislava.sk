@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common'
 
-import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
+import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto.js'
 
 /**
  * Escapes occurrences of the `"` and `\` characters in input string for logfmt compatibility

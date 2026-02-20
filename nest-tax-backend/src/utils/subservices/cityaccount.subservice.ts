@@ -2,10 +2,10 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { AxiosError } from 'axios'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
-import ClientsService from '../../clients/clients.service'
-import { addSlashToBirthNumber } from '../functions/birthNumber'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
+import ClientsService from '../../clients/clients.service.js'
+import { addSlashToBirthNumber } from '../functions/birthNumber.js'
+import { ErrorsEnum } from '../guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../guards/errors.guard.js'
 
 @Injectable()
 export class CityAccountSubservice {

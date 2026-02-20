@@ -1,10 +1,10 @@
-import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
+import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors.js'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
-} from '../../payment/dtos/error.dto'
-import { CustomErrorTaxTypesEnum } from '../../tax/dtos/error.dto'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
+} from '../../payment/dtos/error.dto.js'
+import { CustomErrorTaxTypesEnum } from '../../tax/dtos/error.dto.js'
+import { ErrorsEnum } from '../guards/dtos/error.dto.js'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.

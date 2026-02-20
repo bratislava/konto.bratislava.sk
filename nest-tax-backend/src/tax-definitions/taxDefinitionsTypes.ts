@@ -5,23 +5,23 @@ import {
   TaxType,
 } from '@prisma/client'
 
-import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
+import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto.js'
 import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
-} from '../noris/types/noris.types'
+} from '../noris/types/noris.types.js'
 import {
   CommunalWasteTaxDetail,
   RealEstateTaxDetail,
-} from '../prisma/json-types'
+} from '../prisma/json-types.js'
 import {
   ResponseActiveInstallmentDto,
   ResponseCommunalWasteTaxDetailItemizedDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseRealEstateTaxDetailItemizedDto,
-} from '../tax/dtos/response.tax.dto'
-import { QrCodeGeneratorDto } from '../utils/subservices/dtos/qrcode.dto'
+} from '../tax/dtos/response.tax.dto.js'
+import { QrCodeGeneratorDto } from '../utils/subservices/dtos/qrcode.dto.js'
 
 export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
   [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]

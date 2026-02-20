@@ -3,13 +3,13 @@ import path from 'node:path'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone.js'
+import utc from 'dayjs/plugin/utc.js'
 import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 
-import { PrismaService } from '../../prisma/prisma.service'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
+import { PrismaService } from '../../prisma/prisma.service.js'
+import { ErrorsEnum } from '../guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../guards/errors.guard.js'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

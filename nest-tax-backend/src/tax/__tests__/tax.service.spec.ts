@@ -3,19 +3,19 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 
-import prismaMock from '../../../test/singleton'
-import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-import { PaymentService } from '../../payment/payment.service'
-import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
+import prismaMock from '../../../test/singleton.js'
+import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto.js'
+import { PaymentService } from '../../payment/payment.service.js'
+import { PrismaService } from '../../prisma/prisma.service.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
+import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice.js'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
-} from '../dtos/error.dto'
-import { TaxAvailabilityStatus, TaxStatusEnum } from '../dtos/response.tax.dto'
-import { TaxService } from '../tax.service'
-import * as unifiedTaxUtil from '../utils/unified-tax.util'
+} from '../dtos/error.dto.js'
+import { TaxAvailabilityStatus, TaxStatusEnum } from '../dtos/response.tax.dto.js'
+import { TaxService } from '../tax.service.js'
+import * as unifiedTaxUtil from '../utils/unified-tax.util.js'
 
 jest.mock('../utils/helpers/tax.helper', () => {
   const actual = jest.requireActual('../utils/helpers/tax.helper')

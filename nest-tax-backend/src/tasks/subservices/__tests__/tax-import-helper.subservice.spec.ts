@@ -2,14 +2,14 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 
-import prismaMock from '../../../../test/singleton'
-import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
-import { NorisService } from '../../../noris/noris.service'
-import { PrismaService } from '../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
-import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import TaxImportHelperSubservice from '../tax-import-helper.subservice'
+import prismaMock from '../../../../test/singleton.js'
+import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto.js'
+import { NorisService } from '../../../noris/noris.service.js'
+import { PrismaService } from '../../../prisma/prisma.service.js'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType.js'
+import DatabaseSubservice from '../../../utils/subservices/database.subservice.js'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice.js'
+import TaxImportHelperSubservice from '../tax-import-helper.subservice.js'
 
 describe('TaxImportHelperSubservice', () => {
   let service: TaxImportHelperSubservice

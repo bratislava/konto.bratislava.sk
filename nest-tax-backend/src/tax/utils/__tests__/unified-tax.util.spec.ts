@@ -6,29 +6,29 @@ import noop from 'lodash/noop'
 import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
-} from '../../../prisma/json-types'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+} from '../../../prisma/json-types.js'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType.js'
 import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
-} from '../../../tax-definitions/taxDefinitionsTypes'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
+} from '../../../tax-definitions/taxDefinitionsTypes.js'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard.js'
+import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto.js'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
-} from '../../dtos/error.dto'
+} from '../../dtos/error.dto.js'
 import {
   InstallmentPaidStatusEnum,
   InstallmentPaymentReasonNotPossibleEnum,
   OneTimePaymentReasonNotPossibleEnum,
   OneTimePaymentTypeEnum,
-} from '../../dtos/response.tax.dto'
+} from '../../dtos/response.tax.dto.js'
 import {
   getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
-} from '../unified-tax.util'
+} from '../unified-tax.util.js'
 
 // Add this mock at the top after imports
 jest.mock('../../../tax-definitions/getTaxDefinitionByType')

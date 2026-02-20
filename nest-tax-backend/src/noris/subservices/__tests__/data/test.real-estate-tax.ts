@@ -1,4 +1,4 @@
-import { NorisRealEstateTax } from '../../../types/noris.types'
+import { NorisRealEstateTax } from '../../../types/noris.types.js'
 
 export const testRealEstateTax1: NorisRealEstateTax = {
   stav_dokladu: 'Z',

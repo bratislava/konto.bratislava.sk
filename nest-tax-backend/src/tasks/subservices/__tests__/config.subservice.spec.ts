@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
-import prismaMock from '../../../../test/singleton'
-import { PrismaService } from '../../../prisma/prisma.service'
+import prismaMock from '../../../../test/singleton.js'
+import { PrismaService } from '../../../prisma/prisma.service.js'
 import {
   OVERPAYMENTS_LOOKBACK_DAYS,
   OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT,
-} from '../../../utils/constants'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import TasksConfigSubservice from '../config.subservice'
+} from '../../../utils/constants.js'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice.js'
+import TasksConfigSubservice from '../config.subservice.js'
 
 describe('TasksConfigSubservice', () => {
   let service: TasksConfigSubservice

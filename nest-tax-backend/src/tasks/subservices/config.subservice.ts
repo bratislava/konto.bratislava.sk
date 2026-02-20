@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 
-import { PrismaService } from '../../prisma/prisma.service'
+import { PrismaService } from '../../prisma/prisma.service.js'
 import {
   OVERPAYMENTS_LOOKBACK_DAYS,
   OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT,
-} from '../../utils/constants'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+} from '../../utils/constants.js'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice.js'
 
 @Injectable()
 export default class TasksConfigSubservice {

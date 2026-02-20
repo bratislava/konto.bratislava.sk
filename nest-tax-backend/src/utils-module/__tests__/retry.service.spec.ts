@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { RetryService } from '../retry.service'
+import { RetryService } from '../retry.service.js'
 
 describe('RetryService', () => {
   let service: RetryService

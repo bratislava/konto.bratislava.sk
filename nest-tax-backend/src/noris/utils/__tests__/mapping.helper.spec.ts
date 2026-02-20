@@ -4,16 +4,16 @@ import { TaxType } from '@prisma/client'
 import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
-} from '../../../prisma/json-types'
+} from '../../../prisma/json-types.js'
 import {
   AreaTypesEnum,
   DeliveryMethod,
   DeliveryMethodNoris,
-} from '../../types/noris.enums'
+} from '../../types/noris.enums.js'
 import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
-} from '../../types/noris.types'
+} from '../../types/noris.types.js'
 import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,
@@ -22,7 +22,7 @@ import {
   mapNorisToTaxAdministratorData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
-} from '../mapping.helper'
+} from '../mapping.helper.js'
 
 describe('convertCurrencyToInt', () => {
   it('should convert string currency with comma to integer', () => {

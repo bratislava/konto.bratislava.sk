@@ -16,7 +16,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/types/noris.enums'
+import { DeliveryMethod } from '../../noris/types/noris.enums.js'
 
 // eslint-disable-next-line no-secrets/no-secrets
 /**

@@ -3,16 +3,16 @@ import { TaxType } from '@prisma/client'
 import {
   mapNorisToCommunalWasteDatabaseDetail,
   mapNorisToRealEstateDatabaseDetail,
-} from '../noris/utils/mapping.helper'
+} from '../noris/utils/mapping.helper.js'
 import {
   generateItemizedCommunalWasteTaxDetail,
   generateItemizedRealEstateTaxDetail,
-} from '../tax/utils/helpers/tax.helper'
+} from '../tax/utils/helpers/tax.helper.js'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
-} from '../tax/utils/testing-tax-mock'
-import { TaxDefinitionsMap } from './taxDefinitionsTypes'
+} from '../tax/utils/testing-tax-mock.js'
+import { TaxDefinitionsMap } from './taxDefinitionsTypes.js'
 
 export const taxDefinitions: TaxDefinitionsMap = {
   [TaxType.DZN]: {

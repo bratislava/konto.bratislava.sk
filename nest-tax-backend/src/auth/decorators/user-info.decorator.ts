@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common'
 import express from 'express'
 
-import ClientsService from '../../clients/clients.service'
-import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import ClientsService from '../../clients/clients.service.js'
+import { addSlashToBirthNumber } from '../../utils/functions/birthNumber.js'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
 
 @Injectable()
 export class UserInfoPipe implements PipeTransform {

@@ -1,8 +1,8 @@
 import noop from 'lodash/noop'
 
-import { ErrorsEnum } from '../../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../guards/errors.guard'
-import HandleErrors from '../errorHandler.decorator'
+import { ErrorsEnum } from '../../guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../guards/errors.guard.js'
+import HandleErrors from '../errorHandler.decorator.js'
 
 describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance

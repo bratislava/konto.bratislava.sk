@@ -9,27 +9,27 @@ import {
 } from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
 
-import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { PrismaService } from '../prisma/prisma.service'
-import { TaxService } from '../tax/tax.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { TaxPaymentWithTaxInfo } from '../utils/types/types.prisma'
-import { RetryService } from '../utils-module/retry.service'
+import { BloomreachService } from '../bloomreach/bloomreach.service.js'
+import { PrismaService } from '../prisma/prisma.service.js'
+import { TaxService } from '../tax/tax.service.js'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice.js'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice.js'
+import { TaxPaymentWithTaxInfo } from '../utils/types/types.prisma.js'
+import { RetryService } from '../utils-module/retry.service.js'
 import {
   CustomErrorNorisTypesResponseEnum,
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
-} from './dtos/error.dto'
-import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
-import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
-import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+} from './dtos/error.dto.js'
+import { PaymentGateURLGeneratorDto } from './dtos/generator.dto.js'
+import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto.js'
+import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto.js'
 import {
   GP_WEBPAY_CONFIG_KEY_MAP,
   GpWebpaySubservice,
-} from './subservices/gpwebpay.subservice'
+} from './subservices/gpwebpay.subservice.js'
 
 interface GpWebpayProcessingStrategy {
   dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'

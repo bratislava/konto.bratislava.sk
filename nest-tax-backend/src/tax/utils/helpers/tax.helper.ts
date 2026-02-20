@@ -4,12 +4,12 @@ import {
   CommunalWasteTaxDetail,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
-} from '../../../prisma/json-types'
+} from '../../../prisma/json-types.js'
 import {
   ResponseCommunalWasteTaxDetailItemizedDto,
   ResponseRealEstateTaxDetailItemizedDto,
   TaxStatusEnum,
-} from '../../dtos/response.tax.dto'
+} from '../../dtos/response.tax.dto.js'
 
 export const getExistingTaxStatus = (
   taxAmount: number,

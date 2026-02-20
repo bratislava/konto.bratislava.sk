@@ -3,11 +3,11 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
-import { NorisConnectionSubservice } from '../noris-connection.subservice'
-import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice'
-import { NorisValidatorSubservice } from '../noris-validator.subservice'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard.js'
+import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums.js'
+import { NorisConnectionSubservice } from '../noris-connection.subservice.js'
+import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice.js'
+import { NorisValidatorSubservice } from '../noris-validator.subservice.js'
 
 const mockRequest = {
   query: jest.fn(),

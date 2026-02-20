@@ -7,8 +7,8 @@ import { TaxType } from '@prisma/client'
 import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,
-} from '../../dtos/gpwebpay.dto'
-import { GpWebpaySubservice } from '../gpwebpay.subservice'
+} from '../../dtos/gpwebpay.dto.js'
+import { GpWebpaySubservice } from '../gpwebpay.subservice.js'
 
 describe('GpWebpaySubservice', () => {
   let service: GpWebpaySubservice

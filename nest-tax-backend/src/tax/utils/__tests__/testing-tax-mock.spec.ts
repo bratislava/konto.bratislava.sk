@@ -2,12 +2,12 @@ import { randomBytes } from 'node:crypto'
 
 import { TaxAdministrator, TaxType } from '@prisma/client'
 
-import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
-import { DeliveryMethod } from '../../../noris/types/noris.enums'
+import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto.js'
+import { DeliveryMethod } from '../../../noris/types/noris.enums.js'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
-} from '../testing-tax-mock'
+} from '../testing-tax-mock.js'
 
 jest.mock('node:crypto', () => ({
   randomBytes: jest.fn(),

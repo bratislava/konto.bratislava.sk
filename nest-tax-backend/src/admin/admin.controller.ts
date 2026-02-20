@@ -18,10 +18,10 @@ import {
 } from '@nestjs/swagger'
 import { TaxType } from '@prisma/client'
 
-import { AdminGuard } from '../auth/guards/admin.guard'
-import { NotProductionGuard } from '../auth/guards/not-production.guard'
-import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
-import { AdminService } from './admin.service'
+import { AdminGuard } from '../auth/guards/admin.guard.js'
+import { NotProductionGuard } from '../auth/guards/not-production.guard.js'
+import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto.js'
+import { AdminService } from './admin.service.js'
 import {
   DateRangeDto,
   RequestAdminCreateTestingTaxDto,
@@ -29,11 +29,11 @@ import {
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
-} from './dtos/requests.dto'
+} from './dtos/requests.dto.js'
 import {
   CreateBirthNumbersResponseDto,
   UpdateDeliveryMethodsInNorisResponseDto,
-} from './dtos/responses.dto'
+} from './dtos/responses.dto.js'
 
 @ApiTags('Admin')
 @Controller('admin')

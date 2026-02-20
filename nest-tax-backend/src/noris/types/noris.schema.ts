@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { CommunalWasteTaxDetailSchema } from '../../prisma/json-types'
+import { CommunalWasteTaxDetailSchema } from '../../prisma/json-types.js'
 
 // COMMON SCHEMAS
 export const NorisBaseTaxWithoutPaymentSchema = z.object({

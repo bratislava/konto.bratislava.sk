@@ -2,9 +2,9 @@ import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileInfo } from 'ssh2-sftp-client'
 
-import { PrismaService } from '../../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../guards/errors.guard'
-import SftpFileSubservice from '../sftp-file.subservice'
+import { PrismaService } from '../../../prisma/prisma.service.js'
+import ThrowerErrorGuard from '../../guards/errors.guard.js'
+import SftpFileSubservice from '../sftp-file.subservice.js'
 
 // Mock SFTPClient
 jest.mock('ssh2-sftp-client')

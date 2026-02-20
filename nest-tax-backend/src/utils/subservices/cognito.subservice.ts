@@ -8,8 +8,8 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
+import { ErrorsEnum } from '../guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../guards/errors.guard.js'
 
 @Injectable()
 export class CognitoSubservice {

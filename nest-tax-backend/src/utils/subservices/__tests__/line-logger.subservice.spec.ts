@@ -1,6 +1,6 @@
 import noop from 'lodash/noop'
 
-import { LineLoggerSubservice } from '../line-logger.subservice'
+import { LineLoggerSubservice } from '../line-logger.subservice.js'
 
 describe('LineLoggerService', () => {
   let service: any

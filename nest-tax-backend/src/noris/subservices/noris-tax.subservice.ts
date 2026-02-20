@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 
-import { RequestPostNorisLoadDataOptionsDto } from '../../admin/dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
-import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { RequestPostNorisLoadDataOptionsDto } from '../../admin/dtos/requests.dto.js'
+import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto.js'
+import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes.js'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
 import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
-} from '../types/noris.types'
-import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
-import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
+} from '../types/noris.types.js'
+import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice.js'
+import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice.js'
 
 type TaxTypeToNorisSubservice = {
   [TaxType.DZN]: NorisTaxRealEstateSubservice

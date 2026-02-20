@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice.js'
 import {
   BloomreachEventNameEnum,
   TaxBloomreachData,
   TaxPaymentBloomreachData,
   UnpaidTaxReminderBloomreachData,
-} from './bloomreach.types'
+} from './bloomreach.types.js'
 
 @Injectable()
 export class BloomreachService {

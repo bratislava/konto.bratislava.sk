@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import nodemailer from 'nodemailer'
 
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
-import { LineLoggerSubservice } from './line-logger.subservice'
+import { ErrorsEnum } from '../guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../guards/errors.guard.js'
+import { LineLoggerSubservice } from './line-logger.subservice.js'
 
 /**
  * EmailSubservice handles the functionality of sending emails using an SMTP

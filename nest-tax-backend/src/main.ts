@@ -2,13 +2,13 @@ import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
-import { AppModule } from './app.module'
+import { AppModule } from './app.module.js'
 import {
   ErrorFilter,
   HttpExceptionFilter,
   TypeErrorFilter,
-} from './utils/filters/error.filter'
-import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
+} from './utils/filters/error.filter.js'
+import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice.js'
 
 async function bootstrap() {
   const port = process.env.PORT || 3000

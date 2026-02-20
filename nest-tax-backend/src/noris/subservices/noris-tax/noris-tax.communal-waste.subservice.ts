@@ -1,31 +1,31 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
-import groupBy from 'lodash/groupBy'
+import groupBy from 'lodash/groupBy.js'
 import * as mssql from 'mssql'
 
-import { BloomreachService } from '../../../bloomreach/bloomreach.service'
-import { PrismaService } from '../../../prisma/prisma.service'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
-import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
-import { CustomErrorNorisTypesEnum } from '../../noris.errors'
+import { BloomreachService } from '../../../bloomreach/bloomreach.service.js'
+import { PrismaService } from '../../../prisma/prisma.service.js'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice.js'
+import DatabaseSubservice from '../../../utils/subservices/database.subservice.js'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice.js'
+import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice.js'
+import { CustomErrorNorisTypesEnum } from '../../noris.errors.js'
 import {
   NorisBaseTaxSchema,
   NorisCommunalWasteTaxSchema,
-} from '../../types/noris.schema'
+} from '../../types/noris.schema.js'
 import {
   NorisBaseTax,
   NorisCommunalWasteTax,
   NorisCommunalWasteTaxGrouped,
-} from '../../types/noris.types'
-import { getCommunalWasteTaxesFromNoris } from '../../utils/noris.queries'
-import { NorisConnectionSubservice } from '../noris-connection.subservice'
-import { NorisPaymentSubservice } from '../noris-payment.subservice'
-import { NorisValidatorSubservice } from '../noris-validator.subservice'
-import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract'
+} from '../../types/noris.types.js'
+import { getCommunalWasteTaxesFromNoris } from '../../utils/noris.queries.js'
+import { NorisConnectionSubservice } from '../noris-connection.subservice.js'
+import { NorisPaymentSubservice } from '../noris-payment.subservice.js'
+import { NorisValidatorSubservice } from '../noris-validator.subservice.js'
+import { AbstractNorisTaxSubservice } from './noris-tax.subservice.abstract.js'
 
 @Injectable()
 export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<

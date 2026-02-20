@@ -5,12 +5,12 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
-import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import DatabaseSubservice from '../../utils/subservices/database.subservice'
-import EmailSubservice from '../../utils/subservices/email.subservice'
-import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
-import { CardPaymentReportingService } from '../card-payment-reporting.service'
+import { PrismaService } from '../../prisma/prisma.service.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
+import DatabaseSubservice from '../../utils/subservices/database.subservice.js'
+import EmailSubservice from '../../utils/subservices/email.subservice.js'
+import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice.js'
+import { CardPaymentReportingService } from '../card-payment-reporting.service.js'
 
 const csvColumnNames = [
   'transactionType',

@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 
-import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
-import { NorisService } from '../noris/noris.service'
-import { NorisTaxPayment } from '../noris/types/noris.types'
-import { PrismaService } from '../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
-import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { BloomreachService } from '../bloomreach/bloomreach.service.js'
+import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto.js'
+import { NorisService } from '../noris/noris.service.js'
+import { NorisTaxPayment } from '../noris/types/noris.types.js'
+import { PrismaService } from '../prisma/prisma.service.js'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType.js'
+import { addSlashToBirthNumber } from '../utils/functions/birthNumber.js'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice.js'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice.js'
 import {
   DateRangeDto,
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
   RequestUpdateNorisDeliveryMethodsDto,
-} from './dtos/requests.dto'
+} from './dtos/requests.dto.js'
 import {
   CreateBirthNumbersResponseDto,
   UpdateDeliveryMethodsInNorisResponseDto,
-} from './dtos/responses.dto'
+} from './dtos/responses.dto.js'
 
 @Injectable()
 export class AdminService {

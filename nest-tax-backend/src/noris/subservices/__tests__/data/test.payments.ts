@@ -1,4 +1,4 @@
-import { NorisTaxPayment } from '../../../types/noris.types'
+import { NorisTaxPayment } from '../../../types/noris.types.js'
 
 export const testPaymentValid: NorisTaxPayment = {
   variabilny_symbol: '1234567890',

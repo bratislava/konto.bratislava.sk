@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { BloomreachService } from './bloomreach.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import { BloomreachService } from './bloomreach.service.js'
 
 @Module({
   imports: [],

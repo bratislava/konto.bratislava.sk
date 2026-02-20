@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
-import alertReporting from '../constants/error.alerts'
+import alertReporting from '../constants/error.alerts.js'
 import {
   CustomErrorEnums,
   ErrorSymbols,
   ResponseErrorInternalDto,
-} from './dtos/error.dto'
+} from './dtos/error.dto.js'
 
 @Injectable()
 export default class ThrowerErrorGuard {

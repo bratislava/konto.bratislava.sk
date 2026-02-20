@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 
-import { toLogfmt } from '../utils/logging'
+import { toLogfmt } from '../utils/logging.js'
 
 @Injectable()
 export class RetryService {

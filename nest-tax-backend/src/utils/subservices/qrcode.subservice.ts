@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import { DataModel, generate, PaymentOptions } from 'bysquare'
 import * as qrCode from 'qrcode'
 
-import { QrCodeGeneratorDto } from './dtos/qrcode.dto'
+import { QrCodeGeneratorDto } from './dtos/qrcode.dto.js'
 
 @Injectable()
 export class QrCodeSubservice {

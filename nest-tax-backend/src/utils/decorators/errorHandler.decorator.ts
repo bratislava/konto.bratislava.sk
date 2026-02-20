@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../subservices/line-logger.subservice.js'
 
 export default function HandleErrors(
   loggerName = 'Error Handler Decorator',

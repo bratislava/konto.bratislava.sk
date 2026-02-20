@@ -8,7 +8,7 @@ import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,
   SignedOrderData,
-} from '../dtos/gpwebpay.dto'
+} from '../dtos/gpwebpay.dto.js'
 
 export const GP_WEBPAY_CONFIG_KEY_MAP: Record<
   TaxType,

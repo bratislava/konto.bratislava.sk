@@ -5,20 +5,20 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 import isArray from 'lodash/isArray'
 
-import prismaMock from '../../../test/singleton'
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
-import { NorisService } from '../../noris/noris.service'
-import { DeliveryMethod } from '../../noris/types/noris.enums'
-import { PrismaService } from '../../prisma/prisma.service'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import { AdminService } from '../admin.service'
+import prismaMock from '../../../test/singleton.js'
+import { BloomreachService } from '../../bloomreach/bloomreach.service.js'
+import { NorisService } from '../../noris/noris.service.js'
+import { DeliveryMethod } from '../../noris/types/noris.enums.js'
+import { PrismaService } from '../../prisma/prisma.service.js'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice.js'
+import { AdminService } from '../admin.service.js'
 import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminCreateTestingTaxNorisData,
-} from '../dtos/requests.dto'
+} from '../dtos/requests.dto.js'
 
 describe('AdminService', () => {
   let adminService: AdminService

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone.js'
+import utc from 'dayjs/plugin/utc.js'
 
-import { NorisService } from '../../noris/noris.service'
-import { PrismaService } from '../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
-import DatabaseSubservice from '../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { NorisService } from '../../noris/noris.service.js'
+import { PrismaService } from '../../prisma/prisma.service.js'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType.js'
+import DatabaseSubservice from '../../utils/subservices/database.subservice.js'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice.js'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

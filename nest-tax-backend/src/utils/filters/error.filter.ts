@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common'
 import { Response } from 'express'
 
-import { errorTypeKeys } from '../guards/dtos/error.dto'
-import { symbolKeysToStrings } from '../logging'
-import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
+import { errorTypeKeys } from '../guards/dtos/error.dto.js'
+import { symbolKeysToStrings } from '../logging.js'
+import { LineLoggerSubservice } from '../subservices/line-logger.subservice.js'
 
 function rethrowIfNotHttp(
   host: ArgumentsHost,

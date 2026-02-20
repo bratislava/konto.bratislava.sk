@@ -1,8 +1,8 @@
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 
-import { separateLogFromResponseObj } from '../logging'
-import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
+import { separateLogFromResponseObj } from '../logging.js'
+import { LineLoggerSubservice } from '../subservices/line-logger.subservice.js'
 
 @Injectable()
 export default class AppLoggerMiddleware implements NestMiddleware {

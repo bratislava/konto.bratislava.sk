@@ -7,13 +7,13 @@ import {
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
-} from '../admin/dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from '../admin/dtos/responses.dto'
-import { ResponseCreatedAlreadyCreatedDto } from './dtos/response.dto'
-import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
-import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
-import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
-import { NorisTax, NorisTaxPayment } from './types/noris.types'
+} from '../admin/dtos/requests.dto.js'
+import { CreateBirthNumbersResponseDto } from '../admin/dtos/responses.dto.js'
+import { ResponseCreatedAlreadyCreatedDto } from './dtos/response.dto.js'
+import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice.js'
+import { NorisPaymentSubservice } from './subservices/noris-payment.subservice.js'
+import { NorisTaxSubservice } from './subservices/noris-tax.subservice.js'
+import { NorisTax, NorisTaxPayment } from './types/noris.types.js'
 
 @Injectable()
 export class NorisService {

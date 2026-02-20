@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common'
 import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone.js'
+import utc from 'dayjs/plugin/utc.js'
 
-import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
-import { PrismaService } from '../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
+import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto.js'
+import { PrismaService } from '../prisma/prisma.service.js'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType.js'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice.js'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
-} from './dtos/error.dto'
+} from './dtos/error.dto.js'
 import {
   ResponseAnyTaxSummaryDetailDto,
   ResponseGetTaxesListBodyDto,
@@ -23,16 +23,16 @@ import {
   ResponseTaxPayerReducedDto,
   TaxAvailabilityStatus,
   TaxStatusEnum,
-} from './dtos/response.tax.dto'
+} from './dtos/response.tax.dto.js'
 import {
   checkTaxDateInclusion,
   getExistingTaxStatus,
-} from './utils/helpers/tax.helper'
+} from './utils/helpers/tax.helper.js'
 import {
   getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
-} from './utils/unified-tax.util'
+} from './utils/unified-tax.util.js'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

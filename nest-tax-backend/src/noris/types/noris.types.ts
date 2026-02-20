@@ -7,7 +7,7 @@ import {
   NorisDeliveryMethodsUpdateResultSchema,
   NorisRealEstateTaxSchema,
   NorisTaxPaymentSchema,
-} from './noris.schema'
+} from './noris.schema.js'
 
 export type NorisBaseTax = z.infer<typeof NorisBaseTaxSchema>
 

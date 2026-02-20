@@ -19,20 +19,20 @@ import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import { TaxType } from '@prisma/client'
 import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
-import { BratislavaUser } from '../auth/decorators/user-info.decorator'
-import { TiersGuard } from '../auth/guards/tiers.guard'
-import { Tiers } from '../utils/decorators/tier.decorator'
-import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import { BratislavaUser } from '../auth/decorators/user-info.decorator.js'
+import { TiersGuard } from '../auth/guards/tiers.guard.js'
+import { Tiers } from '../utils/decorators/tier.decorator.js'
+import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto.js'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
-} from '../utils/guards/dtos/error.dto'
+} from '../utils/guards/dtos/error.dto.js'
 import {
   ResponseCommunalWasteTaxSummaryDetailDto,
   ResponseGetTaxesListDto,
   ResponseRealEstateTaxSummaryDetailDto,
-} from './dtos/response.tax.dto'
-import { TaxService } from './tax.service'
+} from './dtos/response.tax.dto.js'
+import { TaxService } from './tax.service.js'
 
 @ApiTags('tax')
 @ApiBearerAuth()

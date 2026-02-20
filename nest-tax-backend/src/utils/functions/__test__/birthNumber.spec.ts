@@ -1,4 +1,4 @@
-import { addSlashToBirthNumber } from '../birthNumber'
+import { addSlashToBirthNumber } from '../birthNumber.js'
 
 // eslint-disable-next-line no-secrets/no-secrets
 describe('addSlashToBirthNumber', () => {

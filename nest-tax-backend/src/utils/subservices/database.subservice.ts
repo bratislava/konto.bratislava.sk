@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
-import { PrismaService } from '../../prisma/prisma.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
+import { PrismaService } from '../../prisma/prisma.service.js'
+import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../guards/errors.guard.js'
 
 @Injectable()
 export default class DatabaseSubservice {

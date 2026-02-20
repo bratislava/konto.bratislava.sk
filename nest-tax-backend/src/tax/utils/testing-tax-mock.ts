@@ -2,11 +2,11 @@ import { randomBytes } from 'node:crypto'
 
 import { TaxAdministrator, TaxType } from '@prisma/client'
 
-import { RequestAdminCreateTestingTaxNorisData } from '../../admin/dtos/requests.dto'
+import { RequestAdminCreateTestingTaxNorisData } from '../../admin/dtos/requests.dto.js'
 import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
-} from '../../noris/types/noris.types'
+} from '../../noris/types/noris.types.js'
 
 /**
  * Creates a mock Noris tax record for testing purposes based on user input

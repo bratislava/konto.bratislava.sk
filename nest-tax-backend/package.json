@@ -5,6 +5,7 @@
   "author": "Department of Innovation and Technology - City of Bratislava",
   "private": false,
   "license": "EUPL-1.2",
+  "type": "module",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
+import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors.js'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
-} from '../../../payment/dtos/error.dto'
-import { CustomErrorTaxTypesEnum } from '../../../tax/dtos/error.dto'
+} from '../../../payment/dtos/error.dto.js'
+import { CustomErrorTaxTypesEnum } from '../../../tax/dtos/error.dto.js'
 
 export class ResponseInternalServerErrorDto {
   @ApiProperty({

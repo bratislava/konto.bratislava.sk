@@ -2,14 +2,14 @@ import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import noop from 'lodash/noop'
 
-import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard.js'
 import {
   NorisCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
   NorisTaxPaymentSchema,
-} from '../../types/noris.schema'
-import { NorisValidatorSubservice } from '../noris-validator.subservice'
+} from '../../types/noris.schema.js'
+import { NorisValidatorSubservice } from '../noris-validator.subservice.js'
 import {
   allNorisCommunalWasteTaxes,
   invalidNorisCommunalWasteTax1,
@@ -21,12 +21,12 @@ import {
   testCommunalWasteTax5,
   testCommunalWasteTax6,
   validNorisCommunalWasteTaxes,
-} from './data/test.communal-waste-tax'
+} from './data/test.communal-waste-tax.js'
 import {
   testPaymentInvalidVariabilnySymbol,
   testPaymentStringUhrazeno,
   testPaymentValid,
-} from './data/test.payments'
+} from './data/test.payments.js'
 import {
   allNorisRealEstateTaxes,
   invalidNorisRealEstateTax1,
@@ -35,7 +35,7 @@ import {
   testRealEstateTax2,
   testRealEstateTax3,
   validNorisRealEstateTaxes,
-} from './data/test.real-estate-tax'
+} from './data/test.real-estate-tax.js'
 
 describe('NorisValidatorSubservice', () => {
   let service: NorisValidatorSubservice

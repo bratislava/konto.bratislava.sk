@@ -6,9 +6,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import { RequestPostReportingSendReport } from '../admin/dtos/requests.dto'
-import { AdminGuard } from '../auth/guards/admin.guard'
-import { CardPaymentReportingService } from './card-payment-reporting.service'
+import { RequestPostReportingSendReport } from '../admin/dtos/requests.dto.js'
+import { AdminGuard } from '../auth/guards/admin.guard.js'
+import { CardPaymentReportingService } from './card-payment-reporting.service.js'
 
 @ApiTags('card-payment-reporting')
 @Controller('card-payment-reporting')

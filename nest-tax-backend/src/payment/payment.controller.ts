@@ -21,22 +21,22 @@ import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import { TaxType } from '@prisma/client'
 import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
 
-import { BratislavaUser } from '../auth/decorators/user-info.decorator'
-import { TiersGuard } from '../auth/guards/tiers.guard'
-import { Tiers } from '../utils/decorators/tier.decorator'
-import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import { BratislavaUser } from '../auth/decorators/user-info.decorator.js'
+import { TiersGuard } from '../auth/guards/tiers.guard.js'
+import { Tiers } from '../utils/decorators/tier.decorator.js'
+import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto.js'
 import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
-} from '../utils/guards/dtos/error.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
+} from '../utils/guards/dtos/error.dto.js'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice.js'
+import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto.js'
 import {
   PaymentRedirectResponseDto,
   PaymentRedirectStateEnum,
-} from './dtos/redirect.payent.dto'
-import { ResponseGetPaymentUrlDto } from './dtos/requests.payment.dto'
-import { PaymentService } from './payment.service'
+} from './dtos/redirect.payent.dto.js'
+import { ResponseGetPaymentUrlDto } from './dtos/requests.payment.dto.js'
+import { PaymentService } from './payment.service.js'
 
 @ApiTags('payment')
 @ApiExtraModels(PaymentRedirectResponseDto)

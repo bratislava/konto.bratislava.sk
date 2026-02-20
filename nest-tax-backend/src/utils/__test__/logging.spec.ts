@@ -1,14 +1,14 @@
 import { HttpException } from '@nestjs/common'
 
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
+import { ErrorsEnum } from '../guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../guards/errors.guard.js'
 import {
   errorToLogfmt,
   escapeForLogfmt,
   objToLogfmt,
   separateLogFromResponseObj,
   toLogfmt,
-} from '../logging'
+} from '../logging.js'
 
 describe('Testing logging:', () => {
   describe('objToLogfmt function', () => {

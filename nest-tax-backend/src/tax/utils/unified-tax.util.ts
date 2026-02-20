@@ -1,22 +1,22 @@
 import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone.js'
+import utc from 'dayjs/plugin/utc.js'
 
-import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
+import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto.js'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType.js'
 import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
   ReplaceQrCodeWithGeneratorDto,
   TaxTypeToResponseDetailItemizedDto,
-} from '../../tax-definitions/taxDefinitionsTypes'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto'
+} from '../../tax-definitions/taxDefinitionsTypes.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
+import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto.js'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
-} from '../dtos/error.dto'
+} from '../dtos/error.dto.js'
 import {
   InstallmentPaidStatusEnum,
   InstallmentPaymentReasonNotPossibleEnum,
@@ -26,7 +26,7 @@ import {
   ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-} from '../dtos/response.tax.dto'
+} from '../dtos/response.tax.dto.js'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

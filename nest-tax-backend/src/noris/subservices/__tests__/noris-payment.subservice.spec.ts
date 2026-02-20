@@ -4,20 +4,20 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Tax } from '@prisma/client'
 import * as mssql from 'mssql'
 
-import prismaMock from '../../../../test/singleton'
-import { BloomreachService } from '../../../bloomreach/bloomreach.service'
-import { PrismaService } from '../../../prisma/prisma.service'
+import prismaMock from '../../../../test/singleton.js'
+import { BloomreachService } from '../../../bloomreach/bloomreach.service.js'
+import { PrismaService } from '../../../prisma/prisma.service.js'
 import {
   ErrorsEnum,
   ErrorsResponseEnum,
-} from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
-import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
-import { NorisTaxPayment } from '../../types/noris.types'
-import { NorisConnectionSubservice } from '../noris-connection.subservice'
-import { NorisPaymentSubservice } from '../noris-payment.subservice'
-import { NorisValidatorSubservice } from '../noris-validator.subservice'
+} from '../../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice.js'
+import { TaxWithTaxPayer } from '../../../utils/types/types.prisma.js'
+import { NorisTaxPayment } from '../../types/noris.types.js'
+import { NorisConnectionSubservice } from '../noris-connection.subservice.js'
+import { NorisPaymentSubservice } from '../noris-payment.subservice.js'
+import { NorisValidatorSubservice } from '../noris-validator.subservice.js'
 
 const mockRequest = {
   query: jest.fn(),

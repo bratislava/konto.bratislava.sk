@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common'
 import * as mssql from 'mssql'
 
-import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto'
-import { UpdateDeliveryMethodsInNorisResponseDto } from '../../admin/dtos/responses.dto'
-import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { RequestUpdateNorisDeliveryMethodsDto } from '../../admin/dtos/requests.dto.js'
+import { UpdateDeliveryMethodsInNorisResponseDto } from '../../admin/dtos/responses.dto.js'
+import { addSlashToBirthNumber } from '../../utils/functions/birthNumber.js'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard.js'
 import {
   DeliveryMethod,
   IsInCityAccount,
   UpdateNorisDeliveryMethods,
-} from '../types/noris.enums'
+} from '../types/noris.enums.js'
 import {
   NorisDeliveryMethodsUpdateResultSchema,
   NorisOrganizationResultSchema,
-} from '../types/noris.schema'
-import { NorisDeliveryMethodsUpdateResult } from '../types/noris.types'
-import { mapDeliveryMethodToNoris } from '../utils/mapping.helper'
+} from '../types/noris.schema.js'
+import { NorisDeliveryMethodsUpdateResult } from '../types/noris.types.js'
+import { mapDeliveryMethodToNoris } from '../utils/mapping.helper.js'
 import {
   getBirthNumbersForSubjects,
   setDeliveryMethodsForUser,
-} from '../utils/noris.queries'
-import { NorisConnectionSubservice } from './noris-connection.subservice'
-import { NorisValidatorSubservice } from './noris-validator.subservice'
+} from '../utils/noris.queries.js'
+import { NorisConnectionSubservice } from './noris-connection.subservice.js'
+import { NorisValidatorSubservice } from './noris-validator.subservice.js'
 
 @Injectable()
 export class NorisDeliveryMethodSubservice {

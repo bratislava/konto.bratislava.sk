@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { parse } from 'csv-parse/sync'
 import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone.js'
+import utc from 'dayjs/plugin/utc.js'
 
-import { PrismaService } from '../prisma/prisma.service'
-import DatabaseSubservice from '../utils/subservices/database.subservice'
-import EmailSubservice from '../utils/subservices/email.subservice'
-import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
+import { PrismaService } from '../prisma/prisma.service.js'
+import DatabaseSubservice from '../utils/subservices/database.subservice.js'
+import EmailSubservice from '../utils/subservices/email.subservice.js'
+import SftpFileSubservice from '../utils/subservices/sftp-file.subservice.js'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

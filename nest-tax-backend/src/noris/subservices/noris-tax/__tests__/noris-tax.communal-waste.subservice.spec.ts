@@ -4,17 +4,17 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
 
-import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
-import { PrismaService } from '../../../../prisma/prisma.service'
-import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
-import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
-import { QrCodeSubservice } from '../../../../utils/subservices/qrcode.subservice'
+import { BloomreachService } from '../../../../bloomreach/bloomreach.service.js'
+import { PrismaService } from '../../../../prisma/prisma.service.js'
+import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../../../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice.js'
+import DatabaseSubservice from '../../../../utils/subservices/database.subservice.js'
+import { QrCodeSubservice } from '../../../../utils/subservices/qrcode.subservice.js'
 import {
   NorisCommunalWasteTax,
   NorisCommunalWasteTaxGrouped,
-} from '../../../types/noris.types'
+} from '../../../types/noris.types.js'
 import {
   testCommunalWasteTax1,
   testCommunalWasteTax2,
@@ -22,11 +22,11 @@ import {
   testCommunalWasteTax4,
   testCommunalWasteTax5,
   testCommunalWasteTax6,
-} from '../../__tests__/data/test.communal-waste-tax'
-import { NorisConnectionSubservice } from '../../noris-connection.subservice'
-import { NorisPaymentSubservice } from '../../noris-payment.subservice'
-import { NorisValidatorSubservice } from '../../noris-validator.subservice'
-import { NorisTaxCommunalWasteSubservice } from '../noris-tax.communal-waste.subservice'
+} from '../../__tests__/data/test.communal-waste-tax.js'
+import { NorisConnectionSubservice } from '../../noris-connection.subservice.js'
+import { NorisPaymentSubservice } from '../../noris-payment.subservice.js'
+import { NorisValidatorSubservice } from '../../noris-validator.subservice.js'
+import { NorisTaxCommunalWasteSubservice } from '../noris-tax.communal-waste.subservice.js'
 
 jest.mock('mssql', () => ({
   Request: jest.fn().mockImplementation(() => ({

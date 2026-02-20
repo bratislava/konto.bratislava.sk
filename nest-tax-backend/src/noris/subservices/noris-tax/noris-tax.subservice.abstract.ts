@@ -1,32 +1,32 @@
 import { Prisma, Tax, TaxType } from '@prisma/client'
-import groupBy from 'lodash/groupBy'
+import groupBy from 'lodash/groupBy.js'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
 
-import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
-import { BloomreachService } from '../../../bloomreach/bloomreach.service'
-import { PrismaService } from '../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto.js'
+import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto.js'
+import { BloomreachService } from '../../../bloomreach/bloomreach.service.js'
+import { PrismaService } from '../../../prisma/prisma.service.js'
+import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType.js'
 import {
   TaxDefinition,
   TaxTypeToNorisData,
-} from '../../../tax-definitions/taxDefinitionsTypes'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
-import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
-import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
+} from '../../../tax-definitions/taxDefinitionsTypes.js'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice.js'
+import DatabaseSubservice from '../../../utils/subservices/database.subservice.js'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice.js'
+import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice.js'
+import { TaxWithTaxPayer } from '../../../utils/types/types.prisma.js'
 import {
   convertCurrencyToInt,
   mapNorisToDatabaseBaseTax,
   mapNorisToTaxAdministratorData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
-} from '../../utils/mapping.helper'
-import { NorisPaymentSubservice } from '../noris-payment.subservice'
+} from '../../utils/mapping.helper.js'
+import { NorisPaymentSubservice } from '../noris-payment.subservice.js'
 
 export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   protected readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)

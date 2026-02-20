@@ -10,33 +10,33 @@ import {
 import dayjs from 'dayjs'
 import pLimit from 'p-limit'
 
-import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
-import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
-import { NorisService } from '../noris/noris.service'
-import { NorisTaxPayment } from '../noris/types/noris.types'
-import { PaymentService } from '../payment/payment.service'
-import { PrismaService } from '../prisma/prisma.service'
+import { BloomreachService } from '../bloomreach/bloomreach.service.js'
+import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service.js'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors.js'
+import { NorisService } from '../noris/noris.service.js'
+import { NorisTaxPayment } from '../noris/types/noris.types.js'
+import { PaymentService } from '../payment/payment.service.js'
+import { PrismaService } from '../prisma/prisma.service.js'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
-} from '../tax/dtos/error.dto'
-import { stateHolidays } from '../tax/utils/unified-tax.util'
-import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
+} from '../tax/dtos/error.dto.js'
+import { stateHolidays } from '../tax/utils/unified-tax.util.js'
+import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType.js'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
   OVERPAYMENTS_LOOKBACK_DAYS,
-} from '../utils/constants'
-import HandleErrors from '../utils/decorators/errorHandler.decorator'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import DatabaseSubservice from '../utils/subservices/database.subservice'
-import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
-import { RetryService } from '../utils-module/retry.service'
-import TasksConfigSubservice from './subservices/config.subservice'
-import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
+} from '../utils/constants.js'
+import HandleErrors from '../utils/decorators/errorHandler.decorator.js'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice.js'
+import DatabaseSubservice from '../utils/subservices/database.subservice.js'
+import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma.js'
+import { RetryService } from '../utils-module/retry.service.js'
+import TasksConfigSubservice from './subservices/config.subservice.js'
+import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice.js'
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 

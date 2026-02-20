@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 
-import { RetryService } from './retry.service'
+import { RetryService } from './retry.service.js'
 
 /**
  * 🔧 Utils Module - Reusable Utilities for Multiple Modules

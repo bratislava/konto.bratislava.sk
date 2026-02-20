@@ -16,7 +16,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { RealEstateTaxAreaType } from '../../prisma/json-types'
+import { RealEstateTaxAreaType } from '../../prisma/json-types.js'
 
 export enum TaxDetailTypeEnum {
   APARTMENT = 'APARTMENT',

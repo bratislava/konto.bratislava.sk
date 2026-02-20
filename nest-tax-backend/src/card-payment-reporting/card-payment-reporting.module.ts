@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
-import { PrismaService } from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import DatabaseSubservice from '../utils/subservices/database.subservice'
-import EmailSubservice from '../utils/subservices/email.subservice'
-import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
-import { CardPaymentReportingController } from './card-payment-reporting.controller'
-import { CardPaymentReportingService } from './card-payment-reporting.service'
+import { PrismaService } from '../prisma/prisma.service.js'
+import ThrowerErrorGuard from '../utils/guards/errors.guard.js'
+import DatabaseSubservice from '../utils/subservices/database.subservice.js'
+import EmailSubservice from '../utils/subservices/email.subservice.js'
+import SftpFileSubservice from '../utils/subservices/sftp-file.subservice.js'
+import { CardPaymentReportingController } from './card-payment-reporting.controller.js'
+import { CardPaymentReportingService } from './card-payment-reporting.service.js'
 
 @Module({
   imports: [],

@@ -1,4 +1,4 @@
-import { NorisCommunalWasteTax } from '../../../types/noris.types'
+import { NorisCommunalWasteTax } from '../../../types/noris.types.js'
 
 // Test data 1: Complete data with all fields populated - multiple containers for one person
 export const testCommunalWasteTax1: NorisCommunalWasteTax = {

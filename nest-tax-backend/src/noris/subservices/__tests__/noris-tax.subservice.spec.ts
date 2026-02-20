@@ -2,12 +2,12 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 
-import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { NorisTaxSubservice } from '../noris-tax.subservice'
-import { NorisTaxCommunalWasteSubservice } from '../noris-tax/noris-tax.communal-waste.subservice'
-import { NorisTaxRealEstateSubservice } from '../noris-tax/noris-tax.real-estate.subservice'
+import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto.js'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto.js'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard.js'
+import { NorisTaxSubservice } from '../noris-tax.subservice.js'
+import { NorisTaxCommunalWasteSubservice } from '../noris-tax/noris-tax.communal-waste.subservice.js'
+import { NorisTaxRealEstateSubservice } from '../noris-tax/noris-tax.real-estate.subservice.js'
 
 describe('NorisTaxSubservice', () => {
   let service: NorisTaxSubservice

@@ -6,13 +6,13 @@ import {
   RealEstateTaxAreaType,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
-} from '../../prisma/json-types'
-import { DeliveryMethod, DeliveryMethodNoris } from '../types/noris.enums'
+} from '../../prisma/json-types.js'
+import { DeliveryMethod, DeliveryMethodNoris } from '../types/noris.enums.js'
 import {
   NorisBaseTax,
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
-} from '../types/noris.types'
+} from '../types/noris.types.js'
 
 export const convertCurrencyToInt = (value: string): number => {
   return currency(value.replace(',', '.')).intValue

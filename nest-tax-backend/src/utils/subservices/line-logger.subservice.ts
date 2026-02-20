@@ -2,7 +2,7 @@ import * as process from 'node:process'
 
 import { LoggerService } from '@nestjs/common'
 
-import { escapeForLogfmt, isLogfmt, toLogfmt } from '../logging'
+import { escapeForLogfmt, isLogfmt, toLogfmt } from '../logging.js'
 
 // ANSI color escape codes
 const ANSI_RESET = '\u001B[0m'

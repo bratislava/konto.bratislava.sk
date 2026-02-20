@@ -12,7 +12,7 @@ import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
 import { AddIcon } from '@/src/assets/ui-icons'
-import ConditionalFormMarkdown from '@/src/components/info-components/ConditionalFormMarkdown'
+import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
 import Button from '@/src/components/simple-components/Button'
 import FieldErrorMessage from '@/src/components/widget-components/FieldErrorMessage'

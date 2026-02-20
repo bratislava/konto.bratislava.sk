@@ -2,7 +2,7 @@ import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
-import ConditionalFormMarkdown from '@/src/components/info-components/ConditionalFormMarkdown'
+import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 import cn from '@/src/frontend/cn'
 

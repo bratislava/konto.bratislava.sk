@@ -12,8 +12,8 @@ import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 import { useFormData } from '@/src/components/forms/useFormData'
-import ConditionalFormMarkdown from '@/src/components/info-components/ConditionalFormMarkdown'
 import cn from '@/src/frontend/cn'
 
 /**

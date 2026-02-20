@@ -1,10 +1,10 @@
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
 
-import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import ErrorIcon from '@/src/components/icon-components/ErrorIcon'
 import InfoIcon from '@/src/components/icon-components/InfoIcon'
 import SuccessIcon from '@/src/components/icon-components/SuccessIcon'
 import WarningIcon from '@/src/components/icon-components/WarningIcon'
+import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import cn from '@/src/frontend/cn'
 
 export type MessageModalProps = PropsWithChildren<{

@@ -1,4 +1,6 @@
-import FormMarkdown, { FormMarkdownProps } from '@/src/components/info-components/FormMarkdown'
+import FormMarkdown, {
+  FormMarkdownProps,
+} from '@/src/components/formatting/FormMarkdown/FormMarkdown'
 
 type ConditionalFormMarkdownProps = FormMarkdownProps & {
   isMarkdown?: boolean

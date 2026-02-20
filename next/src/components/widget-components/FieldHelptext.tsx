@@ -1,6 +1,6 @@
 import React, { DOMAttributes } from 'react'
 
-import ConditionalFormMarkdown from '@/src/components/info-components/ConditionalFormMarkdown'
+import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 
 type FieldHelptextProps = {
   helptext?: string

@@ -258,6 +258,7 @@ export enum Enum_Municipalservice_Icon {
   Mosquito = 'mosquito',
   Parking = 'parking',
   PublicSpaceOccupation = 'public_space_occupation',
+  Scooter = 'scooter',
   Security = 'security',
   SpatialPlanning = 'spatial_planning',
   SwimmingPool = 'swimming_pool',

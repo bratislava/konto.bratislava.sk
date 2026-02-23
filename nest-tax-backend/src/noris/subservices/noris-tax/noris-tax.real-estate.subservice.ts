@@ -75,15 +75,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
           ),
         )
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get taxes from Noris',
-          undefined,
-          error instanceof Error ? undefined : (error as string),
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get taxes from Noris',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisRealEstateTaxSchema,

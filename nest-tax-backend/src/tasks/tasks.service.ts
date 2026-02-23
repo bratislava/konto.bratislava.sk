@@ -16,6 +16,8 @@ import NotificationsEventsService from './subservices/notifications-events.servi
 import ReportingTasksService from './subservices/reporting.tasks.service'
 import TaxImportTasksService from './subservices/tax-import.tasks.service'
 
+export const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
+
 @Injectable()
 export class TasksService {
   constructor(
@@ -99,7 +101,42 @@ export class TasksService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @HandleErrors('Cron Error')
   async resendBloomreachEvents() {
     await this.notificationsEventsService.resendBloomreachEvents()
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  @HandleErrors('Cron Error')
+  async alertSilentNorisConnectionErrors() {
+    const numberOfErrorsValue = await this.databaseSubservice.getConfigByKeys([
+      NORIS_SILENT_CONNECTION_ERRORS_KEY,
+    ])
+    const numberOfErrors = Number(numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY])
+
+    if (numberOfErrors === 0) {
+      return
+    }
+
+    if (numberOfErrors.toString() === 'NaN') {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,
+      )
+    }
+
+    await this.prismaService.config.updateMany({
+      where: {
+        key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
+      },
+      data: {
+        value: '0',
+      },
+    })
+
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
+    )
   }
 }

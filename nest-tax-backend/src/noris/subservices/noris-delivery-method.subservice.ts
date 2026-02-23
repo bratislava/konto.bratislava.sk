@@ -42,15 +42,7 @@ export class NorisDeliveryMethodSubservice {
         )
         return Promise.all(updatePromises)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to update delivery methods',
-          undefined,
-          undefined,
-          error,
-        )
-      },
+      'Failed to update delivery methods',
     )
 
     return this.getBirthNumbersWithUpdatedDeliveryMethods(
@@ -130,15 +122,7 @@ export class NorisDeliveryMethodSubservice {
           record.ico.trim(),
         ) // Birth numbers are stored in `ico` column in the respective table
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get birth numbers for updated subjects',
-          undefined,
-          error instanceof Error ? undefined : (error as string),
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get birth numbers for updated subjects',
     )
   }
 

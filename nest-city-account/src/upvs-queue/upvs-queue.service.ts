@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
+import { CognitoUserAttributesTierEnum, PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { CreateManyParam, NasesService } from '../nases/nases.service'
@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import { toLogfmt } from '../utils/logging'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
+import { parseName } from '../magproxy/dtos/uri'
 
 @Injectable()
 export class UpvsQueueService {
@@ -68,18 +69,19 @@ export class UpvsQueueService {
     }
 
     try {
-      const remainingSlots = this.BATCH_SIZE
+      let remainingSlots = this.BATCH_SIZE
 
       // Get all urgent items (up to capacity)
       const urgentItems = await this.getUrgentQueueItems(remainingSlots)
+      remainingSlots = remainingSlots - urgentItems.length
 
       // Get high priority items (up to reservation)
       const highPrioritySlots = Math.min(this.HIGH_PRIORITY_RESERVED_SLOTS, remainingSlots)
       const highPriorityItems = await this.getHighPriorityQueueItems(highPrioritySlots)
 
       // If high priority doesn't fill reservation, give to external queue
-      const externalSlots = remainingSlots - highPriorityItems.length
-      const externalItems = await this.getExternalQueueItems(externalSlots)
+      remainingSlots = remainingSlots - highPriorityItems.length
+      const externalItems = await this.getExternalQueueItems(remainingSlots)
 
       const createManyJoinedInput: CreateManyParam = [
         ...urgentItems,
@@ -159,20 +161,6 @@ export class UpvsQueueService {
   }
 
   /**
-   * Check if a PhysicalEntity's Edesk status is fresh (within cache TTL)
-   */
-  private isPhysicalEntityEdeskStatusFresh(entity: PhysicalEntity): boolean {
-    if (!entity.activeEdeskUpdatedAt) {
-      return false
-    }
-
-    const updatedAt = dayjs(entity.activeEdeskUpdatedAt)
-    const expiresAt = updatedAt.add(this.CACHE_TTL_HOURS, 'hour')
-
-    return dayjs().isBefore(expiresAt)
-  }
-
-  /**
    * Parse URI name from Cognito given_name and family_name
    * Similar to parseUriNameFromRfo but uses Cognito attributes
    */
@@ -182,15 +170,6 @@ export class UpvsQueueService {
   ): string | null {
     if (!givenName || !familyName) {
       return null
-    }
-
-    const parseName = (name: string) => {
-      return name
-        .replace(/,.*/, '')
-        .trim()
-        .normalize('NFD')
-        .replace(/\p{Diacritic}/gu, '')
-        .toLowerCase()
     }
 
     const processedFamilyName = parseName(familyName)
@@ -203,15 +182,17 @@ export class UpvsQueueService {
    * Get urgent queue items: PhysicalEntities with birthNumber but no uri
    */
   private async getUrgentQueueItems(limit: number): Promise<CreateManyParam> {
-    const entities = await this.prismaService.physicalEntity.findMany({
-      where: {
-        birthNumber: { not: null },
-        uri: null,
-        userId: { not: null },
-      },
-      orderBy: { createdAt: 'asc' },
-      take: limit,
-    })
+    const entities = await this.prismaService.$queryRaw<PhysicalEntity[]>`
+      SELECT e.*
+      FROM "PhysicalEntity" e
+      JOIN "User" u ON e."userId" = u."id"
+      WHERE e."birthNumber" IS NOT NULL
+        AND e."uri" IS NULL
+        AND (u."cognitoTier" = ${CognitoUserAttributesTierEnum.IDENTITY_CARD}
+             OR u."cognitoTier" = ${CognitoUserAttributesTierEnum.EID})
+      ORDER BY greatest(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
+      LIMIT ${limit}
+    `
 
     const preparedItems = await this.prepareUrgentItems(entities)
     return preparedItems
@@ -222,7 +203,7 @@ export class UpvsQueueService {
    * Filters out entities with fresh cache and respects exponential backoff
    */
   private async getHighPriorityQueueItems(limit: number): Promise<CreateManyParam> {
-    const lookBackDate = dayjs().add(this.CACHE_TTL_HOURS, 'hour')
+    const lookBackDate = dayjs().subtract(this.CACHE_TTL_HOURS, 'hour')
 
     // Reuse existing edesk-tasks query logic with exponential backoff
     const entities = await this.prismaService.$queryRaw<PhysicalEntity[]>`
@@ -234,7 +215,7 @@ export class UpvsQueueService {
         AND ("activeEdeskUpdateFailedAt" IS NULL OR
              "activeEdeskUpdateFailCount" = 0 OR
              ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate.toDate()}))
-      ORDER BY greatest("activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
+      ORDER BY greatest("createdAt", "activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
       LIMIT ${limit}
     `
 
@@ -250,6 +231,7 @@ export class UpvsQueueService {
     const externalItems = await this.prismaService.externalEdeskCheck.findMany({
       where: {
         queueStatus: QueueItemStatusEnum.PENDING,
+        uri: { not: null },
       },
       orderBy: { updatedAt: 'asc' },
       take: limit,

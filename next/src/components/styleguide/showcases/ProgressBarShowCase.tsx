@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ProgressBar from '@/src/components/forms/simple-components/ProgressBar'
+import ProgressBar from '@/src/components/simple-components/ProgressBar'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

@@ -6,13 +6,13 @@ import { useState } from 'react'
 
 import { AlertIcon, ErrorIcon } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from '@/src/components/forms/simple-components/Button'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
-import { ROUTES } from '@/src/frontend/api/constants'
-import cn from '@/src/frontend/cn'
+import Button from '@/src/components/simple-components/Button'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import cn from '@/src/utils/cn'
+import { ROUTES } from '@/src/utils/routes'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21643-15659&t=9VxOW0GxS2SEYDIL-4
@@ -106,12 +106,17 @@ const FormVersionCompareAction = () => {
 
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
             {isSignedIn ? (
-              <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
+              <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS} hasLinkIcon={false}>
                 {t('form_version_compare_action.button_back')}
               </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.CannotContinue ? (
-              <Button variant="solid" fullWidth href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}>
+              <Button
+                variant="solid"
+                fullWidth
+                href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}
+                hasLinkIcon={false}
+              >
                 {t('form_version_compare_action.button_create_new')}
               </Button>
             ) : null}

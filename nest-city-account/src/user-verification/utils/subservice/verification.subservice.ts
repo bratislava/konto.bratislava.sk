@@ -185,7 +185,10 @@ export class VerificationSubservice {
     }
 
     // request RFO data and handle exceptions that may be resolved later
-    const rfoData = await this.physicalEntityService.createFromBirthNumber(data.birthNumber)
+    const rfoData = await this.magproxyService.rfoBirthNumberList(data.birthNumber)
+
+    // create physical entity and attempt to get uri and edesk status
+    await this.physicalEntityService.createFromBirthNumber(data.birthNumber, rfoData)
 
     if (!rfoData.success) {
       return rfoData

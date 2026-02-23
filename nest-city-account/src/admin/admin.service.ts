@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
@@ -47,7 +46,6 @@ export class AdminService {
     private cognitoSubservice: CognitoSubservice,
     private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
-    private physicalEntityService: PhysicalEntityService,
     private readonly userService: UserService,
     private readonly verificationService: VerificationService
   ) {}
@@ -121,9 +119,5 @@ export class AdminService {
     data: ManuallyVerifyUserRequestDto
   ): Promise<OnlySuccessDto> {
     return await this.verificationService.manuallyVerifyUser(email, data)
-  }
-
-  async validateEdeskWithUriFromCognito(offset: number) {
-    return await this.physicalEntityService.validateEdeskWithUriFromCognito(offset)
   }
 }

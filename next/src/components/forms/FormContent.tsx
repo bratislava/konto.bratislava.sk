@@ -4,9 +4,6 @@ import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 import FormControls from '@/src/components/forms/FormControls'
 import FormProviders from '@/src/components/forms/FormProviders'
 import FormUploadXmlJson from '@/src/components/forms/FormUploadXmlJson'
-import FormModals from '@/src/components/forms/segments/FormModals/FormModals'
-import FormBottomMenu from '@/src/components/forms/simple-components/FormBottomMenu'
-import FormHeader from '@/src/components/forms/simple-components/FormHeader'
 import StepperView from '@/src/components/forms/steps/StepperView'
 import FormSummary from '@/src/components/forms/steps/Summary/FormSummary'
 import ThemedForm from '@/src/components/forms/ThemedForm'
@@ -15,6 +12,9 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormErrorTranslations } from '@/src/components/forms/useFormErrorTranslations'
 import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
+import FormModals from '@/src/components/modals/FormModals/FormModals'
+import FormBottomMenu from '@/src/components/simple-components/FormBottomMenu'
+import FormHeader from '@/src/components/simple-components/FormHeader'
 
 const FormStep = () => {
   const { isReadonly } = useFormContext()
@@ -74,7 +74,7 @@ const FormContentInner = () => {
       <FormUploadXmlJson />
       {displayHeaderAndMenu && <FormHeader />}
       <div
-        className="max-w-(--breakpoint-lg) mx-auto flex w-full flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10"
+        className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-10 pt-0 pb-6 lg:flex-row lg:gap-20 lg:py-10"
         data-cy="form-container"
       >
         <StepperView />

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import InputField from '@/src/components/forms/widget-components/InputField/InputField'
+import InputField from '@/src/components/widget-components/InputField/InputField'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

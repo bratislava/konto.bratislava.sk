@@ -1,7 +1,7 @@
 import React from 'react'
 
-import FieldErrorMessage from '@/src/components/forms/info-components/FieldErrorMessage'
-import FieldHeader from '@/src/components/forms/info-components/FieldHeader'
+import FieldErrorMessage from '@/src/components/widget-components/FieldErrorMessage'
+import FieldHeader from '@/src/components/widget-components/FieldHeader'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

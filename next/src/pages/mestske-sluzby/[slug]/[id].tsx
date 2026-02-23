@@ -13,7 +13,6 @@ import { makeClientFormDefinition } from '@/src/components/forms/clientFormDefin
 import FormPage, { FormPageProps } from '@/src/components/forms/FormPage'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import { environment } from '@/src/environment'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { handleEmbeddedFormRequest } from '@/src/frontend/utils/embeddedFormsHelpers'
 import { getDefaultFormDataForFormDefinition } from '@/src/frontend/utils/getDefaultFormDataForFormDefinition'
@@ -21,6 +20,7 @@ import { getInitialSummaryJson } from '@/src/frontend/utils/getInitialSummaryJso
 import { redirectQueryParam } from '@/src/frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 import type { GlobalAppProps } from '@/src/pages/_app'
+import { ROUTES } from '@/src/utils/routes'
 
 const fetchStrapiForm = async (slug: string): Promise<FormBaseFragment | null | undefined> => {
   const result = await strapiClient.FormBaseBySlug({ slug })

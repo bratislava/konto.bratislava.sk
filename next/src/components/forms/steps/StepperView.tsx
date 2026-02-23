@@ -6,9 +6,9 @@ import { ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
 import StepperViewList from '@/src/components/forms/steps/StepperViewList'
 import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
-import { FormStepIndex } from '@/src/components/forms/types/Steps'
+import { FormStepIndex } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
-import cn from '@/src/frontend/cn'
+import cn from '@/src/utils/cn'
 
 type StepperModalProps = {
   isOpen: boolean

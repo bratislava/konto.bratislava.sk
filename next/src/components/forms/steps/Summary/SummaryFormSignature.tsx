@@ -1,13 +1,13 @@
 import React, { PropsWithChildren, useMemo } from 'react'
 
 import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
-import Alert from '@/src/components/forms/info-components/Alert'
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
 import { useFormSignerLoader } from '@/src/components/forms/signer/useFormSignerLoader'
-import Button from '@/src/components/forms/simple-components/Button'
-import MenuDropdown from '@/src/components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import Alert from '@/src/components/simple-components/Alert'
+import Button from '@/src/components/simple-components/Button'
+import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 
 /**
@@ -70,11 +70,7 @@ const SummaryFormSignature = () => {
           message={
             <>
               Platforma, na ktorej sa nachádzate nie je podporovaná. Pozrite si{' '}
-              <Button
-                href="https://www.slovensko.sk/sk/na-stiahnutie"
-                target="_blank"
-                variant="link"
-              >
+              <Button href="https://www.slovensko.sk/sk/na-stiahnutie" variant="link">
                 zoznam podporovaných aplikácií.
               </Button>
             </>

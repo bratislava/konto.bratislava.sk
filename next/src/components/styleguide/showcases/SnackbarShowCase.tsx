@@ -1,4 +1,4 @@
-import Button from '@/src/components/forms/simple-components/Button'
+import Button from '@/src/components/simple-components/Button'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 
 import { Stack } from '../Stack'

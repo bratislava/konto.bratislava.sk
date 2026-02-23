@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { useEffect } from 'react'
 
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import {
   postMessageToApprovedDomains,

@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
-import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
 import { PrismaModule } from '../prisma/prisma.module'
-import { UpvsIdentityByUriModule } from '../upvs-identity-by-uri/upvs-identity-by-uri.module'
 import { VerificationModule } from '../user-verification/verification.module'
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
@@ -16,21 +14,10 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
  * AdminModule - Manual administrative operations
  *
  * This module provides endpoints for manual/debug/maintenance operations.
- * It has been refactored to delegate business logic to domain modules:
- * - UserModule: User lookup, deactivation, deceased marking
- * - VerificationModule: Verification state, data retrieval, manual verification
- * - PhysicalEntityModule: Edesk validation (TODO)
+ * It has been refactored to delegate business logic to domain modules.
  */
 @Module({
-  imports: [
-    PassportModule,
-    PrismaModule,
-    UpvsIdentityByUriModule,
-    PhysicalEntityModule,
-    UserModule,
-    VerificationModule,
-    BloomreachModule,
-  ],
+  imports: [PassportModule, PrismaModule, UserModule, VerificationModule, BloomreachModule],
   providers: [AdminService, AdminStrategy, AdminCronSubservice],
   exports: [],
   controllers: [AdminController],

@@ -1,10 +1,10 @@
-import { StatusBar } from '@/src/components/forms/info-components/StatusBar'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
 import BannerShowCase from '@/src/components/styleguide/showcases/BannerShowCase'
 import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase'
-import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupedShowCase'
+import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
@@ -16,7 +16,6 @@ import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroup
 import SearchFieldShowCase from '@/src/components/styleguide/showcases/SearchFieldShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCardShowCase'
-import SingleCheckboxShowCase from '@/src/components/styleguide/showcases/SingleCheckboxShowCase'
 import SnackbarShowCase from '@/src/components/styleguide/showcases/SnackbarShowCase'
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
@@ -42,11 +41,11 @@ const Styleguide = () => {
 
       <StyleGuideWrapper>
         {/* HERE ADD SHOWCASES */}
+        <ButtonShowCase />
         <IconShowCase />
         <TagShowCase />
         <TooltipShowCase />
         <FieldHeaderShowCase />
-        <ButtonShowCase />
         <SpinnerShowCase />
         <InputFieldShowCase />
         <DatePickerShowCase />
@@ -60,7 +59,6 @@ const Styleguide = () => {
         <ModalShowCase />
         <AccordionShowCase />
         <ProgressBarShowCase />
-        <SingleCheckboxShowCase />
         <CheckboxGroupShowCase />
         <RadioGroupShowCase />
         {/* TODO: Fix stepper showcase */}

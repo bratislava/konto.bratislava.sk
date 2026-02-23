@@ -13,7 +13,6 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { DownloadIcon, UploadIcon } from '@/src/assets/ui-icons'
 import { ClientPlaygroundFormDefinition } from '@/src/components/forms/clientFormDefinitions'
-import Button from '@/src/components/forms/simple-components/Button'
 import ThemedForm from '@/src/components/forms/ThemedForm'
 import { FormDataContext } from '@/src/components/forms/useFormData'
 import { useFormErrorTranslations } from '@/src/components/forms/useFormErrorTranslations'
@@ -22,9 +21,10 @@ import {
   FormValidatorRegistryProvider,
   useFormValidatorRegistry,
 } from '@/src/components/forms/useFormValidatorRegistry'
+import Button from '@/src/components/simple-components/Button'
 import SelectField, {
   SelectOption,
-} from '@/src/components/forms/widget-components/SelectField/SelectField'
+} from '@/src/components/widget-components/SelectField/SelectField'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { downloadBlob } from '@/src/frontend/utils/general'
 

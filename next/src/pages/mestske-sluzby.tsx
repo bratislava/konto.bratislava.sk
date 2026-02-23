@@ -2,16 +2,16 @@ import { uniqBy } from 'lodash'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
-import MunicipalServicesSection, {
-  MunicipalServicesSectionProps,
-} from '@/src/components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import MunicipalServicesPageContent, {
+  MunicipalServicesPageContentProps,
+} from '@/src/components/page-contents/MunicipalServicesPageContent/MunicipalServicesPageContent'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { isDefined } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
-type AccountMunicipalServicesPageProps = MunicipalServicesSectionProps
+type AccountMunicipalServicesPageProps = MunicipalServicesPageContentProps
 
 const extractAndSortCategories = (services: MunicipalServiceEntityFragment[]) => {
   const collator = new Intl.Collator('sk')
@@ -61,7 +61,7 @@ const AccountMunicipalServicesPage = ({
 }: AccountMunicipalServicesPageProps) => {
   return (
     <PageLayout>
-      <MunicipalServicesSection
+      <MunicipalServicesPageContent
         services={services}
         categories={categories}
         servicesLegalPerson={servicesLegalPerson}

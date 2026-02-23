@@ -4,12 +4,16 @@ import { useRef, useState } from 'react'
 import { cityAccountClient } from '@/src/clients/city-account'
 import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
-} from '@/src/components/forms/auth-forms/IdentityVerificationOfPhysicalEntityForm'
-import AccountContainer from '@/src/components/forms/segments/AccountContainer/AccountContainer'
-import AccountSuccessAlert from '@/src/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+} from '@/src/components/auth-forms/IdentityVerificationOfPhysicalEntityForm'
+import LegalPersonVerificationPageContent from '@/src/components/auth-forms/LegalPersonVerificationPageContent'
+import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import LegalPersonVerificationPageContent from '@/src/components/verify/LegalPersonVerificationPageContent'
+import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -18,10 +22,6 @@ import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/ut
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import {
-  AmplifyClientOAuthProvider,
-  useOAuthGetContext,
-} from '@/src/frontend/utils/useAmplifyClientOAuthContext'
 import { AuthPageCommonProps } from '@/src/pages/prihlasenie'
 
 export const getServerSideProps = amplifyGetServerSideProps(

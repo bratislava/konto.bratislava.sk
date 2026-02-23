@@ -3,7 +3,7 @@ import { GroupBase } from 'react-select'
 
 import SelectField, {
   SelectOption,
-} from '@/src/components/forms/widget-components/SelectField/SelectField'
+} from '@/src/components/widget-components/SelectField/SelectField'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

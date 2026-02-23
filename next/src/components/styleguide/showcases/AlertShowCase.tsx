@@ -1,4 +1,4 @@
-import Alert from '@/src/components/forms/info-components/Alert'
+import Alert from '@/src/components/simple-components/Alert'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

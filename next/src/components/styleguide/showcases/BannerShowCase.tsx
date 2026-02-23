@@ -1,7 +1,7 @@
 import React from 'react'
 
 import BannerPhone from '@/src/assets/images/banner-phone.png'
-import Banner from '@/src/components/forms/simple-components/Banner'
+import Banner from '@/src/components/simple-components/Banner'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

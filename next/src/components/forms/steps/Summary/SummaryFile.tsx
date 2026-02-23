@@ -8,8 +8,8 @@ import {
 import React, { useMemo } from 'react'
 
 import { AlertIcon, AttachmentIcon, CheckInCircleIcon, ScanningIcon } from '@/src/assets/ui-icons'
-import Spinner from '@/src/components/forms/simple-components/Spinner'
-import cn from '@/src/frontend/cn'
+import Spinner from '@/src/components/simple-components/Spinner'
+import cn from '@/src/utils/cn'
 
 type SummaryFileProps = {
   fileInfo: FileInfoSummary

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import Button from '@/src/components/forms/simple-components/Button'
-import Modal from '@/src/components/forms/simple-components/Modal'
-import MessageModal from '@/src/components/forms/widget-components/Modals/MessageModal'
+import Button from '@/src/components/simple-components/Button'
+import Modal from '@/src/components/simple-components/Modal'
+import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

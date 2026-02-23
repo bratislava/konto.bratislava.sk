@@ -25,6 +25,7 @@ import TransportIcon from '@/src/assets/icons/transport-and-maps/city-\u200B\u20
 import ExcavationsIcon from '@/src/assets/icons/transport-and-maps/excavations.svg'
 import ManagmentCommunicationsIcon from '@/src/assets/icons/transport-and-maps/management-communications.svg'
 import ParkingIcon from '@/src/assets/icons/transport-and-maps/parking.svg'
+import ScooterIcon from '@/src/assets/icons/transport-and-maps/scooter.svg'
 import TowIcon from '@/src/assets/icons/transport-and-maps/towing.svg'
 import {
   Enum_Municipalservice_Color,
@@ -87,6 +88,7 @@ const getIconComponent = (
     ),
     [Enum_Municipalservice_Icon.Parking]: <ParkingIcon className={className} />,
     [Enum_Municipalservice_Icon.Towing]: <TowIcon className={className} />,
+    [Enum_Municipalservice_Icon.Scooter]: <ScooterIcon className={className} />,
   } as const
 
   return iconComponentMap[iconName]

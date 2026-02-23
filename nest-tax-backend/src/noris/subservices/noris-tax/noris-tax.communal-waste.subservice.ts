@@ -107,15 +107,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
 
         return request.query(queryWithPlaceholders)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get communal waste tax data from Noris',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get communal waste tax data from Noris',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisCommunalWasteTaxSchema,

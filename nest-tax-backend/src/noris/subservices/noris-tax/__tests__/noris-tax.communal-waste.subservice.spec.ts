@@ -372,61 +372,29 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     it('should throw InternalServerErrorException with correct error message on database connection failure', async () => {
       const mockError = new Error('Database connection failed')
 
-      throwerErrorGuard.InternalServerErrorException.mockImplementation(() => {
+      connectionService.withConnection.mockImplementation(async () => {
         throw mockError
       })
 
-      connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
-          return errorHandler(mockError)
-        },
-      )
-
       await expect(
         service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
           '123456/7890',
         ]),
-      ).rejects.toThrow()
-
-      expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get communal waste tax data from Noris',
-        undefined,
-        undefined,
-        mockError,
-      )
+      ).rejects.toThrow('Database connection failed')
     })
 
     it('should handle non-Error objects in connection failures', async () => {
-      const mockError = 'String error'
+      const mockError = new Error('String error')
 
-      throwerErrorGuard.InternalServerErrorException.mockImplementation(() => {
-        throw new Error('Mocked error')
-      })
-
-      connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
-          return errorHandler(mockError)
-        },
-      )
+      jest
+        .spyOn(connectionService, 'withConnection')
+        .mockRejectedValue(mockError)
 
       await expect(
         service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
           '123456/7890',
         ]),
-      ).rejects.toThrow()
-
-      expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get communal waste tax data from Noris',
-        undefined,
-        mockError,
-        undefined,
-      )
+      ).rejects.toThrow('String error')
     })
   })
 

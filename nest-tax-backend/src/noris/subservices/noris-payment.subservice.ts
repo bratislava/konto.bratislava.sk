@@ -64,15 +64,7 @@ export class NorisPaymentSubservice {
 
         return request.query(queryPaymentsFromNorisByFromToDate)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get payment data from Noris by date range.',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get payment data from Noris by date range.',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisTaxPaymentSchema,
@@ -133,15 +125,7 @@ export class NorisPaymentSubservice {
             .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
         )
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get payment data from Noris by variable symbols.',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get payment data from Noris by variable symbols.',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisTaxPaymentSchema,
@@ -164,15 +148,7 @@ export class NorisPaymentSubservice {
 
         return request.query(queryOverpaymentsFromNorisByDateRange)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get overpayments data from Noris by date range.',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get overpayments data from Noris by date range.',
     )
 
     const validatedOverpaymentsData =

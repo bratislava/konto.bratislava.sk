@@ -40,6 +40,8 @@ import TaxImportHelperSubservice from './subservices/tax-import-helper.subservic
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
+export const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
+
 @Injectable()
 export class TasksService {
   private readonly logger: Logger
@@ -583,6 +585,7 @@ export class TasksService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @HandleErrors('Cron Error')
   async resendBloomreachEvents() {
     this.logger.log('Starting resendBloomreachEvents task')
     const payments = await this.prismaService.taxPayment.findMany({
@@ -641,6 +644,40 @@ export class TasksService {
 
     this.logger.log(
       `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events.`,
+    )
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  @HandleErrors('Cron Error')
+  async alertSilentNorisConnectionErrors() {
+    const numberOfErrorsValue = await this.databaseSubservice.getConfigByKeys([
+      NORIS_SILENT_CONNECTION_ERRORS_KEY,
+    ])
+    const numberOfErrors = Number(numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY])
+
+    if (numberOfErrors === 0) {
+      return
+    }
+
+    if (numberOfErrors.toString() === 'NaN') {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,
+      )
+    }
+
+    await this.prismaService.config.updateMany({
+      where: {
+        key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
+      },
+      data: {
+        value: '0',
+      },
+    })
+
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
     )
   }
 }

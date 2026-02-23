@@ -49,6 +49,7 @@ export class UpvsQueueService {
       },
       select: { uri: true, edeskStatus: true, upvsStatus: true, edeskNumber: true },
       take: limit,
+      orderBy: { createdAt: 'asc' },
     })
   }
 

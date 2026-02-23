@@ -31,8 +31,9 @@ model TaxPayer {
   lastUpdatedAtDZN            DateTime @default(now())
   lastUpdatedAtKO             DateTime @default(now())
 
-  taxes             Tax[]
-  taxAdministrators TaxPayerTaxAdministrator[]
+  taxes                        Tax[]
+  taxAdministrators            TaxPayerTaxAdministrator[]
+  historicalTaxImportAttempts  HistoricalTaxImportAttempt[]
 
   @@unique([birthNumber])
   @@unique([uuid])
@@ -137,6 +138,22 @@ model Config {
   updatedAt  DateTime @default(now()) @updatedAt
 }
 
+model HistoricalTaxImportAttempt {
+  id          Int                         @id @default(autoincrement())
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @default(now()) @updatedAt
+  taxPayerId  Int
+  taxPayer    TaxPayer                    @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
+  year        Int
+  taxType     TaxType
+  status      HistoricalTaxImportStatus
+  errorMessage String?
+
+  @@unique([taxPayerId, year, taxType])
+  @@index([status, updatedAt])
+  @@index([taxPayerId, taxType])
+}
+
 enum TaxPaymentSource {
   CARD
   QRCODE
@@ -160,4 +177,10 @@ enum DeliveryMethodNamed {
 enum TaxType {
   DZN // daň z nehnuteľnosti
   KO // komumálny odpad
+}
+
+enum HistoricalTaxImportStatus {
+  SUCCESS       // Successfully imported
+  NOT_FOUND     // No tax found in Noris for this year
+  FAILED        // Failed due to an error
 }

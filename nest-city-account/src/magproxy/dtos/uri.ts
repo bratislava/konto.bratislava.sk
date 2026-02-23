@@ -1,5 +1,3 @@
-import { RfoIdentityListElement } from '../../rfo-by-birthnumber/dtos/rfoSchema'
-
 export const parseName = (name: string) => {
   return name
     .replace(/,.*/, '')

@@ -434,6 +434,25 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       data: taxInstallments,
     })
 
+    await transaction.historicalTaxImportAttempt.upsert({
+      where: {
+        taxPayerId_year_taxType: {
+          taxPayerId: taxPayer.id,
+          year,
+          taxType: taxDefinition.type,
+        },
+      },
+      create: {
+        taxPayerId: taxPayer.id,
+        year,
+        taxType: taxDefinition.type,
+        status: 'SUCCESS',
+      },
+      update: {
+        status: 'SUCCESS',
+      },
+    })
+
     return tax
   }
 

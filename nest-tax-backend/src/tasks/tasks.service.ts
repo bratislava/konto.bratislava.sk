@@ -284,6 +284,7 @@ export class TasksService {
   @HandleErrors('Cron Error')
   async sendUnpaidTaxReminders() {
     const FIFTEEN_DAYS_AGO = dayjs().subtract(15, 'day').toDate()
+    const currentYear = new Date().getFullYear()
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
@@ -299,6 +300,9 @@ export class TasksService {
       where: {
         bloomreachUnpaidTaxReminderSent: false,
         isCancelled: false,
+        year: {
+          gte: currentYear, // Only send reminders for the current year and future
+        },
         taxPayments: {
           none: {
             status: PaymentStatus.SUCCESS,

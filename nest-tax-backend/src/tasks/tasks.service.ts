@@ -48,6 +48,8 @@ export class TasksService {
 
   private lastUpdateTaxType: TaxType = TaxType.KO
 
+  private FIRST_HISTORICAL_YEAR = 2020
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,

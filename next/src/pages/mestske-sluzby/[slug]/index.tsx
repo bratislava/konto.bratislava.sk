@@ -10,7 +10,6 @@ import FormCreatedSplitPage, {
 } from '@/src/components/forms/FormCreatedSplitPage'
 import { FormWithLandingPageRequiredFragment } from '@/src/components/forms/FormLandingPage'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import {
   EMBEDDED_FORM_QUERY_PARAM,
@@ -18,6 +17,7 @@ import {
   handleEmbeddedFormRequest,
 } from '@/src/frontend/utils/embeddedFormsHelpers'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
+import { ROUTES } from '@/src/utils/routes'
 
 type Params = {
   slug: string

@@ -13,14 +13,18 @@ import {
 import { useRef, useState } from 'react'
 
 import { cityAccountClient, LoginClientEnum } from '@/src/clients/city-account'
-import LoginForm from '@/src/components/forms/auth-forms/LoginForm'
-import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
-import AccountContainer from '@/src/components/forms/segments/AccountContainer/AccountContainer'
-import AccountLink from '@/src/components/forms/segments/AccountLink/AccountLink'
+import LoginForm from '@/src/components/auth-forms/LoginForm'
+import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import { ROUTES } from '@/src/frontend/api/constants'
+import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { Tier } from '@/src/frontend/dtos/accountDto'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
+import { usePrepareFormMigration } from '@/src/frontend/hooks/usePrepareFormMigration'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import {
   removeAllCookiesAndClearLocalStorage,
@@ -31,11 +35,7 @@ import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import {
-  AmplifyClientOAuthProvider,
-  useOAuthGetContext,
-} from '@/src/frontend/utils/useAmplifyClientOAuthContext'
-import { usePrepareFormMigration } from '@/src/frontend/utils/usePrepareFormMigration'
+import { ROUTES } from '@/src/utils/routes'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {

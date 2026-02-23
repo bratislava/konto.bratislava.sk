@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import Footer from '@/src/components/forms/segments/Footer/Footer'
-import AuthNavBar from '@/src/components/forms/segments/NavBar/AuthNavBar'
-import NavBar from '@/src/components/forms/segments/NavBar/NavBar'
 import { useNavbarHeight } from '@/src/components/layouts/useNavbarHeight'
-import cn from '@/src/frontend/cn'
+import Footer from '@/src/components/segments/Footer/Footer'
+import AuthNavBar from '@/src/components/segments/NavBar/AuthNavBar'
+import NavBar from '@/src/components/segments/NavBar/NavBar'
+import cn from '@/src/utils/cn'
 
 declare module 'react' {
   interface CSSProperties {

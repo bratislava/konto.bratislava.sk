@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Spinner from '@/src/components/forms/simple-components/Spinner'
+import Spinner from '@/src/components/simple-components/Spinner'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

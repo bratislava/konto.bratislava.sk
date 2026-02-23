@@ -10,12 +10,6 @@ export const getLanguageKey = (currentLanguage?: string) => {
   return currentLanguage === 'sk' ? 'sk' : 'en'
 }
 
-export const formatDate = (dateISOString: string | undefined | null) => {
-  if (!dateISOString) return ''
-  const date = new Date(dateISOString)
-  return date.toLocaleDateString('sk-SK')
-}
-
 export const base64ToArrayBuffer = (base64: string) => {
   const binaryString = window.atob(base64)
   const binaryLen = binaryString.length

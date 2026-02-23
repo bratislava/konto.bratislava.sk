@@ -13,14 +13,14 @@ import React, {
   useState,
 } from 'react'
 
-import { FormStepIndex } from '@/src/components/forms/types/Steps'
+import { FormStepIndex } from '@/src/components/forms/steps/types/Steps'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormCurrentStepIndex } from '@/src/components/forms/useFormCurrentStepIndex'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormFileUpload } from '@/src/components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
-import { useFormModals } from '@/src/components/forms/useFormModals'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
+import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import {
   getEvaluatedStepsSchemas,
   getStepperData,

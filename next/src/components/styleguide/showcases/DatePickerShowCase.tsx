@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import DatePicker from '@/src/components/forms/widget-components/DateTimePicker/DatePicker'
+import DatePicker from '@/src/components/widget-components/DateTimePicker/DatePicker'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

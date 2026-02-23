@@ -4,7 +4,7 @@ import { BaRjsfValidatorRegistry } from 'forms-shared/form-utils/validatorRegist
 import { StepUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import pick from 'lodash/pick'
 
-import { FormStepperStep } from '@/src/components/forms/types/Steps'
+import { FormStepperStep } from '@/src/components/forms/steps/types/Steps'
 import { isDefined } from '@/src/frontend/utils/general'
 
 export const STEP_QUERY_PARAM_VALUE_SUMMARY = 'sumar'

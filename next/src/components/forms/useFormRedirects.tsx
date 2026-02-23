@@ -8,9 +8,9 @@ import { useFormSignature } from '@/src/components/forms/signer/useFormSignature
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import { ROUTES } from '@/src/utils/routes'
 
 const useGetContext = () => {
   const router = useRouter()

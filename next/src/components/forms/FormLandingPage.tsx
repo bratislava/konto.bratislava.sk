@@ -6,13 +6,13 @@ import React from 'react'
 
 import { formsClient } from '@/src/clients/forms'
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
-import FormLandingPageCard from '@/src/components/forms/info-components/FormLandingPageCard'
-import AccountMarkdown from '@/src/components/forms/segments/AccountMarkdown/AccountMarkdown'
 import PageLayout from '@/src/components/layouts/PageLayout'
-import { ROUTES } from '@/src/frontend/api/constants'
+import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { isDefined } from '@/src/frontend/utils/general'
+import { ROUTES } from '@/src/utils/routes'
 
 export type FormWithLandingPageRequiredFragment = Omit<
   FormWithLandingPageFragment,

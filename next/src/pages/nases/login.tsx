@@ -3,13 +3,13 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 
 import { STEP_QUERY_PARAM_KEY } from '@/src/components/forms/useFormCurrentStepIndex'
-import { ROUTES } from '@/src/frontend/api/constants'
 import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '@/src/frontend/utils/formState'
 import {
   NASES_TOKEN_QUERY_KEY,
   popSendEidMetadata,
   popVerifyEidMetadata,
 } from '@/src/frontend/utils/metadataStorage'
+import { ROUTES } from '@/src/utils/routes'
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return { props: {} }

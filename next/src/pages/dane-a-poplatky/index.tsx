@@ -11,11 +11,11 @@ import {
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { TaxFragment } from '@/src/clients/graphql-strapi/api'
 import { taxClient } from '@/src/clients/tax'
-import TaxesFeesSection from '@/src/components/forms/segments/AccountSections/TaxesFees/TaxesFeesSection/TaxesFeesSection'
-import { StrapiTaxProvider } from '@/src/components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import { TaxesFeesSectionProvider } from '@/src/components/forms/segments/AccountSections/TaxesFees/useTaxesFeesSection'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import TaxesFeesPageContent from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesPageContent'
+import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { TaxesFeesProvider } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -108,12 +108,9 @@ const AccountTaxesFeesPage = ({
     <HydrationBoundary state={dehydratedState}>
       <PageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxesFeesSectionProvider
-            taxesData={taxesData}
-            strapiTaxAdministrator={strapiTaxAdministrator}
-          >
-            <TaxesFeesSection />
-          </TaxesFeesSectionProvider>
+          <TaxesFeesProvider taxesData={taxesData} strapiTaxAdministrator={strapiTaxAdministrator}>
+            <TaxesFeesPageContent />
+          </TaxesFeesProvider>
         </StrapiTaxProvider>
       </PageLayout>
     </HydrationBoundary>

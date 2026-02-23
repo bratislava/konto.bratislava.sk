@@ -1,0 +1,60 @@
+import 'yet-another-react-lightbox/styles.css'
+
+import { useTranslation } from 'next-i18next'
+import React, { PropsWithChildren, useState } from 'react'
+import { Button as AriaButton } from 'react-aria-components'
+import Lightbox from 'yet-another-react-lightbox'
+import { Zoom } from 'yet-another-react-lightbox/plugins'
+
+import { CrossIcon } from '@/src/assets/ui-icons'
+import Button from '@/src/components/simple-components/Button'
+import Spinner from '@/src/components/simple-components/Spinner'
+
+type FormLightboxModalProps = { imageUrl: string }
+
+const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightboxModalProps>) => {
+  const { t } = useTranslation('account')
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)} variant="link">
+        {children}
+      </Button>
+
+      <Lightbox
+        className="[&_.yarl\_\_container]:bg-gray-800/40"
+        open={isOpen}
+        close={() => setIsOpen(false)}
+        plugins={[Zoom]}
+        carousel={{
+          finite: true,
+        }}
+        slides={[
+          {
+            src: imageUrl,
+          },
+        ]}
+        render={{
+          buttonPrev: () => null,
+          buttonNext: () => null,
+          buttonZoom: () => null,
+          buttonClose: () => (
+            <AriaButton onPress={() => setIsOpen(false)} className="p-2">
+              <CrossIcon className="size-6" aria-hidden />
+              <span className="sr-only">{t('Modal.aria.close')}</span>
+            </AriaButton>
+          ),
+          iconLoading: () => <Spinner />,
+        }}
+        zoom={{
+          scrollToZoom: true,
+          maxZoomPixelRatio: 2,
+        }}
+        controller={{ closeOnBackdropClick: true }}
+      />
+    </>
+  )
+}
+
+export default FormLightboxModal

@@ -7,17 +7,21 @@ import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { cityAccountClient, LoginClientEnum } from '@/src/clients/city-account'
-import EmailVerificationForm from '@/src/components/forms/auth-forms/EmailVerificationForm'
-import RegisterForm from '@/src/components/forms/auth-forms/RegisterForm'
-import HorizontalDivider from '@/src/components/forms/HorizontalDivider'
-import AccountActivator from '@/src/components/forms/segments/AccountActivator/AccountActivator'
-import AccountContainer from '@/src/components/forms/segments/AccountContainer/AccountContainer'
-import AccountLink from '@/src/components/forms/segments/AccountLink/AccountLink'
-import AccountSuccessAlert from '@/src/components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import EmailVerificationForm from '@/src/components/auth-forms/EmailVerificationForm'
+import RegisterForm from '@/src/components/auth-forms/RegisterForm'
+import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import { ROUTES } from '@/src/frontend/api/constants'
+import AccountActivator from '@/src/components/segments/AccountActivator/AccountActivator'
+import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
+import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
+import {
+  AmplifyClientOAuthProvider,
+  useOAuthGetContext,
+} from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
+import { usePrepareFormMigration } from '@/src/frontend/hooks/usePrepareFormMigration'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
@@ -26,14 +30,10 @@ import logger from '@/src/frontend/utils/logger'
 import { SafeRedirectType } from '@/src/frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 import {
-  AmplifyClientOAuthProvider,
-  useOAuthGetContext,
-} from '@/src/frontend/utils/useAmplifyClientOAuthContext'
-import { usePrepareFormMigration } from '@/src/frontend/utils/usePrepareFormMigration'
-import {
   AuthPageCommonProps,
   loginConfirmSignUpEmailHiddenQueryParam,
 } from '@/src/pages/prihlasenie'
+import { ROUTES } from '@/src/utils/routes'
 
 enum RegistrationStatus {
   INIT = 'INIT',

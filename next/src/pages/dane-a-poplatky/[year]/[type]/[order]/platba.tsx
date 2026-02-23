@@ -9,16 +9,16 @@ import {
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { TaxFragment } from '@/src/clients/graphql-strapi/api'
 import { taxClient } from '@/src/clients/tax'
-import TaxFeePaymentSection from '@/src/components/forms/segments/AccountSections/TaxesFees/TaxFeePaymentSection/TaxFeePaymentSection'
-import { StrapiTaxProvider } from '@/src/components/forms/segments/AccountSections/TaxesFees/useStrapiTax'
-import { TaxFeeSectionProvider } from '@/src/components/forms/segments/AccountSections/TaxesFees/useTaxFeeSection'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import { TaxFeeRouteProps } from '@/src/frontend/api/constants'
+import TaxFeePaymentPageContent from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/TaxFeePaymentPageContent'
+import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { TaxFeeProvider } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { convertYearToNumber } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
+import { TaxFeeRouteProps } from '@/src/utils/routes'
 
 type PageProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
@@ -103,9 +103,9 @@ const AccountTaxesFeesPage = ({
     <HydrationBoundary state={dehydratedState}>
       <PageLayout>
         <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxFeeSectionProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
-            <TaxFeePaymentSection />
-          </TaxFeeSectionProvider>
+          <TaxFeeProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
+            <TaxFeePaymentPageContent />
+          </TaxFeeProvider>
         </StrapiTaxProvider>
       </PageLayout>
     </HydrationBoundary>

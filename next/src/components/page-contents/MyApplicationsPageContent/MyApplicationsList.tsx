@@ -1,0 +1,117 @@
+import { AuthSession } from 'aws-amplify/auth'
+import { useRouter } from 'next/router'
+import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-clients/forms'
+import React from 'react'
+
+import { formsClient } from '@/src/clients/forms'
+import MyApplicationCardsPlaceholder from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationCardsPlaceholder'
+import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard'
+import { patchApplicationFormIfNeeded } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededClient'
+import Pagination from '@/src/components/simple-components/Pagination/Pagination'
+import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
+import logger from '@/src/frontend/utils/logger'
+import { ApplicationsListVariant } from '@/src/pages/moje-ziadosti'
+
+// must be string due to typing
+const PAGE_SIZE = '10'
+
+export const getDraftApplications = async (
+  variant: ApplicationsListVariant,
+  page: number,
+  emailFormSlugs: string[],
+  getSsrAuthSession?: () => Promise<AuthSession>,
+): Promise<GetFormsResponseDto> => {
+  // TODO - required functionality per product docs - SENDING tab will display only the ERRORs that the user can edit + queued
+  const variantToStates: Array<GetFormResponseDtoStateEnum> = {
+    SENT: [
+      'REJECTED',
+      'FINISHED',
+      'PROCESSING',
+      'DELIVERED_NASES',
+      'DELIVERED_GINIS',
+    ] satisfies Array<GetFormResponseDtoStateEnum>,
+    SENDING: ['QUEUED', 'ERROR'] satisfies Array<GetFormResponseDtoStateEnum>,
+    DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
+  }[variant]
+  const response = await formsClient.nasesControllerGetForms(
+    page?.toString(),
+    PAGE_SIZE,
+    variantToStates,
+    // TODO update when backend behaviour changes
+    // if this is set varianToStates would be ignored, that does not match the required functionality in any of the tabs
+    undefined,
+    undefined,
+    { authStrategy: 'authOnly', getSsrAuthSession },
+  )
+  return {
+    ...response.data,
+    items: response.data.items.map((item) => patchApplicationFormIfNeeded(item, emailFormSlugs)),
+  }
+}
+
+type MyApplicationsListProps = {
+  variant: ApplicationsListVariant
+  applications?: GetFormsResponseDto
+  refetchApplicationsCount: () => Promise<void>
+  formDefinitionSlugTitleMap: Record<string, string>
+}
+
+const MyApplicationsList = ({
+  variant,
+  applications,
+  refetchApplicationsCount,
+  formDefinitionSlugTitleMap,
+}: MyApplicationsListProps) => {
+  const router = useRouter()
+  const currentPage = parseInt(router.query.strana as string, 10) || 1
+
+  const { refreshData } = useRefreshServerSideProps(applications)
+
+  const refreshListData = () => Promise.all([refetchApplicationsCount(), refreshData()])
+
+  const totalPagesCount = applications?.countPages ?? 0
+
+  return (
+    <div className="m-auto w-full max-w-(--breakpoint-lg)">
+      {applications?.items.length ? (
+        <>
+          <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
+            {applications.items.map((form) => {
+              return (
+                <li key={form.id}>
+                  <MyApplicationsCard
+                    form={form}
+                    refreshListData={refreshListData}
+                    variant={variant}
+                    formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+                  />
+                </li>
+              )
+            })}
+          </ul>
+          <div className="my-4 lg:my-8">
+            <Pagination
+              totalCount={totalPagesCount}
+              currentPage={currentPage}
+              onPageChange={(page) =>
+                router
+                  .push(
+                    {
+                      pathname: router.pathname,
+                      query: { ...router.query, strana: page },
+                    },
+                    undefined,
+                  )
+                  .catch((error) => logger.error(error))
+              }
+            />
+          </div>
+        </>
+      ) : (
+        <MyApplicationCardsPlaceholder />
+      )}
+    </div>
+  )
+}
+
+export default MyApplicationsList

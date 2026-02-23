@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react'
 
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
 import ThankYouCard, {
-  ThankYouCardBase,
+  ThankYouCardProps,
 } from '@/src/components/page-contents/ThankYouPageContent/ThankYouCard'
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
@@ -88,28 +88,28 @@ const ThankYouPageContent = () => {
     return null
   }, [type, feedbackLinkDzn, feedbackLinkKo])
 
-  const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouCardBase> = {
+  const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouCardProps> = {
     [PaymentRedirectStateEnum.PaymentSuccess]: {
-      success: true,
+      variant: 'success',
       title: t('thank_you.result.payment_success.title'),
       content: t('thank_you.result.payment_success.content'),
       firstButtonTitle: t('thank_you.button_to_formular_text'),
       firstButtonLink: feedbackLink ?? '#',
     },
     [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
-      success: true,
+      variant: 'success',
       title: t('thank_you.result.payment_already_paid.title'),
       content: t('thank_you.result.payment_success.content'),
     },
     [PaymentRedirectStateEnum.FailedToVerify]: {
-      success: false,
+      variant: 'warning',
       title: t('thank_you.result.failed_to_verify.title'),
       content: t('thank_you.result.payment_failed.content'),
       firstButtonTitle: t('thank_you.button_restart_text'),
       firstButtonLink: taxDetailLink,
     },
     [PaymentRedirectStateEnum.PaymentFailed]: {
-      success: false,
+      variant: 'error',
       title: t('thank_you.result.payment_failed.title'),
       content: t('thank_you.result.payment_failed.content'),
       firstButtonTitle: t('thank_you.button_restart_text'),
@@ -122,7 +122,7 @@ const ThankYouPageContent = () => {
   return (
     <div className="bg-gray-0 pt-16 lg:bg-gray-50 lg:pt-8">
       <ThankYouCard
-        success={cardProps.success}
+        variant={cardProps.variant}
         title={cardProps.title}
         content={`<span className='text-p2'>${cardProps.content}</span>`}
         firstButtonTitle={cardProps.firstButtonTitle}

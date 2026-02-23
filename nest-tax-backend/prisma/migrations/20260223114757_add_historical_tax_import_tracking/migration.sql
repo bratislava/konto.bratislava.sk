@@ -69,7 +69,6 @@ ON CONFLICT DO NOTHING;
 -- Clean up old database columns and indexes
 
 -- AlterEnum
-ALTER TYPE "HistoricalTaxImportStatus" ADD VALUE '';
 
 -- DropIndex
 DROP INDEX "public"."TaxPayer_lastUpdatedAtDZN_idx";

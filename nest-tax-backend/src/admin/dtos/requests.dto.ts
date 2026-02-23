@@ -55,6 +55,21 @@ export class RequestPostNorisLoadDataOptionsDto {
   @IsOptional()
   @IsBoolean()
   ignoreBatchLimit?: boolean
+
+  /**
+   * If `true`, suppresses email notifications for tax creation.
+   * Used for loading historical taxes where we don't want to send email notifications.
+   *
+   * @default false
+   */
+  @ApiPropertyOptional({
+    description:
+      'If true, suppress email notifications for tax creation',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  suppressEmail?: boolean
 }
 
 export class RequestPostNorisLoadDataDto {

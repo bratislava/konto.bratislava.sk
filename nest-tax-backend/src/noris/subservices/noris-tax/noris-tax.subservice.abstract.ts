@@ -103,6 +103,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         year,
         tx,
         userFromCityAccount,
+        {}, // Empty options for updating existing taxes
       )
 
       if (tax.isCancelled && !existingTax.isCancelled) {
@@ -251,6 +252,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
             norisItem,
             userDataFromCityAccount,
             year,
+            options,
           )
         }),
       ),
@@ -339,6 +341,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    * @param year - Year of the taxes
    * @param transaction - Transaction client
    * @param userDataFromCityAccount - User data from City Account
+   * @param options
    * @returns The tax data that was inserted into the database, along with info about the tax payer.
    */
   protected async insertTaxDataToDatabase(
@@ -347,6 +350,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     year: number,
     transaction: Prisma.TransactionClient,
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
+    options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<TaxWithTaxPayer> {
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
     const taxAdministrator = taxAdministratorData
@@ -418,6 +422,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         taxDetails,
         type: taxDefinition.type,
         deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
+        bloomreachUnpaidTaxReminderSent: options.suppressEmail,
       },
       include: {
         taxPayer: true,
@@ -438,6 +443,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     norisItem: TaxTypeToNorisData[TTaxType],
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
     year: number,
+    options: RequestPostNorisLoadDataOptionsDto,
   ) => {
     try {
       await this.prismaService.$transaction(async (tx) => {
@@ -456,6 +462,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           year,
           tx,
           userFromCityAccount,
+          options,
         )
 
         const amountToTrack = tax.isCancelled
@@ -470,6 +477,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
               userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
             tax_type: taxDefinition.type,
             order: tax.order!,
+            suppress_email: options.suppressEmail,
           },
           userFromCityAccount.externalId ?? undefined,
         )

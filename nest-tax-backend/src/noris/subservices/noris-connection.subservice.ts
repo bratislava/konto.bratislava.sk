@@ -85,12 +85,22 @@ export class NorisConnectionSubservice {
   }
 
   private getNorisUrgentError(errorMessage: string, error: any) {
+    let mssqlErrorDetails
+    if (error instanceof MSSQLError) {
+      mssqlErrorDetails = {
+        code: error.code,
+        message: error.message,
+        number: error.name,
+      }
+      errorMessage += `: ${JSON.stringify(mssqlErrorDetails)}`
+    }
+
     return this.throwerErrorGuard.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,
       errorMessage,
       undefined,
-      undefined,
-      error,
+      error instanceof Error ? undefined : <string>error,
+      error instanceof Error ? error : undefined,
     )
   }
 

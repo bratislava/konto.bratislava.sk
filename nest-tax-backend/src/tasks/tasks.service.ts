@@ -461,7 +461,7 @@ export class TasksService {
   }
 
   private async loadTaxDataForUserByTaxType(taxType: TaxType) {
-    const year = new Date().getFullYear()
+    const currentYear = new Date().getFullYear()
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
       this.taxImportHelperSubservice.isWithinImportWindow(),
@@ -478,26 +478,18 @@ export class TasksService {
     const { birthNumbers, newlyCreated } =
       await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
         taxType,
-        year,
+        currentYear,
+        this.FIRST_HISTORICAL_YEAR,
         importPhase,
       )
 
-    // Import newly created users regardless of window or limit
     if (newlyCreated.length > 0) {
-      this.logger.log(
-        `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
-      )
-      await this.taxImportHelperSubservice.importTaxes(
-        TaxType.DZN,
-        newlyCreated,
-        year,
-      )
-      await this.taxImportHelperSubservice.importTaxes(
-        TaxType.KO,
-        newlyCreated,
-        year,
-      )
+      await this.loadTaxesForNewlyCreatedUsers(newlyCreated, currentYear)
     }
+
+    this.logger.log(
+      `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
+    )
 
     if (birthNumbers.length > 0) {
       this.logger.log(
@@ -507,17 +499,44 @@ export class TasksService {
         ? this.taxImportHelperSubservice.importTaxes(
             taxType,
             birthNumbers,
-            year,
+            currentYear,
           )
         : this.taxImportHelperSubservice.prepareTaxes(
             taxType,
             birthNumbers,
-            year,
+            currentYear,
           ))
     }
 
     if (birthNumbers.length === 0 && newlyCreated.length === 0) {
       this.logger.log('No birth numbers found to import taxes')
+    }
+  }
+
+  private async loadTaxesForNewlyCreatedUsers(
+    newlyCreated: string[],
+    currentYear: number,
+  ) {
+    this.logger.log(
+      `Found ${newlyCreated.length} newly created users, importing all years (${this.FIRST_HISTORICAL_YEAR}-${currentYear}) for both tax types`,
+    )
+
+    // Load all years for both tax types
+    for (let year = this.FIRST_HISTORICAL_YEAR; year <= currentYear; year++) {
+      const suppressEmail = year < currentYear
+
+      await this.taxImportHelperSubservice.importTaxes(
+        TaxType.DZN,
+        newlyCreated,
+        year,
+        suppressEmail,
+      )
+      await this.taxImportHelperSubservice.importTaxes(
+        TaxType.KO,
+        newlyCreated,
+        year,
+        suppressEmail,
+      )
     }
   }
 

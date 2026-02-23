@@ -253,6 +253,7 @@ enum ENUM_MUNICIPALSERVICE_ICON {
   mosquito
   parking
   public_space_occupation
+  scooter
   security
   spatial_planning
   swimming_pool

@@ -16,31 +16,23 @@ datasource db {
 }
 
 model TaxPayer {
-  id                          Int      @id @default(autoincrement())
-  uuid                        String   @default(uuid()) @db.Uuid
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @default(now()) @updatedAt
-  birthNumber                 String // with slash
-  externalId                  String?
-  name                        String?
-  permanentResidenceStreet    String?
-  permanentResidenceZip       String?
-  permanentResidenceCity      String?
-  readyToImportDZN            Boolean  @default(false)
-  readyToImportKO             Boolean  @default(false)
-  lastUpdatedAtDZN            DateTime @default(now())
-  lastUpdatedAtKO             DateTime @default(now())
+  id                       Int      @id @default(autoincrement())
+  uuid                     String   @default(uuid()) @db.Uuid
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @default(now()) @updatedAt
+  birthNumber              String // with slash
+  externalId               String?
+  name                     String?
+  permanentResidenceStreet String?
+  permanentResidenceZip    String?
+  permanentResidenceCity   String?
 
-  taxes                        Tax[]
-  taxAdministrators            TaxPayerTaxAdministrator[]
-  historicalTaxImportAttempts  HistoricalTaxImportAttempt[]
+  taxes                       Tax[]
+  taxAdministrators           TaxPayerTaxAdministrator[]
+  historicalTaxImportAttempts HistoricalTaxImportAttempt[]
 
   @@unique([birthNumber])
   @@unique([uuid])
-  @@index([readyToImportDZN])
-  @@index([readyToImportKO])
-  @@index([lastUpdatedAtDZN])
-  @@index([lastUpdatedAtKO])
 }
 
 model Tax {
@@ -139,17 +131,18 @@ model Config {
 }
 
 model HistoricalTaxImportAttempt {
-  id          Int                         @id @default(autoincrement())
-  createdAt   DateTime                    @default(now())
-  updatedAt   DateTime                    @default(now()) @updatedAt
-  taxPayerId  Int
-  taxPayer    TaxPayer                    @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
-  year        Int
-  taxType     TaxType
-  status      HistoricalTaxImportStatus
+  id           Int                       @id @default(autoincrement())
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @default(now()) @updatedAt
+  taxPayerId   Int
+  taxPayer     TaxPayer                  @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
+  year         Int
+  taxType      TaxType
+  status       HistoricalTaxImportStatus
   errorMessage String?
 
   @@unique([taxPayerId, year, taxType])
+  // TODO what indexes do we need here?
   @@index([status, updatedAt])
   @@index([taxPayerId, taxType])
 }
@@ -180,7 +173,8 @@ enum TaxType {
 }
 
 enum HistoricalTaxImportStatus {
-  SUCCESS       // Successfully imported
-  NOT_FOUND     // No tax found in Noris for this year
-  FAILED        // Failed due to an error
+  READY_TO_IMPORT // Found in Noris during prepare phase, ready to import
+  SUCCESS // Successfully imported
+  NOT_FOUND // No tax found in Noris for this year
+  FAILED // Failed due to an error
 }

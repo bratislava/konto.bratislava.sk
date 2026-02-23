@@ -63,6 +63,7 @@ export default class TaxImportHelperSubservice {
           gte: todayStart,
           lte: todayEnd,
         },
+        year: todayStart.getFullYear(), // do not count historical tax loading
       },
     })
   }
@@ -98,12 +99,14 @@ export default class TaxImportHelperSubservice {
    * Get prioritized birth numbers for tax import with metadata
    * @param taxType - Type of tax
    * @param year - The tax year
+   * @param firstHistoricalYear - First year to consider for tax import
    * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by lastUpdatedAtDatabaseFieldName
    * @returns {Object} - The prioritized birth numbers and newly created birth numbers (imported immediately), these sets are disjoint
    */
   async getPrioritizedBirthNumbersWithMetadata(
     taxType: TaxType,
     year: number,
+    firstHistoricalYear: number,
     isImportPhase: boolean = true,
   ): Promise<{
     birthNumbers: string[]
@@ -112,6 +115,9 @@ export default class TaxImportHelperSubservice {
     // Determine which readyToImport field to use
     const { readyToImportDatabaseFieldName, lastUpdatedAtDatabaseFieldName } =
       getTaxDefinitionByType(taxType)
+
+    const thisYear = new Date().getFullYear()
+    const NorisCallsPerNewUser = 2 * (firstHistoricalYear - thisYear + 1)
 
     // Get users that have no taxes loaded and were never updated as a priority
     const newlyCreatedTaxPayers = await this.prismaService.$queryRaw<
@@ -124,11 +130,12 @@ export default class TaxImportHelperSubservice {
       )
         AND tp."createdAt" = tp."updatedAt"
       ORDER BY tp."updatedAt" ASC
-      LIMIT ${Math.floor(this.UPLOAD_BIRTHNUMBERS_BATCH / 2)}
+      LIMIT ${Math.floor(this.UPLOAD_BIRTHNUMBERS_BATCH / NorisCallsPerNewUser)}
     `
 
     const remainingCapacity =
-      this.UPLOAD_BIRTHNUMBERS_BATCH - newlyCreatedTaxPayers.length * 2
+      this.UPLOAD_BIRTHNUMBERS_BATCH -
+      newlyCreatedTaxPayers.length * NorisCallsPerNewUser
 
     if (remainingCapacity === 0) {
       return {
@@ -168,6 +175,7 @@ export default class TaxImportHelperSubservice {
     taxType: TaxType,
     birthNumbers: string[],
     year: number,
+    suppressEmail: boolean = false,
   ): Promise<void> {
     if (birthNumbers.length === 0) {
       return
@@ -180,6 +188,7 @@ export default class TaxImportHelperSubservice {
         birthNumbers,
         {
           prepareOnly: false,
+          suppressEmail,
         },
       )
 
@@ -208,6 +217,10 @@ export default class TaxImportHelperSubservice {
     )
   }
 
+  /**
+   * Checks if a user (by birth number) has tax in Notis for the given year. If yes, the user is marked as having tax in
+   * Noris and is later prioritized in the import phase.
+   */
   async prepareTaxes(
     taxType: TaxType,
     birthNumbers: string[],

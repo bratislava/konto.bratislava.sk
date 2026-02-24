@@ -98,6 +98,8 @@ model TaxInstallment {
   amount                       Int
   text                         String?
   bloomreachUnpaidReminderSent UnpaidReminderSent @default(NONE)
+
+  @@index([taxId, order])
 }
 
 model TaxAdministrator {

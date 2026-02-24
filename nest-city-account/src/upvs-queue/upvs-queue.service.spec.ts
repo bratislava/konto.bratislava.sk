@@ -214,7 +214,7 @@ describe('UpvsQueueService', () => {
       const urgentCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[0]
       const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[1]
       expect(urgentCall[urgentCall.length - 1]).toBe(8) // Last parameter is the limit
-      expect(highPriorityCall[urgentCall.length - 1]).toBe(6) // We take only 6 for high priority
+      expect(highPriorityCall[highPriorityCall.length - 1]).toBe(6) // We take only 6 for high priority
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           take: 8,

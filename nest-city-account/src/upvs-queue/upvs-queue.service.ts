@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CognitoUserAttributesTierEnum, PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
+import { PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { CreateManyParam, NasesService } from '../nases/nases.service'

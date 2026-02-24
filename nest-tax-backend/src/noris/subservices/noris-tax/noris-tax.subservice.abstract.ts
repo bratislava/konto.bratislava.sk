@@ -1,4 +1,4 @@
-import { Prisma, Tax, TaxType } from '@prisma/client'
+import { HistoricalTaxImportStatus, Prisma, Tax, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -194,18 +194,17 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     )
 
     if (prepareOnly) {
-      // In prepare mode, mark birth numbers as ready to import, and return them
+      // In prepare mode, just check if taxes exist and return the birth numbers
+      // The tracking will be done in the prepareTaxes function via HistoricalTaxImportAttempt table
       // No need to check for userFromCityAccount - that will be validated during actual import
       const birthNumbers = norisDataNotInDatabase.map(
         (norisItem) => norisItem.ICO_RC,
       )
-      await this.prismaService.taxPayer.updateMany({
-        where: {
-          birthNumber: { in: birthNumbers },
-        },
-        data: {
-          [taxDefinition.readyToImportDatabaseFieldName]: true,
-        },
+      await this.prismaService.historicalTaxImportAttempt.createMany({
+        data: birthNumbers.map((birthNumber) => ({
+          birthNumber,
+          status: HistoricalTaxImportStatus.READY_TO_IMPORT,
+        })),
       })
       return { birthNumbers }
     }

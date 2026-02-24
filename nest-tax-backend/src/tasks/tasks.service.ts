@@ -22,6 +22,8 @@ import NotificationsEventsService from './subservices/notifications-events.servi
 import ReportingTasksService from './subservices/reporting.tasks.service'
 import TaxImportTasksService from './subservices/tax-import.tasks.service'
 
+const NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD = 20
+
 @Injectable()
 export class TasksService {
   constructor(
@@ -122,10 +124,6 @@ export class TasksService {
       numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY],
     )
 
-    if (numberOfErrors === 0) {
-      return
-    }
-
     if (numberOfErrors.toString() === 'NaN') {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -141,6 +139,10 @@ export class TasksService {
         value: '0',
       },
     })
+
+    if (numberOfErrors < NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD) {
+      return
+    }
 
     throw this.throwerErrorGuard.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,

@@ -6,14 +6,10 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../tasks/tasks.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisConnectionSubservice {
-
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(NorisConnectionSubservice.name)
-
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -84,22 +80,24 @@ export class NorisConnectionSubservice {
     })
   }
 
-  private getNorisUrgentError(errorMessage: string, error: any) {
-    let mssqlErrorDetails
+  private addMssqlErrorDetailsToErrorMessage(errorMessage: string, error: any): string {
     if (error instanceof MSSQLError) {
-      mssqlErrorDetails = {
+      const mssqlErrorDetails = {
         code: error.code,
         message: error.message,
         number: error.name,
       }
-      errorMessage += `: ${JSON.stringify(mssqlErrorDetails)}`
+      return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
     }
+    return errorMessage
+  }
 
+  private getNorisUrgentError(errorMessage: string, error: any) {
     return this.throwerErrorGuard.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,
-      errorMessage,
+      this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
       undefined,
-      error instanceof Error ? undefined : <string>error,
+      error instanceof Error ? undefined : error as string,
       error instanceof Error ? error : undefined,
     )
   }
@@ -118,16 +116,6 @@ export class NorisConnectionSubservice {
       'ECANCEL',
       'ETIMEOUT'
     ].includes(error.code)) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-          errorMessage,
-          undefined,
-          error instanceof Error ? undefined : error as string,
-          error instanceof Error ? error : undefined,
-        )
-      )
-
       await this.prismaService.$transaction(async (tx) => {
         const configValue = await tx.config.findFirst({
           where: {
@@ -145,6 +133,14 @@ export class NorisConnectionSubservice {
           },
         })
       })
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        undefined,
+        error instanceof Error ? undefined : error as string,
+        error instanceof Error ? error : undefined,
+      )
     }
     
     throw this.getNorisUrgentError(errorMessage, error)

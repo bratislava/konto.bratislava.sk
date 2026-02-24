@@ -41,6 +41,8 @@ import TaxImportHelperSubservice from './subservices/tax-import-helper.subservic
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
+const NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD = 20
+
 @Injectable()
 export class TasksService {
   private readonly logger: Logger
@@ -656,10 +658,6 @@ export class TasksService {
       numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY],
     )
 
-    if (numberOfErrors === 0) {
-      return
-    }
-
     if (numberOfErrors.toString() === 'NaN') {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -675,6 +673,10 @@ export class TasksService {
         value: '0',
       },
     })
+
+    if (numberOfErrors < NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD) {
+      return
+    }
 
     throw this.throwerErrorGuard.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,

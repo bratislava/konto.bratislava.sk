@@ -155,6 +155,7 @@ export class VerificationService {
         const bloomreachService = new BloomreachService(
           cognitoSubservice,
           throwerErrorGuard,
+          prismaService,
           fakeBloomreachContactDb
         )
 
@@ -200,11 +201,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       data.msg.type
     )
-    const verificationData = data.msg.data
-    await this.bloomreachService.trackCustomer(data.msg.user.idUser, {
-      birthNumber: verificationData.birthNumber,
-      ...('ico' in verificationData && { ico: verificationData.ico }),
-    })
+    await this.bloomreachService.trackCustomer(data.msg.user.idUser)
     const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
     if (
       newUserData[CognitoUserAttributesEnum.TIER] ===
@@ -346,7 +343,6 @@ export class VerificationService {
     const payloadBuffer = Buffer.from(base64Payload, 'base64')
     const payload = JSON.parse(payloadBuffer.toString())
     const type = payload.sub.split(':')[0]
-    let ico: string | undefined
 
     const birthNumber = extractBirthNumberFromUri(payload.actor.sub)
     if (!birthNumber) {
@@ -396,7 +392,7 @@ export class VerificationService {
     }
 
     if (type === 'ico') {
-      ico = extractIcoFromUri(payload.sub)
+      const ico = extractIcoFromUri(payload.sub)
       if (!ico) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
@@ -424,10 +420,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.EID,
       user['custom:account_type']
     )
-    await this.bloomreachService.trackCustomer(user.idUser, {
-      birthNumber,
-      ...(ico && { ico }),
-    })
+    await this.bloomreachService.trackCustomer(user.idUser)
 
     const newUserData = await this.cognitoSubservice.getDataFromCognito(user.idUser)
     if (newUserData[CognitoUserAttributesEnum.TIER] !== CognitoUserAttributesTierEnum.EID) {
@@ -759,10 +752,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       cognitoUser['custom:account_type']
     )
-    await this.bloomreachService.trackCustomer(user.externalId, {
-      birthNumber: data.birthNumber,
-      ...(isLegalPerson && data.ico && { ico: data.ico }),
-    })
+    await this.bloomreachService.trackCustomer(user.externalId)
 
     return { success: true }
   }

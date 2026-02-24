@@ -1,6 +1,7 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 
 import axios, { isAxiosError } from 'axios'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 
 import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import {
@@ -12,7 +13,11 @@ import {
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
 import {
   CognitoUserAttributesTierEnum,
   GDPRCategoryEnum,
@@ -36,6 +41,7 @@ export class BloomreachService {
   constructor(
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly prisma: PrismaService,
     @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDb: IDatabase<unknown>
   ) {
     if (
@@ -52,14 +58,57 @@ export class BloomreachService {
     this.logger = new LineLoggerSubservice(BloomreachService.name)
   }
 
+  private async getVerifiedIdentifiers(user: CognitoGetUserData): Promise<{
+    birthNumber?: string
+    ico?: string
+  }> {
+    const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      const foundUser = await this.prisma.user.findUnique({
+        where: {
+          externalId: user.idUser,
+          ...ACTIVE_USER_FILTER,
+        },
+        select: {
+          birthNumber: true,
+        },
+      })
+
+      return { birthNumber: foundUser?.birthNumber ?? undefined }
+    }
+
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      const legalPerson = await this.prisma.legalPerson.findUnique({
+        where: {
+          externalId: user.idUser,
+        },
+        select: {
+          birthNumber: true,
+          ico: true,
+        },
+      })
+
+      return {
+        birthNumber: legalPerson?.birthNumber ?? undefined,
+        ico: legalPerson?.ico ?? undefined,
+      }
+    }
+
+    return {}
+  }
+
   async obtainBloomreachContactUuid(
+    email: string,
     birthNumber: string,
-    ico?: string,
-    email?: string
+    ico?: string
   ): Promise<string | undefined> {
     for (let tries = 1; tries <= 2; tries++) {
       try {
-        return await this.upsertBloomreachContactUuid(birthNumber, ico, email)
+        return await this.upsertBloomreachContactUuid(email, birthNumber, ico)
       } catch (error) {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
@@ -75,42 +124,47 @@ export class BloomreachService {
   }
 
   async upsertBloomreachContactUuid(
+    email: string,
     birthNumber: string,
-    ico?: string,
-    email?: string
+    ico?: string
   ): Promise<string> {
-    let contactId = await this.getBloomreachContactUuid(birthNumber, ico)
+    let contact = await this.getBloomreachContact(birthNumber, ico)
 
-    if (!contactId && ico && email) {
-      contactId = await this.handleBloomreachIcoContactMatch(birthNumber, ico, email)
+    if (!contact?.uuid && ico) {
+      contact = await this.findBloomreachIcoAndEmailContactMatch(email, ico)
     }
-    if (contactId) {
-      return contactId
+    if (!contact?.uuid) {
+      return await this.insertBloomreachContact(email, birthNumber, ico)
     }
 
-    return await this.insertBloomreachContact(birthNumber, ico)
+    await this.updateBloomreachContact(contact.uuid, email, birthNumber, ico)
+    return contact.uuid
   }
 
-  async handleBloomreachIcoContactMatch(
-    birthNumber: string,
-    ico: string,
-    _email?: string
-  ): Promise<string | undefined> {
-    void _email
-    const icoContactId = await this.getBloomreachContactUuid(undefined, ico)
-    if (!icoContactId) {
-      return undefined
+  async findBloomreachIcoAndEmailContactMatch(
+    email: string,
+    ico: string
+  ): Promise<BloomreachContactDto | null> {
+    if (!email) {
+      return null
     }
-    // todo match email or phone in BR
-    const isMatch = true // TODO: implement matching
-    if (!isMatch) {
-      return undefined
+
+    const icoContact = await this.getBloomreachContact(undefined, ico)
+    if (!icoContact?.uuid || !icoContact.email) {
+      return null
     }
-    await this.updateBloomreachContact(icoContactId, birthNumber, ico)
-    return icoContactId
+
+    if (icoContact.email.toLowerCase() !== email.toLowerCase()) {
+      return null
+    }
+
+    return icoContact
   }
 
-  async getBloomreachContactUuid(birthNumber?: string, ico?: string): Promise<string | undefined> {
+  async getBloomreachContact(
+    birthNumber?: string,
+    ico?: string
+  ): Promise<BloomreachContactDto | null> {
     const query = `
       SELECT * FROM public.contacts 
       WHERE birth_number IS NOT DISTINCT FROM $1 AND ico IS NOT DISTINCT FROM $2
@@ -120,25 +174,43 @@ export class BloomreachService {
       ico ?? null,
     ])
 
-    return data?.uuid
+    return data
   }
 
-  async updateBloomreachContact(uuid: string, birthNumber?: string, ico?: string): Promise<void> {
+  async updateBloomreachContact(
+    uuid: string,
+    email: string,
+    birthNumber: string,
+    ico?: string
+  ): Promise<void> {
     const query = `
       UPDATE public.contacts
-      SET birth_number = $1, ico = $2
-      WHERE uuid = $3
+      SET email = $1, birth_number = $2, ico = $3
+      WHERE uuid = $4
     `
-    await this.contactDb.none(query, [birthNumber ?? null, ico ?? null, uuid])
+    await this.contactDb.none(query, [email, birthNumber, ico ?? null, uuid])
   }
 
-  async insertBloomreachContact(birthNumber: string, ico?: string): Promise<string> {
+  async addBloomreachContactPhone(uuid: string, phoneNumber: string): Promise<void> {
     const query = `
-      INSERT INTO public.contacts (birth_number, ico)
-      VALUES ($1, $2)
+      UPDATE public.contacts
+      SET phone = $1
+      WHERE uuid = $2
+    `
+    await this.contactDb.none(query, [phoneNumber, uuid])
+  }
+
+  async insertBloomreachContact(email: string, birthNumber: string, ico?: string): Promise<string> {
+    const query = `
+      INSERT INTO public.contacts (email, birth_number, ico)
+      VALUES ($1, $2, $3)
       RETURNING uuid
     `
-    const data = await this.contactDb.one<BloomreachContactDto>(query, [birthNumber, ico ?? null])
+    const data = await this.contactDb.one<BloomreachContactDto>(query, [
+      email,
+      birthNumber,
+      ico ?? null,
+    ])
     return data.uuid
   }
 
@@ -165,14 +237,7 @@ export class BloomreachService {
   }
 
   // TODO: This looks like it can use https://docs.nestjs.com/techniques/events
-  async trackCustomer(
-    cognitoId: string,
-    additionalData?: {
-      birthNumber?: string
-      ico?: string
-      phoneNumber?: string
-    }
-  ): Promise<boolean | undefined> {
+  async trackCustomer(cognitoId: string, phoneNumber?: string): Promise<boolean | undefined> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return undefined
     }
@@ -194,12 +259,15 @@ export class BloomreachService {
 
       let contactId: string | undefined
 
-      if (isIdentityVerified && additionalData?.birthNumber) {
-        contactId = await this.obtainBloomreachContactUuid(
-          additionalData?.birthNumber,
-          additionalData?.ico,
-          email
-        )
+      if (isIdentityVerified) {
+        const { birthNumber, ico } = await this.getVerifiedIdentifiers(user)
+        if (birthNumber) {
+          contactId = await this.obtainBloomreachContactUuid(email, birthNumber, ico)
+        }
+      }
+
+      if (contactId && phoneNumber) {
+        await this.addBloomreachContactPhone(contactId, phoneNumber)
       }
 
       const data = {
@@ -214,7 +282,7 @@ export class BloomreachService {
           ...(accountType && { person_type: accountType }),
           ...(registrationDate && { registration_date: registrationDate }),
           ...(email && { email: email }),
-          ...(additionalData?.phoneNumber && { phone: additionalData.phoneNumber }),
+          ...(phoneNumber && { phone: phoneNumber }),
           ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
           ...(oAuthOriginClientName && { oauth_origin_client_name: oAuthOriginClientName }),
         },

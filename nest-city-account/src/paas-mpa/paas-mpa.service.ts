@@ -72,12 +72,13 @@ export class PaasMpaService {
   }
 
   private async getExistingBloomreachContactIdWithRetry(
+    email: string,
     birthNumber: string,
     ico?: string
   ): Promise<string | undefined> {
     for (let tries = 1; tries <= 2; tries++) {
       try {
-        return await this.bloomreachService.getBloomreachContactUuid(birthNumber, ico)
+        return await this.bloomreachService.obtainBloomreachContactUuid(email, birthNumber, ico)
       } catch (error) {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
@@ -97,9 +98,7 @@ export class PaasMpaService {
     phoneNumber: string
   ): Promise<boolean> {
     for (let tries = 1; tries <= 2; tries++) {
-      const trackedInBloomreach = await this.bloomreachService.trackCustomer(cognitoId, {
-        phoneNumber,
-      })
+      const trackedInBloomreach = await this.bloomreachService.trackCustomer(cognitoId, phoneNumber)
 
       if (trackedInBloomreach) {
         return trackedInBloomreach
@@ -136,7 +135,11 @@ export class PaasMpaService {
       }
     }
 
-    const bloomreachContactId = await this.getExistingBloomreachContactIdWithRetry(birthNumber, ico)
+    const bloomreachContactId = await this.getExistingBloomreachContactIdWithRetry(
+      user.email,
+      birthNumber,
+      ico
+    )
 
     if (!bloomreachContactId) {
       return {

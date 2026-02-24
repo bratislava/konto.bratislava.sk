@@ -71,4 +71,18 @@ export class BloomreachContactDto {
     type: String,
   })
   ico?: string
+
+  @ApiPropertyOptional({
+    description: 'Email of the user',
+    example: 'test@test.com',
+    type: String,
+  })
+  email?: string
+
+  @ApiPropertyOptional({
+    description: 'Phone number of the user',
+    example: '+421912345678',
+    type: String,
+  })
+  phone?: string
 }

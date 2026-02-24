@@ -6,7 +6,7 @@ import { MSSQLError } from 'mssql'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
-import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../../tasks/tasks.service'
+import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../../utils/constants'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 

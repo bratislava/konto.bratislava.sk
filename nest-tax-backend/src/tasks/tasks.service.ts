@@ -26,6 +26,7 @@ import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByTyp
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
+  NORIS_SILENT_CONNECTION_ERRORS_KEY,
   OVERPAYMENTS_LOOKBACK_DAYS,
 } from '../utils/constants'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
@@ -39,8 +40,6 @@ import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
-
-export const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
 
 @Injectable()
 export class TasksService {

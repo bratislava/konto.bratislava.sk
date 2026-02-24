@@ -167,9 +167,10 @@ export class BloomreachService {
   // TODO: This looks like it can use https://docs.nestjs.com/techniques/events
   async trackCustomer(
     cognitoId: string,
-    verifiedIdentifiers?: {
-      birthNumber: string
+    additionalData?: {
+      birthNumber?: string
       ico?: string
+      phoneNumber?: string
     }
   ): Promise<boolean | undefined> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
@@ -193,10 +194,10 @@ export class BloomreachService {
 
       let contactId: string | undefined
 
-      if (isIdentityVerified && verifiedIdentifiers?.birthNumber) {
+      if (isIdentityVerified && additionalData?.birthNumber) {
         contactId = await this.obtainBloomreachContactUuid(
-          verifiedIdentifiers?.birthNumber,
-          verifiedIdentifiers?.ico,
+          additionalData?.birthNumber,
+          additionalData?.ico,
           email
         )
       }
@@ -213,6 +214,7 @@ export class BloomreachService {
           ...(accountType && { person_type: accountType }),
           ...(registrationDate && { registration_date: registrationDate }),
           ...(email && { email: email }),
+          ...(additionalData?.phoneNumber && { phone: additionalData.phoneNumber }),
           ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
           ...(oAuthOriginClientName && { oauth_origin_client_name: oAuthOriginClientName }),
         },

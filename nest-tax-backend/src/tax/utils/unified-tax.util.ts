@@ -322,6 +322,11 @@ const calculateInstallmentStatus = (
   return result
 }
 
+export const parseInstallmentDueDate = (
+  taxYear: number,
+  dateString: string,
+): Dayjs => dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
+
 const calculateInstallmentPaymentDetails = (options: {
   overallAmount: number
   overallPaid: number
@@ -359,9 +364,6 @@ const calculateInstallmentPaymentDetails = (options: {
 
   // Calculate due dates for all installments
   // First installment due date is calculated from dateOfValidity (may be undefined)
-  const parseInstallmentDueDate = (dateString: string): Dayjs =>
-    dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
-
   const installmentDueDatesParsed: [
     dayjs.Dayjs | undefined,
     dayjs.Dayjs,
@@ -371,12 +373,12 @@ const calculateInstallmentPaymentDetails = (options: {
     // First installment due date is calculated from dateOfValidity
     dueDate,
     // Second installment:
-    parseInstallmentDueDate(installmentDueDates.second),
+    parseInstallmentDueDate(taxYear, installmentDueDates.second),
     // Third installment:
-    parseInstallmentDueDate(installmentDueDates.third),
+    parseInstallmentDueDate(taxYear, installmentDueDates.third),
     // Fourth installment (if exists):
     ...(installmentDueDates.fourth
-      ? [parseInstallmentDueDate(installmentDueDates.fourth)]
+      ? [parseInstallmentDueDate(taxYear, installmentDueDates.fourth)]
       : []),
   ]
 

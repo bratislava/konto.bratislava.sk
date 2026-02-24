@@ -8,6 +8,7 @@ import {
   BloomreachEventNameEnum,
   TaxBloomreachData,
   TaxPaymentBloomreachData,
+  UnpaidTaxInstallmentReminderBloomreachData,
   UnpaidTaxReminderBloomreachData,
 } from './bloomreach.types'
 
@@ -121,6 +122,17 @@ export class BloomreachService {
       taxData,
       cognitoId,
       BloomreachEventNameEnum.UNPAID_TAX_REMINDER,
+    )
+  }
+
+  async trackEventUnpaidTaxInstallmentReminder(
+    taxData: UnpaidTaxInstallmentReminderBloomreachData,
+    cognitoId: string,
+  ): Promise<void> {
+    await this.trackEvent(
+      taxData,
+      cognitoId,
+      BloomreachEventNameEnum.UNPAID_TAX_INSTALLMENT_REMINDER,
     )
   }
 }

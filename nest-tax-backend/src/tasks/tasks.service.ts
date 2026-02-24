@@ -652,7 +652,9 @@ export class TasksService {
     const numberOfErrorsValue = await this.databaseSubservice.getConfigByKeys([
       NORIS_SILENT_CONNECTION_ERRORS_KEY,
     ])
-    const numberOfErrors = Number(numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY])
+    const numberOfErrors = Number(
+      numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY],
+    )
 
     if (numberOfErrors === 0) {
       return

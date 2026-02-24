@@ -1,13 +1,13 @@
 import { createMock } from '@golevelup/ts-jest'
-import { Test, TestingModule } from '@nestjs/testing'
 import { ConfigService } from '@nestjs/config'
+import { Test, TestingModule } from '@nestjs/testing'
 import { MSSQLError } from 'mssql'
 
+import { PrismaService } from '../../../prisma/prisma.service'
+import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../../utils/constants'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
-import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../../utils/constants'
-import { PrismaService } from '../../../prisma/prisma.service'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
 const mockConnect = jest.fn()
@@ -27,7 +27,7 @@ describe('NorisConnectionSubservice', () => {
 
   const mockConnectionPool = {
     connected: true,
-    close: jest.fn().mockResolvedValue(undefined),
+    close: jest.fn(),
   }
 
   const originalEnv = process.env
@@ -83,7 +83,10 @@ describe('NorisConnectionSubservice', () => {
 
     it('should throw getNorisUrgentError when error is not an MSSQLError', async () => {
       const genericError = new Error('Generic failure')
-      const throwerErrorGuardSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const throwerErrorGuardSpy = jest.spyOn(
+        throwerErrorGuard,
+        'InternalServerErrorException',
+      )
 
       await expect(
         service.withConnection(async () => {
@@ -103,7 +106,10 @@ describe('NorisConnectionSubservice', () => {
 
     it('should throw getNorisUrgentError when error is MSSQLError with code not in the silent list', async () => {
       const mssqlError = new MSSQLError('Query failed', 'ESOMEOTHER')
-      const throwerErrorGuardSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const throwerErrorGuardSpy = jest.spyOn(
+        throwerErrorGuard,
+        'InternalServerErrorException',
+      )
       await expect(
         service.withConnection(async () => {
           throw mssqlError
@@ -130,7 +136,10 @@ describe('NorisConnectionSubservice', () => {
       'should log, increment config value, then throw when MSSQLError has code %s',
       async (code) => {
         const mssqlError = new MSSQLError('Connection problem', code)
-        const throwerErrorGuardSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        const throwerErrorGuardSpy = jest.spyOn(
+          throwerErrorGuard,
+          'InternalServerErrorException',
+        )
         const mockTx = {
           config: {
             findFirst: jest.fn().mockResolvedValue({
@@ -179,7 +188,10 @@ describe('NorisConnectionSubservice', () => {
 
     it('should use currentValue 0 when config row does not exist and increment to 1', async () => {
       const mssqlError = new MSSQLError('Timeout', 'ETIMEOUT')
-      const throwerErrorGuardSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const throwerErrorGuardSpy = jest.spyOn(
+        throwerErrorGuard,
+        'InternalServerErrorException',
+      )
       const mockTx = {
         config: {
           findFirst: jest.fn().mockResolvedValue(null),

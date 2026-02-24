@@ -6,7 +6,6 @@ import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
-import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
@@ -41,7 +40,6 @@ describe('NorisTaxCommunalWasteSubservice', () => {
   let service: NorisTaxCommunalWasteSubservice
   let connectionService: jest.Mocked<NorisConnectionSubservice>
   let norisValidatorSubservice: jest.Mocked<NorisValidatorSubservice>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -91,7 +89,6 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     )
     connectionService = module.get(NorisConnectionSubservice)
     norisValidatorSubservice = module.get(NorisValidatorSubservice)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
 
     // Mock validator to return data as-is
     norisValidatorSubservice.validateNorisData.mockImplementation(

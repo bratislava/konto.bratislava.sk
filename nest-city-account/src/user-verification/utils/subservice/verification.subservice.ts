@@ -187,8 +187,9 @@ export class VerificationSubservice {
     // request RFO data and handle exceptions that may be resolved later
     const rfoData = await this.magproxyService.rfoBirthNumberList(data.birthNumber)
 
-    // create physical entity and attempt to get uri and edesk status
-    await this.physicalEntityService.createFromBirthNumber(data.birthNumber, rfoData)
+    // create physical entity for the birth number.
+    // UPVS identity and edesk status will be preferentially updated in the UPVS queue cron job
+    await this.physicalEntityService.getOrCreateEmptyFromBirthNumber(data.birthNumber)
 
     if (!rfoData.success) {
       return rfoData

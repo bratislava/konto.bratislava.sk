@@ -59,6 +59,12 @@ enum LoginClientEnum {
   CITY_ACCOUNT
 }
 
+enum QueueItemStatusEnum {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id                                   String                         @id @default(uuid()) @db.Uuid
   createdAt                            DateTime                       @default(now())
@@ -131,6 +137,25 @@ model PhysicalEntity {
   activeEdeskUpdatedAt       DateTime?
   activeEdeskUpdateFailedAt  DateTime?
   activeEdeskUpdateFailCount Int       @default(0)
+}
+
+model ExternalEdeskCheck {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  uri         String?
+  queueStatus QueueItemStatusEnum @default(PENDING)
+
+  upvsStatus  String?
+  edeskStatus String?
+  edeskNumber String?
+
+  processedAt DateTime?
+  failCount   Int       @default(0)
+
+  @@index([queueStatus])
+  @@index([createdAt])
 }
 
 model LegalPerson {

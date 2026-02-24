@@ -242,11 +242,17 @@ export default class BloomreachEventsSubservice {
 
     const nextInstallment = this.getNextInstallment(taxType)
     if (nextInstallment) {
+      this.logger.log(
+        `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
+      )
       await this.processNextInstallment(nextInstallment, taxType, year)
     }
 
     const pastInstallment = this.getPastInstallment(taxType)
     if (pastInstallment) {
+      this.logger.log(
+        `Processing past installment: ${pastInstallment.installmentNumber} ${pastInstallment.installmentDate.format('YYYY-MM-DD')}`,
+      )
       await this.processPastInstallment(pastInstallment, taxType, year)
     }
   }

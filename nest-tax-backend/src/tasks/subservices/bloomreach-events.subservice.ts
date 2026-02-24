@@ -94,24 +94,30 @@ export default class BloomreachEventsSubservice {
     year: number,
   ): Promise<{ id: number }[]> {
     return this.prismaService.$queryRaw<{ id: number }[]>`
+      WITH paid AS (
+        SELECT tp."taxId", SUM(tp.amount) AS total_paid
+        FROM "TaxPayment" tp
+        WHERE tp.status = 'SUCCESS'::"PaymentStatus"
+        GROUP BY tp."taxId"
+      ),
+      due AS (
+        SELECT ti."taxId", SUM(ti.amount) AS total_due
+        FROM "TaxInstallment" ti
+        WHERE ti.order <= ${installmentNumber}
+        GROUP BY ti."taxId"
+      )
       SELECT t."id"
       FROM "Tax" t
-      JOIN "TaxInstallment" ti_check_reminder_sent
-        ON ti_check_reminder_sent."taxId" = t.id
-        AND ti_check_reminder_sent.order = ${installmentNumber}
-        AND ti_check_reminder_sent."bloomreachUnpaidReminderSent"::text IN (${Prisma.join(reminderSentFilter)})
+      JOIN "TaxInstallment" ti_check
+        ON ti_check."taxId" = t.id
+        AND ti_check.order = ${installmentNumber}
+        AND ti_check."bloomreachUnpaidReminderSent"::text IN (${Prisma.join(reminderSentFilter)})
+      LEFT JOIN paid p ON p."taxId" = t.id
+      LEFT JOIN due d ON d."taxId" = t.id
       WHERE t.type = ${taxType}::"TaxType"
         AND t."year" = ${year}
         AND t."isCancelled" = false
-        AND (
-          SELECT COALESCE(SUM(tp.amount), 0)
-          FROM "TaxPayment" tp
-          WHERE tp."taxId" = t.id AND tp.status = 'SUCCESS'::"PaymentStatus"
-        ) < (
-          SELECT COALESCE(SUM(ti.amount), 0)
-          FROM "TaxInstallment" ti
-          WHERE ti."taxId" = t.id AND ti.order <= ${installmentNumber}
-        )
+        AND COALESCE(p.total_paid, 0) < COALESCE(d.total_due, 0)
       LIMIT ${UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT}
     `
   }

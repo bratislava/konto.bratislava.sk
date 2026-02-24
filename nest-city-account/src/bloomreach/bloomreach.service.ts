@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 
 import axios, { isAxiosError } from 'axios'
 
@@ -8,6 +8,7 @@ import {
   BloomreachConsentActionEnum,
   BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
+  BloomreachContactDto,
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -21,6 +22,7 @@ import {
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { IDatabase } from 'pg-promise'
 
 @Injectable()
 export class BloomreachService {
@@ -33,7 +35,8 @@ export class BloomreachService {
 
   constructor(
     private readonly cognitoSubservice: CognitoSubservice,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDb: IDatabase<unknown>
   ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
@@ -47,6 +50,96 @@ export class BloomreachService {
       )
     }
     this.logger = new LineLoggerSubservice(BloomreachService.name)
+  }
+
+  async obtainBloomreachContactUuid(
+    birthNumber: string,
+    ico?: string,
+    email?: string
+  ): Promise<string | undefined> {
+    for (let tries = 1; tries <= 2; tries++) {
+      try {
+        return await this.upsertBloomreachContactUuid(birthNumber, ico, email)
+      } catch (error) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Failed to obtain bloomreach contact uuid on try: ${tries}`,
+            undefined,
+            error
+          )
+        )
+      }
+    }
+    return undefined
+  }
+
+  async upsertBloomreachContactUuid(
+    birthNumber: string,
+    ico?: string,
+    email?: string
+  ): Promise<string> {
+    let contactId = await this.getBloomreachContactUuid(birthNumber, ico)
+
+    if (!contactId && ico && email) {
+      contactId = await this.handleBloomreachIcoContactMatch(birthNumber, ico, email)
+    }
+    if (contactId) {
+      return contactId
+    }
+
+    return await this.insertBloomreachContact(birthNumber, ico)
+  }
+
+  async handleBloomreachIcoContactMatch(
+    birthNumber: string,
+    ico: string,
+    _email?: string
+  ): Promise<string | undefined> {
+    void _email
+    const icoContactId = await this.getBloomreachContactUuid(undefined, ico)
+    if (!icoContactId) {
+      return undefined
+    }
+    // todo match email or phone in BR
+    const isMatch = true // TODO: implement matching
+    if (!isMatch) {
+      return undefined
+    }
+    await this.updateBloomreachContact(icoContactId, birthNumber, ico)
+    return icoContactId
+  }
+
+  async getBloomreachContactUuid(birthNumber?: string, ico?: string): Promise<string | undefined> {
+    const query = `
+      SELECT * FROM public.contacts 
+      WHERE birth_number IS NOT DISTINCT FROM $1 AND ico IS NOT DISTINCT FROM $2
+    `
+    const data = await this.contactDb.oneOrNone<BloomreachContactDto>(query, [
+      birthNumber ?? null,
+      ico ?? null,
+    ])
+
+    return data?.uuid
+  }
+
+  async updateBloomreachContact(uuid: string, birthNumber?: string, ico?: string): Promise<void> {
+    const query = `
+      UPDATE public.contacts
+      SET birth_number = $1, ico = $2
+      WHERE uuid = $3
+    `
+    await this.contactDb.none(query, [birthNumber ?? null, ico ?? null, uuid])
+  }
+
+  async insertBloomreachContact(birthNumber: string, ico?: string): Promise<string> {
+    const query = `
+      INSERT INTO public.contacts (birth_number, ico)
+      VALUES ($1, $2)
+      RETURNING uuid
+    `
+    const data = await this.contactDb.one<BloomreachContactDto>(query, [birthNumber, ico ?? null])
+    return data.uuid
   }
 
   private createBloomreachConsentCategory(
@@ -72,7 +165,13 @@ export class BloomreachService {
   }
 
   // TODO: This looks like it can use https://docs.nestjs.com/techniques/events
-  async trackCustomer(cognitoId: string): Promise<boolean | undefined> {
+  async trackCustomer(
+    cognitoId: string,
+    verifiedIdentifiers?: {
+      birthNumber: string
+      ico?: string
+    }
+  ): Promise<boolean | undefined> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return undefined
     }
@@ -92,9 +191,20 @@ export class BloomreachService {
         user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
         user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
 
+      let contactId: string | undefined
+
+      if (isIdentityVerified && verifiedIdentifiers?.birthNumber) {
+        contactId = await this.obtainBloomreachContactUuid(
+          verifiedIdentifiers?.birthNumber,
+          verifiedIdentifiers?.ico,
+          email
+        )
+      }
+
       const data = {
         customer_ids: {
           city_account_id: cognitoId,
+          ...(contactId && { contact_id: contactId }),
         },
         properties: {
           ...(firstName && { first_name: firstName }),

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { config, connect, ConnectionPool, MSSQLError } from 'mssql'
 
 import { PrismaService } from '../../prisma/prisma.service'
-import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../tasks/tasks.service'
+import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'

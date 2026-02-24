@@ -3,20 +3,24 @@ import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import dayjs from 'dayjs'
 
+import { PrismaService } from '../prisma/prisma.service'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
+import {
+  NORIS_SILENT_CONNECTION_ERRORS_KEY,
+} from '../utils/constants'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import DatabaseSubservice from '../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
 import NotificationsEventsService from './subservices/notifications-events.service'
 import ReportingTasksService from './subservices/reporting.tasks.service'
 import TaxImportTasksService from './subservices/tax-import.tasks.service'
-
-export const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
 
 @Injectable()
 export class TasksService {
@@ -28,6 +32,8 @@ export class TasksService {
     private readonly norisSyncTasksService: NorisSyncTasksService,
     private readonly cityAccountIngestionTasksService: CityAccountIngestionTasksService,
     private readonly taxImportTasksService: TaxImportTasksService,
+    private readonly databaseSubservice: DatabaseSubservice,
+    private readonly prismaService: PrismaService,
   ) {
     this.configService.getOrThrow<string>(
       'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
@@ -70,7 +76,7 @@ export class TasksService {
   sendAlertsIfHolidaysAreNotSet() {
     const nextYear = dayjs().year() + 1
 
-    const stateHolidaysForNextYear = !!stateHolidays[nextYear]
+    const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
 
     if (!stateHolidaysForNextYear) {
       this.throwerErrorGuard.InternalServerErrorException(

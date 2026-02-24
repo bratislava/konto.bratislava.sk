@@ -188,8 +188,7 @@ export class UpvsQueueService {
       JOIN "User" u ON e."userId" = u."id"
       WHERE e."birthNumber" IS NOT NULL
         AND e."uri" IS NULL
-        AND (u."cognitoTier" = ${CognitoUserAttributesTierEnum.IDENTITY_CARD}
-             OR u."cognitoTier" = ${CognitoUserAttributesTierEnum.EID})
+        AND u."birthNumber" IS NOT NULL
       ORDER BY greatest(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
       LIMIT ${limit}
     `

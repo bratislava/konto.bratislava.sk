@@ -63,8 +63,7 @@ export class RequestPostNorisLoadDataOptionsDto {
    * @default false
    */
   @ApiPropertyOptional({
-    description:
-      'If true, suppress email notifications for tax creation',
+    description: 'If true, suppress email notifications for tax creation',
     default: false,
   })
   @IsOptional()

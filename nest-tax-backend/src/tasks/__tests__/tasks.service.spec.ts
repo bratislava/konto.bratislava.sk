@@ -21,7 +21,7 @@ import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from '../subservices/config.subservice'
-import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
+import TaxImportTasksService from '../subservices/tax-import.tasks.service'
 import { TasksService } from '../tasks.service'
 
 // Mock p-limit to return a function that executes the passed function immediately
@@ -62,8 +62,8 @@ describe('TasksService', () => {
           useValue: createMock<BloomreachService>(),
         },
         {
-          provide: TaxImportHelperSubservice,
-          useValue: createMock<TaxImportHelperSubservice>(),
+          provide: TaxImportTasksService,
+          useValue: createMock<TaxImportTasksService>(),
         },
         {
           provide: PaymentService,

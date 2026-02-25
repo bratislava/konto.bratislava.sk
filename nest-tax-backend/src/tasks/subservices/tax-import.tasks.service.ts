@@ -14,7 +14,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 @Injectable()
-export default class TaxImportHelperSubservice {
+export default class TaxImportTasksService {
   private readonly logger: LineLoggerSubservice
 
   private readonly BRATISLAVA_TIMEZONE = 'Europe/Bratislava'
@@ -26,7 +26,7 @@ export default class TaxImportHelperSubservice {
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
   ) {
-    this.logger = new LineLoggerSubservice(TaxImportHelperSubservice.name)
+    this.logger = new LineLoggerSubservice(TaxImportTasksService.name)
   }
 
   private async getImportWindowConfig(): Promise<{

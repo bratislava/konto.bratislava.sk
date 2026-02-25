@@ -9,10 +9,10 @@ import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import TaxImportHelperSubservice from '../tax-import-helper.subservice'
+import TaxImportTasksService from '../tax-import.tasks.service'
 
 describe('TaxImportHelperSubservice', () => {
-  let service: TaxImportHelperSubservice
+  let service: TaxImportTasksService
   let prismaService: PrismaService
   let databaseSubservice: DatabaseSubservice
   let norisService: NorisService
@@ -20,7 +20,7 @@ describe('TaxImportHelperSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        TaxImportHelperSubservice,
+        TaxImportTasksService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: DatabaseSubservice,
@@ -37,7 +37,7 @@ describe('TaxImportHelperSubservice', () => {
       ],
     }).compile()
 
-    service = module.get<TaxImportHelperSubservice>(TaxImportHelperSubservice)
+    service = module.get<TaxImportTasksService>(TaxImportTasksService)
     prismaService = module.get<PrismaService>(PrismaService)
     databaseSubservice = module.get<DatabaseSubservice>(DatabaseSubservice)
     norisService = module.get<NorisService>(NorisService)

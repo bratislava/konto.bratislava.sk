@@ -10,7 +10,8 @@ import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservi
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { UtilsModule } from '../utils-module/utils.module'
 import TasksConfigSubservice from './subservices/config.subservice'
-import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
+import { ReportinTasksSubservice } from './subservices/reporting.tasks.service'
+import TaxImportTasksService from './subservices/tax-import.tasks.service'
 import { TasksService } from './tasks.service'
 
 @Module({
@@ -28,7 +29,8 @@ import { TasksService } from './tasks.service'
     DatabaseSubservice,
     CityAccountSubservice,
     TasksConfigSubservice,
-    TaxImportHelperSubservice,
+    TaxImportTasksService,
+    ReportinTasksSubservice,
   ],
   exports: [TasksService],
 })

@@ -35,7 +35,7 @@ enum GDPRTypeEnum {
   ANALYTICS
   DATAPROCESSING
   FORMAL_COMMUNICATION
-  LICENSE
+  GENERAL
   MARKETING
 }
 
@@ -51,6 +51,7 @@ enum GDPRCategoryEnum {
   TAXES
   INIT
   LIBRARY
+  PAAS_MPA
 }
 
 enum LoginClientEnum {

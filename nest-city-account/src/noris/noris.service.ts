@@ -2,12 +2,18 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import { config, connect, ConnectionPool, Int } from 'mssql'
-import { EdeskRecord, EdeskRecordSchema } from './types/noris.types'
+import { config, connect, ConnectionPool } from 'mssql'
+import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
 import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
+import * as mssql from 'mssql'
+import pLimit from 'p-limit'
 
 @Injectable()
 export class NorisService {
+  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+
+  private readonly concurrencyLimit = pLimit(this.concurrency)
+
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -105,8 +111,8 @@ export class NorisService {
       async (connection) => {
         const result = await connection
           .request()
-          .input('numso', Int, physicalPersons)
-          .input('numpo', Int, legalPersons)
+          .input('numso', mssql.Int, physicalPersons)
+          .input('numpo', mssql.Int, legalPersons)
           .execute('lcs.usp21_ino_check_edesk')
 
         return this.norisValidatorSubservice.validateNorisData(EdeskRecordSchema, result.recordset)
@@ -120,5 +126,35 @@ export class NorisService {
         )
       }
     )
+  }
+
+  async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
+    const edeskUpdateProcessed = edeskChecks.map((edeskCheck) =>
+      this.concurrencyLimit(async () =>
+        this.withConnection(
+          async (connection) => {
+            await connection
+              .request()
+              .input('id_noris', mssql.Int, edeskCheck.idNoris)
+              .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
+              .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
+              .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
+              .input('edesk_pco', mssql.VarChar, edeskCheck.edeskPCO)
+              .input('last_check', mssql.DateTime, edeskCheck.lastCheck)
+              .execute('lcs.usp21_ino_edesk_update')
+          },
+          (error) => {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to update edesk checks',
+              undefined,
+              error
+            )
+          }
+        )
+      )
+    )
+
+    await Promise.all(edeskUpdateProcessed)
   }
 }

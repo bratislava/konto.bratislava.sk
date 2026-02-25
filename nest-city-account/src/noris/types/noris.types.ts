@@ -28,3 +28,36 @@ export const EdeskRecordSchema = z.object({
 })
 
 export type EdeskRecord = z.infer<typeof EdeskRecordSchema>
+
+/**
+ * Parameters for lcs.usp21_ino_edesk_update.
+ * Procedure raises an exception with error description on validation failure.
+ *
+ * Conditional rules:
+ * - When edesk_status !== 'NONEXISTENT': edesk_number and uri are required;
+ * - When edesk_status === 'NONEXISTENT': edesk_number and uri must be null.
+ *
+ */
+
+type UpdateEdeskChecksBase = {
+  idNoris: number
+  /** Must be null when status is NONEXISTENT. */
+  uri: null
+  /** Not validated; legacy ESBS field, usually ICO or IFO. */
+  edeskPCO: string | null
+  lastCheck: Date
+}
+
+export type UpdateEdeskChecks = UpdateEdeskChecksBase &
+  (
+    | {
+        edeskStatus: EdeskStatus.NONEXISTENT
+        /** Must be null when status is NONEXISTENT. */
+        edeskNumber: null
+      }
+    | {
+        edeskStatus: Exclude<EdeskStatus, EdeskStatus.NONEXISTENT>
+        /** Required when status !== NONEXISTENT; format E + 10 digits (e.g. E1234567890). */
+        edeskNumber: string
+      }
+  )

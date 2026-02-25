@@ -113,7 +113,7 @@ export class UpvsQueueService {
               edeskStatus: item.data.upvs?.edesk_status ?? null,
               edeskNumber: item.data.upvs?.edesk_number ?? null,
               processedAt: new Date(),
-              edeskPCO: item.data.upvs?.re_iam_identity_id ?? null,
+              edeskPCO: item.data.upvs?.re_iam_identity_id ?? null, // TODO is this correct value?
             },
           })
         })

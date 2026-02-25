@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
+import { TaxType, UnpaidReminderSent } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -11,7 +11,9 @@ import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
-import BloomreachEventsSubservice from '../bloomreach-events.subservice'
+import BloomreachEventsSubservice, {
+  DUE_DATE_TIMING,
+} from '../bloomreach-events.subservice'
 
 jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
@@ -27,8 +29,47 @@ function setNowBratislava(localDateTime: string): void {
   jest.setSystemTime(dayjs.tz(localDateTime, TZ).toDate())
 }
 
+/** Assert $executeRaw was called with SQL that uses the given alreadyOtherSent and newReminderSent enums (and BOTH). */
+function assertExecuteRawUsesReminderEnums(
+  executeRawMock: jest.Mock,
+  alreadyOtherSent: UnpaidReminderSent,
+  newReminderSent: UnpaidReminderSent,
+): void {
+  const rawCallArgs = executeRawMock.mock.calls[0] as unknown[]
+  const first = rawCallArgs[0]
+  const values: unknown[] = Array.isArray(
+    (first as { values?: unknown[] })?.values,
+  )
+    ? (first as { values: unknown[] }).values
+    : [...rawCallArgs].slice(1)
+  expect(values).toContain(alreadyOtherSent)
+  expect(values).toContain(newReminderSent)
+  expect(values).toContain(UnpaidReminderSent.BOTH)
+}
+
 describe('BloomreachEventsSubservice', () => {
   let service: BloomreachEventsSubservice
+  let bloomreachService: jest.Mocked<BloomreachService>
+  let cityAccountSubservice: jest.Mocked<CityAccountSubservice>
+
+  const mockTaxDefinitionKO = {
+    type: TaxType.KO,
+    numberOfInstallments: 4,
+    installmentDueDates: {
+      second: '05-31',
+      third: '08-31',
+      fourth: '10-31',
+    },
+  }
+
+  const mockTaxDefinitionDZN = {
+    type: TaxType.DZN,
+    numberOfInstallments: 3,
+    installmentDueDates: {
+      second: '09-01',
+      third: '11-01',
+    },
+  }
 
   const mockNextInstallment = {
     installmentNumber: 3 as const,
@@ -57,38 +98,21 @@ describe('BloomreachEventsSubservice', () => {
     }).compile()
 
     service = module.get(BloomreachEventsSubservice)
+    bloomreachService = module.get(BloomreachService)
+    cityAccountSubservice = module.get(CityAccountSubservice)
 
     jest.spyOn(service['logger'], 'log').mockImplementation(noop)
+    ;(getTaxDefinitionByType as jest.Mock).mockImplementation((taxType) => {
+      if (taxType === TaxType.KO) {
+        return mockTaxDefinitionKO
+      }
+      return mockTaxDefinitionDZN
+    })
   })
 
   describe('getNextInstallment', () => {
-    const mockTaxDefinitionKO = {
-      type: TaxType.KO,
-      numberOfInstallments: 4,
-      installmentDueDates: {
-        second: '05-31',
-        third: '08-31',
-        fourth: '10-31',
-      },
-    }
-
-    const mockTaxDefinitionDZN = {
-      type: TaxType.DZN,
-      numberOfInstallments: 3,
-      installmentDueDates: {
-        second: '09-01',
-        third: '11-01',
-      },
-    }
-
     beforeEach(() => {
       jest.useFakeTimers()
-      ;(getTaxDefinitionByType as jest.Mock).mockImplementation((taxType) => {
-        if (taxType === TaxType.KO) {
-          return mockTaxDefinitionKO
-        }
-        return mockTaxDefinitionDZN
-      })
     })
 
     afterEach(() => {
@@ -204,6 +228,452 @@ describe('BloomreachEventsSubservice', () => {
       const result = service['getNextInstallment'](TaxType.KO)
 
       expect(result!.installmentNumber).toBe(2)
+    })
+  })
+
+  describe('getPastInstallment', () => {
+    beforeEach(() => {
+      jest.useFakeTimers()
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    it('returns fourth installment when fourth due date + 1 week is before now', () => {
+      // KO: fourth 10-31. Due + 1 week = Nov 7. Now = 2025-11-15 → Nov 7 before Nov 15
+      setNowBratislava('2025-11-15T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.KO)
+
+      expect(result).not.toBeNull()
+      expect(result!.installmentNumber).toBe(4)
+      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-10-31')
+    })
+
+    it('returns third installment when third is past (due+1week < now) and fourth not yet', () => {
+      // KO: fourth 10-31, third 08-31. Now = 2025-09-15 → Aug 31+1week=Sep 7 before Sep 15; Oct 31+1week=Nov 7 not before Sep 15
+      setNowBratislava('2025-09-15T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.KO)
+
+      expect(result).not.toBeNull()
+      expect(result!.installmentNumber).toBe(3)
+      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-08-31')
+    })
+
+    it('returns third installment when third is past (due+1week < now) even if fourth is past but less than a week', () => {
+      // KO: fourth 10-31, third 08-31. Now = 2025-11-01
+      setNowBratislava('2025-11-01T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.KO)
+
+      expect(result).not.toBeNull()
+      expect(result!.installmentNumber).toBe(3)
+      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-08-31')
+    })
+
+    it('returns second installment when second due date + 1 week is before now', () => {
+      // KO: second 05-31. Due + 1 week = June 7. Now = 2025-06-15
+      setNowBratislava('2025-06-15T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.KO)
+
+      expect(result).not.toBeNull()
+      expect(result!.installmentNumber).toBe(2)
+      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-05-31')
+    })
+
+    it('returns null when no installment is more than 1 week past due', () => {
+      // KO second 05-31. Due + 1 week = June 7. Now = 2025-06-01 → June 7 not before June 1
+      setNowBratislava('2025-06-01T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.KO)
+
+      expect(result).toBeNull()
+    })
+
+    it('returns null when all installments are in the future', () => {
+      // Now = start of year, no KO due date + 1 week is before Jan 1
+      setNowBratislava('2025-01-01T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.KO)
+
+      expect(result).toBeNull()
+    })
+
+    it('returns first in reverse order when multiple are past (fourth before third before second)', () => {
+      // KO: all due dates past. Now = Dec 1 → fourth (Oct 31) returned first (loop order: fourth, third, second)
+      setNowBratislava('2025-12-01T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.KO)
+
+      expect(result).not.toBeNull()
+      expect(result!.installmentNumber).toBe(4)
+      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-10-31')
+    })
+
+    it('returns second installment for DZN when Sep 1 + 1 week is before now', () => {
+      // DZN: second 09-01. Due + 1 week = Sep 8. Now = 2025-09-15
+      setNowBratislava('2025-09-15T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.DZN)
+
+      expect(result).not.toBeNull()
+      expect(result!.installmentNumber).toBe(2)
+      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-09-01')
+    })
+
+    it('returns third installment for DZN when Nov 1 + 1 week is before now', () => {
+      // DZN: third 11-01 (no fourth). Due + 1 week = Nov 8. Now = 2025-11-15
+      setNowBratislava('2025-11-15T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.DZN)
+
+      expect(result).not.toBeNull()
+      expect(result!.installmentNumber).toBe(3)
+      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-11-01')
+    })
+
+    it('returns null for DZN when no installment is more than 1 week past', () => {
+      setNowBratislava('2025-01-01T12:00:00')
+
+      const result = service['getPastInstallment'](TaxType.DZN)
+
+      expect(result).toBeNull()
+    })
+  })
+
+  describe('processInstallmentReminders', () => {
+    const installment = {
+      installmentNumber: 2 as const,
+      installmentDate: dayjs.tz('2025-05-31', 'Europe/Bratislava'),
+    }
+    const year = 2025
+
+    it('calls getTaxesEligibleForInstallmentReminder with reminderSentFilter [NONE] when dueDateTiming is BEFORE', async () => {
+      const getTaxesSpy = jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([])
+      prismaMock.tax.findMany.mockResolvedValue([])
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
+
+      expect(getTaxesSpy).toHaveBeenCalledTimes(1)
+      expect(getTaxesSpy).toHaveBeenCalledWith(
+        TaxType.KO,
+        installment.installmentNumber,
+        [UnpaidReminderSent.NONE],
+        year,
+      )
+    })
+
+    it('calls getTaxesEligibleForInstallmentReminder with reminderSentFilter [NONE, BEFORE_DUE] when dueDateTiming is AFTER', async () => {
+      const getTaxesSpy = jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([])
+      prismaMock.tax.findMany.mockResolvedValue([])
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.AFTER,
+        year,
+      )
+
+      expect(getTaxesSpy).toHaveBeenCalledTimes(1)
+      expect(getTaxesSpy).toHaveBeenCalledWith(
+        TaxType.KO,
+        installment.installmentNumber,
+        [UnpaidReminderSent.NONE, UnpaidReminderSent.BEFORE_DUE],
+        year,
+      )
+    })
+
+    it('does not call trackEvent or $executeRaw when no eligible taxes', async () => {
+      jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([])
+      prismaMock.tax.findMany.mockResolvedValue([])
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
+
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).not.toHaveBeenCalled()
+      expect(prismaMock.$executeRaw).not.toHaveBeenCalled()
+    })
+
+    it('does not call trackEvent or $executeRaw when eligible taxes have no externalId (user missing)', async () => {
+      const birthNumber = '123456/7890'
+      jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([{ id: 1 }])
+      prismaMock.tax.findMany.mockResolvedValue([
+        {
+          id: 1,
+          year: 2025,
+          type: TaxType.KO,
+          order: 1,
+          taxPayer: { birthNumber },
+        } as any,
+      ])
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({} as any)
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
+
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).not.toHaveBeenCalled()
+      expect(prismaMock.$executeRaw).not.toHaveBeenCalled()
+    })
+
+    it('does not call trackEvent when externalId is null', async () => {
+      const birthNumber = '123456/7890'
+      jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([{ id: 1 }])
+      prismaMock.tax.findMany.mockResolvedValue([
+        {
+          id: 1,
+          year: 2025,
+          type: TaxType.KO,
+          order: 1,
+          taxPayer: { birthNumber },
+        } as any,
+      ])
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+        [birthNumber]: { externalId: null },
+      } as any)
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
+
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).not.toHaveBeenCalled()
+      expect(prismaMock.$executeRaw).not.toHaveBeenCalled()
+    })
+
+    it('calls trackEvent with full payload and updates TaxInstallment with newReminderSent=BEFORE_DUE and alreadyOtherSent=AFTER_DUE when one tax has externalId (BEFORE)', async () => {
+      const birthNumber = '123456/7890'
+      jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([{ id: 1 }])
+      prismaMock.tax.findMany.mockResolvedValue([
+        {
+          id: 1,
+          year: 2025,
+          type: TaxType.KO,
+          order: 1,
+          taxPayer: { birthNumber },
+        } as any,
+      ])
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+        [birthNumber]: { externalId: 'ext-1' },
+      } as any)
+      bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockImplementation(
+        () => Promise.resolve(),
+      )
+      prismaMock.$executeRaw.mockResolvedValue(1)
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
+
+      const expectedPayload = {
+        year: 2025,
+        tax_type: TaxType.KO,
+        order: 1,
+        installment_order: 2,
+        due_date_timing: 'before' as const,
+        due_date_month: 5,
+        due_date_day: 31,
+      }
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledTimes(1)
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledWith(expectedPayload, 'ext-1')
+
+      expect(prismaMock.$executeRaw).toHaveBeenCalledTimes(1)
+      assertExecuteRawUsesReminderEnums(
+        prismaMock.$executeRaw as jest.Mock,
+        UnpaidReminderSent.AFTER_DUE,
+        UnpaidReminderSent.BEFORE_DUE,
+      )
+    })
+
+    it('calls trackEvent with full payload and uses newReminderSent=AFTER_DUE and alreadyOtherSent=BEFORE_DUE when AFTER', async () => {
+      const birthNumber = '123456/7890'
+      jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([{ id: 1 }])
+      prismaMock.tax.findMany.mockResolvedValue([
+        {
+          id: 1,
+          year: 2025,
+          type: TaxType.KO,
+          order: 1,
+          taxPayer: { birthNumber },
+        } as any,
+      ])
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+        [birthNumber]: { externalId: 'ext-1' },
+      } as any)
+      bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockResolvedValue(
+        Promise.resolve(),
+      )
+      prismaMock.$executeRaw.mockResolvedValue(1)
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.AFTER,
+        year,
+      )
+
+      const expectedPayload = {
+        year: 2025,
+        tax_type: TaxType.KO,
+        order: 1,
+        installment_order: 2,
+        due_date_timing: 'after' as const,
+        due_date_month: 5,
+        due_date_day: 31,
+      }
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledTimes(1)
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledWith(expectedPayload, 'ext-1')
+
+      expect(prismaMock.$executeRaw).toHaveBeenCalledTimes(1)
+      assertExecuteRawUsesReminderEnums(
+        prismaMock.$executeRaw as jest.Mock,
+        UnpaidReminderSent.BEFORE_DUE,
+        UnpaidReminderSent.AFTER_DUE,
+      )
+    })
+
+    it('calls trackEvent for each tax with full payload and updates all in one $executeRaw', async () => {
+      const birth1 = '111111/1111'
+      const birth2 = '222222/2222'
+      jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([{ id: 1 }, { id: 2 }])
+      prismaMock.tax.findMany.mockResolvedValue([
+        {
+          id: 1,
+          year: 2025,
+          type: TaxType.KO,
+          order: 1,
+          taxPayer: { birthNumber: birth1 },
+        } as any,
+        {
+          id: 2,
+          year: 2025,
+          type: TaxType.KO,
+          order: 2,
+          taxPayer: { birthNumber: birth2 },
+        } as any,
+      ])
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+        [birth1]: { externalId: 'ext-1' },
+        [birth2]: { externalId: 'ext-2' },
+      } as any)
+      bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockResolvedValue(
+        Promise.resolve(),
+      )
+      prismaMock.$executeRaw.mockResolvedValue(1)
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
+
+      const expectedPayload1 = {
+        year: 2025,
+        tax_type: TaxType.KO,
+        order: 1,
+        installment_order: 2,
+        due_date_timing: 'before' as const,
+        due_date_month: 5,
+        due_date_day: 31,
+      }
+      const expectedPayload2 = {
+        ...expectedPayload1,
+        order: 2,
+      }
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledTimes(2)
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenNthCalledWith(1, expectedPayload1, 'ext-1')
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenNthCalledWith(2, expectedPayload2, 'ext-2')
+      expect(prismaMock.$executeRaw).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls getUserDataAdminBatch with all tax payer birth numbers', async () => {
+      const birth1 = '111111/1111'
+      const birth2 = '222222/2222'
+      jest
+        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .mockResolvedValue([{ id: 1 }, { id: 2 }])
+      prismaMock.tax.findMany.mockResolvedValue([
+        {
+          id: 1,
+          taxPayer: { birthNumber: birth1 },
+        } as any,
+        {
+          id: 2,
+          taxPayer: { birthNumber: birth2 },
+        } as any,
+      ])
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+        [birth1]: { externalId: 'ext-1' },
+      } as any)
+
+      await service['processInstallmentReminders'](
+        installment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
+
+      expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith([
+        birth1,
+        birth2,
+      ])
     })
   })
 

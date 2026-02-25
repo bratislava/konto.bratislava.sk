@@ -17,7 +17,7 @@ const INSTALLMENT_NUMBERS = {
   fourth: 4 as const,
 }
 
-enum DUE_DATE_TIMING {
+export enum DUE_DATE_TIMING {
   BEFORE = 'before',
   AFTER = 'after',
 }
@@ -158,14 +158,14 @@ export default class BloomreachEventsSubservice {
       taxes.map(async (tax) => {
         const user = userDataFromCityAccount[tax.taxPayer.birthNumber]
         const externalId = user?.externalId
-        if (!externalId || tax.order == null) {
+        if (!externalId) {
           return
         }
         await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
           {
             year: tax.year,
             tax_type: tax.type,
-            order: tax.order,
+            order: tax.order!,
             installment_order: installmentNumber,
             due_date_timing: dueDateTiming,
             due_date_month: dueDateMonth,

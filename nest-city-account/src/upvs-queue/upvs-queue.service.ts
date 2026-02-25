@@ -182,8 +182,10 @@ export class UpvsQueueService {
    * Get urgent queue items: PhysicalEntities with birthNumber but no uri
    */
   private async getUrgentQueueItems(limit: number): Promise<CreateManyParam> {
-    const entities = await this.prismaService.$queryRaw<PhysicalEntity[]>`
-      SELECT e.*
+    const entities = await this.prismaService.$queryRaw<
+      (PhysicalEntity & { externalID: string })[]
+    >`
+      SELECT e.*, u."externalID" as externalID
       FROM "PhysicalEntity" e
       JOIN "User" u ON e."userId" = u."id"
       WHERE e."birthNumber" IS NOT NULL
@@ -245,20 +247,22 @@ export class UpvsQueueService {
    * Process urgent queue item: Get UPVS identity (uri) for PhysicalEntity with birthNumber
    * Uses Cognito given_name and family_name to construct URI
    */
-  private async prepareUrgentItems(entities: PhysicalEntity[]): Promise<CreateManyParam> {
+  private async prepareUrgentItems(
+    entities: (PhysicalEntity & { externalID: string })[]
+  ): Promise<CreateManyParam> {
     const idBirthNumberUserIdList = entities
       .map((entity) => {
-        return { id: entity.id, birthNumber: entity.birthNumber, userId: entity.userId }
+        return { id: entity.id, birthNumber: entity.birthNumber, externalId: entity.externalID }
       })
       .filter(
-        (entity): entity is { id: string; birthNumber: string; userId: string } =>
-          entity.birthNumber !== null && entity.userId !== null
+        (entity): entity is { id: string; birthNumber: string; externalId: string } =>
+          entity.birthNumber !== null && entity.externalId !== null
       )
 
     const idUriList = await Promise.allSettled(
       idBirthNumberUserIdList.map(async (item) => {
         // Get user data from Cognito
-        const cognitoUser = await this.cognitoSubservice.getDataFromCognito(item.userId)
+        const cognitoUser = await this.cognitoSubservice.getDataFromCognito(item.externalId)
 
         // Parse URI name from Cognito given_name and family_name
         const uriName = this.parseUriNameFromCognito(
@@ -270,7 +274,7 @@ export class UpvsQueueService {
           throw this.throwerErrorGuard.InternalServerErrorException(
             MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
             'Missing given_name or family_name in Cognito user data',
-            toLogfmt({ userId: item.userId, entityId: item.id })
+            toLogfmt({ externalId: item.externalId, entityId: item.id })
           )
         }
 
@@ -287,7 +291,7 @@ export class UpvsQueueService {
     idUriList
       .filter((item) => item.status === 'rejected')
       .forEach((item) => {
-        errorMessage = [errorMessage, toLogfmt(item.reason)].join('\n')
+        errorMessage = [errorMessage, toLogfmt(item.reason)].join('\\n\\n')
       })
 
     if (errorMessage) {

@@ -2,11 +2,9 @@
   Warnings:
 
   - The values [LICENSE] on the enum `GDPRTypeEnum` will be removed. If these variants are still used in the database, this will fail.
+  - all values was removed in migration 20251021111401_remove_esbs_license 
 
 */
--- AlterEnum
-ALTER TYPE "GDPRCategoryEnum" ADD VALUE 'PAAS_MPA';
-
 -- AlterEnum
 BEGIN;
 CREATE TYPE "GDPRTypeEnum_new" AS ENUM ('ANALYTICS', 'DATAPROCESSING', 'FORMAL_COMMUNICATION', 'GENERAL', 'MARKETING');

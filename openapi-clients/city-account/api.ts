@@ -233,7 +233,6 @@ export const GDPRCategoryEnum = {
   Taxes: 'TAXES',
   Init: 'INIT',
   Library: 'LIBRARY',
-  PaasMpa: 'PAAS_MPA',
 } as const
 
 export type GDPRCategoryEnum = (typeof GDPRCategoryEnum)[keyof typeof GDPRCategoryEnum]

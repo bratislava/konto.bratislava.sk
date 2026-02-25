@@ -51,7 +51,6 @@ enum GDPRCategoryEnum {
   TAXES
   INIT
   LIBRARY
-  PAAS_MPA
 }
 
 enum LoginClientEnum {

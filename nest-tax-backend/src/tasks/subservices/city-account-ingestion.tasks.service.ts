@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+
+import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
-import { ConfigService } from '@nestjs/config'
-import { PaymentService } from '../../payment/payment.service'
-import { ReportingTasksService } from './reporting.tasks.service'
 import { NorisSyncTasksService } from './noris-sync.tasks.service'
+import { ReportingTasksService } from './reporting.tasks.service'
 import { TaxImportOrchestratorTasksService } from './tax-import-orchestrator.tasks.service'
 
 @Injectable()
 export class CityAccountIngestionTasksService {
   private readonly LOAD_USER_BIRTHNUMBERS_BATCH = 100
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,

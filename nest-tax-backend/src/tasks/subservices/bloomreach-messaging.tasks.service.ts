@@ -1,8 +1,26 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
+import { DeliveryMethodNamed, PaymentStatus } from '@prisma/client'
+import dayjs from 'dayjs'
+
+import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { PrismaService } from '../../prisma/prisma.service'
+import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
+import pLimit from 'p-limit'
+import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
+import { PaymentService } from '../../payment/payment.service'
 
 @Injectable()
 export class BloomreachMessagingTasksService {
-  constructor() {}
+  private readonly logger: Logger
+
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly bloomreachService: BloomreachService,
+    private readonly cityAccountSubservice: CityAccountSubservice,
+    private readonly paymentService: PaymentService,
+  ) {
+    this.logger = new Logger(BloomreachMessagingTasksService.name)
+  }
 
   async sendUnpaidTaxReminders() {
     const FIFTEEN_DAYS_AGO = dayjs().subtract(15, 'day').toDate()
@@ -97,5 +115,66 @@ export class BloomreachMessagingTasksService {
         bloomreachUnpaidTaxReminderSent: true,
       },
     })
+  }
+
+  async resendBloomreachEvents() {
+    this.logger.log('Starting resendBloomreachEvents task')
+    const payments = await this.prismaService.taxPayment.findMany({
+      where: {
+        status: PaymentStatus.SUCCESS,
+        bloomreachEventSent: false,
+      },
+      include: {
+        tax: {
+          include: {
+            taxPayer: true,
+          },
+        },
+      },
+    })
+
+    if (payments.length === 0) {
+      this.logger.log('No payments to resend bloomreach events for')
+      return
+    }
+
+    const concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
+    const concurrencyLimit = pLimit(concurrency)
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        payments.map((payment) => payment.tax.taxPayer.birthNumber),
+      )
+
+    const trackPaymentWithConcurrencyLimit = async (
+      payment: TaxPaymentWithTaxAndTaxPayer,
+    ): Promise<boolean> => {
+      try {
+        await concurrencyLimit(async () => {
+          const userFromCityAccount =
+            userDataFromCityAccount[payment.tax.taxPayer.birthNumber] || null
+          await this.paymentService.trackPaymentInBloomreach(
+            payment,
+            userFromCityAccount?.externalId ?? undefined,
+          )
+        })
+        return true
+      } catch (error) {
+        // Throwing would cause the whole task to fail, so we just log the error
+        this.logger.error(error)
+        return false
+      }
+    }
+
+    const results = await Promise.all(
+      payments.map(async (payment) => {
+        const success = await trackPaymentWithConcurrencyLimit(payment)
+        return success
+      }),
+    )
+
+    this.logger.log(
+      `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events.`,
+    )
   }
 }

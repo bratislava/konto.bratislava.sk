@@ -183,9 +183,9 @@ export class UpvsQueueService {
    */
   private async getUrgentQueueItems(limit: number): Promise<CreateManyParam> {
     const entities = await this.prismaService.$queryRaw<
-      (PhysicalEntity & { externalID: string })[]
+      (PhysicalEntity & { externalId: string })[]
     >`
-      SELECT e.*, u."externalID" as externalID
+      SELECT e.*, u."externalId" as externalId
       FROM "PhysicalEntity" e
       JOIN "User" u ON e."userId" = u."id"
       WHERE e."birthNumber" IS NOT NULL
@@ -248,11 +248,11 @@ export class UpvsQueueService {
    * Uses Cognito given_name and family_name to construct URI
    */
   private async prepareUrgentItems(
-    entities: (PhysicalEntity & { externalID: string })[]
+    entities: (PhysicalEntity & { externalId: string })[]
   ): Promise<CreateManyParam> {
     const idBirthNumberUserIdList = entities
       .map((entity) => {
-        return { id: entity.id, birthNumber: entity.birthNumber, externalId: entity.externalID }
+        return { id: entity.id, birthNumber: entity.birthNumber, externalId: entity.externalId }
       })
       .filter(
         (entity): entity is { id: string; birthNumber: string; externalId: string } =>

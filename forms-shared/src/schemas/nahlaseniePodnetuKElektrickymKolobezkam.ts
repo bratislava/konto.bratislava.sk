@@ -39,7 +39,7 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
           required: true,
         },
         {
-          helptext: 'Napr. navrhujem úpravu miesta parkovania',
+          helptext: 'Napr. navrhujem úpravu miesta parkovania.',
         },
       ),
     ]),
@@ -68,7 +68,7 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
       },
       {
         helptext:
-          'Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt alebo ulicu a číslo',
+          'Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt, prípadne uveďte ulicu a číslo.',
       },
     ),
     input(
@@ -79,7 +79,7 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         required: false,
       },
       {
-        helptext: 'Nachádza sa v strede riadidiel pod QR kódom',
+        helptext: 'Nachádza sa v strede riadidiel pod QR kódom.',
       },
     ),
     fileUploadMultiple(
@@ -91,11 +91,12 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
       {
         type: 'dragAndDrop',
         accept: '.jpg,.jpeg,.png',
-        helptext: 'Nahrajte fotografiu kolobežky alebo lokality, ktorej sa podnet týka',
+        helptext: 'Snažte sa odfotiť kolobežku tak, aby bolo vidieť aj širšie okolie.',
       },
     ),
   ]),
 ])
+
 type ExtractProviderFormData = {
   podnet: {
     poskytovatel: 'bolt' | 'dott' | 'svist'

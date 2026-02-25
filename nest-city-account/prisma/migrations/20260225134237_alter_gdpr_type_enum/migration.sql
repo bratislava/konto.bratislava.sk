@@ -2,7 +2,7 @@
   Warnings:
 
   - The values [LICENSE] on the enum `GDPRTypeEnum` will be removed. If these variants are still used in the database, this will fail.
-  - all values was removed in migration 20251021111401_remove_esbs_license 
+  - all values were removed in migration 20251021111401_remove_esbs_license 
 
 */
 -- AlterEnum

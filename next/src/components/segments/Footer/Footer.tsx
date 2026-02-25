@@ -11,7 +11,7 @@ type Props = {
  */
 
 export const Footer = ({ className }: Props) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('account')
 
   return (
     <footer

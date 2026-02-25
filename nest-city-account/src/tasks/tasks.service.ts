@@ -55,6 +55,15 @@ export class TasksService {
   }
 
   /**
+   * TODO
+   */
+  @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: bratislavaTimezone })
+  @HandleErrors('CronError')
+  async updateEdeskInNoris(): Promise<void> {
+    return this.edeskTasksSubservice.updateEdeskInNoris()
+  } 
+
+  /**
    * Alerts on entities that have failed eDesk updates 7 or more times consecutively.
    * Logs error messages with entity details for monitoring.
    * Runs daily at 9:01 AM.

@@ -30,7 +30,6 @@ export class NorisService {
         'Missing one of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.'
       )
     }
-    this.getExternalEdeskChecks(10, 10).then(console.log)
   }
 
   private async createConnection(configOverrides?: Partial<config>): Promise<ConnectionPool> {
@@ -130,12 +129,20 @@ export class NorisService {
 
   async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
     const edeskUpdateProcessed = edeskChecks.map((edeskCheck) =>
-      this.concurrencyLimit(async () =>
+      this.concurrencyLimit(async () => {
+        const idNoris = Number(edeskCheck.idNoris)
+        if (isNaN(idNoris)) {
+          throw this.throwerErrorGuard.BadRequestException(
+            ErrorsEnum.BAD_REQUEST_ERROR,
+            `Invalid idNoris: ${edeskCheck.idNoris}`
+          )
+        }
+
         this.withConnection(
           async (connection) => {
             await connection
               .request()
-              .input('id_noris', mssql.Int, edeskCheck.idNoris)
+              .input('id_noris', mssql.Int, idNoris)
               .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
               .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
               .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
@@ -152,7 +159,7 @@ export class NorisService {
             )
           }
         )
-      )
+      })
     )
 
     await Promise.all(edeskUpdateProcessed)

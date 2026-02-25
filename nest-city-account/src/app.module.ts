@@ -18,6 +18,7 @@ import { OAuth2Module } from './oauth2/oauth2.module'
 import { DpbModule } from './dpb/dpb.module'
 import { SharedModule } from './utils/subservices/shared.module'
 import { PaasMpaModule } from './paas-mpa/paas-mpa.module'
+import { NorisModule } from './noris/noris.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PaasMpaModule } from './paas-mpa/paas-mpa.module'
     OAuth2Module,
     DpbModule,
     PaasMpaModule,
+    NorisModule,
   ],
   controllers: [AppController],
   providers: [TaxSubservice, ThrowerErrorGuard],

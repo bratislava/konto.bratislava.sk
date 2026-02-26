@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 
 import axios, { isAxiosError } from 'axios'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
@@ -9,9 +9,9 @@ import {
   BloomreachConsentActionEnum,
   BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
-  BloomreachContactDto,
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
+import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   CognitoGetUserData,
@@ -27,7 +27,6 @@ import {
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import { IDatabase } from 'pg-promise'
 
 @Injectable()
 export class BloomreachService {
@@ -42,7 +41,7 @@ export class BloomreachService {
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly prisma: PrismaService,
-    @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDb: IDatabase<unknown>
+    private readonly bloomreachContactDatabaseService: BloomreachContactDatabaseService
   ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
@@ -58,6 +57,7 @@ export class BloomreachService {
     this.logger = new LineLoggerSubservice(BloomreachService.name)
   }
 
+  // TODO: Refactor - duplicate exists in paas-mpa/paas-mpa.service.ts
   private async getVerifiedIdentifiers(user: CognitoGetUserData): Promise<{
     birthNumber?: string
     ico?: string
@@ -99,119 +99,6 @@ export class BloomreachService {
     }
 
     return {}
-  }
-
-  async obtainBloomreachContactUuid(
-    email: string,
-    birthNumber: string,
-    ico?: string
-  ): Promise<string | undefined> {
-    for (let tries = 1; tries <= 2; tries++) {
-      try {
-        return await this.upsertBloomreachContactUuid(email, birthNumber, ico)
-      } catch (error) {
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `Failed to obtain bloomreach contact uuid on try: ${tries}`,
-            undefined,
-            error
-          )
-        )
-      }
-    }
-    return undefined
-  }
-
-  async upsertBloomreachContactUuid(
-    email: string,
-    birthNumber: string,
-    ico?: string
-  ): Promise<string> {
-    let contact = await this.getBloomreachContact(birthNumber, ico)
-
-    if (!contact?.uuid && ico) {
-      contact = await this.findBloomreachIcoAndEmailContactMatch(email, ico)
-    }
-    if (!contact?.uuid) {
-      return await this.insertBloomreachContact(email, birthNumber, ico)
-    }
-
-    await this.updateBloomreachContact(contact.uuid, email, birthNumber, ico)
-    return contact.uuid
-  }
-
-  async findBloomreachIcoAndEmailContactMatch(
-    email: string,
-    ico: string
-  ): Promise<BloomreachContactDto | null> {
-    if (!email) {
-      return null
-    }
-
-    const icoContact = await this.getBloomreachContact(undefined, ico)
-    if (!icoContact?.uuid || !icoContact.email) {
-      return null
-    }
-
-    if (icoContact.email.toLowerCase() !== email.toLowerCase()) {
-      return null
-    }
-
-    return icoContact
-  }
-
-  async getBloomreachContact(
-    birthNumber?: string,
-    ico?: string
-  ): Promise<BloomreachContactDto | null> {
-    const query = `
-      SELECT * FROM public.contacts 
-      WHERE birth_number IS NOT DISTINCT FROM $1 AND ico IS NOT DISTINCT FROM $2
-    `
-    const data = await this.contactDb.oneOrNone<BloomreachContactDto>(query, [
-      birthNumber ?? null,
-      ico ?? null,
-    ])
-
-    return data
-  }
-
-  async updateBloomreachContact(
-    uuid: string,
-    email: string,
-    birthNumber: string,
-    ico?: string
-  ): Promise<void> {
-    const query = `
-      UPDATE public.contacts
-      SET email = $1, birth_number = $2, ico = $3
-      WHERE uuid = $4
-    `
-    await this.contactDb.none(query, [email, birthNumber, ico ?? null, uuid])
-  }
-
-  async addBloomreachContactPhone(uuid: string, phoneNumber: string): Promise<void> {
-    const query = `
-      UPDATE public.contacts
-      SET phone = $1
-      WHERE uuid = $2
-    `
-    await this.contactDb.none(query, [phoneNumber, uuid])
-  }
-
-  async insertBloomreachContact(email: string, birthNumber: string, ico?: string): Promise<string> {
-    const query = `
-      INSERT INTO public.contacts (email, birth_number, ico)
-      VALUES ($1, $2, $3)
-      RETURNING uuid
-    `
-    const data = await this.contactDb.one<BloomreachContactDto>(query, [
-      email,
-      birthNumber,
-      ico ?? null,
-    ])
-    return data.uuid
   }
 
   private createBloomreachConsentCategory(
@@ -262,12 +149,12 @@ export class BloomreachService {
       if (isIdentityVerified) {
         const { birthNumber, ico } = await this.getVerifiedIdentifiers(user)
         if (birthNumber) {
-          contactId = await this.obtainBloomreachContactUuid(email, birthNumber, ico)
+          contactId = await this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
         }
       }
 
       if (contactId && phoneNumber) {
-        await this.addBloomreachContactPhone(contactId, phoneNumber)
+        await this.bloomreachContactDatabaseService.addPhone(contactId, phoneNumber)
       }
 
       const data = {

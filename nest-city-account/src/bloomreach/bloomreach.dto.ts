@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 
 export enum BloomreachEventNameEnum {
   CONSENT = 'consent',
@@ -49,40 +49,4 @@ export class ConsentBloomreachDataDto {
     example: BloomreachConsentCategoryEnum.ESBS_MARKETING,
   })
   valid_until: string
-}
-
-export class BloomreachContactDto {
-  @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174000',
-    description: 'User UUID in Bloomreach database',
-  })
-  uuid: string
-
-  @ApiPropertyOptional({
-    description: 'Birth number of the user',
-    example: '4001011234',
-    type: String,
-  })
-  birth_number?: string
-
-  @ApiPropertyOptional({
-    description: 'ICO of the user',
-    example: '12345678',
-    type: String,
-  })
-  ico?: string
-
-  @ApiPropertyOptional({
-    description: 'Email of the user',
-    example: 'test@test.com',
-    type: String,
-  })
-  email?: string
-
-  @ApiPropertyOptional({
-    description: 'Phone number of the user',
-    example: '+421912345678',
-    type: String,
-  })
-  phone?: string
 }

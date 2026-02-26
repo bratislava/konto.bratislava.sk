@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
@@ -15,6 +16,7 @@ export class PaasMpaService {
 
   constructor(
     private readonly bloomreachService: BloomreachService,
+    private readonly bloomreachContactDatabaseService: BloomreachContactDatabaseService,
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {
@@ -28,6 +30,7 @@ export class PaasMpaService {
     )
   }
 
+  // TODO: Refactor - duplicate exists in bloomreach/bloomreach.service.ts
   private async getVerifiedIdentifiers(user: CognitoGetUserData): Promise<{
     birthNumber?: string
     ico?: string
@@ -78,7 +81,7 @@ export class PaasMpaService {
   ): Promise<string | undefined> {
     for (let tries = 1; tries <= 2; tries++) {
       try {
-        return await this.bloomreachService.obtainBloomreachContactUuid(email, birthNumber, ico)
+        return await this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
       } catch (error) {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(

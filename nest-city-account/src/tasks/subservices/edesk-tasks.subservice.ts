@@ -93,10 +93,14 @@ export class EdeskTasksSubservice {
   }
 
   async updateEdeskInNoris(): Promise<void> {
+    const numberOfExternalItemsInQueue = await this.upvsQueueService.getNumberOfExternalItemsInQueue()
+    if (numberOfExternalItemsInQueue === 0) {
+      await this.retrieveNewRecordsFromNorisToUpdate()
+    }
+    
     const finishedExternalItems = await this.upvsQueueService.retrieveFinishedExternalItems(100)
 
     if (finishedExternalItems.length === 0) {
-      await this.retrieveNewRecordsFromNorisToUpdate()
       return
     }
 

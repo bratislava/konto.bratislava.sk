@@ -55,7 +55,10 @@ export class TasksService {
   }
 
   /**
-   * TODO
+   * Syncs eDesk status from UPVS back to Noris for external eDesk checks.
+   * Processes finished UPVS queue items, updates Noris with check results, then cleans up local records.
+   * When no queued items exist, fetches new records from Noris and enqueues them for UPVS checking.
+   * Runs every 30 seconds.
    */
   @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')

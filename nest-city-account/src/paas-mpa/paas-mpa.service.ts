@@ -9,6 +9,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { PaasMpaRegisterResponseDto, PaasMpaRegisterStatusEnum } from './dtos/paas-mpa.dto'
+import { toLogfmt } from 'src/utils/logging'
 
 @Injectable()
 export class PaasMpaService {
@@ -74,45 +75,53 @@ export class PaasMpaService {
     return {}
   }
 
-  private async getExistingBloomreachContactIdWithRetry(
-    email: string,
+  private async upsertBloomreachCOntactAndHandleError(
+    user: CognitoGetUserData,
     birthNumber: string,
     ico?: string
   ): Promise<string | undefined> {
-    for (let tries = 1; tries <= 2; tries++) {
-      try {
-        return await this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
-      } catch (error) {
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `Failed to read bloomreach contact uuid on try: ${tries}`,
-            undefined,
-            error
-          )
+    try {
+      return await this.bloomreachContactDatabaseService.upsert(user.email, birthNumber, ico)
+    } catch (error) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Failed to upsert bloomreach contact`,
+          toLogfmt({
+            userId: user.idUser,
+            email: user.email,
+            hasBirthNumber: !!birthNumber,
+            hasIco: !!ico,
+          }),
+          error
         )
-      }
+      )
+      return undefined
     }
-    return undefined
   }
 
   private async trackCustomerPhoneWithRetry(
     cognitoId: string,
     phoneNumber: string
   ): Promise<boolean> {
-    for (let tries = 1; tries <= 2; tries++) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
       const trackedInBloomreach = await this.bloomreachService.trackCustomer(cognitoId, phoneNumber)
 
       if (trackedInBloomreach) {
         return trackedInBloomreach
       }
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to sync phone to bloomreach on try: ${tries}`
-        )
-      )
+
+      this.logger.error(`Failed to sync phone to bloomreach on attempt: ${attempt}`)
     }
+
+    this.logger.error(
+      this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Failed to sync phone to bloomreach`,
+        toLogfmt({ userId: cognitoId })
+      )
+    )
+
     return false
   }
 
@@ -138,8 +147,8 @@ export class PaasMpaService {
       }
     }
 
-    const bloomreachContactId = await this.getExistingBloomreachContactIdWithRetry(
-      user.email,
+    const bloomreachContactId = await this.upsertBloomreachCOntactAndHandleError(
+      user,
       birthNumber,
       ico
     )
@@ -179,7 +188,11 @@ export class PaasMpaService {
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Unexpected error during PAAS-MPA contact registration for user: ${user.idUser}`,
-          undefined,
+          toLogfmt({
+            userId: user.idUser,
+            email: user.email,
+            hasPhoneNumber: !!phoneNumber,
+          }),
           error
         )
       )

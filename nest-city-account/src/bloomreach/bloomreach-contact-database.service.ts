@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { toLogfmt } from '../utils/logging'
 import { IDatabase } from 'pg-promise'
 
 interface BloomreachContactRecord {
@@ -33,7 +34,7 @@ export class BloomreachContactDatabaseService {
         loggedError = this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Failed to upsert bloomreach contact on attempt: ${attempt}`,
-          undefined,
+          toLogfmt({ email, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt }),
           error
         )
         this.logger.error(loggedError?.message) // this won't alert

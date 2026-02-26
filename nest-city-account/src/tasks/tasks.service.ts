@@ -61,7 +61,7 @@ export class TasksService {
   @HandleErrors('CronError')
   async updateEdeskInNoris(): Promise<void> {
     return this.edeskTasksSubservice.updateEdeskInNoris()
-  } 
+  }
 
   /**
    * Alerts on entities that have failed eDesk updates 7 or more times consecutively.

@@ -39,27 +39,16 @@ export type EdeskRecord = z.infer<typeof EdeskRecordSchema>
  *
  */
 
-type UpdateEdeskChecksBase = {
+export type UpdateEdeskChecks = {
   idNoris: string
   /** Not validated; legacy ESBS field, usually ICO or IFO. */
   edeskPCO: string | null
   lastCheck: Date
-}
 
-export type UpdateEdeskChecks = UpdateEdeskChecksBase &
-  (
-    | {
-        edeskStatus: EdeskStatus.NONEXISTENT
-        /** Must be null when status is NONEXISTENT. */
-        edeskNumber: null
-        /** Must be null when status is NONEXISTENT. */
-        uri: null
-      }
-    | {
-        edeskStatus: Exclude<EdeskStatus, EdeskStatus.NONEXISTENT>
-        /** Required when status !== NONEXISTENT; format E + 10 digits (e.g. E1234567890). */
-        edeskNumber: string
-        /** Required when status !== NONEXISTENT; format ico:// or rc://. */
-        uri: string
-      }
-  )
+  edeskStatus: EdeskStatus
+
+  /** Must be null when status is NONEXISTENT. */
+  edeskNumber: string | null
+  /** Must be null when status is NONEXISTENT. */
+  uri: string | null
+}

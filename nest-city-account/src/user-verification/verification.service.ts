@@ -36,6 +36,7 @@ import { VerificationSubservice } from './utils/subservice/verification.subservi
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { VerificationReturnType } from './types'
 import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
@@ -44,7 +45,6 @@ import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.d
 import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { VerificationDataForUserResponseDto } from './dtos/verification-response.dto'
-import { IDatabase } from 'pg-promise'
 
 @Injectable()
 export class VerificationService {
@@ -145,17 +145,9 @@ export class VerificationService {
           data.msg.type
         )
 
-        const fakeBloomreachContactDb = {
-          oneOrNone: async () => null,
-          none: async () => undefined,
-          one: async () => {
-            throw new Error('Unsupported operation in rabbit error handler')
-          },
-        } as unknown as IDatabase<unknown>
-
         const bloomreachContactDatabaseService = new BloomreachContactDatabaseService(
           throwerErrorGuard,
-          fakeBloomreachContactDb
+          getBloomreachContactDatabase()
         )
 
         const bloomreachService = new BloomreachService(

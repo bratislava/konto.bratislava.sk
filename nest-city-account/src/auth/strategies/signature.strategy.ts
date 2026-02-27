@@ -121,9 +121,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     // Format: METHOD|PATH|TIMESTAMP|BODY
     // This prevents signature reuse across different requests
     const method = req.method
-    const path = req.path
+    const originalUrl = req.originalUrl
     const body = JSON.stringify(req.body || {})
-    const dataToVerify = `${method}|${path}|${timestamp}|${body}`
+    const dataToVerify = `${method}|${originalUrl}|${timestamp}|${body}`
 
     // Verify signature using RSA-SHA256
     let isValid = false

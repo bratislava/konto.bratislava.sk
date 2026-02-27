@@ -6,6 +6,12 @@ import { NorisService } from '../../noris/noris.service'
 import { EdeskStatus } from '../../noris/types/noris.types'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+
+const PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE = 100
+const LEGAL_PERSONS_RETRIEVE_BATCH_SIZE = 0 // TODO: add when upvs retrieval works for legal persons
+const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 100
 
 @Injectable()
 export class EdeskTasksSubservice {
@@ -14,7 +20,8 @@ export class EdeskTasksSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly upvsQueueService: UpvsQueueService,
-    private readonly norisService: NorisService
+    private readonly norisService: NorisService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(EdeskTasksSubservice.name)
   }
@@ -86,7 +93,10 @@ export class EdeskTasksSubservice {
   }
 
   async retrieveNewRecordsFromNorisToUpdate() {
-    const norisRecords = await this.norisService.getExternalEdeskChecks(100, 100)
+    const norisRecords = await this.norisService.getExternalEdeskChecks(
+      PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE,
+      LEGAL_PERSONS_RETRIEVE_BATCH_SIZE
+    )
     await this.upvsQueueService.addExternalItemsToQueue(
       norisRecords.map((item) => ({ uri: item.uri_generated, externalId: item.id_noris }))
     )
@@ -99,19 +109,38 @@ export class EdeskTasksSubservice {
       await this.retrieveNewRecordsFromNorisToUpdate()
     }
 
-    const finishedExternalItems = await this.upvsQueueService.retrieveFinishedExternalItems(100)
+    const finishedExternalItems = await this.upvsQueueService.retrieveFinishedExternalItems(
+      EXTERNAL_ITEMS_PROCESS_BATCH_SIZE
+    )
 
     if (finishedExternalItems.length === 0) {
       return
     }
 
     await this.norisService.updateEdeskChecks(
-      finishedExternalItems.map((item) => ({
-        idNoris: item.externalId,
-        lastCheck: new Date(),
-        edeskPCO: item.edeskPCO,
-        ...this.mapEdeskDataToNorisType(item),
-      }))
+      finishedExternalItems
+        .map((item) => {
+          try {
+            const edeskData = this.mapEdeskDataToNorisType(item)
+            return {
+              idNoris: item.externalId,
+              lastCheck: new Date(),
+              edeskPCO: item.edeskPCO,
+              ...edeskData,
+            }
+          } catch (error) {
+            this.logger.error(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                'Error mapping eDesk data to Noris type',
+                undefined,
+                error
+              )
+            )
+            return false
+          }
+        })
+        .filter((item) => item !== false)
     )
 
     await this.prismaService.externalEdeskCheck.deleteMany({

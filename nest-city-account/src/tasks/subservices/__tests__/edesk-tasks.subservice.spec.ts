@@ -5,6 +5,8 @@ import prismaMock from '../../../../test/singleton'
 import { EdeskTasksSubservice } from '../edesk-tasks.subservice'
 import { UpvsQueueService } from '../../../upvs-queue/upvs-queue.service'
 import { PhysicalEntity } from '@prisma/client'
+import { NorisService } from '../../../noris/noris.service'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 
 describe('EdeskTasksSubservice', () => {
   let service: EdeskTasksSubservice
@@ -16,6 +18,8 @@ describe('EdeskTasksSubservice', () => {
         EdeskTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
         { provide: UpvsQueueService, useValue: createMock<UpvsQueueService>() },
+        { provide: NorisService, useValue: createMock<NorisService>() },
+        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
       ],
     }).compile()
 

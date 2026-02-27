@@ -25,7 +25,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
   return (
     // We consciously do not use MessageModal props for buttons,
     // because this modal has custom layout with content under buttons
-    <MessageModal type="warning" title={t('verification_modal.title')}>
+    <MessageModal type="warning" title={t('verification_modal.title')} {...rest}>
       <div className="flex flex-col gap-6 lg:gap-4">
         <div className="flex flex-col gap-4">
           <AccountMarkdown className="text-center" content={t('verification_modal.subtitle')} />

@@ -38,11 +38,7 @@ const MessageModal = ({
   ...rest
 }: MessageModalProps) => {
   return (
-    // <Modal isDismissable {...rest}>
-    <div
-      className="relative w-full overflow-auto bg-background-passive-base px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[37rem] md:rounded-2xl md:p-6"
-      {...rest}
-    >
+    <Modal isDismissable {...rest}>
       <div className="flex flex-col items-center gap-3 p-0 md:gap-5">
         <div
           className={cn('rounded-full p-4 *:size-6', {
@@ -67,8 +63,7 @@ const MessageModal = ({
           </div>
         </div>
       </div>
-    </div>
-    // </Modal>
+    </Modal>
   )
 }
 

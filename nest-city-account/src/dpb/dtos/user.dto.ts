@@ -66,13 +66,6 @@ export class DPBUserLoginStatistics {
   latestLogin!: Date
 
   @ApiProperty({
-    description: 'User email',
-    example: 'user@example.com',
-    nullable: true,
-  })
-  email!: string | null
-
-  @ApiProperty({
     description: 'Cognito user ID',
     example: '123e4567-e89b-12d3-a456-426614174000',
     nullable: true,

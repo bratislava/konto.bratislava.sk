@@ -608,7 +608,6 @@ export class UserDataSubservice {
         loginCount: userLoginClient.loginCount,
         firstLogin: userLoginClient.createdAt,
         latestLogin: userLoginClient.updatedAt,
-        email: userLoginClient.user.email,
         cognitoId: userLoginClient.user.externalId,
       }
     })

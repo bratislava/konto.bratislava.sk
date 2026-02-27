@@ -8,7 +8,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @Module({
   imports: [PassportModule],
-  providers: [CognitoStrategy, SignatureStrategy, SignatureGuard, ThrowerErrorGuard],
+  providers: [CognitoStrategy, SignatureStrategy, SignatureGuard],
   exports: [SignatureGuard],
   controllers: [AuthController],
 })

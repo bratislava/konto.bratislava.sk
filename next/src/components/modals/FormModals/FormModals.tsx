@@ -14,6 +14,24 @@ import MessageModal, {
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 
+export const formMessageModalsKeys = [
+  'migrationRequiredModal',
+  'conceptSaveErrorModal',
+  'sendIdentityMissingModal',
+  'sendFilesUploadingModal',
+  'sendFilesScanningModal',
+  'sendConfirmationModal',
+  'sendConfirmationEidModal',
+  'sendConfirmationEidLegalModal',
+  'sendConfirmationNonAuthenticatedEidModal',
+  'eidSendingModal',
+  'eidSendErrorModal',
+  'deleteConceptModal',
+  'signerIsDeploying',
+  'xmlImportVersionConfirmationModal',
+] as const
+export type FormMessageModalsKey = (typeof formMessageModalsKeys)[number]
+
 const FormModals = () => {
   const { t } = useTranslation('forms')
 
@@ -60,7 +78,7 @@ const FormModals = () => {
     useFormExportImport()
   const { login, register, verifyIdentity } = useFormRedirects()
 
-  const messageModals: (MessageModalProps & { key: string })[] = [
+  const messageModals: (MessageModalProps & { key: FormMessageModalsKey })[] = [
     {
       key: 'migrationRequiredModal',
       isOpen: migrationRequiredModal,

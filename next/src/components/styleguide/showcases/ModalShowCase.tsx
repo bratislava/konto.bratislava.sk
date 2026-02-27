@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
+import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import FormProviders from '@/src/components/forms/FormProviders'
 import { FormContextProvider } from '@/src/components/forms/useFormContext'
 import { FormSentProvider } from '@/src/components/forms/useFormSent'
 import {
   FormMessageModals,
-  FormMessageModalsKey,
-  formMessageModalsKeys,
+  FormMessageModalsKeys,
 } from '@/src/components/modals/FormModals/FormModals'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
@@ -28,7 +28,6 @@ import MessageModal from '@/src/components/widget-components/Modals/MessageModal
 const ModalShowCaseContent = () => {
   const [simpleModal, setSimpleModalOpen] = useState(false)
   const [messageModal, setMessageModal] = useState(false)
-  useState(false)
 
   const formModals = useFormModals()
 
@@ -38,52 +37,78 @@ const ModalShowCaseContent = () => {
   }
 
   /**
-   * Forms use a number of message modals. Here we map the keys to the corresponding modal handler functions,
+   * Forms use a number of message modals through the FormModals component.
+   * Here we map the keys to the corresponding modal handler functions,
    * so we can easily open them in the showcase.
    */
-  const formMessageModalsHandlerMap: Record<FormMessageModalsKey, () => void> = {
-    migrationRequiredModal: () => formModals.setMigrationRequiredModal(true),
-    conceptSaveErrorModal: () => formModals.setConceptSaveErrorModal(true),
-    sendIdentityMissingModal: () => formModals.setSendIdentityMissingModal(true),
-    sendFilesUploadingModal: () => formModals.setSendFilesUploadingModal(true),
-    sendFilesScanningModal: () => formModals.setSendFilesScanningModal(true),
-    sendConfirmationModal: () => formModals.setSendConfirmationModal(commonModalHandlerProps),
-    sendConfirmationEidModal: () => formModals.setSendConfirmationEidModal(commonModalHandlerProps),
-    sendConfirmationEidLegalModal: () =>
-      formModals.setSendConfirmationEidLegalModal(commonModalHandlerProps),
-    sendConfirmationNonAuthenticatedEidModal: () =>
-      formModals.setSendConfirmationNonAuthenticatedEidModal(commonModalHandlerProps),
-    eidSendingModal: () => formModals.setEidSendingModal(true),
-    eidSendErrorModal: () => formModals.setEidSendErrorModal(commonModalHandlerProps),
-    deleteConceptModal: () => formModals.setDeleteConceptModal(commonModalHandlerProps),
-    signerIsDeploying: () => formModals.setSignerIsDeploying(true),
-    xmlImportVersionConfirmationModal: () =>
-      formModals.setXmlImportVersionConfirmationModal(commonModalHandlerProps),
-  }
-
-  const formMessageModalsTriggerButtons = formMessageModalsKeys.map((key) => {
-    return {
-      key,
-      button: (
-        <Button
-          variant="solid"
-          onPress={() => {
-            formMessageModalsHandlerMap[key]()
-          }}
-        >
-          Open {key}
-        </Button>
-      ),
-    }
-  })
+  const formMessageModalsConfig = {
+    migrationRequiredModal: {
+      onPress: () => formModals.setMigrationRequiredModal(true),
+      label:
+        'shown when continuing to fill a draft that was saved in an older form version (migration required)',
+    },
+    conceptSaveErrorModal: {
+      onPress: () => formModals.setConceptSaveErrorModal(true),
+      label: 'shown when saving a draft fails (e.g. network error)',
+    },
+    sendIdentityMissingModal: {
+      onPress: () => formModals.setSendIdentityMissingModal(true),
+      label: 'shown when the user taps Send but has not completed identity verification',
+    },
+    sendFilesUploadingModal: {
+      onPress: () => formModals.setSendFilesUploadingModal(true),
+      label: 'shown when the user taps Send while attachments are still uploading',
+    },
+    sendFilesScanningModal: {
+      onPress: () => formModals.setSendFilesScanningModal(true),
+      label: 'shown when the user taps Send while scanned files are still being processed',
+    },
+    sendConfirmationModal: {
+      onPress: () => formModals.setSendConfirmationModal(commonModalHandlerProps),
+      label: 'shown as final confirmation before submitting the form (standard submit, no eID)',
+    },
+    sendConfirmationEidModal: {
+      onPress: () => formModals.setSendConfirmationEidModal(commonModalHandlerProps),
+      label: 'shown as final confirmation before submitting via eID (fyzicka osoba)',
+    },
+    sendConfirmationEidLegalModal: {
+      onPress: () => formModals.setSendConfirmationEidLegalModal(commonModalHandlerProps),
+      label:
+        'shown as final confirmation before submitting via eID (právnická osoba alebo živnostník)',
+    },
+    sendConfirmationNonAuthenticatedEidModal: {
+      onPress: () =>
+        formModals.setSendConfirmationNonAuthenticatedEidModal(commonModalHandlerProps),
+      label: 'shown as final confirmation before submitting via eID when not signed in',
+    },
+    eidSendingModal: {
+      onPress: () => formModals.setEidSendingModal(true),
+      label: 'shown while the form is being sent via eID',
+    },
+    eidSendErrorModal: {
+      onPress: () => formModals.setEidSendErrorModal(commonModalHandlerProps),
+      label: 'shown when sending via eID fails',
+    },
+    deleteConceptModal: {
+      onPress: () => formModals.setDeleteConceptModal(commonModalHandlerProps),
+      label: "when the user chooses 'Delete draft' from the form's three-dot menu",
+    },
+    signerIsDeploying: {
+      onPress: () => formModals.setSignerIsDeploying(true),
+      label: 'shown when the user uses the signer and it is still loading or deploying',
+    },
+    xmlImportVersionConfirmationModal: {
+      onPress: () => formModals.setXmlImportVersionConfirmationModal(commonModalHandlerProps),
+      label: 'shown when the user imports an XML file created in an older form version',
+    },
+  } satisfies Record<FormMessageModalsKeys, { onPress: () => void; label: string }>
 
   return (
     <Wrapper direction="column" title="Modals">
       <Wrapper title="Base" direction="column" noBorder>
         <p>
-          <strong>Where in production:</strong> Base Modal and MessageModal are used across the app
-          for confirmations, errors, and alerts. MessageModal appears e.g. when deleting a draft
-          (Moje žiadosti → three-dot menu → Delete).
+          <strong>Where is this used:</strong> Base Modal is the building block for custom modal
+          content across the app. MessageModal is used for specific usecases outlined below.
         </p>
         <Stack direction="column">
           <Button variant="solid" onPress={() => setSimpleModalOpen(true)}>
@@ -132,25 +157,24 @@ const ModalShowCaseContent = () => {
           </Button>
         }
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        This is a message modal. Buttons are optional, and anything can be added as children.
       </MessageModal>
 
       <Wrapper title="Form MessageModal variants" direction="column" noBorder>
         <p>
-          <strong>Where in production:</strong> All appear during form filling (form pages
-          /mestske-sluzby/[slug]/[id]). Migration required when opening an old-version form; concept
-          save error when Save fails; send identity missing when submitting without verification;
-          files uploading/scanning during attach/scan; send confirmation (and eID variants)
-          before/after submit; eID sending/error during eID flow; delete concept from form menu;
-          signer deploying when using signer; XML import version when importing an older XML.
+          <strong>Where is this used:</strong> All of these appear on form pages
+          /mestske-sluzby/[slug]/[id].
         </p>
 
         <Stack direction="row">
-          {formMessageModalsTriggerButtons.map(({ key }) => (
-            <div key={key}>
-              <Button variant="solid" onPress={() => formMessageModalsHandlerMap[key]()}>
-                {key}
-              </Button>
+          {Object.entries(formMessageModalsConfig).map(([key, value]) => (
+            <div className="flex w-full flex-col gap-2" key={key}>
+              <div className="flex flex-row items-center gap-2">
+                <Button variant="solid" onPress={value.onPress}>
+                  Open
+                </Button>
+                <AccountMarkdown variant="sm" content={`**${key}** – ${value.label}`} />
+              </div>
             </div>
           ))}
           <FormMessageModals />
@@ -158,6 +182,11 @@ const ModalShowCaseContent = () => {
       </Wrapper>
 
       <Wrapper title="Tax form PDF export modal" direction="column" noBorder>
+        <p>
+          <strong>Where is this used:</strong> Usage: when the user exports form as PDF (form menu →
+          Export PDF). Shows loading while the PDF is generated, then success when done. Used only
+          for tax forms.
+        </p>
         <Stack direction="column">
           <Button
             variant="solid"
@@ -186,9 +215,15 @@ const ModalShowCaseContent = () => {
       </Wrapper>
 
       <Wrapper title="Identity verification modal" direction="column" noBorder>
+        <p>
+          <strong>Where is this used:</strong> Usage: explains that identity verification is
+          required and offers a button to go to the verification page. Shown when the user needs to
+          verify their identity in the form context (e.g. before sending or from a verify-identity
+          action).
+        </p>
         <Stack direction="column">
           <Button variant="solid" onPress={() => formModals.setIdentityVerificationModal(true)}>
-            Open identity verification modal
+            Identity verification modal
           </Button>
           <IdentityVerificationModal
             isOpen={formModals.identityVerificationModal}
@@ -199,6 +234,12 @@ const ModalShowCaseContent = () => {
       </Wrapper>
 
       <Wrapper title="Registration modal" direction="column" noBorder>
+        <p>
+          <strong>Where is this used:</strong> Form page. Each variant is shown when the user is not
+          signed in: <strong>Initial</strong> when opening a form that requires sign-in;{' '}
+          <strong>NotAuthenticatedConceptSave</strong> when tapping Save draft;{' '}
+          <strong>NotAuthenticatedSubmitForm</strong> when tapping Send.
+        </p>
         <Stack direction="column">
           <Button
             variant="solid"

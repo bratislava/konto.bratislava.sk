@@ -31,7 +31,7 @@ export const formMessageModalsKeys = [
   'signerIsDeploying',
   'xmlImportVersionConfirmationModal',
 ] as const
-export type FormMessageModalsKey = (typeof formMessageModalsKeys)[number]
+export type FormMessageModalsKeys = (typeof formMessageModalsKeys)[number]
 
 export const FormMessageModals = () => {
   const { t } = useTranslation('forms')
@@ -73,7 +73,7 @@ export const FormMessageModals = () => {
     useFormExportImport()
   const { verifyIdentity } = useFormRedirects()
 
-  const messageModals: (MessageModalProps & { key: FormMessageModalsKey })[] = [
+  const messageModals: (MessageModalProps & { key: FormMessageModalsKeys })[] = [
     {
       key: 'migrationRequiredModal',
       isOpen: migrationRequiredModal,

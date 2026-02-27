@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -85,21 +86,21 @@ const FormModals = () => {
       onOpenChange: setMigrationRequiredModal,
       type: 'warning',
       title: t('migration_required_modal.title'),
-      buttons: [
-        <Button onPress={() => setMigrationRequiredModal(false)} fullWidthMobile>
-          {t('migration_required_modal.button_discard')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="solid"
-          size="small"
           onPress={() => migrateForm()}
-          fullWidthMobile
           isLoading={migrateFormIsPending}
           loadingText={t('migration_required_modal.button_title_loading')}
         >
           {t('migration_required_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button variant="outline" onPress={() => setMigrationRequiredModal(false)}>
+          {t('migration_required_modal.button_discard')}
+        </Button>
+      ),
       children: t('migration_required_modal.content'),
     },
     {
@@ -108,20 +109,21 @@ const FormModals = () => {
       onOpenChange: setConceptSaveErrorModal,
       type: 'error',
       title: t('concept_save_error_modal.title'),
-      buttons: [
-        <Button variant="plain" onPress={() => setConceptSaveErrorModal(false)}>
-          {t('modal.close_button_label')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="negative-solid"
-          size="small"
           onPress={() => saveConcept(true)}
           isLoading={saveConceptIsPending}
           loadingText={t('concept_save_error_modal.button_title_loading')}
         >
           {t('concept_save_error_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button variant="outline" onPress={() => setConceptSaveErrorModal(false)}>
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       children: t('concept_save_error_modal.content'),
     },
     {
@@ -130,14 +132,16 @@ const FormModals = () => {
       onOpenChange: setSendIdentityMissingModal,
       title: t('send_identity_missing_modal.title'),
       type: 'warning',
-      buttons: [
-        <Button variant="plain" onPress={() => setSendIdentityMissingModal(false)} fullWidthMobile>
-          {t('modal.close_button_label')}
-        </Button>,
-        <Button variant="solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
+      primaryButton: (
+        <Button variant="solid" onPress={() => verifyIdentity()}>
           {t('send_identity_missing_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button variant="outline" onPress={() => setSendIdentityMissingModal(false)}>
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       children: t('send_identity_missing_modal.content'),
     },
     {
@@ -146,11 +150,11 @@ const FormModals = () => {
       onOpenChange: setSendFilesUploadingModal,
       title: t('send_files_uploading_modal.title'),
       type: 'warning',
-      buttons: [
-        <Button variant="plain" onPress={() => setSendFilesUploadingModal(false)}>
+      primaryButton: (
+        <Button variant="solid" onPress={() => setSendFilesUploadingModal(false)}>
           {t('modal.close_button_label')}
-        </Button>,
-      ],
+        </Button>
+      ),
       children: t('send_files_uploading_modal.content'),
     },
     {
@@ -159,11 +163,11 @@ const FormModals = () => {
       onOpenChange: setSendFilesScanningModal,
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
-      buttons: [
-        <Button variant="plain" onPress={() => setSendFilesScanningModal(false)}>
+      primaryButton: (
+        <Button variant="solid" onPress={() => setSendFilesScanningModal(false)}>
           {t('modal.close_button_label')}
-        </Button>,
-      ],
+        </Button>
+      ),
       children: t('send_files_scanning_modal.content'),
     },
     {
@@ -176,26 +180,25 @@ const FormModals = () => {
       },
       title: t('send_confirmation_modal.title'),
       type: 'info',
-      buttons: [
-        <Button
-          variant="plain"
-          onPress={() => setSendConfirmationModal({ isOpen: false })}
-          fullWidthMobile
-          isDisabled={sendPending}
-        >
-          {t('modal.close_button_label')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="solid"
-          size="small"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.confirmCallback()}
-          fullWidthMobile
           isLoading={sendPending}
           loadingText={t('send_confirmation_modal.button_title_loading')}
         >
           {t('send_confirmation_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button
+          variant="outline"
+          onPress={() => setSendConfirmationModal({ isOpen: false })}
+          isDisabled={sendPending}
+        >
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       isDismissable: !sendPending,
       noCloseButton: sendPending,
       children: t('send_confirmation_modal.content'),
@@ -210,28 +213,27 @@ const FormModals = () => {
       },
       title: t('send_confirmation_eid_modal.title'),
       type: 'info',
-      buttons: [
-        <Button
-          variant="plain"
-          onPress={() => setSendConfirmationEidModal({ isOpen: false })}
-          isDisabled={eidSendConfirmationModalIsPending}
-          fullWidthMobile
-        >
-          {t('modal.close_button_label')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="solid"
-          size="small"
           onPress={() =>
             sendConfirmationEidModal.isOpen && sendConfirmationEidModal.confirmCallback()
           }
-          fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
           loadingText={t('send_confirmation_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_eid_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button
+          variant="outline"
+          onPress={() => setSendConfirmationEidModal({ isOpen: false })}
+          isDisabled={eidSendConfirmationModalIsPending}
+        >
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       isDismissable: !eidSendConfirmationModalIsPending,
       noCloseButton: eidSendConfirmationModalIsPending,
       children: (
@@ -251,31 +253,35 @@ const FormModals = () => {
       },
       title: t('send_confirmation_eid_legal_modal.title'),
       type: 'info',
-      buttons: [
-        <Button
-          variant="plain"
-          onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
-          isDisabled={eidSendConfirmationModalIsPending}
-          fullWidthMobile
-        >
-          {t('modal.close_button_label')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="solid"
-          size="small"
           onPress={() =>
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.confirmCallback()
           }
           isLoading={eidSendConfirmationModalIsPending}
           loadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
-          fullWidthMobile
         >
           {t('send_confirmation_eid_legal_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button
+          variant="outline"
+          onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
+          isDisabled={eidSendConfirmationModalIsPending}
+        >
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       isDismissable: !eidSendConfirmationModalIsPending,
       noCloseButton: eidSendConfirmationModalIsPending,
-      children: t('send_confirmation_eid_legal_modal.content'),
+      children: (
+        <>
+          {t('send_confirmation_eid_legal_modal.content')}
+          <div className="text-p3">{t('send_confirmation_eid_legal_modal.content_small')}</div>
+        </>
+      ),
     },
     {
       key: 'sendConfirmationNonAuthenticatedEidModal',
@@ -287,29 +293,28 @@ const FormModals = () => {
       },
       title: t('send_confirmation_non_authenticated_eid_modal.title'),
       type: 'info',
-      buttons: [
-        <Button
-          variant="plain"
-          onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
-          fullWidthMobile
-          isDisabled={eidSendConfirmationModalIsPending}
-        >
-          {t('modal.close_button_label')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="solid"
-          size="small"
           onPress={() =>
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
             sendConfirmationNonAuthenticatedEidModal.confirmCallback()
           }
-          fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
           loadingText={t('send_confirmation_non_authenticated_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_non_authenticated_eid_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button
+          variant="outline"
+          onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
+          isDisabled={eidSendConfirmationModalIsPending}
+        >
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       isDismissable: !eidSendConfirmationModalIsPending,
       noCloseButton: eidSendConfirmationModalIsPending,
       children: t('send_confirmation_non_authenticated_eid_modal.content'),
@@ -320,10 +325,10 @@ const FormModals = () => {
       onOpenChange: setEidSendingModal,
       title: t('eid_sending_modal.title'),
       type: 'info',
-      buttons: [
-        // Faux button that show only is loading
-        <Button isLoading={sendEidPending} onPress={() => {}} />,
-      ],
+      primaryButton: (
+        // Faux button that shows only is loading
+        <Button variant="solid" size="small" isLoading onPress={() => {}} className="w-fit" />
+      ),
       isDismissable: false,
       noCloseButton: true,
       children: t('eid_sending_modal.content'),
@@ -338,16 +343,15 @@ const FormModals = () => {
       },
       title: t('eid_send_error_modal.title'),
       type: 'info',
-      buttons: [
+      primaryButton: (
         <Button
           variant="solid"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
           isDisabled={sendEidPending}
-          fullWidthMobile
         >
           {t('modal.close_button_label')}
-        </Button>,
-      ],
+        </Button>
+      ),
       isDismissable: !sendEidPending,
       noCloseButton: sendEidPending,
       children: t('eid_send_error_modal.content'),
@@ -362,18 +366,19 @@ const FormModals = () => {
       },
       title: t('concept_delete_modal.title'),
       type: 'error',
-      buttons: [
-        <Button variant="plain" onPress={() => setDeleteConceptModal({ isOpen: false })}>
-          {t('modal.close_button_label')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="negative-solid"
-          size="small"
           onPress={() => deleteConceptModal.isOpen && deleteConceptModal.confirmCallback()}
         >
           {t('concept_delete_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
+      secondaryButton: (
+        <Button variant="outline" onPress={() => setDeleteConceptModal({ isOpen: false })}>
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       isDismissable: false,
       noCloseButton: true,
       children: t('concept_delete_modal.content'),
@@ -399,26 +404,17 @@ const FormModals = () => {
       },
       title: t('xml_import_version_confirmation_modal.title'),
       type: 'warning',
-      buttons: [
-        <Button
-          variant="plain"
-          onPress={() => setXmlImportVersionConfirmationModal({ isOpen: false })}
-          fullWidthMobile
-        >
-          {t('xml_import_version_confirmation_modal.button_cancel')}
-        </Button>,
+      primaryButton: (
         <Button
           variant="solid"
-          size="small"
           onPress={() =>
             xmlImportVersionConfirmationModal.isOpen &&
             xmlImportVersionConfirmationModal.confirmCallback()
           }
-          fullWidthMobile
         >
           {t('xml_import_version_confirmation_modal.button_title')}
-        </Button>,
-      ],
+        </Button>
+      ),
       children: t('xml_import_version_confirmation_modal.content'),
     },
   ]

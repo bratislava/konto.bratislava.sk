@@ -331,10 +331,7 @@ const MyApplicationsCard = ({
         type="error"
         isOpen={deleteConceptModalShow}
         onOpenChange={() => setDeleteConceptModalShow(false)}
-        buttons={[
-          <Button variant="plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {t('forms:modal.close_button_label')}
-          </Button>,
+        primaryButton={
           <Button
             variant="negative-solid"
             onPress={() => {
@@ -343,8 +340,13 @@ const MyApplicationsCard = ({
             }}
           >
             {t('forms:concept_delete_modal.button_title')}
-          </Button>,
-        ]}
+          </Button>
+        }
+        secondaryButton={
+          <Button variant="plain" onPress={() => setDeleteConceptModalShow(false)}>
+            {t('forms:modal.close_button_label')}
+          </Button>
+        }
       >
         {t('forms:concept_delete_modal.content_with_name', { conceptName: subject })}
       </MessageModal>

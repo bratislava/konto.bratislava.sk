@@ -212,6 +212,7 @@ model UserLoginClient {
 
   @@unique([userId, loginClient])
   @@index([userId])
+  @@index([loginClient])
 }
 
 model LegalPersonLoginClient {

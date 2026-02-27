@@ -40,6 +40,7 @@ export class SignatureGuard extends AuthGuard('signature') {
       )
     }
 
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(request as any).signaturePublicKeyEnvVar = envVarName
 
     return !!(await super.canActivate(context))

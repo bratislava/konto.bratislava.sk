@@ -47,6 +47,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
   async validate(req: Request): Promise<boolean> {
     // Extract the environment variable name from request metadata
     // This should be set by the @SignaturePublicKey() decorator
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const envVarName = (req as any).signaturePublicKeyEnvVar as string | undefined
 
     if (!envVarName) {

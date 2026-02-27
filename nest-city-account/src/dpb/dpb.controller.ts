@@ -5,12 +5,17 @@ import { ClientName } from '../oauth2/decorators/client-name.decorator'
 import { OAuth2ClientName } from '../oauth2/subservices/oauth2-client.subservice'
 import { User } from '../utils/decorators/request.decorator'
 import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
-import { DpbUserDto } from './dtos/user.dto'
+import { DpbUserDto, DPBUserLoginStatistics } from './dtos/user.dto'
+import { DpbService } from './dpb.service'
+import { SignatureGuard } from '../auth/guards/signature.guard'
+import { SignaturePublicKey } from '../auth/decorators/signature-public-key.decorator'
 
 @ApiTags('DPB')
 @ApiBearerAuth()
 @Controller('dpb')
 export class DpbController {
+  constructor(private readonly dpbService: DpbService) {}
+
   @Get('userdata')
   @ClientName(OAuth2ClientName.DPB)
   @UseGuards(OAuth2AccessGuard)
@@ -33,5 +38,26 @@ export class DpbController {
       given_name: user.given_name,
       family_name: user.family_name,
     }
+  }
+
+  @Get('list-user-logins')
+  @SignaturePublicKey('DPB_CLIENT_PUBLIC_KEY')
+  @UseGuards(SignatureGuard)
+  @ApiOperation({
+    summary: 'List all user logins for DPB',
+    description: 'Returns a list of all user logins. Requires RSA signature verification.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User logins retrieved successfully',
+    type: [DPBUserLoginStatistics],
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing signature',
+  })
+  async listUserLogins(): Promise<DPBUserLoginStatistics[]> {
+    const returnValue = await this.dpbService.getUserLoginClientList()
+    return returnValue
   }
 }

@@ -75,7 +75,7 @@ export class PaasMpaService {
     return {}
   }
 
-  private async upsertBloomreachCOntactAndHandleError(
+  private async upsertBloomreachContactAndHandleError(
     user: CognitoGetUserData,
     birthNumber: string,
     ico?: string
@@ -147,7 +147,7 @@ export class PaasMpaService {
       }
     }
 
-    const bloomreachContactId = await this.upsertBloomreachCOntactAndHandleError(
+    const bloomreachContactId = await this.upsertBloomreachContactAndHandleError(
       user,
       birthNumber,
       ico

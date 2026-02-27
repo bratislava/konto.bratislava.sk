@@ -25,6 +25,20 @@ export class BloomreachContactDatabaseService {
     this.logger = new LineLoggerSubservice(BloomreachContactDatabaseService.name)
   }
 
+  /**
+   * Upserts a bloomreach contact with retry.
+   *
+   * Find is performed by exact match on birth number and ico (including matchingnull values).
+   * If no match is found and ico is provided, a secondary find is performed by
+   * exact match on ico and case insensitive match on email.
+   *
+   * If a match is found, the contact is updated with all of email, birth number and ico.
+   * If no match is found, a new contact is inserted with email, birth number and ico.
+   * @param email - The email of the contact.
+   * @param birthNumber - The birth number of the contact.
+   * @param ico - The ico of the contact.
+   * @returns The uuid of the contact. Undefined if all attempts fail.
+   */
   async upsert(email: string, birthNumber: string, ico?: string): Promise<string | undefined> {
     let loggedError: Error | undefined
     for (let attempt = 1; attempt <= 2; attempt++) {

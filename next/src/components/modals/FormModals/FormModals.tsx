@@ -434,6 +434,15 @@ export const FormMessageModals = () => {
           {t('xml_import_version_confirmation_modal.button_title')}
         </Button>
       ),
+      secondaryButton: (
+        <Button
+          variant="outline-soft"
+          size="small"
+          onPress={() => setXmlImportVersionConfirmationModal({ isOpen: false })}
+        >
+          {t('modal.close_button_label')}
+        </Button>
+      ),
       children: t('xml_import_version_confirmation_modal.content'),
     },
   ]

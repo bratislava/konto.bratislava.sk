@@ -34,12 +34,12 @@ import { isProductionDeployment } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
 const showcases = [
+  { id: 'button', label: 'Button', component: <ButtonShowCase /> },
   {
     id: 'modal',
     label: 'Modal',
     component: <ModalShowCase />,
   },
-  { id: 'button', label: 'Button', component: <ButtonShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },
   { id: 'tag', label: 'Tag', component: <TagShowCase /> },
   { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },

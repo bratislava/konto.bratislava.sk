@@ -36,7 +36,7 @@ import { SharedModule } from './utils/subservices/shared.module'
     DpbModule,
   ],
   controllers: [AppController],
-  providers: [TaxSubservice, ThrowerErrorGuard],
+  providers: [TaxSubservice],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

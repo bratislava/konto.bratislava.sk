@@ -23,6 +23,10 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dt
  */
 @Injectable()
 export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signature') {
+  // TODO #1287: Add nonce-based replay protection (X-Nonce header + server-side cache, e.g. Redis with TTL)
+  //  before this strategy is reused for mutating endpoints (PUT/POST/DELETE).
+  //  Timestamp-only is acceptable for the current read-only GET endpoint over TLS,
+  //  but mutating operations are vulnerable to replay within the 5-minute window.
   private readonly maxTimestampAge: number = 5 * 60 * 1000 // 5 minutes
 
   private readonly maxClockSkew: number = 60 * 1000 // 1 minute

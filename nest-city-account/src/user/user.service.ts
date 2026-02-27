@@ -696,4 +696,9 @@ export class UserService {
 
     return { birthNumbers, nextSince }
   }
+
+  async getUserLoginClientList(client: LoginClientEnum) {
+    const returnValue = await this.userDataSubservice.getUserLoginClientList(client)
+    return returnValue
+  }
 }

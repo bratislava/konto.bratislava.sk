@@ -28,6 +28,7 @@ import {
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import { DPBUserLoginStatistics } from '../../../dpb/dtos/user.dto'
 
 @Injectable()
 export class UserDataSubservice {
@@ -584,5 +585,32 @@ export class UserDataSubservice {
         },
       })
     }
+  }
+
+  async getUserLoginClientList(client: LoginClientEnum): Promise<DPBUserLoginStatistics[]> {
+    const userLoginList = await this.prisma.userLoginClient.findMany({
+      where: { loginClient: client },
+      select: {
+        loginCount: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
+          select: {
+            externalId: true,
+            email: true,
+          },
+        },
+      },
+    })
+
+    return userLoginList.map((userLoginClient) => {
+      return {
+        loginCount: userLoginClient.loginCount,
+        firstLogin: userLoginClient.createdAt,
+        latestLogin: userLoginClient.updatedAt,
+        email: userLoginClient.user.email,
+        cognitoId: userLoginClient.user.externalId,
+      }
+    })
   }
 }

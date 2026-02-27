@@ -33,16 +33,12 @@ export const formMessageModalsKeys = [
 ] as const
 export type FormMessageModalsKey = (typeof formMessageModalsKeys)[number]
 
-const FormModals = () => {
+export const FormMessageModals = () => {
   const { t } = useTranslation('forms')
 
   const {
     migrationRequiredModal,
     setMigrationRequiredModal,
-    registrationModal,
-    setRegistrationModal,
-    identityVerificationModal,
-    setIdentityVerificationModal,
     conceptSaveErrorModal,
     setConceptSaveErrorModal,
     sendFilesScanningModal,
@@ -68,8 +64,6 @@ const FormModals = () => {
     eidSendConfirmationModalIsPending,
     deleteConceptModal,
     setDeleteConceptModal,
-    taxFormPdfExportModal,
-    setTaxFormPdfExportModal,
     signerIsDeploying,
     setSignerIsDeploying,
     xmlImportVersionConfirmationModal,
@@ -77,7 +71,7 @@ const FormModals = () => {
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
-  const { login, register, verifyIdentity } = useFormRedirects()
+  const { verifyIdentity } = useFormRedirects()
 
   const messageModals: (MessageModalProps & { key: FormMessageModalsKey })[] = [
     {
@@ -419,10 +413,32 @@ const FormModals = () => {
     },
   ]
 
+  return (
+    <>
+      {messageModals.map((modalProps) => {
+        // To avoid "A props object containing a "key" prop is being spread into JSX" error
+        const { key, ...restModalProps } = modalProps
+        return <MessageModal key={key} {...restModalProps} />
+      })}
+    </>
+  )
+}
+
+const FormModals = () => {
+  const {
+    registrationModal,
+    setRegistrationModal,
+    taxFormPdfExportModal,
+    setTaxFormPdfExportModal,
+    identityVerificationModal,
+    setIdentityVerificationModal,
+  } = useFormModals()
   const { accountType } = useSsrAuth()
+  const { login, register } = useFormRedirects()
 
   return (
     <>
+      <FormMessageModals />
       <RegistrationModal
         type={registrationModal}
         isOpen={registrationModal != null}
@@ -448,13 +464,7 @@ const FormModals = () => {
         onOpenChange={setIdentityVerificationModal}
         accountType={accountType}
       />
-      {messageModals.map((modalProps) => {
-        // To avoid "A props object containing a "key" prop is being spread into JSX" error
-        const { key, ...restModalProps } = modalProps
-        return <MessageModal key={key} {...restModalProps} />
-      })}
     </>
   )
 }
-
 export default FormModals

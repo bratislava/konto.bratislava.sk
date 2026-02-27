@@ -250,14 +250,15 @@ const MyApplicationsCard = ({
                       variant="outline"
                       startIcon={
                         isEditable ? (
-                          <EditIcon className="size-5" />
+                          <EditIcon className="size-5 shrink-0" />
                         ) : (
-                          <EyeIcon className="size-5" />
+                          <EyeIcon className="size-5 shrink-0" />
                         )
                       }
                       href={formPageHref}
                       target="_blank"
                       className="w-[148px]"
+                      hasLinkIcon={false}
                     >
                       {isEditable
                         ? variant === 'DRAFT'

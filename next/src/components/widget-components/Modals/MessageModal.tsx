@@ -26,9 +26,7 @@ const icons = {
 }
 
 /**
- * Figma:
- * - Desktop: node-id=727-1665 (Modal / Negative)
- * - Responsive: node-id=4761-6129 (R: Modal / Negative)
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19823-40590
  */
 
 const MessageModal = ({

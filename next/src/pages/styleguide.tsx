@@ -82,12 +82,12 @@ const StyleguidePage = () => {
           onSelectionChange={setSelectedKey}
           className="mb-10 flex flex-col"
         >
-          <TabList className="scrollbar-hide flex flex-wrap gap-2 overflow-auto pb-4">
+          <TabList className="flex flex-wrap gap-2 pb-4">
             {showcases.map(({ id, label }) => (
               <Tab
                 key={id}
                 id={id}
-                className="text-14 cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 transition-colors hover:border-gray-500 hover:bg-gray-50 data-selected:border-gray-700 data-selected:bg-gray-100 data-selected:font-semibold"
+                className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 hover:border-gray-500 hover:bg-gray-50 data-selected:border-gray-700 data-selected:bg-gray-100 data-selected:font-semibold"
               >
                 {label}
               </Tab>

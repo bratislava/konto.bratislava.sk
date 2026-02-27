@@ -3,11 +3,15 @@ import { useState } from 'react'
 import FormProviders from '@/src/components/forms/FormProviders'
 import { FormContextProvider } from '@/src/components/forms/useFormContext'
 import { FormSentProvider } from '@/src/components/forms/useFormSent'
-import FormModals, {
+import {
+  FormMessageModals,
   FormMessageModalsKey,
   formMessageModalsKeys,
 } from '@/src/components/modals/FormModals/FormModals'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
+import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
+import RegistrationModal, { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
+import TaxFormPdfExportModal from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModal'
 import Button from '@/src/components/simple-components/Button'
 import Modal from '@/src/components/simple-components/Modal'
 import { Stack } from '@/src/components/styleguide/Stack'
@@ -15,9 +19,16 @@ import { mockFormServerContext } from '@/src/components/styleguide/utils/mockFor
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 
+/**
+ * Some modals are missing here
+ * - OfficialCorrespondenceChannelChangeModal (requires data which are not easily mocked)
+ * - PhoneNumberModal (not used in production)
+ */
+
 const ModalShowCaseContent = () => {
-  const [simpleModalOpen, setSimpleModalOpen] = useState(false)
+  const [simpleModal, setSimpleModalOpen] = useState(false)
   const [messageModal, setMessageModal] = useState(false)
+  useState(false)
 
   const formModals = useFormModals()
 
@@ -50,7 +61,7 @@ const ModalShowCaseContent = () => {
       formModals.setXmlImportVersionConfirmationModal(commonModalHandlerProps),
   }
 
-  const modalsShowcaseButtons = formMessageModalsKeys.map((key) => {
+  const formMessageModalsTriggerButtons = formMessageModalsKeys.map((key) => {
     return {
       key,
       button: (
@@ -67,99 +78,163 @@ const ModalShowCaseContent = () => {
   })
 
   return (
-    <Wrapper direction="column" title="Modal">
-      {/**
-       * TODO Add remaining Form modals:
-       * - OfficialCorrespondenceChannelChangeModal
-       * - PhoneNumberModal
-       * - RegistrationModal
-       * - TaxFormPdfExportModal
-       */}
+    <Wrapper direction="column" title="Modals">
+      <Wrapper title="Base" direction="column" noBorder>
+        <p>
+          <strong>Where in production:</strong> Base Modal and MessageModal are used across the app
+          for confirmations, errors, and alerts. MessageModal appears e.g. when deleting a draft
+          (Moje žiadosti → three-dot menu → Delete).
+        </p>
+        <Stack direction="column">
+          <Button variant="solid" onPress={() => setSimpleModalOpen(true)}>
+            Open simple modal
+          </Button>
+          <Button variant="solid" onPress={() => setMessageModal(true)}>
+            Open message modal
+          </Button>
+        </Stack>
+      </Wrapper>
 
-      <Stack direction="column">
-        <Wrapper title="Base" direction="column" noBorder>
-          <p>
-            <strong>Where in production:</strong> Base Modal and MessageModal are used across the
-            app for confirmations, errors, and alerts. MessageModal appears e.g. when deleting a
-            draft (Moje žiadosti → three-dot menu → Delete).
-          </p>
-          <Stack direction="column">
-            <Button variant="solid" onPress={() => setSimpleModalOpen(true)}>
-              Open simple modal
-            </Button>
-            <Button variant="solid" onPress={() => setMessageModal(true)}>
-              Open message modal
-            </Button>
-          </Stack>
-        </Wrapper>
-
-        <Modal
-          isOpen={simpleModalOpen}
-          onOpenChange={setSimpleModalOpen}
-          modalClassname="max-w-[700px]"
-        >
+      <Modal isOpen={simpleModal} onOpenChange={setSimpleModalOpen} modalClassname="max-w-[700px]">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-h3 font-semibold">Simple Modal Example</h2>
           <div className="flex flex-col gap-4">
-            <h2 className="text-h3 font-semibold">Simple Modal Example</h2>
-            <div className="flex flex-col gap-4">
-              <div className="flex w-full items-center justify-center rounded-lg bg-background-passive-primary p-4">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an
-                unknown printer took a galley of type and scrambled it to make a type specimen book.
-              </div>
-              <div className="mt-2 flex justify-between">
-                <Button variant="outline" onPress={() => setSimpleModalOpen(false)}>
-                  Cancel
-                </Button>
-                <Button variant="solid" onPress={() => setSimpleModalOpen(false)}>
-                  Submit
-                </Button>
-              </div>
+            <div className="flex w-full items-center justify-center rounded-lg bg-background-passive-primary p-4">
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+              has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown
+              printer took a galley of type and scrambled it to make a type specimen book.
+            </div>
+            <div className="mt-2 flex justify-between">
+              <Button variant="outline" onPress={() => setSimpleModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="solid" onPress={() => setSimpleModalOpen(false)}>
+                Submit
+              </Button>
             </div>
           </div>
-        </Modal>
+        </div>
+      </Modal>
 
-        <MessageModal
-          type="success"
-          isOpen={messageModal}
-          onOpenChange={setMessageModal}
-          title="Lorem ipsum"
-          primaryButton={
-            <Button key="test-button" variant="solid">
-              Test button
-            </Button>
-          }
-          secondaryButton={
-            <Button key="test-button" variant="outline">
-              Test button
-            </Button>
-          }
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </MessageModal>
+      <MessageModal
+        type="success"
+        isOpen={messageModal}
+        onOpenChange={setMessageModal}
+        title="Lorem ipsum"
+        primaryButton={
+          <Button key="test-button" variant="solid">
+            Test button
+          </Button>
+        }
+        secondaryButton={
+          <Button key="test-button" variant="outline">
+            Test button
+          </Button>
+        }
+      >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </MessageModal>
 
-        <Wrapper title="Form MessageModal variants" direction="column" noBorder>
-          <p>
-            <strong>Where in production:</strong> All appear during form filling (form pages
-            /mestske-sluzby/[slug]/[id]). Migration required when opening an old-version form;
-            concept save error when Save fails; send identity missing when submitting without
-            verification; files uploading/scanning during attach/scan; send confirmation (and eID
-            variants) before/after submit; eID sending/error during eID flow; delete concept from
-            form menu; signer deploying when using signer; XML import version when importing an
-            older XML.
-          </p>
+      <Wrapper title="Form MessageModal variants" direction="column" noBorder>
+        <p>
+          <strong>Where in production:</strong> All appear during form filling (form pages
+          /mestske-sluzby/[slug]/[id]). Migration required when opening an old-version form; concept
+          save error when Save fails; send identity missing when submitting without verification;
+          files uploading/scanning during attach/scan; send confirmation (and eID variants)
+          before/after submit; eID sending/error during eID flow; delete concept from form menu;
+          signer deploying when using signer; XML import version when importing an older XML.
+        </p>
 
-          <Stack direction="row">
-            {modalsShowcaseButtons.map(({ key }) => (
-              <div key={key}>
-                <Button variant="solid" onPress={() => formMessageModalsHandlerMap[key]()}>
-                  {key}
-                </Button>
-              </div>
-            ))}
-            <FormModals />
-          </Stack>
-        </Wrapper>
-      </Stack>
+        <Stack direction="row">
+          {formMessageModalsTriggerButtons.map(({ key }) => (
+            <div key={key}>
+              <Button variant="solid" onPress={() => formMessageModalsHandlerMap[key]()}>
+                {key}
+              </Button>
+            </div>
+          ))}
+          <FormMessageModals />
+        </Stack>
+      </Wrapper>
+
+      <Wrapper title="Tax form PDF export modal" direction="column" noBorder>
+        <Stack direction="column">
+          <Button
+            variant="solid"
+            onPress={() =>
+              formModals.setTaxFormPdfExportModal({ type: 'loading', onClose: () => {} })
+            }
+          >
+            Tax form PDF export - loading state
+          </Button>
+          <Button
+            variant="solid"
+            onPress={() => formModals.setTaxFormPdfExportModal({ type: 'success' })}
+          >
+            Tax form PDF export - success state
+          </Button>
+          <TaxFormPdfExportModal
+            state={formModals.taxFormPdfExportModal}
+            isOpen={formModals.taxFormPdfExportModal != null}
+            onOpenChange={(value) => {
+              if (!value) {
+                formModals.setTaxFormPdfExportModal(null)
+              }
+            }}
+          />
+        </Stack>
+      </Wrapper>
+
+      <Wrapper title="Identity verification modal" direction="column" noBorder>
+        <Stack direction="column">
+          <Button variant="solid" onPress={() => formModals.setIdentityVerificationModal(true)}>
+            Open identity verification modal
+          </Button>
+          <IdentityVerificationModal
+            isOpen={formModals.identityVerificationModal}
+            onOpenChange={formModals.setIdentityVerificationModal}
+            accountType={undefined}
+          />
+        </Stack>
+      </Wrapper>
+
+      <Wrapper title="Registration modal" direction="column" noBorder>
+        <Stack direction="column">
+          <Button
+            variant="solid"
+            onPress={() => formModals.setRegistrationModal(RegistrationModalType.Initial)}
+          >
+            Variant: Initial
+          </Button>
+          <Button
+            variant="solid"
+            onPress={() =>
+              formModals.setRegistrationModal(RegistrationModalType.NotAuthenticatedConceptSave)
+            }
+          >
+            Variant: NotAuthenticatedConceptSave
+          </Button>
+          <Button
+            variant="solid"
+            onPress={() =>
+              formModals.setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
+            }
+          >
+            Variant: NotAuthenticatedSubmitForm
+          </Button>
+          <RegistrationModal
+            type={formModals.registrationModal}
+            isOpen={formModals.registrationModal != null}
+            onOpenChange={(value) => {
+              if (!value) {
+                formModals.setRegistrationModal(null)
+              }
+            }}
+            login={() => {}}
+            register={() => {}}
+          />
+        </Stack>
+      </Wrapper>
     </Wrapper>
   )
 }

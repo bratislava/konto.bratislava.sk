@@ -19,14 +19,16 @@ export type MessageModalProps = PropsWithChildren<{
   >
 
 const icons = {
-  error: <ErrorIcon className="size-6" />,
-  info: <InfoIcon className="size-6" />,
-  warning: <WarningIcon className="size-6" />,
-  success: <SuccessIcon className="size-6" />,
+  error: <ErrorIcon />,
+  info: <InfoIcon />,
+  warning: <WarningIcon />,
+  success: <SuccessIcon />,
 }
 
 /**
- * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19823-40590&t=HfOPgKO8V7kD1mLz-4
+ * Figma:
+ * - Desktop: node-id=727-1665 (Modal / Negative)
+ * - Responsive: node-id=4761-6129 (R: Modal / Negative)
  */
 
 const MessageModal = ({
@@ -39,7 +41,7 @@ const MessageModal = ({
 }: MessageModalProps) => {
   return (
     <Modal isDismissable {...rest}>
-      <div className="flex flex-col items-center gap-3 p-0 md:gap-5">
+      <div className="flex flex-col items-center gap-4 lg:gap-6">
         <div
           className={cn('rounded-full p-4 *:size-6', {
             'bg-background-passive-secondary': type === 'info',
@@ -51,7 +53,7 @@ const MessageModal = ({
           {icons[type]}
         </div>
         <div className="flex w-full flex-col gap-5 lg:gap-6">
-          <div className="flex flex-col gap-2 lg:gap-1.5">
+          <div className="flex flex-col gap-2">
             <div className="w-full text-center text-h5 font-semibold">{title}</div>
             <div className="flex w-full flex-col gap-4 text-center text-p2 text-p-base whitespace-pre-wrap">
               {children}

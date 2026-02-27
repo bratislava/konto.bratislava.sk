@@ -97,7 +97,7 @@ const FormModals = () => {
         </Button>
       ),
       secondaryButton: (
-        <Button variant="outline" onPress={() => setMigrationRequiredModal(false)}>
+        <Button variant="outline-soft" onPress={() => setMigrationRequiredModal(false)}>
           {t('migration_required_modal.button_discard')}
         </Button>
       ),
@@ -120,7 +120,7 @@ const FormModals = () => {
         </Button>
       ),
       secondaryButton: (
-        <Button variant="outline" onPress={() => setConceptSaveErrorModal(false)}>
+        <Button variant="outline-soft" onPress={() => setConceptSaveErrorModal(false)}>
           {t('modal.close_button_label')}
         </Button>
       ),
@@ -138,7 +138,7 @@ const FormModals = () => {
         </Button>
       ),
       secondaryButton: (
-        <Button variant="outline" onPress={() => setSendIdentityMissingModal(false)}>
+        <Button variant="outline-soft" onPress={() => setSendIdentityMissingModal(false)}>
           {t('modal.close_button_label')}
         </Button>
       ),
@@ -192,7 +192,7 @@ const FormModals = () => {
       ),
       secondaryButton: (
         <Button
-          variant="outline"
+          variant="outline-soft"
           onPress={() => setSendConfirmationModal({ isOpen: false })}
           isDisabled={sendPending}
         >
@@ -227,7 +227,7 @@ const FormModals = () => {
       ),
       secondaryButton: (
         <Button
-          variant="outline"
+          variant="outline-soft"
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
         >
@@ -267,7 +267,7 @@ const FormModals = () => {
       ),
       secondaryButton: (
         <Button
-          variant="outline"
+          variant="outline-soft"
           onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
         >
@@ -308,7 +308,7 @@ const FormModals = () => {
       ),
       secondaryButton: (
         <Button
-          variant="outline"
+          variant="outline-soft"
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
         >
@@ -375,7 +375,7 @@ const FormModals = () => {
         </Button>
       ),
       secondaryButton: (
-        <Button variant="outline" onPress={() => setDeleteConceptModal({ isOpen: false })}>
+        <Button variant="outline-soft" onPress={() => setDeleteConceptModal({ isOpen: false })}>
           {t('modal.close_button_label')}
         </Button>
       ),

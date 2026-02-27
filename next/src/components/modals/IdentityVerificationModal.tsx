@@ -39,7 +39,11 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
           <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>
             {t('auth.verification_url_text')}
           </Button>
-          <Button className="grow" variant="outline" onPress={() => rest?.onOpenChange?.(false)}>
+          <Button
+            className="grow"
+            variant="outline-soft"
+            onPress={() => rest?.onOpenChange?.(false)}
+          >
             {t('verification_modal.footer_desktop_eID_text')}
           </Button>
         </div>

@@ -1,7 +1,5 @@
-import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import FormProviders from '@/src/components/forms/FormProviders'
 import { FormContextProvider } from '@/src/components/forms/useFormContext'
 import { FormSentProvider } from '@/src/components/forms/useFormSent'
@@ -18,10 +16,8 @@ import { Wrapper } from '@/src/components/styleguide/Wrapper'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 
 const ModalShowCaseContent = () => {
-  const { t: tAccount } = useTranslation('account')
   const [simpleModalOpen, setSimpleModalOpen] = useState(false)
   const [messageModal, setMessageModal] = useState(false)
-  const [identityVerificationOpen, setIdentityVerificationOpen] = useState(false)
 
   const formModals = useFormModals()
 
@@ -105,7 +101,7 @@ const ModalShowCaseContent = () => {
           <div className="flex flex-col gap-4">
             <h2 className="text-h3 font-semibold">Simple Modal Example</h2>
             <div className="flex flex-col gap-4">
-              <div className="flex w-full items-center justify-center rounded-lg bg-[green] p-4 text-white">
+              <div className="flex w-full items-center justify-center rounded-lg bg-background-passive-primary p-4">
                 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
                 Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an
                 unknown printer took a galley of type and scrambled it to make a type specimen book.
@@ -163,58 +159,6 @@ const ModalShowCaseContent = () => {
             <FormModals />
           </Stack>
         </Wrapper>
-
-        <Wrapper title="IdentityVerificationModal (MessageModal clone)" direction="column" noBorder>
-          <p>
-            <strong>Where in production:</strong> Form pages. Shown when the user is logged in but
-            identity is not verified and they try to send the form (or when opening a form that
-            requires verification).
-          </p>
-          <Stack direction="column">
-            <Button variant="solid" onPress={() => setIdentityVerificationOpen(true)}>
-              Open IdentityVerificationModal
-            </Button>
-          </Stack>
-        </Wrapper>
-
-        <MessageModal
-          type="warning"
-          title={tAccount('verification_modal.title')}
-          isOpen={identityVerificationOpen}
-          onOpenChange={setIdentityVerificationOpen}
-          primaryButton={
-            <Button
-              key="verify"
-              className="grow"
-              variant="solid"
-              onPress={() => setIdentityVerificationOpen(false)}
-            >
-              {tAccount('auth.verification_url_text')}
-            </Button>
-          }
-          secondaryButton={
-            <Button
-              key="eid"
-              className="grow"
-              variant="outline"
-              onPress={() => setIdentityVerificationOpen(false)}
-            >
-              {tAccount('verification_modal.footer_desktop_eID_text')}
-            </Button>
-          }
-        >
-          <div className="flex flex-col gap-6 md:gap-4">
-            <AccountMarkdown
-              className="text-center"
-              content={tAccount('verification_modal.subtitle')}
-            />
-            <AccountMarkdown
-              className="text-center text-p3"
-              variant="sm"
-              content={tAccount('verification_modal.info')}
-            />
-          </div>
-        </MessageModal>
       </Stack>
     </Wrapper>
   )

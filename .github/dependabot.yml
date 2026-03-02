@@ -102,6 +102,7 @@ updates:
           - 'eslint'
           - 'eslint-*'
           - '@eslint/*'
+          - '@bratislava/eslint-config-nest'
           - '@types/eslint-*'
           - '@darraghor/eslint-plugin-nestjs-typed'
           - 'typescript-eslint'

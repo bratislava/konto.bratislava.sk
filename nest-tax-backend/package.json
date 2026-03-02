@@ -63,7 +63,7 @@
     "@nestjs/testing": "^11.1.14",
     "@types/express": "^5.0.6",
     "@types/jest": "30.0.0",
-    "@types/lodash": "^4.17.23",
+    "@types/lodash": "^4.17.24",
     "@types/node": "^20.19.28",
     "@types/nodemailer": "^7.0.11",
     "@types/qrcode": "^1.5.6",

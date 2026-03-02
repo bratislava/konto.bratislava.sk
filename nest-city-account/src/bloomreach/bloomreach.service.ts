@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 
 import axios, { isAxiosError } from 'axios'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 
 import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import {
@@ -10,8 +11,13 @@ import {
   BloomreachEventNameEnum,
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
+import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
 import {
   CognitoUserAttributesTierEnum,
   GDPRCategoryEnum,
@@ -33,7 +39,9 @@ export class BloomreachService {
 
   constructor(
     private readonly cognitoSubservice: CognitoSubservice,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly prisma: PrismaService,
+    private readonly bloomreachContactDatabaseService: BloomreachContactDatabaseService
   ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
@@ -47,6 +55,50 @@ export class BloomreachService {
       )
     }
     this.logger = new LineLoggerSubservice(BloomreachService.name)
+  }
+
+  // TODO: Refactor - duplicate exists in paas-mpa/paas-mpa.service.ts
+  private async getVerifiedIdentifiers(user: CognitoGetUserData): Promise<{
+    birthNumber?: string
+    ico?: string
+  }> {
+    const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      const foundUser = await this.prisma.user.findUnique({
+        where: {
+          externalId: user.idUser,
+          ...ACTIVE_USER_FILTER,
+        },
+        select: {
+          birthNumber: true,
+        },
+      })
+
+      return { birthNumber: foundUser?.birthNumber ?? undefined }
+    }
+
+    if (
+      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+    ) {
+      const legalPerson = await this.prisma.legalPerson.findUnique({
+        where: {
+          externalId: user.idUser,
+        },
+        select: {
+          birthNumber: true,
+          ico: true,
+        },
+      })
+
+      return {
+        birthNumber: legalPerson?.birthNumber ?? undefined,
+        ico: legalPerson?.ico ?? undefined,
+      }
+    }
+
+    return {}
   }
 
   private createBloomreachConsentCategory(
@@ -72,7 +124,7 @@ export class BloomreachService {
   }
 
   // TODO: This looks like it can use https://docs.nestjs.com/techniques/events
-  async trackCustomer(cognitoId: string): Promise<boolean | undefined> {
+  async trackCustomer(cognitoId: string, phoneNumber?: string): Promise<boolean | undefined> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return undefined
     }
@@ -92,9 +144,23 @@ export class BloomreachService {
         user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
         user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
 
+      let contactId: string | undefined
+
+      if (isIdentityVerified) {
+        const { birthNumber, ico } = await this.getVerifiedIdentifiers(user)
+        if (birthNumber) {
+          contactId = await this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
+        }
+      }
+
+      if (contactId && phoneNumber) {
+        await this.bloomreachContactDatabaseService.addPhone(contactId, phoneNumber)
+      }
+
       const data = {
         customer_ids: {
           city_account_id: cognitoId,
+          ...(contactId && { contact_id: contactId }),
         },
         properties: {
           ...(firstName && { first_name: firstName }),
@@ -103,6 +169,7 @@ export class BloomreachService {
           ...(accountType && { person_type: accountType }),
           ...(registrationDate && { registration_date: registrationDate }),
           ...(email && { email: email }),
+          ...(phoneNumber && { phone: phoneNumber }),
           ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
           ...(oAuthOriginClientName && { oauth_origin_client_name: oAuthOriginClientName }),
         },

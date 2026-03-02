@@ -35,6 +35,8 @@ import { VerificationDataSubservice } from './utils/subservice/verification-data
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { VerificationReturnType } from './types'
 import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
@@ -143,7 +145,17 @@ export class VerificationService {
           data.msg.type
         )
 
-        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard)
+        const bloomreachContactDatabaseService = new BloomreachContactDatabaseService(
+          throwerErrorGuard,
+          getBloomreachContactDatabase()
+        )
+
+        const bloomreachService = new BloomreachService(
+          cognitoSubservice,
+          throwerErrorGuard,
+          prismaService,
+          bloomreachContactDatabaseService
+        )
 
         await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {

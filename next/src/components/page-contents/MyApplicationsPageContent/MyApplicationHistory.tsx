@@ -11,6 +11,14 @@ interface MyApplicationHistoryProps {
 
 const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
   const { t } = useTranslation('account')
+
+  const translationMap = {
+    DOCUMENT_CREATED: t(
+      'account_section_applications.details.application_history.state.DOCUMENT_CREATED',
+    ),
+    UNKNOWN: t('account_section_applications.details.application_history.state.UNKNOWN'),
+  }
+
   return (
     <>
       {/* Desktop */}
@@ -36,11 +44,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                   {t('account_section_applications.details.application_history.description')}
                 </span>
                 <span className="text-p2">
-                  {t(
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    `account_section_applications.details.application_history.state.${data?.assignedCategory}`,
-                    'account_section_applications.details.application_history.state.UNKNOWN',
-                  )}
+                  {translationMap[data?.assignedCategory] ?? translationMap.UNKNOWN}
                 </span>
               </div>
             </div>
@@ -68,11 +72,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                   </FormatDate>
                 </span>
                 <span className="w-full text-p2">
-                  {t(
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    `account_section_applications.details.application_history.state.${data?.assignedCategory}`,
-                    'account_section_applications.details.application_history.state.UNKNOWN',
-                  )}
+                  {translationMap[data?.assignedCategory] ?? translationMap.UNKNOWN}
                 </span>
               </div>
             ))}

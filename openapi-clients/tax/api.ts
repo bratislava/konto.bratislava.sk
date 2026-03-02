@@ -603,6 +603,7 @@ export const ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum = {
   BelowThreshold: 'BELOW_THRESHOLD',
   AfterDueDate: 'AFTER_DUE_DATE',
   AlreadyPaid: 'ALREADY_PAID',
+  TaxIsCancelled: 'TAX_IS_CANCELLED',
 } as const
 
 export type ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum =
@@ -658,6 +659,7 @@ export type ResponseOneTimePaymentDetailsDtoTypeEnum =
   (typeof ResponseOneTimePaymentDetailsDtoTypeEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoTypeEnum]
 export const ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum = {
   AlreadyPaid: 'ALREADY_PAID',
+  TaxIsCancelled: 'TAX_IS_CANCELLED',
 } as const
 
 export type ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum =

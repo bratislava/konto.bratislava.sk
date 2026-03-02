@@ -1,10 +1,11 @@
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import WarningIcon from '@/src/components/icon-components/WarningIcon'
 import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
-export type ThankYouCardBase = {
-  success?: boolean
+export type ThankYouCardProps = {
+  variant: 'success' | 'error' | 'warning'
   title?: string
   firstButtonTitle?: string
   secondButtonTitle?: string
@@ -19,7 +20,7 @@ export type ThankYouCardBase = {
  */
 
 const ThankYouCard = ({
-  success,
+  variant,
   title,
   firstButtonTitle,
   secondButtonTitle,
@@ -27,23 +28,27 @@ const ThankYouCard = ({
   feedbackTitle,
   firstButtonLink,
   secondButtonLink,
-}: ThankYouCardBase) => {
+}: ThankYouCardProps) => {
+  const iconClassname = 'flex size-8 items-center justify-center md:size-10'
+  const iconByVariant = {
+    success: <CheckIcon className={cn(iconClassname, 'text-content-success-default')} />,
+    error: <CrossIcon className={cn(iconClassname, 'text-content-error-default')} />,
+    warning: <WarningIcon className={cn(iconClassname, 'text-content-warning-default')} />,
+  }[variant]
+
   return (
     <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-8 md:rounded-2xl md:px-12 md:py-10 lg:max-w-[800px]">
       <span
         className={cn(
-          'flex h-14 w-14 min-w-14 items-center justify-center rounded-full bg-negative-100 md:h-[88px] md:w-[88px] md:min-w-[88px]',
+          'flex h-14 w-14 min-w-14 items-center justify-center rounded-full md:h-[88px] md:w-[88px] md:min-w-[88px]',
           {
-            'bg-negative-100': !success,
-            'bg-success-100': success,
+            'bg-background-success-soft-default': variant === 'success',
+            'bg-background-error-soft-default': variant === 'error',
+            'bg-background-warning-soft-default': variant === 'warning',
           },
         )}
       >
-        {success ? (
-          <CheckIcon className="flex size-8 items-center justify-center text-success-700 md:size-10" />
-        ) : (
-          <CrossIcon className="flex size-8 items-center justify-center text-negative-700 md:size-10" />
-        )}
+        {iconByVariant}
       </span>
       <div className="flex flex-col items-center gap-8 md:gap-3">
         <h2 className="text-center text-h3">{title}</h2>
@@ -54,9 +59,9 @@ const ThankYouCard = ({
           'px-0 sm:flex-row': !feedbackTitle,
         })}
       >
-        {success ? (
+        {variant === 'success' ? (
           <>
-            {firstButtonTitle ? (
+            {firstButtonLink ? (
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
                   <h3 className="text-left text-h3">{feedbackTitle}</h3>
@@ -70,7 +75,7 @@ const ThankYouCard = ({
                 </Button>
               )
             ) : null}
-            {secondButtonTitle ? (
+            {secondButtonLink ? (
               <Button href={secondButtonLink} variant="outline" fullWidth hasLinkIcon={false}>
                 {secondButtonTitle}
               </Button>
@@ -78,12 +83,12 @@ const ThankYouCard = ({
           </>
         ) : (
           <>
-            {firstButtonTitle ? (
+            {firstButtonLink ? (
               <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
                 {firstButtonTitle}
               </Button>
             ) : null}
-            {secondButtonTitle ? (
+            {secondButtonLink ? (
               <Button href={secondButtonLink} variant="outline" fullWidth hasLinkIcon={false}>
                 {secondButtonTitle}
               </Button>

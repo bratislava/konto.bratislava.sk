@@ -84,6 +84,8 @@ spec:
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-bloomreach-secret
         - secretRef:
+            name: ${BUILD_REPOSITORY_NAME}-bloomreach-contact-database-secret
+        - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-cipher-key-secret
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-tax-backend-secret

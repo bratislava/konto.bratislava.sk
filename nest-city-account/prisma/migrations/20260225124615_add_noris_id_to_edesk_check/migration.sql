@@ -2,4 +2,4 @@
 DELETE FROM "ExternalEdeskCheck";
 
 -- AlterTable
-ALTER TABLE "ExternalEdeskCheck" ADD COLUMN     "externalId" TEXT NOT NULL;
+ALTER TABLE "ExternalEdeskCheck" ADD COLUMN     "norisId" TEXT NOT NULL;

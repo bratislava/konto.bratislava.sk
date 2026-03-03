@@ -99,7 +99,7 @@ export class EdeskTasksSubservice {
       LEGAL_PERSONS_RETRIEVE_BATCH_SIZE
     )
     await this.upvsQueueService.addExternalItemsToQueue(
-      norisRecords.map((item) => ({ uri: item.uri_generated, externalId: item.id_noris }))
+      norisRecords.map((item) => ({ uri: item.uri_generated, norisId: item.id_noris }))
     )
   }
 
@@ -133,7 +133,7 @@ export class EdeskTasksSubservice {
           try {
             const edeskData = this.mapEdeskDataToNorisType(item)
             return {
-              idNoris: item.externalId,
+              idNoris: item.norisId,
               lastCheck: item.processedAt,
               ...edeskData,
             }

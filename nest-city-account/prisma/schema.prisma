@@ -151,7 +151,7 @@ model ExternalEdeskCheck {
   edeskStatus String?
   edeskNumber String?
 
-  externalId String // Noris ID
+  norisId String
 
   processedAt DateTime?
   failCount   Int       @default(0)

@@ -68,7 +68,7 @@ describe('UpvsQueueService', () => {
         edeskNumber: null,
         processedAt: null,
         failCount: 0,
-        externalId: 'norisId',
+        norisId: 'norisId',
       }
 
       // First call for urgent items, second call for high priority items
@@ -136,7 +136,7 @@ describe('UpvsQueueService', () => {
         edeskNumber: null,
         processedAt: null,
         failCount: 0,
-        externalId: 'norisId',
+        norisId: 'norisId',
       }
 
       // First call for urgent items (empty), second call for high priority items

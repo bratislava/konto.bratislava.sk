@@ -111,8 +111,8 @@ export class NorisService {
       async (connection) => {
         const result = await connection
           .request()
-          .input('numso', mssql.Int, physicalPersons)
-          .input('numpo', mssql.Int, legalPersons)
+          .input('numSO', mssql.Int, physicalPersons)
+          .input('numPO', mssql.Int, legalPersons)
           .execute('lcs.usp21_ino_check_edesk')
 
         return this.norisValidatorSubservice.validateNorisData(EdeskRecordSchema, result.recordset)

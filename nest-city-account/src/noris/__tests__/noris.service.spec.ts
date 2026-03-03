@@ -160,8 +160,8 @@ describe('NorisService', () => {
       const result = await service.getExternalEdeskChecks(physicalPersons, legalPersons)
 
       expect(result).toEqual(validatedData)
-      expect(mockRequest.input).toHaveBeenCalledWith('numso', expect.anything(), physicalPersons)
-      expect(mockRequest.input).toHaveBeenCalledWith('numpo', expect.anything(), legalPersons)
+      expect(mockRequest.input).toHaveBeenCalledWith('numSO', expect.anything(), physicalPersons)
+      expect(mockRequest.input).toHaveBeenCalledWith('numPO', expect.anything(), legalPersons)
       expect(mockRequest.execute).toHaveBeenCalledWith('lcs.usp21_ino_check_edesk')
       expect(norisValidatorSubservice.validateNorisData).toHaveBeenCalledWith(
         EdeskRecordSchema,

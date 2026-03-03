@@ -64,7 +64,6 @@ describe('TasksConfigSubservice', () => {
     })
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('incrementOverpaymentsLookbackDays', () => {
     it('should increment lookback days by 1 when config exists', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '5' }
@@ -80,7 +79,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return callback(tx)
+          return await callback(tx)
         })
 
       await service.incrementOverpaymentsLookbackDays()
@@ -108,7 +107,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return callback(tx)
+          return await callback(tx)
         })
 
       await service.incrementOverpaymentsLookbackDays(3)
@@ -132,7 +131,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return callback(tx)
+          return await callback(tx)
         })
 
       await service.incrementOverpaymentsLookbackDays(2)
@@ -168,7 +167,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return callback(tx)
+          return await callback(tx)
         })
 
       await expect(service.incrementOverpaymentsLookbackDays()).rejects.toThrow(

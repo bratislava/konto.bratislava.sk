@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-condition */
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {
@@ -292,7 +293,13 @@ export class PaymentService {
             currentStatus === PaymentStatus.NEW ? PaymentStatus.FAIL : undefined
           break
 
+        case 'KEEP_CURRENT':
+          nextStatus = undefined
+          break
+
         default:
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          throw new Error(`Unknown database status: ${strategy.dbStatus}`)
           break
       }
 
@@ -334,8 +341,8 @@ export class PaymentService {
 
       if (nextStatus === PaymentStatus.SUCCESS) {
         const user = await this.retryService.retryWithDelay(
-          () =>
-            this.cityAccountSubservice.getUserDataAdmin(
+          async () =>
+            await this.cityAccountSubservice.getUserDataAdmin(
               taxPaymentWithTax.tax.taxPayer.birthNumber,
             ),
           'getUserDataAdmin',

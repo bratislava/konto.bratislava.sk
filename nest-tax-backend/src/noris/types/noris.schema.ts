@@ -57,7 +57,6 @@ export const NorisCommunalWasteTaxSchema = NorisBaseTaxSchema.extend({
   orientacne_cislo: z.string().nullable(),
 })
 
-// eslint-disable-next-line no-secrets/no-secrets
 /**
  * NorisCommunalWasteTaxGroupedSchema is an extended schema based on
  * NorisBaseTaxSchema and incorporates the structure defined in

@@ -1,4 +1,4 @@
-/* eslint-disable no-secrets/no-secrets */
+/* eslint-disable require-await, @typescript-eslint/require-await */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
@@ -8,6 +8,7 @@ import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'ope
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
+import { QrCodeService } from '../../../../qrcode/qrcode.service'
 import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpers/tax.helper'
 import { createTestingRealEstateTaxMock } from '../../../../tax/utils/testing-tax-mock'
 import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
@@ -16,7 +17,6 @@ import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
-import { QrCodeSubservice } from '../../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../../utils/types/types.prisma'
 import { CustomErrorNorisTypesEnum } from '../../../noris.errors'
 import { AreaTypesEnum } from '../../../types/noris.enums'
@@ -30,7 +30,7 @@ jest.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
 }))
 
-const mockPLimitFn = (fn: any) => fn()
+const mockPLimitFn = async (fn: () => Promise<any>): Promise<any> => await fn()
 jest.mock('p-limit', () => {
   return jest.fn(() => mockPLimitFn)
 })
@@ -182,7 +182,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           provide: BloomreachService,
           useValue: createMock<BloomreachService>(),
         },
-        { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
+        { provide: QrCodeService, useValue: createMock<QrCodeService>() },
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: NorisValidatorSubservice,
@@ -242,12 +242,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
       ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
+        (): unknown => mockRequest as any,
       )
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2023, [
@@ -272,7 +272,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -300,12 +300,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return await callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
       ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
+        (): unknown => mockRequest as any,
       )
 
       const birthNumbers = ['123456/7890', '987654/3210']
@@ -369,7 +369,9 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(() => {})
+        .mockImplementation(async () => {
+          return Promise.resolve()
+        })
     })
 
     it('should process Noris tax data and return birth numbers', async () => {
@@ -589,7 +591,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -664,7 +666,9 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(() => {})
+        .mockImplementation(() => {
+          /* noop */
+        })
 
       await service.processNorisTaxData(mockNorisData, 2023, {})
 
@@ -800,9 +804,8 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       beforeEach(() => {
-        // eslint-disable-next-line prefer-destructuring
-        const qrCodeSubservice = service['qrCodeSubservice']
-        qrCodeSubservice.createQrCode = jest.fn().mockResolvedValue('qr-code')
+        const qrCodeService = service['qrCodeService']
+        qrCodeService.createQrCode = jest.fn().mockResolvedValue('qr-code')
 
         prismaMock.taxAdministrator.upsert.mockResolvedValue({
           id: 1,
@@ -922,9 +925,8 @@ describe('NorisTaxRealEstateSubservice', () => {
       let bloomreachService: any
 
       beforeEach(() => {
-        // eslint-disable-next-line prefer-destructuring
-        const qrCodeSubservice = service['qrCodeSubservice']
-        qrCodeSubservice.createQrCode = jest.fn().mockResolvedValue('qr-code')
+        const qrCodeService = service['qrCodeService']
+        qrCodeService.createQrCode = jest.fn().mockResolvedValue('qr-code')
 
         bloomreachService = service['bloomreachService']
         bloomreachService.trackEventTax = jest.fn().mockResolvedValue(true)
@@ -960,7 +962,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               createMany: jest.fn().mockResolvedValue({}),
             },
           }
-          return callback(mockTx as any)
+          return await callback(mockTx as any)
         })
       })
 
@@ -1067,5 +1069,3 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

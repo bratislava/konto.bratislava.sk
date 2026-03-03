@@ -59,7 +59,11 @@ export class AdminController {
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     const { taxType, year, birthNumbers } = data
-    return this.adminService.loadDataFromNoris(taxType, year, birthNumbers)
+    return await this.adminService.loadDataFromNoris(
+      taxType,
+      year,
+      birthNumbers,
+    )
   }
 
   @HttpCode(200)
@@ -78,7 +82,11 @@ export class AdminController {
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<{ updated: number }> {
     const { taxType, year, birthNumbers } = data
-    return this.adminService.updateDataFromNoris(taxType, year, birthNumbers)
+    return await this.adminService.updateDataFromNoris(
+      taxType,
+      year,
+      birthNumbers,
+    )
   }
 
   @HttpCode(200)
@@ -96,7 +104,7 @@ export class AdminController {
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return this.adminService.updatePaymentsFromNoris({
+    return await this.adminService.updatePaymentsFromNoris({
       type: 'fromToDate',
       data,
     })
@@ -117,7 +125,9 @@ export class AdminController {
   async updateOverpaymentsFromNoris(
     @Body() data: DateRangeDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data)
+    return await this.adminService.updateOverpaymentsDataFromNorisByDateRange(
+      data,
+    )
   }
 
   @HttpCode(200)
@@ -134,7 +144,7 @@ export class AdminController {
   async updateDeliveryMethodsInNoris(
     @Body() data: RequestUpdateNorisDeliveryMethodsDto,
   ): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return this.adminService.updateDeliveryMethodsInNoris(data)
+    return await this.adminService.updateDeliveryMethodsInNoris(data)
   }
 
   @HttpCode(200)
@@ -152,7 +162,7 @@ export class AdminController {
   async removeDeliveryMethodsFromNoris(
     @Param('birthNumber') birthNumber: string,
   ): Promise<void> {
-    return this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
+    await this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   @HttpCode(200)

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-misused-spread */
 import { Prisma, Tax, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -7,6 +8,7 @@ import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { QrCodeService } from '../../../qrcode/qrcode.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import {
   TaxDefinition,
@@ -17,7 +19,6 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import {
   convertCurrencyToInt,
@@ -34,7 +35,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   protected readonly concurrencyLimit = pLimit(this.concurrency)
 
   protected constructor(
-    protected readonly qrCodeSubservice: QrCodeSubservice,
+    protected readonly qrCodeService: QrCodeService,
     protected readonly prismaService: PrismaService,
     protected readonly bloomreachService: BloomreachService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -142,7 +143,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     const taxesExist = await this.prismaService.tax.findMany({
       select: selectQuery,
       where: {
-        year: +year,
+        year,
         taxPayer: {
           birthNumber: {
             in: norisData.map((norisRecord) => norisRecord.ICO_RC),
@@ -178,7 +179,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     year: number,
     options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    const birthNumbersResult: Set<string> = new Set()
+    const birthNumbersResult = new Set<string>()
     const { prepareOnly = false, ignoreBatchLimit = false } = options
 
     this.logger.log(
@@ -243,8 +244,8 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       )
 
     await Promise.all(
-      recordsToProcess.map(async (norisItem) =>
-        this.concurrencyLimit(async () => {
+      recordsToProcess.map(async (norisItem) => {
+        await this.concurrencyLimit(async () => {
           await this.processTaxRecordFromNoris(
             taxDefinition,
             birthNumbersResult,
@@ -252,8 +253,8 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
             userDataFromCityAccount,
             year,
           )
-        }),
-      ),
+        })
+      }),
     )
 
     // Add the payments only for processed taxes
@@ -323,7 +324,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         return undefined
       }
       return batchSizeLimit
-    } catch (error) {
+    } catch {
       this.logger.warn(
         'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax payers',
       )

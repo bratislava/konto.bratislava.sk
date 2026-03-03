@@ -44,7 +44,6 @@ export default class SftpFileSubservice {
         : await this.filterAlreadyReportedFiles(sftpFiles)
 
       // Get contents of all new files
-      // eslint-disable-next-line no-restricted-syntax
       for (const fileName of newFiles) {
         const filePath = path.join(
           this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
@@ -55,6 +54,7 @@ export default class SftpFileSubservice {
         const fileContent = await sftp.get(filePath)
         newFileContents.push({
           name: fileName,
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           content: fileContent.toString('utf8'), // Assuming you want the content as a string
         })
       }

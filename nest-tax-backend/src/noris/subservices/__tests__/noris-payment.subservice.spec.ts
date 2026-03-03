@@ -1,4 +1,4 @@
-/* eslint-disable no-secrets/no-secrets */
+/* eslint-disable require-await, @typescript-eslint/require-await */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Tax } from '@prisma/client'
@@ -337,7 +337,7 @@ describe('NorisPaymentSubservice', () => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
-            aggregate: jest.fn().mockImplementation(({ where }) => {
+            aggregate: jest.fn().mockImplementation(async ({ where }) => {
               // First tax (1111111111) already has full payment
               if (where.taxId === 1) {
                 return Promise.resolve({
@@ -608,7 +608,7 @@ describe('NorisPaymentSubservice', () => {
 
       const mockTransaction = jest.fn().mockImplementation(async (callback) => {
         return callback({
-          $queryRaw: jest.fn().mockImplementation(() => {
+          $queryRaw: jest.fn().mockImplementation(async () => {
             return Promise.resolve([])
           }),
           taxPayment: {
@@ -1009,7 +1009,7 @@ describe('NorisPaymentSubservice', () => {
 
       const mockTransaction = jest.fn().mockImplementation(async (callback) => {
         return callback({
-          $queryRaw: jest.fn().mockImplementation(() => {
+          $queryRaw: jest.fn().mockImplementation(async () => {
             return Promise.resolve([])
           }),
           taxPayment: {
@@ -1032,5 +1032,3 @@ describe('NorisPaymentSubservice', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

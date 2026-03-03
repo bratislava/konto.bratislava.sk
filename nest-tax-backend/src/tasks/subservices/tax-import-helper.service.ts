@@ -57,7 +57,7 @@ export default class TaxImportHelperService {
       .toDate()
     const todayEnd = dayjs().tz(this.BRATISLAVA_TIMEZONE).endOf('day').toDate()
 
-    return this.prismaService.tax.count({
+    return await this.prismaService.tax.count({
       where: {
         createdAt: {
           gte: todayStart,
@@ -104,7 +104,7 @@ export default class TaxImportHelperService {
   async getPrioritizedBirthNumbersWithMetadata(
     taxType: TaxType,
     year: number,
-    isImportPhase: boolean = true,
+    isImportPhase = true,
   ): Promise<{
     birthNumbers: string[]
     newlyCreated: string[]

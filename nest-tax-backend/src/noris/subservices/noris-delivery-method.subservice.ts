@@ -37,10 +37,10 @@ export class NorisDeliveryMethodSubservice {
   ): Promise<string[]> {
     const updatedSubjects = await this.connectionService.withConnection(
       async (connection) => {
-        const updatePromises = data.map((dataItem) =>
-          this.executeDeliveryMethodUpdate(connection, dataItem),
-        )
-        return Promise.all(updatePromises)
+        const updatePromises = data.map(async (dataItem) => {
+          return await this.executeDeliveryMethodUpdate(connection, dataItem)
+        })
+        return await Promise.all(updatePromises)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -104,7 +104,7 @@ export class NorisDeliveryMethodSubservice {
       return []
     }
 
-    return this.connectionService.withConnection(
+    return await this.connectionService.withConnection(
       async (connection) => {
         const request = new mssql.Request(connection)
 
@@ -135,7 +135,7 @@ export class NorisDeliveryMethodSubservice {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get birth numbers for updated subjects',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : (error as string),
           error instanceof Error ? error : undefined,
         )
       },
@@ -184,7 +184,7 @@ export class NorisDeliveryMethodSubservice {
       .filter(
         ([deliveryMethod, birthNumbers]) =>
           birthNumbers.length > 0 &&
-          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT,
+          (deliveryMethod as DeliveryMethod) !== DeliveryMethod.CITY_ACCOUNT,
       )
       .map(([deliveryMethod, birthNumbers]) => {
         return {

@@ -13,7 +13,7 @@ import {
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 
-type TaxTypeToNorisSubservice = {
+interface TaxTypeToNorisSubservice {
   [TaxType.DZN]: NorisTaxRealEstateSubservice
   [TaxType.KO]: NorisTaxCommunalWasteSubservice
 }
@@ -36,14 +36,7 @@ export class NorisTaxSubservice {
   private getImplementationByType<TTaxType extends TaxType>(
     taxType: TTaxType,
   ): TaxTypeToNorisSubservice[TTaxType] {
-    const service = this.subservices[taxType]
-    if (!service) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Implementation for tax type ${taxType} not found`,
-      )
-    }
-    return service
+    return this.subservices[taxType]
   }
 
   async processNorisTaxData<TTaxType extends TaxType>(
@@ -54,7 +47,7 @@ export class NorisTaxSubservice {
   ): Promise<CreateBirthNumbersResponseDto> {
     // Use conditional branching to help TypeScript narrow types
     if (taxType === TaxType.DZN) {
-      return this.subservices[TaxType.DZN].processNorisTaxData(
+      return await this.subservices[TaxType.DZN].processNorisTaxData(
         norisData as NorisRealEstateTax[],
         year,
         options,
@@ -62,7 +55,7 @@ export class NorisTaxSubservice {
     }
 
     if (taxType === TaxType.KO) {
-      return this.subservices[TaxType.KO].processNorisTaxData(
+      return await this.subservices[TaxType.KO].processNorisTaxData(
         norisData as NorisCommunalWasteTaxGrouped[],
         year,
         options,
@@ -82,7 +75,7 @@ export class NorisTaxSubservice {
     birthNumbers: string[],
     options: RequestPostNorisLoadDataOptionsDto = {},
   ) {
-    return this.getImplementationByType(
+    return await this.getImplementationByType(
       taxType,
     ).getAndProcessNorisTaxDataByBirthNumberAndYear(year, birthNumbers, options)
   }
@@ -92,7 +85,7 @@ export class NorisTaxSubservice {
     year: number,
     birthNumbers: string[],
   ): Promise<{ updated: number }> {
-    return this.getImplementationByType(
+    return await this.getImplementationByType(
       taxType,
     ).getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       year,

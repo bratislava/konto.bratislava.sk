@@ -1,8 +1,7 @@
-/* eslint-disable no-secrets/no-secrets */
-
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
+import { noop } from 'lodash'
 import isArray from 'lodash/isArray'
 
 import prismaMock from '../../../test/singleton'
@@ -52,7 +51,7 @@ describe('AdminService', () => {
     norisService = module.get<NorisService>(NorisService)
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.clearAllMocks()
   })
 
@@ -530,7 +529,7 @@ describe('AdminService', () => {
 
       const loggerErrorSpy = jest
         .spyOn(adminService['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(noop)
 
       await adminService.deleteTax({
         birthNumber: mockBirthNumber,
@@ -647,5 +646,3 @@ describe('AdminService', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

@@ -4,7 +4,12 @@ export default [
   ...createNestConfig({
     tsconfigRootDir: import.meta.dirname,
   }),
-
+  {
+    rules: {
+      'no-await-in-loop': 'error',
+      '@typescript-eslint/prefer-literal-enum-member': 'warn',
+    },
+  },
   // Project-specific rule overrides
   {
     files: ['**/*.spec.ts', '**/*_test_.ts'],
@@ -14,6 +19,10 @@ export default [
       'dot-notation': 'off', // to test private methods
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      'sonarjs/no-nested-functions': 'off',
     },
   },
 ]

@@ -46,7 +46,7 @@ export class NorisConnectionSubservice {
   }
 
   private async createOptimizedConnection(): Promise<ConnectionPool> {
-    return this.createConnection({
+    return await this.createConnection({
       connectionTimeout: 60_000,
       requestTimeout: 180_000,
     })
@@ -54,14 +54,14 @@ export class NorisConnectionSubservice {
 
   private async waitForConnection(
     connection: ConnectionPool,
-    maxWaitTime: number = 10_000,
+    maxWaitTime = 10_000,
   ): Promise<void> {
     const startTime = Date.now()
 
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       const checkConnection = () => {
         if (connection.connected) {
-          resolve()
+          resolve(undefined)
         } else if (Date.now() - startTime >= maxWaitTime) {
           reject(
             new Error(
@@ -87,8 +87,8 @@ export class NorisConnectionSubservice {
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
-    errorHandler: (error: any) => never,
-    useOptimized: boolean = false,
+    errorHandler: (error: unknown) => never,
+    useOptimized = false,
   ): Promise<T> {
     const connection = useOptimized
       ? await this.createOptimizedConnection()

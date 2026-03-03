@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -69,7 +68,7 @@ describe('NorisDeliveryMethodSubservice', () => {
     jest
       .spyOn(connectionService, 'withConnection')
       .mockImplementation(async (fn) => {
-        return fn({} as mssql.ConnectionPool)
+        return await fn({} as mssql.ConnectionPool)
       })
   })
 
@@ -257,7 +256,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       jest
         .spyOn(connectionService, 'withConnection')
         .mockImplementation(async () => {
-          throw connectionError
+          return await Promise.reject(connectionError)
         })
 
       await expect(
@@ -280,7 +279,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         .spyOn(connectionService, 'withConnection')
         .mockImplementation(async (fn) => {
           callCount += 1
-          return fn({} as mssql.ConnectionPool)
+          return await fn({} as mssql.ConnectionPool)
         })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
@@ -544,7 +543,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         const withConnectionSpy = jest
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
+            return await fn({} as mssql.ConnectionPool)
           })
 
         const result = await service['updateDeliveryMethodsInNoris'](mockData)
@@ -568,7 +567,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn, errorHandler) => {
             errorHandler(connectionError)
-            throw connectionError
+            return await Promise.reject(connectionError)
           })
 
         await expect(
@@ -607,7 +606,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         jest
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
+            return await fn({} as mssql.ConnectionPool)
           })
 
         const result = await service['updateDeliveryMethodsInNoris'](mockData)
@@ -737,7 +736,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         jest
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
+            return await fn({} as mssql.ConnectionPool)
           })
 
         const result =
@@ -766,7 +765,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn, errorHandler) => {
             errorHandler(connectionError)
-            throw connectionError
+            return await Promise.reject(connectionError)
           })
 
         await expect(
@@ -786,7 +785,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         jest
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
+            return await fn({} as mssql.ConnectionPool)
           })
 
         const result =
@@ -797,4 +796,3 @@ describe('NorisDeliveryMethodSubservice', () => {
     })
   })
 })
-/* eslint-enable no-secrets/no-secrets */

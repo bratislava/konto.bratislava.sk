@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-condition */
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 
@@ -13,7 +14,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     response.locals.middlewareUsed = 'true'
 
     const { send } = response
-    response.send = (exitData: string | object | Buffer | Array<any>) => {
+    response.send = (exitData: string | object | Buffer | any[]) => {
       response.locals.middlewareUsed = undefined
 
       const { responseData, logData, returnExitData } = this.parseExitData(
@@ -71,7 +72,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
         const tokenData = JSON.parse(Buffer.from(token, 'base64').toString())
         userId = tokenData.sub
       }
-    } catch (error) {
+    } catch {
       /* empty */
     }
 
@@ -80,7 +81,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
   private parseExitData(
     response: Response,
-    exitData: string | object | Buffer | Array<any>,
+    exitData: string | object | Buffer | any[],
   ): {
     returnExitData: typeof exitData
     responseData: string
@@ -93,7 +94,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
         .includes('application/json')
     ) {
       return {
-        responseData: <string>exitData,
+        responseData: exitData as string,
         returnExitData: exitData,
         logData: {},
       }
@@ -105,7 +106,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     if (typeof exitData === 'string') {
       try {
         data = JSON.parse(exitData)
-      } catch (error) {
+      } catch {
         // If parsing fails, assume it's a plain string
         return {
           responseData: exitData,

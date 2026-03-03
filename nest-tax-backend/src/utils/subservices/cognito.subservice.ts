@@ -12,6 +12,7 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
+// eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided
 export class CognitoSubservice {
   cognitoClient: CognitoIdentityProviderClient
 
@@ -44,7 +45,7 @@ export class CognitoSubservice {
         throw this.throwerErrorGuard.BadRequestException(
           ErrorsEnum.BAD_REQUEST_ERROR,
           error.name,
-          error.$metadata?.httpStatusCode?.toString(),
+          error.$metadata.httpStatusCode?.toString(),
           undefined,
           error,
         )

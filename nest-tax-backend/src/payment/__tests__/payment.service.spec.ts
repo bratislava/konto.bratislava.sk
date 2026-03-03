@@ -1,3 +1,4 @@
+/* eslint-disable require-await, @typescript-eslint/require-await, @typescript-eslint/no-misused-spread */
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -241,7 +242,7 @@ describe('PaymentService', () => {
         try {
           const result = await callback(mockTx)
           return result
-        } catch (error) {
+        } catch {
           transactionThrow = true
           throw new Error('Transaction error')
         }

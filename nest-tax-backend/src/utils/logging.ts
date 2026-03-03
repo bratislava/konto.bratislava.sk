@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions, sonarjs/no-ignored-exceptions, @typescript-eslint/no-unused-vars, @typescript-eslint/no-base-to-string, @typescript-eslint/no-explicit-any */
 import { HttpException } from '@nestjs/common'
 
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
@@ -27,8 +28,8 @@ export function escapeForLogfmt(value: string): string {
 export function separateLogFromResponseObj<T extends object>(
   obj: T,
 ): {
-  responseLog: { [K: string]: T[keyof T] }
-  responseMessage: { [K: string]: T[keyof T] }
+  responseLog: Record<string, T[keyof T]>
+  responseMessage: Record<string, T[keyof T]>
 } {
   const responseLog: ReturnType<
     typeof separateLogFromResponseObj

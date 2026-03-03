@@ -70,6 +70,7 @@ export type CommunalWasteTaxDetail = z.infer<
 export type RealEstateTaxDetail = z.infer<typeof RealEstateTaxDetailSchema>
 export type TaxDetail = RealEstateTaxDetail | CommunalWasteTaxDetail
 
+/* eslint-disable @typescript-eslint/no-namespace, sonarjs/redundant-type-aliases */
 declare global {
   namespace PrismaJson {
     type TaxDetailType = TaxDetail

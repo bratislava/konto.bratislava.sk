@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { TaxType } from '@prisma/client'
 
 import {
@@ -874,5 +873,3 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
     expect(result.addresses[0].containers[0].poplatok).toBe(999_999)
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

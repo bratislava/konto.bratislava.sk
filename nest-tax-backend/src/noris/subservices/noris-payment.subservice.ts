@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-non-null-assertion */
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
@@ -62,14 +63,14 @@ export class NorisPaymentSubservice {
         request.input('overPayments', mssql.TinyInt, overPayments ? 1 : 0)
         request.input('years', mssql.Int, year)
 
-        return request.query(queryPaymentsFromNorisByFromToDate)
+        return await request.query(queryPaymentsFromNorisByFromToDate)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get payment data from Noris by date range.',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : (error as string),
           error instanceof Error ? error : undefined,
         )
       },
@@ -127,7 +128,7 @@ export class NorisPaymentSubservice {
           )
         })
 
-        return request.query(
+        return await request.query(
           queryPaymentsFromNorisByVariableSymbols
             .replaceAll('@years', yearPlaceholders)
             .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
@@ -138,7 +139,7 @@ export class NorisPaymentSubservice {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get payment data from Noris by variable symbols.',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : (error as string),
           error instanceof Error ? error : undefined,
         )
       },
@@ -162,14 +163,14 @@ export class NorisPaymentSubservice {
         request.input('fromDate', mssql.SmallDateTime, data.fromDate)
         request.input('toDate', mssql.SmallDateTime, data.toDate ?? new Date())
 
-        return request.query(queryOverpaymentsFromNorisByDateRange)
+        return await request.query(queryOverpaymentsFromNorisByDateRange)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get overpayments data from Noris by date range.',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : (error as string),
           error instanceof Error ? error : undefined,
         )
       },
@@ -192,9 +193,7 @@ export class NorisPaymentSubservice {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {
-          in: norisPaymentData
-            .map((item) => item.variabilny_symbol)
-            .filter((item) => item !== null && item !== undefined),
+          in: norisPaymentData.map((item) => item.variabilny_symbol),
         },
       },
       include: {
@@ -256,19 +255,21 @@ export class NorisPaymentSubservice {
     },
   ) {
     // Step 1: Process each payment separately with a concurrency limit
-    const paymentProcesses = norisPaymentData.map((norisPayment) =>
-      this.concurrencyLimit(async () =>
-        this.processIndividualPayment(
-          norisPayment,
-          taxesDataByVsMap,
-          userDataFromCityAccount,
-          bloomreachSettings,
+    const paymentProcesses = norisPaymentData.map(
+      async (norisPayment) =>
+        await this.concurrencyLimit(
+          async () =>
+            await this.processIndividualPayment(
+              norisPayment,
+              taxesDataByVsMap,
+              userDataFromCityAccount,
+              bloomreachSettings,
+            ),
         ),
-      ),
     )
 
     // Step 2: Execute all payment processes with limited concurrency
-    return Promise.all(paymentProcesses)
+    return await Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(

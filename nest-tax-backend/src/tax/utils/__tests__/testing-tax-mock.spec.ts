@@ -98,7 +98,9 @@ describe('testing-tax-mock', () => {
       )
 
       expect(result.vyb_email).toBe(mockTaxAdministrator.email)
-      expect(result.cislo_poradace).toBe(+mockTaxAdministrator.externalId)
+      expect(result.cislo_poradace).toBe(
+        Number(mockTaxAdministrator.externalId),
+      )
       expect(result.vyb_id).toBe(mockTaxAdministrator.id)
       expect(result.vyb_nazov).toBe(mockTaxAdministrator.name)
       expect(result.vyb_telefon_prace).toBe(mockTaxAdministrator.phoneNumber)
@@ -246,7 +248,6 @@ describe('testing-tax-mock', () => {
     })
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('createTestingCommunalWasteTaxMock', () => {
     const testCases = [
       { taxTotal: '120,00', description: 'standard amount' },
@@ -306,7 +307,9 @@ describe('testing-tax-mock', () => {
       )
 
       expect(result.vyb_email).toBe(mockTaxAdministrator.email)
-      expect(result.cislo_poradace).toBe(+mockTaxAdministrator.externalId)
+      expect(result.cislo_poradace).toBe(
+        Number(mockTaxAdministrator.externalId),
+      )
       expect(result.vyb_id).toBe(mockTaxAdministrator.id)
       expect(result.vyb_nazov).toBe(mockTaxAdministrator.name)
       expect(result.vyb_telefon_prace).toBe(mockTaxAdministrator.phoneNumber)

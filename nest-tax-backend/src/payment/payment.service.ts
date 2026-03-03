@@ -294,12 +294,7 @@ export class PaymentService {
           break
 
         case 'KEEP_CURRENT':
-          nextStatus = undefined
-          break
-
         default:
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          throw new Error(`Unknown database status: ${strategy.dbStatus}`)
           break
       }
 

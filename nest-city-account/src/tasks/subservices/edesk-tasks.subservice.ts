@@ -110,15 +110,13 @@ export class EdeskTasksSubservice {
       await this.retrieveNewRecordsFromNorisToUpdate()
     }
 
-    const finishedExternalItems = await this.upvsQueueService.retrieveFinishedExternalItems(
+    const completedExternalItems = await this.upvsQueueService.retrieveCompletedExternalItems(
       EXTERNAL_ITEMS_PROCESS_BATCH_SIZE
     )
 
-    if (finishedExternalItems.length === 0) {
+    if (completedExternalItems.length === 0) {
       return
     }
-
-    // TODO what to do with failed items?
 
     const isCompletedItem = (
       item: ExternalEdeskCheck
@@ -127,7 +125,7 @@ export class EdeskTasksSubservice {
     }
 
     await this.norisService.updateEdeskChecks(
-      finishedExternalItems
+      completedExternalItems
         .filter(isCompletedItem)
         .map((item) => {
           try {
@@ -154,7 +152,7 @@ export class EdeskTasksSubservice {
 
     await this.prismaService.externalEdeskCheck.deleteMany({
       where: {
-        id: { in: finishedExternalItems.map((item) => item.id) },
+        id: { in: completedExternalItems.map((item) => item.id) },
       },
     })
   }

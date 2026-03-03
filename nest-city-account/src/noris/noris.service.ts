@@ -147,7 +147,7 @@ export class NorisService {
               .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
               .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
               .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
-              .input('edesk_pco', mssql.VarChar, edeskCheck.edeskPCO)
+              .input('edesk_pco', mssql.VarChar, null)
               .input('last_check', mssql.DateTime, edeskCheck.lastCheck)
               .execute('lcs.usp21_ino_edesk_update')
           },

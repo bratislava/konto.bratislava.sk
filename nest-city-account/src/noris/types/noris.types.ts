@@ -45,8 +45,6 @@ export type EdeskRecord = z.infer<typeof EdeskRecordSchema>
 
 export type UpdateEdeskChecks = {
   idNoris: string
-  /** Not validated; legacy ESBS field, usually ICO or IFO. */
-  edeskPCO: string | null
   lastCheck: Date
 
   edeskStatus: EdeskStatus

@@ -135,7 +135,6 @@ export class EdeskTasksSubservice {
             return {
               idNoris: item.externalId,
               lastCheck: item.processedAt,
-              edeskPCO: item.edeskPCO,
               ...edeskData,
             }
           } catch (error) {

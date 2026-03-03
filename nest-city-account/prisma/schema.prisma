@@ -150,7 +150,6 @@ model ExternalEdeskCheck {
   upvsStatus  String?
   edeskStatus String?
   edeskNumber String?
-  edeskPCO    String?
 
   externalId String // Noris ID
 

@@ -222,7 +222,6 @@ describe('NorisService', () => {
       const edeskChecks = [
         {
           idNoris: 'not-a-number',
-          edeskPCO: null,
           lastCheck: new Date(),
           edeskStatus: EdeskStatus.ACTIVE,
           edeskNumber: '123',
@@ -240,7 +239,6 @@ describe('NorisService', () => {
       const edeskChecks = [
         {
           idNoris: '42',
-          edeskPCO: 'ico',
           lastCheck: new Date('2024-01-15'),
           edeskStatus: EdeskStatus.ACTIVE,
           edeskNumber: '12345',
@@ -264,7 +262,6 @@ describe('NorisService', () => {
       const edeskChecks = [
         {
           idNoris: '1',
-          edeskPCO: null,
           lastCheck: new Date(),
           edeskStatus: EdeskStatus.ACTIVE,
           edeskNumber: 'a',
@@ -272,7 +269,6 @@ describe('NorisService', () => {
         },
         {
           idNoris: 'invalid',
-          edeskPCO: null,
           lastCheck: new Date(),
           edeskStatus: EdeskStatus.ACTIVE,
           edeskNumber: 'b',

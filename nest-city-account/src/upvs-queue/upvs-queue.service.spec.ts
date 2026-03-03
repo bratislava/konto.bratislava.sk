@@ -68,7 +68,6 @@ describe('UpvsQueueService', () => {
         edeskNumber: null,
         processedAt: null,
         failCount: 0,
-        edeskPCO: null,
         externalId: 'norisId',
       }
 
@@ -137,7 +136,6 @@ describe('UpvsQueueService', () => {
         edeskNumber: null,
         processedAt: null,
         failCount: 0,
-        edeskPCO: null,
         externalId: 'norisId',
       }
 

@@ -48,6 +48,14 @@ export default class NotificationsEventsSubservice {
       const dueDate = taxDefinition.installmentDueDates[installmentKey]
       if (dueDate) {
         const installmentDate = parseInstallmentDueDate(now.year(), dueDate)
+        /**
+         * We are iterating forwards through the installments. An installment is considered in the future,
+         * if its due date is less than 1 week in the future.
+         * 
+         * Note that two conditions must hold:
+         * 1. The installment is in the future.
+         * 2. The installment is less than 1 week in the future.
+         */
         if (
           installmentDate.isAfter(now) &&
           installmentDate.isBefore(now.add(1, 'week'))
@@ -75,6 +83,10 @@ export default class NotificationsEventsSubservice {
       const dueDate = taxDefinition.installmentDueDates[installmentKey]
       if (dueDate) {
         const installmentDate = parseInstallmentDueDate(now.year(), dueDate)
+        /**
+         * We are iterating backwards through the installments. An installment is considired in the past,
+         * if its due date is more than 1 week in the past.
+         */
         if (installmentDate.add(1, 'week').isBefore(now)) {
           return {
             installmentNumber: INSTALLMENT_NUMBERS[installmentKey],
@@ -83,10 +95,8 @@ export default class NotificationsEventsSubservice {
         }
       }
     }
-
     return null
   }
-
   private async getTaxesEligibleForInstallmentReminder(
     taxType: TaxType,
     installmentNumber: number,
@@ -219,7 +229,12 @@ export default class NotificationsEventsSubservice {
       this.logger.log(
         `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
       )
-      await this.processInstallmentReminders(nextInstallment, taxType, DUE_DATE_TIMING.BEFORE, year)
+      await this.processInstallmentReminders(
+        nextInstallment,
+        taxType,
+        DUE_DATE_TIMING.BEFORE,
+        year,
+      )
     }
 
     const pastInstallment = this.getPastInstallment(taxType)
@@ -227,7 +242,12 @@ export default class NotificationsEventsSubservice {
       this.logger.log(
         `Processing past installment: ${pastInstallment.installmentNumber} ${pastInstallment.installmentDate.format('YYYY-MM-DD')}`,
       )
-      await this.processInstallmentReminders(pastInstallment, taxType, DUE_DATE_TIMING.AFTER, year)
+      await this.processInstallmentReminders(
+        pastInstallment,
+        taxType,
+        DUE_DATE_TIMING.AFTER,
+        year,
+      )
     }
   }
 }

@@ -373,7 +373,7 @@ export class TasksService {
     })
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron('*/10 7-20 * * *') // every 10 minutes between 7:00 and 20:00
   @HandleErrors('Cron Error')
   async sendUnpaidTaxInstallmentReminders() {
     await this.notificationsEventsSubservice.sendUnpaidTaxInstallmentReminders()

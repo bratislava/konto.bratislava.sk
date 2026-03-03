@@ -57,7 +57,7 @@ const MessageModal = ({
               {children}
             </div>
           </div>
-          <div className="flex flex-col-reverse gap-3 *:w-full empty:hidden lg:flex-row lg:justify-end">
+          <div className="flex flex-col-reverse gap-3 *:w-full empty:hidden lg:flex-row">
             {secondaryButton}
             {primaryButton}
           </div>

@@ -40,7 +40,7 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
-export const stateHolidays: Record<number, { dates: Dayjs[] } | undefined> = {
+export const stateHolidays: Partial<Record<number, { dates: Dayjs[] }>> = {
   2023: {
     dates: [
       dayjs.tz('2023-01-01', bratislavaTimeZone),

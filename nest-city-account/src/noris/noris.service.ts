@@ -23,11 +23,12 @@ export class NorisService {
       !process.env.MSSQL_HOST ||
       !process.env.MSSQL_DB ||
       !process.env.MSSQL_USERNAME ||
-      !process.env.MSSQL_PASSWORD
+      !process.env.MSSQL_PASSWORD ||
+      !process.env.MSSQL_PORT
     ) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Missing one of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.'
+        'Missing one of noris envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD, MSSQL_PORT.'
       )
     }
   }
@@ -35,7 +36,7 @@ export class NorisService {
   private async createConnection(configOverrides?: Partial<config>): Promise<ConnectionPool> {
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
-      port: 1433,
+      port: this.configService.getOrThrow<number>('MSSQL_PORT'),
       database: this.configService.getOrThrow<string>('MSSQL_DB'),
       user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
       connectionTimeout: 120_000,

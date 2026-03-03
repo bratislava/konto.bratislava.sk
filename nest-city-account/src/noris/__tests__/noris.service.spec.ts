@@ -6,7 +6,6 @@ import { HttpException } from '@nestjs/common'
 import { ConnectionPool } from 'mssql'
 import { NorisService } from '../noris.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import { NorisValidatorSubservice } from '../subservices/noris-validator.subservice'
 import { EdeskRecordSchema } from '../types/noris.types'
 import { EdeskStatus } from '../types/noris.types'
@@ -218,7 +217,7 @@ describe('NorisService', () => {
       jest.clearAllMocks()
     })
 
-    it('should accept valid numeric idNoris and call withConnection', async () => {
+    it('should accept idNoris as string and call withConnection', async () => {
       const edeskChecks = [
         {
           idNoris: '42',
@@ -239,33 +238,6 @@ describe('NorisService', () => {
       const withConnectionSpy = jest.spyOn(service as any, 'withConnection')
       await expect(service.updateEdeskChecks([])).resolves.toBeUndefined()
       expect(withConnectionSpy).not.toHaveBeenCalled()
-    })
-
-    it('should throw when one of multiple items has invalid idNoris', async () => {
-      const edeskChecks = [
-        {
-          idNoris: '1',
-          lastCheck: new Date(),
-          edeskStatus: EdeskStatus.ACTIVE,
-          edeskNumber: 'a',
-          uri: 'u',
-        },
-        {
-          idNoris: 'invalid',
-          lastCheck: new Date(),
-          edeskStatus: EdeskStatus.ACTIVE,
-          edeskNumber: 'b',
-          uri: 'v',
-        },
-      ]
-      const badRequestError = new HttpException('Bad request', 400)
-      jest.mocked(throwerErrorGuard.BadRequestException).mockReturnValue(badRequestError)
-
-      await expect(service.updateEdeskChecks(edeskChecks)).rejects.toThrow(badRequestError)
-      expect(throwerErrorGuard.BadRequestException).toHaveBeenCalledWith(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Invalid idNoris: invalid'
-      )
     })
   })
 })

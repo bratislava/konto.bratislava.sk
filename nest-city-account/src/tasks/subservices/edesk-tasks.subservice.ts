@@ -8,6 +8,7 @@ import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
 
 const PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE = 100
 const LEGAL_PERSONS_RETRIEVE_BATCH_SIZE = 0 // TODO: add when upvs retrieval works for legal persons
@@ -67,7 +68,7 @@ export class EdeskTasksSubservice {
       case UpvsIdentityUpvsEdeskStatusEnum.Disabled:
         return EdeskStatus.DISABLED
       case UpvsIdentityUpvsEdeskStatusEnum.Deleted:
-        return EdeskStatus.DISABLED // TODO: is this correct?
+        return EdeskStatus.DISABLED // There is no Deleted status in Noris
     }
   }
 
@@ -117,14 +118,23 @@ export class EdeskTasksSubservice {
       return
     }
 
+    // TODO what to do with failed items?
+
+    const isCompletedItem = (
+      item: ExternalEdeskCheck
+    ): item is ExternalEdeskCheck & { queueStatus: 'COMPLETED'; processedAt: Date } => {
+      return item.queueStatus === QueueItemStatusEnum.COMPLETED && item.processedAt !== null
+    }
+
     await this.norisService.updateEdeskChecks(
       finishedExternalItems
+        .filter(isCompletedItem)
         .map((item) => {
           try {
             const edeskData = this.mapEdeskDataToNorisType(item)
             return {
               idNoris: item.externalId,
-              lastCheck: new Date(),
+              lastCheck: item.processedAt,
               edeskPCO: item.edeskPCO,
               ...edeskData,
             }

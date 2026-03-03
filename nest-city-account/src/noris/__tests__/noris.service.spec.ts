@@ -21,6 +21,7 @@ describe('NorisService', () => {
 
   beforeEach(async () => {
     process.env.MSSQL_HOST = 'localhost'
+    process.env.MSSQL_PORT = '1433'
     process.env.MSSQL_DB = 'testdb'
     process.env.MSSQL_USERNAME = 'user'
     process.env.MSSQL_PASSWORD = 'pass'
@@ -43,8 +44,9 @@ describe('NorisService', () => {
     norisValidatorSubservice = module.get<NorisValidatorSubservice>(NorisValidatorSubservice)
 
     jest.mocked(configService.getOrThrow).mockImplementation((key: string) => {
-      const map: Record<string, string> = {
+      const map: Record<string, string | number> = {
         MSSQL_HOST: 'localhost',
+        MSSQL_PORT: 1433,
         MSSQL_DB: 'testdb',
         MSSQL_USERNAME: 'user',
         MSSQL_PASSWORD: 'pass',

@@ -681,25 +681,23 @@ describe('NotificationsEventsSubservice', () => {
     beforeEach(() => {
       jest.spyOn(service as any, 'getNextInstallment').mockReturnValue(null)
       jest.spyOn(service as any, 'getPastInstallment').mockReturnValue(null)
-      service['processNextInstallment'] = jest.fn()
-      service['processPastInstallment'] = jest.fn()
+      service['processInstallmentReminders'] = jest.fn()
     })
 
     afterEach(() => {
       jest.restoreAllMocks()
     })
 
-    it('calls neither processNextInstallment nor processPastInstallment when both getNext and getPast return null', async () => {
+    it('does not call processInstallmentReminders when both getNext and getPast return null', async () => {
       jest.spyOn(service as any, 'getNextInstallment').mockReturnValue(null)
       jest.spyOn(service as any, 'getPastInstallment').mockReturnValue(null)
 
       await service.sendUnpaidTaxInstallmentReminders()
 
-      expect(service['processNextInstallment']).not.toHaveBeenCalled()
-      expect(service['processPastInstallment']).not.toHaveBeenCalled()
+      expect(service['processInstallmentReminders']).not.toHaveBeenCalled()
     })
 
-    it('calls processNextInstallment only when getNextInstallment returns an installment', async () => {
+    it('calls processInstallmentReminders with DUE_DATE_TIMING.BEFORE only when getNextInstallment returns an installment', async () => {
       jest.spyOn(service as any, 'getPastInstallment').mockReturnValue(null)
       jest
         .spyOn(service as any, 'getNextInstallment')
@@ -707,16 +705,22 @@ describe('NotificationsEventsSubservice', () => {
 
       await service.sendUnpaidTaxInstallmentReminders()
 
-      expect(service['processNextInstallment']).toHaveBeenCalledTimes(1)
-      expect(service['processNextInstallment']).toHaveBeenCalledWith(
+      expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(1)
+      expect(service['processInstallmentReminders']).toHaveBeenCalledWith(
         mockNextInstallment,
         TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
         currentYear,
       )
-      expect(service['processPastInstallment']).not.toHaveBeenCalled()
+      expect(service['processInstallmentReminders']).not.toHaveBeenCalledWith(
+        mockNextInstallment,
+        TaxType.KO,
+        DUE_DATE_TIMING.AFTER,
+        currentYear,
+      )
     })
 
-    it('calls processPastInstallment only when getPastInstallment returns an installment', async () => {
+    it('calls processInstallmentReminders with DUE_DATE_TIMING.AFTER only when getPastInstallment returns an installment', async () => {
       jest.spyOn(service as any, 'getNextInstallment').mockReturnValue(null)
       jest
         .spyOn(service as any, 'getPastInstallment')
@@ -724,16 +728,22 @@ describe('NotificationsEventsSubservice', () => {
 
       await service.sendUnpaidTaxInstallmentReminders()
 
-      expect(service['processPastInstallment']).toHaveBeenCalledTimes(1)
-      expect(service['processPastInstallment']).toHaveBeenCalledWith(
+      expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(1)
+      expect(service['processInstallmentReminders']).toHaveBeenCalledWith(
         mockPastInstallment,
         TaxType.KO,
+        DUE_DATE_TIMING.AFTER,
         currentYear,
       )
-      expect(service['processNextInstallment']).not.toHaveBeenCalled()
+      expect(service['processInstallmentReminders']).not.toHaveBeenCalledWith(
+        mockPastInstallment,
+        TaxType.KO,
+        DUE_DATE_TIMING.BEFORE,
+        currentYear,
+      )
     })
 
-    it('calls both processNextInstallment and processPastInstallment when both return an installment', async () => {
+    it('calls processInstallmentReminders with DUE_DATE_TIMING.BEFORE and DUE_DATE_TIMING.AFTER when both getNext and getPast return an installment', async () => {
       jest
         .spyOn(service as any, 'getNextInstallment')
         .mockReturnValue(mockNextInstallment)
@@ -743,18 +753,7 @@ describe('NotificationsEventsSubservice', () => {
 
       await service.sendUnpaidTaxInstallmentReminders()
 
-      expect(service['processNextInstallment']).toHaveBeenCalledTimes(1)
-      expect(service['processNextInstallment']).toHaveBeenCalledWith(
-        mockNextInstallment,
-        TaxType.KO,
-        currentYear,
-      )
-      expect(service['processPastInstallment']).toHaveBeenCalledTimes(1)
-      expect(service['processPastInstallment']).toHaveBeenCalledWith(
-        mockPastInstallment,
-        TaxType.KO,
-        currentYear,
-      )
+      expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(2)
     })
 
     it('uses toggled tax type (DZN -> KO on first run)', async () => {

@@ -201,32 +201,6 @@ export default class NotificationsEventsSubservice {
     `
   }
 
-  private async processNextInstallment(
-    installment: { installmentNumber: 2 | 3 | 4; installmentDate: Dayjs },
-    taxType: TaxType,
-    year: number,
-  ) {
-    await this.processInstallmentReminders(
-      installment,
-      taxType,
-      DUE_DATE_TIMING.BEFORE,
-      year,
-    )
-  }
-
-  private async processPastInstallment(
-    installment: { installmentNumber: 2 | 3 | 4; installmentDate: Dayjs },
-    taxType: TaxType,
-    year: number,
-  ) {
-    await this.processInstallmentReminders(
-      installment,
-      taxType,
-      DUE_DATE_TIMING.AFTER,
-      year,
-    )
-  }
-
   async sendUnpaidTaxInstallmentReminders() {
     this.lastInstallmentReminderTaxType =
       this.lastInstallmentReminderTaxType === TaxType.KO
@@ -245,7 +219,7 @@ export default class NotificationsEventsSubservice {
       this.logger.log(
         `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
       )
-      await this.processNextInstallment(nextInstallment, taxType, year)
+      await this.processInstallmentReminders(nextInstallment, taxType, DUE_DATE_TIMING.BEFORE, year)
     }
 
     const pastInstallment = this.getPastInstallment(taxType)
@@ -253,7 +227,7 @@ export default class NotificationsEventsSubservice {
       this.logger.log(
         `Processing past installment: ${pastInstallment.installmentNumber} ${pastInstallment.installmentDate.format('YYYY-MM-DD')}`,
       )
-      await this.processPastInstallment(pastInstallment, taxType, year)
+      await this.processInstallmentReminders(pastInstallment, taxType, DUE_DATE_TIMING.AFTER, year)
     }
   }
 }

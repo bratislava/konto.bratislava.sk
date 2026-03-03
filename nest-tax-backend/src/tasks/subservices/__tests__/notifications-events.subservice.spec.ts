@@ -11,9 +11,9 @@ import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
-import BloomreachEventsSubservice, {
+import NotificationsEventsSubservice, {
   DUE_DATE_TIMING,
-} from '../bloomreach-events.subservice'
+} from '../notifications-events.subservice'
 
 jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
@@ -47,8 +47,8 @@ function assertExecuteRawUsesReminderEnums(
   expect(values).toContain(UnpaidReminderSent.BOTH)
 }
 
-describe('BloomreachEventsSubservice', () => {
-  let service: BloomreachEventsSubservice
+describe('NotificationsEventsSubservice', () => {
+  let service: NotificationsEventsSubservice
   let bloomreachService: jest.Mocked<BloomreachService>
   let cityAccountSubservice: jest.Mocked<CityAccountSubservice>
 
@@ -84,7 +84,7 @@ describe('BloomreachEventsSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        BloomreachEventsSubservice,
+        NotificationsEventsSubservice,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: BloomreachService,
@@ -97,7 +97,7 @@ describe('BloomreachEventsSubservice', () => {
       ],
     }).compile()
 
-    service = module.get(BloomreachEventsSubservice)
+    service = module.get(NotificationsEventsSubservice)
     bloomreachService = module.get(BloomreachService)
     cityAccountSubservice = module.get(CityAccountSubservice)
 

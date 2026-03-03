@@ -20,7 +20,7 @@ import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subse
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { RetryService } from '../../utils-module/retry.service'
-import BloomreachEventsSubservice from '../subservices/bloomreach-events.subservice'
+import NotificationsEventsSubservice from '../subservices/notifications-events.subservice'
 import TasksConfigSubservice from '../subservices/config.subservice'
 import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
 import { TasksService } from '../tasks.service'
@@ -75,8 +75,8 @@ describe('TasksService', () => {
           useValue: createMock<RetryService>(),
         },
         {
-          provide: BloomreachEventsSubservice,
-          useValue: createMock<BloomreachEventsSubservice>(),
+          provide: NotificationsEventsSubservice,
+          useValue: createMock<NotificationsEventsSubservice>(),
         },
       ],
     }).compile()

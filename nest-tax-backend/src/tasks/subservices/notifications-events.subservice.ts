@@ -23,7 +23,7 @@ export enum DUE_DATE_TIMING {
 }
 
 @Injectable()
-export default class BloomreachEventsSubservice {
+export default class NotificationsEventsSubservice {
   private readonly logger: LineLoggerSubservice
 
   private lastInstallmentReminderTaxType: TaxType = TaxType.DZN
@@ -33,7 +33,7 @@ export default class BloomreachEventsSubservice {
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
   ) {
-    this.logger = new LineLoggerSubservice(BloomreachEventsSubservice.name)
+    this.logger = new LineLoggerSubservice(NotificationsEventsSubservice.name)
   }
 
   private getNextInstallment(

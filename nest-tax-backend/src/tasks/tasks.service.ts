@@ -35,7 +35,7 @@ import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservi
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
-import BloomreachEventsSubservice from './subservices/bloomreach-events.subservice'
+import NotificationsEventsSubservice from './subservices/notifications-events.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 
@@ -62,7 +62,7 @@ export class TasksService {
     private readonly configService: ConfigService,
     private readonly retryService: RetryService,
     private readonly paymentService: PaymentService,
-    private readonly bloomreachEventsSubservice: BloomreachEventsSubservice,
+    private readonly notificationsEventsSubservice: NotificationsEventsSubservice,
   ) {
     this.logger = new Logger('TasksService')
     // Check if the required environment variable is set
@@ -376,7 +376,7 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async sendUnpaidTaxInstallmentReminders() {
-    await this.bloomreachEventsSubservice.sendUnpaidTaxInstallmentReminders()
+    await this.notificationsEventsSubservice.sendUnpaidTaxInstallmentReminders()
   }
 
   @Cron('0 9-17 1-23 12 1-5')

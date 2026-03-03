@@ -450,7 +450,7 @@
   "Upload.uploadFiles": "Nahrať súbory",
   "Upload.uploadingList": "Nahrávané súbory",
   "verification_modal.footer_choice": "alebo",
-  "verification_modal.footer_desktop_continue": "Pokračovať na žiadosť",
+  "verification_modal.footer_desktop_continue": "Preskočiť na žiadosť",
   "verification_modal.footer_desktop_eID_text": "Pokračovať s eID",
   "verification_modal.info": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení totožnosti v Bratislavskom konte. Bez overenia viete žiadosť vyplniť, ale odoslať iba pomocou eID cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>.",
   "verification_modal.subtitle": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné <strong>jednorazovo</strong> overiť totožnosť používateľa.",

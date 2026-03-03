@@ -36,7 +36,7 @@ export class NorisService {
   private async createConnection(configOverrides?: Partial<config>): Promise<ConnectionPool> {
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
-      port: this.configService.getOrThrow<number>('MSSQL_PORT'),
+      port: Number(this.configService.getOrThrow<string>('MSSQL_PORT')),
       database: this.configService.getOrThrow<string>('MSSQL_DB'),
       user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
       connectionTimeout: 120_000,
@@ -131,19 +131,11 @@ export class NorisService {
   async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
     const edeskUpdateProcessed = edeskChecks.map((edeskCheck) =>
       this.concurrencyLimit(async () => {
-        const idNoris = Number(edeskCheck.idNoris)
-        if (isNaN(idNoris)) {
-          throw this.throwerErrorGuard.BadRequestException(
-            ErrorsEnum.BAD_REQUEST_ERROR,
-            `Invalid idNoris: ${edeskCheck.idNoris}`
-          )
-        }
-
         this.withConnection(
           async (connection) => {
             await connection
               .request()
-              .input('id_noris', mssql.Int, idNoris)
+              .input('id_noris', mssql.VarChar, edeskCheck.idNoris)
               .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
               .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
               .input('edesk_uri', mssql.VarChar, edeskCheck.uri)

@@ -218,23 +218,6 @@ describe('NorisService', () => {
       jest.clearAllMocks()
     })
 
-    it('should throw BadRequest when idNoris is NaN', async () => {
-      const edeskChecks = [
-        {
-          idNoris: 'not-a-number',
-          lastCheck: new Date(),
-          edeskStatus: EdeskStatus.ACTIVE,
-          edeskNumber: '123',
-          uri: 'https://example.com',
-        },
-      ]
-      const badRequestError = new HttpException('Bad request', 400)
-      jest.mocked(throwerErrorGuard.BadRequestException).mockReturnValue(badRequestError)
-
-      await expect(service.updateEdeskChecks(edeskChecks)).rejects.toThrow(badRequestError)
-      expect(throwerErrorGuard.BadRequestException).toHaveBeenCalled()
-    })
-
     it('should accept valid numeric idNoris and call withConnection', async () => {
       const edeskChecks = [
         {

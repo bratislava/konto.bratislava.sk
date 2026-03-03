@@ -31,7 +31,7 @@ jest.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
 }))
 
-const mockPLimitFn = async (fn: () => Promise<any>): Promise<any> => await fn()
+const mockPLimitFn = (fn: any) => fn()
 jest.mock('p-limit', () => {
   return jest.fn(() => mockPLimitFn)
 })
@@ -243,12 +243,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return await callback(mockConnection as any)
+        return callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
       ;(Request as unknown as jest.Mock).mockImplementation(
-        (): unknown => mockRequest as any,
+        () => mockRequest as any,
       )
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2023, [
@@ -301,7 +301,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return await callback(mockConnection as any)
+        return callback(mockConnection as any)
       })
 
       const { Request } = await import('mssql')
@@ -961,7 +961,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               createMany: jest.fn().mockResolvedValue({}),
             },
           }
-          return await callback(mockTx as any)
+          return callback(mockTx as any)
         })
       })
 

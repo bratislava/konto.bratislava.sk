@@ -43,7 +43,7 @@ export class AdminService {
     year: number,
     birthNumbers: string[],
   ): Promise<CreateBirthNumbersResponseDto> {
-    return await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+    return this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
       taxType,
       year,
       birthNumbers,
@@ -55,7 +55,7 @@ export class AdminService {
     year: number,
     birthNumbers: string[],
   ) {
-    return await this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
+    return this.norisService.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       taxType,
       year,
       birthNumbers,
@@ -71,9 +71,7 @@ export class AdminService {
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
             norisRequest.data,
           )
-    return await this.norisService.updatePaymentsFromNorisWithData(
-      norisPaymentData,
-    )
+    return this.norisService.updatePaymentsFromNorisWithData(norisPaymentData)
   }
 
   /**
@@ -85,18 +83,15 @@ export class AdminService {
   async updateOverpaymentsDataFromNorisByDateRange(
     data: DateRangeDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return await this.norisService.updateOverpaymentsDataFromNorisByDateRange(
-      data,
-      {
-        suppressEmail: true,
-      },
-    )
+    return this.norisService.updateOverpaymentsDataFromNorisByDateRange(data, {
+      suppressEmail: true,
+    })
   }
 
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return await this.norisService.updateDeliveryMethodsInNoris({ data })
+    return this.norisService.updateDeliveryMethodsInNoris({ data })
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

@@ -79,7 +79,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return await callback(tx)
+          return callback(tx)
         })
 
       await service.incrementOverpaymentsLookbackDays()
@@ -107,7 +107,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return await callback(tx)
+          return callback(tx)
         })
 
       await service.incrementOverpaymentsLookbackDays(3)
@@ -131,7 +131,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return await callback(tx)
+          return callback(tx)
         })
 
       await service.incrementOverpaymentsLookbackDays(2)
@@ -167,7 +167,7 @@ describe('TasksConfigSubservice', () => {
               updateMany: mockUpdateMany,
             },
           } as any
-          return await callback(tx)
+          return callback(tx)
         })
 
       await expect(service.incrementOverpaymentsLookbackDays()).rejects.toThrow(

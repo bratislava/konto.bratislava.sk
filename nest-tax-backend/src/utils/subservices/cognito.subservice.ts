@@ -39,7 +39,7 @@ export class CognitoSubservice {
     }
 
     try {
-      return await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
+      return this.cognitoClient.send(new AdminGetUserCommand(inputParams))
     } catch (error) {
       if (error instanceof CognitoIdentityProviderServiceException) {
         throw this.throwerErrorGuard.BadRequestException(

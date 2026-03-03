@@ -47,7 +47,7 @@ export class NorisTaxSubservice {
   ): Promise<CreateBirthNumbersResponseDto> {
     // Use conditional branching to help TypeScript narrow types
     if (taxType === TaxType.DZN) {
-      return await this.subservices[TaxType.DZN].processNorisTaxData(
+      return this.subservices[TaxType.DZN].processNorisTaxData(
         norisData as NorisRealEstateTax[],
         year,
         options,
@@ -55,7 +55,7 @@ export class NorisTaxSubservice {
     }
 
     if (taxType === TaxType.KO) {
-      return await this.subservices[TaxType.KO].processNorisTaxData(
+      return this.subservices[TaxType.KO].processNorisTaxData(
         norisData as NorisCommunalWasteTaxGrouped[],
         year,
         options,
@@ -75,7 +75,7 @@ export class NorisTaxSubservice {
     birthNumbers: string[],
     options: RequestPostNorisLoadDataOptionsDto = {},
   ) {
-    return await this.getImplementationByType(
+    return this.getImplementationByType(
       taxType,
     ).getAndProcessNorisTaxDataByBirthNumberAndYear(year, birthNumbers, options)
   }
@@ -85,7 +85,7 @@ export class NorisTaxSubservice {
     year: number,
     birthNumbers: string[],
   ): Promise<{ updated: number }> {
-    return await this.getImplementationByType(
+    return this.getImplementationByType(
       taxType,
     ).getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
       year,

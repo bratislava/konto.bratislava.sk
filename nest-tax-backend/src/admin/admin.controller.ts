@@ -59,11 +59,7 @@ export class AdminController {
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     const { taxType, year, birthNumbers } = data
-    return await this.adminService.loadDataFromNoris(
-      taxType,
-      year,
-      birthNumbers,
-    )
+    return this.adminService.loadDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)
@@ -82,11 +78,7 @@ export class AdminController {
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<{ updated: number }> {
     const { taxType, year, birthNumbers } = data
-    return await this.adminService.updateDataFromNoris(
-      taxType,
-      year,
-      birthNumbers,
-    )
+    return this.adminService.updateDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)
@@ -104,7 +96,7 @@ export class AdminController {
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return await this.adminService.updatePaymentsFromNoris({
+    return this.adminService.updatePaymentsFromNoris({
       type: 'fromToDate',
       data,
     })
@@ -125,9 +117,7 @@ export class AdminController {
   async updateOverpaymentsFromNoris(
     @Body() data: DateRangeDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
-    return await this.adminService.updateOverpaymentsDataFromNorisByDateRange(
-      data,
-    )
+    return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data)
   }
 
   @HttpCode(200)
@@ -144,7 +134,7 @@ export class AdminController {
   async updateDeliveryMethodsInNoris(
     @Body() data: RequestUpdateNorisDeliveryMethodsDto,
   ): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return await this.adminService.updateDeliveryMethodsInNoris(data)
+    return this.adminService.updateDeliveryMethodsInNoris(data)
   }
 
   @HttpCode(200)

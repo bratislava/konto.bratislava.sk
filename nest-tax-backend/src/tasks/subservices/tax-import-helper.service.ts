@@ -57,7 +57,7 @@ export default class TaxImportHelperService {
       .toDate()
     const todayEnd = dayjs().tz(this.BRATISLAVA_TIMEZONE).endOf('day').toDate()
 
-    return await this.prismaService.tax.count({
+    return this.prismaService.tax.count({
       where: {
         createdAt: {
           gte: todayStart,

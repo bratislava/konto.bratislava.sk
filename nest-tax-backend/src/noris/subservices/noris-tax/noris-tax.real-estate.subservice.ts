@@ -68,7 +68,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
           request.input(`birth_number${index}`, mssql.VarChar(20), birthNumber)
         })
 
-        return await request.query(
+        return request.query(
           queryPayersFromNoris.replaceAll(
             '@birth_numbers',
             birthNumbersPlaceholders,
@@ -143,7 +143,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     const updateTaxRecord = async (
       norisItem: NorisRealEstateTax,
     ): Promise<boolean> => {
-      return await this.concurrencyLimit(async () => {
+      return this.concurrencyLimit(async () => {
         const taxIdentifier = norisItem.ICO_RC
         const existingTax = taxIdentifierToTax.get(taxIdentifier)
         if (!existingTax) {

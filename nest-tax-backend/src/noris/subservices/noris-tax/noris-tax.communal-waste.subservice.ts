@@ -105,7 +105,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
           birthNumbersPlaceholders,
         )
 
-        return await request.query(queryWithPlaceholders)
+        return request.query(queryWithPlaceholders)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -231,7 +231,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     const updateTaxRecord = async (
       norisItem: NorisCommunalWasteTaxGrouped,
     ): Promise<boolean> => {
-      return await this.concurrencyLimit(async () => {
+      return this.concurrencyLimit(async () => {
         const taxIdentifier = norisItem.variabilny_symbol
         const existingTax = taxIdentifierToTax.get(taxIdentifier)
         if (!existingTax) {

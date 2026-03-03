@@ -46,7 +46,7 @@ export class NorisConnectionSubservice {
   }
 
   private async createOptimizedConnection(): Promise<ConnectionPool> {
-    return await this.createConnection({
+    return this.createConnection({
       connectionTimeout: 60_000,
       requestTimeout: 180_000,
     })

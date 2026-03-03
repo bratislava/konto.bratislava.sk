@@ -85,12 +85,7 @@ export class TaxControllerV2 {
     @Query('order', ParseIntPipe) order: number,
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ) {
-    return await this.taxService.getTaxDetail(
-      baUser.birthNumber,
-      year,
-      type,
-      order,
-    )
+    return this.taxService.getTaxDetail(baUser.birthNumber, year, type, order)
   }
 
   @HttpCode(200)

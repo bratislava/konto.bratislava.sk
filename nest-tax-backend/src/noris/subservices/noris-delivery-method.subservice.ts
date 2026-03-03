@@ -37,10 +37,10 @@ export class NorisDeliveryMethodSubservice {
   ): Promise<string[]> {
     const updatedSubjects = await this.connectionService.withConnection(
       async (connection) => {
-        const updatePromises = data.map(async (dataItem) => {
-          return await this.executeDeliveryMethodUpdate(connection, dataItem)
-        })
-        return await Promise.all(updatePromises)
+        const updatePromises = data.map(async (dataItem) =>
+          this.executeDeliveryMethodUpdate(connection, dataItem),
+        )
+        return Promise.all(updatePromises)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -104,7 +104,7 @@ export class NorisDeliveryMethodSubservice {
       return []
     }
 
-    return await this.connectionService.withConnection(
+    return this.connectionService.withConnection(
       async (connection) => {
         const request = new mssql.Request(connection)
 

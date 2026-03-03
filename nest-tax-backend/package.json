@@ -57,7 +57,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "^0.7.1",
+    "@bratislava/eslint-config-nest": "^0.8.0",
     "@golevelup/ts-jest": "^1.2.1",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.14",

@@ -63,7 +63,7 @@ export class NorisPaymentSubservice {
         request.input('overPayments', mssql.TinyInt, overPayments ? 1 : 0)
         request.input('years', mssql.Int, year)
 
-        return await request.query(queryPaymentsFromNorisByFromToDate)
+        return request.query(queryPaymentsFromNorisByFromToDate)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -128,7 +128,7 @@ export class NorisPaymentSubservice {
           )
         })
 
-        return await request.query(
+        return request.query(
           queryPaymentsFromNorisByVariableSymbols
             .replaceAll('@years', yearPlaceholders)
             .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
@@ -163,7 +163,7 @@ export class NorisPaymentSubservice {
         request.input('fromDate', mssql.SmallDateTime, data.fromDate)
         request.input('toDate', mssql.SmallDateTime, data.toDate ?? new Date())
 
-        return await request.query(queryOverpaymentsFromNorisByDateRange)
+        return request.query(queryOverpaymentsFromNorisByDateRange)
       },
       (error) => {
         throw this.throwerErrorGuard.InternalServerErrorException(
@@ -255,21 +255,19 @@ export class NorisPaymentSubservice {
     },
   ) {
     // Step 1: Process each payment separately with a concurrency limit
-    const paymentProcesses = norisPaymentData.map(
-      async (norisPayment) =>
-        await this.concurrencyLimit(
-          async () =>
-            await this.processIndividualPayment(
-              norisPayment,
-              taxesDataByVsMap,
-              userDataFromCityAccount,
-              bloomreachSettings,
-            ),
+    const paymentProcesses = norisPaymentData.map(async (norisPayment) =>
+      this.concurrencyLimit(async () =>
+        this.processIndividualPayment(
+          norisPayment,
+          taxesDataByVsMap,
+          userDataFromCityAccount,
+          bloomreachSettings,
         ),
+      ),
     )
 
     // Step 2: Execute all payment processes with limited concurrency
-    return await Promise.all(paymentProcesses)
+    return Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(
@@ -289,7 +287,7 @@ export class NorisPaymentSubservice {
 
       const paidFromNoris = this.formatAmount(norisPayment.uhrazeno)
 
-      return await this.prismaService.$transaction(async (tx) => {
+      return this.prismaService.$transaction(async (tx) => {
         // Lock the tax row to prevent concurrent updates
         await tx.$queryRaw`SELECT id FROM "Tax" WHERE id = ${taxData.id} FOR UPDATE`
 

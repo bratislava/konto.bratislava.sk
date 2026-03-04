@@ -58,9 +58,9 @@ export class TasksService {
    * Syncs eDesk status from UPVS back to Noris for external eDesk checks.
    * Processes finished UPVS queue items, updates Noris with check results, then cleans up local records.
    * When no queued items exist, fetches new records from Noris and enqueues them for UPVS checking.
-   * Runs every 5 minutes.
+   * Runs every 30 minutes.
    */
-  @Cron(CronExpression.EVERY_5_MINUTES, { timeZone: bratislavaTimezone })
+  @Cron(CronExpression.EVERY_30_MINUTES, { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async updateEdeskInNoris(): Promise<void> {
     return this.edeskTasksSubservice.updateEdeskInNoris()

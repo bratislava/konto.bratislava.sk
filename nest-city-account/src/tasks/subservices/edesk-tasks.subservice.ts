@@ -10,9 +10,9 @@ import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
 
-const PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE = 100
+const PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE = 4000
 const LEGAL_PERSONS_RETRIEVE_BATCH_SIZE = 0 // TODO: add when upvs retrieval works for legal persons
-const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 100
+const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 500
 
 @Injectable()
 export class EdeskTasksSubservice {
@@ -114,7 +114,7 @@ export class EdeskTasksSubservice {
       EXTERNAL_ITEMS_PROCESS_BATCH_SIZE
     )
 
-    if (completedExternalItems.length === 0) {
+    if (completedExternalItems.length < EXTERNAL_ITEMS_PROCESS_BATCH_SIZE) {
       return
     }
 

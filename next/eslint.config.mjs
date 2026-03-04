@@ -63,9 +63,6 @@ export default [
       'tailwindcss/enforces-shorthand': 'warn', // 2 violations
       'sonarjs/fixme-tag': 'warn', // 2 violations
       '@typescript-eslint/no-base-to-string': 'warn', // 2 violations
-
-      'tailwindcss/no-custom-classname': 'off',
-      'tailwindcss/classnames-order': 'off',
     },
   },
 ]

@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import dayjs from 'dayjs'
+
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -9,10 +10,10 @@ import {
 import { stateHolidays } from '../tax/utils/unified-tax.util'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import ReportingTasksService from './subservices/reporting.tasks.service'
-import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
-import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import BloomreachMessagingTasksService from './subservices/bloomreach-messaging.tasks.service'
+import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
+import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
+import ReportingTasksService from './subservices/reporting.tasks.service'
 import TaxImportTasksService from './subservices/tax-import.tasks.service'
 
 @Injectable()
@@ -42,6 +43,7 @@ export class TasksService {
   async updateTaxesFromNoris() {
     await this.norisSyncTasksService.updateTaxesFromNoris()
   }
+
   @Cron(CronExpression.EVERY_WEEKDAY)
   @HandleErrors('Cron Error')
   async reportCardPayments() {

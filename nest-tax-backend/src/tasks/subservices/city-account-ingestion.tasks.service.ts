@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
+
 import { PrismaService } from '../../prisma/prisma.service'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 
 @Injectable()
 export default class CityAccountIngestionTasksService {

@@ -6,6 +6,7 @@ import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
 import { NorisTaxPayment } from '../../noris/types/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
@@ -16,7 +17,6 @@ import {
 } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 
 @Injectable()
 export default class NorisSyncTasksService {

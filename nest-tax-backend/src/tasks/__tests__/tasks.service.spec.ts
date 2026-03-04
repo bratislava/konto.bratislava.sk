@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -50,5 +49,3 @@ describe('TasksService', () => {
     expect(service).toBeDefined()
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { DeliveryMethodNamed, PaymentStatus } from '@prisma/client'
 import dayjs from 'dayjs'
+import pLimit from 'p-limit'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import pLimit from 'p-limit'
 import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
-import { PaymentService } from '../../payment/payment.service'
 
 @Injectable()
 export default class BloomreachMessagingTasksService {

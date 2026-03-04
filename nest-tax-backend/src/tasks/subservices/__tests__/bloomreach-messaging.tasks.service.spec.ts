@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus } from '@prisma/client'
@@ -279,7 +278,7 @@ describe('BloomreachMessagingTasksService', () => {
 
       const trackPaymentInBloomreachSpy = jest
         .spyOn(service['paymentService'], 'trackPaymentInBloomreach')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.resendBloomreachEvents()
 
@@ -327,7 +326,7 @@ describe('BloomreachMessagingTasksService', () => {
       const error = new Error('Tracking failed')
       const trackPaymentInBloomreachSpy = jest
         .spyOn(service['paymentService'], 'trackPaymentInBloomreach')
-        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce()
         .mockRejectedValueOnce(error)
 
       await service.resendBloomreachEvents()
@@ -398,5 +397,3 @@ describe('BloomreachMessagingTasksService', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

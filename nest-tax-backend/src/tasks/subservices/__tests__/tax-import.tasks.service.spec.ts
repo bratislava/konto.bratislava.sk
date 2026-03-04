@@ -1,23 +1,19 @@
 /* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
-import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
-import noop from 'lodash/noop'
 
 import prismaMock from '../../../../test/singleton'
-import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../../utils/constants'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { RetryService } from '../../../utils-module/retry.service'
 import TasksConfigSubservice from '../config.service'
-import TaxImportHelperService from '../tax-import-helper.service'
 import TaxImportTasksService from '../tax-import.tasks.service'
+import TaxImportHelperService from '../tax-import-helper.service'
 
 describe('TaxImportTasksService', () => {
   let service: TaxImportTasksService
@@ -129,10 +125,10 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
       const prepareTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -173,10 +169,10 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
       const prepareTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -218,10 +214,10 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
       const prepareTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -262,10 +258,10 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
       const prepareTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -305,7 +301,7 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -340,10 +336,10 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
       const prepareTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -381,10 +377,10 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
       const prepareTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -414,10 +410,10 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
       const prepareTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'prepareTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadTaxesForUsers()
 
@@ -451,7 +447,7 @@ describe('TaxImportTasksService', () => {
         })
       const importTaxesSpy = jest
         .spyOn(mockTaxImportHelper, 'importTaxes')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       // First call (DZN)
       await service.loadTaxesForUsers()
@@ -612,7 +608,7 @@ describe('TaxImportTasksService', () => {
 
       const configSubserviceMock = jest
         .spyOn(service['configSubservice'], 'resetOverpaymentsLookbackDays')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await service.loadOverpaymentsFromNoris()
 
@@ -640,7 +636,7 @@ describe('TaxImportTasksService', () => {
 
       const configSubserviceMock = jest
         .spyOn(service['configSubservice'], 'incrementOverpaymentsLookbackDays')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
 
@@ -664,7 +660,7 @@ describe('TaxImportTasksService', () => {
 
       const configSubserviceMock = jest
         .spyOn(service['configSubservice'], 'incrementOverpaymentsLookbackDays')
-        .mockResolvedValue(undefined)
+        .mockResolvedValue()
 
       await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
 

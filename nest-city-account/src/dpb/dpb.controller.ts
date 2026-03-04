@@ -8,7 +8,7 @@ import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
 import { DpbUserDto, DPBUserLoginStatistics } from './dtos/user.dto'
 import { DpbService } from './dpb.service'
 import { SignatureGuard } from '../auth/guards/signature.guard'
-import { SignaturePublicKey } from '../auth/decorators/signature-public-key.decorator'
+import { SignaturePublicKeyEnvVarName } from '../auth/decorators/signature-public-key.decorator'
 
 @ApiTags('DPB')
 @ApiBearerAuth()
@@ -41,7 +41,7 @@ export class DpbController {
   }
 
   @Get('list-user-logins')
-  @SignaturePublicKey('DPB_CLIENT_PUBLIC_KEY')
+  @SignaturePublicKeyEnvVarName('DPB_CLIENT_PUBLIC_KEY')
   @UseGuards(SignatureGuard)
   @ApiOperation({
     summary: 'List all user logins for DPB',

@@ -11,5 +11,5 @@ export const SIGNATURE_PUBLIC_KEY = 'signature_public_key'
  *   @UseGuards(SignatureGuard)
  * ```
  */
-export const SignaturePublicKey = (envVarName: string) =>
+export const SignaturePublicKeyEnvVarName = (envVarName: string) =>
   SetMetadata(SIGNATURE_PUBLIC_KEY, envVarName)

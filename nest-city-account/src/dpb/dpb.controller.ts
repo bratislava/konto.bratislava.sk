@@ -57,12 +57,12 @@ Authenticated via RSA signature (backend-to-backend).
 
 Example:
 
-    GET|/dpb/list-user-logins?page=1|1234567890123|{}
+    GET|/dpb/list-user-logins?example=1|1234567890123|{}
 
 - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host)
 - TIMESTAMP is Unix ms
 - BODY is the JSON body string, or '{}' for GET requests
-- Sign with your RSA private key using SHA-256, then Base64-encode the result
+- Sign with your RSA private key using SHA-256, then base64-encode the result
 
 ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.
 

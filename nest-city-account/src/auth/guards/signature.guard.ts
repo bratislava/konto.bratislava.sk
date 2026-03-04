@@ -1,10 +1,10 @@
 import { ExecutionContext, Injectable } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Reflector } from '@nestjs/core'
-import { Request } from 'express'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import { SIGNATURE_PUBLIC_KEY } from '../decorators/signature-public-key.decorator'
+import { SignatureRequest } from '../types/signature-request.types'
 
 /**
  * Guard that validates requests signed with RSA private key using Passport strategy
@@ -25,7 +25,7 @@ export class SignatureGuard extends AuthGuard('signature') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<Request>()
+    const request = context.switchToHttp().getRequest<SignatureRequest>()
 
     const envVarName = this.reflector.getAllAndOverride<string>(SIGNATURE_PUBLIC_KEY, [
       context.getHandler(),
@@ -40,8 +40,7 @@ export class SignatureGuard extends AuthGuard('signature') {
       )
     }
 
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(request as any).signaturePublicKeyEnvVar = envVarName
+    request.signaturePublicKeyEnvVar = envVarName
 
     return !!(await super.canActivate(context))
   }

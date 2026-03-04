@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy as CustomStrategy } from 'passport-custom'
-import { Request } from 'express'
 import { createVerify } from 'crypto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
+import { SignatureRequest } from '../types/signature-request.types'
 
 /**
  * Passport strategy for RSA signature verification
@@ -44,11 +44,10 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
    * @returns true if validation succeeds
    * @throws UnauthorizedException if validation fails
    */
-  async validate(req: Request): Promise<boolean> {
+  async validate(req: SignatureRequest): Promise<boolean> {
     // Extract the environment variable name from request metadata
     // This should be set by the @SignaturePublicKey() decorator
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const envVarName = (req as any).signaturePublicKeyEnvVar as string | undefined
+    const envVarName = req.signaturePublicKeyEnvVar
 
     if (!envVarName) {
       throw this.throwerErrorGuard.UnauthorizedException(

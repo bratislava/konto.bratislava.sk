@@ -114,7 +114,11 @@ export class EdeskTasksSubservice {
       EXTERNAL_ITEMS_PROCESS_BATCH_SIZE
     )
 
-    if (completedExternalItems.length < EXTERNAL_ITEMS_PROCESS_BATCH_SIZE) {
+    if (
+      completedExternalItems.length === 0 ||
+      (completedExternalItems.length < EXTERNAL_ITEMS_PROCESS_BATCH_SIZE &&
+        numberOfExternalItemsInQueue !== 0)
+    ) {
       return
     }
 

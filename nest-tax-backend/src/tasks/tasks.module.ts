@@ -9,9 +9,14 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { UtilsModule } from '../utils-module/utils.module'
-import TasksConfigSubservice from './subservices/config.subservice'
-import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
+import TasksConfigSubservice from './subservices/config.service'
+import TaxImportTasksService from './subservices/tax-import.tasks.service'
 import { TasksService } from './tasks.service'
+import BloomreachMessagingTasksService from './subservices/bloomreach-messaging.tasks.service'
+import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
+import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
+import ReportingTasksService from './subservices/reporting.tasks.service'
+import TaxImportHelperService from './subservices/tax-import-helper.service'
 
 @Module({
   imports: [
@@ -28,7 +33,12 @@ import { TasksService } from './tasks.service'
     DatabaseSubservice,
     CityAccountSubservice,
     TasksConfigSubservice,
-    TaxImportHelperSubservice,
+    TaxImportTasksService,
+    BloomreachMessagingTasksService,
+    CityAccountIngestionTasksService,
+    NorisSyncTasksService,
+    ReportingTasksService,
+    TaxImportHelperService,
   ],
   exports: [TasksService],
 })

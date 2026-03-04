@@ -80,7 +80,7 @@ const ThankYouFormPageContent = () => {
     >
       <div className="flex flex-col">
         <ThankYouCard
-          success
+          variant="success"
           title={title}
           firstButtonTitle={firstButtonTitle}
           secondButtonTitle={secondButtonTitle}

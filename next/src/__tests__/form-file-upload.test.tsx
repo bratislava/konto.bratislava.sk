@@ -18,7 +18,6 @@ jest.mock('@/src/frontend/utils/formFileUpload', () => ({
  * TODO: Implement proper file tests and reenable them.
  */
 describe.skip('useFormFileUpload', () => {
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   const setupTest = ({ formServerContext }: { formServerContext: Partial<FormServerContext> }) => {
     ;(uploadFile as jest.Mock).mockImplementation(
       ({

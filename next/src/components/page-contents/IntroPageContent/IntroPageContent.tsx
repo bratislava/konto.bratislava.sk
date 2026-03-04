@@ -45,7 +45,7 @@ const IntroPageContent = ({
           title={
             name
               ? `${t('account_section_intro.header_title')} ${name}.`
-              : `${t('account_section_intro.header_title_without_name')}`
+              : t('account_section_intro.header_title_without_name')
           }
           text={t('account_section_intro.header_text')}
           titleAsParagraph

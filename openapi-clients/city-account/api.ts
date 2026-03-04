@@ -256,7 +256,7 @@ export const GDPRTypeEnum = {
   Analytics: 'ANALYTICS',
   Dataprocessing: 'DATAPROCESSING',
   FormalCommunication: 'FORMAL_COMMUNICATION',
-  License: 'LICENSE',
+  General: 'GENERAL',
   Marketing: 'MARKETING',
 } as const
 

@@ -1,3 +1,6 @@
+import { ReactElement, useState } from 'react'
+import { Key, Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
+
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
@@ -30,44 +33,72 @@ import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
-const Styleguide = () => {
-  /**
-   * Always create new component for adding showcase in StyleGuide
-   * Path to StyleGuide showcase components should be ./next/src/components/styleguide/showcases
-   * */
+const showcases = [
+  { id: 'button', label: 'Button', component: <ButtonShowCase /> },
+  {
+    id: 'modal',
+    label: 'Modal',
+    component: <ModalShowCase />,
+  },
+  { id: 'icon', label: 'Icon', component: <IconShowCase /> },
+  { id: 'tag', label: 'Tag', component: <TagShowCase /> },
+  { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },
+  { id: 'field-header', label: 'Field Header', component: <FieldHeaderShowCase /> },
+  { id: 'spinner', label: 'Spinner', component: <SpinnerShowCase /> },
+  { id: 'input-field', label: 'Input Field', component: <InputFieldShowCase /> },
+  { id: 'date-picker', label: 'Date Picker', component: <DatePickerShowCase /> },
+  { id: 'time-picker', label: 'Time Picker', component: <TimePickerShowCase /> },
+  { id: 'text-area-field', label: 'Text Area Field', component: <TextAreaFieldShowCase /> },
+  { id: 'search-field', label: 'Search Field', component: <SearchFieldShowCase /> },
+  { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },
+  { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
+  { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
+  { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
+  { id: 'accordion', label: 'Accordion', component: <AccordionShowCase /> },
+  { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
+  { id: 'checkbox-group', label: 'Checkbox Group', component: <CheckboxGroupShowCase /> },
+  { id: 'radio-group', label: 'Radio Group', component: <RadioGroupShowCase /> },
+  { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
+  { id: 'banner', label: 'Banner', component: <BannerShowCase /> },
+  { id: 'service-card', label: 'Service Card', component: <ServiceCardShowCase /> },
+  {
+    id: 'my-applications-card',
+    label: 'My Applications Card',
+    component: <MyApplicationsCardShowCase />,
+  },
+  { id: 'snackbar', label: 'Snackbar', component: <SnackbarShowCase /> },
+] satisfies { id: string; label: string; component: ReactElement }[]
+
+const StyleguidePage = () => {
+  const [selectedKey, setSelectedKey] = useState<Key>(showcases[0].id)
+
   return (
     <>
       <StatusBar />
 
       <StyleGuideWrapper>
-        {/* HERE ADD SHOWCASES */}
-        <ButtonShowCase />
-        <IconShowCase />
-        <TagShowCase />
-        <TooltipShowCase />
-        <FieldHeaderShowCase />
-        <SpinnerShowCase />
-        <InputFieldShowCase />
-        <DatePickerShowCase />
-        <TimePickerShowCase />
-        <TextAreaFieldShowCase />
-        <SearchFieldShowCase />
-        <SelectMultiNewShowCase />
-        <ToggleShowCase />
-        <AlertShowCase />
-        <UploadShowCase />
-        <ModalShowCase />
-        <AccordionShowCase />
-        <ProgressBarShowCase />
-        <CheckboxGroupShowCase />
-        <RadioGroupShowCase />
-        {/* TODO: Fix stepper showcase */}
-        {/* <StepperShowCase /> */}
-        <SummaryRowShowCase />
-        <BannerShowCase />
-        <ServiceCardShowCase />
-        <MyApplicationsCardShowCase />
-        <SnackbarShowCase />
+        <Tabs
+          selectedKey={selectedKey}
+          onSelectionChange={setSelectedKey}
+          className="mb-10 flex flex-col"
+        >
+          <TabList className="flex flex-wrap gap-2 pb-4">
+            {showcases.map(({ id, label }) => (
+              <Tab
+                key={id}
+                id={id}
+                className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 hover:border-gray-500 hover:bg-gray-50 data-selected:border-gray-700 data-selected:bg-gray-100 data-selected:font-semibold"
+              >
+                {label}
+              </Tab>
+            ))}
+          </TabList>
+          {showcases.map(({ id, component }) => (
+            <TabPanel key={id} id={id}>
+              {component}
+            </TabPanel>
+          ))}
+        </Tabs>
       </StyleGuideWrapper>
     </>
   )
@@ -83,4 +114,4 @@ export const getServerSideProps = amplifyGetServerSideProps(async () => {
   }
 })
 
-export default SsrAuthProviderHOC(Styleguide)
+export default SsrAuthProviderHOC(StyleguidePage)

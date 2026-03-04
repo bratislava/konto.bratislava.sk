@@ -16,7 +16,7 @@ export const SectionContainer = ({
     className={cn(
       'px-8',
       {
-        'bg-category-200': hasBackground === true,
+        'bg-category-200': hasBackground,
       },
       className,
     )}

@@ -111,7 +111,6 @@ export const useVerifyEid = () => {
     setVerificationStatus(VerificationStatus.REDIRECTING)
     setVerifyEidMetadata({ verifiedProcess: true })
     // We are redirecting to a trusted URL
-    // eslint-disable-next-line xss/no-location-href-assign
     window.location.href = environment.slovenskoSkLoginUrl
   }
 

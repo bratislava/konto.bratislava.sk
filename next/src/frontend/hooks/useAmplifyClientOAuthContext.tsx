@@ -24,6 +24,7 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
     if (authRequestId) {
       parsedUrl.searchParams.set(authRequestIdQueryParam, authRequestId)
     }
+
     return parsedUrl
   }
 
@@ -34,6 +35,7 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
 
     if (!refreshToken || !authRequestId) {
       logger.error(`[AUTH] Missing refreshToken or authRequestId in handlePostOAuthTokens`)
+
       return
     }
 
@@ -71,7 +73,7 @@ export const useOAuthGetContext = (clientInfo: ClientInfoResponseDto | null) => 
     clientInfo,
     clientTitle,
     storeTokensAndRedirect,
-    isIdentityVerificationRequired: !!isIdentityVerificationRequired,
+    isIdentityVerificationRequired,
   }
 }
 

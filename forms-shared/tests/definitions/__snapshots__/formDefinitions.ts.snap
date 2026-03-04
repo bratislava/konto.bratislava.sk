@@ -906,7 +906,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
-                        "helptext": "Napr. navrhujem úpravu miesta parkovania",
+                        "helptext": "Napr. navrhujem úpravu miesta parkovania.",
                       },
                       "ui:widget": "TextArea",
                     },
@@ -933,7 +933,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
               "baUiSchema": {
                 "ui:options": {
                   "accept": ".jpg,.jpeg,.png",
-                  "helptext": "Nahrajte fotografiu kolobežky alebo lokality, ktorej sa podnet týka",
+                  "helptext": "Snažte sa odfotiť kolobežku tak, aby bolo vidieť aj širšie okolie.",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -952,7 +952,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
               "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
-                  "helptext": "Nachádza sa v strede riadidiel pod QR kódom",
+                  "helptext": "Nachádza sa v strede riadidiel pod QR kódom.",
                   "inputType": "text",
                 },
                 "ui:widget": "Input",
@@ -964,7 +964,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
-                  "helptext": "Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt alebo ulicu a číslo",
+                  "helptext": "Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt, prípadne uveďte ulicu a číslo.",
                 },
                 "ui:widget": "TextArea",
               },

@@ -39,7 +39,6 @@ const useGetContext = () => {
   const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   const validatorRegistry = useFormValidatorRegistry()
-  // eslint-disable-next-line testing-library/render-result-naming-convention
 
   const isFirstRender = useRef(true)
 
@@ -80,6 +79,7 @@ const useGetContext = () => {
       .slice(0, currentStepIndex === 'summary' ? stepsSchemas.length : currentStepIndex)
       .reverse()
     const prevStepIndex = prevSteps.findIndex((step) => step != null)
+
     return prevStepIndex === -1 ? null : prevSteps.length - prevStepIndex - 1
   }
 
@@ -96,6 +96,7 @@ const useGetContext = () => {
     if (currentStepIndex === 'summary') return null
     const nextSteps = stepsSchemas.slice(currentStepIndex + 1)
     const nextStepIndex = nextSteps.findIndex((step) => step != null)
+
     return nextStepIndex === -1 ? 'summary' : currentStepIndex + nextStepIndex + 1
   }
 
@@ -167,9 +168,10 @@ const useGetContext = () => {
         ) {
           return null
         }
+
         return index
       })
-      .filter((value) => value != null) as Array<number>
+      .filter((value) => value != null)
     setSubmittedStepsIndexes(new Set(stepIndexesWithoutErrors))
   }
 
@@ -181,6 +183,7 @@ const useGetContext = () => {
     setSubmittedStepsIndexes((prev) => {
       const newSet = new Set(prev)
       newSet.delete(currentStepIndex)
+
       return newSet
     })
 
@@ -212,6 +215,7 @@ const useGetContext = () => {
   const popScrollToFieldId = () => {
     const fieldId = scrollToFieldIdRef.current
     scrollToFieldIdRef.current = null
+
     return fieldId
   }
 

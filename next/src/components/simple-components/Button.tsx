@@ -33,6 +33,7 @@ type ButtonBase = {
     | 'solid'
     | 'solid-inverted'
     | 'outline'
+    | 'outline-soft'
     | 'plain'
     | 'negative-solid'
     | 'negative-plain'
@@ -92,7 +93,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
 
     const isSolidVariant =
       variant === 'solid' || variant === 'negative-solid' || variant === 'solid-inverted'
-    const isOutlineVariant = variant === 'outline'
+    const isOutlineVariant = variant === 'outline' || variant === 'outline-soft'
     const isSolidOrOutlineVariant = isSolidVariant || isOutlineVariant
     const isPlainVariant = variant === 'plain' || variant === 'negative-plain'
     const isIconWrappedVariant =
@@ -176,13 +177,19 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
                 variant === 'solid-inverted' && !isLoadingOrDisabled,
 
               // colors - bg, border, content - variant outline (figma: boxed secondary)
-              'bg-background-active-secondary-default text-content-active-secondary-default border-border-active-secondary-default':
+              'border-border-active-secondary-default text-content-active-primary-default':
                 variant === 'outline',
-              'hover:bg-background-active-secondary-hover hover:text-content-active-secondary-hover active:bg-background-active-secondary-pressed active:text-content-active-secondary-pressed hover:border-border-active-secondary-hover active:border-border-active-secondary-pressed':
+              'hover:border-border-active-secondary-hover hover:text-content-active-primary-hover active:border-border-active-secondary-pressed active:text-content-active-primary-pressed':
                 variant === 'outline' && !isLoadingOrDisabled,
 
+              // colors - bg, border, content - variant outline-soft (figma: boxed tertiary)
+              'border-border-active-tertiary-default text-content-active-tertiary-default':
+                variant === 'outline-soft',
+              'hover:border-border-active-tertiary-hover hover:text-content-active-tertiary-hover active:border-border-active-tertiary-pressed active:text-content-active-tertiary-pressed':
+                variant === 'outline-soft' && !isLoadingOrDisabled,
+
               // colors - bg, border, content - variant plain (figma: plain default)
-              'text-content-active-secondary-default bg-background-active-primary-soft-inverted-default':
+              'bg-background-active-primary-soft-inverted-default text-content-active-primary-default':
                 variant === 'plain',
               'hover:bg-background-active-primary-soft-hover hover:text-content-active-primary-hover active:bg-background-active-primary-soft-pressed active:text-content-active-primary-pressed':
                 variant === 'plain' && !isLoadingOrDisabled,

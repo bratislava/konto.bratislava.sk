@@ -73,10 +73,10 @@ export class CognitoSubservice {
     })
   }
 
-  private async getUser(userId: string): Promise<AdminGetUserCommandOutput> {
+  private async getUser(externalId: string): Promise<AdminGetUserCommandOutput> {
     const inputParams = {
       UserPoolId: this.config.cognitoUserPoolId,
-      Username: userId,
+      Username: externalId,
     }
 
     try {
@@ -99,8 +99,8 @@ export class CognitoSubservice {
     }
   }
 
-  async getDataFromCognito(userId: string): Promise<CognitoGetUserData> {
-    const result = await this.getUser(userId)
+  async getDataFromCognito(externalId: string): Promise<CognitoGetUserData> {
+    const result = await this.getUser(externalId)
 
     if (result.Username === undefined) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -119,10 +119,10 @@ export class CognitoSubservice {
     }
   }
 
-  async cognitoDeactivateUser(userId: string): Promise<void> {
+  async cognitoDeactivateUser(externalId: string): Promise<void> {
     const inputParams = {
       UserPoolId: this.config.cognitoUserPoolId,
-      Username: userId,
+      Username: externalId,
     }
 
     try {
@@ -150,7 +150,7 @@ export class CognitoSubservice {
    * Note: This does NOT update the database. For coordinated tier changes with database sync,
    * use UserTierService.changeTier() instead.
    */
-  async changeTier(userId: string, newTier: CognitoUserAttributesTierEnum): Promise<void> {
+  async changeTier(externalId: string, newTier: CognitoUserAttributesTierEnum): Promise<void> {
     const inputParams = {
       UserAttributes: [
         {
@@ -159,7 +159,7 @@ export class CognitoSubservice {
         },
       ],
       UserPoolId: this.config.cognitoUserPoolId,
-      Username: userId,
+      Username: externalId,
     }
     try {
       await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
@@ -176,15 +176,15 @@ export class CognitoSubservice {
   /**
    * Changes the email in cognito to unique format {cognitoId}-{email}.disabled.bratislava.sk
    * Used so that users with deactivated accounts can recreate new accounts with previously used emails.
-   * @param userId user id in cognito
+   * @param externalId user id in cognito
    * @returns void
    */
-  async deactivateCognitoMail(userId: string, oldMail: string) {
+  async deactivateCognitoMail(externalId: string, oldMail: string) {
     const inputParams = {
       UserAttributes: [
         {
           Name: 'email',
-          Value: `${userId}-${oldMail}.disabled.bratislava.sk`,
+          Value: `${externalId}-${oldMail}.disabled.bratislava.sk`,
         },
         {
           Name: 'email_verified',
@@ -192,7 +192,7 @@ export class CognitoSubservice {
         },
       ],
       UserPoolId: this.config.cognitoUserPoolId,
-      Username: userId,
+      Username: externalId,
     }
 
     try {

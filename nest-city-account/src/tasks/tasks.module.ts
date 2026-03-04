@@ -9,9 +9,17 @@ import { PdfGeneratorModule } from '../pdf-generator/pdf-generator.module'
 import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
 import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
 import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'
+import { UpvsQueueModule } from '../upvs-queue/upvs-queue.module'
 
 @Module({
-  imports: [PrismaModule, PhysicalEntityModule, ClientsModule, MailgunModule, PdfGeneratorModule],
+  imports: [
+    PrismaModule,
+    PhysicalEntityModule,
+    ClientsModule,
+    MailgunModule,
+    PdfGeneratorModule,
+    UpvsQueueModule,
+  ],
   providers: [
     TaxSubservice,
     CleanupTasksSubservice,

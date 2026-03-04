@@ -168,6 +168,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()
+
         // marketing confirmation always set to true (with new gdpr document we get consent with the registration itself)
         return onSubmit(data.email, data.password, data.turnstileToken, userAttributes)
       })}
@@ -283,7 +284,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       <AccountMarkdown
         variant="sm"
         className="text-center"
-        content={`${t('auth.marketing_confirmation_text')}`}
+        content={t('auth.marketing_confirmation_text')}
       />
       <Controller
         name="turnstileToken"
@@ -302,6 +303,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               onError={(error) => {
                 logger.error('Turnstile error:', error)
                 setCaptchaWarning('show')
+
                 return onChange(null)
               }}
               onTimeout={() => {

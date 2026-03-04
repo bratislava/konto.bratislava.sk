@@ -1,6 +1,5 @@
 import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
-import type { PolymorphicProps } from '@/src/components/simple-components/Button'
-import Button from '@/src/components/simple-components/Button'
+import Button, { PolymorphicProps } from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 import { Stack } from '../Stack'
@@ -10,7 +9,15 @@ type ButtonVariant = PolymorphicProps['variant']
 
 // All button variants from Button.tsx, grouped for display
 const variants: Record<string, ButtonVariant[]> = {
-  basic: ['solid', 'outline', 'plain', 'solid-inverted', 'negative-solid', 'negative-plain'],
+  basic: [
+    'solid',
+    'outline',
+    'outline-soft',
+    'plain',
+    'solid-inverted',
+    'negative-solid',
+    'negative-plain',
+  ],
   link: ['link', 'link-inverted'],
   iconWrapped: ['icon-wrapped', 'icon-wrapped-negative-margin'],
 }

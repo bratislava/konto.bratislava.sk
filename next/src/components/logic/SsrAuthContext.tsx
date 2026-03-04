@@ -12,6 +12,8 @@ export interface SsrAuthContextType {
 
 export const SsrAuthContext = createContext<SsrAuthContextType | null>(null)
 
+// TODO fix eslint violation
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export const SsrAuthProviderHOC = <Props extends {}>(Wrapped: ComponentType<Props>) => {
   return function (props: Props & { [ssrAuthContextPropKey]?: SsrAuthContextType }) {
     // eslint-disable-next-line react/destructuring-assignment

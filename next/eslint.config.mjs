@@ -27,7 +27,6 @@ export default [
       'security/detect-object-injection': 'off',
       'no-implicit-coercion': 'off',
 
-      // TODO good rules, require work to fix and were skipped over in eslint v9 upgrade
       '@typescript-eslint/no-unused-vars': 'warn', // 148 violations
       '@typescript-eslint/no-unnecessary-condition': 'warn', // 143 violations
       'i18next/no-literal-string': 'warn', // 141 violations
@@ -54,13 +53,9 @@ export default [
       'sonarjs/no-clear-text-protocols': 'warn', // 5 violations
       '@typescript-eslint/switch-exhaustiveness-check': 'warn', // 4 violations
       '@typescript-eslint/no-useless-default-assignment': 'warn', // 4 violations
-      // 'unicorn/consistent-function-scoping': 'warn', // 3 violations
       '@typescript-eslint/no-deprecated': 'warn', // 3 violations
-      '@typescript-eslint/no-unnecessary-template-expression': 'warn', // 3 violations
       'react-hooks/set-state-in-effect': 'warn', // 3 violations
-      // 'unicorn/consistent-destructuring': 'warn', // 3 violations
       '@typescript-eslint/no-unnecessary-type-parameters': 'warn', // 3 violations
-      // 'xss/no-location-href-assign': 'warn', // 2 violations
       'sonarjs/no-nested-functions': 'warn', // 2 violations
       '@typescript-eslint/no-dynamic-delete': 'warn', // 2 violations
       'react-hooks/static-components': 'warn', // 2 violations
@@ -68,26 +63,6 @@ export default [
       'tailwindcss/enforces-shorthand': 'warn', // 2 violations
       'sonarjs/fixme-tag': 'warn', // 2 violations
       '@typescript-eslint/no-base-to-string': 'warn', // 2 violations
-      'sonarjs/no-hardcoded-passwords': 'warn', // 2 violations
-      'simple-import-sort/imports': 'warn', // 1 violations
-      'no-case-declarations': 'warn', // 1 violations
-      // 'testing-library/render-result-naming-convention': 'warn', // 1 violations
-      '@typescript-eslint/no-unnecessary-type-assertion': 'warn', // 1 violations
-      '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'warn', // 1 violations
-      // '@typescript-eslint/ban-types': 'warn', // 1 violations
-      '@typescript-eslint/no-empty-object-type': 'warn', // 1 violations
-      // 'switch-case/no-case-curly': 'warn', // 1 violations
-      'no-duplicate-imports': 'warn', // 1 violations
-      'sonarjs/no-inverted-boolean-check': 'warn', // 1 violations
-      '@typescript-eslint/unbound-method': 'warn', // 1 violations
-      // 'lodash-fp/no-extraneous-args': 'warn', // 1 violations
-      'no-console': 'warn', // 1 violations
-      'react/prop-types': 'warn', // 1 violations
-      '@typescript-eslint/no-unnecessary-type-conversion': 'warn', // 1 violations
-      // 'unicorn/prefer-code-point': 'warn', // 1 violations
-      // 'lodash/prop-shorthand': 'warn', // 1 violations
-      'no-useless-assignment': 'warn', // 1 violations
-      // 'unicorn/prefer-switch': 'warn', // 1 violations
 
       'tailwindcss/no-custom-classname': 'off',
       'tailwindcss/classnames-order': 'off',

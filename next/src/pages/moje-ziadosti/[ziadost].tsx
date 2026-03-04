@@ -24,6 +24,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
 
     if (!id) return { notFound: true }
 
+    // eslint-disable-next-line no-useless-assignment
     let myApplicationDetailsData: GetFormResponseDto | null = null
     let myApplicationGinisData: GinisDocumentDetailResponseDto | null = null
     try {

@@ -62,8 +62,9 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
       'border-gray-200 hover:border-gray-400': !disabled && !isOpen,
       'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,
       'pointer-events-none border-gray-300 bg-gray-100': disabled,
-      'border-gray-700': isOpen && !disabled && !(errorMessage?.length > 0),
+      'border-gray-700': isOpen && !disabled && errorMessage?.length <= 0,
     })
+
     return (
       <FieldWrapper
         label={label}

@@ -94,8 +94,17 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
+    // We tried to find a smarter way to test this.
+    if (!/^\d{10,13}$/.test(timestamp)) {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        'Invalid X-Timestamp format. Must be Unix timestamp in seconds or milliseconds (10 or 13 digits)'
+      )
+    }
+
     const requestTime = parseInt(timestamp, 10)
-    if (isNaN(requestTime) || requestTime <= 0) {
+    if (requestTime <= 0) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,

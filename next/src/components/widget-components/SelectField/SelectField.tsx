@@ -229,6 +229,8 @@ const SelectField = <
               noOptionsMessage: () => 'px-4 py-3',
             }}
             components={{
+              // TODO children type
+              // eslint-disable-next-line react/prop-types
               Option: ({ children, ...props }) => (
                 <CustomOption {...props} selectHasDescriptions={hasDescriptions}>
                   {children}

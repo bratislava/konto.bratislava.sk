@@ -30,7 +30,9 @@ cd ../nest-city-account/
 
 2. Run from docker-compose:
    - RabbitMQ
-   - Postgresql
+   - Postgresql (main app DB on `localhost:5422`)
+   - Postgresql (Bloomreach contacts DB on `localhost:54322`)
+   - Bloomreach contacts bootstrap script (`docker/postgres-init/01-bloomreach-contacts.sql`)
 
 3. Install dependencies:
 
@@ -41,6 +43,7 @@ npm install
 copy and adjust .env from .env.example
 
 if you are using a different database or different postgres with user, adjust env `DATABASE_URL`
+(also adjust `BLOOMREACH_CONTACT_DB_*` envs if Bloomreach contact DB should point elsewhere)
 
 Migrate database and generate prisma files
 

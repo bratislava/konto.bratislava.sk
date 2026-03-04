@@ -120,6 +120,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
               {state?.isOpen && (
                 <Popover
                   isOpen={state.isOpen}
+                  // TODO fix eslint error
+                  // eslint-disable-next-line @typescript-eslint/unbound-method
                   onOpenChange={state.setOpen}
                   triggerRef={dateFieldRef}
                   placement="bottom start"

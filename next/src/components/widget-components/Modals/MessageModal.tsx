@@ -1,4 +1,4 @@
-import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
+import React, { PropsWithChildren, ReactNode } from 'react'
 
 import ErrorIcon from '@/src/components/icon-components/ErrorIcon'
 import InfoIcon from '@/src/components/icon-components/InfoIcon'
@@ -9,13 +9,9 @@ import cn from '@/src/utils/cn'
 
 export type MessageModalProps = PropsWithChildren<{
   type: 'warning' | 'info' | 'error' | 'success'
-  variant?: 'horizontal' | 'vertical'
-  buttonsAlign?: 'left' | 'center' | 'right'
   title: string
-  buttons?: ReactNode[]
-  afterContent?: ReactNode
-  titleClassName?: string
-  childrenClassName?: string
+  primaryButton?: ReactNode
+  secondaryButton?: ReactNode
 }> &
   Pick<
     ModalProps,
@@ -29,78 +25,44 @@ const icons = {
   success: <SuccessIcon />,
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19823-40590
+ */
+
 const MessageModal = ({
   type,
-  variant = 'horizontal',
-  buttonsAlign = 'right',
   children,
   title,
-  buttons,
-  afterContent,
-  titleClassName,
-  childrenClassName,
+  primaryButton,
+  secondaryButton,
   ...rest
 }: MessageModalProps) => {
   return (
     <Modal isDismissable {...rest}>
-      <div
-        className={cn('flex items-center gap-3 p-0 md:gap-5', {
-          'flex-col': variant === 'vertical',
-          'md:grid-row-2 flex-col md:grid md:grid-cols-[3.5rem] md:flex-row md:items-start':
-            variant === 'horizontal',
-        })}
-      >
+      <div className="flex flex-col items-center gap-4 lg:gap-6">
         <div
-          className={cn(
-            'relative flex flex-row items-start gap-2 rounded-full p-4 md:col-start-1 md:col-end-1 md:row-start-1 md:row-end-2',
-            {
-              'bg-gray-100': type === 'info',
-              'bg-warning-100': type === 'warning',
-              'bg-negative-100': type === 'error',
-              'bg-success-100': type === 'success',
-            },
-          )}
+          className={cn('rounded-full p-4 *:size-6', {
+            'bg-background-passive-secondary': type === 'info',
+            'bg-background-warning-soft-default': type === 'warning',
+            'bg-background-error-soft-default': type === 'error',
+            'bg-background-success-soft-default': type === 'success',
+          })}
         >
-          <div className="flex size-6 items-center justify-center">
-            <span className="">{icons[type]}</span>
-          </div>
+          {icons[type]}
         </div>
-        <div
-          className={cn(
-            'flex h-14 items-center text-center text-h-base font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-1 md:text-left',
-            titleClassName,
-          )}
-        >
-          {title}
-        </div>
-        <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
-          <div
-            className={cn(
-              'text-center text-p2 whitespace-pre-wrap md:text-left',
-              childrenClassName,
-            )}
-          >
-            {children}
-          </div>
-          {buttons && buttons.length > 0 && (
-            <div
-              className={cn('order-1 mt-6 flex flex-wrap items-center gap-6 p-0', {
-                'flex-col-reverse justify-center md:flex-row md:justify-end':
-                  buttonsAlign === 'right',
-                'flex-col-reverse justify-center md:flex-row md:justify-start':
-                  buttonsAlign === 'left',
-                'flex-row justify-center': buttonsAlign === 'center',
-              })}
-            >
-              {buttons.map((button, index) => (
-                <Fragment key={index}>{button}</Fragment>
-              ))}
+        <div className="flex w-full flex-col gap-5 lg:gap-6">
+          <div className="flex flex-col gap-2">
+            <div className="w-full text-center text-h5 font-semibold">{title}</div>
+            <div className="flex w-full flex-col gap-4 text-center text-p2 text-p-base whitespace-pre-wrap">
+              {children}
             </div>
-          )}
+          </div>
+          <div className="flex flex-col-reverse gap-3 *:w-full empty:hidden lg:flex-row">
+            {secondaryButton}
+            {primaryButton}
+          </div>
         </div>
       </div>
-
-      {afterContent}
     </Modal>
   )
 }

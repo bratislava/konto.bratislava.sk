@@ -180,21 +180,21 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             {type === RegistrationModalType.Initial && (
               <>
                 {eidSendPossible ? (
-                  <Button variant="outline" onPress={close} fullWidth>
+                  <Button variant="outline-soft" size="small" onPress={close} fullWidth>
                     {t('registration_modal.buttons_initial_continue_eid')}
                   </Button>
                 ) : null}
-                <Button variant="outline" onPress={close} fullWidth>
+                <Button variant="outline-soft" size="small" onPress={close} fullWidth>
                   {t('registration_modal.buttons_initial_skip')}
                 </Button>
               </>
             )}
             {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
               <>
-                <Button variant="outline" onPress={close} fullWidth>
+                <Button variant="outline-soft" size="small" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_back')}
                 </Button>
-                <Button variant="outline" onPress={close} fullWidth>
+                <Button variant="outline-soft" size="small" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_send')}
                 </Button>
               </>

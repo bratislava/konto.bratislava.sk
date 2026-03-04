@@ -1,9 +1,8 @@
 import { FormProps, ThemeProps, withTheme } from '@rjsf/core'
 import {
-  ArrayFieldTemplateItemType,
+  ArrayFieldItemTemplateProps,
   ArrayFieldTemplateProps,
   FieldProps,
-  getTemplate,
   getUiOptions,
   ObjectFieldTemplateProps,
   WidgetProps,
@@ -91,52 +90,44 @@ const wrapWidget = (widgetType: BaWidgetType) =>
 
 const FieldTemplate = ({ children }: { children: React.ReactNode }) => <>{children}</>
 
-type SummaryArrayFieldTemplateItemType = ArrayFieldTemplateItemType & {
-  parentId: string
-  parentUiOptions: ArrayFieldUiOptions
-}
-
 const ArrayFieldItemTemplate = ({
   children,
-  parentId,
+  buttonsProps,
   index,
-  parentUiOptions,
-}: SummaryArrayFieldTemplateItemType) => {
-  const id = `${parentId}_${index}`
+  parentUiSchema,
+}: ArrayFieldItemTemplateProps) => {
+  const parentUiOptions = getUiOptions(parentUiSchema) as ArrayFieldUiOptions
+  console.log('parentUiSchema', parentUiSchema)
+  console.log('parentUiOptions', parentUiOptions)
   const { itemTitle } = parentUiOptions
 
   return (
-    <SummaryXmlFormTag.ArrayItem id={id} title={getArrayItemTitle(itemTitle, index)}>
+    <SummaryXmlFormTag.ArrayItem
+      id={buttonsProps.fieldPathId.$id}
+      title={getArrayItemTitle(itemTitle, index)}
+    >
       {children}
     </SummaryXmlFormTag.ArrayItem>
   )
 }
 
-const ArrayFieldTemplate = ({
-  title,
-  items,
-  idSchema,
-  registry,
-  uiSchema,
-}: ArrayFieldTemplateProps) => {
-  const options = getUiOptions(uiSchema) as ArrayFieldUiOptions
-  const id = idSchema.$id
-  const ItemTemplate = getTemplate(
-    'ArrayFieldItemTemplate',
-    registry,
-  ) as ComponentType<SummaryArrayFieldTemplateItemType>
+const ArrayFieldTemplate = ({ title, items, fieldPathId }: ArrayFieldTemplateProps) => {
+  const id = fieldPathId.$id
 
   return (
     <SummaryXmlFormTag.Array id={id} length={items.length} title={title}>
-      {items.map(({ key, ...itemProps }) => (
-        <ItemTemplate key={key} parentId={id} parentUiOptions={options} {...itemProps} />
-      ))}
+      {items}
     </SummaryXmlFormTag.Array>
   )
 }
 
-const ObjectFieldTemplate = ({ schema, properties, idSchema, title }: ObjectFieldTemplateProps) => {
-  const { id, splitId, isFormObject, isStepObject } = getObjectFieldInfo(idSchema)
+const ObjectFieldTemplate = ({
+  schema,
+  properties,
+  fieldPathId,
+  title,
+}: ObjectFieldTemplateProps) => {
+  const { id, isFormObject, isStepObject, stepId } = getObjectFieldInfo(fieldPathId)
 
   const content = properties.map((element, index) => (
     <Fragment key={index}>{element.content}</Fragment>
@@ -151,9 +142,8 @@ const ObjectFieldTemplate = ({ schema, properties, idSchema, title }: ObjectFiel
   }
 
   if (isStepObject) {
-    const stepName = splitId[1]
     return (
-      <SummaryXmlFormTag.Step id={id} title={title} name={stepName}>
+      <SummaryXmlFormTag.Step id={id} title={title} name={stepId as string}>
         {content}
       </SummaryXmlFormTag.Step>
     )
@@ -167,7 +157,7 @@ const theme: ThemeProps = {
     FieldTemplate,
     ObjectFieldTemplate,
     ArrayFieldTemplate,
-    ArrayFieldItemTemplate: ArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
+    ArrayFieldItemTemplate,
   },
   widgets: {
     [BaWidgetType.Select]: wrapWidget(BaWidgetType.Select),

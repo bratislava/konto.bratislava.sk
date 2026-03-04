@@ -4,6 +4,7 @@ import React, { ComponentType, useMemo } from 'react'
 import { BAJSONSchema7 } from './ajvKeywords'
 import { defaultUiSchema } from './formDefaults'
 import { getObjectFieldInfo } from './getObjectFieldInfo'
+import isEqual from 'lodash/isEqual'
 
 const assertBaOrderInProperties = (
   entries: [string, BAJSONSchema7][],
@@ -24,16 +25,17 @@ const { SchemaField, ObjectField } = defaultRegistry.fields
  * here and let the original `SchemaField` act as it would be originally there.
  */
 const ExtractUiSchemaSchemaField = (props: FieldProps) => {
-  const { isFormObject } = getObjectFieldInfo(props.idSchema)
+  const { isFormObject } = getObjectFieldInfo(props.fieldPathId)
   const baUiSchema = props.schema.baUiSchema
   const uiSchemaEmptyObject = props.uiSchema ? Object.keys(props.uiSchema).length === 0 : false
 
   // `uiSchema` should be present only in the root object (whether `defaultUiSchema` or empty)
-  if (isFormObject && (props.uiSchema === defaultUiSchema || uiSchemaEmptyObject)) {
+  if (isFormObject && (isEqual(props.uiSchema, defaultUiSchema) || uiSchemaEmptyObject)) {
     return <SchemaField {...props} />
   }
 
   if (props.uiSchema) {
+    console.log(isFormObject, props.uiSchema, defaultUiSchema, props.uiSchema === defaultUiSchema)
     throw new Error('uiSchema is not supported')
   }
 

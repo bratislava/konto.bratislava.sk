@@ -6,7 +6,6 @@ import {
 } from '@rjsf/utils'
 import isEqual from 'lodash/isEqual'
 import { BaRjsfValidatorRegistry } from './validatorRegistry'
-import { baFastMergeAllOf } from './fastMergeAllOf'
 
 /**
  * Detects schema of fileUploadMultiple field.
@@ -82,7 +81,7 @@ export const baGetDefaultFormState = (
     rootSchema,
     undefined,
     baDefaultFormStateBehavior,
-    baFastMergeAllOf,
+    // baFastMergeAllOf,
   )
 
 /**

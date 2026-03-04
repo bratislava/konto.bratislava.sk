@@ -21,6 +21,7 @@ import { redirectQueryParam } from '@/src/frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 import type { GlobalAppProps } from '@/src/pages/_app'
 import { ROUTES } from '@/src/utils/routes'
+import jsdom from 'jsdom'
 
 const fetchStrapiForm = async (slug: string): Promise<FormBaseFragment | null | undefined> => {
   const result = await strapiClient.FormBaseBySlug({ slug })
@@ -40,6 +41,9 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
     if (!context.params) {
       return { notFound: true }
     }
+
+    const jsDomInstance = new jsdom.JSDOM()
+    const domParserInstance = new jsDomInstance.window.DOMParser()
 
     const { slug, id: formId } = context.params
     const serverFormDefinition = getFormDefinitionBySlug(slug)

@@ -1803,7 +1803,7 @@ exports[`getSummaryJsonBrowser > oloKoloTaxiExample summary JSON should match sn
 
 exports[`getSummaryJsonBrowser > oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -1904,7 +1904,7 @@ exports[`getSummaryJsonBrowser > oloMimoriadnyOdvozAZhodnotenieOdpaduExample sum
           "value": "test@email.com",
         },
       ],
-      "id": "root_ziadatel",
+      "id": null,
       "title": "Žiadateľ",
       "type": "Step",
     },
@@ -1914,89 +1914,15 @@ exports[`getSummaryJsonBrowser > oloMimoriadnyOdvozAZhodnotenieOdpaduExample sum
           "id": "root_sluzba_infoOOdpade",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Račianska 5, Bratislava, 83102",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_miestoDodania",
-                  "label": "Miesto dodania / výkonu služby",
-                  "type": "Field",
-                  "value": "Račianska 5, Bratislava, 83102",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Zmesový komunálny odpad",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_druhOdpadu",
-                  "label": "Vyberte druh odpadu",
-                  "type": "Field",
-                  "value": "Zmesový komunálny odpad",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "240 l zberná nádoba",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_objemNadobyZmesovyKomunalnyOdpad",
-                  "label": "Vyberte objem nádoby",
-                  "type": "Field",
-                  "value": "240 l zberná nádoba",
-                },
-              ],
-              "id": "root_sluzba_infoOOdpade_0",
-              "title": "Odpad č. 1",
+              "children": [],
+              "id": "root_sluzba_infoOOdpade_undefined",
+              "title": "Odpad č. NaN",
               "type": "ArrayItem",
             },
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Varšavská 101",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_miestoDodania",
-                  "label": "Miesto dodania / výkonu služby",
-                  "type": "Field",
-                  "value": "Varšavská 101",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Zmesový komunálny odpad",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_druhOdpadu",
-                  "label": "Vyberte druh odpadu",
-                  "type": "Field",
-                  "value": "Zmesový komunálny odpad",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "120 l zberná nádoba",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_objemNadobyZmesovyKomunalnyOdpad",
-                  "label": "Vyberte objem nádoby",
-                  "type": "Field",
-                  "value": "120 l zberná nádoba",
-                },
-              ],
-              "id": "root_sluzba_infoOOdpade_1",
-              "title": "Odpad č. 2",
+              "children": [],
+              "id": "root_sluzba_infoOOdpade_undefined",
+              "title": "Odpad č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -2028,7 +1954,7 @@ exports[`getSummaryJsonBrowser > oloMimoriadnyOdvozAZhodnotenieOdpaduExample sum
           "value": "This is an example form for OLO",
         },
       ],
-      "id": "root_sluzba",
+      "id": null,
       "title": "Služba",
       "type": "Step",
     },
@@ -2047,7 +1973,7 @@ exports[`getSummaryJsonBrowser > oloMimoriadnyOdvozAZhodnotenieOdpaduExample sum
           "value": true,
         },
       ],
-      "id": "root_suhlasy",
+      "id": null,
       "title": "Súhlasy",
       "type": "Step",
     },
@@ -2951,7 +2877,7 @@ exports[`getSummaryJsonBrowser > oloPodnetyAPochvalyObcanovExample summary JSON 
 
 exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -3172,7 +3098,7 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPrePravnickeO
           "value": true,
         },
       ],
-      "id": "root_ziadatel",
+      "id": null,
       "title": "Žiadateľ",
       "type": "Step",
     },
@@ -3182,137 +3108,15 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPrePravnickeO
           "id": "root_sluzba_infoOOdpade",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Landererova 10",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_miestoDodania",
-                  "label": "Miesto dodania / výkonu služby",
-                  "type": "Field",
-                  "value": "Landererova 10",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_druhOdpadu",
-                  "label": "Vyberte druh odpadu",
-                  "type": "Field",
-                  "value": "Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3000 l polopodzemný kontajner",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_objemNadobyPapier",
-                  "label": "Vyberte objem nádoby",
-                  "type": "Field",
-                  "value": "3000 l polopodzemný kontajner",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1 x do týždňa",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_frekvenciaOdvozov",
-                  "label": "Frekvencia odvozov",
-                  "type": "Field",
-                  "value": "1 x do týždňa",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_pocetNadob",
-                  "label": "Počet nádob",
-                  "type": "Field",
-                  "value": 1,
-                },
-              ],
-              "id": "root_sluzba_infoOOdpade_0",
-              "title": "Odpad č. 1",
+              "children": [],
+              "id": "root_sluzba_infoOOdpade_undefined",
+              "title": "Odpad č. NaN",
               "type": "ArrayItem",
             },
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Landererova 10",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_miestoDodania",
-                  "label": "Miesto dodania / výkonu služby",
-                  "type": "Field",
-                  "value": "Landererova 10",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_druhOdpadu",
-                  "label": "Vyberte druh odpadu",
-                  "type": "Field",
-                  "value": "Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "120 l zberná nádoba",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_objemNadobyPapier",
-                  "label": "Vyberte objem nádoby",
-                  "type": "Field",
-                  "value": "120 l zberná nádoba",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1 x do týždňa",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_frekvenciaOdvozov",
-                  "label": "Frekvencia odvozov",
-                  "type": "Field",
-                  "value": "1 x do týždňa",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_1_pocetNadob",
-                  "label": "Počet nádob",
-                  "type": "Field",
-                  "value": 5,
-                },
-              ],
-              "id": "root_sluzba_infoOOdpade_1",
-              "title": "Odpad č. 2",
+              "children": [],
+              "id": "root_sluzba_infoOOdpade_undefined",
+              "title": "Odpad č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -3332,7 +3136,7 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPrePravnickeO
           "value": false,
         },
       ],
-      "id": "root_sluzba",
+      "id": null,
       "title": "Služba",
       "type": "Step",
     },
@@ -3351,7 +3155,7 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPrePravnickeO
           "value": true,
         },
       ],
-      "id": "root_suhlasy",
+      "id": null,
       "title": "Súhlasy",
       "type": "Step",
     },
@@ -3363,7 +3167,7 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPrePravnickeO
 
 exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -3535,7 +3339,7 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPreSpravcovsk
           "value": "test@test.test",
         },
       ],
-      "id": "root_ziadatel",
+      "id": null,
       "title": "Žiadateľ",
       "type": "Step",
     },
@@ -3545,70 +3349,9 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPreSpravcovsk
           "id": "root_sluzba_infoOOdpade",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Test 1",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_miestoDodania",
-                  "label": "Miesto dodania / výkonu služby",
-                  "type": "Field",
-                  "value": "Test 1",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_druhOdpadu",
-                  "label": "Vyberte druh odpadu",
-                  "type": "Field",
-                  "value": "Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "120 l zberná nádoba",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_objemNadobyPapierPlasty",
-                  "label": "Vyberte objem nádoby",
-                  "type": "Field",
-                  "value": "120 l zberná nádoba",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1 x do týždňa",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_frekvenciaOdvozovPapierPlasty",
-                  "label": "Frekvencia odvozov",
-                  "type": "Field",
-                  "value": "1 x do týždňa",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1",
-                    },
-                  ],
-                  "id": "root_sluzba_infoOOdpade_0_pocetNadob",
-                  "label": "Počet nádob",
-                  "type": "Field",
-                  "value": 1,
-                },
-              ],
-              "id": "root_sluzba_infoOOdpade_0",
-              "title": "Odpad č. 1",
+              "children": [],
+              "id": "root_sluzba_infoOOdpade_undefined",
+              "title": "Odpad č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -3628,7 +3371,7 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPreSpravcovsk
           "value": false,
         },
       ],
-      "id": "root_sluzba",
+      "id": null,
       "title": "Služba",
       "type": "Step",
     },
@@ -3647,7 +3390,7 @@ exports[`getSummaryJsonBrowser > oloTriedenyZberPapieraPlastovASklaPreSpravcovsk
           "value": true,
         },
       ],
-      "id": "root_suhlasy",
+      "id": null,
       "title": "Súhlasy",
       "type": "Step",
     },
@@ -4331,7 +4074,7 @@ exports[`getSummaryJsonBrowser > oloUzatvorenieZmluvyONakladaniSOdpadom summary 
 
 exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -4348,7 +4091,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "value": "vznik",
         },
       ],
-      "id": "root_typOznamenia",
+      "id": null,
       "title": "Typ oznámenia",
       "type": "Step",
     },
@@ -4535,7 +4278,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "value": true,
         },
       ],
-      "id": "root_oznamovatel",
+      "id": null,
       "title": "Oznamovateľ",
       "type": "Step",
     },
@@ -4664,7 +4407,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "value": 4,
         },
       ],
-      "id": "root_informacieOOdvoze",
+      "id": null,
       "title": "Informácie o odvoze",
       "type": "Step",
     },
@@ -4674,137 +4417,15 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "id": "root_poplatnici_poplatnici",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Ján",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_0_meno",
-                  "label": "Meno",
-                  "type": "Field",
-                  "value": "Ján",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Kováč",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_0_priezvisko",
-                  "label": "Priezvisko",
-                  "type": "Field",
-                  "value": "Kováč",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Ing.",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_0_titul",
-                  "label": "Titul",
-                  "type": "Field",
-                  "value": "Ing.",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "910313/1234",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_0_rodneCislo",
-                  "label": "Rodné číslo",
-                  "type": "Field",
-                  "value": "910313/1234",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_0_zhodujeSaAdresa",
-                  "label": "Zhoduje sa adresa trvalého alebo prechodného pobytu poplatníka s adresou miesta odvozu, na ktorú sa táto žiadosť vzťahuje?",
-                  "type": "Field",
-                  "value": true,
-                },
-              ],
-              "id": "root_poplatnici_poplatnici_0",
-              "title": "Poplatník č. 1",
+              "children": [],
+              "id": "root_poplatnici_poplatnici_undefined",
+              "title": "Poplatník č. NaN",
               "type": "ArrayItem",
             },
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Marta",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_1_meno",
-                  "label": "Meno",
-                  "type": "Field",
-                  "value": "Marta",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nováková",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_1_priezvisko",
-                  "label": "Priezvisko",
-                  "type": "Field",
-                  "value": "Nováková",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Mgr.",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_1_titul",
-                  "label": "Titul",
-                  "type": "Field",
-                  "value": "Mgr.",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "920414/5678",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_1_rodneCislo",
-                  "label": "Rodné číslo",
-                  "type": "Field",
-                  "value": "920414/5678",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_poplatnici_poplatnici_1_zhodujeSaAdresa",
-                  "label": "Zhoduje sa adresa trvalého alebo prechodného pobytu poplatníka s adresou miesta odvozu, na ktorú sa táto žiadosť vzťahuje?",
-                  "type": "Field",
-                  "value": true,
-                },
-              ],
-              "id": "root_poplatnici_poplatnici_1",
-              "title": "Poplatník č. 2",
+              "children": [],
+              "id": "root_poplatnici_poplatnici_undefined",
+              "title": "Poplatník č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -4812,7 +4433,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "type": "Array",
         },
       ],
-      "id": "root_poplatnici",
+      "id": null,
       "title": "Údaje o všetkých poplatníkoch, ktorí užívajú danú nehnuteľnosť",
       "type": "Step",
     },
@@ -4822,46 +4443,9 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "id": "root_komunalnyOdpad_nadoby",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "120 l zberná nádoba",
-                    },
-                  ],
-                  "id": "root_komunalnyOdpad_nadoby_0_objemNadoby",
-                  "label": "Objem nádoby",
-                  "type": "Field",
-                  "value": "120LZbernaNadoba",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2",
-                    },
-                  ],
-                  "id": "root_komunalnyOdpad_nadoby_0_pocetNadob",
-                  "label": "Počet nádob",
-                  "type": "Field",
-                  "value": 2,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1× 7 dní",
-                    },
-                  ],
-                  "id": "root_komunalnyOdpad_nadoby_0_frekvenciaOdvozu",
-                  "label": "Frekvencia odvozu",
-                  "type": "Field",
-                  "value": "1X7Dni",
-                },
-              ],
-              "id": "root_komunalnyOdpad_nadoby_0",
-              "title": "Nádoba č. 1",
+              "children": [],
+              "id": "root_komunalnyOdpad_nadoby_undefined",
+              "title": "Nádoba č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -4881,7 +4465,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "value": "Odpad bude odvážaný každý týždeň.",
         },
       ],
-      "id": "root_komunalnyOdpad",
+      "id": null,
       "title": "Komunálny odpad",
       "type": "Step",
     },
@@ -4912,7 +4496,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "value": "Záhrada produkuje veľa bioodpadu.",
         },
       ],
-      "id": "root_biologickyRozlozitelnyOdpadZoZahrad",
+      "id": null,
       "title": "Biologicky rozložiteľný odpad zo záhrad",
       "type": "Step",
     },
@@ -4943,7 +4527,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "value": "Kuchynský bioodpad bude zbieraný do menších nádob.",
         },
       ],
-      "id": "root_biologickyRozlozitelnyOdpadZKuchyne",
+      "id": null,
       "title": "Biologicky rozložiteľný odpad z kuchyne",
       "type": "Step",
     },
@@ -4962,7 +4546,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           "value": "bezhotovostnyPrevod",
         },
       ],
-      "id": "root_sposobPlatby",
+      "id": null,
       "title": "Spôsob platby",
       "type": "Step",
     },
@@ -4983,7 +4567,7 @@ exports[`getSummaryJsonBrowser > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpad
           ],
         },
       ],
-      "id": "root_prilohy",
+      "id": null,
       "title": "Prílohy",
       "type": "Step",
     },
@@ -5230,7 +4814,7 @@ exports[`getSummaryJsonBrowser > predzahradkyExample summary JSON should match s
 
 exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -5259,7 +4843,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "value": 2024,
         },
       ],
-      "id": "root_druhPriznania",
+      "id": null,
       "title": "Druh priznania",
       "type": "Step",
     },
@@ -5432,7 +5016,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "value": "+421948111111",
         },
       ],
-      "id": "root_udajeODanovnikovi",
+      "id": null,
       "title": "Údaje o daňovníkovi",
       "type": "Step",
     },
@@ -5466,172 +5050,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "id": "root_danZPozemkov_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Som jediný vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "somJedinyVlastnik",
-                },
-                {
-                  "id": "root_danZPozemkov_priznania_0_pozemky",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "0000",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_cisloListuVlastnictva",
-                          "label": "Číslo listu vlastníctva",
-                          "type": "Field",
-                          "value": "0000",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Nové Mesto",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_kataster",
-                          "label": "Názov katastrálneho územia",
-                          "type": "Field",
-                          "value": "Nové Mesto",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "2567/0",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely",
-                          "label": "Číslo parcely",
-                          "type": "Field",
-                          "value": "2567/0",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku",
-                          "label": "Spôsob využitia pozemku",
-                          "type": "Field",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "E – rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_druhPozemku",
-                          "label": "Druh pozemku",
-                          "type": "Field",
-                          "value": "E",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "215",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_celkovaVymeraPozemku",
-                          "label": "Celková výmera pozemku",
-                          "type": "Field",
-                          "value": 215,
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "2569/15897",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                          "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                          "type": "Field",
-                          "value": "2569/15897",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_spoluvlastnickyPodiel",
-                          "label": "Spoluvlastnícky podiel",
-                          "type": "Field",
-                          "value": "1/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumVznikuDanovejPovinnosti",
-                          "label": "Dátum vzniku daňovej povinnosti",
-                          "type": "Field",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumZanikuDanovejPovinnosti",
-                          "label": "Dátum zániku daňovej povinnosti",
-                          "type": "Field",
-                        },
-                      ],
-                      "id": "root_danZPozemkov_priznania_0_pozemky_0",
-                      "title": "Pozemok č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Pozemky",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZPozemkov_priznania_0",
-              "title": "Priznanie k dani z pozemkov č. 1",
+              "children": [],
+              "id": "root_danZPozemkov_priznania_undefined",
+              "title": "Priznanie k dani z pozemkov č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -5639,7 +5060,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "type": "Array",
         },
       ],
-      "id": "root_danZPozemkov",
+      "id": null,
       "title": "Priznanie k dani z pozemkov",
       "type": "Step",
     },
@@ -5658,7 +5079,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZoStaviebJedenUcel",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
       "type": "Step",
     },
@@ -5677,7 +5098,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZoStaviebViacereUcely",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
       "type": "Step",
     },
@@ -5696,7 +5117,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZBytovANebytovychPriestorov",
+      "id": null,
       "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
       "type": "Step",
     },
@@ -5754,7 +5175,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
           "type": "Field",
         },
       ],
-      "id": "root_znizenieAleboOslobodenieOdDane",
+      "id": null,
       "title": "Zníženie alebo oslobodenie od dane",
       "type": "Step",
     },
@@ -5766,7 +5187,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample1 summary JS
 
 exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -5795,7 +5216,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "value": 2024,
         },
       ],
-      "id": "root_druhPriznania",
+      "id": null,
       "title": "Druh priznania",
       "type": "Step",
     },
@@ -5968,7 +5389,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "value": "+42191111111",
         },
       ],
-      "id": "root_udajeODanovnikovi",
+      "id": null,
       "title": "Údaje o daňovníkovi",
       "type": "Step",
     },
@@ -6002,341 +5423,15 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "id": "root_danZPozemkov_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Bezpodielové spoluvlastníctvo manželov",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "bezpodieloveSpoluvlastnictvoManzelov",
-                },
-                {
-                  "id": "root_danZPozemkov_priznania_0_pozemky",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1111",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_cisloListuVlastnictva",
-                          "label": "Číslo listu vlastníctva",
-                          "type": "Field",
-                          "value": "1111",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Záhorská Bystrica",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_kataster",
-                          "label": "Názov katastrálneho územia",
-                          "type": "Field",
-                          "value": "Záhorská Bystrica",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "730/2",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely",
-                          "label": "Číslo parcely",
-                          "type": "Field",
-                          "value": "730/2",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku",
-                          "label": "Spôsob využitia pozemku",
-                          "type": "Field",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "F – zastavané plochy a nádvoria",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_druhPozemku",
-                          "label": "Druh pozemku",
-                          "type": "Field",
-                          "value": "F",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "2",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_celkovaVymeraPozemku",
-                          "label": "Celková výmera pozemku",
-                          "type": "Field",
-                          "value": 2,
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                          "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                          "type": "Field",
-                          "value": "1/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_spoluvlastnickyPodiel",
-                          "label": "Spoluvlastnícky podiel",
-                          "type": "Field",
-                          "value": "1/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumVznikuDanovejPovinnosti",
-                          "label": "Dátum vzniku daňovej povinnosti",
-                          "type": "Field",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumZanikuDanovejPovinnosti",
-                          "label": "Dátum zániku daňovej povinnosti",
-                          "type": "Field",
-                        },
-                      ],
-                      "id": "root_danZPozemkov_priznania_0_pozemky_0",
-                      "title": "Pozemok č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Pozemky",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZPozemkov_priznania_0",
-              "title": "Priznanie k dani z pozemkov č. 1",
+              "children": [],
+              "id": "root_danZPozemkov_priznania_undefined",
+              "title": "Priznanie k dani z pozemkov č. NaN",
               "type": "ArrayItem",
             },
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_1_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Bezpodielové spoluvlastníctvo manželov",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_1_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "bezpodieloveSpoluvlastnictvoManzelov",
-                },
-                {
-                  "id": "root_danZPozemkov_priznania_1_pozemky",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1111",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_cisloListuVlastnictva",
-                          "label": "Číslo listu vlastníctva",
-                          "type": "Field",
-                          "value": "1111",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Záhorská Bystrica",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_kataster",
-                          "label": "Názov katastrálneho územia",
-                          "type": "Field",
-                          "value": "Záhorská Bystrica",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "755/4",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely",
-                          "label": "Číslo parcely",
-                          "type": "Field",
-                          "value": "755/4",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku",
-                          "label": "Spôsob využitia pozemku",
-                          "type": "Field",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "C – záhrady",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_druhPozemku",
-                          "label": "Druh pozemku",
-                          "type": "Field",
-                          "value": "C",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "24",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_celkovaVymeraPozemku",
-                          "label": "Celková výmera pozemku",
-                          "type": "Field",
-                          "value": 24,
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                          "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                          "type": "Field",
-                          "value": "1/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_spoluvlastnickyPodiel",
-                          "label": "Spoluvlastnícky podiel",
-                          "type": "Field",
-                          "value": "1/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_datumy_datumVznikuDanovejPovinnosti",
-                          "label": "Dátum vzniku daňovej povinnosti",
-                          "type": "Field",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "None",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_1_pozemky_0_datumy_datumZanikuDanovejPovinnosti",
-                          "label": "Dátum zániku daňovej povinnosti",
-                          "type": "Field",
-                        },
-                      ],
-                      "id": "root_danZPozemkov_priznania_1_pozemky_0",
-                      "title": "Pozemok č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Pozemky",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_1_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZPozemkov_priznania_1",
-              "title": "Priznanie k dani z pozemkov č. 2",
+              "children": [],
+              "id": "root_danZPozemkov_priznania_undefined",
+              "title": "Priznanie k dani z pozemkov č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -6344,7 +5439,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "type": "Array",
         },
       ],
-      "id": "root_danZPozemkov",
+      "id": null,
       "title": "Priznanie k dani z pozemkov",
       "type": "Step",
     },
@@ -6363,7 +5458,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZoStaviebJedenUcel",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
       "type": "Step",
     },
@@ -6382,7 +5477,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZoStaviebViacereUcely",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
       "type": "Step",
     },
@@ -6401,7 +5496,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZBytovANebytovychPriestorov",
+      "id": null,
       "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
       "type": "Step",
     },
@@ -6492,7 +5587,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "value": "+42191111111",
         },
       ],
-      "id": "root_bezpodieloveSpoluvlastnictvoManzelov",
+      "id": null,
       "title": "Údaje o manželovi/manželke",
       "type": "Step",
     },
@@ -6542,7 +5637,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
           "type": "Field",
         },
       ],
-      "id": "root_znizenieAleboOslobodenieOdDane",
+      "id": null,
       "title": "Zníženie alebo oslobodenie od dane",
       "type": "Step",
     },
@@ -6554,7 +5649,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample2 summary JS
 
 exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -6583,7 +5678,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "value": 2024,
         },
       ],
-      "id": "root_druhPriznania",
+      "id": null,
       "title": "Druh priznania",
       "type": "Step",
     },
@@ -6758,7 +5853,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "value": "+421901111111",
         },
       ],
-      "id": "root_udajeODanovnikovi",
+      "id": null,
       "title": "Údaje o daňovníkovi",
       "type": "Step",
     },
@@ -6777,7 +5872,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZPozemkov",
+      "id": null,
       "title": "Priznanie k dani z pozemkov",
       "type": "Step",
     },
@@ -6796,7 +5891,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZoStaviebJedenUcel",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
       "type": "Step",
     },
@@ -6815,7 +5910,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "value": false,
         },
       ],
-      "id": "root_danZoStaviebViacereUcely",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
       "type": "Step",
     },
@@ -6849,239 +5944,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "id": "root_danZBytovANebytovychPriestorov_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3385",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_cisloListuVlastnictva",
-                  "label": "Číslo listu vlastníctva",
-                  "type": "Field",
-                  "value": "3385",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Jána Smreka 1",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok1_ulicaACisloDomu",
-                  "label": "Ulica a číslo domu",
-                  "type": "Field",
-                  "value": "Jána Smreka 1",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok1_supisneCislo",
-                  "label": "Súpisné číslo",
-                  "type": "Field",
-                  "value": 1,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Devínska Nová Ves",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok2_kataster",
-                  "label": "Názov katastrálneho územia",
-                  "type": "Field",
-                  "value": "Devínska Nová Ves",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1234/10",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok2_cisloParcely",
-                  "label": "Číslo parcely",
-                  "type": "Field",
-                  "value": "1234/10",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Podielové spoluvlastníctvo",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "podieloveSpoluvlastnictvo",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_pocetSpoluvlastnikov",
-                  "label": "Zadajte počet spoluvlastníkov",
-                  "type": "Field",
-                  "value": 2,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_naZakladeDohody",
-                  "label": "Podávate priznanie za všetkých spoluvlastníkov na základe dohody?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_splnomocnenie",
-                  "label": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
-                  "type": "Field",
-                  "value": [],
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_priznanieZaByt",
-                  "label": "Podávate priznanie za byt?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "23",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_cisloBytu",
-                  "label": "Číslo bytu",
-                  "type": "Field",
-                  "value": "23",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_popisBytu",
-                  "label": "Popis bytu",
-                  "type": "Field",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3468/246230",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                  "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                  "type": "Field",
-                  "value": "3468/246230",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1/2",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_spoluvlastnickyPodiel",
-                  "label": "Spoluvlastnícky podiel",
-                  "type": "Field",
-                  "value": "1/2",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_vymeraPodlahovejPlochyNaIneUcely",
-                  "label": "Výmera podlahovej plochy bytu používaného na iné účely",
-                  "type": "Field",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumVznikuDanovejPovinnosti",
-                  "label": "Dátum vzniku daňovej povinnosti",
-                  "type": "Field",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumZanikuDanovejPovinnosti",
-                  "label": "Dátum zániku daňovej povinnosti",
-                  "type": "Field",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_priznanieZaNebytovyPriestor",
-                  "label": "Podávate priznanie za nebytový priestor (napr. garážové státie, pivnica, obchodný priestor a pod.)?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZBytovANebytovychPriestorov_priznania_0",
-              "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. 1",
+              "children": [],
+              "id": "root_danZBytovANebytovychPriestorov_priznania_undefined",
+              "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -7089,7 +5954,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "type": "Array",
         },
       ],
-      "id": "root_danZBytovANebytovychPriestorov",
+      "id": null,
       "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
       "type": "Step",
     },
@@ -7139,7 +6004,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample3 summary JS
           "type": "Field",
         },
       ],
-      "id": "root_znizenieAleboOslobodenieOdDane",
+      "id": null,
       "title": "Zníženie alebo oslobodenie od dane",
       "type": "Step",
     },
@@ -7491,7 +6356,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample4 summary JS
 
 exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -7520,7 +6385,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "value": 2024,
         },
       ],
-      "id": "root_druhPriznania",
+      "id": null,
       "title": "Druh priznania",
       "type": "Step",
     },
@@ -7755,7 +6620,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "value": "+421948417711",
         },
       ],
-      "id": "root_udajeODanovnikovi",
+      "id": null,
       "title": "Údaje o daňovníkovi",
       "type": "Step",
     },
@@ -7789,178 +6654,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "id": "root_danZPozemkov_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Som jediný vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "somJedinyVlastnik",
-                },
-                {
-                  "id": "root_danZPozemkov_priznania_0_pozemky",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "4589",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_cisloListuVlastnictva",
-                          "label": "Číslo listu vlastníctva",
-                          "type": "Field",
-                          "value": "4589",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Devínska Nová Ves",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_kataster",
-                          "label": "Názov katastrálneho územia",
-                          "type": "Field",
-                          "value": "Devínska Nová Ves",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "7986/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely",
-                          "label": "Číslo parcely",
-                          "type": "Field",
-                          "value": "7986/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Ložisko",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku",
-                          "label": "Spôsob využitia pozemku",
-                          "type": "Field",
-                          "value": "Ložisko",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "B – trvalé trávnaté porasty",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_druhPozemku",
-                          "label": "Druh pozemku",
-                          "type": "Field",
-                          "value": "B",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "218",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_celkovaVymeraPozemku",
-                          "label": "Celková výmera pozemku",
-                          "type": "Field",
-                          "value": 218,
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "4587/53994",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                          "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                          "type": "Field",
-                          "value": "4587/53994",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_spoluvlastnickyPodiel",
-                          "label": "Spoluvlastnícky podiel",
-                          "type": "Field",
-                          "value": "1/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "13. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumVznikuDanovejPovinnosti",
-                          "label": "Dátum vzniku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-13",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "4. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumZanikuDanovejPovinnosti",
-                          "label": "Dátum zániku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-04",
-                        },
-                      ],
-                      "id": "root_danZPozemkov_priznania_0_pozemky_0",
-                      "title": "Pozemok č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Pozemky",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZPozemkov_priznania_0",
-              "title": "Priznanie k dani z pozemkov č. 1",
+              "children": [],
+              "id": "root_danZPozemkov_priznania_undefined",
+              "title": "Priznanie k dani z pozemkov č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -7968,7 +6664,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "type": "Array",
         },
       ],
-      "id": "root_danZPozemkov",
+      "id": null,
       "title": "Priznanie k dani z pozemkov",
       "type": "Step",
     },
@@ -8002,247 +6698,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "id": "root_danZoStaviebJedenUcel_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4597",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_cisloListuVlastnictva",
-                  "label": "Číslo listu vlastníctva",
-                  "type": "Field",
-                  "value": "4597",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok1_ulicaACisloDomu",
-                  "label": "Ulica a číslo domu",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2526",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok1_supisneCislo",
-                  "label": "Súpisné číslo",
-                  "type": "Field",
-                  "value": 2526,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Jarovce",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok2_kataster",
-                  "label": "Názov katastrálneho územia",
-                  "type": "Field",
-                  "value": "Jarovce",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "7859/1",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok2_cisloParcely",
-                  "label": "Číslo parcely",
-                  "type": "Field",
-                  "value": "7859/1",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Podielové spoluvlastníctvo",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "podieloveSpoluvlastnictvo",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_pocetSpoluvlastnikov",
-                  "label": "Zadajte počet spoluvlastníkov",
-                  "type": "Field",
-                  "value": 2,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_naZakladeDohody",
-                  "label": "Podávate priznanie za všetkých spoluvlastníkov na základe dohody?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_splnomocnenie",
-                  "label": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
-                  "type": "Field",
-                  "value": [],
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "a) stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_predmetDane",
-                  "label": "Predmet dane",
-                  "type": "Field",
-                  "value": "a",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2 659",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_celkovaZastavanaPlocha",
-                  "label": "Celková zastavaná plocha",
-                  "type": "Field",
-                  "value": 2659,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1/2",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_spoluvlastnickyPodiel",
-                  "label": "Spoluvlastnícky podiel",
-                  "type": "Field",
-                  "value": "1/2",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia",
-                  "label": "Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia",
-                  "type": "Field",
-                  "value": 5,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDane",
-                  "label": "Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "26",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDaneDetaily_celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby",
-                  "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                  "type": "Field",
-                  "value": 26,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "89",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDaneDetaily_vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb",
-                  "label": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                  "type": "Field",
-                  "value": 89,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_datumy_datumVznikuDanovejPovinnosti",
-                  "label": "Dátum vzniku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-04",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "6. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_datumy_datumZanikuDanovejPovinnosti",
-                  "label": "Dátum zániku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-06",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZoStaviebJedenUcel_priznania_0",
-              "title": "Priznanie k dani zo stavby slúžiacej na jeden účel č. 1",
+              "children": [],
+              "id": "root_danZoStaviebJedenUcel_priznania_undefined",
+              "title": "Priznanie k dani zo stavby slúžiacej na jeden účel č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -8250,7 +6708,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "type": "Array",
         },
       ],
-      "id": "root_danZoStaviebJedenUcel",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
       "type": "Step",
     },
@@ -8284,240 +6742,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "id": "root_danZoStaviebViacereUcely_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4597",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_cisloListuVlastnictva",
-                  "label": "Číslo listu vlastníctva",
-                  "type": "Field",
-                  "value": "4597",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok1_ulicaACisloDomu",
-                  "label": "Ulica a číslo domu",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok1_supisneCislo",
-                  "label": "Súpisné číslo",
-                  "type": "Field",
-                  "value": 35,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Devín",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok2_kataster",
-                  "label": "Názov katastrálneho územia",
-                  "type": "Field",
-                  "value": "Devín",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5697/1",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok2_cisloParcely",
-                  "label": "Číslo parcely",
-                  "type": "Field",
-                  "value": "5697/1",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nájomca",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "najomca",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Bezpodielové spoluvlastníctvo manželov",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "bezpodieloveSpoluvlastnictvoManzelov",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná stavba",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_popisStavby",
-                  "label": "Popis stavby",
-                  "type": "Field",
-                  "value": "Príkladná stavba",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_datumy_datumVznikuDanovejPovinnosti",
-                  "label": "Dátum vzniku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-05",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_datumy_datumZanikuDanovejPovinnosti",
-                  "label": "Dátum zániku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-04",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "25 648",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_celkovaVymera",
-                  "label": "Celková výmera zastavanej plochy viacúčelovej stavby",
-                  "type": "Field",
-                  "value": 25648,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia",
-                  "label": "Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia",
-                  "type": "Field",
-                  "value": 4,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_castStavbyOslobodenaOdDane",
-                  "label": "Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "26",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb",
-                  "label": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                  "type": "Field",
-                  "value": 26,
-                },
-                {
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "b) stavby na pôdohospodársku produkciu, skleníky, stavby pre vodné hospodárstvo, stavby využívané na skladovanie vlastnej pôdohospodárskej produkcie vrátane stavieb na vlastnú administratívu",
-                            },
-                          ],
-                          "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_ucelVyuzitiaStavby",
-                          "label": "Účel využitia stavby",
-                          "type": "Field",
-                          "value": "b",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "4598/26594",
-                            },
-                          ],
-                          "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                          "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                          "type": "Field",
-                          "value": "4598/26594",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/1",
-                            },
-                          ],
-                          "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_spoluvlastnickyPodiel",
-                          "label": "Spoluvlastnícky podiel",
-                          "type": "Field",
-                          "value": "1/1",
-                        },
-                      ],
-                      "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0",
-                      "title": "Časť stavby č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-              ],
-              "id": "root_danZoStaviebViacereUcely_priznania_0",
-              "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely č. 1",
+              "children": [],
+              "id": "root_danZoStaviebViacereUcely_priznania_undefined",
+              "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -8525,7 +6752,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "type": "Array",
         },
       ],
-      "id": "root_danZoStaviebViacereUcely",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
       "type": "Step",
     },
@@ -8559,324 +6786,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "id": "root_danZBytovANebytovychPriestorov_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2648",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_cisloListuVlastnictva",
-                  "label": "Číslo listu vlastníctva",
-                  "type": "Field",
-                  "value": "2648",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok1_ulicaACisloDomu",
-                  "label": "Ulica a číslo domu",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3694",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok1_supisneCislo",
-                  "label": "Súpisné číslo",
-                  "type": "Field",
-                  "value": 3694,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Karlova Ves",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok2_kataster",
-                  "label": "Názov katastrálneho územia",
-                  "type": "Field",
-                  "value": "Karlova Ves",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "6975/2",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok2_cisloParcely",
-                  "label": "Číslo parcely",
-                  "type": "Field",
-                  "value": "6975/2",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Správca",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "spravca",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Podielové spoluvlastníctvo",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "podieloveSpoluvlastnictvo",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_pocetSpoluvlastnikov",
-                  "label": "Zadajte počet spoluvlastníkov",
-                  "type": "Field",
-                  "value": 3,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_naZakladeDohody",
-                  "label": "Podávate priznanie za všetkých spoluvlastníkov na základe dohody?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_priznanieZaByt",
-                  "label": "Podávate priznanie za byt?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_cisloBytu",
-                  "label": "Číslo bytu",
-                  "type": "Field",
-                  "value": "3",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Dvojizbak",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_popisBytu",
-                  "label": "Popis bytu",
-                  "type": "Field",
-                  "value": "Dvojizbak",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2654/36594",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                  "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                  "type": "Field",
-                  "value": "2654/36594",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1/1",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_spoluvlastnickyPodiel",
-                  "label": "Spoluvlastnícky podiel",
-                  "type": "Field",
-                  "value": "1/1",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "18",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_vymeraPodlahovejPlochyNaIneUcely",
-                  "label": "Výmera podlahovej plochy bytu používaného na iné účely",
-                  "type": "Field",
-                  "value": 18,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "16. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumVznikuDanovejPovinnosti",
-                  "label": "Dátum vzniku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-16",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "7. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumZanikuDanovejPovinnosti",
-                  "label": "Dátum zániku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-07",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_priznanieZaNebytovyPriestor",
-                  "label": "Podávate priznanie za nebytový priestor (napr. garážové státie, pivnica, obchodný priestor a pod.)?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Garáž",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_riadok_ucelVyuzitiaNebytovehoPriestoruVBytovomDome",
-                          "label": "Účel využitia nebytového priestoru v bytovom dome",
-                          "type": "Field",
-                          "value": "Garáž",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "G05",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_riadok_cisloNebytovehoPriestoruVBytovomDome",
-                          "label": "Číslo nebytového priestoru v bytovom dome",
-                          "type": "Field",
-                          "value": "G05",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "2659/86569",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
-                          "label": "Podiel priestoru na spoločných častiach a zariadeniach domu",
-                          "type": "Field",
-                          "value": "2659/86569",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "1/5",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_spoluvlastnickyPodiel",
-                          "label": "Spoluvlastnícky podiel",
-                          "type": "Field",
-                          "value": "1/5",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "5. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_datumy_datumVznikuDanovejPovinnosti",
-                          "label": "Dátum vzniku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-05",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "12. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_datumy_datumZanikuDanovejPovinnosti",
-                          "label": "Dátum zániku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-12",
-                        },
-                      ],
-                      "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0",
-                      "title": "Nebytový priestor č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Nebytové priestory",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-              ],
-              "id": "root_danZBytovANebytovychPriestorov_priznania_0",
-              "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. 1",
+              "children": [],
+              "id": "root_danZBytovANebytovychPriestorov_priznania_undefined",
+              "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -8884,7 +6796,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "type": "Array",
         },
       ],
-      "id": "root_danZBytovANebytovychPriestorov",
+      "id": null,
       "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
       "type": "Step",
     },
@@ -9035,7 +6947,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "value": "+421948417711",
         },
       ],
-      "id": "root_bezpodieloveSpoluvlastnictvoManzelov",
+      "id": null,
       "title": "Údaje o manželovi/manželke",
       "type": "Step",
     },
@@ -9126,7 +7038,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
           "value": "Príkladná 35",
         },
       ],
-      "id": "root_znizenieAleboOslobodenieOdDane",
+      "id": null,
       "title": "Zníženie alebo oslobodenie od dane",
       "type": "Step",
     },
@@ -9138,7 +7050,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5 summary JS
 
 exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculators summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -9167,7 +7079,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "value": 2024,
         },
       ],
-      "id": "root_druhPriznania",
+      "id": null,
       "title": "Druh priznania",
       "type": "Step",
     },
@@ -9402,7 +7314,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "value": "+421948417711",
         },
       ],
-      "id": "root_udajeODanovnikovi",
+      "id": null,
       "title": "Údaje o daňovníkovi",
       "type": "Step",
     },
@@ -9435,154 +7347,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "id": "root_danZPozemkov_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Som jediný vlastník",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "somJedinyVlastnik",
-                },
-                {
-                  "id": "root_danZPozemkov_priznania_0_pozemky",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "4589",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_cisloListuVlastnictva",
-                          "label": "Číslo listu vlastníctva",
-                          "type": "Field",
-                          "value": "4589",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Devínska Nová Ves",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_kataster",
-                          "label": "Názov katastrálneho územia",
-                          "type": "Field",
-                          "value": "Devínska Nová Ves",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "7986/1",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely",
-                          "label": "Číslo parcely",
-                          "type": "Field",
-                          "value": "7986/1",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Ložisko",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku",
-                          "label": "Spôsob využitia pozemku",
-                          "type": "Field",
-                          "value": "Ložisko",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "B – trvalé trávnaté porasty",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_druhPozemku",
-                          "label": "Druh pozemku",
-                          "type": "Field",
-                          "value": "B",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "18,51",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_vymeraPozemku",
-                          "label": "Vaša výmera pozemku",
-                          "type": "Field",
-                          "value": 18.51,
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "13. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumVznikuDanovejPovinnosti",
-                          "label": "Dátum vzniku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-13",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "4. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZPozemkov_priznania_0_pozemky_0_datumy_datumZanikuDanovejPovinnosti",
-                          "label": "Dátum zániku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-04",
-                        },
-                      ],
-                      "id": "root_danZPozemkov_priznania_0_pozemky_0",
-                      "title": "Pozemok č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Pozemky",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZPozemkov_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZPozemkov_priznania_0",
-              "title": "Priznanie k dani z pozemkov č. 1",
+              "children": [],
+              "id": "root_danZPozemkov_priznania_undefined",
+              "title": "Priznanie k dani z pozemkov č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -9590,7 +7357,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "type": "Array",
         },
       ],
-      "id": "root_danZPozemkov",
+      "id": null,
       "title": "Priznanie k dani z pozemkov",
       "type": "Step",
     },
@@ -9623,235 +7390,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "id": "root_danZoStaviebJedenUcel_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4597",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_cisloListuVlastnictva",
-                  "label": "Číslo listu vlastníctva",
-                  "type": "Field",
-                  "value": "4597",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok1_ulicaACisloDomu",
-                  "label": "Ulica a číslo domu",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2526",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok1_supisneCislo",
-                  "label": "Súpisné číslo",
-                  "type": "Field",
-                  "value": 2526,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Jarovce",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok2_kataster",
-                  "label": "Názov katastrálneho územia",
-                  "type": "Field",
-                  "value": "Jarovce",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "7859/1",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_riadok2_cisloParcely",
-                  "label": "Číslo parcely",
-                  "type": "Field",
-                  "value": "7859/1",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vlastník",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "vlastnik",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Podielové spoluvlastníctvo",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "podieloveSpoluvlastnictvo",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_pocetSpoluvlastnikov",
-                  "label": "Zadajte počet spoluvlastníkov",
-                  "type": "Field",
-                  "value": 2,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_naZakladeDohody",
-                  "label": "Podávate priznanie za všetkých spoluvlastníkov na základe dohody?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_splnomocnenie",
-                  "label": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
-                  "type": "Field",
-                  "value": [],
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "a) stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_predmetDane",
-                  "label": "Predmet dane",
-                  "type": "Field",
-                  "value": "a",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1 330",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_zakladDane",
-                  "label": "Základ dane",
-                  "type": "Field",
-                  "value": 1330,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia",
-                  "label": "Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia",
-                  "type": "Field",
-                  "value": 5,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDane",
-                  "label": "Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "26",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDaneDetaily_celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby",
-                  "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                  "type": "Field",
-                  "value": 26,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "89",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDaneDetaily_vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb",
-                  "label": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                  "type": "Field",
-                  "value": 89,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_datumy_datumVznikuDanovejPovinnosti",
-                  "label": "Dátum vzniku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-04",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "6. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_datumy_datumZanikuDanovejPovinnosti",
-                  "label": "Dátum zániku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-06",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "None",
-                    },
-                  ],
-                  "id": "root_danZoStaviebJedenUcel_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                },
-              ],
-              "id": "root_danZoStaviebJedenUcel_priznania_0",
-              "title": "Priznanie k dani zo stavby slúžiacej na jeden účel č. 1",
+              "children": [],
+              "id": "root_danZoStaviebJedenUcel_priznania_undefined",
+              "title": "Priznanie k dani zo stavby slúžiacej na jeden účel č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -9859,7 +7400,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "type": "Array",
         },
       ],
-      "id": "root_danZoStaviebJedenUcel",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
       "type": "Step",
     },
@@ -9892,252 +7433,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "id": "root_danZoStaviebViacereUcely_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4597",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_cisloListuVlastnictva",
-                  "label": "Číslo listu vlastníctva",
-                  "type": "Field",
-                  "value": "4597",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok1_ulicaACisloDomu",
-                  "label": "Ulica a číslo domu",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok1_supisneCislo",
-                  "label": "Súpisné číslo",
-                  "type": "Field",
-                  "value": 35,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Devín",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok2_kataster",
-                  "label": "Názov katastrálneho územia",
-                  "type": "Field",
-                  "value": "Devín",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5697/1",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_riadok2_cisloParcely",
-                  "label": "Číslo parcely",
-                  "type": "Field",
-                  "value": "5697/1",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nájomca",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "najomca",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Bezpodielové spoluvlastníctvo manželov",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "bezpodieloveSpoluvlastnictvoManzelov",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná stavba",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_popisStavby",
-                  "label": "Popis stavby",
-                  "type": "Field",
-                  "value": "Príkladná stavba",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_datumy_datumVznikuDanovejPovinnosti",
-                  "label": "Dátum vzniku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-05",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_datumy_datumZanikuDanovejPovinnosti",
-                  "label": "Dátum zániku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-04",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "25 648",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_celkovaVymera",
-                  "label": "Celková výmera zastavanej plochy viacúčelovej stavby",
-                  "type": "Field",
-                  "value": 25648,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia",
-                  "label": "Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia",
-                  "type": "Field",
-                  "value": 4,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_castStavbyOslobodenaOdDane",
-                  "label": "Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "26",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb",
-                  "label": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                  "type": "Field",
-                  "value": 26,
-                },
-                {
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "b) stavby na pôdohospodársku produkciu, skleníky, stavby pre vodné hospodárstvo, stavby využívané na skladovanie vlastnej pôdohospodárskej produkcie vrátane stavieb na vlastnú administratívu",
-                            },
-                          ],
-                          "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_ucelVyuzitiaStavby",
-                          "label": "Účel využitia stavby",
-                          "type": "Field",
-                          "value": "b",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "45,98",
-                            },
-                          ],
-                          "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_vymeraPodlahovejPlochy",
-                          "label": "Výmera podlahovej plochy",
-                          "type": "Field",
-                          "value": 45.98,
-                        },
-                      ],
-                      "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0",
-                      "title": "Časť stavby č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "46",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_sumar_vymeraPodlahovychPloch",
-                  "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                  "type": "Field",
-                  "value": 46,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "4 435",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_sumar_zakladDane",
-                  "label": "Základ dane – výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov",
-                  "type": "Field",
-                  "value": 4435,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZoStaviebViacereUcely_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-              ],
-              "id": "root_danZoStaviebViacereUcely_priznania_0",
-              "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely č. 1",
+              "children": [],
+              "id": "root_danZoStaviebViacereUcely_priznania_undefined",
+              "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -10145,7 +7443,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "type": "Array",
         },
       ],
-      "id": "root_danZoStaviebViacereUcely",
+      "id": null,
       "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
       "type": "Step",
     },
@@ -10178,300 +7476,9 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "id": "root_danZBytovANebytovychPriestorov_priznania",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "2648",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_cisloListuVlastnictva",
-                  "label": "Číslo listu vlastníctva",
-                  "type": "Field",
-                  "value": "2648",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok1_ulicaACisloDomu",
-                  "label": "Ulica a číslo domu",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3694",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok1_supisneCislo",
-                  "label": "Súpisné číslo",
-                  "type": "Field",
-                  "value": 3694,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Karlova Ves",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok2_kataster",
-                  "label": "Názov katastrálneho územia",
-                  "type": "Field",
-                  "value": "Karlova Ves",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "6975/2",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_riadok2_cisloParcely",
-                  "label": "Číslo parcely",
-                  "type": "Field",
-                  "value": "6975/2",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Správca",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_pravnyVztah",
-                  "label": "Právny vzťah",
-                  "type": "Field",
-                  "value": "spravca",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Podielové spoluvlastníctvo",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_spoluvlastnictvo",
-                  "label": "Spoluvlastníctvo",
-                  "type": "Field",
-                  "value": "podieloveSpoluvlastnictvo",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_pocetSpoluvlastnikov",
-                  "label": "Zadajte počet spoluvlastníkov",
-                  "type": "Field",
-                  "value": 3,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_naZakladeDohody",
-                  "label": "Podávate priznanie za všetkých spoluvlastníkov na základe dohody?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_priznanieZaByt",
-                  "label": "Podávate priznanie za byt?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "3",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_cisloBytu",
-                  "label": "Číslo bytu",
-                  "type": "Field",
-                  "value": "3",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Dvojizbak",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_popisBytu",
-                  "label": "Popis bytu",
-                  "type": "Field",
-                  "value": "Dvojizbak",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "27",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_vymeraPodlahovejPlochyBytu",
-                  "label": "Výmera podlahovej plochy bytu (základ dane bytu)",
-                  "type": "Field",
-                  "value": 27,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "18",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_vymeraPodlahovejPlochyNaIneUcely",
-                  "label": "Výmera podlahovej plochy bytu používaného na iné účely",
-                  "type": "Field",
-                  "value": 18,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "16. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumVznikuDanovejPovinnosti",
-                  "label": "Dátum vzniku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-16",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "7. 1. 2024",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumZanikuDanovejPovinnosti",
-                  "label": "Dátum zániku daňovej povinnosti",
-                  "type": "Field",
-                  "value": "2024-01-07",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_priznanieZaNebytovyPriestor",
-                  "label": "Podávate priznanie za nebytový priestor (napr. garážové státie, pivnica, obchodný priestor a pod.)?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory",
-                  "items": [
-                    {
-                      "children": [
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "Garáž",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_riadok_ucelVyuzitiaNebytovehoPriestoruVBytovomDome",
-                          "label": "Účel využitia nebytového priestoru v bytovom dome",
-                          "type": "Field",
-                          "value": "Garáž",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "G05",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_riadok_cisloNebytovehoPriestoruVBytovomDome",
-                          "label": "Číslo nebytového priestoru v bytovom dome",
-                          "type": "Field",
-                          "value": "G05",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "6",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome",
-                          "label": "Výmera podlahových plôch nebytového priestoru v bytovom dome",
-                          "type": "Field",
-                          "value": 6,
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "5. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_datumy_datumVznikuDanovejPovinnosti",
-                          "label": "Dátum vzniku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-05",
-                        },
-                        {
-                          "displayValues": [
-                            {
-                              "type": "String",
-                              "value": "12. 1. 2024",
-                            },
-                          ],
-                          "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_datumy_datumZanikuDanovejPovinnosti",
-                          "label": "Dátum zániku daňovej povinnosti",
-                          "type": "Field",
-                          "value": "2024-01-12",
-                        },
-                      ],
-                      "id": "root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0",
-                      "title": "Nebytový priestor č. 1",
-                      "type": "ArrayItem",
-                    },
-                  ],
-                  "title": "Nebytové priestory",
-                  "type": "Array",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Príkladná 35",
-                    },
-                  ],
-                  "id": "root_danZBytovANebytovychPriestorov_priznania_0_poznamka",
-                  "label": "Poznámka",
-                  "type": "Field",
-                  "value": "Príkladná 35",
-                },
-              ],
-              "id": "root_danZBytovANebytovychPriestorov_priznania_0",
-              "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. 1",
+              "children": [],
+              "id": "root_danZBytovANebytovychPriestorov_priznania_undefined",
+              "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -10479,7 +7486,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "type": "Array",
         },
       ],
-      "id": "root_danZBytovANebytovychPriestorov",
+      "id": null,
       "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
       "type": "Step",
     },
@@ -10630,7 +7637,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "value": "+421948417711",
         },
       ],
-      "id": "root_bezpodieloveSpoluvlastnictvoManzelov",
+      "id": null,
       "title": "Údaje o manželovi/manželke",
       "type": "Step",
     },
@@ -10721,7 +7728,7 @@ exports[`getSummaryJsonBrowser > priznanieKDaniZNehnutelnostiExample5NoCalculato
           "value": "Príkladná 35",
         },
       ],
-      "id": "root_znizenieAleboOslobodenieOdDane",
+      "id": null,
       "title": "Zníženie alebo oslobodenie od dane",
       "type": "Step",
     },
@@ -11781,7 +8788,7 @@ Stavba 03 - Prípojky - SO 01, SO 02, SO 03",
 
 exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -12220,7 +9227,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "value": "menejAko63",
         },
       ],
-      "id": "root_ziadatelZiadatelka",
+      "id": null,
       "title": "Žiadateľ/žiadateľka",
       "type": "Step",
     },
@@ -12239,7 +9246,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "value": false,
         },
       ],
-      "id": "root_manzelManzelka",
+      "id": null,
       "title": "Manžel/manželka",
       "type": "Step",
     },
@@ -12498,7 +9505,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "value": false,
         },
       ],
-      "id": "root_druhDruzka",
+      "id": null,
       "title": "Druh/družka",
       "type": "Step",
     },
@@ -12520,245 +9527,15 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "id": "root_deti_zoznamDeti",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Lucia",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_osobneUdaje_meno",
-                  "label": "Meno",
-                  "type": "Field",
-                  "value": "Lucia",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nováková",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_osobneUdaje_priezvisko",
-                  "label": "Priezvisko",
-                  "type": "Field",
-                  "value": "Nováková",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "30. 11. 2010",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_osobneUdaje_datumNarodenia",
-                  "label": "Dátum narodenia",
-                  "type": "Field",
-                  "value": "2010-11-30",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Slovenská",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_osobneUdaje_statnaPrislusnost",
-                  "label": "Štátna príslušnosť",
-                  "type": "Field",
-                  "value": "slovenska",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_osobneUdaje_vlastnikNehnutelnosti",
-                  "label": "Je vaše nezaopatrené dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_sucasneByvanie_situaciaRovnakaAkoVasa",
-                  "label": "Je situácia súčasného bývania vášho nezaopatreného dieťaťa rovnaká ako vaša?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_prijem_student",
-                  "label": "Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_prijem_maPrijem",
-                  "label": "Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_0_zdravotnyStav_chronickeOchorenie",
-                  "label": "Trpí chronickým ochorením?",
-                  "type": "Field",
-                  "value": false,
-                },
-              ],
-              "id": "root_deti_zoznamDeti_0",
-              "title": "Dieťa č. 1",
+              "children": [],
+              "id": "root_deti_zoznamDeti_undefined",
+              "title": "Dieťa č. NaN",
               "type": "ArrayItem",
             },
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Michal",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_osobneUdaje_meno",
-                  "label": "Meno",
-                  "type": "Field",
-                  "value": "Michal",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Novák",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_osobneUdaje_priezvisko",
-                  "label": "Priezvisko",
-                  "type": "Field",
-                  "value": "Novák",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "18. 4. 2005",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_osobneUdaje_datumNarodenia",
-                  "label": "Dátum narodenia",
-                  "type": "Field",
-                  "value": "2005-04-18",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Slovenská",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_osobneUdaje_statnaPrislusnost",
-                  "label": "Štátna príslušnosť",
-                  "type": "Field",
-                  "value": "slovenska",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_osobneUdaje_vlastnikNehnutelnosti",
-                  "label": "Je vaše nezaopatrené dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_sucasneByvanie_situaciaRovnakaAkoVasa",
-                  "label": "Je situácia súčasného bývania vášho nezaopatreného dieťaťa rovnaká ako vaša?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_prijem_student",
-                  "label": "Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_prijem_maPrijem",
-                  "label": "Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "200",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_prijem_prijemVyska",
-                  "label": "Čistý mesačný príjem dieťaťa",
-                  "type": "Field",
-                  "value": 200,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_deti_zoznamDeti_1_zdravotnyStav_chronickeOchorenie",
-                  "label": "Trpí chronickým ochorením?",
-                  "type": "Field",
-                  "value": false,
-                },
-              ],
-              "id": "root_deti_zoznamDeti_1",
-              "title": "Dieťa č. 2",
+              "children": [],
+              "id": "root_deti_zoznamDeti_undefined",
+              "title": "Dieťa č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -12766,7 +9543,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "type": "Array",
         },
       ],
-      "id": "root_deti",
+      "id": null,
       "title": "Nezaopatrené deti do 25 rokov",
       "type": "Step",
     },
@@ -12788,202 +9565,9 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Mária",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_meno",
-                  "label": "Meno",
-                  "type": "Field",
-                  "value": "Mária",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Kováčová",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_priezvisko",
-                  "label": "Priezvisko",
-                  "type": "Field",
-                  "value": "Kováčová",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Hrušková",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_rodnePriezvisko",
-                  "label": "Rodné priezvisko",
-                  "type": "Field",
-                  "value": "Hrušková",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "5. 9. 1960",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_datumNarodenia",
-                  "label": "Dátum narodenia",
-                  "type": "Field",
-                  "value": "1960-09-05",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Slovenská",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_statnaPrislusnost",
-                  "label": "Štátna príslušnosť",
-                  "type": "Field",
-                  "value": "slovenska",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Vdovec/vdova",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_rodinnyStav",
-                  "label": "Rodinný stav",
-                  "type": "Field",
-                  "value": "vdovec",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_vlastnikNehnutelnosti",
-                  "label": "Je člen/členka domácnosti vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_sucasneByvanie_situaciaRovnakaAkoVasa",
-                  "label": "Je situácia súčasného bývania člena/členky domácnosti rovnaká ako vaša?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_zamestnanie",
-                  "label": "Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_samostatnaZarobkovaCinnost",
-                  "label": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Áno",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodok",
-                  "label": "Poberal/poberala v minulom kalendárnom roku dôchodok?",
-                  "type": "Field",
-                  "value": true,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "550",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska",
-                  "label": "Mesačná výška dôchodku",
-                  "type": "Field",
-                  "value": 550,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_vyzivne",
-                  "label": "Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_davkaVNezamestnanosti",
-                  "label": "Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_inePrijmy",
-                  "label": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
-                  "type": "Field",
-                  "value": false,
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Nie",
-                    },
-                  ],
-                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_zdravotnyStav_chronickeOchorenie",
-                  "label": "Trpí chronickým ochorením?",
-                  "type": "Field",
-                  "value": false,
-                },
-              ],
-              "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0",
-              "title": "Člen/členka domácnosti č. 1",
+              "children": [],
+              "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_undefined",
+              "title": "Člen/členka domácnosti č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -12991,7 +9575,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "type": "Array",
         },
       ],
-      "id": "root_inyClenoviaClenkyDomacnosti",
+      "id": null,
       "title": "Iní členovia/členky domácnosti",
       "type": "Step",
     },
@@ -13065,7 +9649,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "value": 700,
         },
       ],
-      "id": "root_ineOkolnosti",
+      "id": null,
       "title": "Iné okolnosti",
       "type": "Step",
     },
@@ -13084,7 +9668,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
           "value": true,
         },
       ],
-      "id": "root_sucetPrijmovCestneVyhlasenie",
+      "id": null,
       "title": "Súčet príjmov a čestné výhlásenie",
       "type": "Step",
     },
@@ -13285,7 +9869,7 @@ exports[`getSummaryJsonBrowser > ziadostOSlobodnyPristupKInformaciamExample summ
 
 exports[`getSummaryJsonBrowser > ziadostOUzemnoplanovaciuInformaciuExample summary JSON should match snapshot 1`] = `
 {
-  "id": "root",
+  "id": null,
   "steps": [
     {
       "children": [
@@ -13398,7 +9982,7 @@ exports[`getSummaryJsonBrowser > ziadostOUzemnoplanovaciuInformaciuExample summa
           "value": "email",
         },
       ],
-      "id": "root_ziadatel",
+      "id": null,
       "title": "Žiadateľ",
       "type": "Step",
     },
@@ -13420,46 +10004,9 @@ exports[`getSummaryJsonBrowser > ziadostOUzemnoplanovaciuInformaciuExample summa
           "id": "root_detailAUcel_informacieOLokalite_lokality",
           "items": [
             {
-              "children": [
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "1245/2",
-                    },
-                  ],
-                  "id": "root_detailAUcel_informacieOLokalite_lokality_0_parcelneCislo",
-                  "label": "Parcelné číslo",
-                  "type": "Field",
-                  "value": "1245/2",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "register C-KN",
-                    },
-                  ],
-                  "id": "root_detailAUcel_informacieOLokalite_lokality_0_registerParcely",
-                  "label": "Register parcely",
-                  "type": "Field",
-                  "value": "registerCKn",
-                },
-                {
-                  "displayValues": [
-                    {
-                      "type": "String",
-                      "value": "Tomášikova 32",
-                    },
-                  ],
-                  "id": "root_detailAUcel_informacieOLokalite_lokality_0_ulicaACislo",
-                  "label": "Ulica a číslo / popis lokality",
-                  "type": "Field",
-                  "value": "Tomášikova 32",
-                },
-              ],
-              "id": "root_detailAUcel_informacieOLokalite_lokality_0",
-              "title": "Lokalita č. 1",
+              "children": [],
+              "id": "root_detailAUcel_informacieOLokalite_lokality_undefined",
+              "title": "Lokalita č. NaN",
               "type": "ArrayItem",
             },
           ],
@@ -13491,7 +10038,7 @@ exports[`getSummaryJsonBrowser > ziadostOUzemnoplanovaciuInformaciuExample summa
           "value": "Plánovaná výstavba rodinného domu s garážou na parcele č. 1245/2 v katastrálnom území Ružinov.",
         },
       ],
-      "id": "root_detailAUcel",
+      "id": null,
       "title": "Detail a účel",
       "type": "Step",
     },
@@ -13512,7 +10059,7 @@ exports[`getSummaryJsonBrowser > ziadostOUzemnoplanovaciuInformaciuExample summa
           ],
         },
       ],
-      "id": "root_prilohy",
+      "id": null,
       "title": "Prílohy",
       "type": "Step",
     },

@@ -75,10 +75,10 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    const signature = req.headers['x-signature'] as string
-    const timestamp = req.headers['x-timestamp'] as string
+    const signature = req.headers['x-signature']
+    const timestamp = req.headers['x-timestamp']
 
-    if (!signature) {
+    if (!signature || typeof signature !== 'string') {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
@@ -86,7 +86,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    if (!timestamp) {
+    if (!timestamp || typeof timestamp !== 'string') {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,

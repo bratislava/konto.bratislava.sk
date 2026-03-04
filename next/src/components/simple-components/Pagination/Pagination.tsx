@@ -1,4 +1,3 @@
-/* eslint-disable switch-case/no-case-curly */
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
@@ -46,7 +45,6 @@ const Pagination = ({ currentPage, totalCount, onPageChange = () => {} }: Pagina
           ({ page, type, selected, disabled, onPress, 'aria-current': ariaCurrent }, index) => {
             let children: ReactNode = null
 
-            // eslint-disable-next-line default-case
             switch (type) {
               case 'start-ellipsis':
               case 'end-ellipsis':

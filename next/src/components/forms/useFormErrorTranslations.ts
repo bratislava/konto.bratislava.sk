@@ -10,7 +10,7 @@ const useGetTranslationKey = () => {
   return (error: RJSFValidationError) => {
     // eslint-disable-next-line sonarjs/no-small-switch
     switch (error.name) {
-      case 'format':
+      case 'format': {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const key = `format.${error?.params?.format}`
         if (exists(key)) {
@@ -18,6 +18,7 @@ const useGetTranslationKey = () => {
         }
 
         return `format.unknown`
+      }
       default:
         return error.name ?? 'unknown'
     }
@@ -45,5 +46,6 @@ export const useFormErrorTranslations = () => {
         message: t(getTranslationKey(error)),
       }
     })
+
   return { transformErrors }
 }

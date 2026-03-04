@@ -21,7 +21,7 @@ const extractAndSortCategories = (services: MunicipalServiceEntityFragment[]) =>
     .filter(isDefined)
     .filter((category) => category.attributes)
     .toSorted((a, b) => collator.compare(a.attributes!.title, b.attributes!.title))
-  // eslint-disable-next-line lodash/prop-shorthand
+
   return uniqBy(categoriesWithDuplicates, (category) => category.id)
 }
 

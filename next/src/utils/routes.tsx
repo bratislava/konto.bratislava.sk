@@ -8,9 +8,11 @@ export const ROUTES = {
   IDENTITY_VERIFICATION: '/overenie-identity',
   LOGIN: '/prihlasenie',
   LOGOUT: '/odhlasenie',
+  // eslint-disable-next-line sonarjs/no-hardcoded-passwords
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
   OAUTH: '/oauth',
   OAUTH_CONFIRM: '/oauth-potvrdenie',
+  // eslint-disable-next-line sonarjs/no-hardcoded-passwords
   PASSWORD_CHANGE: '/zmena-hesla',
   HELP: '/pomoc',
   TAXES_AND_FEES: '/dane-a-poplatky',

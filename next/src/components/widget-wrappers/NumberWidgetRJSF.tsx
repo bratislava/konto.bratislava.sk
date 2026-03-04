@@ -48,7 +48,6 @@ const NumberWidgetRJSF = ({
       return 1
     }
 
-    // eslint-disable-next-line unicorn/no-useless-undefined
     return undefined
   }
 

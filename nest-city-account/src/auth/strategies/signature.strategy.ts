@@ -6,6 +6,7 @@ import { createVerify } from 'crypto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import { SignatureRequest } from '../types/signature-request.types'
+import { createPublicKey } from 'node:crypto'
 
 /**
  * Passport strategy for RSA signature verification
@@ -66,7 +67,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    if (!publicKey.includes('BEGIN PUBLIC KEY')) {
+    if (!this.isValidPublicKeyPem(publicKey)) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
@@ -161,6 +162,15 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
         'Signature verification failed',
         error instanceof Error ? error : undefined
       )
+    }
+  }
+
+  private isValidPublicKeyPem(value: string): boolean {
+    try {
+      const key = createPublicKey(value)
+      return key.type === 'public'
+    } catch {
+      return false
     }
   }
 }

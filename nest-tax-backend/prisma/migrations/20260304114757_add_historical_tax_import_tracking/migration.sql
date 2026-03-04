@@ -84,7 +84,5 @@ DROP INDEX "public"."TaxPayer_readyToImportKO_idx";
 
 -- AlterTable
 ALTER TABLE "TaxPayer"
-    DROP COLUMN "lastUpdatedAtDZN",
-    DROP COLUMN "lastUpdatedAtKO",
     DROP COLUMN "readyToImportDZN",
     DROP COLUMN "readyToImportKO";

@@ -109,7 +109,6 @@ export const useGetContext = () => {
      * Verifies if there's a file that needs to be uploaded and schedules it if needed.
      */
     const scheduleUploadIfNeeded = async () => {
-      // eslint-disable-next-line unicorn/consistent-function-scoping
       const isAlreadyUploadingFile = newClientFiles.some(
         (item) => item.status.type === FileStatusType.Uploading,
       )
@@ -226,7 +225,6 @@ export const useGetContext = () => {
     return newFiles[0].id
   }
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   const downloadFile = async (fileId: string) => {
     try {
       const response = await formsClient.filesControllerDownloadToken(formId, fileId, {

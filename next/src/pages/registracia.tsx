@@ -180,7 +180,6 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
           },
         },
       })
-      // eslint-disable-next-line unicorn/prefer-switch
       if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
         logger.info(`[AUTH] Completing auto sign in after successful sing up for email ${email}`)
         await handleAutoSignIn()
@@ -222,6 +221,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
         )
         handleErrorChange(null)
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
+
         return
       }
 
@@ -265,6 +265,7 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
         )
         handleErrorChange(null)
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
+
         return
       }
       if (isError(error)) {

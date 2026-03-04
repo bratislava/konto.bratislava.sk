@@ -1,4 +1,3 @@
-/* eslint-disable lodash-fp/no-extraneous-args */
 import { parseTime } from '@internationalized/date'
 import { useControlledState } from '@react-stately/utils'
 import { forwardRef, useMemo } from 'react'
@@ -58,10 +57,12 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
 
       try {
         const time = parseTime(valueControlled)
+
         return time.set({ second: 0 })
       } catch (error) {
         // Error: Invalid ISO 8601 date string
         console.log('Error: Invalid ISO 8601 date string')
+
         return null
       }
     }, [valueControlled])

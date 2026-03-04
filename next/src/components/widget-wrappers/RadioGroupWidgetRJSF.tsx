@@ -35,7 +35,6 @@ const ValueAdapter = ({ schema, value, onChange, children }: ValueAdapterProps) 
     const mappedValue = typeof value === 'boolean' ? value.toString() : null
     const handleChange = (newValue: string | null) => {
       if (newValue === null) {
-        // eslint-disable-next-line unicorn/no-useless-undefined
         onChange(undefined)
         return
       }
@@ -47,7 +46,6 @@ const ValueAdapter = ({ schema, value, onChange, children }: ValueAdapterProps) 
         onChange(false)
         return
       }
-      // eslint-disable-next-line unicorn/no-useless-undefined
       onChange(undefined)
     }
 
@@ -57,7 +55,6 @@ const ValueAdapter = ({ schema, value, onChange, children }: ValueAdapterProps) 
     const mappedValue = value === undefined ? null : (value as string)
     const handleChange = (newValue: string | null) => {
       if (newValue === null) {
-        // eslint-disable-next-line unicorn/no-useless-undefined
         onChange(undefined)
         return
       }

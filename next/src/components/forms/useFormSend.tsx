@@ -112,6 +112,7 @@ const useGetContext = () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
         setFormIsSent()
+
         return
       }
 
@@ -136,7 +137,6 @@ const useGetContext = () => {
         setSendEidMetadata({ formSlug: slug, formId })
         turnOffLeaveProtection()
         // We are redirecting to a trusted URL
-        // eslint-disable-next-line xss/no-location-href-assign
         window.location.href = environment.slovenskoSkLoginUrl
         setRedirectingToSlovenskoSkLogin(true)
       },
@@ -171,6 +171,7 @@ const useGetContext = () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
         setFormIsSent()
+
         return
       }
 
@@ -252,11 +253,13 @@ const useGetContext = () => {
       sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
     ) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
+
       return
     }
 
     if (sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
       setSendIdentityMissingModal(true)
+
       return
     }
 
@@ -266,11 +269,13 @@ const useGetContext = () => {
 
     if (getUploadFiles().length > 0) {
       setSendFilesUploadingModal(true)
+
       return
     }
 
     if (getScanFiles().length > 0) {
       setSendFilesScanningModal(true)
+
       return
     }
 
@@ -287,11 +292,13 @@ const useGetContext = () => {
 
     if (getUploadFiles().length > 0) {
       setSendFilesUploadingModal(true)
+
       return
     }
 
     if (getScanFiles().length > 0) {
       setSendFilesScanningModal(true)
+
       return
     }
 
@@ -304,11 +311,13 @@ const useGetContext = () => {
 
     if (!isSignedIn) {
       setSendConfirmationNonAuthenticatedEidModal(modalValue)
+
       return
     }
 
     if (accountType === AccountType.FyzickaOsoba) {
       setSendConfirmationEidModal(modalValue)
+
       return
     }
 

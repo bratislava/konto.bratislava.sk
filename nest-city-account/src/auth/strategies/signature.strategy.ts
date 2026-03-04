@@ -63,7 +63,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Server configuration error: Public key not configured'
+        `Server configuration error: Public key ${req.signaturePublicKeyEnvVar} not configured.`
       )
     }
 

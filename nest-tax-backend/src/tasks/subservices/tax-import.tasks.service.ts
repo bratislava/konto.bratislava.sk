@@ -18,6 +18,8 @@ import TaxImportHelperService from './tax-import-helper.service'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+const firstHistoricalYear = 2020
+
 @Injectable()
 export default class TaxImportTasksService {
   private readonly logger: LineLoggerSubservice
@@ -65,6 +67,7 @@ export default class TaxImportTasksService {
       await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
         taxType,
         year,
+        firstHistoricalYear,
         importPhase,
       )
 

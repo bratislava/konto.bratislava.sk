@@ -597,19 +597,26 @@ export class UserDataSubservice {
         user: {
           select: {
             externalId: true,
-            email: true,
           },
         },
       },
     })
 
-    return userLoginList.map((userLoginClient) => {
-      return {
-        loginCount: userLoginClient.loginCount,
-        firstLogin: userLoginClient.createdAt,
-        latestLogin: userLoginClient.updatedAt,
-        cognitoId: userLoginClient.user.externalId,
-      }
-    })
+    return (
+      userLoginList
+        .map((userLoginClient) => {
+          return {
+            loginCount: userLoginClient.loginCount,
+            firstLogin: userLoginClient.createdAt,
+            latestLogin: userLoginClient.updatedAt,
+            cognitoId: userLoginClient.user.externalId,
+          }
+        })
+        // This is here just for type safety since our database does not have a constraint implemented for this scenario.
+        // Real data should never be null here.
+        .filter((userLoginListItem): userLoginListItem is DPBUserLoginStatistics => {
+          return !!userLoginListItem.cognitoId
+        })
+    )
   }
 }

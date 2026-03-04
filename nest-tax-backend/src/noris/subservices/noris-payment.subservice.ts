@@ -287,7 +287,7 @@ export class NorisPaymentSubservice {
 
       const paidFromNoris = this.formatAmount(norisPayment.uhrazeno)
 
-      return this.prismaService.$transaction(async (tx) => {
+      return await this.prismaService.$transaction(async (tx) => {
         // Lock the tax row to prevent concurrent updates
         await tx.$queryRaw`SELECT id FROM "Tax" WHERE id = ${taxData.id} FOR UPDATE`
 

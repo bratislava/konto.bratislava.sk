@@ -337,7 +337,7 @@ export class PaymentService {
       if (nextStatus === PaymentStatus.SUCCESS) {
         const user = await this.retryService.retryWithDelay(
           async () =>
-            await this.cityAccountSubservice.getUserDataAdmin(
+            this.cityAccountSubservice.getUserDataAdmin(
               taxPaymentWithTax.tax.taxPayer.birthNumber,
             ),
           'getUserDataAdmin',

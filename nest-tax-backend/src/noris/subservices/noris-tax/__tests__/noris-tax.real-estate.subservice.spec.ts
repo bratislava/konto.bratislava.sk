@@ -1,4 +1,3 @@
-/* eslint-disable require-await, @typescript-eslint/require-await */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
@@ -306,7 +305,7 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       const { Request } = await import('mssql')
       ;(Request as unknown as jest.Mock).mockImplementation(
-        (): unknown => mockRequest as any,
+        () => mockRequest as any,
       )
 
       const birthNumbers = ['123456/7890', '987654/3210']
@@ -378,11 +377,9 @@ describe('NorisTaxRealEstateSubservice', () => {
     it('should process Noris tax data and return birth numbers', async () => {
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(
-          async (taxDefinition, birthNumbersResult, norisItem) => {
-            ;(birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
-          },
-        )
+        .mockImplementation((taxDefinition, birthNumbersResult, norisItem) => {
+          ;(birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
+        })
 
       const result = await service.processNorisTaxData(mockNorisData, 2023, {})
 
@@ -465,7 +462,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         },
       ] as any)
 
-      prismaMock.$transaction.mockImplementation(async (callback: any) => {
+      prismaMock.$transaction.mockImplementation((callback: any) => {
         const mockTx = {
           taxInstallment: {
             deleteMany: jest.fn().mockResolvedValue({}),
@@ -620,7 +617,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -700,7 +697,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         },
       ] as any)
 
-      prismaMock.$transaction.mockImplementation(async (callback: any) => {
+      prismaMock.$transaction.mockImplementation((callback: any) => {
         const mockTx = {
           taxInstallment: {
             deleteMany: jest.fn().mockResolvedValue({}),
@@ -930,7 +927,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         bloomreachService = service['bloomreachService']
         bloomreachService.trackEventTax = jest.fn().mockResolvedValue(true)
 
-        prismaMock.$transaction.mockImplementation(async (callback: any) => {
+        prismaMock.$transaction.mockImplementation((callback: any) => {
           const mockTx = {
             taxAdministrator: {
               upsert: jest.fn().mockResolvedValue({

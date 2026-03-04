@@ -244,8 +244,8 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       )
 
     await Promise.all(
-      recordsToProcess.map(async (norisItem) => {
-        await this.concurrencyLimit(async () => {
+      recordsToProcess.map(async (norisItem) =>
+        this.concurrencyLimit(async () => {
           await this.processTaxRecordFromNoris(
             taxDefinition,
             birthNumbersResult,
@@ -253,8 +253,8 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
             userDataFromCityAccount,
             year,
           )
-        })
-      }),
+        }),
+      ),
     )
 
     // Add the payments only for processed taxes

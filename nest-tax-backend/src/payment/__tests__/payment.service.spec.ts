@@ -1,4 +1,4 @@
-/* eslint-disable require-await, @typescript-eslint/require-await, @typescript-eslint/no-misused-spread */
+/* eslint-disable @typescript-eslint/require-await, @typescript-eslint/no-misused-spread */
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'

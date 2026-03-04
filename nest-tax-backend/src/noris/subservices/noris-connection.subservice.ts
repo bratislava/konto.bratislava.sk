@@ -58,10 +58,10 @@ export class NorisConnectionSubservice {
   ): Promise<void> {
     const startTime = Date.now()
 
-    await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const checkConnection = () => {
         if (connection.connected) {
-          resolve(undefined)
+          resolve()
         } else if (Date.now() - startTime >= maxWaitTime) {
           reject(
             new Error(

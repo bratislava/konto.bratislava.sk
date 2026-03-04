@@ -262,7 +262,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     }
 
     const results = await Promise.all(
-      norisData.map(async (norisItem) => await updateTaxRecord(norisItem)),
+      norisData.map(async (norisItem) => updateTaxRecord(norisItem)),
     )
     const count = results.filter(Boolean).length
 

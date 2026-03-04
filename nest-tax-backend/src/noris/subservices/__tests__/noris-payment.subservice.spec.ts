@@ -1,4 +1,4 @@
-/* eslint-disable require-await, @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/require-await */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Tax } from '@prisma/client'

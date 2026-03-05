@@ -27,12 +27,17 @@ model TaxPayer {
   permanentResidenceZip    String?
   permanentResidenceCity   String?
 
+  lastUpdatedAtDZN DateTime @default(now())
+  lastUpdatedAtKO  DateTime @default(now())
+
   taxes                       Tax[]
   taxAdministrators           TaxPayerTaxAdministrator[]
   historicalTaxImportAttempts HistoricalTaxImportAttempt[]
 
   @@unique([birthNumber])
   @@unique([uuid])
+  @@index([lastUpdatedAtDZN])
+  @@index([lastUpdatedAtKO])
 }
 
 model Tax {

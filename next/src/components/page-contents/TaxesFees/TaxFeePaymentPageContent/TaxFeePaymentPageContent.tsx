@@ -64,7 +64,7 @@ const TaxFeePaymentPageContent = () => {
           { title: getTitle(), path: null },
         ]}
       />
-      <div className="m-auto w-full max-w-(--breakpoint-lg) px-4 py-6 lg:px-0 lg:py-12">
+      <div className="m-auto w-full max-w-(--breakpoint-xl) px-4 py-6 lg:px-8 lg:py-12">
         {isIdentityVerified ? (
           showChannelNeededBanner ? (
             <OfficialCorrespondenceChannelNeededBanner />

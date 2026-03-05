@@ -45,7 +45,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
       : router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
 
   return (
-    <div className="m-auto hidden h-[57px] max-w-(--breakpoint-lg) items-center gap-x-6 lg:flex">
+    <div className="m-auto flex h-[57px] max-w-(--breakpoint-xl) items-center gap-x-6 px-4 lg:px-8">
       <Brand
         className="group grow"
         url={ROUTES.HOME}

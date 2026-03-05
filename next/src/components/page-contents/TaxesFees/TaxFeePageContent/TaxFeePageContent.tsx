@@ -56,7 +56,7 @@ const TaxFeePageContent = () => {
   return (
     <div className="flex flex-col">
       <TaxFeePageHeader title={pageTitle} breadcrumbs={breadcrumbs} />
-      <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-10 lg:py-10">
+      <div className="m-auto flex w-full max-w-(--breakpoint-xl) flex-col items-center gap-6 px-4 py-6 lg:gap-10 lg:px-8 lg:py-10">
         {showTaxFeePaidAlert && <Alert type="success" fullWidth message={paymentSuccessMessage} />}
         {showTaxFeeCancelledAlert && (
           <Alert type="info" fullWidth message={paymentCancelledMessage} />

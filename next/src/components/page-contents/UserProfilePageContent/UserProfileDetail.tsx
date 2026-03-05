@@ -58,21 +58,19 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
     >
       {/* TODO: Proper positioning of edit view. Now, alert is hidden to show edit view on top of the page, otherwise is was pushed down.  */}
       {!tierStatus.isIdentityVerified && !isEditing && (
-        <div className="flex w-full items-center justify-center bg-white p-3 md:px-8 md:py-3">
-          <div className="md:max-w-(--breakpoint-lg)">
-            <Alert
-              title={t('IdentityVerificationStatus.verification_status_required')}
-              message={t('IdentityVerificationStatus.verification_status_required_alert')}
-              type="warning"
-              buttons={[
-                {
-                  title: t('auth.verification_url_text'),
-                  link: '/overenie-identity',
-                },
-              ]}
-              fullWidth
-            />
-          </div>
+        <div className="mx-auto flex w-full max-w-(--breakpoint-xl) items-center justify-center p-3 px-4 md:px-8 md:py-3 lg:px-8">
+          <Alert
+            title={t('IdentityVerificationStatus.verification_status_required')}
+            message={t('IdentityVerificationStatus.verification_status_required_alert')}
+            type="warning"
+            buttons={[
+              {
+                title: t('auth.verification_url_text'),
+                link: '/overenie-identity',
+              },
+            ]}
+            fullWidth
+          />
         </div>
       )}
       <BoxedSection>

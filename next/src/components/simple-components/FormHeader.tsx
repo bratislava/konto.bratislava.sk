@@ -22,7 +22,7 @@ const FormHeader = () => {
   return (
     <div className="relative flex flex-col">
       <div className="min-h-none size-full bg-gray-50 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
-        <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
+        <div className="mx-auto flex max-w-(--breakpoint-xl) justify-between px-4 lg:px-8">
           <div className="flex flex-col gap-2 lg:gap-4">
             <h1 className="text-h1-form">{schema.title}</h1>
             {strapiForm?.moreInformationUrl ? (

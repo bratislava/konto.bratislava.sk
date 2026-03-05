@@ -19,13 +19,11 @@ const PageHeader = (props: AccountSectionHeaderBase) => {
     <div className="bg-gray-50">
       <div
         className={cn(
-          'm-auto flex max-w-(--breakpoint-lg) flex-col gap-4 lg:gap-6',
+          'm-auto flex max-w-(--breakpoint-xl) flex-col gap-4 px-4 lg:gap-6 lg:px-8',
           wrapperClassName,
         )}
       >
-        <span
-          className={cn('size-full justify-end py-6 pl-4 lg:px-0 lg:py-16', titleWrapperClassName)}
-        >
+        <span className={cn('size-full justify-end py-6 lg:px-0 lg:py-16', titleWrapperClassName)}>
           {titleAsParagraph ? (
             <p className="text-h1">{title}</p>
           ) : (

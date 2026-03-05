@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+j /// <reference types="cypress" />
 
 describe('RF02 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']

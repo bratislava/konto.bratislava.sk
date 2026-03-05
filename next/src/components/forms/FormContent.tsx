@@ -74,7 +74,7 @@ const FormContentInner = () => {
       <FormUploadXmlJson />
       {displayHeaderAndMenu && <FormHeader />}
       <div
-        className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-10 pt-0 pb-6 lg:flex-row lg:gap-20 lg:py-10"
+        className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-col gap-10 px-4 pt-0 pb-6 lg:flex-row lg:gap-20 lg:px-8 lg:py-10"
         data-cy="form-container"
       >
         <StepperView />

@@ -20,9 +20,11 @@ export const Footer = ({ className }: Props) => {
         className,
       )}
     >
-      <p className="text-center text-p2 text-content-passive-secondary">
-        {t('Footer.text', { currentYear: new Date().getFullYear() })}
-      </p>
+      <div className="mx-auto max-w-(--breakpoint-xl) px-4 lg:px-8">
+        <p className="text-center text-p2 text-content-passive-secondary">
+          {t('Footer.text', { currentYear: new Date().getFullYear() })}
+        </p>
+      </div>
     </footer>
   )
 }

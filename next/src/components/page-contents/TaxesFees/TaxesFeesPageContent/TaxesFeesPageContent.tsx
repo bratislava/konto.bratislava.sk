@@ -57,7 +57,7 @@ const TaxesFeesPageContent = () => {
           items={taxTypeTabOptions}
         />
       </PageHeader>
-      <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-4 p-4 lg:gap-8 lg:px-0 lg:py-12">
+      <div className="m-auto flex w-full max-w-(--breakpoint-xl) flex-col gap-4 px-4 py-4 lg:gap-8 lg:px-8 lg:py-12">
         {!isIdentityVerified &&
           (isInQueue ? (
             <IdentityVerificationBanner variant="verification-in-process" />

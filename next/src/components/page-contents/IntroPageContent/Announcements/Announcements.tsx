@@ -17,15 +17,17 @@ const Announcements = ({ announcements, announcementsLegalPerson }: Announcement
   const announcementsByPersonType = isLegalEntity ? announcementsLegalPerson : announcements
 
   return (
-    <div className="flex flex-col gap-4 px-4 py-6 lg:gap-6 lg:px-0 lg:py-16">
-      <h2 className="text-h2">{t('account_section_intro.announcement_title')}</h2>
-      {announcementsByPersonType.map((announcement, index) => (
-        <AnnouncementBlockStrapi
-          key={announcement.id}
-          announcement={announcement}
-          reversed={index % 2 === 1}
-        />
-      ))}
+    <div className="mx-auto max-w-(--breakpoint-xl) px-4 lg:px-8">
+      <div className="flex flex-col gap-4 py-6 lg:gap-6 lg:py-16">
+        <h2 className="text-h2">{t('account_section_intro.announcement_title')}</h2>
+        {announcementsByPersonType.map((announcement, index) => (
+          <AnnouncementBlockStrapi
+            key={announcement.id}
+            announcement={announcement}
+            reversed={index % 2 === 1}
+          />
+        ))}
+      </div>
     </div>
   )
 }

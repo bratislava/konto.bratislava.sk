@@ -12,7 +12,6 @@ import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import Banner from '@/src/components/simple-components/Banner'
 import Button from '@/src/components/simple-components/Button'
 import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
-import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -39,43 +38,42 @@ const IntroPageContent = ({
   return (
     <>
       <PhoneNumberModal />
-      <div className="flex flex-col">
-        <h1 className="sr-only">{t('common.bratislava_account')}</h1>
-        <PageHeader
-          title={
-            name
-              ? `${t('account_section_intro.header_title')} ${name}.`
-              : t('account_section_intro.header_title_without_name')
-          }
-          text={t('account_section_intro.header_text')}
-          titleAsParagraph
-        />
-        <div className="m-auto w-full max-w-(--breakpoint-lg)">
-          <Announcements
-            announcements={announcements}
-            announcementsLegalPerson={announcementsLegalPerson}
-          />
+      <h1 className="sr-only">{t('common.bratislava_account')}</h1>
+      <PageHeader
+        title={
+          name
+            ? `${t('account_section_intro.header_title')} ${name}.`
+            : t('account_section_intro.header_title_without_name')
+        }
+        text={t('account_section_intro.header_text')}
+        titleAsParagraph
+      />
 
-          {/* TODO remove custom spacing on respo when proper layout is introduced */}
-          <HorizontalDivider className="max-lg:mx-4" />
+      {/* TODO remove custom spacing on respo when proper layout is introduced */}
+      <Announcements
+        announcements={announcements}
+        announcementsLegalPerson={announcementsLegalPerson}
+      />
 
-          <div className="flex flex-col gap-6 py-6 lg:py-16">
-            <div className="flex w-full flex-col gap-2 px-4 md:flex-row md:items-center md:justify-between lg:px-0">
-              <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
-              <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
-                {t('account_section_intro.all_services')}
-              </Button>
-            </div>
-            <ResponsiveCarousel
-              desktop={4}
-              items={servicesByPersonType.map((service) => (
-                <MunicipalServiceCard key={service.id} service={service} />
-              ))}
-              hasVerticalPadding={false}
-            />
-          </div>
+      <div className="mx-auto flex max-w-(--breakpoint-xl) flex-col gap-6 px-4 py-6 lg:px-8 lg:py-16">
+        <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
+          <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
+            {t('account_section_intro.all_services')}
+          </Button>
         </div>
-        <div className="bg-gray-50 py-0 lg:py-16">
+        <ResponsiveCarousel
+          desktop={4}
+          items={servicesByPersonType.map((service) => (
+            <MunicipalServiceCard key={service.id} service={service} />
+          ))}
+          hasVerticalPadding={false}
+          className="-mx-2 px-2"
+        />
+      </div>
+
+      <div className="py-6 lg:bg-gray-50 lg:py-16">
+        <div className="mx-auto w-full max-w-(--breakpoint-xl) px-4 lg:px-8">
           <Banner
             title={t('account_section_intro.banner_title')}
             content={t('account_section_intro.banner_content')}

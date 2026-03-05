@@ -108,9 +108,9 @@ const MyApplicationsPageContent = ({
       className="flex flex-col"
     >
       <div className="bg-gray-50 pl-8 lg:pl-0">
-        <div className="m-auto size-full max-w-(--breakpoint-lg) flex-col justify-end gap-4 pt-6 lg:gap-6 lg:pt-14">
+        <div className="m-auto size-full max-w-(--breakpoint-xl) flex-col justify-end gap-4 px-4 pt-6 lg:gap-6 lg:px-8 lg:pt-14">
           <h1 className="pt-4 text-h1">{title}</h1>
-          <TabList className="scrollbar-hide flex max-w-(--breakpoint-lg) gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
+          <TabList className="scrollbar-hide flex gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
             {headerNavigationList.map((item) => {
               const count = totalCounts[item.tag].data
               const countText = count == null ? '' : ` (${count})`

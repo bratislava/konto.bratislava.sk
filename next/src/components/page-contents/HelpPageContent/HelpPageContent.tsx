@@ -20,9 +20,9 @@ const HelpPageContent = ({ helpPage }: Props) => {
   )}</span>`
 
   return (
-    <div className="flex flex-col">
+    <div className="mx-auto flex flex-col">
       <PageHeader title={t('account_section_help.navigation')} />
-      <div className="mx-auto w-full max-w-(--breakpoint-lg) py-6 lg:py-16">
+      <div className="mx-auto w-full max-w-(--breakpoint-xl) px-4 py-6 lg:px-8 lg:py-16">
         <h2 className="flex justify-start px-4 text-h2 lg:px-0">
           {t('account_section_help.faq.title')}
         </h2>
@@ -39,14 +39,16 @@ const HelpPageContent = ({ helpPage }: Props) => {
           ))}
         </div>
       </div>
-      <div className="bg-gray-50 py-0 lg:py-16">
-        <Banner
-          title="Nenašli ste odpoveď na vašu otázku?"
-          content={bannerContent}
-          buttonText={t('account_section_help.banner_button_text')}
-          href="mailto:info@bratislava.sk"
-          image={BannerPhone}
-        />
+      <div className="bg-background-passive-primary">
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-0 lg:px-8 lg:py-16">
+          <Banner
+            title="Nenašli ste odpoveď na vašu otázku?"
+            content={bannerContent}
+            buttonText={t('account_section_help.banner_button_text')}
+            href="mailto:info@bratislava.sk"
+            image={BannerPhone}
+          />
+        </div>
       </div>
     </div>
   )

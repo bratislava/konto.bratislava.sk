@@ -84,7 +84,7 @@ const MunicipalServicesPageContent = ({
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="mx-auto w-full max-w-(--breakpoint-lg) pt-4 lg:pt-8">
+      <div className="mx-auto w-full max-w-(--breakpoint-xl) px-4 pt-4 lg:px-8 lg:pt-8">
         <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
         <div className="grid grid-cols-1 gap-3 px-4 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4 lg:px-0">
           {filteredServices

@@ -40,7 +40,7 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-(--breakpoint-xl) items-center justify-between p-4 lg:px-8">
+        <div className="mx-auto flex max-w-(--breakpoint-xl) items-center justify-between px-4 py-4 lg:px-8">
           <a href="#" className="font-semibold text-black">
             LOGO
           </a>

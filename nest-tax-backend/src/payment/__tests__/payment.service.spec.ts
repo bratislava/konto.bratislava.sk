@@ -12,7 +12,6 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxPaymentWithTaxInfo } from '../../utils/types/types.prisma'
 import { RetryService } from '../../utils-module/retry.service'
-import { PaymentResponseQueryDto } from '../dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from '../dtos/redirect.payent.dto'
 import { PaymentService } from '../payment.service'
 import { GpWebpaySubservice } from '../subservices/gpwebpay.subservice'
@@ -267,8 +266,7 @@ describe('PaymentService', () => {
   })
 
   describe('processPaymentResponse', () => {
-    /** Plain object type for test mocks to avoid spreading class instances. */
-    const mockQuery: PaymentResponseQueryDto = {
+    const mockQuery = {
       OPERATION: 'CREATE_ORDER',
       ORDERNUMBER: '123456789',
       PRCODE: '0',

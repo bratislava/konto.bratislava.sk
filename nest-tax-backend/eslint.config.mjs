@@ -6,7 +6,6 @@ export default [
   }),
   {
     rules: {
-      'no-await-in-loop': 'error',
       '@typescript-eslint/prefer-literal-enum-member': 'warn',
     },
   },

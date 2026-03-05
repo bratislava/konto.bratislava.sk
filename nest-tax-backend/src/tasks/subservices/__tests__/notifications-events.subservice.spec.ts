@@ -11,9 +11,8 @@ import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
-import NotificationsEventsSubservice, {
-  INSTALLMENT_DUE_DATE_TYPE,
-} from '../notifications-events.subservice'
+import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
+import NotificationsEventsSubservice from '../notifications-events.subservice'
 
 jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
@@ -492,7 +491,7 @@ describe('NotificationsEventsSubservice', () => {
         [birthNumber]: { externalId: 'ext-1' },
       } as any)
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockImplementation(
-        () => Promise.resolve(),
+        () => Promise.resolve(true),
       )
       prismaMock.$executeRaw.mockResolvedValue(1)
 
@@ -545,7 +544,7 @@ describe('NotificationsEventsSubservice', () => {
         [birthNumber]: { externalId: 'ext-1' },
       } as any)
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockResolvedValue(
-        Promise.resolve(),
+        Promise.resolve(true),
       )
       prismaMock.$executeRaw.mockResolvedValue(1)
 
@@ -607,7 +606,7 @@ describe('NotificationsEventsSubservice', () => {
         [birth2]: { externalId: 'ext-2' },
       } as any)
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockResolvedValue(
-        Promise.resolve(),
+        Promise.resolve(true),
       )
       prismaMock.$executeRaw.mockResolvedValue(1)
 

@@ -13,7 +13,7 @@ describe('getNextTaxType', () => {
 
   it('should cycle through all tax types in schema order', () => {
     const types = [TaxType.DZN, TaxType.KO]
-    for (let i = 0; i < types.length; i++) {
+    for (let i = 0; i < types.length; i += 1) {
       const current = types[i]
       const next = types[(i + 1) % types.length]
       expect(getNextTaxType(current)).toBe(next)

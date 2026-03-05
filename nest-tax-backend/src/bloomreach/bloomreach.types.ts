@@ -1,5 +1,6 @@
 import { DeliveryMethodNamed, TaxPaymentSource, TaxType } from '@prisma/client'
-import { INSTALLMENT_DUE_DATE_TYPE } from '../tasks/subservices/notifications-events.subservice'
+
+import { INSTALLMENT_DUE_DATE_TYPE } from '../tasks/utils/types'
 
 export enum BloomreachEventNameEnum {
   TAX = 'tax',

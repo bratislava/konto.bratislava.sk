@@ -35,8 +35,8 @@ import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservi
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
-import NotificationsEventsSubservice from './subservices/notifications-events.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
+import NotificationsEventsSubservice from './subservices/notifications-events.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 import { getNextTaxType } from './utils/tax-type-switch'
 

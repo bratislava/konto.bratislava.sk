@@ -6,11 +6,12 @@ import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { parseInstallmentDueDate } from '../../tax/utils/unified-tax.util'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { getNextTaxType } from '../utils/tax-type-switch'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { INSTALLMENT_DUE_DATE_TYPE } from '../utils/types'
 
 const UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT = 50
 
@@ -18,11 +19,6 @@ const INSTALLMENT_NUMBERS = {
   second: 2 as const,
   third: 3 as const,
   fourth: 4 as const,
-}
-
-export enum INSTALLMENT_DUE_DATE_TYPE {
-  NEXT = 'next',
-  PAST = 'past',
 }
 
 @Injectable()
@@ -101,6 +97,7 @@ export default class NotificationsEventsSubservice {
     }
     return null
   }
+
   private async getTaxesEligibleForInstallmentReminder(
     taxType: TaxType,
     installmentNumber: number,
@@ -185,10 +182,11 @@ export default class NotificationsEventsSubservice {
           due_date_day: dueDateDay,
         }
         try {
-          const result = await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
-            eventData,
-            externalId,
-          )
+          const result =
+            await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
+              eventData,
+              externalId,
+            )
           if (!result) {
             throw this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,

@@ -200,7 +200,7 @@ export default class TaxImportHelperService {
       (bn) => !foundInNoris.includes(bn),
     )
 
-    if (notFoundInNoris.length == 0) {
+    if (notFoundInNoris.length === 0) {
       this.logger.log(`No birth numbers were added to tax backend.`)
     }
 

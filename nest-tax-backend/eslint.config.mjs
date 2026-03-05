@@ -7,6 +7,7 @@ export default [
   {
     rules: {
       '@typescript-eslint/prefer-literal-enum-member': 'warn',
+      '@darraghor/nestjs-typed/injectable-should-be-provided': 'warn', // 5 occurrences in codebase; should be addressed and fixed
     },
   },
   // Project-specific rule overrides

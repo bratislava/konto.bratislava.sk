@@ -8,7 +8,6 @@ import {
 } from './dtos/error.dto'
 
 @Injectable()
-/* eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided -- shared across modules */
 export default class ThrowerErrorGuard {
   NotAcceptableException(
     errorEnum: CustomErrorEnums,

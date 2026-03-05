@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-non-null-assertion */
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
@@ -273,7 +272,7 @@ export class NorisPaymentSubservice {
   private async processIndividualPayment(
     norisPayment: NorisTaxPayment,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>= {},
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
@@ -345,7 +344,7 @@ export class NorisPaymentSubservice {
   private async trackPaymentIfNeeded(
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>,
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
@@ -360,7 +359,8 @@ export class NorisPaymentSubservice {
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
           tax_type: taxData.type,
-          order: taxData.order!, // non-null by DB trigger and constraint
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
+          order: taxData.order!,
           suppress_email: bloomreachSettings?.suppressEmail ?? false,
         },
         userFromCityAccount.externalId,

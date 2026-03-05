@@ -12,7 +12,6 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
-// eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided
 export class CognitoSubservice {
   cognitoClient: CognitoIdentityProviderClient
 

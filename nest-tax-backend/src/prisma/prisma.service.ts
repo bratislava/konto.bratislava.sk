@@ -5,7 +5,6 @@ import { escapeForLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
-/* eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided -- shared across modules */
 export class PrismaService
   extends PrismaClient<Prisma.PrismaClientOptions, 'info' | 'warn' | 'error'>
   implements OnModuleInit

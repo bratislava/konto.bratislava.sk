@@ -5,7 +5,6 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
-/* eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided -- shared across modules */
 export default class DatabaseSubservice {
   constructor(
     private readonly prismaService: PrismaService,
@@ -43,7 +42,6 @@ export default class DatabaseSubservice {
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
         undefined,
-        // eslint-disable prefer-template
         `Error while getting ${keysString} from Config.`,
         error instanceof Error ? error : undefined,
       )

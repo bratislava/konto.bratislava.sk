@@ -1,4 +1,4 @@
-/* eslint-disable sonarjs/no-alphabetical-sort, @typescript-eslint/no-misused-spread */
+/* eslint-disable @typescript-eslint/no-misused-spread */
 import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import noop from 'lodash/noop'
 
@@ -237,12 +237,12 @@ function createExpectedOutput(
 function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
   const stringifiedOutput = JSON.stringify(
     received,
-    Object.keys(received).sort(),
+    Object.keys(received).sort((a, b) => a.localeCompare(b)),
     2,
   )
   const stringifiedExpected = JSON.stringify(
     expected,
-    Object.keys(expected).sort(),
+    Object.keys(expected).sort((a, b) => a.localeCompare(b)),
     2,
   )
 

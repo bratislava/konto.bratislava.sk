@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-misused-spread */
 import { Prisma, Tax, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -61,7 +60,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   private async trackCancelledTax(
     tax: TaxWithTaxPayer,
     year: number,
-    userFromCityAccount: ResponseUserByBirthNumberDto,
+    userFromCityAccount: ResponseUserByBirthNumberDto | null,
   ) {
     const trackingSuccess = await this.bloomreachService.trackEventTax(
       {
@@ -69,9 +68,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         year,
         delivery_method: tax.deliveryMethod,
         tax_type: this.getTaxType(),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
         order: tax.order!,
       },
-      userFromCityAccount.externalId ?? undefined,
+      userFromCityAccount?.externalId ?? undefined,
     )
     if (!trackingSuccess) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -86,7 +86,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     norisItem: TaxTypeToNorisData[TTaxType],
     existingTax: Pick<Tax, 'id' | 'isCancelled'>,
     year: number,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>,
   ): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       await tx.taxInstallment.deleteMany({
@@ -306,6 +306,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
 
     // Include birth numbers found in Noris (regardless of whether they were processed)
     return {
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread
       ...birthNumbersResult,
       foundInNoris: [...new Set(norisData.map((item) => item.ICO_RC))],
     }
@@ -437,7 +438,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     taxDefinition: TaxDefinition<TTaxType>,
     birthNumbersResult: Set<string>,
     norisItem: TaxTypeToNorisData[TTaxType],
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>,
     year: number,
   ) => {
     try {
@@ -470,6 +471,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
             delivery_method:
               userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
             tax_type: taxDefinition.type,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
             order: tax.order!,
           },
           userFromCityAccount.externalId ?? undefined,

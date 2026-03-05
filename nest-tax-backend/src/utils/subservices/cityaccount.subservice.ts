@@ -8,7 +8,6 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
-/* eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided -- shared across modules */
 export class CityAccountSubservice {
   private readonly logger: Logger
 
@@ -61,7 +60,7 @@ export class CityAccountSubservice {
 
   async getUserDataAdminBatch(
     birthNumbers: string[],
-  ): Promise<Record<string, ResponseUserByBirthNumberDto>> {
+  ): Promise<Partial<Record<string, ResponseUserByBirthNumberDto>>> {
     const birthNumbersWithoutSlash = birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', ''),
     )

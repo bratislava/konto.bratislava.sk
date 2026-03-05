@@ -10,10 +10,10 @@ import prismaMock from '../../../../test/singleton'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsSubservice from '../notifications-events.subservice'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 
 jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),

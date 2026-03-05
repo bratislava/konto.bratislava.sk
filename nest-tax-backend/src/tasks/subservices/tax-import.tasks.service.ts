@@ -14,11 +14,13 @@ import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subser
 import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from './config.service'
 import TaxImportHelperService from './tax-import-helper.service'
+import { PrismaService } from '../../prisma/prisma.service'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 const firstHistoricalYear = 2020
+const LOAD_HISTORICAL_TAXES_BATCH = 10
 
 @Injectable()
 export default class TaxImportTasksService {
@@ -33,6 +35,7 @@ export default class TaxImportTasksService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configSubservice: TasksConfigSubservice,
     private readonly retryService: RetryService,
+    private readonly prismaService: PrismaService,
   ) {
     this.logger = new LineLoggerSubservice(TaxImportTasksService.name)
   }
@@ -179,5 +182,86 @@ export default class TaxImportTasksService {
         error,
       )
     }
+  }
+
+  async loadHistoricalTaxes() {
+    this.logger.log('Starting loadHistoricalTaxes task')
+
+    const currentYear = new Date().getFullYear()
+    const previousYear = currentYear - 1
+
+    if (previousYear < firstHistoricalYear) {
+      this.logger.log('No historical years to process')
+      return
+    }
+
+    const historicalYears = Array.from(
+      { length: previousYear - firstHistoricalYear + 1 },
+      (_, i) => firstHistoricalYear + i,
+    )
+
+    // Query for users missing specific (year, taxType) combinations
+    const missingTaxAttempts = await this.prismaService.$queryRaw<
+      { birthNumber: string; year: number; taxType: TaxType }[]
+      // language=PostgreSQL
+    >`
+        SELECT tp."birthNumber",
+               years.year,
+               tax_types."taxType"
+        FROM "TaxPayer" tp
+                 -- This generates 'years * taxTypes' rows per taxPayer, 
+                 CROSS JOIN UNNEST(ARRAY [${historicalYears.join(',')}]) AS years(year)
+                 CROSS JOIN UNNEST(ENUM_RANGE(NULL::"TaxType")) AS tax_types("taxType")
+                 LEFT JOIN "HistoricalTaxImportAttempt" htia
+                           ON htia."taxPayerId" = tp.id
+                               AND htia.year = years.year
+                               AND htia."taxType" = tax_types."taxType"
+        WHERE tp."createdAt" != tp."updatedAt"
+          AND htia.id IS NULL
+        ORDER BY tp."updatedAt", years.year, tax_types."taxType"
+        LIMIT ${LOAD_HISTORICAL_TAXES_BATCH}
+    `
+    // TODO add support for retrying failed attempts
+
+    if (missingTaxAttempts.length === 0) {
+      this.logger.log('No missing historical tax attempts found')
+      return
+    }
+
+    // Group by year and taxType to batch the import calls
+    const groupedByYearAndType = new Map<
+      string,
+      { year: number; taxType: TaxType; birthNumbers: string[] }
+    >()
+
+    missingTaxAttempts.forEach((item) => {
+      const key = `${item.year}-${item.taxType}`
+      const existing = groupedByYearAndType.get(key)
+      if (existing) {
+        existing.birthNumbers.push(item.birthNumber)
+      } else {
+        groupedByYearAndType.set(key, {
+          year: item.year,
+          taxType: item.taxType,
+          birthNumbers: [item.birthNumber],
+        })
+      }
+    })
+
+    // Import taxes for each group
+    await Promise.all(
+      [...groupedByYearAndType.values()].map(async (group) => {
+        this.logger.log(
+          `Importing ${group.taxType} taxes for ${group.birthNumbers.length} users for year ${group.year}`,
+        )
+        return this.taxImportHelperSubservice.importTaxes(
+          group.taxType,
+          group.birthNumbers,
+          group.year,
+        )
+      }),
+    )
+
+    this.logger.log('Completed loadHistoricalTaxes task')
   }
 }

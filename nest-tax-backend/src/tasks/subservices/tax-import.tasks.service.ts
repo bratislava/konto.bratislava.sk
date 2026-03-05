@@ -49,7 +49,7 @@ export default class TaxImportTasksService {
   }
 
   private async loadTaxDataForUserByTaxType(taxType: TaxType) {
-    const year = new Date().getFullYear()
+    const thisYear = new Date().getFullYear()
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
       this.taxImportHelperSubservice.isWithinImportWindow(),
@@ -66,26 +66,32 @@ export default class TaxImportTasksService {
     const { birthNumbers, newlyCreated } =
       await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
         taxType,
-        year,
+        thisYear,
         firstHistoricalYear,
         importPhase,
       )
 
-    // Import newly created users regardless of window or limit
+    // Import newly created users
     if (newlyCreated.length > 0) {
       this.logger.log(
         `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
       )
-      await this.taxImportHelperSubservice.importTaxes(
-        TaxType.DZN,
-        newlyCreated,
-        year,
-      )
-      await this.taxImportHelperSubservice.importTaxes(
-        TaxType.KO,
-        newlyCreated,
-        year,
-      )
+
+      for (let year = firstHistoricalYear; year <= thisYear; year += 1) {
+        // Intentionally sequential: avoid hammering slow DB
+        // eslint-disable-next-line no-await-in-loop
+        await this.taxImportHelperSubservice.importTaxes(
+          TaxType.DZN,
+          newlyCreated,
+          year,
+        )
+        // eslint-disable-next-line no-await-in-loop
+        await this.taxImportHelperSubservice.importTaxes(
+          TaxType.KO,
+          newlyCreated,
+          year,
+        )
+      }
     }
 
     if (birthNumbers.length > 0) {
@@ -96,12 +102,12 @@ export default class TaxImportTasksService {
         ? this.taxImportHelperSubservice.importTaxes(
             taxType,
             birthNumbers,
-            year,
+            thisYear,
           )
         : this.taxImportHelperSubservice.prepareTaxes(
             taxType,
             birthNumbers,
-            year,
+            thisYear,
           ))
     }
 

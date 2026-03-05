@@ -31,27 +31,30 @@ export class UpvsQueueService {
     this.logger = new LineLoggerSubservice(UpvsQueueService.name)
   }
 
-  // TODO in #1220: use this in an endpoint
-  async addExternalItemsToQueue(uris: string[]) {
+  async addExternalItemsToQueue(records: {uri: string, norisId: string}[]) {
     await this.prismaService.externalEdeskCheck.createMany({
-      data: uris.map((uri) => ({ uri })),
+      data: records.map((record) => ({ uri: record.uri, norisId: record.norisId })),
     })
   }
 
-  // TODO in #1220: use this in an endpoint or make a call to Noris with the result
-  async retrieveFinishedExternalItems(limit: number) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getNumberOfExternalItemsInQueue(): Promise<number> {
+    return this.prismaService.externalEdeskCheck.count({
+      where: {
+        queueStatus: QueueItemStatusEnum.PENDING,
+      },
+    })
+  }
+
+  async retrieveCompletedExternalItems(limit: number) {
     const result = await this.prismaService.externalEdeskCheck.findMany({
       where: {
-        OR: [
-          { queueStatus: QueueItemStatusEnum.COMPLETED },
-          { queueStatus: QueueItemStatusEnum.FAILED },
-        ],
+        queueStatus: QueueItemStatusEnum.COMPLETED
       },
-      select: { uri: true, edeskStatus: true, upvsStatus: true, edeskNumber: true },
       take: limit,
       orderBy: { createdAt: 'asc' },
     })
+
+    return result
   }
 
   /**

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Tax } from '@prisma/client'
@@ -111,11 +110,11 @@ describe('NorisPaymentSubservice', () => {
   describe('updateOverpaymentsDataFromNorisByDateRange', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
-    beforeAll(async () => {
+    beforeAll(() => {
       jest.useFakeTimers()
     })
 
-    beforeEach(async () => {
+    beforeEach(() => {
       jest.clearAllMocks()
       jest.setSystemTime(DEFAULT_TEST_NOW)
     })
@@ -154,7 +153,7 @@ describe('NorisPaymentSubservice', () => {
       const withConnectionMock = jest
         .spyOn(connectionService, 'withConnection')
         .mockImplementation(async (fn) => {
-          return fn({} as any)
+          return await fn({} as any)
         })
 
       const mockTaxData = [
@@ -194,7 +193,7 @@ describe('NorisPaymentSubservice', () => {
           },
         })
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -239,7 +238,7 @@ describe('NorisPaymentSubservice', () => {
       const connectionError = new Error('Database connection failed')
       jest
         .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn, errorHandler) => {
+        .mockImplementation((fn, errorHandler) => {
           errorHandler(connectionError)
           throw connectionError
         })
@@ -333,7 +332,7 @@ describe('NorisPaymentSubservice', () => {
           },
         })
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -424,7 +423,7 @@ describe('NorisPaymentSubservice', () => {
           },
         })
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -606,7 +605,7 @@ describe('NorisPaymentSubservice', () => {
 
       const userDataFromCityAccount = {}
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockImplementation(async () => {
             return Promise.resolve([])
@@ -667,7 +666,7 @@ describe('NorisPaymentSubservice', () => {
       }
 
       const createSpyMock = jest.fn().mockResolvedValue(mockCreatedPayment)
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -741,7 +740,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -800,7 +799,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -857,7 +856,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -963,7 +962,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockResolvedValue([]),
           taxPayment: {
@@ -1007,7 +1006,7 @@ describe('NorisPaymentSubservice', () => {
 
       const userDataFromCityAccount = {}
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         return callback({
           $queryRaw: jest.fn().mockImplementation(async () => {
             return Promise.resolve([])

@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import nodemailer from 'nodemailer'
+import { SentMessageInfo } from 'nodemailer/lib/smtp-transport'
 
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
@@ -22,7 +22,7 @@ import { LineLoggerSubservice } from './line-logger.subservice'
 export default class EmailSubservice {
   private readonly logger = new LineLoggerSubservice(EmailSubservice.name)
 
-  private readonly transporter: nodemailer.Transporter
+  private readonly transporter: nodemailer.Transporter<SentMessageInfo>
 
   constructor(
     private readonly configService: ConfigService,

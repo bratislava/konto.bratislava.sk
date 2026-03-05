@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await, @typescript-eslint/no-misused-spread */
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -85,7 +84,7 @@ describe('PaymentService', () => {
       })
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.resetAllMocks()
   })
 
@@ -105,7 +104,7 @@ describe('PaymentService', () => {
     it('should update bloomreachEventSent flag and track event when externalId is provided and tracking succeeds', async () => {
       const externalId = 'external-id-123'
       const mockUpdate = jest.fn()
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: mockUpdate,
@@ -147,7 +146,7 @@ describe('PaymentService', () => {
         source: null,
       } as TaxPaymentWithTaxInfo
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: jest.fn(),
@@ -181,7 +180,7 @@ describe('PaymentService', () => {
 
     it('should only update bloomreachEventSent flag when externalId is not provided', async () => {
       const mockUpdate = jest.fn()
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: mockUpdate,
@@ -206,7 +205,7 @@ describe('PaymentService', () => {
     it('should throw InternalServerErrorException when tracking fails (returns false)', async () => {
       const externalId = 'external-id-123'
       const mockInternalServerError = new Error('Internal Server Error')
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: jest.fn(),
@@ -268,6 +267,7 @@ describe('PaymentService', () => {
   })
 
   describe('processPaymentResponse', () => {
+    /** Plain object type for test mocks to avoid spreading class instances. */
     const mockQuery: PaymentResponseQueryDto = {
       OPERATION: 'CREATE_ORDER',
       ORDERNUMBER: '123456789',

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
@@ -105,11 +104,11 @@ describe('TaxService', () => {
   describe('getListOfTaxesByBirthnumberAndType', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
-    beforeAll(async () => {
+    beforeAll(() => {
       jest.useFakeTimers()
     })
 
-    beforeEach(async () => {
+    beforeEach(() => {
       jest.setSystemTime(DEFAULT_TEST_NOW)
     })
 

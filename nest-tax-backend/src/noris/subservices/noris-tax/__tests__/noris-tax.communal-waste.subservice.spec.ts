@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
@@ -377,7 +376,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -407,7 +406,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )

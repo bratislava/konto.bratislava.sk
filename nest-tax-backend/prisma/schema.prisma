@@ -100,6 +100,7 @@ model TaxInstallment {
   bloomreachUnpaidReminderSent UnpaidReminderSent @default(NONE)
 
   @@index([taxId, order])
+  @@unique([taxId, order])
 }
 
 model TaxAdministrator {

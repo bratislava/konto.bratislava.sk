@@ -117,8 +117,8 @@ export class BloomreachService {
   async trackEventUnpaidTaxReminder(
     taxData: UnpaidTaxReminderBloomreachData,
     cognitoId: string,
-  ): Promise<void> {
-    await this.trackEvent(
+  ): Promise<boolean> {
+    return this.trackEvent(
       taxData,
       cognitoId,
       BloomreachEventNameEnum.UNPAID_TAX_REMINDER,
@@ -128,8 +128,8 @@ export class BloomreachService {
   async trackEventUnpaidTaxInstallmentReminder(
     taxData: UnpaidTaxInstallmentReminderBloomreachData,
     cognitoId: string,
-  ): Promise<void> {
-    await this.trackEvent(
+  ): Promise<boolean> {
+    return this.trackEvent(
       taxData,
       cognitoId,
       BloomreachEventNameEnum.UNPAID_TAX_INSTALLMENT_REMINDER,

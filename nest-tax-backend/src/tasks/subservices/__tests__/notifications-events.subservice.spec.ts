@@ -12,7 +12,7 @@ import { PrismaService } from '../../../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import NotificationsEventsSubservice, {
-  DUE_DATE_TIMING,
+  INSTALLMENT_DUE_DATE_TYPE,
 } from '../notifications-events.subservice'
 
 jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
@@ -360,7 +360,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
 
@@ -382,7 +382,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.AFTER,
+        INSTALLMENT_DUE_DATE_TYPE.PAST,
         year,
       )
 
@@ -404,7 +404,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
 
@@ -433,7 +433,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
 
@@ -464,7 +464,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
 
@@ -499,7 +499,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
 
@@ -508,7 +508,7 @@ describe('NotificationsEventsSubservice', () => {
         tax_type: TaxType.KO,
         order: 1,
         installment_order: 2,
-        due_date_timing: 'before' as const,
+        due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
         due_date_month: 5,
         due_date_day: 31,
       }
@@ -552,7 +552,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.AFTER,
+        INSTALLMENT_DUE_DATE_TYPE.PAST,
         year,
       )
 
@@ -561,7 +561,7 @@ describe('NotificationsEventsSubservice', () => {
         tax_type: TaxType.KO,
         order: 1,
         installment_order: 2,
-        due_date_timing: 'after' as const,
+        due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
         due_date_month: 5,
         due_date_day: 31,
       }
@@ -614,7 +614,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
 
@@ -623,7 +623,7 @@ describe('NotificationsEventsSubservice', () => {
         tax_type: TaxType.KO,
         order: 1,
         installment_order: 2,
-        due_date_timing: 'before' as const,
+        due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
         due_date_month: 5,
         due_date_day: 31,
       }
@@ -666,7 +666,7 @@ describe('NotificationsEventsSubservice', () => {
       await service['processInstallmentReminders'](
         installment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
 
@@ -697,7 +697,7 @@ describe('NotificationsEventsSubservice', () => {
       expect(service['processInstallmentReminders']).not.toHaveBeenCalled()
     })
 
-    it('calls processInstallmentReminders with DUE_DATE_TIMING.BEFORE only when getNextInstallment returns an installment', async () => {
+    it('calls processInstallmentReminders with INSTALLMENT_DUE_DATE_TYPE.NEXT only when getNextInstallment returns an installment', async () => {
       jest.spyOn(service as any, 'getPastInstallment').mockReturnValue(null)
       jest
         .spyOn(service as any, 'getNextInstallment')
@@ -709,18 +709,18 @@ describe('NotificationsEventsSubservice', () => {
       expect(service['processInstallmentReminders']).toHaveBeenCalledWith(
         mockNextInstallment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         currentYear,
       )
       expect(service['processInstallmentReminders']).not.toHaveBeenCalledWith(
         mockNextInstallment,
         TaxType.KO,
-        DUE_DATE_TIMING.AFTER,
+        INSTALLMENT_DUE_DATE_TYPE.PAST,
         currentYear,
       )
     })
 
-    it('calls processInstallmentReminders with DUE_DATE_TIMING.AFTER only when getPastInstallment returns an installment', async () => {
+    it('calls processInstallmentReminders with INSTALLMENT_DUE_DATE_TYPE.PAST only when getPastInstallment returns an installment', async () => {
       jest.spyOn(service as any, 'getNextInstallment').mockReturnValue(null)
       jest
         .spyOn(service as any, 'getPastInstallment')
@@ -732,18 +732,18 @@ describe('NotificationsEventsSubservice', () => {
       expect(service['processInstallmentReminders']).toHaveBeenCalledWith(
         mockPastInstallment,
         TaxType.KO,
-        DUE_DATE_TIMING.AFTER,
+        INSTALLMENT_DUE_DATE_TYPE.PAST,
         currentYear,
       )
       expect(service['processInstallmentReminders']).not.toHaveBeenCalledWith(
         mockPastInstallment,
         TaxType.KO,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         currentYear,
       )
     })
 
-    it('calls processInstallmentReminders with DUE_DATE_TIMING.BEFORE and DUE_DATE_TIMING.AFTER when both getNext and getPast return an installment', async () => {
+    it('calls processInstallmentReminders with INSTALLMENT_DUE_DATE_TYPE.NEXT and INSTALLMENT_DUE_DATE_TYPE.PAST when both getNext and getPast return an installment', async () => {
       jest
         .spyOn(service as any, 'getNextInstallment')
         .mockReturnValue(mockNextInstallment)

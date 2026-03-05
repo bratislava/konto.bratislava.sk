@@ -8,6 +8,9 @@ import { parseInstallmentDueDate } from '../../tax/utils/unified-tax.util'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { getNextTaxType } from '../utils/tax-type-switch'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 const UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT = 50
 
@@ -17,9 +20,9 @@ const INSTALLMENT_NUMBERS = {
   fourth: 4 as const,
 }
 
-export enum DUE_DATE_TIMING {
-  BEFORE = 'before',
-  AFTER = 'after',
+export enum INSTALLMENT_DUE_DATE_TYPE {
+  NEXT = 'next',
+  PAST = 'past',
 }
 
 @Injectable()
@@ -32,6 +35,7 @@ export default class NotificationsEventsSubservice {
     private readonly prismaService: PrismaService,
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice(NotificationsEventsSubservice.name)
   }
@@ -51,7 +55,7 @@ export default class NotificationsEventsSubservice {
         /**
          * We are iterating forwards through the installments. An installment is considered in the future,
          * if its due date is less than 1 week in the future.
-         * 
+         *
          * Note that two conditions must hold:
          * 1. The installment is in the future.
          * 2. The installment is less than 1 week in the future.
@@ -135,12 +139,12 @@ export default class NotificationsEventsSubservice {
   private async processInstallmentReminders(
     installment: { installmentNumber: 2 | 3 | 4; installmentDate: Dayjs },
     taxType: TaxType,
-    dueDateTiming: DUE_DATE_TIMING,
+    dueDateType: INSTALLMENT_DUE_DATE_TYPE,
     year: number,
   ) {
     const { installmentNumber, installmentDate } = installment
     const reminderSentFilter: UnpaidReminderSent[] =
-      dueDateTiming === DUE_DATE_TIMING.BEFORE
+      dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT
         ? [UnpaidReminderSent.NONE]
         : [UnpaidReminderSent.NONE, UnpaidReminderSent.BEFORE_DUE]
 
@@ -171,19 +175,38 @@ export default class NotificationsEventsSubservice {
         if (!externalId) {
           return
         }
-        await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
-          {
-            year: tax.year,
-            tax_type: tax.type,
-            order: tax.order!,
-            installment_order: installmentNumber,
-            due_date_timing: dueDateTiming,
-            due_date_month: dueDateMonth,
-            due_date_day: dueDateDay,
-          },
-          externalId,
-        )
-        taxIdsSent.push(tax.id)
+        const eventData = {
+          year: tax.year,
+          tax_type: tax.type,
+          order: tax.order!,
+          installment_order: installmentNumber,
+          due_date_type: dueDateType,
+          due_date_month: dueDateMonth,
+          due_date_day: dueDateDay,
+        }
+        try {
+          const result = await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
+            eventData,
+            externalId,
+          )
+          if (!result) {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              `Failed to track event in Bloomreach for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
+            )
+          }
+          taxIdsSent.push(tax.id)
+        } catch (error) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              `Failed to process installment reminder for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
+              undefined,
+              undefined,
+              error,
+            ),
+          )
+        }
       }),
     )
 
@@ -192,12 +215,12 @@ export default class NotificationsEventsSubservice {
     }
 
     const newReminderSent: UnpaidReminderSent =
-      dueDateTiming === DUE_DATE_TIMING.BEFORE
+      dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT
         ? UnpaidReminderSent.BEFORE_DUE
         : UnpaidReminderSent.AFTER_DUE
 
     const alreadyOtherSent =
-      dueDateTiming === DUE_DATE_TIMING.BEFORE
+      dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT
         ? UnpaidReminderSent.AFTER_DUE
         : UnpaidReminderSent.BEFORE_DUE
     await this.prismaService.$executeRaw`
@@ -212,11 +235,9 @@ export default class NotificationsEventsSubservice {
   }
 
   async sendUnpaidTaxInstallmentReminders() {
-    this.lastInstallmentReminderTaxType =
-      this.lastInstallmentReminderTaxType === TaxType.KO
-        ? TaxType.DZN
-        : TaxType.KO
-
+    this.lastInstallmentReminderTaxType = getNextTaxType(
+      this.lastInstallmentReminderTaxType,
+    )
     const year = dayjs().year()
 
     const taxType = this.lastInstallmentReminderTaxType
@@ -232,7 +253,7 @@ export default class NotificationsEventsSubservice {
       await this.processInstallmentReminders(
         nextInstallment,
         taxType,
-        DUE_DATE_TIMING.BEFORE,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
     }
@@ -245,7 +266,7 @@ export default class NotificationsEventsSubservice {
       await this.processInstallmentReminders(
         pastInstallment,
         taxType,
-        DUE_DATE_TIMING.AFTER,
+        INSTALLMENT_DUE_DATE_TYPE.PAST,
         year,
       )
     }

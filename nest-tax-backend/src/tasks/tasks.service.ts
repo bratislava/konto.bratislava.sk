@@ -38,6 +38,7 @@ import { RetryService } from '../utils-module/retry.service'
 import NotificationsEventsSubservice from './subservices/notifications-events.subservice'
 import TasksConfigSubservice from './subservices/config.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
+import { getNextTaxType } from './utils/tax-type-switch'
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
@@ -198,8 +199,7 @@ export class TasksService {
       return
     }
 
-    this.lastUpdateTaxType =
-      this.lastUpdateTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+    this.lastUpdateTaxType = getNextTaxType(this.lastUpdateTaxType)
 
     await this.updateTaxesFromNorisByTaxType(this.lastUpdateTaxType)
   }
@@ -452,8 +452,7 @@ export class TasksService {
   @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
-    this.lastLoadedTaxType =
-      this.lastLoadedTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+    this.lastLoadedTaxType = getNextTaxType(this.lastLoadedTaxType)
 
     this.logger.log(
       `Starting LoadTaxForUsers task for TaxType: ${this.lastLoadedTaxType}`,

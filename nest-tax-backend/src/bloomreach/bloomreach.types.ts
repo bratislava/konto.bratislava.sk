@@ -1,4 +1,5 @@
 import { DeliveryMethodNamed, TaxPaymentSource, TaxType } from '@prisma/client'
+import { INSTALLMENT_DUE_DATE_TYPE } from '../tasks/subservices/notifications-events.subservice'
 
 export enum BloomreachEventNameEnum {
   TAX = 'tax',
@@ -35,7 +36,7 @@ export type UnpaidTaxInstallmentReminderBloomreachData = {
   tax_type: TaxType
   order: number
   installment_order: number
-  due_date_timing: 'before' | 'after'
+  due_date_type: INSTALLMENT_DUE_DATE_TYPE
   due_date_month: number
   due_date_day: number
 }

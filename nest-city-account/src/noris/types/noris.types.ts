@@ -9,7 +9,7 @@ export enum EdeskStatus {
 }
 
 export const EdeskRecordSchema = z.object({
-  id_noris: z.string(),
+  id_noris: z.number(),
   uri_generated: z.string(),
 
   // TODO - these fields are not necessary now, but can be in the future for generating uris.
@@ -44,7 +44,7 @@ export type EdeskRecord = z.infer<typeof EdeskRecordSchema>
  */
 
 export type UpdateEdeskChecks = {
-  idNoris: string
+  idNoris: number
   lastCheck: Date
 
   edeskStatus: EdeskStatus

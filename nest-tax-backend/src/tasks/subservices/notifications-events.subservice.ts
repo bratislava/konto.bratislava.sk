@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { Prisma, TaxType, UnpaidReminderSent } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 
@@ -21,6 +21,11 @@ const INSTALLMENT_NUMBERS = {
   fourth: 4 as const,
 }
 
+type InstallmentInfo = {
+  installmentNumber: 2 | 3 | 4
+  installmentDate: Dayjs
+}
+
 @Injectable()
 export default class NotificationsEventsSubservice {
   private readonly logger: LineLoggerSubservice
@@ -36,66 +41,39 @@ export default class NotificationsEventsSubservice {
     this.logger = new LineLoggerSubservice(NotificationsEventsSubservice.name)
   }
 
-  private getNextInstallment(
-    taxType: TaxType,
-  ): { installmentNumber: 2 | 3 | 4; installmentDate: Dayjs } | null {
-    const taxDefinition = getTaxDefinitionByType(taxType)
-    const now = dayjs().tz('Europe/Bratislava')
-
-    const installmentKeys = ['second', 'third', 'fourth'] as const
-    // eslint-disable-next-line no-restricted-syntax
-    for (const installmentKey of installmentKeys) {
-      const dueDate = taxDefinition.installmentDueDates[installmentKey]
-      if (dueDate) {
-        const installmentDate = parseInstallmentDueDate(now.year(), dueDate)
-        /**
-         * We are iterating forwards through the installments. An installment is considered in the future,
-         * if its due date is less than 1 week in the future.
-         *
-         * Note that two conditions must hold:
-         * 1. The installment is in the future.
-         * 2. The installment is less than 1 week in the future.
-         */
-        if (
-          installmentDate.isAfter(now) &&
-          installmentDate.isBefore(now.add(1, 'week'))
-        ) {
-          return {
-            installmentNumber: INSTALLMENT_NUMBERS[installmentKey],
-            installmentDate,
-          }
-        }
-      }
-    }
-
-    return null
+  private readonly isWithinNextWeek = (installmentDate: Dayjs, now: Dayjs) => {
+    const oneWeekFromNow = now.add(1, 'week')
+    return (
+      installmentDate.isAfter(now) && installmentDate.isBefore(oneWeekFromNow)
+    )
   }
 
-  private getPastInstallment(
+  private readonly isWithinPastWeek = (installmentDate: Dayjs, now: Dayjs) => {
+    const oneWeekAgo = now.subtract(1, 'week')
+    return installmentDate.isAfter(oneWeekAgo) && installmentDate.isBefore(now)
+  }
+
+  private findInstallment(
     taxType: TaxType,
-  ): { installmentNumber: 2 | 3 | 4; installmentDate: Dayjs } | null {
+    dateInclusionPredicate: (installmentDate: Dayjs, now: Dayjs) => boolean,
+  ): InstallmentInfo | null {
     const taxDefinition = getTaxDefinitionByType(taxType)
     const now = dayjs().tz('Europe/Bratislava')
 
-    const installmentKeys = ['fourth', 'third', 'second'] as const
-    // eslint-disable-next-line no-restricted-syntax
-    for (const installmentKey of installmentKeys) {
-      const dueDate = taxDefinition.installmentDueDates[installmentKey]
-      if (dueDate) {
+    const installmentDueDates = Object.entries(
+      taxDefinition.installmentDueDates,
+    ) as Array<[keyof typeof taxDefinition.installmentDueDates, string]>
+
+    const found = installmentDueDates
+      .map(([key, dueDate]) => {
         const installmentDate = parseInstallmentDueDate(now.year(), dueDate)
-        /**
-         * We are iterating backwards through the installments. An installment is considired in the past,
-         * if its due date is more than 1 week in the past.
-         */
-        if (installmentDate.add(1, 'week').isBefore(now)) {
-          return {
-            installmentNumber: INSTALLMENT_NUMBERS[installmentKey],
-            installmentDate,
-          }
-        }
-      }
-    }
-    return null
+        return { installmentNumber: INSTALLMENT_NUMBERS[key], installmentDate }
+      })
+      .find((installmentInfo) =>
+        dateInclusionPredicate(installmentInfo.installmentDate, now),
+      )
+
+    return found ?? null
   }
 
   private async getTaxesEligibleForInstallmentReminder(
@@ -104,6 +82,9 @@ export default class NotificationsEventsSubservice {
     reminderSentFilter: UnpaidReminderSent[],
     year: number,
   ): Promise<{ id: number }[]> {
+    const reminderSentFilterSql = Prisma.join(
+      reminderSentFilter.map((v) => Prisma.sql`${v}::"UnpaidReminderSent"`),
+    )
     return this.prismaService.$queryRaw<{ id: number }[]>`
       WITH paid AS (
         SELECT tp."taxId", SUM(tp.amount) AS total_paid
@@ -122,7 +103,7 @@ export default class NotificationsEventsSubservice {
       JOIN "TaxInstallment" ti_check
         ON ti_check."taxId" = t.id
         AND ti_check.order = ${installmentNumber}
-        AND ti_check."bloomreachUnpaidReminderSent"::text IN (${Prisma.join(reminderSentFilter)})
+        AND ti_check."bloomreachUnpaidReminderSent" IN (${reminderSentFilterSql})
       LEFT JOIN paid p ON p."taxId" = t.id
       LEFT JOIN due d ON d."taxId" = t.id
       WHERE t.type = ${taxType}::"TaxType"
@@ -163,14 +144,13 @@ export default class NotificationsEventsSubservice {
 
     const dueDateMonth = installmentDate.month() + 1
     const dueDateDay = installmentDate.date()
-    const taxIdsSent: number[] = []
 
-    await Promise.all(
-      taxes.map(async (tax) => {
+    const sentResults = await Promise.all(
+      taxes.map(async (tax): Promise<number | undefined> => {
         const user = userDataFromCityAccount[tax.taxPayer.birthNumber]
         const externalId = user?.externalId
         if (!externalId) {
-          return
+          return undefined
         }
         const eventData = {
           year: tax.year,
@@ -193,19 +173,25 @@ export default class NotificationsEventsSubservice {
               `Failed to track event in Bloomreach for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
             )
           }
-          taxIdsSent.push(tax.id)
+          return tax.id
         } catch (error) {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `Failed to process installment reminder for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
-              undefined,
-              undefined,
-              error,
-            ),
+            error instanceof HttpException
+              ? error
+              : this.throwerErrorGuard.InternalServerErrorException(
+                  ErrorsEnum.INTERNAL_SERVER_ERROR,
+                  `Failed to process installment reminder for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
+                  undefined,
+                  undefined,
+                  error,
+                ),
           )
+          return undefined
         }
       }),
+    )
+    const taxIdsSent = sentResults.filter(
+      (id): id is number => id !== undefined,
     )
 
     if (taxIdsSent.length === 0) {
@@ -221,15 +207,22 @@ export default class NotificationsEventsSubservice {
       dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT
         ? UnpaidReminderSent.AFTER_DUE
         : UnpaidReminderSent.BEFORE_DUE
-    await this.prismaService.$executeRaw`
-      UPDATE "TaxInstallment"
-      SET "bloomreachUnpaidReminderSent" = CASE
-        WHEN "bloomreachUnpaidReminderSent" = ${alreadyOtherSent} THEN ${UnpaidReminderSent.BOTH}
-        ELSE ${newReminderSent}
-      END
-      WHERE "taxId" IN (${Prisma.join(taxIdsSent)})
-        AND "order" = ${installmentNumber}
-    `
+
+    const baseWhere = {
+      taxId: { in: taxIdsSent },
+      order: installmentNumber,
+    }
+    await this.prismaService.taxInstallment.updateMany({
+      where: { ...baseWhere, bloomreachUnpaidReminderSent: alreadyOtherSent },
+      data: { bloomreachUnpaidReminderSent: UnpaidReminderSent.BOTH },
+    })
+    await this.prismaService.taxInstallment.updateMany({
+      where: {
+        ...baseWhere,
+        bloomreachUnpaidReminderSent: { not: alreadyOtherSent },
+      },
+      data: { bloomreachUnpaidReminderSent: newReminderSent },
+    })
   }
 
   async sendUnpaidTaxInstallmentReminders() {
@@ -243,7 +236,7 @@ export default class NotificationsEventsSubservice {
       `Starting sendUnpaidTaxInstallmentReminders task for TaxType: ${taxType}`,
     )
 
-    const nextInstallment = this.getNextInstallment(taxType)
+    const nextInstallment = this.findInstallment(taxType, this.isWithinNextWeek)
     if (nextInstallment) {
       this.logger.log(
         `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
@@ -256,17 +249,18 @@ export default class NotificationsEventsSubservice {
       )
     }
 
-    const pastInstallment = this.getPastInstallment(taxType)
-    if (pastInstallment) {
-      this.logger.log(
-        `Processing past installment: ${pastInstallment.installmentNumber} ${pastInstallment.installmentDate.format('YYYY-MM-DD')}`,
-      )
-      await this.processInstallmentReminders(
-        pastInstallment,
-        taxType,
-        INSTALLMENT_DUE_DATE_TYPE.PAST,
-        year,
-      )
+    const pastInstallment = this.findInstallment(taxType, this.isWithinPastWeek)
+    if (!pastInstallment) {
+      return
     }
+    this.logger.log(
+      `Processing past installment: ${pastInstallment.installmentNumber} ${pastInstallment.installmentDate.format('YYYY-MM-DD')}`,
+    )
+    await this.processInstallmentReminders(
+      pastInstallment,
+      taxType,
+      INSTALLMENT_DUE_DATE_TYPE.PAST,
+      year,
+    )
   }
 }

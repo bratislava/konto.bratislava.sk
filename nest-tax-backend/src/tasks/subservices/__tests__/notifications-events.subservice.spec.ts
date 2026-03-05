@@ -13,6 +13,7 @@ import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitio
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsSubservice from '../notifications-events.subservice'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 
 jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
@@ -93,6 +94,7 @@ describe('NotificationsEventsSubservice', () => {
           provide: CityAccountSubservice,
           useValue: createMock<CityAccountSubservice>(),
         },
+        ThrowerErrorGuard,
       ],
     }).compile()
 

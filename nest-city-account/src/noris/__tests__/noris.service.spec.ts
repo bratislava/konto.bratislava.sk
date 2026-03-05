@@ -142,7 +142,7 @@ describe('NorisService', () => {
     it('should pass physicalPersons and legalPersons to request and return validated data', async () => {
       const physicalPersons = 5
       const legalPersons = 3
-      const mockRecordset = [{ id_noris: '1' }, { id_noris: '2' }]
+      const mockRecordset = [{ id_noris: 1 }, { id_noris: 2 }]
       const validatedData = mockRecordset as any
       const mockRequest = {
         input: jest.fn().mockReturnThis(),
@@ -220,7 +220,7 @@ describe('NorisService', () => {
     it('should accept idNoris as string and call withConnection', async () => {
       const edeskChecks = [
         {
-          idNoris: '42',
+          idNoris: 42,
           lastCheck: new Date('2024-01-15'),
           edeskStatus: EdeskStatus.ACTIVE,
           edeskNumber: '12345',

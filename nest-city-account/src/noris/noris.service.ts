@@ -135,7 +135,7 @@ export class NorisService {
           async (connection) => {
             await connection
               .request()
-              .input('id_noris', mssql.VarChar, edeskCheck.idNoris)
+              .input('id_noris', mssql.Int, edeskCheck.idNoris)
               .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
               .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
               .input('edesk_uri', mssql.VarChar, edeskCheck.uri)

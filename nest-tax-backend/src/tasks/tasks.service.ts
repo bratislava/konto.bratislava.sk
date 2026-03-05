@@ -86,7 +86,7 @@ export class TasksService {
     await this.taxImportTasksService.loadTaxesForUsers()
   }
 
-  @Cron('*/15 * * * *')
+  @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async loadHistoricalTaxes() {
     await this.taxImportTasksService.loadHistoricalTaxes()

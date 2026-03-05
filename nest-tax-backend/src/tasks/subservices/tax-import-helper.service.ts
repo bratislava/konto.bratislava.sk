@@ -121,12 +121,9 @@ export default class TaxImportHelperService {
     // Check HistoricalTaxImportAttempt table instead of Tax table
     // In the preparation phase: find users without any attempt record (not yet prepared)
     // In the import phase: prioritize users with READY_TO_IMPORT status
-    let existingTaxPayers: { birthNumber: string }[]
-    if (isImportPhase) {
-      // language=PostgreSQL
-      existingTaxPayers = await this.prismaService.$queryRaw<
-        { birthNumber: string }[]
-      >`
+    const existingTaxPayers: { birthNumber: string }[] = isImportPhase
+      ? // language=PostgreSQL
+        await this.prismaService.$queryRaw<{ birthNumber: string }[]>`
           SELECT tp."birthNumber"
           FROM "TaxPayer" tp
                    LEFT JOIN "HistoricalTaxImportAttempt" htia
@@ -146,11 +143,8 @@ export default class TaxImportHelperService {
                    tp."updatedAt"
           LIMIT ${remainingCapacity}
       `
-    } else {
-      // language=PostgreSQL
-      existingTaxPayers = await this.prismaService.$queryRaw<
-        { birthNumber: string }[]
-      >`
+      : // language=PostgreSQL
+        await this.prismaService.$queryRaw<{ birthNumber: string }[]>`
           SELECT tp."birthNumber"
           FROM "TaxPayer" tp
                    LEFT JOIN "HistoricalTaxImportAttempt" htia
@@ -165,7 +159,6 @@ export default class TaxImportHelperService {
           ORDER BY tp."updatedAt"
           LIMIT ${remainingCapacity}
       `
-    }
 
     return {
       birthNumbers: existingTaxPayers.map((tp) => tp.birthNumber),

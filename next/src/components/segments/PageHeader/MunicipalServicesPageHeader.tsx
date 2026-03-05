@@ -25,7 +25,7 @@ const MunicipalServicesPageHeader = ({
         <h1 className="mb-4 text-h1 md:mb-6">{title}</h1>
         <SelectFieldNew
           label=""
-          className="max-w-none pr-4 xs:max-w-[400px]"
+          className="max-w-none pr-4 sm:max-w-[400px]"
           value={selectorValue}
           onChange={(value) => {
             if (!value) return

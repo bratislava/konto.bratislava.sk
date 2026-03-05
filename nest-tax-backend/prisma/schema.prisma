@@ -38,6 +38,7 @@ model TaxPayer {
   @@unique([uuid])
   @@index([lastUpdatedAtDZN])
   @@index([lastUpdatedAtKO])
+  @@index([updatedAt, id])
 }
 
 model Tax {

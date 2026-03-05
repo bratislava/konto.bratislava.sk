@@ -209,17 +209,15 @@ export default class TaxImportTasksService {
                years.year,
                tax_types."taxType"
         FROM "TaxPayer" tp
-                 -- This generates 'years * taxTypes' rows per taxPayer, 
                  CROSS JOIN UNNEST(ARRAY [${historicalYears.join(',')}]) AS years(year)
                  CROSS JOIN UNNEST(ENUM_RANGE(NULL::"TaxType")) AS tax_types("taxType")
-                 LEFT JOIN "HistoricalTaxImportAttempt" htia
-                           ON htia."taxPayerId" = tp.id
-                               AND htia.year = years.year
-                               AND htia."taxType" = tax_types."taxType"
-        WHERE tp."createdAt" != tp."updatedAt"
-          AND htia.id IS NULL
-        ORDER BY tp."updatedAt", years.year, tax_types."taxType"
-        LIMIT ${LOAD_HISTORICAL_TAXES_BATCH}
+        WHERE NOT EXISTS (SELECT 1
+                          FROM "HistoricalTaxImportAttempt" htia
+                          WHERE htia."taxPayerId" = tp.id
+                            AND htia.year = years.year
+                            AND htia."taxType" = tax_types."taxType")
+        ORDER BY tp."updatedAt", tp.id
+        LIMIT ${LOAD_HISTORICAL_TAXES_BATCH};
     `
     // TODO add support for retrying failed attempts
 

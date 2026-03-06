@@ -609,13 +609,13 @@ export class UserDataSubservice {
             loginCount: userLoginClient.loginCount,
             firstLogin: userLoginClient.createdAt,
             latestLogin: userLoginClient.updatedAt,
-            cognitoId: userLoginClient.user.externalId,
+            id: userLoginClient.user.externalId,
           }
         })
         // This is here just for type safety since our database does not have a constraint implemented for this scenario.
         // Real data should never be null here.
         .filter((userLoginListItem): userLoginListItem is DPBUserLoginStatistics => {
-          return !!userLoginListItem.cognitoId
+          return !!userLoginListItem.id
         })
     )
   }

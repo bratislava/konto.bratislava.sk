@@ -31,7 +31,7 @@ export class UpvsQueueService {
     this.logger = new LineLoggerSubservice(UpvsQueueService.name)
   }
 
-  async addExternalItemsToQueue(records: {uri: string, norisId: number}[]) {
+  async addExternalItemsToQueue(records: { uri: string; norisId: number }[]) {
     await this.prismaService.externalEdeskCheck.createMany({
       data: records.map((record) => ({ uri: record.uri, norisId: record.norisId })),
     })
@@ -48,7 +48,7 @@ export class UpvsQueueService {
   async retrieveCompletedExternalItems(limit: number) {
     const result = await this.prismaService.externalEdeskCheck.findMany({
       where: {
-        queueStatus: QueueItemStatusEnum.COMPLETED
+        queueStatus: QueueItemStatusEnum.COMPLETED,
       },
       take: limit,
       orderBy: { createdAt: 'asc' },
@@ -187,15 +187,17 @@ export class UpvsQueueService {
   private async getUrgentQueueItems(limit: number): Promise<CreateManyParam> {
     const entities = await this.prismaService.$queryRaw<
       (PhysicalEntity & { externalId: string })[]
+      //language=postgresql
     >`
-      SELECT e.*, u."externalId" as externalId
-      FROM "PhysicalEntity" e
-      JOIN "User" u ON e."userId" = u."id"
-      WHERE e."birthNumber" IS NOT NULL
-        AND e."uri" IS NULL
-        AND u."birthNumber" IS NOT NULL
-      ORDER BY greatest(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
-      LIMIT ${limit}
+        SELECT e.*, u."externalId" AS "externalId"
+        FROM "PhysicalEntity" e
+                 JOIN "User" u ON e."userId" = u."id"
+        WHERE e."birthNumber" IS NOT NULL
+          AND e."uri" IS NULL
+          AND u."birthNumber" IS NOT NULL
+          AND u."externalId" IS NOT NULL
+        ORDER BY GREATEST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
+        LIMIT ${limit}
     `
 
     const preparedItems = await this.prepareUrgentItems(entities)
@@ -210,17 +212,20 @@ export class UpvsQueueService {
     const lookBackDate = dayjs().subtract(this.CACHE_TTL_HOURS, 'hour')
 
     // Reuse existing edesk-tasks query logic with exponential backoff
-    const entities = await this.prismaService.$queryRaw<PhysicalEntity[]>`
-      SELECT e.*
-      FROM "PhysicalEntity" e
-      WHERE "userId" IS NOT NULL
-        AND "uri" IS NOT NULL
-        AND ("activeEdeskUpdatedAt" IS NULL OR "activeEdeskUpdatedAt" < ${lookBackDate.toDate()})
-        AND ("activeEdeskUpdateFailedAt" IS NULL OR
-             "activeEdeskUpdateFailCount" = 0 OR
-             ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate.toDate()}))
-      ORDER BY greatest("createdAt", "activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
-      LIMIT ${limit}
+    const entities = await this.prismaService.$queryRaw<PhysicalEntity[]>
+    //language=postgresql
+    `
+        SELECT e.*
+        FROM "PhysicalEntity" e
+        WHERE "userId" IS NOT NULL
+          AND "uri" IS NOT NULL
+          AND ("activeEdeskUpdatedAt" IS NULL OR "activeEdeskUpdatedAt" < ${lookBackDate.toDate()})
+          AND ("activeEdeskUpdateFailedAt" IS NULL OR
+               "activeEdeskUpdateFailCount" = 0 OR
+               ("activeEdeskUpdateFailedAt" + (POWER(2, LEAST("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') <
+                ${lookBackDate.toDate()}))
+        ORDER BY GREATEST("createdAt", "activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
+        LIMIT ${limit}
     `
 
     return entities.map((entity) => {
@@ -259,7 +264,7 @@ export class UpvsQueueService {
       })
       .filter(
         (entity): entity is { id: string; birthNumber: string; externalId: string } =>
-          entity.birthNumber !== null && entity.externalId !== null
+          !!entity.birthNumber && !!entity.externalId
       )
 
     const idUriList = await Promise.allSettled(

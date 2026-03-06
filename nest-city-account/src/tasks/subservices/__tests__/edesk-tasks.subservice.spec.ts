@@ -10,7 +10,9 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 
 const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 500
 
-const createMockCompletedItem = (overrides: Partial<ExternalEdeskCheck> = {}): ExternalEdeskCheck => {
+const createMockCompletedItem = (
+  overrides: Partial<ExternalEdeskCheck> = {}
+): ExternalEdeskCheck => {
   return {
     id: 'check-1',
     uri: 'rc://sk/123',
@@ -111,9 +113,7 @@ describe('EdeskTasksSubservice', () => {
       const retrieveNewRecordsSpy = jest
         .spyOn(service, 'retrieveNewRecordsFromNorisToUpdate')
         .mockResolvedValue(undefined)
-      jest
-        .spyOn(upvsQueueService, 'retrieveCompletedExternalItems')
-        .mockResolvedValue([])
+      jest.spyOn(upvsQueueService, 'retrieveCompletedExternalItems').mockResolvedValue([])
       const updateEdeskChecksSpy = jest.spyOn(norisService, 'updateEdeskChecks')
 
       await service.updateEdeskInNoris()
@@ -152,7 +152,9 @@ describe('EdeskTasksSubservice', () => {
     it('should return early when completedExternalItems.length < batch size AND numberOfExternalItemsInQueue !== 0', async () => {
       const completedCount = EXTERNAL_ITEMS_PROCESS_BATCH_SIZE - 1
       const itemsInQueue = 50
-      jest.spyOn(upvsQueueService, 'getNumberOfExternalItemsInQueue').mockResolvedValue(itemsInQueue)
+      jest
+        .spyOn(upvsQueueService, 'getNumberOfExternalItemsInQueue')
+        .mockResolvedValue(itemsInQueue)
       jest.spyOn(service, 'retrieveNewRecordsFromNorisToUpdate').mockResolvedValue(undefined)
       jest
         .spyOn(upvsQueueService, 'retrieveCompletedExternalItems')
@@ -176,7 +178,9 @@ describe('EdeskTasksSubservice', () => {
         createMockCompletedItem({ id: `id-${i}`, norisId: i })
       )
       jest.spyOn(upvsQueueService, 'getNumberOfExternalItemsInQueue').mockResolvedValue(100)
-      const retrieveNewRecordsFromNorisToUpdateSpy = jest.spyOn(service, 'retrieveNewRecordsFromNorisToUpdate').mockResolvedValue(undefined)
+      const retrieveNewRecordsFromNorisToUpdateSpy = jest
+        .spyOn(service, 'retrieveNewRecordsFromNorisToUpdate')
+        .mockResolvedValue(undefined)
       jest.spyOn(upvsQueueService, 'retrieveCompletedExternalItems').mockResolvedValue(fullBatch)
 
       const updateEdeskChecksSpy = jest.spyOn(norisService, 'updateEdeskChecks').mockResolvedValue()
@@ -197,7 +201,9 @@ describe('EdeskTasksSubservice', () => {
         createMockCompletedItem({ id: 'id-2', norisId: 2 }),
       ]
       jest.spyOn(upvsQueueService, 'getNumberOfExternalItemsInQueue').mockResolvedValue(0)
-      const retrieveNewRecordsFromNorisToUpdateSpy = jest.spyOn(service, 'retrieveNewRecordsFromNorisToUpdate').mockResolvedValue(undefined)
+      const retrieveNewRecordsFromNorisToUpdateSpy = jest
+        .spyOn(service, 'retrieveNewRecordsFromNorisToUpdate')
+        .mockResolvedValue(undefined)
       jest.spyOn(upvsQueueService, 'retrieveCompletedExternalItems').mockResolvedValue(partialBatch)
 
       const updateEdeskChecksSpy = jest.spyOn(norisService, 'updateEdeskChecks').mockResolvedValue()

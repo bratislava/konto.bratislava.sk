@@ -28,10 +28,7 @@ export const invalidEdeskRecordWrongUriGeneratedType = {
   uri_generated: 12345,
 }
 
-export const validEdeskRecords: EdeskRecord[] = [
-  testEdeskRecord1,
-  testEdeskRecord2,
-]
+export const validEdeskRecords: EdeskRecord[] = [testEdeskRecord1, testEdeskRecord2]
 
 export const invalidEdeskRecords = [
   invalidEdeskRecordMissingIdNoris,

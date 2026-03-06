@@ -263,6 +263,16 @@ export class BloomreachService {
     }
 
     try {
+      // Check if customer exists in Bloomreach first to avoid creating phantom profiles
+      await axios.get(
+        `${process.env.BLOOMREACH_API_URL}/data/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers?id_type=city_account_id&id=${cognitoId}`,
+        {
+          headers: {
+            Authorization: `Basic ${this.bloomreachCredentials}`,
+          },
+        }
+      )
+
       await this.trackEventConsents(
         [
           {

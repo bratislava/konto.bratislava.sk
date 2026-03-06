@@ -6,6 +6,7 @@ export default [
   }),
   {
     rules: {
+      // TODO: fix https://github.com/bratislava/private-konto.bratislava.sk/issues/1300
       '@typescript-eslint/prefer-literal-enum-member': 'warn',
       '@darraghor/nestjs-typed/injectable-should-be-provided': 'warn', // 5 occurrences in codebase; should be addressed and fixed
       // Moved from file-level eslint-disable; counts are total rule violations (from npm run lint)

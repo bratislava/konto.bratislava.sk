@@ -35,19 +35,13 @@ describe('NorisValidatorSubservice', () => {
     describe('Edesk records', () => {
       describe('valid', () => {
         it('should validate valid edesk record', () => {
-          const result = service.validateNorisData(
-            EdeskRecordSchema,
-            testEdeskRecord1,
-          )
+          const result = service.validateNorisData(EdeskRecordSchema, testEdeskRecord1)
           expect(result).toEqual(testEdeskRecord1)
         })
 
         it('should validate all valid edesk records', () => {
           validEdeskRecords.forEach((record) => {
-            const result = service.validateNorisData(
-              EdeskRecordSchema,
-              record,
-            )
+            const result = service.validateNorisData(EdeskRecordSchema, record)
             expect(result).toEqual(record)
           })
         })
@@ -64,17 +58,11 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw error containing id_noris when missing', () => {
           expect(() => {
-            service.validateNorisData(
-              EdeskRecordSchema,
-              invalidEdeskRecordMissingIdNoris,
-            )
+            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingIdNoris)
           }).toThrow(HttpException)
 
           try {
-            service.validateNorisData(
-              EdeskRecordSchema,
-              invalidEdeskRecordMissingIdNoris,
-            )
+            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingIdNoris)
           } catch (error) {
             const response = (error as HttpException).getResponse() as Record<
               symbol | string,
@@ -86,17 +74,11 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw error containing uri_generated when missing', () => {
           expect(() => {
-            service.validateNorisData(
-              EdeskRecordSchema,
-              invalidEdeskRecordMissingUriGenerated,
-            )
+            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingUriGenerated)
           }).toThrow(HttpException)
 
           try {
-            service.validateNorisData(
-              EdeskRecordSchema,
-              invalidEdeskRecordMissingUriGenerated,
-            )
+            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingUriGenerated)
           } catch (error) {
             const response = (error as HttpException).getResponse() as Record<
               symbol | string,
@@ -108,19 +90,13 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw for wrong type of id_noris', () => {
           expect(() => {
-            service.validateNorisData(
-              EdeskRecordSchema,
-              invalidEdeskRecordWrongIdNorisType,
-            )
+            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordWrongIdNorisType)
           }).toThrow(HttpException)
         })
 
         it('should throw for wrong type of uri_generated', () => {
           expect(() => {
-            service.validateNorisData(
-              EdeskRecordSchema,
-              invalidEdeskRecordWrongUriGeneratedType,
-            )
+            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordWrongUriGeneratedType)
           }).toThrow(HttpException)
         })
       })
@@ -128,13 +104,8 @@ describe('NorisValidatorSubservice', () => {
 
     describe('validateNorisData with array', () => {
       it('should return only valid records and error log the rest', () => {
-        const errorLogSpy = jest
-          .spyOn(service['logger'], 'error')
-          .mockImplementation(noop)
-        const result = service.validateNorisData(
-          EdeskRecordSchema,
-          allEdeskRecords,
-        )
+        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+        const result = service.validateNorisData(EdeskRecordSchema, allEdeskRecords)
         expect(result).toHaveLength(validEdeskRecords.length)
         expect(result).toContainEqual(testEdeskRecord1)
         expect(result).toContainEqual(testEdeskRecord2)
@@ -142,25 +113,15 @@ describe('NorisValidatorSubservice', () => {
       })
 
       it('should return empty array when all records are invalid', () => {
-        const errorLogSpy = jest
-          .spyOn(service['logger'], 'error')
-          .mockImplementation(noop)
-        const result = service.validateNorisData(
-          EdeskRecordSchema,
-          invalidEdeskRecords,
-        )
+        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+        const result = service.validateNorisData(EdeskRecordSchema, invalidEdeskRecords)
         expect(result).toHaveLength(0)
         expect(errorLogSpy).toHaveBeenCalledTimes(invalidEdeskRecords.length)
       })
 
       it('should return all records when all are valid', () => {
-        const errorLogSpy = jest
-          .spyOn(service['logger'], 'error')
-          .mockImplementation(noop)
-        const result = service.validateNorisData(
-          EdeskRecordSchema,
-          validEdeskRecords,
-        )
+        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+        const result = service.validateNorisData(EdeskRecordSchema, validEdeskRecords)
         expect(result).toEqual(validEdeskRecords)
         expect(errorLogSpy).not.toHaveBeenCalled()
       })

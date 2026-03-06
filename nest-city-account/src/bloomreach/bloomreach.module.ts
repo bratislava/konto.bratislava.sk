@@ -7,7 +7,11 @@ import { PrismaModule } from '../prisma/prisma.module'
 
 @Module({
   imports: [PrismaModule],
-  providers: [BloomreachService, BloomreachContactDatabaseService, bloomreachContactDatabaseProvider],
+  providers: [
+    BloomreachService,
+    BloomreachContactDatabaseService,
+    bloomreachContactDatabaseProvider,
+  ],
   exports: [BloomreachService, BloomreachContactDatabaseService],
   controllers: [],
 })

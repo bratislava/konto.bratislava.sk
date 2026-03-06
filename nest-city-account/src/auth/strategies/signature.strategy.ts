@@ -95,7 +95,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     }
 
     // We tried to find a smarter way to test this.
-    if (!/^\d{10,13}$/.test(timestamp)) {
+    if (!/^\d{10}(\d{3})?$/.test(timestamp)) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,

@@ -196,7 +196,7 @@ export class UpvsQueueService {
           AND e."uri" IS NULL
           AND u."birthNumber" IS NOT NULL
           AND u."externalId" IS NOT NULL
-        ORDER BY LEAST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
+        ORDER BY GREATEST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
         LIMIT ${limit}
     `
 

@@ -218,6 +218,31 @@ describe('EdeskTasksSubservice', () => {
       expect(retrieveNewRecordsFromNorisToUpdateSpy).toHaveBeenCalled()
     })
 
+    it('should call retrieveNewRecordsFromNorisToUpdateSpy after updateEdeskChecks and deleteMany', async () => {
+      const partialBatch = [
+        createMockCompletedItem({ id: 'id-1', norisId: 1 }),
+        createMockCompletedItem({ id: 'id-2', norisId: 2 }),
+      ]
+      jest.spyOn(upvsQueueService, 'getNumberOfPendingExternalItemsInQueue').mockResolvedValue(0)
+      const retrieveNewRecordsFromNorisToUpdateSpy = jest
+        .spyOn(service, 'retrieveNewRecordsFromNorisToUpdate')
+        .mockResolvedValue(undefined)
+      jest.spyOn(upvsQueueService, 'retrieveCompletedExternalItems').mockResolvedValue(partialBatch)
+
+      const updateEdeskChecksSpy = jest.spyOn(norisService, 'updateEdeskChecks').mockResolvedValue()
+      prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: partialBatch.length })
+
+      await service.updateEdeskInNoris()
+
+      const deleteManyOrder = prismaMock.externalEdeskCheck.deleteMany.mock.invocationCallOrder[0]
+      const updateEdeskChecksOrder = updateEdeskChecksSpy.mock.invocationCallOrder[0]
+      const retrieveNewRecordsFromNorisToUpdateOrder =
+        retrieveNewRecordsFromNorisToUpdateSpy.mock.invocationCallOrder[0]
+
+      expect(updateEdeskChecksOrder).toBeLessThan(deleteManyOrder)
+      expect(deleteManyOrder).toBeLessThan(retrieveNewRecordsFromNorisToUpdateOrder)
+    })
+
     it('should return early when exactly one completed item but queue has items (length 1 < 500 and queue !== 0)', async () => {
       jest.spyOn(upvsQueueService, 'getNumberOfPendingExternalItemsInQueue').mockResolvedValue(1)
       jest.spyOn(service, 'retrieveNewRecordsFromNorisToUpdate').mockResolvedValue(undefined)

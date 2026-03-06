@@ -103,22 +103,30 @@ export class EdeskTasksSubservice {
     )
   }
 
-  async updateEdeskInNoris(): Promise<void> {
-    const numberOfExternalItemsInQueue =
-      await this.upvsQueueService.getNumberOfExternalItemsInQueue()
-    if (numberOfExternalItemsInQueue === 0) {
+  private async fillQueueWithNewRecordsFromNorisIfEmpty(
+    numberOfPendingExternalItemsInQueue: number
+  ) {
+    if (numberOfPendingExternalItemsInQueue === 0) {
       await this.retrieveNewRecordsFromNorisToUpdate()
     }
+  }
+
+  async updateEdeskInNoris(): Promise<void> {
+    const numberOfPendingExternalItemsInQueue =
+      await this.upvsQueueService.getNumberOfPendingExternalItemsInQueue()
 
     const completedExternalItems = await this.upvsQueueService.retrieveCompletedExternalItems(
       EXTERNAL_ITEMS_PROCESS_BATCH_SIZE
     )
 
+    // If there are no completed items or if there are less than the batch size and
+    // the queue is not empty, return early. When the queue is empty, fill it before returning.
     if (
       completedExternalItems.length === 0 ||
       (completedExternalItems.length < EXTERNAL_ITEMS_PROCESS_BATCH_SIZE &&
-        numberOfExternalItemsInQueue !== 0)
+        numberOfPendingExternalItemsInQueue !== 0)
     ) {
+      await this.fillQueueWithNewRecordsFromNorisIfEmpty(numberOfPendingExternalItemsInQueue)
       return
     }
 
@@ -159,5 +167,8 @@ export class EdeskTasksSubservice {
         id: { in: completedExternalItems.map((item) => item.id) },
       },
     })
+
+    // After the update, if the queue is empty, retrieve new records from Noris to update
+    await this.fillQueueWithNewRecordsFromNorisIfEmpty(numberOfPendingExternalItemsInQueue)
   }
 }

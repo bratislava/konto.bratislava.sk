@@ -248,7 +248,7 @@ export class NorisPaymentSubservice {
   private async processNorisPaymentData(
     norisPaymentData: NorisTaxPayment[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>> = {},
     bloomreachSettings?: {
       suppressEmail?: boolean
     },

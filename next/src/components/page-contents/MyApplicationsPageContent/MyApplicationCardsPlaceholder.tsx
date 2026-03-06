@@ -1,14 +1,15 @@
 import { useTranslation } from 'next-i18next'
 
 import Icon from '@/src/assets/images/mestske-konto-situacia-2-1.svg'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 
 const MyApplicationCardsPlaceholder = () => {
   const { t } = useTranslation('account')
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="m-auto mt-0 flex w-full max-w-(--breakpoint-xl) flex-col justify-around rounded-lg border-0 border-gray-200 px-4 pt-0 md:px-16 lg:mt-8 lg:flex-row lg:border-2 lg:px-8 lg:py-10">
+    <SectionContainer>
+      <div className="-mx-4 mt-0 flex flex-col justify-around rounded-lg border-0 border-gray-200 pt-0 lg:-mx-8 lg:flex-row lg:border-2">
         <div className="flex justify-center">
           <Icon className="h-[145px] w-[146px] sm:h-[296px] sm:w-[298px]" />
         </div>
@@ -17,7 +18,7 @@ const MyApplicationCardsPlaceholder = () => {
           <AccountMarkdown content={t('account_section_applications.placeholder.subtitle')} />
         </div>
       </div>
-    </div>
+    </SectionContainer>
   )
 }
 

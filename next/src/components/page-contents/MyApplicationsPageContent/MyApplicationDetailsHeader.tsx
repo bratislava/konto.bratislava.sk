@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { ChevronLeftIcon, DownloadIcon } from '@/src/assets/ui-icons'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
 import Button from '@/src/components/simple-components/Button'
@@ -67,8 +68,8 @@ const MyApplicationDetailsHeader = ({
   }
 
   return (
-    <div className="bg-gray-50">
-      <div className="m-auto flex size-full max-w-(--breakpoint-xl) flex-col justify-end gap-4 px-4 py-4 lg:gap-6 lg:px-8 lg:py-8">
+    <SectionContainer className="bg-gray-50">
+      <div className="flex size-full flex-col justify-end gap-4 py-4 lg:gap-6 lg:py-8">
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
           <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
             <ChevronLeftIcon className="size-5" />
@@ -125,7 +126,7 @@ const MyApplicationDetailsHeader = ({
           </div>
         </div>
       </div>
-    </div>
+    </SectionContainer>
   )
 }
 

@@ -34,7 +34,7 @@ const TaxFeeDetails = () => {
   }[taxData.type]
 
   return (
-    <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
+    <div className="flex w-full flex-col items-start gap-3 lg:gap-6">
       <div className="flex w-full flex-col justify-between lg:flex-row">
         <span className="text-h5">{taxFeeAccordionsHeader}</span>
         <Button variant="link" endIcon={<ExportIcon />} {...taxFeeAccordionsHeaderLinkProps} />

@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import BannerImage from '@/src/assets/images/bratislava-dog.png'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
@@ -55,34 +56,34 @@ const IntroPageContent = ({
         announcementsLegalPerson={announcementsLegalPerson}
       />
 
-      <div className="mx-auto flex max-w-(--breakpoint-xl) flex-col gap-6 px-4 py-6 lg:px-8 lg:py-16">
-        <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
-          <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
-            {t('account_section_intro.all_services')}
-          </Button>
-        </div>
-        <ResponsiveCarousel
-          desktop={4}
-          items={servicesByPersonType.map((service) => (
-            <MunicipalServiceCard key={service.id} service={service} />
-          ))}
-          hasVerticalPadding={false}
-          className="-mx-2 px-2"
-        />
-      </div>
-
-      <div className="py-6 lg:bg-gray-50 lg:py-16">
-        <div className="mx-auto w-full max-w-(--breakpoint-xl) px-4 lg:px-8">
-          <Banner
-            title={t('account_section_intro.banner_title')}
-            content={t('account_section_intro.banner_content')}
-            buttonText={t('account_section_intro.banner_button_text')}
-            href={ROUTES.HELP}
-            image={BannerImage}
+      <SectionContainer className="py-6 lg:py-16">
+        <div className="flex flex-col gap-6">
+          <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
+            <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
+              {t('account_section_intro.all_services')}
+            </Button>
+          </div>
+          <ResponsiveCarousel
+            desktop={4}
+            items={servicesByPersonType.map((service) => (
+              <MunicipalServiceCard key={service.id} service={service} />
+            ))}
+            hasVerticalPadding={false}
+            className="-mx-2 px-2"
           />
         </div>
-      </div>
+      </SectionContainer>
+
+      <SectionContainer className="py-6 lg:bg-gray-50 lg:py-16">
+        <Banner
+          title={t('account_section_intro.banner_title')}
+          content={t('account_section_intro.banner_content')}
+          buttonText={t('account_section_intro.banner_button_text')}
+          href={ROUTES.HELP}
+          image={BannerImage}
+        />
+      </SectionContainer>
     </>
   )
 }

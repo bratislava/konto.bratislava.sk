@@ -1,3 +1,4 @@
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Breadcrumbs, { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
 
 type Props = {
@@ -6,12 +7,12 @@ type Props = {
 
 const TaxFeePageHeader = ({ title, breadcrumbs }: Props) => {
   return (
-    <div className="h-full bg-gray-50">
-      <div className="m-auto flex max-w-(--breakpoint-xl) flex-col gap-4 px-4 pb-8 lg:px-8">
+    <SectionContainer className="bg-gray-50 pb-8">
+      <div className="flex flex-col gap-4">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <h1 className="text-h1">{title}</h1>
       </div>
-    </div>
+    </SectionContainer>
   )
 }
 

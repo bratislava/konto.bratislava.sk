@@ -3,6 +3,7 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
 import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
 import cn from '@/src/utils/cn'
@@ -26,7 +27,7 @@ export const NavMenu = ({ menuSections }: Props) => {
 
   return (
     menuSections && (
-      <div className="m-auto w-full max-w-(--breakpoint-xl) px-4 lg:px-8">
+      <SectionContainer>
         <div className="flex h-[57px] w-full items-center justify-between border-t border-border-passive-primary">
           <NavigationMenu.Root
             value={menuValue}
@@ -64,7 +65,7 @@ export const NavMenu = ({ menuSections }: Props) => {
             </NavigationMenu.List>
           </NavigationMenu.Root>
         </div>
-      </div>
+      </SectionContainer>
     )
   )
 }

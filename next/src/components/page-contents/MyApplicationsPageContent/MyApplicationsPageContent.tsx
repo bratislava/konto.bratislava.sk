@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MyApplicationsList, {
   getDraftApplications,
 } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
@@ -107,8 +108,8 @@ const MyApplicationsPageContent = ({
       }}
       className="flex flex-col"
     >
-      <div className="bg-gray-50 pl-8 lg:pl-0">
-        <div className="m-auto size-full max-w-(--breakpoint-xl) flex-col justify-end gap-4 px-4 pt-6 lg:gap-6 lg:px-8 lg:pt-14">
+      <SectionContainer className="bg-gray-50 pt-6 lg:pt-14">
+        <div className="size-full flex-col justify-end gap-4 lg:gap-6">
           <h1 className="pt-4 text-h1">{title}</h1>
           <TabList className="scrollbar-hide flex gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
             {headerNavigationList.map((item) => {
@@ -130,17 +131,19 @@ const MyApplicationsPageContent = ({
             })}
           </TabList>
         </div>
-      </div>
-      {sections.map((variant) => (
-        <TabPanel key={variant} id={variant}>
-          <MyApplicationsList
-            variant={variant}
-            applications={applications}
-            refetchApplicationsCount={refetchApplicationsCount}
-            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          />
-        </TabPanel>
-      ))}
+      </SectionContainer>
+      <SectionContainer className="py-4 lg:py-8">
+        {sections.map((variant) => (
+          <TabPanel key={variant} id={variant}>
+            <MyApplicationsList
+              variant={variant}
+              applications={applications}
+              refetchApplicationsCount={refetchApplicationsCount}
+              formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+            />
+          </TabPanel>
+        ))}
+      </SectionContainer>
     </Tabs>
   )
 }

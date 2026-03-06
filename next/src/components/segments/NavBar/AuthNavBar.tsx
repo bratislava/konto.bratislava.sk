@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import { ArrowLeftIcon } from '@/src/assets/ui-icons'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
@@ -65,27 +66,29 @@ export const AuthNavBar = ({
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto flex h-[57px] w-full max-w-(--breakpoint-xl) items-center justify-between px-4 lg:px-8">
-          <div className="flex">
-            {!backButtonHidden && <BackButton />}
-            <Brand
-              className="group"
-              url={brandLinkHref}
-              title={
-                <p
-                  className={cn('text-p2 text-font', {
-                    'group-hover:text-gray-600': brandLinkHref,
-                  })}
-                >
-                  {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
-                  {t('NavBar.capitalCityOfSR')}
-                  {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
-                </p>
-              }
-            />
+        <SectionContainer className="h-[57px]">
+          <div className="flex w-full items-center justify-between">
+            <div className="flex">
+              {!backButtonHidden && <BackButton />}
+              <Brand
+                className="group"
+                url={brandLinkHref}
+                title={
+                  <p
+                    className={cn('text-p2 text-font', {
+                      'group-hover:text-gray-600': brandLinkHref,
+                    })}
+                  >
+                    {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
+                    {t('NavBar.capitalCityOfSR')}
+                    {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
+                  </p>
+                }
+              />
+            </div>
+            <OAuthLogo />
           </div>
-          <OAuthLogo />
-        </div>
+        </SectionContainer>
       </div>
       {/* Mobile */}
       <div

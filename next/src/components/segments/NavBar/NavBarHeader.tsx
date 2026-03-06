@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { ChevronDownSmallIcon } from '@/src/assets/ui-icons'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
@@ -45,54 +46,56 @@ export const NavBarHeader = ({ menuItems }: Props) => {
       : router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
 
   return (
-    <div className="m-auto flex h-[57px] max-w-(--breakpoint-xl) items-center gap-x-6 px-4 lg:px-8">
-      <Brand
-        className="group grow"
-        url={ROUTES.HOME}
-        title={
-          <p className="text-p2 text-font group-hover:text-gray-600">
-            {t('NavBar.capitalCityOfSR')}
-            <span className="font-semibold"> Bratislava</span>
-          </p>
-        }
-      />
-      <IdentityVerificationStatus />
-      <nav className="flex gap-x-8 font-semibold text-font/75">
-        {isSignedIn ? (
-          <MenuDropdown
-            setIsOpen={setIsMenuOpen}
-            buttonTrigger={
-              <Button
-                variant="unstyled"
-                data-cy="account-button"
-                className="flex items-center gap-4 font-semibold text-font/75"
-              >
-                <UserAvatar userAttributes={userAttributes} />
-                <div className="flex items-center gap-1 font-light lg:font-semibold">
-                  {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
-                  <ChevronDownSmallIcon
-                    className={cn('hidden size-5 mix-blend-normal lg:flex', {
-                      '-rotate-180': isMenuOpen,
-                    })}
-                  />
-                </div>
+    <SectionContainer>
+      <div className="flex h-[57px] items-center gap-x-6">
+        <Brand
+          className="group grow"
+          url={ROUTES.HOME}
+          title={
+            <p className="text-p2 text-font group-hover:text-gray-600">
+              {t('NavBar.capitalCityOfSR')}
+              <span className="font-semibold"> Bratislava</span>
+            </p>
+          }
+        />
+        <IdentityVerificationStatus />
+        <nav className="flex gap-x-8 font-semibold text-font/75">
+          {isSignedIn ? (
+            <MenuDropdown
+              setIsOpen={setIsMenuOpen}
+              buttonTrigger={
+                <Button
+                  variant="unstyled"
+                  data-cy="account-button"
+                  className="flex items-center gap-4 font-semibold text-font/75"
+                >
+                  <UserAvatar userAttributes={userAttributes} />
+                  <div className="flex items-center gap-1 font-light lg:font-semibold">
+                    {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
+                    <ChevronDownSmallIcon
+                      className={cn('hidden size-5 mix-blend-normal lg:flex', {
+                        '-rotate-180': isMenuOpen,
+                      })}
+                    />
+                  </div>
+                </Button>
+              }
+              itemVariant="header"
+              items={menuItems}
+            />
+          ) : (
+            <div className="flex items-center gap-6">
+              <Button variant="plain" size="small" onPress={login} data-cy="login-button">
+                {t('menu_links.login')}
               </Button>
-            }
-            itemVariant="header"
-            items={menuItems}
-          />
-        ) : (
-          <div className="flex items-center gap-6">
-            <Button variant="plain" size="small" onPress={login} data-cy="login-button">
-              {t('menu_links.login')}
-            </Button>
-            <Button variant="solid" onPress={register} size="small" data-cy="register-button">
-              {t('menu_links.register')}
-            </Button>
-          </div>
-        )}
-      </nav>
-    </div>
+              <Button variant="solid" onPress={register} size="small" data-cy="register-button">
+                {t('menu_links.register')}
+              </Button>
+            </div>
+          )}
+        </nav>
+      </div>
+    </SectionContainer>
   )
 }
 

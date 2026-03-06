@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/PaymentData'
@@ -64,19 +65,21 @@ const TaxFeePaymentPageContent = () => {
           { title: getTitle(), path: null },
         ]}
       />
-      <div className="m-auto w-full max-w-(--breakpoint-xl) px-4 py-6 lg:px-8 lg:py-12">
-        {isIdentityVerified ? (
-          showChannelNeededBanner ? (
-            <OfficialCorrespondenceChannelNeededBanner />
+      <SectionContainer>
+        <div className="py-6 lg:py-12">
+          {isIdentityVerified ? (
+            showChannelNeededBanner ? (
+              <OfficialCorrespondenceChannelNeededBanner />
+            ) : (
+              <PaymentData paymentMethod={paymentMethodParam} />
+            )
+          ) : isInQueue ? (
+            <IdentityVerificationBanner variant="verification-in-process" />
           ) : (
-            <PaymentData paymentMethod={paymentMethodParam} />
-          )
-        ) : isInQueue ? (
-          <IdentityVerificationBanner variant="verification-in-process" />
-        ) : (
-          <IdentityVerificationBanner variant="verification-needed" />
-        )}
-      </div>
+            <IdentityVerificationBanner variant="verification-needed" />
+          )}
+        </div>
+      </SectionContainer>
     </div>
   )
 }

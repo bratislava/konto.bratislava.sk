@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import BannerPhone from '@/src/assets/images/help-page-banner-image.png'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { HelpPageFragment } from '@/src/clients/graphql-strapi/api'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
@@ -22,34 +23,32 @@ const HelpPageContent = ({ helpPage }: Props) => {
   return (
     <div className="mx-auto flex flex-col">
       <PageHeader title={t('account_section_help.navigation')} />
-      <div className="mx-auto w-full max-w-(--breakpoint-xl) px-4 py-6 lg:px-8 lg:py-16">
-        <h2 className="flex justify-start px-4 text-h2 lg:px-0">
-          {t('account_section_help.faq.title')}
-        </h2>
-        <div className="flex flex-col gap-2 px-4 md:gap-3 lg:px-0">
-          {helpPage.categories.filter(isDefined).map((category) => (
-            <div className="flex flex-col gap-2 md:gap-3" key={category.id}>
-              <h3 className="mt-6 flex justify-start text-h4">{category.title}</h3>
-              {category.items.filter(isDefined).map((item, index) => (
-                <AccordionV2 key={index} title={item.title}>
-                  <AccountMarkdown content={item.content} />
-                </AccordionV2>
-              ))}
-            </div>
-          ))}
+      <SectionContainer>
+        <div className="py-6 lg:py-16">
+          <h2 className="flex justify-start text-h2">{t('account_section_help.faq.title')}</h2>
+          <div className="flex flex-col gap-2 md:gap-3">
+            {helpPage.categories.filter(isDefined).map((category) => (
+              <div className="flex flex-col gap-2 md:gap-3" key={category.id}>
+                <h3 className="mt-6 flex justify-start text-h4">{category.title}</h3>
+                {category.items.filter(isDefined).map((item, index) => (
+                  <AccordionV2 key={index} title={item.title}>
+                    <AccountMarkdown content={item.content} />
+                  </AccordionV2>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="bg-background-passive-primary">
-        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-0 lg:px-8 lg:py-16">
-          <Banner
-            title="Nenašli ste odpoveď na vašu otázku?"
-            content={bannerContent}
-            buttonText={t('account_section_help.banner_button_text')}
-            href="mailto:info@bratislava.sk"
-            image={BannerPhone}
-          />
-        </div>
-      </div>
+      </SectionContainer>
+      <SectionContainer className="bg-background-passive-primary py-6 lg:py-16">
+        <Banner
+          title="Nenašli ste odpoveď na vašu otázku?"
+          content={bannerContent}
+          buttonText={t('account_section_help.banner_button_text')}
+          href="mailto:info@bratislava.sk"
+          image={BannerPhone}
+        />
+      </SectionContainer>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import SummaryRow from '@/src/components/forms/steps/Summary/SummaryRow'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetailsHeader'
 import MyApplicationHistory from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationHistory'
 import MLink from '@/src/components/simple-components/MLink'
@@ -26,74 +27,80 @@ const MyApplicationDetails = ({
         data={detailsData}
         ginisData={ginisData}
       />
-      <div className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-col gap-16 px-4 py-12 lg:px-8">
-        <div className="flex flex-col gap-2 px-4 lg:px-0">
-          <h3 className="text-h3">
-            {t('account_section_applications.details.application_details.title')}
-          </h3>
-          <div className="flex w-full flex-col">
-            <SummaryRow
-              size="small"
-              isEditable={false}
-              data={{
-                label: t('account_section_applications.details.application_details.record_number'),
-                value: ginisData?.id,
-                schemaPath: '',
-                isError: false,
-              }}
-            />
-            <SummaryRow
-              size="small"
-              isEditable={false}
-              data={{
-                label: t('account_section_applications.details.application_details.file_number'),
-                value: ginisData?.dossierId,
-                schemaPath: '',
-                isError: false,
-              }}
-            />
-            <SummaryRow
-              size="small"
-              isEditable={false}
-              data={{
-                label: t('account_section_applications.details.application_details.handle_person'),
-                value: ginisData?.ownerName,
-                schemaPath: '',
-                isError: false,
-              }}
-            />
-            <SummaryRowSimple
-              size="small"
-              isEditable={false}
-              label={t('account_section_applications.details.application_details.contact')}
-              isError={false}
-            >
-              <p>
-                {ginisData?.ownerPhone ? (
-                  <MLink variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
-                    {`${ginisData.ownerPhone}, `}
-                  </MLink>
-                ) : (
-                  ''
-                )}
-                {ginisData?.ownerEmail ? (
-                  <MLink variant="underlined" href={`mailto:${ginisData.ownerEmail}`}>
-                    {ginisData.ownerEmail}
-                  </MLink>
-                ) : (
-                  t('account_section_applications.details.application_details.email_unavailable')
-                )}
-              </p>
-            </SummaryRowSimple>
+      <SectionContainer className="py-12">
+        <div className="flex flex-col gap-16">
+          <div className="flex flex-col gap-2 px-4 lg:px-0">
+            <h3 className="text-h3">
+              {t('account_section_applications.details.application_details.title')}
+            </h3>
+            <div className="flex w-full flex-col">
+              <SummaryRow
+                size="small"
+                isEditable={false}
+                data={{
+                  label: t(
+                    'account_section_applications.details.application_details.record_number',
+                  ),
+                  value: ginisData?.id,
+                  schemaPath: '',
+                  isError: false,
+                }}
+              />
+              <SummaryRow
+                size="small"
+                isEditable={false}
+                data={{
+                  label: t('account_section_applications.details.application_details.file_number'),
+                  value: ginisData?.dossierId,
+                  schemaPath: '',
+                  isError: false,
+                }}
+              />
+              <SummaryRow
+                size="small"
+                isEditable={false}
+                data={{
+                  label: t(
+                    'account_section_applications.details.application_details.handle_person',
+                  ),
+                  value: ginisData?.ownerName,
+                  schemaPath: '',
+                  isError: false,
+                }}
+              />
+              <SummaryRowSimple
+                size="small"
+                isEditable={false}
+                label={t('account_section_applications.details.application_details.contact')}
+                isError={false}
+              >
+                <p>
+                  {ginisData?.ownerPhone ? (
+                    <MLink variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
+                      {`${ginisData.ownerPhone}, `}
+                    </MLink>
+                  ) : (
+                    ''
+                  )}
+                  {ginisData?.ownerEmail ? (
+                    <MLink variant="underlined" href={`mailto:${ginisData.ownerEmail}`}>
+                      {ginisData.ownerEmail}
+                    </MLink>
+                  ) : (
+                    t('account_section_applications.details.application_details.email_unavailable')
+                  )}
+                </p>
+              </SummaryRowSimple>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 px-4 lg:px-0">
+            <h3 className="text-h3">
+              {t('account_section_applications.details.application_history.title')}
+            </h3>
+            <MyApplicationHistory historyData={ginisData?.documentHistory} />
           </div>
         </div>
-        <div className="flex flex-col gap-2 px-4 lg:px-0">
-          <h3 className="text-h3">
-            {t('account_section_applications.details.application_history.title')}
-          </h3>
-          <MyApplicationHistory historyData={ginisData?.documentHistory} />
-        </div>
-      </div>
+      </SectionContainer>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { TaxType } from 'openapi-clients/tax'
 import React, { useState } from 'react'
 import { Key } from 'react-aria-components'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelInformation from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
 import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
@@ -48,7 +49,7 @@ const TaxesFeesPageContent = () => {
         title={t('account_section_payment.title')}
         // not the best solution, but for proper one we need to rewrite components in Figma (pages, UserProfileView, HelpSection, IntroSection)
         titleWrapperClassName="pb-0 pt-8 lg:py-0"
-        wrapperClassName="lg:pt-14"
+        className="lg:pt-14"
       >
         <OfficialCorrespondenceChannelInformation />
         <TaxesFeesTabs
@@ -57,29 +58,34 @@ const TaxesFeesPageContent = () => {
           items={taxTypeTabOptions}
         />
       </PageHeader>
-      <div className="m-auto flex w-full max-w-(--breakpoint-xl) flex-col gap-4 px-4 py-4 lg:gap-8 lg:px-8 lg:py-12">
-        {!isIdentityVerified &&
-          (isInQueue ? (
-            <IdentityVerificationBanner variant="verification-in-process" />
-          ) : (
-            <IdentityVerificationBanner variant="verification-needed" />
-          ))}
-        {isIdentityVerified &&
-          (showChannelNeededBanner ? (
-            <OfficialCorrespondenceChannelNeededBanner />
-          ) : (
-            <div className="flex flex-col gap-4 lg:gap-6">
-              {(taxesData[selectedTaxType]?.taxAdministrator || strapiTaxAdministrator) && (
-                <TaxesFeesAdministratorCardWrapper
+      <SectionContainer className="py-4 lg:py-12">
+        <div className="flex flex-col gap-4 lg:gap-8">
+          {!isIdentityVerified &&
+            (isInQueue ? (
+              <IdentityVerificationBanner variant="verification-in-process" />
+            ) : (
+              <IdentityVerificationBanner variant="verification-needed" />
+            ))}
+          {isIdentityVerified &&
+            (showChannelNeededBanner ? (
+              <OfficialCorrespondenceChannelNeededBanner />
+            ) : (
+              <div className="flex flex-col gap-4 lg:gap-6">
+                {(taxesData[selectedTaxType]?.taxAdministrator || strapiTaxAdministrator) && (
+                  <TaxesFeesAdministratorCardWrapper
+                    taxType={selectedTaxType}
+                    beTaxAdministrator={taxesData[selectedTaxType]?.taxAdministrator ?? null}
+                    strapiTaxAdministrator={strapiTaxAdministrator}
+                  />
+                )}
+                <TaxesFeesOverview
+                  taxesData={taxesData[selectedTaxType]}
                   taxType={selectedTaxType}
-                  beTaxAdministrator={taxesData[selectedTaxType]?.taxAdministrator ?? null}
-                  strapiTaxAdministrator={strapiTaxAdministrator}
                 />
-              )}
-              <TaxesFeesOverview taxesData={taxesData[selectedTaxType]} taxType={selectedTaxType} />
-            </div>
-          ))}
-      </div>
+              </div>
+            ))}
+        </div>
+      </SectionContainer>
     </>
   )
 }

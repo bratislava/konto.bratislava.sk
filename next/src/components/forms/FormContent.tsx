@@ -2,6 +2,7 @@ import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/form
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import FormControls from '@/src/components/forms/FormControls'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormProviders from '@/src/components/forms/FormProviders'
 import FormUploadXmlJson from '@/src/components/forms/FormUploadXmlJson'
 import StepperView from '@/src/components/forms/steps/StepperView'
@@ -73,16 +74,18 @@ const FormContentInner = () => {
       <FormModals />
       <FormUploadXmlJson />
       {displayHeaderAndMenu && <FormHeader />}
-      <div
-        className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-col gap-10 px-4 pt-0 pb-6 lg:flex-row lg:gap-20 lg:px-8 lg:py-10"
-        data-cy="form-container"
-      >
-        <StepperView />
-        <div className="grow px-4 lg:px-0">
-          {currentStepperStep.index === 'summary' ? <FormSummary /> : <FormStep />}
-          {displayHeaderAndMenu && <FormBottomMenu />}
+      <SectionContainer>
+        <div
+          className="flex flex-col gap-10 pt-0 pb-6 lg:flex-row lg:gap-20 lg:py-10"
+          data-cy="form-container"
+        >
+          <StepperView />
+          <div className="grow px-4 lg:px-0">
+            {currentStepperStep.index === 'summary' ? <FormSummary /> : <FormStep />}
+            {displayHeaderAndMenu && <FormBottomMenu />}
+          </div>
         </div>
-      </div>
+      </SectionContainer>
     </>
   )
 }

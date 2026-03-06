@@ -4,6 +4,7 @@ import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-client
 import React from 'react'
 
 import { formsClient } from '@/src/clients/forms'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MyApplicationCardsPlaceholder from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationCardsPlaceholder'
 import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard'
 import { patchApplicationFormIfNeeded } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededClient'
@@ -71,46 +72,42 @@ const MyApplicationsList = ({
 
   const totalPagesCount = applications?.countPages ?? 0
 
-  return (
-    <div className="m-auto w-full max-w-(--breakpoint-xl) px-4 lg:px-8">
-      {applications?.items.length ? (
-        <>
-          <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
-            {applications.items.map((form) => {
-              return (
-                <li key={form.id}>
-                  <MyApplicationsCard
-                    form={form}
-                    refreshListData={refreshListData}
-                    variant={variant}
-                    formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-                  />
-                </li>
+  return applications?.items.length ? (
+    <>
+      <ul className="flex flex-col gap-2 lg:gap-4">
+        {applications.items.map((form) => {
+          return (
+            <li key={form.id}>
+              <MyApplicationsCard
+                form={form}
+                refreshListData={refreshListData}
+                variant={variant}
+                formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+              />
+            </li>
+          )
+        })}
+      </ul>
+      <div className="py-4 lg:py-8">
+        <Pagination
+          totalCount={totalPagesCount}
+          currentPage={currentPage}
+          onPageChange={(page) =>
+            router
+              .push(
+                {
+                  pathname: router.pathname,
+                  query: { ...router.query, strana: page },
+                },
+                undefined,
               )
-            })}
-          </ul>
-          <div className="my-4 lg:my-8">
-            <Pagination
-              totalCount={totalPagesCount}
-              currentPage={currentPage}
-              onPageChange={(page) =>
-                router
-                  .push(
-                    {
-                      pathname: router.pathname,
-                      query: { ...router.query, strana: page },
-                    },
-                    undefined,
-                  )
-                  .catch((error) => logger.error(error))
-              }
-            />
-          </div>
-        </>
-      ) : (
-        <MyApplicationCardsPlaceholder />
-      )}
-    </div>
+              .catch((error) => logger.error(error))
+          }
+        />
+      </div>
+    </>
+  ) : (
+    <MyApplicationCardsPlaceholder />
   )
 }
 

@@ -37,7 +37,7 @@ export class UpvsQueueService {
     })
   }
 
-  async getNumberOfExternalItemsInQueue(): Promise<number> {
+  async getNumberOfPendingExternalItemsInQueue(): Promise<number> {
     return this.prismaService.externalEdeskCheck.count({
       where: {
         queueStatus: QueueItemStatusEnum.PENDING,

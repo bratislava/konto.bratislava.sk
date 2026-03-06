@@ -8,6 +8,23 @@ export default [
     rules: {
       '@typescript-eslint/prefer-literal-enum-member': 'warn',
       '@darraghor/nestjs-typed/injectable-should-be-provided': 'warn', // 5 occurrences in codebase; should be addressed and fixed
+      // Moved from file-level eslint-disable; counts are total rule violations (from npm run lint)
+      '@typescript-eslint/no-unsafe-return': 'warn', // 1 occurrence
+      '@typescript-eslint/no-unsafe-member-access': 'warn', // 7 occurrences
+      '@typescript-eslint/no-unsafe-call': 'warn', // 1 occurrence
+      '@typescript-eslint/no-unsafe-assignment': 'warn', // 11 occurrences
+      'sonarjs/function-return-type': 'warn', // 1 occurrence
+      '@typescript-eslint/no-misused-spread': 'warn', // 3 occurrences
+      '@typescript-eslint/no-namespace': 'warn', // 1 occurrence
+      'sonarjs/redundant-type-aliases': 'warn', // 1 occurrence
+      '@typescript-eslint/no-explicit-any': 'warn', // 4 occurrences
+      '@typescript-eslint/no-unnecessary-condition': 'warn', // 4 occurrences
+      '@typescript-eslint/restrict-template-expressions': 'warn', // 1 occurrence
+      'sonarjs/no-ignored-exceptions': 'warn', // 1 occurrence
+      '@typescript-eslint/no-unused-vars': 'warn', // 2 occurrences
+      '@typescript-eslint/no-base-to-string': 'warn', // 1 occurrence
+      '@typescript-eslint/no-non-null-assertion': 'warn', // 1 occurrence
+      '@typescript-eslint/no-unsafe-argument': 'warn', // 1 occurrence
     },
   },
   // Project-specific rule overrides

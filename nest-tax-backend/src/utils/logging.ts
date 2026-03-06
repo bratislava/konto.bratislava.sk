@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions, sonarjs/no-ignored-exceptions, @typescript-eslint/no-unused-vars, @typescript-eslint/no-base-to-string, @typescript-eslint/no-explicit-any */
 import { HttpException } from '@nestjs/common'
 
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'

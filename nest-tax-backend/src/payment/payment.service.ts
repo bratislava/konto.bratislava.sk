@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-condition */
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {

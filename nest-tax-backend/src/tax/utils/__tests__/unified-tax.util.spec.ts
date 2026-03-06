@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-spread */
 import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import noop from 'lodash/noop'
 

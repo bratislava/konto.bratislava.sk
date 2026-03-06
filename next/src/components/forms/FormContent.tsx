@@ -2,7 +2,6 @@ import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/form
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import FormControls from '@/src/components/forms/FormControls'
-import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormProviders from '@/src/components/forms/FormProviders'
 import FormUploadXmlJson from '@/src/components/forms/FormUploadXmlJson'
 import StepperView from '@/src/components/forms/steps/StepperView'
@@ -13,6 +12,7 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormErrorTranslations } from '@/src/components/forms/useFormErrorTranslations'
 import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormModals from '@/src/components/modals/FormModals/FormModals'
 import FormBottomMenu from '@/src/components/simple-components/FormBottomMenu'
 import FormHeader from '@/src/components/simple-components/FormHeader'
@@ -66,7 +66,6 @@ const FormContentInner = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
     // We don't want popScrollToFieldId to trigger the effect
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex])
 
   return (

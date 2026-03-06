@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next'
 
 import BannerPhone from '@/src/assets/images/help-page-banner-image.png'
-import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { HelpPageFragment } from '@/src/clients/graphql-strapi/api'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import Banner from '@/src/components/simple-components/Banner'

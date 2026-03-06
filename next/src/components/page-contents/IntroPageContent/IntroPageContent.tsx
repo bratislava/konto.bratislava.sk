@@ -1,11 +1,11 @@
 import { useTranslation } from 'next-i18next'
 
 import BannerImage from '@/src/assets/images/bratislava-dog.png'
-import SectionContainer from '@/src/components/layouts/SectionContainer'
 import {
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import PhoneNumberModal from '@/src/components/modals/PhoneNumberModal'
 import Announcements from '@/src/components/page-contents/IntroPageContent/Announcements/Announcements'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'

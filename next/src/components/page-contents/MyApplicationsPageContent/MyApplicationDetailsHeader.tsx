@@ -3,9 +3,9 @@ import { useTranslation } from 'next-i18next'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { ChevronLeftIcon, DownloadIcon } from '@/src/assets/ui-icons'
-import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Button from '@/src/components/simple-components/Button'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
@@ -47,11 +47,7 @@ const MyApplicationDetailsHeader = ({
   const exportPdf = async () => {
     openSnackbarInfo(t('forms:info_messages.pdf_export'))
     try {
-      if (!formId)
-        throw new Error(
-          // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No form id.`,
-        )
+      if (!formId) throw new Error(`No form id.`)
       const response = await formsClient.convertControllerConvertToPdf(
         formId,
         {},

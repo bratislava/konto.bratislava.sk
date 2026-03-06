@@ -8,14 +8,14 @@ import { SectionTitleLevel } from '@/src/utils/getCardTitleLevel'
 import { CommonLinkProps } from '@/src/utils/getLinkProps'
 
 type Props = {
-  title?: string | null | undefined
+  title?: string | null
   titleId?: string
-  titleLevel?: SectionTitleLevel | null | undefined
-  text?: string | null | undefined
+  titleLevel?: SectionTitleLevel | null
+  text?: string | null
   asRichtext?: boolean
   isFullWidth?: boolean
   isCentered?: boolean
-  showMoreLink?: CommonLinkProps | null | undefined
+  showMoreLink?: CommonLinkProps | null
   className?: string
 }
 

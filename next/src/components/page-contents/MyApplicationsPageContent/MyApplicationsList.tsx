@@ -1,10 +1,8 @@
 import { AuthSession } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-clients/forms'
-import React from 'react'
 
 import { formsClient } from '@/src/clients/forms'
-import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MyApplicationCardsPlaceholder from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationCardsPlaceholder'
 import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard'
 import { patchApplicationFormIfNeeded } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededClient'
@@ -44,6 +42,7 @@ export const getDraftApplications = async (
     undefined,
     { authStrategy: 'authOnly', getSsrAuthSession },
   )
+
   return {
     ...response.data,
     items: response.data.items.map((item) => patchApplicationFormIfNeeded(item, emailFormSlugs)),

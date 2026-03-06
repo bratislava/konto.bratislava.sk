@@ -21,7 +21,7 @@ import HorizontalDivider from '@/src/components/simple-components/HorizontalDivi
 import PaymentSchedule from '@/src/components/simple-components/PaymentSchedule'
 import { useUser } from '@/src/frontend/hooks/useUser'
 import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
-import { isDefined, isProductionDeployment } from '@/src/frontend/utils/general'
+import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {
   paymentMethod: PaymentMethodType
@@ -151,44 +151,39 @@ const PaymentData = ({ paymentMethod }: Props) => {
       <div className="flex flex-col gap-2 lg:gap-4">
         <div className="text-h5">{t('taxes.payment_data.payment_methods_title')}</div>
         <div className="rounded-lg border px-4 lg:px-6">
-          {
-            // Temporarily hide pay-by-card option for KO on production, until we setup correct payment gateway
-            (taxData.type !== TaxType.Ko || !isProductionDeployment()) && (
-              <>
-                <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
-                    <div className="flex flex-row-reverse items-center justify-between gap-4 lg:flex-row lg:justify-start">
-                      <PaymentHandIcon className="size-8 lg:size-12" />
-                      <span className="text-h5">{t('taxes.payment_data.card_payment_title')}</span>
-                    </div>
-                    <div className="flex flex-row items-center gap-1.5 lg:gap-3">
-                      <div className="rounded-lg bg-background-passive-primary px-3 py-1">
-                        <CreditCardIcon className="size-5" />
-                      </div>
-                      <ApplePayIcon className="size-12" />
-                      <GooglePayIcon className="size-12" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
-                    <span className="w-full text-h5 lg:w-auto">
-                      {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
-                    </span>
-                    <Button
-                      variant="solid"
-                      onPress={handleRedirectToPayment}
-                      isLoading={isLoading}
-                      endIcon={<ArrowRightIcon />}
-                      loadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
-                      className="max-lg:w-full"
-                    >
-                      {t('taxes.payment.to_pay')}
-                    </Button>
-                  </div>
+          <>
+            <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex flex-row-reverse items-center justify-between gap-4 lg:flex-row lg:justify-start">
+                  <PaymentHandIcon className="size-8 lg:size-12" />
+                  <span className="text-h5">{t('taxes.payment_data.card_payment_title')}</span>
                 </div>
-                <HorizontalDivider />
-              </>
-            )
-          }
+                <div className="flex flex-row items-center gap-1.5 lg:gap-3">
+                  <div className="rounded-lg bg-background-passive-primary px-3 py-1">
+                    <CreditCardIcon className="size-5" />
+                  </div>
+                  <ApplePayIcon className="size-12" />
+                  <GooglePayIcon className="size-12" />
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
+                <span className="w-full text-h5 lg:w-auto">
+                  {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
+                </span>
+                <Button
+                  variant="solid"
+                  onPress={handleRedirectToPayment}
+                  isLoading={isLoading}
+                  endIcon={<ArrowRightIcon />}
+                  loadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
+                  className="max-lg:w-full"
+                >
+                  {t('taxes.payment.to_pay')}
+                </Button>
+              </div>
+            </div>
+            <HorizontalDivider />
+          </>
 
           <div className="flex flex-col gap-4 py-4 lg:gap-6 lg:py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">

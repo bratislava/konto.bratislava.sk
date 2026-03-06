@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import {
+  extractEmailFormAddress,
   extractEmailFormEmail,
   extractEmailFormName,
   extractFormSubjectPlain,
@@ -219,6 +220,17 @@ describe('formDataExtractors', () => {
   })
 
   describe('extractEmailFormEmail', () => {
+    test('should return undefined if extractEmail is not provided', () => {
+      const formDefinition = {
+        type: FormDefinitionType.Email,
+        email: {},
+      } as FormDefinitionEmail
+      const formData = {}
+
+      const result = extractEmailFormEmail(formDefinition, formData)
+      expect(result).toBeUndefined()
+    })
+
     test('should return result of extractEmail', () => {
       const extractEmailMock: SchemalessFormDataExtractor<any> = {
         type: 'schemaless',
@@ -264,6 +276,32 @@ describe('formDataExtractors', () => {
       test(`${exampleForm.name} email should match snapshot`, () => {
         const result = extractEmailFormEmail(formDefinition, exampleForm.formData)
         expect(result).toMatchSnapshot()
+      })
+    })
+  })
+
+  describe('extractEmailFormAddress', () => {
+    test('should support arrays with extractor values', () => {
+      const dynamicExtractor: SchemalessFormDataExtractor<{ dynamic: string }> = {
+        type: 'schemaless',
+        extractFn: (formData) => formData.dynamic,
+      }
+      const formDefinition = {
+        type: FormDefinitionType.Email,
+        email: {
+          address: {
+            prod: ['prod@example.com', dynamicExtractor],
+            test: ['test@example.com'],
+          },
+        },
+      } as FormDefinitionEmail
+
+      const result = extractEmailFormAddress(formDefinition, {
+        dynamic: 'dynamic@example.com',
+      })
+      expect(result).toEqual({
+        prod: ['prod@example.com', 'dynamic@example.com'],
+        test: ['test@example.com'],
       })
     })
   })

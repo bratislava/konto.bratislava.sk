@@ -253,6 +253,7 @@ enum ENUM_MUNICIPALSERVICE_ICON {
   mosquito
   parking
   public_space_occupation
+  scooter
   security
   spatial_planning
   swimming_pool
@@ -1010,8 +1011,9 @@ type Tax {
   channelChangeEffectiveNextYearText: String
   channelChangeEffectiveNextYearTitle: String
   createdAt: DateTime
+  feedbackLinkDzn: String
+  feedbackLinkKo: String
   paymentAlertText: String
-  paymentSuccessFeedbackLink: String
   updatedAt: DateTime
 }
 
@@ -1035,10 +1037,11 @@ input TaxFiltersInput {
   channelChangeEffectiveNextYearText: StringFilterInput
   channelChangeEffectiveNextYearTitle: StringFilterInput
   createdAt: DateTimeFilterInput
+  feedbackLinkDzn: StringFilterInput
+  feedbackLinkKo: StringFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
   paymentAlertText: StringFilterInput
-  paymentSuccessFeedbackLink: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
@@ -1046,8 +1049,9 @@ input TaxInput {
   accountCommunicationConsentText: String
   channelChangeEffectiveNextYearText: String
   channelChangeEffectiveNextYearTitle: String
+  feedbackLinkDzn: String
+  feedbackLinkKo: String
   paymentAlertText: String
-  paymentSuccessFeedbackLink: String
 }
 
 type TaxRelationResponseCollection {

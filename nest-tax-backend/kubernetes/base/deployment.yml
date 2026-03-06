@@ -38,6 +38,8 @@ spec:
         - secretRef:
             name: payment-secret
         - secretRef:
+            name: payment-communal-waste-secret
+        - secretRef:
             name: cognito-secret
         - secretRef:
             name: admin-secret

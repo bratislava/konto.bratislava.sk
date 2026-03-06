@@ -28,6 +28,7 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
@@ -41,13 +42,13 @@ export interface ChangeEmailRequestDto {
 }
 export interface ClientInfoResponseDto {
   /**
+   * Client ID of the oAuth2 client
+   */
+  clientId: string
+  /**
    * Human-readable name for the client (prefix from OAUTH2_CLIENT_LIST)
    */
-  name: string
-  /**
-   * Human-readable title for the client (for frontend display)
-   */
-  title?: string
+  clientName: string
 }
 export interface CognitoGetUserData {
   /**
@@ -255,7 +256,7 @@ export const GDPRTypeEnum = {
   Analytics: 'ANALYTICS',
   Dataprocessing: 'DATAPROCESSING',
   FormalCommunication: 'FORMAL_COMMUNICATION',
-  License: 'LICENSE',
+  General: 'GENERAL',
   Marketing: 'MARKETING',
 } as const
 
@@ -491,12 +492,6 @@ export interface RequestBatchQueryUsersByBirthNumbersDto {
    */
   birthNumbers: Array<string>
 }
-export interface RequestBodyValidateEdeskForUserIdsDto {
-  /**
-   * How many records to skip
-   */
-  offset?: number
-}
 export interface RequestBodyVerifyIdentityCardDto {
   /**
    * Birth number for check
@@ -535,24 +530,8 @@ export interface RequestBodyVerifyWithRpoDto {
    */
   turnstileToken: string
 }
-export interface RequestDeleteTaxDto {
-  /**
-   * Year of tax
-   */
-  year: number
-  /**
-   * Birth number in format with slash
-   */
-  birthNumber: string
-}
 export interface RequestGdprDataDto {
   gdprData: Array<GdprDataDto>
-}
-export interface RequestValidatePhysicalEntityRfoDto {
-  /**
-   * Id of the physical entity object in db
-   */
-  physicalEntityId: string
 }
 export interface ResponseCustomErrorVerificationEidDto {
   /**
@@ -589,6 +568,7 @@ export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
@@ -629,6 +609,7 @@ export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
@@ -870,20 +851,6 @@ export interface ResponseUserDataDto {
   gdprData: Array<ResponseGdprUserDataDto>
 }
 
-export interface ResponseValidatePhysicalEntityRfoDto {
-  /**
-   * Entity data (updated if new info was found in state registry)
-   */
-  physicalEntity: object
-  /**
-   * Data received from RFO
-   */
-  rfoData: object
-  /**
-   * Data received from UPVS
-   */
-  upvsResult: object
-}
 export interface ResponseVerificationDto {
   /**
    * number of status code
@@ -923,6 +890,7 @@ export const ResponseVerificationDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseVerificationDtoErrorNameEnum =
@@ -974,6 +942,7 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
   EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
 } as const
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
@@ -981,33 +950,13 @@ export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
 
 export interface StoreTokensRequestDto {
   /**
-   * Access token from user authentication (e.g., from Cognito)
-   */
-  access_token: string
-  /**
-   * ID token from user authentication
-   */
-  id_token?: string
-  /**
    * Refresh token from user authentication
    */
-  refresh_token: string
+  refreshToken: string
   /**
    * UUID of the authorization request stored in the database
    */
-  payload: string
-  /**
-   * Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-   */
-  client_id?: string
-  /**
-   * Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-   */
-  redirect_uri?: string
-  /**
-   * Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
-   */
-  state?: string
+  authRequestId: string
 }
 export interface TokenRequestDto {
   /**
@@ -1177,11 +1126,11 @@ export interface UserVerifyState {
    */
   cognitoTier?: UserVerifyStateCognitoTierEnum
   /**
-   * If set, then this number was used for verifiying, but is already in our database for other user.
+   * If set, then this number was used for verifying, but is already in our database for other user.
    */
   birthNumberAlreadyExists?: string
   /**
-   * If set, then this number was used for verifiying, but is already in our database for other user.
+   * If set, then this number was used for verifying, but is already in our database for other user.
    */
   birthNumberIcoAlreadyExists?: string
   /**
@@ -1213,20 +1162,6 @@ export const UserVerifyStateCognitoTierEnum = {
 export type UserVerifyStateCognitoTierEnum =
   (typeof UserVerifyStateCognitoTierEnum)[keyof typeof UserVerifyStateCognitoTierEnum]
 
-export interface ValidateEdeskForUserIdsResponseDto {
-  /**
-   * Number of users that were validated
-   */
-  validatedUsers: number
-  /**
-   * Temp debug data
-   */
-  enitites: object
-}
-export interface ValidatedUsersToPhysicalEntitiesResponseDto {
-  existingPhysicalEntitiesUpdated: number
-  newPhysicalEntitiesCreated: number
-}
 export interface VerificationDataForUser {
   /**
    * Id of the user in cognito.
@@ -1355,207 +1290,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Delete tax for user
-     * @param {RequestDeleteTaxDto} requestDeleteTaxDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerDeleteTax: async (
-      requestDeleteTaxDto: RequestDeleteTaxDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestDeleteTaxDto' is not null or undefined
-      assertParamExists('adminControllerDeleteTax', 'requestDeleteTaxDto', requestDeleteTaxDto)
-      const localVarPath = `/admin/delete-tax`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestDeleteTaxDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-     * @summary Get birth numbers of newly verified users.
-     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetNewVerifiedUsersBirthNumbers: async (
-      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestBatchNewUserBirthNumbers' is not null or undefined
-      assertParamExists(
-        'adminControllerGetNewVerifiedUsersBirthNumbers',
-        'requestBatchNewUserBirthNumbers',
-        requestBatchNewUserBirthNumbers,
-      )
-      const localVarPath = `/admin/get-verified-users-birth-numbers-batch`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestBatchNewUserBirthNumbers,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Get user data by birthnumber
-     * @summary Get user data
-     * @param {string} birthNumber userBirthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumber: async (
-      birthNumber: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'birthNumber' is not null or undefined
-      assertParamExists('adminControllerGetUserDataByBirthNumber', 'birthNumber', birthNumber)
-      const localVarPath = `/admin/userdata`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      if (birthNumber !== undefined) {
-        localVarQueryParameter['birthNumber'] = birthNumber
-      }
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Get user data by birthnumbers in batch.
-     * @summary Get user data
-     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumbersBatch: async (
-      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestBatchQueryUsersByBirthNumbersDto' is not null or undefined
-      assertParamExists(
-        'adminControllerGetUserDataByBirthNumbersBatch',
-        'requestBatchQueryUsersByBirthNumbersDto',
-        requestBatchQueryUsersByBirthNumbersDto,
-      )
-      const localVarPath = `/admin/userdata-batch`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestBatchQueryUsersByBirthNumbersDto,
-        localVarRequestOptions,
-        configuration,
-      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1699,151 +1433,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-     * @summary Validate edesk for physicalEntities
-     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidateEdeskForUserIds: async (
-      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestBodyValidateEdeskForUserIdsDto' is not null or undefined
-      assertParamExists(
-        'adminControllerValidateEdeskForUserIds',
-        'requestBodyValidateEdeskForUserIdsDto',
-        requestBodyValidateEdeskForUserIdsDto,
-      )
-      const localVarPath = `/admin/validate-edesk-by-cognito-where-first-try`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestBodyValidateEdeskForUserIdsDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary Manually update entity data against RFO (and UPVS) if possible
-     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatePhysicalEntityRfo: async (
-      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestValidatePhysicalEntityRfoDto' is not null or undefined
-      assertParamExists(
-        'adminControllerValidatePhysicalEntityRfo',
-        'requestValidatePhysicalEntityRfoDto',
-        requestValidatePhysicalEntityRfoDto,
-      )
-      const localVarPath = `/admin/validate-physical-entity-rfo`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestValidatePhysicalEntityRfoDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-     * @summary Create physicalEntity records for validated users
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatedUsersToPhysicalEntities: async (
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/admin/validated-users-to-physical-entities`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
      * @summary Manually verify user.
      * @param {string} email
@@ -1971,131 +1560,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Delete tax for user
-     * @param {RequestDeleteTaxDto} requestDeleteTaxDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerDeleteTax(
-      requestDeleteTaxDto: RequestDeleteTaxDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeleteTax(
-        requestDeleteTaxDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerDeleteTax']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-     * @summary Get birth numbers of newly verified users.
-     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerGetNewVerifiedUsersBirthNumbers(
-      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerGetNewVerifiedUsersBirthNumbers(
-          requestBatchNewUserBirthNumbers,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerGetNewVerifiedUsersBirthNumbers']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Get user data by birthnumber
-     * @summary Get user data
-     * @param {string} birthNumber userBirthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerGetUserDataByBirthNumber(
-      birthNumber: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerGetUserDataByBirthNumber(
-          birthNumber,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumber']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Get user data by birthnumbers in batch.
-     * @summary Get user data
-     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerGetUserDataByBirthNumbersBatch(
-      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerGetUserDataByBirthNumbersBatch(
-          requestBatchQueryUsersByBirthNumbersDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumbersBatch']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
      * @summary Get verification data for user.
      * @param {string} email
@@ -2168,100 +1632,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ADMINApi.adminControllerSyncCognitoToDb']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-     * @summary Validate edesk for physicalEntities
-     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerValidateEdeskForUserIds(
-      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ValidateEdeskForUserIdsResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerValidateEdeskForUserIds(
-          requestBodyValidateEdeskForUserIdsDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerValidateEdeskForUserIds']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
-     * @summary Manually update entity data against RFO (and UPVS) if possible
-     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerValidatePhysicalEntityRfo(
-      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<ResponseValidatePhysicalEntityRfoDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerValidatePhysicalEntityRfo(
-          requestValidatePhysicalEntityRfoDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerValidatePhysicalEntityRfo']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-     * @summary Create physicalEntity records for validated users
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerValidatedUsersToPhysicalEntities(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<ValidatedUsersToPhysicalEntitiesResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerValidatedUsersToPhysicalEntities(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerValidatedUsersToPhysicalEntities']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -2347,69 +1717,6 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Delete tax for user, for example when the tax is cancelled in Noris.
-     * @summary Delete tax for user
-     * @param {RequestDeleteTaxDto} requestDeleteTaxDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerDeleteTax(
-      requestDeleteTaxDto: RequestDeleteTaxDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .adminControllerDeleteTax(requestDeleteTaxDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-     * @summary Get birth numbers of newly verified users.
-     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetNewVerifiedUsersBirthNumbers(
-      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto> {
-      return localVarFp
-        .adminControllerGetNewVerifiedUsersBirthNumbers(requestBatchNewUserBirthNumbers, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Get user data by birthnumber
-     * @summary Get user data
-     * @param {string} birthNumber userBirthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumber(
-      birthNumber: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseUserByBirthNumberDto> {
-      return localVarFp
-        .adminControllerGetUserDataByBirthNumber(birthNumber, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Get user data by birthnumbers in batch.
-     * @summary Get user data
-     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerGetUserDataByBirthNumbersBatch(
-      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto> {
-      return localVarFp
-        .adminControllerGetUserDataByBirthNumbersBatch(
-          requestBatchQueryUsersByBirthNumbersDto,
-          options,
-        )
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
      * @summary Get verification data for user.
      * @param {string} email
@@ -2448,49 +1755,6 @@ export const ADMINApiFactory = function (
     adminControllerSyncCognitoToDb(options?: RawAxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
         .adminControllerSyncCognitoToDb(options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-     * @summary Validate edesk for physicalEntities
-     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidateEdeskForUserIds(
-      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ValidateEdeskForUserIdsResponseDto> {
-      return localVarFp
-        .adminControllerValidateEdeskForUserIds(requestBodyValidateEdeskForUserIdsDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary Manually update entity data against RFO (and UPVS) if possible
-     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatePhysicalEntityRfo(
-      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseValidatePhysicalEntityRfoDto> {
-      return localVarFp
-        .adminControllerValidatePhysicalEntityRfo(requestValidatePhysicalEntityRfoDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-     * @summary Create physicalEntity records for validated users
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerValidatedUsersToPhysicalEntities(
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ValidatedUsersToPhysicalEntitiesResponseDto> {
-      return localVarFp
-        .adminControllerValidatedUsersToPhysicalEntities(options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2544,73 +1808,6 @@ export class ADMINApi extends BaseAPI {
   }
 
   /**
-   * Delete tax for user, for example when the tax is cancelled in Noris.
-   * @summary Delete tax for user
-   * @param {RequestDeleteTaxDto} requestDeleteTaxDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerDeleteTax(
-    requestDeleteTaxDto: RequestDeleteTaxDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerDeleteTax(requestDeleteTaxDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
-   * @summary Get birth numbers of newly verified users.
-   * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerGetNewVerifiedUsersBirthNumbers(
-    requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerGetNewVerifiedUsersBirthNumbers(requestBatchNewUserBirthNumbers, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Get user data by birthnumber
-   * @summary Get user data
-   * @param {string} birthNumber userBirthNumber
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerGetUserDataByBirthNumber(
-    birthNumber: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerGetUserDataByBirthNumber(birthNumber, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Get user data by birthnumbers in batch.
-   * @summary Get user data
-   * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerGetUserDataByBirthNumbersBatch(
-    requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerGetUserDataByBirthNumbersBatch(
-        requestBatchQueryUsersByBirthNumbersDto,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
    * @summary Get verification data for user.
    * @param {string} email
@@ -2648,50 +1845,6 @@ export class ADMINApi extends BaseAPI {
   public adminControllerSyncCognitoToDb(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerSyncCognitoToDb(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
-   * @summary Validate edesk for physicalEntities
-   * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerValidateEdeskForUserIds(
-    requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerValidateEdeskForUserIds(requestBodyValidateEdeskForUserIdsDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Manually update entity data against RFO (and UPVS) if possible
-   * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerValidatePhysicalEntityRfo(
-    requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerValidatePhysicalEntityRfo(requestValidatePhysicalEntityRfoDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
-   * @summary Create physicalEntity records for validated users
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerValidatedUsersToPhysicalEntities(options?: RawAxiosRequestConfig) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerValidatedUsersToPhysicalEntities(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2943,6 +2096,398 @@ export class AuthApi extends BaseAPI {
 }
 
 /**
+ * BackendIntegrationAPIApi - axios parameter creator
+ */
+export const BackendIntegrationAPIApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
+     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetNewVerifiedUsersBirthNumbers: async (
+      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestBatchNewUserBirthNumbers' is not null or undefined
+      assertParamExists(
+        'integrationControllerGetNewVerifiedUsersBirthNumbers',
+        'requestBatchNewUserBirthNumbers',
+        requestBatchNewUserBirthNumbers,
+      )
+      const localVarPath = `/integration/get-verified-users-birth-numbers-batch`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestBatchNewUserBirthNumbers,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Get user data by birthnumber
+     * @summary Get user data
+     * @param {string} birthNumber userBirthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumber: async (
+      birthNumber: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'birthNumber' is not null or undefined
+      assertParamExists('integrationControllerGetUserDataByBirthNumber', 'birthNumber', birthNumber)
+      const localVarPath = `/integration/userdata`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      if (birthNumber !== undefined) {
+        localVarQueryParameter['birthNumber'] = birthNumber
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumbersBatch: async (
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestBatchQueryUsersByBirthNumbersDto' is not null or undefined
+      assertParamExists(
+        'integrationControllerGetUserDataByBirthNumbersBatch',
+        'requestBatchQueryUsersByBirthNumbersDto',
+        requestBatchQueryUsersByBirthNumbersDto,
+      )
+      const localVarPath = `/integration/userdata-batch`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestBatchQueryUsersByBirthNumbersDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * BackendIntegrationAPIApi - functional programming interface
+ */
+export const BackendIntegrationAPIApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = BackendIntegrationAPIApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
+     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async integrationControllerGetNewVerifiedUsersBirthNumbers(
+      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.integrationControllerGetNewVerifiedUsersBirthNumbers(
+          requestBatchNewUserBirthNumbers,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'BackendIntegrationAPIApi.integrationControllerGetNewVerifiedUsersBirthNumbers'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Get user data by birthnumber
+     * @summary Get user data
+     * @param {string} birthNumber userBirthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async integrationControllerGetUserDataByBirthNumber(
+      birthNumber: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.integrationControllerGetUserDataByBirthNumber(
+          birthNumber,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'BackendIntegrationAPIApi.integrationControllerGetUserDataByBirthNumber'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async integrationControllerGetUserDataByBirthNumbersBatch(
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.integrationControllerGetUserDataByBirthNumbersBatch(
+          requestBatchQueryUsersByBirthNumbersDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'BackendIntegrationAPIApi.integrationControllerGetUserDataByBirthNumbersBatch'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * BackendIntegrationAPIApi - factory interface
+ */
+export const BackendIntegrationAPIApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = BackendIntegrationAPIApiFp(configuration)
+  return {
+    /**
+     * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+     * @summary Get birth numbers of newly verified users.
+     * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetNewVerifiedUsersBirthNumbers(
+      requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+      return localVarFp
+        .integrationControllerGetNewVerifiedUsersBirthNumbers(
+          requestBatchNewUserBirthNumbers,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Get user data by birthnumber
+     * @summary Get user data
+     * @param {string} birthNumber userBirthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumber(
+      birthNumber: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseUserByBirthNumberDto> {
+      return localVarFp
+        .integrationControllerGetUserDataByBirthNumber(birthNumber, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    integrationControllerGetUserDataByBirthNumbersBatch(
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto> {
+      return localVarFp
+        .integrationControllerGetUserDataByBirthNumbersBatch(
+          requestBatchQueryUsersByBirthNumbersDto,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * BackendIntegrationAPIApi - object-oriented interface
+ */
+export class BackendIntegrationAPIApi extends BaseAPI {
+  /**
+   * Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.
+   * @summary Get birth numbers of newly verified users.
+   * @param {RequestBatchNewUserBirthNumbers} requestBatchNewUserBirthNumbers
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public integrationControllerGetNewVerifiedUsersBirthNumbers(
+    requestBatchNewUserBirthNumbers: RequestBatchNewUserBirthNumbers,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return BackendIntegrationAPIApiFp(this.configuration)
+      .integrationControllerGetNewVerifiedUsersBirthNumbers(
+        requestBatchNewUserBirthNumbers,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get user data by birthnumber
+   * @summary Get user data
+   * @param {string} birthNumber userBirthNumber
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public integrationControllerGetUserDataByBirthNumber(
+    birthNumber: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return BackendIntegrationAPIApiFp(this.configuration)
+      .integrationControllerGetUserDataByBirthNumber(birthNumber, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get user data by birthnumbers in batch.
+   * @summary Get user data
+   * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public integrationControllerGetUserDataByBirthNumbersBatch(
+    requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return BackendIntegrationAPIApiFp(this.configuration)
+      .integrationControllerGetUserDataByBirthNumbersBatch(
+        requestBatchQueryUsersByBirthNumbersDto,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * DPBApi - axios parameter creator
  */
 export const DPBApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -3149,22 +2694,16 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerContinueComplete: async (
-      payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
+      authRequestId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'payload' is not null or undefined
-      assertParamExists('oAuth2ControllerContinueComplete', 'payload', payload)
+      // verify required parameter 'authRequestId' is not null or undefined
+      assertParamExists('oAuth2ControllerContinueComplete', 'authRequestId', authRequestId)
       const localVarPath = `/oauth2/continue`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3177,20 +2716,8 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      if (payload !== undefined) {
-        localVarQueryParameter['payload'] = payload
-      }
-
-      if (clientId !== undefined) {
-        localVarQueryParameter['client_id'] = clientId
-      }
-
-      if (redirectUri !== undefined) {
-        localVarQueryParameter['redirect_uri'] = redirectUri
-      }
-
-      if (state !== undefined) {
-        localVarQueryParameter['state'] = state
+      if (authRequestId !== undefined) {
+        localVarQueryParameter['authRequestId'] = authRequestId
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -3207,24 +2734,18 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       }
     },
     /**
-     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * Get client information (client id and client name) by authorization request id.
      * @summary OAuth2 Client Info Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerInfo: async (
-      payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
+      authRequestId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'payload' is not null or undefined
-      assertParamExists('oAuth2ControllerInfo', 'payload', payload)
+      // verify required parameter 'authRequestId' is not null or undefined
+      assertParamExists('oAuth2ControllerInfo', 'authRequestId', authRequestId)
       const localVarPath = `/oauth2/info`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3237,20 +2758,8 @@ export const OAuth2ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      if (payload !== undefined) {
-        localVarQueryParameter['payload'] = payload
-      }
-
-      if (clientId !== undefined) {
-        localVarQueryParameter['client_id'] = clientId
-      }
-
-      if (redirectUri !== undefined) {
-        localVarQueryParameter['redirect_uri'] = redirectUri
-      }
-
-      if (state !== undefined) {
-        localVarQueryParameter['state'] = state
+      if (authRequestId !== undefined) {
+        localVarQueryParameter['authRequestId'] = authRequestId
       }
 
       localVarHeaderParameter['Accept'] = 'application/json'
@@ -3424,25 +2933,16 @@ export const OAuth2ApiFp = function (configuration?: Configuration) {
     /**
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async oAuth2ControllerContinueComplete(
-      payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerContinueComplete(
-        payload,
-        clientId,
-        redirectUri,
-        state,
+        authRequestId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3459,27 +2959,18 @@ export const OAuth2ApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * Get client information (client id and client name) by authorization request id.
      * @summary OAuth2 Client Info Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async oAuth2ControllerInfo(
-      payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientInfoResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.oAuth2ControllerInfo(
-        payload,
-        clientId,
-        redirectUri,
-        state,
+        authRequestId,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3598,43 +3089,31 @@ export const OAuth2ApiFactory = function (
     /**
      * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
      * @summary OAuth2 Continue Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerContinueComplete(
-      payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .oAuth2ControllerContinueComplete(payload, clientId, redirectUri, state, options)
+        .oAuth2ControllerContinueComplete(authRequestId, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * Get client information (name and title) by client_id from authorization request for frontend display.
+     * Get client information (client id and client name) by authorization request id.
      * @summary OAuth2 Client Info Endpoint
-     * @param {string} payload UUID of the authorization request stored in the database
-     * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-     * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-     * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+     * @param {string} authRequestId UUID of the authorization request stored in the database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     oAuth2ControllerInfo(
-      payload: string,
-      clientId?: string,
-      redirectUri?: string,
-      state?: string,
+      authRequestId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClientInfoResponseDto> {
       return localVarFp
-        .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
+        .oAuth2ControllerInfo(authRequestId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -3714,44 +3193,26 @@ export class OAuth2Api extends BaseAPI {
   /**
    * Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).
    * @summary OAuth2 Continue Endpoint
-   * @param {string} payload UUID of the authorization request stored in the database
-   * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-   * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-   * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+   * @param {string} authRequestId UUID of the authorization request stored in the database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public oAuth2ControllerContinueComplete(
-    payload: string,
-    clientId?: string,
-    redirectUri?: string,
-    state?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
+  public oAuth2ControllerContinueComplete(authRequestId: string, options?: RawAxiosRequestConfig) {
     return OAuth2ApiFp(this.configuration)
-      .oAuth2ControllerContinueComplete(payload, clientId, redirectUri, state, options)
+      .oAuth2ControllerContinueComplete(authRequestId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Get client information (name and title) by client_id from authorization request for frontend display.
+   * Get client information (client id and client name) by authorization request id.
    * @summary OAuth2 Client Info Endpoint
-   * @param {string} payload UUID of the authorization request stored in the database
-   * @param {string} [clientId] Optional client identifier. Used as fallback for error handling if the original client_id cannot be recovered from the stored authorization request
-   * @param {string} [redirectUri] Optional redirect URI. Used as fallback for error handling if the original redirect_uri cannot be recovered from the stored authorization request
-   * @param {string} [state] Optional state parameter. Used as fallback for error handling if the original state cannot be recovered from the stored authorization request. CSRF protection value per RFC 6749
+   * @param {string} authRequestId UUID of the authorization request stored in the database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public oAuth2ControllerInfo(
-    payload: string,
-    clientId?: string,
-    redirectUri?: string,
-    state?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
+  public oAuth2ControllerInfo(authRequestId: string, options?: RawAxiosRequestConfig) {
     return OAuth2ApiFp(this.configuration)
-      .oAuth2ControllerInfo(payload, clientId, redirectUri, state, options)
+      .oAuth2ControllerInfo(authRequestId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

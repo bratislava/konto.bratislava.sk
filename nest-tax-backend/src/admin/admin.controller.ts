@@ -3,7 +3,9 @@ import {
   Controller,
   HttpCode,
   Param,
+  ParseEnumPipe,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -14,6 +16,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
+import { TaxType } from '@prisma/client'
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
@@ -55,7 +58,8 @@ export class AdminController {
   async loadDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    return this.adminService.loadDataFromNoris(data)
+    const { taxType, year, birthNumbers } = data
+    return this.adminService.loadDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)
@@ -73,7 +77,8 @@ export class AdminController {
   async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<{ updated: number }> {
-    return this.adminService.updateDataFromNoris(data)
+    const { taxType, year, birthNumbers } = data
+    return this.adminService.updateDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)
@@ -167,8 +172,9 @@ export class AdminController {
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
+    @Query('taxType', new ParseEnumPipe(TaxType)) taxType: TaxType,
   ): Promise<void> {
-    await this.adminService.createTestingTax(request)
+    await this.adminService.createTestingTax(request, taxType)
   }
 
   @HttpCode(200)

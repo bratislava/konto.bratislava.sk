@@ -6,34 +6,40 @@ generator client {
   binaryTargets = ["native", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model TaxPayer {
-  id                          Int               @id @default(autoincrement())
-  uuid                        String            @default(uuid()) @db.Uuid
-  createdAt                   DateTime          @default(now())
-  updatedAt                   DateTime          @default(now()) @updatedAt
+  id                          Int      @id @default(autoincrement())
+  uuid                        String   @default(uuid()) @db.Uuid
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @default(now()) @updatedAt
   birthNumber                 String // with slash
-  taxAdministratorId          Int?
-  taxAdministrator            TaxAdministrator? @relation(fields: [taxAdministratorId], references: [id])
-  permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
-  nameTxt                     String?
-  permanentResidenceStreetTxt String?
   permanentResidenceStreet    String?
   permanentResidenceZip       String?
   permanentResidenceCity      String?
-  readyToImport               Boolean           @default(false)
+  readyToImportDZN            Boolean  @default(false)
+  readyToImportKO             Boolean  @default(false)
+  lastUpdatedAtDZN            DateTime @default(now())
+  lastUpdatedAtKO             DateTime @default(now())
 
-  taxes Tax[]
+  taxes             Tax[]
+  taxAdministrators TaxPayerTaxAdministrator[]
 
   @@unique([birthNumber])
   @@unique([uuid])
-  @@index([readyToImport])
+  @@index([readyToImportDZN])
+  @@index([readyToImportKO])
+  @@index([lastUpdatedAtDZN])
+  @@index([lastUpdatedAtKO])
 }
 
 model Tax {
@@ -46,23 +52,23 @@ model Tax {
   taxPayerId                      Int
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   amount                          Int
+  order                           Int? // Will not be null because of set_tax_order() trigger
   variableSymbol                  String
   taxId                           String?
   dateCreateTax                   String?
   dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"
-  taxLand                         Int?
-  taxConstructions                Int?
-  taxFlat                         Int?
   taxPayments                     TaxPayment[]
   taxInstallments                 TaxInstallment[]
-  taxDetails                      TaxDetail[]
+  /// [TaxDetailType]
+  taxDetails                      Json
   lastCheckedPayments             DateTime             @default(now())
-  lastCheckedUpdates              DateTime             @default(now())
   deliveryMethod                  DeliveryMethodNamed? // Delivery method for the given tax.
   bloomreachUnpaidTaxReminderSent Boolean              @default(false)
+  isCancelled                     Boolean              @default(false)
 
-  @@unique([taxPayerId, year])
   @@unique([uuid])
+  @@unique([taxPayerId, year, type, order])
+  @@unique([variableSymbol])
   @@index([year, lastCheckedPayments])
 }
 
@@ -75,7 +81,6 @@ model TaxPayment {
   tax                 Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
   status              PaymentStatus     @default(NEW)
   amount              Int
-  specificSymbol      String?
   source              TaxPaymentSource?
   bloomreachEventSent Boolean
 
@@ -94,28 +99,26 @@ model TaxInstallment {
   text      String?
 }
 
-model TaxDetail {
-  id        Int               @id @default(autoincrement())
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @default(now()) @updatedAt
-  taxId     Int
-  tax       Tax               @relation(fields: [taxId], references: [id], onDelete: Cascade)
-  type      TaxDetailType
-  areaType  TaxDetailareaType
-  area      String?
-  base      Int
-  amount    Int
-}
-
 model TaxAdministrator {
-  id          Int        @id @default(autoincrement())
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now()) @updatedAt
+  id          Int                        @id @default(autoincrement())
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @default(now()) @updatedAt
   externalId  String
   name        String
   phoneNumber String
   email       String
-  TaxPayer    TaxPayer[]
+  taxPayers   TaxPayerTaxAdministrator[]
+}
+
+model TaxPayerTaxAdministrator {
+  taxPayerId         Int
+  taxPayer           TaxPayer         @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
+  taxAdministratorId Int
+  taxAdministrator   TaxAdministrator @relation(fields: [taxAdministratorId], references: [id], onDelete: Cascade)
+  taxType            TaxType
+
+  @@id([taxPayerId, taxAdministratorId, taxType])
+  @@unique([taxPayerId, taxType])
 }
 
 model CsvFile {
@@ -134,35 +137,12 @@ model Config {
   updatedAt  DateTime @default(now()) @updatedAt
 }
 
-enum TaxDetailType {
-  APARTMENT
-  CONSTRUCTION
-  GROUND
-}
-
 enum TaxPaymentSource {
   CARD
   QRCODE
   BANK_ACCOUNT
   POST
   CASH
-}
-
-enum TaxDetailareaType {
-  NONRESIDENTIAL
-  RESIDENTIAL
-  A
-  B
-  C
-  D
-  E
-  F
-  G
-  H
-  jH
-  jI
-  byt
-  nebyt
 }
 
 enum PaymentStatus {

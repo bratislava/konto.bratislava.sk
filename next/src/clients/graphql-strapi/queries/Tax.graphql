@@ -1,0 +1,17 @@
+fragment Tax on Tax {
+  accountCommunicationConsentText
+  channelChangeEffectiveNextYearText
+  channelChangeEffectiveNextYearTitle
+  feedbackLinkDzn
+  feedbackLinkKo
+}
+
+query Tax {
+  tax {
+    data {
+      attributes {
+        ...Tax
+      }
+    }
+  }
+}

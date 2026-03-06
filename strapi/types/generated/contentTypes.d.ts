@@ -579,7 +579,8 @@ export interface ApiMunicipalServiceMunicipalService extends Schema.CollectionTy
         'excavations',
         'management-communications',
         'parking',
-        'towing'
+        'towing',
+        'scooter'
       ]
     > &
       Attribute.Required
@@ -655,8 +656,9 @@ export interface ApiTaxTax extends Schema.SingleType {
     channelChangeEffectiveNextYearTitle: Attribute.String
     createdAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
+    feedbackLinkDzn: Attribute.String
+    feedbackLinkKo: Attribute.String
     paymentAlertText: Attribute.RichText
-    paymentSuccessFeedbackLink: Attribute.String
     updatedAt: Attribute.DateTime
     updatedBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
   }

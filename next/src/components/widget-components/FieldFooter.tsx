@@ -1,0 +1,41 @@
+import { DOMAttributes } from 'react'
+
+import FieldErrorMessage, {
+  FieldErrorMessageProps,
+} from '@/src/components/widget-components/FieldErrorMessage'
+import FieldHelptext from '@/src/components/widget-components/FieldHelptext'
+
+export type FieldFooterProps = FieldErrorMessageProps & {
+  helptextFooter?: string
+  helptextFooterMarkdown?: boolean
+  disabled?: boolean
+  customErrorPlace?: boolean
+  descriptionProps?: DOMAttributes<never>
+}
+
+const FieldFooter = ({
+  helptextFooter,
+  helptextFooterMarkdown,
+  descriptionProps,
+  disabled,
+  customErrorPlace,
+  errorMessage,
+  errorMessageProps,
+}: FieldFooterProps) => {
+  return (
+    <>
+      {!disabled && !customErrorPlace && (
+        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
+      )}
+      {helptextFooter && (
+        <FieldHelptext
+          helptext={helptextFooter}
+          helptextMarkdown={helptextFooterMarkdown}
+          descriptionProps={descriptionProps}
+        />
+      )}
+    </>
+  )
+}
+
+export default FieldFooter

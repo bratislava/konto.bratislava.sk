@@ -3,6 +3,7 @@ resources:
   - ./secrets/admin.secret.yml
   - ./secrets/cognito.secret.yml
   - ./secrets/sharepoint.secret.yml
+  - ./secrets/olo-smtp.secret.yml
 
 generatorOptions:
   disableNameSuffixHash: true

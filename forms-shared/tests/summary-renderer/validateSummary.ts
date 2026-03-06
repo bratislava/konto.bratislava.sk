@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from 'vitest'
+import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
 import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { FileStatusType } from '../../src/form-files/fileStatus'
 import { filterConsole } from '../../test-utils/filterConsole'
@@ -16,6 +16,10 @@ describe('validateSummary', () => {
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   describe('Simple validation', () => {

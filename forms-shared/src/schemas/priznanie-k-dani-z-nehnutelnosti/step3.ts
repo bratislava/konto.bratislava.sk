@@ -21,7 +21,7 @@ const celkovaVymeraPozemku = number(
   { type: 'integer', title: 'Celková výmera pozemku', required: true, minimum: 0 },
   {
     helptextFooter:
-      'Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}',
+      'Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15” a “16”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}',
     helptextFooterMarkdown: true,
   },
 )

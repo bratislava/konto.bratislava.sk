@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { VerificationModule } from './user-verification/verification.module'
 import { UserModule } from './user/user.module'
+import { IntegrationModule } from './integration/integration.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
 import ThrowerErrorGuard from './utils/guards/errors.guard'
 import { TaxSubservice } from './utils/subservices/tax.subservice'
@@ -15,6 +16,9 @@ import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
 import { OAuth2Module } from './oauth2/oauth2.module'
 import { DpbModule } from './dpb/dpb.module'
+import { SharedModule } from './utils/subservices/shared.module'
+import { PaasMpaModule } from './paas-mpa/paas-mpa.module'
+import { NorisModule } from './noris/noris.module'
 
 @Module({
   imports: [
@@ -23,12 +27,17 @@ import { DpbModule } from './dpb/dpb.module'
     UserModule,
     VerificationModule,
     AdminModule,
+    IntegrationModule,
+    SharedModule,
     ScheduleModule.forRoot(),
+    SharedModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule,
     TasksModule,
     OAuth2Module,
     DpbModule,
+    PaasMpaModule,
+    NorisModule,
   ],
   controllers: [AppController],
   providers: [TaxSubservice, ThrowerErrorGuard],

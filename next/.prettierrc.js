@@ -1,10 +1,10 @@
 module.exports = {
-  plugins: ['prettier-plugin-tailwindcss'],
   trailingComma: 'all',
   tabWidth: 2,
   semi: false,
   singleQuote: true,
   printWidth: 100,
+  plugins: ['prettier-plugin-tailwindcss'],
   tailwindFunctions: ['clsx', 'cn'],
-  tailwindStylesheet: './pages/index.css',
+  tailwindStylesheet: './src/pages/index.css',
 }

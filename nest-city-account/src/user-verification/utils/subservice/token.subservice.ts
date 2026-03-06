@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import { v1 as uuidv1 } from 'uuid'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
 
@@ -10,11 +9,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export default class TokenSubservice {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private configService: ConfigService) {
-    this.logger = new LineLoggerSubservice('TokenSubservice')
-  }
+  constructor(private configService: ConfigService) {}
 
   createUserJwtToken(oboToken: string): string {
     const payload = {

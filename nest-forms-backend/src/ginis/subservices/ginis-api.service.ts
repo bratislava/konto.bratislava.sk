@@ -355,13 +355,19 @@ export default class GinisAPIService {
   }
 
   async createContact(params: GinContactParams): Promise<string> {
+    let { lastName } = params
+    if (!lastName && params.type === GinContactType.SELF_EMPLOYED_ENTITY) {
+      // self-employed entity has mandatory last name in ginis, but we don't keep it separately in city account
+      lastName = params.name?.slice(0, 100)
+    }
+
     const data = await this.ginis.gin.editEsu({
       'Uroven-pristupu': GinContactDatabase.CITY_ACCOUNT,
       'Typ-esu': params.type,
       'E-mail': params.email,
       'Id-dat-schranky': params.uri,
       Jmeno: params.firstName,
-      Prijmeni: params.lastName,
+      Prijmeni: lastName,
       'Rodne-cislo': params.birthNumber?.replace('/', ''),
       'Obchodni-jmeno': params.name,
       Ico: params.ico,

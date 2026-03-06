@@ -8,10 +8,10 @@ import { TaxModule } from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { GpWebpaySubservice } from '../utils/subservices/gpwebpay.subservice'
 import { UtilsModule } from '../utils-module/utils.module'
 import { PaymentController } from './payment.controller'
 import { PaymentService } from './payment.service'
+import { GpWebpaySubservice } from './subservices/gpwebpay.subservice'
 
 @Module({
   imports: [
@@ -24,8 +24,8 @@ import { PaymentService } from './payment.service'
   ],
   providers: [
     PaymentService,
-    CognitoSubservice,
     GpWebpaySubservice,
+    CognitoSubservice,
     ThrowerErrorGuard,
     CityAccountSubservice,
   ],

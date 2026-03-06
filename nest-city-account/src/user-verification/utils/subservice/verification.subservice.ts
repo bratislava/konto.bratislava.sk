@@ -7,7 +7,7 @@ import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
 } from '../../dtos/requests.verification.dto'
-import { DatabaseSubserviceUser } from './database.subservice'
+import { VerificationDataSubservice } from './verification-data.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
@@ -21,7 +21,7 @@ export class VerificationSubservice {
 
   constructor(
     private magproxyService: MagproxyService,
-    private databaseSubservice: DatabaseSubserviceUser,
+    private verificationDataSubservice: VerificationDataSubservice,
     private physicalEntityService: PhysicalEntityService
   ) {
     this.logger = new LineLoggerSubservice(VerificationSubservice.name)
@@ -100,6 +100,70 @@ export class VerificationSubservice {
   }
 
   /**
+   * Validates the first and last name of a person against a provided RFO identity data structure.
+   *
+   * @param {RfoIdentityListElement} rfoData - The RFO identity data containing first and last names to compare against.
+   * @param {string | undefined} firstName - The first name of the person to validate.
+   * @param {string | undefined} lastName - The last name of the person to validate.
+   * @return {boolean} Returns true if the provided first and last name match entries in the RFO identity data, otherwise false.
+   */
+  private validatePersonName(
+    rfoData: RfoIdentityListElement,
+    firstName: string | undefined,
+    lastName: string | undefined
+  ) {
+    if (!firstName || !lastName) {
+      return false
+    }
+
+    const stripDiacritics = (str: string): string =>
+      str.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+
+    const normalize = (str: string): string => stripDiacritics(str).trim().toLowerCase()
+
+    const splitToPartsAndNormalize = (str: string): string[] =>
+      normalize(str)
+        .split(/\s+/g) // handles multiple spaces + leading/trailing spaces after trim()
+        .filter(Boolean)
+
+    const normalizedFirstNames = splitToPartsAndNormalize(firstName)
+    const normalizedLastNames = splitToPartsAndNormalize(lastName)
+
+    if (normalizedFirstNames.length === 0 || normalizedLastNames.length === 0) {
+      return false
+    }
+
+    const rfoFirstNames = (rfoData.menaOsoby ?? [])
+      .map((x) => x.meno)
+      .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalize)
+
+    const rfoLastNames = (rfoData.priezviskaOsoby ?? [])
+      .map((x) => x.meno)
+      .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalize)
+
+    if (rfoFirstNames.length === 0 || rfoLastNames.length === 0) {
+      return false
+    }
+
+    const inputFirstSet = new Set(normalizedFirstNames)
+    const inputLastSet = new Set(normalizedLastNames)
+    const rfoFirstSet = new Set(rfoFirstNames)
+    const rfoLastSet = new Set(rfoLastNames)
+
+    const firstOk =
+      [...inputFirstSet].every((name) => rfoFirstSet.has(name)) &&
+      [...rfoFirstSet].every((name) => inputFirstSet.has(name))
+
+    const lastOk =
+      [...inputLastSet].every((name) => rfoLastSet.has(name)) &&
+      [...rfoLastSet].every((name) => inputLastSet.has(name))
+
+    return firstOk && lastOk
+  }
+
+  /**
    * Verifies the identity card of a user.
    *
    * The function attempts to verify the user's identity by comparing RFO data from magproxy with the provided data.
@@ -121,7 +185,11 @@ export class VerificationSubservice {
     }
 
     // request RFO data and handle exceptions that may be resolved later
-    const rfoData = await this.physicalEntityService.createFromBirthNumber(data.birthNumber)
+    const rfoData = await this.magproxyService.rfoBirthNumberList(data.birthNumber)
+
+    // create physical entity for the birth number.
+    // UPVS identity and edesk status will be preferentially updated in the UPVS queue cron job
+    await this.physicalEntityService.getOrCreateEmptyFromBirthNumber(data.birthNumber)
 
     if (!rfoData.success) {
       return rfoData
@@ -145,16 +213,25 @@ export class VerificationSubservice {
         continue
       }
 
+      // For physical person, require Cognito given_name + family_name match to RFO
+      if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
+        this.logger.warn('We refused validation based on names not matching.', {
+          cognitoID: user.sub,
+        })
+        continue
+      }
+
       const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
       let databaseResult: VerificationReturnType
       if (ico) {
-        databaseResult = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-          user,
-          ico,
-          birthNumber
-        )
+        databaseResult =
+          await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+            user,
+            ico,
+            birthNumber
+          )
       } else {
-        databaseResult = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+        databaseResult = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
           user,
           rfoDataSingle.ifo || null,
           birthNumber,
@@ -167,7 +244,7 @@ export class VerificationSubservice {
       }
 
       if (!ico) {
-        const dbUser = await this.databaseSubservice.findUserByEmailOrExternalId(
+        const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
           user.email,
           user.idUser
         )
@@ -189,6 +266,14 @@ export class VerificationSubservice {
       return rfoDataDcom
     }
 
+    // For physical person, require Cognito given_name + family_name match to RFO
+    if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
+      this.logger.warn('We refused validation based on names not matching.', {
+        cognitoID: user.sub,
+      })
+      return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
+    }
+
     if (!rfoDataDcom.data?.rodneCislo) {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
@@ -202,13 +287,14 @@ export class VerificationSubservice {
     const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
     let dbResultDcom: { success: boolean }
     if (ico) {
-      dbResultDcom = await this.databaseSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-        user,
-        ico,
-        birthNumber
-      )
+      dbResultDcom =
+        await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+          user,
+          ico,
+          birthNumber
+        )
     } else {
-      dbResultDcom = await this.databaseSubservice.checkAndCreateUserIfoAndBirthNumber(
+      dbResultDcom = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
         user,
         rfoDataDcom.data.ifo || null,
         birthNumber,

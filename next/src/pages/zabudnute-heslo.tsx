@@ -1,0 +1,152 @@
+import { confirmResetPassword, resetPassword } from 'aws-amplify/auth'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { useRef, useState } from 'react'
+
+import ForgottenPasswordForm from '@/src/components/auth-forms/ForgottenPasswordForm'
+import NewPasswordForm from '@/src/components/auth-forms/NewPasswordForm'
+import AccountContainer from '@/src/components/layouts/AccountContainer'
+import PageLayout from '@/src/components/layouts/PageLayout'
+import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
+import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
+import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
+import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
+import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
+import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
+import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
+import logger from '@/src/frontend/utils/logger'
+import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
+import { AuthPageCommonProps } from '@/src/pages/prihlasenie'
+import { ROUTES } from '@/src/utils/routes'
+
+enum ForgotPasswordStatus {
+  INIT = 'INIT',
+  NEW_PASSWORD_REQUIRED = 'NEW_PASSWORD_REQUIRED',
+  NEW_PASSWORD_SUCCESS = 'NEW_PASSWORD_SUCCESS',
+}
+
+export const getServerSideProps = amplifyGetServerSideProps(
+  async ({ context }) => {
+    const clientInfo = await fetchClientInfo(context.query)
+
+    return {
+      props: {
+        clientInfo,
+        ...(await slovakServerSideTranslations()),
+      },
+    }
+  },
+  { requiresSignOut: true, redirectQueryParam: true },
+)
+
+const ForgottenPasswordPage = ({ clientInfo }: AuthPageCommonProps) => {
+  const [lastEmail, setLastEmail] = useState('')
+  const [forgotPasswordError, setForgotPasswordError] = useState<Error | null>(null)
+  const [forgotPasswordStatus, setForgotPasswordStatus] = useState<ForgotPasswordStatus>(
+    ForgotPasswordStatus.INIT,
+  )
+  const { t } = useTranslation('account')
+  const router = useRouter()
+  const { getRouteWithRedirect } = useQueryParamRedirect()
+  const accountContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleErrorChange = (error: Error | null) => {
+    setForgotPasswordError(error)
+
+    if (error) {
+      accountContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  const onConfirm = async () => {
+    await router
+      .push(getRouteWithRedirect(ROUTES.LOGIN))
+      .catch((error) => logger.error('Failed redirect', error))
+  }
+
+  const forgotPassword = async (email: string) => {
+    try {
+      logger.info(`[AUTH] Attempting to request password reset for email ${email}`)
+      setLastEmail(email)
+      const result = await resetPassword({ username: email })
+      if (result.nextStep.resetPasswordStep === 'CONFIRM_RESET_PASSWORD_WITH_CODE') {
+        logger.info(`[AUTH] Successfully requested password reset for email ${email}`)
+        setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
+      } else {
+        throw new Error(
+          `Unknown "nextStep" after trying to request password reset: ${JSON.stringify(result.nextStep)}`,
+        )
+      }
+    } catch (error) {
+      logger.error(`[AUTH] Failed to request password reset for email ${email}`, error)
+      if (isError(error)) {
+        handleErrorChange(error)
+      } else {
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
+      }
+    }
+  }
+
+  const forgotPasswordSubmit = async (confirmationCode: string, newPassword: string) => {
+    try {
+      logger.info(`[AUTH] Attempting to reset password for email ${lastEmail}`)
+      await confirmResetPassword({
+        username: lastEmail,
+        confirmationCode,
+        newPassword,
+      })
+      logger.info(`[AUTH] Successfully reset password for email ${lastEmail}`)
+      setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_SUCCESS)
+    } catch (error) {
+      logger.error(`[AUTH] Failed to reset password for email ${lastEmail}`, error)
+      if (isError(error)) {
+        handleErrorChange(error)
+      } else {
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
+      }
+    }
+  }
+
+  return (
+    <AmplifyClientOAuthProvider clientInfo={clientInfo}>
+      <PageLayout
+        variant="auth"
+        hideBackButton={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
+      >
+        <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
+          {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
+            <NewPasswordForm
+              onSubmit={(verificationCode, newPassword) =>
+                forgotPasswordSubmit(verificationCode, newPassword)
+              }
+              onResend={() => forgotPassword(lastEmail)}
+              error={forgotPasswordError}
+              lastEmail={lastEmail}
+            />
+          ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
+            <>
+              <ForgottenPasswordForm
+                onSubmit={(email: string) => forgotPassword(email)}
+                error={forgotPasswordError}
+                lastEmail={lastEmail}
+                setLastEmail={setLastEmail}
+              />
+              <HorizontalDivider />
+              <AccountLink variant="login" />
+            </>
+          ) : (
+            <AccountSuccessAlert
+              title={t('auth.forgotten_password_success_title')}
+              confirmLabel={t('auth.forgotten_password_success_go_to_login')}
+              onConfirm={onConfirm}
+            />
+          )}
+        </AccountContainer>
+      </PageLayout>
+    </AmplifyClientOAuthProvider>
+  )
+}
+
+export default SsrAuthProviderHOC(ForgottenPasswordPage)

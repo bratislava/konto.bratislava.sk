@@ -8,6 +8,7 @@ import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
 import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtractor'
+import { GenericObjectType } from '@rjsf/utils'
 
 export default schema(
   {
@@ -163,4 +164,10 @@ export const ziadostOStanoviskoKProjektovejDokumentaciiExtractName: SchemalessFo
       // Unreachable code, provided for type-safety to return `string` as required.
       throw new Error('Failed to extract the name.')
     },
+  }
+
+export const ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject: SchemalessFormDataExtractor<GenericObjectType> =
+  {
+    type: 'schemaless',
+    extractFn: () => 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
   }

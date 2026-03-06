@@ -872,6 +872,189 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
 }
 `;
 
+exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > default form state should match snapshot 1`] = `
+{
+  "podnet": {
+    "fotografia": [],
+    "typPodnetu": "nespravneZaparkovana",
+  },
+}
+`;
+
+exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "podnet": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "typPodnetu": {
+                    "const": "ine",
+                  },
+                },
+                "required": [
+                  "typPodnetu",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "specifikaciaPodnetu": {
+                    "baOrder": 2,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Napr. navrhujem úpravu miesta parkovania.",
+                      },
+                      "ui:widget": "TextArea",
+                    },
+                    "title": "Špecifikácia podnetu",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "specifikaciaPodnetu",
+                ],
+                "type": "object",
+              },
+            },
+          ],
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "podnet",
+            },
+          },
+          "properties": {
+            "fotografia": {
+              "baOrder": 6,
+              "baUiSchema": {
+                "ui:options": {
+                  "accept": ".jpg,.jpeg,.png",
+                  "helptext": "Snažte sa odfotiť kolobežku tak, aby bolo vidieť aj širšie okolie.",
+                  "type": "dragAndDrop",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "minItems": 1,
+              "title": "Fotografia podnetu",
+              "type": "array",
+            },
+            "identifikacnyKod": {
+              "baOrder": 5,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Nachádza sa v strede riadidiel pod QR kódom.",
+                  "inputType": "text",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Identifikačný kód kolobežky",
+              "type": "string",
+            },
+            "miestoPodnetu": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Uveďte podrobný popis bezprostredného okolia, blízkych objektov alebo dominánt, prípadne uveďte ulicu a číslo.",
+                },
+                "ui:widget": "TextArea",
+              },
+              "title": "Miesto podnetu",
+              "type": "string",
+            },
+            "poskytovatel": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Bolt",
+                      "value": "bolt",
+                    },
+                    {
+                      "label": "Dott",
+                      "value": "dott",
+                    },
+                    {
+                      "label": "Svišť",
+                      "value": "svist",
+                    },
+                  ],
+                  "orientations": "column",
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "enum": [
+                "bolt",
+                "dott",
+                "svist",
+              ],
+              "title": "Poskytovateľ kolobežky",
+              "type": "string",
+            },
+            "typPodnetu": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Nesprávne zaparkovaná kolobežka",
+                      "value": "nespravneZaparkovana",
+                    },
+                    {
+                      "label": "Kolobežka neschopná prevádzky",
+                      "value": "neschopnaPrevadzky",
+                    },
+                    {
+                      "label": "Iné",
+                      "value": "ine",
+                    },
+                  ],
+                  "orientations": "column",
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "default": "nespravneZaparkovana",
+              "enum": [
+                "nespravneZaparkovana",
+                "neschopnaPrevadzky",
+                "ine",
+              ],
+              "title": "Typ podnetu",
+              "type": "string",
+            },
+          },
+          "required": [
+            "typPodnetu",
+            "poskytovatel",
+            "miestoPodnetu",
+            "fotografia",
+          ],
+          "title": "Podnet",
+          "type": "object",
+        },
+      },
+      "required": [
+        "podnet",
+      ],
+      "type": "object",
+    },
+  ],
+  "title": "Nahlásenie podnetu k elektrickým kolobežkám",
+}
+`;
+
 exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > default form state should match snapshot 1`] = `
 {
   "sluzba": {},
@@ -49050,7 +49233,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                       "baOrder": 7,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15” a “16”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
                                           "helptextFooterMarkdown": true,
                                         },
                                         "ui:widget": "Number",
@@ -63884,7 +64067,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                       "baOrder": 7,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                                          "helptextFooter": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15” a “16”. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
                                           "helptextFooterMarkdown": true,
                                         },
                                         "ui:widget": "Number",
@@ -75463,6 +75646,78 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
     },
   ],
   "title": "Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia",
+}
+`;
+
+exports[`Form definitions > webhook-showcase > default form state should match snapshot 1`] = `
+{
+  "inputShowcase": {
+    "buttonUpload": [],
+  },
+}
+`;
+
+exports[`Form definitions > webhook-showcase > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "inputShowcase": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "input-showcase",
+            },
+          },
+          "properties": {
+            "basicText": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Basic text input example",
+                  "inputType": "text",
+                  "placeholder": "Enter text here",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Basic Text Input",
+              "type": "string",
+            },
+            "buttonUpload": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Click button to upload files",
+                  "type": "button",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "minItems": 1,
+              "title": "Button Upload",
+              "type": "array",
+            },
+          },
+          "required": [
+            "basicText",
+            "buttonUpload",
+          ],
+          "title": "Input Showcase",
+          "type": "object",
+        },
+      },
+      "required": [
+        "inputShowcase",
+      ],
+      "type": "object",
+    },
+  ],
+  "title": "Webhook showcase",
 }
 `;
 

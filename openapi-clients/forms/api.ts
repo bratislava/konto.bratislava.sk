@@ -28,6 +28,7 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
@@ -696,6 +697,28 @@ export interface ValidateFormRegistrationsResultDto {
    * Valid forms
    */
   valid: Array<ValidateFormRegistrationDto>
+}
+export interface WebhookDto {
+  /**
+   * UUID of the form
+   */
+  formId: string
+  /**
+   * Slug of the form
+   */
+  slug: string
+  /**
+   * JSON version of the form
+   */
+  jsonVersion: string
+  /**
+   * Data of the form
+   */
+  data: object
+  /**
+   * Files of the form
+   */
+  files: object
 }
 export interface XmlToJsonRequestDto {
   /**
@@ -4267,6 +4290,142 @@ export class StatusesApi extends BaseAPI {
   public statusControllerStatus(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerStatus(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * WebhookApi - axios parameter creator
+ */
+export const WebhookApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Endpoint to receive webhook data and log it
+     * @summary Receive webhook data
+     * @param {WebhookDto} webhookDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    webhookControllerReceiveWebhook: async (
+      webhookDto: WebhookDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'webhookDto' is not null or undefined
+      assertParamExists('webhookControllerReceiveWebhook', 'webhookDto', webhookDto)
+      const localVarPath = `/webhook`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        webhookDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * WebhookApi - functional programming interface
+ */
+export const WebhookApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = WebhookApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Endpoint to receive webhook data and log it
+     * @summary Receive webhook data
+     * @param {WebhookDto} webhookDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async webhookControllerReceiveWebhook(
+      webhookDto: WebhookDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.webhookControllerReceiveWebhook(
+        webhookDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['WebhookApi.webhookControllerReceiveWebhook']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * WebhookApi - factory interface
+ */
+export const WebhookApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = WebhookApiFp(configuration)
+  return {
+    /**
+     * Endpoint to receive webhook data and log it
+     * @summary Receive webhook data
+     * @param {WebhookDto} webhookDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    webhookControllerReceiveWebhook(
+      webhookDto: WebhookDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .webhookControllerReceiveWebhook(webhookDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * WebhookApi - object-oriented interface
+ */
+export class WebhookApi extends BaseAPI {
+  /**
+   * Endpoint to receive webhook data and log it
+   * @summary Receive webhook data
+   * @param {WebhookDto} webhookDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public webhookControllerReceiveWebhook(webhookDto: WebhookDto, options?: RawAxiosRequestConfig) {
+    return WebhookApiFp(this.configuration)
+      .webhookControllerReceiveWebhook(webhookDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

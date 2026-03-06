@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
@@ -66,17 +67,22 @@ export default class TaxImportHelperSubservice {
     })
   }
 
-  async clearReadyToImport(birthNumbers: string[]): Promise<void> {
+  async clearReadyToImport(
+    taxType: TaxType,
+    birthNumbers: string[],
+  ): Promise<void> {
     if (birthNumbers.length === 0) {
       return
     }
+
+    const { readyToImportDatabaseFieldName } = getTaxDefinitionByType(taxType)
 
     await this.prismaService.taxPayer.updateMany({
       where: {
         birthNumber: { in: birthNumbers },
       },
       data: {
-        readyToImport: false,
+        [readyToImportDatabaseFieldName]: false,
       },
     })
   }
@@ -90,66 +96,95 @@ export default class TaxImportHelperSubservice {
 
   /**
    * Get prioritized birth numbers for tax import with metadata
+   * @param taxType - Type of tax
    * @param year - The tax year
-   * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by updatedAt
+   * @param isImportPhase - If true, prioritizes readyToImport=1; if false, orders only by lastUpdatedAtDatabaseFieldName
    * @returns {Object} - The prioritized birth numbers and newly created birth numbers (imported immediately), these sets are disjoint
    */
   async getPrioritizedBirthNumbersWithMetadata(
+    taxType: TaxType,
     year: number,
     isImportPhase: boolean = true,
   ): Promise<{
     birthNumbers: string[]
     newlyCreated: string[]
   }> {
-    const prioritized = await this.prismaService.$queryRaw<
-      { birthNumber: string; isNewlyCreated: boolean }[]
+    // Determine which readyToImport field to use
+    const { readyToImportDatabaseFieldName, lastUpdatedAtDatabaseFieldName } =
+      getTaxDefinitionByType(taxType)
+
+    // Get users that have no taxes loaded and were never updated as a priority
+    const newlyCreatedTaxPayers = await this.prismaService.$queryRaw<
+      { birthNumber: string }[]
     >`
-      SELECT tp."birthNumber", (tp."createdAt" = tp."updatedAt") as "isNewlyCreated"
+      SELECT tp."birthNumber"
+      FROM "TaxPayer" tp
+      WHERE NOT EXISTS (
+        SELECT 1 FROM "Tax" t WHERE t."taxPayerId" = tp."id"
+      )
+        AND tp."createdAt" = tp."updatedAt"
+      ORDER BY tp."updatedAt" ASC
+      LIMIT ${Math.floor(this.UPLOAD_BIRTHNUMBERS_BATCH / 2)}
+    `
+
+    const remainingCapacity =
+      this.UPLOAD_BIRTHNUMBERS_BATCH - newlyCreatedTaxPayers.length * 2
+
+    if (remainingCapacity === 0) {
+      return {
+        newlyCreated: newlyCreatedTaxPayers.map((u) => u.birthNumber),
+        birthNumbers: [],
+      }
+    }
+
+    // Then get existing users for the remaining capacity.
+    // In the preparation phase ignore already prepared
+    // In the import phase prioritize marked as ready to import
+    const existingTaxPayers = await this.prismaService.$queryRaw<
+      { birthNumber: string }[]
+    >`
+      SELECT tp."birthNumber"
       FROM "TaxPayer" tp
       WHERE NOT EXISTS (
         SELECT 1
         FROM "Tax" t
-        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year}
+        WHERE t."taxPayerId" = tp."id" AND t."year" = ${year} AND t."type" = ${taxType}::"TaxType"
       )
+      AND NOT tp."createdAt" = tp."updatedAt"
+      ${isImportPhase ? Prisma.empty : Prisma.sql`AND tp."${Prisma.raw(readyToImportDatabaseFieldName)}" = FALSE`}
       ORDER BY 
-        (tp."createdAt" = tp."updatedAt") DESC,
-        ${isImportPhase ? Prisma.sql`tp."readyToImport"::int` : Prisma.sql`0::int`} DESC,
-        tp."updatedAt" ASC
-      LIMIT ${this.UPLOAD_BIRTHNUMBERS_BATCH}
+        ${isImportPhase ? Prisma.sql`tp."${Prisma.raw(readyToImportDatabaseFieldName)}"::INT DESC,` : Prisma.empty}
+        tp."${Prisma.raw(lastUpdatedAtDatabaseFieldName)}" ASC
+      LIMIT ${remainingCapacity}
     `
 
-    const birthNumbers: string[] = []
-    const newlyCreated: string[] = []
-    prioritized.forEach((p) => {
-      if (p.isNewlyCreated) {
-        newlyCreated.push(p.birthNumber)
-      } else {
-        birthNumbers.push(p.birthNumber)
-      }
-    })
-
     return {
-      birthNumbers,
-      newlyCreated,
+      birthNumbers: existingTaxPayers.map((tp) => tp.birthNumber),
+      newlyCreated: newlyCreatedTaxPayers.map((tp) => tp.birthNumber),
     }
   }
 
-  async importTaxes(birthNumbers: string[], year: number): Promise<void> {
+  async importTaxes(
+    taxType: TaxType,
+    birthNumbers: string[],
+    year: number,
+  ): Promise<void> {
     if (birthNumbers.length === 0) {
       return
     }
 
     const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+        taxType,
         year,
         birthNumbers,
-        options: {
+        {
           prepareOnly: false,
         },
-      })
+      )
 
     // Clear readyToImport flag for successfully imported birth numbers
-    await this.clearReadyToImport(result.birthNumbers)
+    await this.clearReadyToImport(taxType, result.birthNumbers)
 
     // Move only birth numbers not found in Noris to the end of the queue
     const foundInNoris = result.foundInNoris || []
@@ -157,12 +192,13 @@ export default class TaxImportHelperSubservice {
       (bn) => !foundInNoris.includes(bn),
     )
     if (notFoundInNoris.length > 0) {
+      const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
       await this.prismaService.taxPayer.updateMany({
         where: {
           birthNumber: { in: notFoundInNoris },
         },
         data: {
-          updatedAt: new Date(),
+          [lastUpdatedAtDatabaseFieldName]: new Date(),
         },
       })
     }
@@ -172,19 +208,26 @@ export default class TaxImportHelperSubservice {
     )
   }
 
-  async prepareTaxes(birthNumbers: string[], year: number): Promise<void> {
+  async prepareTaxes(
+    taxType: TaxType,
+    birthNumbers: string[],
+    year: number,
+  ): Promise<void> {
     if (birthNumbers.length === 0) {
       return
     }
 
+    const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
+
     const result =
-      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear({
+      await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
+        taxType,
         year,
         birthNumbers,
-        options: {
+        {
           prepareOnly: true,
         },
-      })
+      )
 
     // Move birth numbers to the end of the queue
     if (birthNumbers.length > 0) {
@@ -193,7 +236,7 @@ export default class TaxImportHelperSubservice {
           birthNumber: { in: birthNumbers },
         },
         data: {
-          updatedAt: new Date(),
+          [lastUpdatedAtDatabaseFieldName]: new Date(),
         },
       })
     }

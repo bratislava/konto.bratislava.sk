@@ -19,7 +19,7 @@ export class NorisConnectionSubservice {
     ) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Missing one of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
+        'Missing one of noris envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
       )
     }
   }
@@ -81,6 +81,7 @@ export class NorisConnectionSubservice {
    * Creates a connection, executes the function, and ensures proper cleanup.
    *
    * @param operation - Function to execute within the connection context
+   * @param errorHandler - Error handler for any errors that occur during the operation
    * @param useOptimized - Whether to use optimized connection settings
    * @returns Result of the operation
    */

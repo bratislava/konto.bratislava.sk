@@ -7,6 +7,7 @@ import { schema } from '../../generator/functions/schema'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
+import { GenericObjectType } from '@rjsf/utils'
 
 export default schema(
   {
@@ -106,4 +107,10 @@ export const objednavkaInformativnehoZakresuSietiExtractName: SchemalessFormData
       // Unreachable code, provided for type-safety to return `string` as required.
       throw new Error('Failed to extract the name.')
     },
+  }
+
+export const objednavkaInformativnehoZakresuSietiExtractTechnicalSubject: SchemalessFormDataExtractor<GenericObjectType> =
+  {
+    type: 'schemaless',
+    extractFn: () => 'tsb-objednavka-informativneho-zakresu-sieti',
   }

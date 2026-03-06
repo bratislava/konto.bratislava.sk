@@ -1,30 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, Prisma } from '@prisma/client'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
+import { PhysicalEntity } from '@prisma/client'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
-import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
-import {
-  UpvsCreateManyResult,
-  UpvsIdentityByUriService,
-  UpvsIdentityByUriServiceCreateManyParam,
-} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import { UpvsIdentityByUriSuccessType } from '../nases/nases.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { MagproxyService } from '../magproxy/magproxy.service'
-import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
-import { VerificationReturnType } from '../user-verification/types'
-
-// In the physicalEntity model, we're storing the data we have about physicalEntitys from magproxy or NASES. We request this data periodically (TODO) or on demand.
-
-export type UpdateFromRFOResult = {
-  physicalEntity: PhysicalEntity
-  rfoData: RfoIdentityList | null
-  upvsInput?: { uri: string; physicalEntityId: string }
-  upvsResult?: ApiIamIdentitiesIdGet200Response
-}
 
 @Injectable()
 export class PhysicalEntityService {
@@ -32,9 +13,7 @@ export class PhysicalEntityService {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly magproxyService: MagproxyService,
-    private readonly upvsIdentityByUriService: UpvsIdentityByUriService
+    private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
   }
@@ -66,9 +45,7 @@ export class PhysicalEntityService {
    * @returns {Promise<PhysicalEntity | null>} - The retrieved or created physical entity.
    *                                    Returns null if multiple entities with the same birth number exist, or if entity creation fails.
    */
-  private async getOrCreateEmptyFromBirthNumber(
-    birthNumber: string
-  ): Promise<PhysicalEntity | null> {
+  async getOrCreateEmptyFromBirthNumber(birthNumber: string): Promise<PhysicalEntity | null> {
     const entities = await this.prismaService.physicalEntity.findMany({
       where: { birthNumber },
     })
@@ -98,32 +75,8 @@ export class PhysicalEntityService {
     return entity
   }
 
-  async checkUriAndUpdateEdeskFromUpvs(
-    upvsInput: UpvsIdentityByUriServiceCreateManyParam
-  ): Promise<{
-    updatedEntities: PhysicalEntity[]
-    upvsResult: UpvsCreateManyResult
-  }> {
-    let upvsResult: UpvsCreateManyResult | null = null
-    try {
-      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
-    } catch (error) {
-      this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
-    }
-    if (!upvsResult) {
-      await this.updateFailedActiveEdeskUpdateInDatabase({
-        uri: { in: upvsInput.map((item) => item.uri) },
-      })
-      return { updatedEntities: [], upvsResult: { success: [], failed: upvsInput } }
-    }
-
-    if (upvsResult.failed.length > 0) {
-      await this.updateFailedActiveEdeskUpdateInDatabase({
-        uri: { in: upvsResult.failed.map((item) => item.uri) },
-      })
-    }
-
-    const upvsSuccessValueArray = upvsResult.success.map((item) => {
+  async updateSuccessfulActiveEdeskUpdateInDatabase(successArray: UpvsIdentityByUriSuccessType[]) {
+    const upvsSuccessValueArray = successArray.map((item) => {
       return {
         id: item.physicalEntityId ?? undefined,
         uri: item.uri,
@@ -131,172 +84,18 @@ export class PhysicalEntityService {
       }
     })
 
-    const updatedEntities: PhysicalEntity[] = await Promise.all(
+    await Promise.all(
       upvsSuccessValueArray.map(async (item) => {
         return this.update(item)
       })
     )
-
-    this.logger.log(`Successfully verified uri.`, upvsResult.success[0]?.uri)
-    return { updatedEntities, upvsResult }
   }
 
-  private parseRfoDataToUpvsInput(singleRfoRecord: RfoIdentityListElement, entity: PhysicalEntity) {
-    if (!singleRfoRecord.priezviskaOsoby) {
-      return null
-    }
-
-    // Fill additional info
-    const uriName = parseUriNameFromRfo(singleRfoRecord)
-    if (!uriName || !entity.birthNumber) {
-      return null
-    }
-
-    const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
-    const uri = `rc://sk/${processedBirthNumber}_${uriName}`
-    this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
-    return { uri, physicalEntityId: entity.id }
-  }
-
-  async createFromBirthNumber(
-    birthNumber: string
-  ): Promise<VerificationReturnType<RfoIdentityList>> {
-    // Creates PhysicalEntity record before user is verified / created. The new record does not have
-    // userID set.
-
-    // Get data from magproxyService
-    // const data = await this.magproxyService.rfoBirthNumberList(birthNumber)
-
-    const entity = await this.getOrCreateEmptyFromBirthNumber(birthNumber)
-
-    // Get rfo data
-    const rfoData = await this.magproxyService.rfoBirthNumberList(birthNumber)
-    if (!entity) {
-      return rfoData
-    }
-
-    // No data present, return
-    if (!rfoData.success || rfoData.data.length == 0) {
-      this.logger.error(`PhysicalEntity ${birthNumber} not created. No entries from magproxy.`)
-      return rfoData
-    }
-
-    // Multiple data present
-    if (rfoData.data.length > 1) {
-      this.logger.error(
-        `PhysicalEntity ${birthNumber} not created. Multiple entries from magproxy.`
-      )
-      return rfoData
-    }
-
-    const singleRfoRecord = rfoData.data[0]
-
-    const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
-
-    if (!upvsInput) {
-      return rfoData
-    }
-
-    await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
-    return rfoData
-  }
-
-  async updateFromRFO(physicalEntityId: string): Promise<UpdateFromRFOResult> {
-    // gets physicalEntity record by id, looks for existing birthnumber stored in it, creates RfoByBirthnumberRequest and parses data form it into columns
-    // this can be called on demand or scheduled / ran periodically
-    const entity = await this.prismaService.physicalEntity.findUnique({
-      where: { id: physicalEntityId },
-    })
-    if (!entity) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        `PhysicalEntity with id ${physicalEntityId} not found`
-      )
-    }
-    if (!entity.birthNumber) {
-      throw this.throwerErrorGuard.NotFoundException(
-        AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
-        AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
-      )
-    }
-
-    // const rfoData = JSON.parse(result.data.toString()) as RfoIdentityList
-    const rfoData = await this.magproxyService.rfoBirthNumberList(entity.birthNumber)
-    if (!rfoData.success || !Array.isArray(rfoData.data) || rfoData.data.length === 0) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        `Incorrect or no data returned from RFO for birthnumber ${entity.birthNumber} entityId: ${entity.id}, data: ${rfoData}`
-      )
-    }
-
-    if (rfoData.data.length > 1) {
-      this.logger.error(
-        `Found multiple RFO records for birthnumber ${entity.birthNumber} entityId: ${entity.id}`
-      )
-      return {
-        physicalEntity: entity,
-        rfoData: rfoData.data,
-      }
-    }
-
-    // TODO if we're storing other data about entity from RFO, do it here
-
-    const singleRfoRecord = rfoData.data[0]
-
-    const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
-
-    if (!upvsInput) {
-      return {
-        physicalEntity: entity,
-        rfoData: rfoData.data,
-      }
-    }
-
-    const { updatedEntities, upvsResult } = await this.checkUriAndUpdateEdeskFromUpvs([upvsInput])
-
-    const updatedPhysicalEntity = updatedEntities.find(
-      (updatedEntity) => updatedEntity.id === physicalEntityId
-    )
-    const upvsResultSingle = upvsResult.success.find(
-      (result) => result.physicalEntityId === physicalEntityId
-    )
-
-    return {
-      physicalEntity: updatedPhysicalEntity ?? entity,
-      rfoData: rfoData.data,
-      upvsInput,
-      upvsResult: upvsResultSingle,
-    }
-  }
-
-  async updateEdeskFromUpvs(where: Prisma.PhysicalEntityWhereInput): Promise<void>
-  async updateEdeskFromUpvs(entities: PhysicalEntity[]): Promise<void>
-  async updateEdeskFromUpvs(
-    whereOrEntities: Prisma.PhysicalEntityWhereInput | PhysicalEntity[]
-  ): Promise<void> {
-    let physicalEntitiesFromDb: PhysicalEntity[]
-
-    if (Array.isArray(whereOrEntities)) {
-      physicalEntitiesFromDb = whereOrEntities
-    } else {
-      physicalEntitiesFromDb = await this.prismaService.physicalEntity.findMany({
-        where: whereOrEntities,
-      })
-    }
-
-    const upvsInput: UpvsIdentityByUriServiceCreateManyParam = physicalEntitiesFromDb
-      .filter((physicalEntity) => physicalEntity.uri)
-      .map((physicalEntity) => {
-        return { physicalEntityId: physicalEntity.id, uri: physicalEntity.uri! }
-      })
-
-    await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)
-  }
-
-  async updateFailedActiveEdeskUpdateInDatabase(where: Prisma.PhysicalEntityWhereInput) {
+  async updateFailedActiveEdeskUpdateInDatabase(ids: string[]) {
     await this.prismaService.physicalEntity.updateMany({
-      where,
+      where: {
+        id: { in: ids },
+      },
       data: {
         activeEdeskUpdateFailedAt: new Date(),
         activeEdeskUpdateFailCount: { increment: 1 },
@@ -304,8 +103,7 @@ export class PhysicalEntityService {
     })
   }
 
-  // TODO either change or cleanup and use db directly
-  async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
+  private async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
     if (!data.id) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,

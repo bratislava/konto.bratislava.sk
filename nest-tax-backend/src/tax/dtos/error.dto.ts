@@ -9,6 +9,7 @@ export enum CustomErrorTaxTypesEnum {
   ALREADY_PAID = 'ALREADY_PAID',
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
   BELOW_THRESHOLD = 'BELOW_THRESHOLD',
+  TAX_TYPE_NOT_FOUND = 'TAX_TYPE_NOT_FOUND',
 }
 
 export enum CustomErrorTaxTypesResponseEnum {

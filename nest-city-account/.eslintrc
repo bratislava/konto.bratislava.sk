@@ -25,7 +25,7 @@
     "promise"
   ],
   "rules": {
-    "sonarjs/no-duplicate-string": ["error", 5],
+    "sonarjs/no-duplicate-string": ["warn", 5],
     "sonarjs/cognitive-complexity": ["error", 20],
     "promise/prefer-await-to-then": "error",
     "key-spacing": ["error", { "afterColon": true }],

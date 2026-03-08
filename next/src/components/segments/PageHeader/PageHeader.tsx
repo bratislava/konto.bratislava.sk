@@ -15,6 +15,7 @@ type AccountSectionHeaderBase = PropsWithChildren<{
 
 const PageHeader = (props: AccountSectionHeaderBase) => {
   const { title, text, className, titleAsParagraph, titleWrapperClassName, children } = props
+
   return (
     <SectionContainer className={cn('bg-gray-50', className)}>
       <div className="flex flex-col gap-4 lg:gap-6">

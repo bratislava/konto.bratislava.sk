@@ -7,12 +7,10 @@ import {
 } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import PhoneNumberModal from '@/src/components/modals/PhoneNumberModal'
-import Announcements from '@/src/components/page-contents/IntroPageContent/Announcements/Announcements'
-import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
+import AnnouncementsHomepageSection from '@/src/components/segments/homepage-sections/AnnouncementsHomepageSection'
+import MunicipalServicesHomepageSection from '@/src/components/segments/homepage-sections/MunicipalServicesHomepageSection'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import Banner from '@/src/components/simple-components/Banner'
-import Button from '@/src/components/simple-components/Button'
-import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -23,7 +21,11 @@ type Props = {
   announcementsLegalPerson: HomepageAnnouncementEntityFragment[]
 }
 
-const IntroPageContent = ({
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=11540-1892&m=dev
+ */
+
+const HomepageContent = ({
   services,
   servicesLegalPerson,
   announcements,
@@ -50,32 +52,14 @@ const IntroPageContent = ({
         titleAsParagraph
       />
 
-      {/* TODO remove custom spacing on respo when proper layout is introduced */}
-      <Announcements
+      <AnnouncementsHomepageSection
         announcements={announcements}
         announcementsLegalPerson={announcementsLegalPerson}
       />
 
-      <SectionContainer className="py-6 lg:py-16">
-        <div className="flex flex-col gap-6">
-          <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
-            <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
-              {t('account_section_intro.all_services')}
-            </Button>
-          </div>
-          <ResponsiveCarousel
-            desktop={4}
-            items={servicesByPersonType.map((service) => (
-              <MunicipalServiceCard key={service.id} service={service} />
-            ))}
-            hasVerticalPadding={false}
-            className="-mx-2 px-2"
-          />
-        </div>
-      </SectionContainer>
+      <MunicipalServicesHomepageSection services={servicesByPersonType} />
 
-      <SectionContainer className="py-6 lg:bg-gray-50 lg:py-16">
+      <SectionContainer className="py-6 lg:bg-background-passive-primary lg:py-18">
         <Banner
           title={t('account_section_intro.banner_title')}
           content={t('account_section_intro.banner_content')}
@@ -88,4 +72,4 @@ const IntroPageContent = ({
   )
 }
 
-export default IntroPageContent
+export default HomepageContent

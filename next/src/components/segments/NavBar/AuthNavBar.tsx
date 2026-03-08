@@ -66,8 +66,8 @@ export const AuthNavBar = ({
         )}
         ref={desktopNavbarRef}
       >
-        <SectionContainer className="h-[57px]">
-          <div className="flex w-full items-center justify-between">
+        <SectionContainer>
+          <div className="flex h-[57px] w-full items-center justify-between">
             <div className="flex">
               {!backButtonHidden && <BackButton />}
               <Brand

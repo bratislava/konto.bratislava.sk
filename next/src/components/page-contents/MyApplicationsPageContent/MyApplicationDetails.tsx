@@ -14,12 +14,17 @@ type MyApplicationsDetailsBase = {
   ginisData: GinisDocumentDetailResponseDto | null
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
+ */
+
 const MyApplicationDetails = ({
   formDefinitionTitle,
   detailsData,
   ginisData,
 }: MyApplicationsDetailsBase) => {
   const { t } = useTranslation('account')
+
   return (
     <div className="flex flex-col">
       <MyApplicationDetailsHeader

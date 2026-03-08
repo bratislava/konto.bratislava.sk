@@ -61,6 +61,10 @@ type MyApplicationsSectionProps = {
   emailFormSlugs: string[]
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
+ */
+
 const MyApplicationsPageContent = ({
   selectedSection,
   applications,

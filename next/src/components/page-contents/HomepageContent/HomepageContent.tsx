@@ -22,7 +22,7 @@ type Props = {
 }
 
 /**
- * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=11540-1892&m=dev
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=11540-1892
  */
 
 const HomepageContent = ({

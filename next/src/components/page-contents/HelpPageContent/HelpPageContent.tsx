@@ -15,7 +15,7 @@ type Props = {
 }
 
 /**
- * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95087&m=dev
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95087
  */
 
 const HelpPageContent = ({ helpPage }: Props) => {

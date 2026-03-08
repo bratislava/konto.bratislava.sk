@@ -2,8 +2,8 @@ import { useTranslation } from 'next-i18next'
 
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import SectionHeader from '@/src/components/layouts/SectionHeader'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
-import Button from '@/src/components/simple-components/Button'
 import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -16,13 +16,15 @@ const MunicipalServicesHomepageSection = ({ services }: Props) => {
 
   return (
     <SectionContainer className="py-6 lg:py-18">
-      <div className="flex flex-col gap-6">
-        <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
-          <Button variant="link" href={ROUTES.MUNICIPAL_SERVICES}>
-            {t('account_section_intro.all_services')}
-          </Button>
-        </div>
+      <div className="flex flex-col gap-6 lg:gap-10">
+        <SectionHeader
+          title={t('account_section_services.navigation')}
+          titleLevel="h2"
+          showMoreLink={{
+            href: ROUTES.MUNICIPAL_SERVICES,
+            children: t('account_section_intro.all_services'),
+          }}
+        />
         <ResponsiveCarousel
           desktop={4}
           items={services.map((service) => (

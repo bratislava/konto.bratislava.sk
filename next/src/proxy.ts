@@ -8,7 +8,7 @@ const slovenskoSkLoginUrlOrigin = new URL(environment.slovenskoSkLoginUrl).origi
 // Setting up Content Security Policy with csp header and nonce. Following official docs and our security training
 // recommendations. Note that we removed `data:` from `img-src`.
 // Docs: https://nextjs.org/docs/15/pages/guides/content-security-policy
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const isNodeEnvDevelopment = environment.nodeEnv === 'development'
 

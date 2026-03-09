@@ -117,7 +117,7 @@ const FormCalculator = ({
   id,
   variant,
   label,
-  calculators = [],
+  calculators,
 }: CustomComponentCalculatorProps & { id: string }) => {
   const labelClassName = cn('text-h5', {
     'text-white': variant === 'black',

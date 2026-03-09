@@ -24,9 +24,9 @@ describe('F05 -', { testIsolation: false }, () => {
   for (let i = 1; i <= jsonSources.length; i++) {
     context(`Source file ${i}`, () => {
       devices
-        .filter((device) => Cypress.env('devices')[`${device}`])
+        .filter((device) => Cypress.expose('devices')[`${device}`])
         .forEach((device) => {
-          context(device, Cypress.env('resolution')[`${device}`], () => {
+          context(device, Cypress.expose('resolution')[`${device}`], () => {
             before(() => {
               cy.fixture(jsonSources[i - 1]).then((fileData) => {
                 this.fileData = fileData

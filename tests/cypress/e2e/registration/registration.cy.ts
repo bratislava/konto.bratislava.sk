@@ -13,9 +13,9 @@ describe('RF01 -', { testIsolation: false }, () => {
   })
 
   devices
-    .filter((device) => Cypress.env('devices')[`${device}`])
+    .filter((device) => Cypress.expose('devices')[`${device}`])
     .forEach((device) => {
-      context(device, Cypress.env('resolution')[`${device}`], () => {
+      context(device, Cypress.expose('resolution')[`${device}`], () => {
         const emailDomain = 'cypress.test'
         const emailHash = `${Date.now() + device}@${emailDomain}`
         const wrongEmailHash = `${Date.now() + device}wrongemail@${emailDomain}`

@@ -4,9 +4,9 @@ describe('RF04 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
 
   devices
-    .filter((device) => Cypress.env('devices')[`${device}`])
+    .filter((device) => Cypress.expose('devices')[`${device}`])
     .forEach((device) => {
-      context(device, Cypress.env('resolution')[`${device}`], () => {
+      context(device, Cypress.expose('resolution')[`${device}`], () => {
         beforeEach(() => {
           cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti')
           cy.waitForHydration()

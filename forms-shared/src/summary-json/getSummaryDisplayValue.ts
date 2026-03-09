@@ -10,7 +10,9 @@ import {
   RadioGroupUiOptions,
   SelectUiOptions,
 } from '../generator/uiOptionsTypes'
-import { EnumOptionsType, WidgetProps } from '@rjsf/utils'
+import type { EnumOptionsType, WidgetProps } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { baTimeRegex, validateBaFileUuid } from '../form-utils/ajvFormats'
 import { mergeEnumOptionsMetadata } from '../generator/optionItems'
 import { WithEnumOptions } from '../form-utils/WithEnumOptions'

@@ -1,12 +1,14 @@
-import {
+import type {
   Experimental_DefaultFormStateBehavior,
   GenericObjectType,
-  getDefaultFormState,
   RJSFSchema,
-} from '@rjsf/utils'
+} from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import isEqual from 'lodash/isEqual'
 import { BaRjsfValidatorRegistry } from './validatorRegistry'
-import { baFastMergeAllOf } from './fastMergeAllOf'
+
+const { getDefaultFormState } = require('@rjsf/utils')
 
 /**
  * Detects schema of fileUploadMultiple field.
@@ -82,7 +84,6 @@ export const baGetDefaultFormState = (
     rootSchema,
     undefined,
     baDefaultFormStateBehavior,
-    baFastMergeAllOf,
   )
 
 /**

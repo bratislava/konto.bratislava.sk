@@ -1,8 +1,12 @@
-import { customizeValidator, CustomValidatorOptionsType } from '@rjsf/validator-ajv8'
+import type { CustomValidatorOptionsType } from '@rjsf/validator-ajv8' with {
+  'resolution-mode': 'import',
+}
 import { SchemaValidateFunction, Vocabulary } from 'ajv'
 
 import { baAjvFormats } from './ajvFormats'
 import { baAjvKeywords } from './ajvKeywords'
+
+const { customizeValidator } = require('@rjsf/validator-ajv8')
 
 export const getBaRjsfValidator = (customKeywords?: Vocabulary) =>
   customizeValidator({

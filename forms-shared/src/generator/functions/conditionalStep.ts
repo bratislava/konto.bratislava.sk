@@ -1,4 +1,6 @@
-import type { RJSFSchema } from '@rjsf/utils'
+import type { RJSFSchema } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { GeneratorFieldType } from '../generatorTypes'
 import { step } from './step'
 import { removeUndefinedValues } from '../helpers'

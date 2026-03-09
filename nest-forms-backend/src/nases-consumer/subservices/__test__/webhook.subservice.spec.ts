@@ -9,7 +9,7 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
-import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
@@ -88,7 +88,7 @@ describe('WebhookSubservice', () => {
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(mockFormDefinition)
-      ;(omitExtraData.omitExtraData as jest.Mock).mockReturnValue(
+      ;(baOmitExtraData.baOmitExtraData as jest.Mock).mockReturnValue(
         mockForm.formDataJson,
       )
       ;(axios.post as jest.Mock).mockResolvedValue({ status: 200 })

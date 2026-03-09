@@ -196,6 +196,9 @@ export class UpvsQueueService {
           AND e."uri" IS NULL
           AND u."birthNumber" IS NOT NULL
           AND u."externalId" IS NOT NULL
+          AND ("activeEdeskUpdateFailCount" = 0
+            OR ("activeEdeskUpdateFailedAt" + (POWER(2, LEAST("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') <
+                NOW()))
         ORDER BY GREATEST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
         LIMIT ${limit}
     `

@@ -22,6 +22,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
         it('1. Submitting a empty registration form.', () => {
           cy.visit('/registracia')
+          cy.waitForHydration()
           cy.hideNavbar(device)
 
           cy.dataCy('registration-container').should('be.visible') //.matchImage()
@@ -105,6 +106,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
           it('4. Changing password.', () => {
             cy.visit('/moj-profil')
+            cy.waitForHydration()
             cy.get('[data-cy=change-password-button]').click()
             cy.location('pathname', { timeout: 4000 }).should('eq', '/zmena-hesla')
             cy.dataCy('change-password-form').then((form) => {
@@ -166,6 +168,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
           it('1. Submitting wrong value.', () => {
             cy.visit('/zabudnute-heslo')
+            cy.waitForHydration()
             cy.hideNavbar(device)
 
             cy.dataCy('forgotten-password-form').then((form) => {

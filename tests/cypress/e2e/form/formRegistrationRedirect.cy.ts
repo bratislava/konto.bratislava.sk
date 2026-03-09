@@ -24,6 +24,7 @@ describe('F04 -', { testIsolation: false }, () => {
 
         before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
+          cy.waitForHydration()
         })
 
         beforeEach(() => {

@@ -94,6 +94,7 @@ const useGetContext = () => {
       if (isAxiosError(error) && error.response?.data?.errorName === 'BAD_REQUEST_ERROR') {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         openSnackbarError(`Nastala chyba pri validácii: \n\n${error.response?.data?.message}`)
+
         return
       }
       openSnackbarError('Podpisovanie zlyhalo. Skúste to znova.')
@@ -129,6 +130,7 @@ const useGetContext = () => {
 
     try {
       verifyFormSignature(formDefinition, formData, signature)
+
       return true
     } catch (error) {
       return false

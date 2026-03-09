@@ -59,6 +59,7 @@ const FormPlaygroundProviders = ({
             fileIds.forEach((fileId) => {
               delete newFiles[fileId]
             })
+
             return newFiles
           })
         },
@@ -73,6 +74,7 @@ const FormPlaygroundProviders = ({
             }
           })
           setFiles((prevFiles) => ({ ...prevFiles, ...newFiles }))
+
           return Object.keys(newFiles)
         },
         getFileInfoById: (fileId: string): FileInfo => {
@@ -84,6 +86,7 @@ const FormPlaygroundProviders = ({
               fileSize: null,
             }
           }
+
           return file
         },
       }) as Partial<ContextType<typeof FormFileUploadContext>>,
@@ -279,6 +282,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const exampleOptions: SelectOption[] = useMemo(() => {
     if (!selectedForm) return []
     const currentFormExamples = exampleForms[selectedForm.slug] || []
+
     return [
       { value: '', label: 'Prázdny formulár' },
       ...currentFormExamples.map((example) => ({

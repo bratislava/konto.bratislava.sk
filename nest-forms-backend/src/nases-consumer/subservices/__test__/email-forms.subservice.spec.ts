@@ -11,7 +11,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
-import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
@@ -222,7 +222,7 @@ describe('EmailFormsSubservice', () => {
         .spyOn(renderSummaryEmail, 'renderSummaryEmail')
         .mockResolvedValue('<html>Test Email Content</html>')
       jest
-        .spyOn(omitExtraData, 'omitExtraData')
+        .spyOn(baOmitExtraData, 'baOmitExtraData')
         .mockReturnValue({ test: 'data' })
 
       extractEmailFormEmailSpy = jest

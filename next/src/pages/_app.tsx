@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/inline-script-id */
 import 'src/pages/index.css'
 // configure Amplify
 import '@/src/frontend/utils/amplifyConfig'
@@ -74,6 +73,10 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
       logger.info(`[AUTH] Resetting Amplify cookies removal flag in session storage`)
       sessionStorage.removeItem(amplifyCookiesRemovedSessionStorageKey)
     }
+
+    // Set data-hydrated attribute so Cypress can wait for client-side hydration
+    document.body.setAttribute('data-hydrated', 'true')
+
     // Rewritten from useEffectOnce
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -119,8 +122,8 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                     isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
                   }
                   taggedEvents
-                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                  // trackLocalhost
+                // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                // trackLocalhost
                 >
                   <NavMenuContextProvider>
                     {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}

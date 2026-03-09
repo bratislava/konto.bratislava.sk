@@ -1,22 +1,18 @@
 import {
-  ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
   FormContextType,
-  getTemplate,
   getUiOptions,
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { ComponentType } from 'react'
+import React from 'react'
 
 import { AddIcon } from '@/src/assets/ui-icons'
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
 import Button from '@/src/components/simple-components/Button'
 import FieldErrorMessage from '@/src/components/widget-components/FieldErrorMessage'
-import type { BAArrayFieldItemTemplateAdditionalProps } from '@/src/components/widget-wrappers/BAArrayFieldItemTemplate'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 import cn from '@/src/utils/cn'
 
@@ -30,12 +26,11 @@ const BAArrayFieldTemplate = <
 >({
   canAdd,
   disabled,
-  idSchema,
+  fieldPathId,
   uiSchema,
   items,
   onAddClick,
   readonly,
-  registry,
   title,
   rawErrors,
 }: ArrayFieldTemplateProps<T, S, F>) => {
@@ -48,12 +43,6 @@ const BAArrayFieldTemplate = <
     hideTitle,
     cannotAddItemMessage,
   } = uiOptions
-  const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
-    'ArrayFieldItemTemplate',
-    registry,
-    uiOptions,
-  ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & BAArrayFieldItemTemplateAdditionalProps>
-  const { selfId } = getObjectFieldInfo(idSchema)
 
   const containerStyle = cn('flex flex-col', {
     'gap-6': variant === 'topLevel',
@@ -66,10 +55,10 @@ const BAArrayFieldTemplate = <
     onAddClick({ preventDefault: () => {} })
   }
 
-  const hasErrors = rawErrors && rawErrors?.length > 0
+  const hasErrors = rawErrors && rawErrors.length > 0
 
   return (
-    <WidgetWrapper id={idSchema.$id} options={uiOptions}>
+    <WidgetWrapper id={fieldPathId.$id} options={uiOptions}>
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}
@@ -104,16 +93,8 @@ const BAArrayFieldTemplate = <
         </div>
       )}
       <div className={containerStyle}>
-        <div key={`array-item-list-${idSchema.$id}`} className="flex flex-col gap-6">
-          {items &&
-            items.map(({ key, ...itemProps }: ArrayFieldTemplateItemType<T, S, F>) => (
-              <ArrayFieldItemTemplate
-                key={key}
-                {...itemProps}
-                parentUiOptions={uiOptions}
-                parentSelfId={selfId}
-              />
-            ))}
+        <div key={`array-item-list-${fieldPathId.$id}`} className="flex flex-col gap-6">
+          {items}
         </div>
         <div>
           <div className="flex flex-col gap-6">

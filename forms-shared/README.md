@@ -121,3 +121,7 @@ npm run docker:test:update
 
 - `ts-config` based on <https://github.com/tsconfig/bases/blob/main/bases/node-lts.json>
 - `react-markdown` is fixed on version 6, until we use a compiler, see <https://stackoverflow.com/a/69469619>
+- We are using a patched version of `@rjsf/core`. This patch must be present until [PR #4978](https://github.com/rjsf-team/react-jsonschema-form/pull/4978) is released.
+
+
+

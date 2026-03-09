@@ -33,10 +33,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                   {t('account_section_applications.details.application_history.edit_date')}
                 </span>
                 <span className="text-p2">
-                  <FormatDate>
-                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-                    {data?.['Datum-zmeny']}
-                  </FormatDate>
+                  <FormatDate>{data?.['Datum-zmeny']}</FormatDate>
                 </span>
               </div>
               <div className="flex w-full flex-col">
@@ -67,7 +64,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
               <div className="flex w-full border-t-2 p-4" key={i}>
                 <span className="min-w-[240px] text-p2">
                   <FormatDate>
-                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+                    {}
                     {data?.['Datum-zmeny']}
                   </FormatDate>
                 </span>

@@ -23,6 +23,7 @@ xdescribe('F02 -', { testIsolation: false }, () => {
 
         before(() => {
           cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti')
+          cy.waitForHydration()
         })
 
         beforeEach(() => {

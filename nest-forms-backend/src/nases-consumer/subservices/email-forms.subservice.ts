@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import {
   FormDefinitionEmail,
   FormDefinitionType,
@@ -14,7 +16,7 @@ import {
   extractFormSubjectPlain,
   extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   FileIdInfoMap,
   renderSummaryEmail,
@@ -171,7 +173,7 @@ export default class EmailFormsSubservice {
       formId,
       slug: formDefinition.slug,
       jsonVersion: formDefinition.jsonVersion,
-      json: omitExtraData(
+      json: baOmitExtraData(
         formDefinition.schema,
         formDataJson,
         this.formValidatorRegistryService.getRegistry(),

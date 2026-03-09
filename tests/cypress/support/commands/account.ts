@@ -29,6 +29,7 @@ declare namespace Cypress {
 
 Cypress.Commands.add('logInUser', (device, email, password) => {
   cy.visit('/prihlasenie')
+  cy.waitForHydration()
   cy.location('pathname', { timeout: 20000 }).should('eq', '/prihlasenie')
   cy.dataCy('login-container').then((form) => {
     cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(email)
@@ -40,6 +41,7 @@ Cypress.Commands.add('logInUser', (device, email, password) => {
 
 Cypress.Commands.add('logOutUser', () => {
   cy.visit('/odhlasenie')
+  cy.waitForHydration()
   cy.get('[data-cy=odhlásiť-sa-button]').click()
   cy.location('pathname', { timeout: 4000 }).should('eq', '/prihlasenie')
 })

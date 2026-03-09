@@ -17,6 +17,7 @@ describe('F03 -', { testIsolation: false }, () => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
         before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
+          cy.waitForHydration()
         })
 
         beforeEach(() => {

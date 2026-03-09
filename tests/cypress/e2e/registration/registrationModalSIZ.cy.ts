@@ -9,6 +9,7 @@ describe('RF03 -', { testIsolation: false }, () => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
         beforeEach(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
+          cy.waitForHydration()
           cy.hideNavbar(device)
           cy.dataCy('form-landing-page-fill-form-button').click()
         })

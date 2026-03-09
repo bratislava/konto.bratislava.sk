@@ -19,6 +19,7 @@ describe('RF02 -', { testIsolation: false }, () => {
 
         it('1. Submitting a empty registration PO form.', () => {
           cy.visit('/registracia')
+          cy.waitForHydration()
           cy.hideNavbar(device)
         })
 

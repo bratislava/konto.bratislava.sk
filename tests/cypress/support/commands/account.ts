@@ -19,11 +19,6 @@ declare namespace Cypress {
      */
     logOutUser(): Chainable<any>
 
-    /**
-     * Custom command to check successful toast message is visible.
-     * @example cy.checkSuccessSnackbar()
-     */
-    checkSuccessSnackbar(): Chainable<any>
   }
 }
 
@@ -46,10 +41,3 @@ Cypress.Commands.add('logOutUser', () => {
   cy.location('pathname', { timeout: 4000 }).should('eq', '/prihlasenie')
 })
 
-Cypress.Commands.add('checkSuccessSnackbar', () => {
-  cy.get('[class^="Snackbar_snackbar-wrapper"]').should('be.visible')
-  cy.get('*[class^="Snackbar_snackbar-wrapper"]')
-    .find('*[class^="Snackbar_snackbar"]')
-    .eq(0)
-    .should('have.attr', 'style', 'background-color: var(--color-success-700);')
-})

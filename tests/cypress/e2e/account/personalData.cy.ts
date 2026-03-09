@@ -86,15 +86,17 @@ describe('A04 -', { testIsolation: false }, () => {
           //   .clear()
           //   .type(this.fileData.phone_number)
           // })
+          cy.intercept('POST', '**/user/update-or-create-bloomreach-customer').as('updateCustomer')
           if (device === 'desktop') {
             cy.get('[data-cy=save-personal-information-button]').click()
           } else {
             cy.get('[data-cy=save-personal-information-button-mobile]').click()
           }
+          cy.wait('@updateCustomer').its('response.statusCode').should('eq', 200)
         })
 
         it('3. Validating saved information', () => {
-          cy.checkSuccessSnackbar()
+          cy.reload()
           cy.get('[data-cy=meno-a-priezvisko-profile-row]').should(
             'contain',
             nameHash + ' ' + surnameHash,

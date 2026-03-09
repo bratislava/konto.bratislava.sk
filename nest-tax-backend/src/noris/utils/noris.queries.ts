@@ -1,5 +1,11 @@
 /* eslint-disable no-secrets/no-secrets */
+/**
+ * Returns one DZN tax record per (birth number, year). When Noris has multiple
+ * records for the same person/year, we keep a single row deterministically
+ * by ordering by document id (cislo_subjektu).
+ */
 export const queryPayersFromNoris = `
+WITH NorisRows AS (
 SELECT
     subjekt_doklad.cislo_poradace,
     lcs.dane21_doklad.stav_dokladu as stav_dokladu,
@@ -145,7 +151,13 @@ SELECT
    (case 
         when  lcs.dane21_doklad.datum_spl4 is not null  then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl4 , 2)
         else  ''
-    end  ) SPL4_4
+    end  ) SPL4_4,
+
+   /* One row per (rodne_cislo, rok) when Noris returns duplicates; deterministic by document id */
+   ROW_NUMBER() OVER (
+       PARTITION BY lcs.dane21_priznanie.rodne_cislo, lcs.dane21_priznanie.rok
+       ORDER BY lcs.dane21_doklad.cislo_subjektu
+   ) AS _rn
 
    /* --------- Texty splátok výmeru end ----------------------------*/
 FROM 
@@ -392,9 +404,8 @@ WHERE
         AND lcs.dane21_doklad.pohladavka IS NOT NULL
         AND lcs.dane21_priznanie.rodne_cislo IN (@birth_numbers)
     )
-
-ORDER BY 
-    lcs.dane21_priznanie.obchodny_nazov 
+)
+SELECT * FROM NorisRows WHERE _rn = 1
 `
 
 const basePaymentsQuery = `

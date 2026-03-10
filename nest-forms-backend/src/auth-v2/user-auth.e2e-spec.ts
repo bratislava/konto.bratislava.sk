@@ -1,4 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Test } from '@nestjs/testing'
 
 import {
@@ -21,15 +22,20 @@ import { User, UserType } from './types/user'
  * the Date objects so the assertion can be made.
  */
 function createAssertionSafeUser<T>(user: T) {
-  // eslint-disable-next-line unicorn/prefer-structured-clone
   return JSON.parse(JSON.stringify(user)) as T
 }
 
+class TestUserResponse {
+  user: User
+}
+
 @Controller('test-auth-e2e')
+@ApiTags('test-auth-e2e')
 class TestController {
   @Get('allows-both')
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard)
+  @ApiOkResponse({ type: TestUserResponse })
   allowsBothRoute(@GetUser() user: User) {
     return { user }
   }
@@ -37,6 +43,7 @@ class TestController {
   @Get('guest-only')
   @AllowedUserTypes([UserType.Guest])
   @UseGuards(UserAuthGuard)
+  @ApiOkResponse({ type: TestUserResponse })
   testGuestOnlyRoute(@GetUser() user: User) {
     return { user }
   }
@@ -44,12 +51,14 @@ class TestController {
   @Get('auth-only')
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard)
+  @ApiOkResponse({ type: TestUserResponse })
   testAuthOnlyRoute(@GetUser() user: User) {
     return { user }
   }
 
   @Get('missing-decorator-route')
   @UseGuards(UserAuthGuard)
+  @ApiOkResponse({ type: TestUserResponse })
   testMissingDecorator(@GetUser() user: User) {
     return { user }
   }
@@ -57,6 +66,7 @@ class TestController {
   @Get('empty-decorator-route')
   @AllowedUserTypes([])
   @UseGuards(UserAuthGuard)
+  @ApiOkResponse({ type: TestUserResponse })
   testEmptyDecorator(@GetUser() user: User) {
     return { user }
   }

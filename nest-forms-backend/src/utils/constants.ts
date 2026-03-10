@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-escape */
+ 
 /* eslint-disable no-secrets/no-secrets */
 /* eslint-disable pii/no-email */
 
@@ -23,7 +23,7 @@ export const MAX_TRIES_FOR_NASES_CHECK = 10
 
 export const INNOVATION_MAIL = 'inovacie@bratislava.sk'
 
-export const EDITABLE_ERRORS: Array<FormError> = [FormError.INFECTED_FILES]
+export const EDITABLE_ERRORS: FormError[] = [FormError.INFECTED_FILES]
 
 export const JSON_FORM_EXAMPLE = {
   mestoPSCstep: {
@@ -79,4 +79,4 @@ export const XML_FORM_EXAMPLE =
 /* eslint-enable no-secrets/no-secrets */
 /* eslint-enable pii/no-email */
 /* eslint-enable pii/no-phone-number */
-/* eslint-enable no-useless-escape */
+ 

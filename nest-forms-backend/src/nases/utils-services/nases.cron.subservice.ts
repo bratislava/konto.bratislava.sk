@@ -38,7 +38,7 @@ export default class NasesCronSubservice {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @HandleErrors('CronError')
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+   
   async validateFormRegistrations(): Promise<ValidateFormRegistrationsResultDto> {
     const result: ValidateFormRegistrationsResultDto = {
       'not-found': [],

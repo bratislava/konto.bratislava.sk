@@ -170,11 +170,11 @@ describe('EmailFormsSubservice', () => {
     }).compile()
 
     service = module.get<EmailFormsSubservice>(EmailFormsSubservice)
-    mailgunService = module.get(MailgunService) as jest.Mocked<MailgunService>
+    mailgunService = module.get(MailgunService)
     oloMailerService = module.get(
       OloMailerService,
-    ) as jest.Mocked<OloMailerService>
-    configService = module.get(ConfigService) as jest.Mocked<ConfigService>
+    )
+    configService = module.get(ConfigService)
 
     jest.spyOn(configService, 'get').mockReturnValue('production')
 

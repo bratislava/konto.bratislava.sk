@@ -1093,7 +1093,7 @@ describe('GinisService', () => {
     })
 
     it('should assign reference number if not present', async () => {
-      const form = formBase as Forms
+      const form = formBase
 
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
@@ -1115,7 +1115,7 @@ describe('GinisService', () => {
     })
 
     it('should set formId property when document not found by formId', async () => {
-      const form = formBase as Forms
+      const form = formBase
 
       jest
         .spyOn(service['ginisApiService'], 'findDocumentId')
@@ -1134,7 +1134,7 @@ describe('GinisService', () => {
     })
 
     it('should not set formId property when it is already set and document can be found by formId', async () => {
-      const form = formBase as Forms
+      const form = formBase
 
       jest
         .spyOn(service['ginisApiService'], 'findDocumentId')
@@ -1316,7 +1316,7 @@ describe('GinisService', () => {
       const { buildSlovenskoSkXml } = jest.requireMock(
         'forms-shared/slovensko-sk/xmlBuilder',
       )
-      const form = formBase as Forms
+      const form = formBase
       const mockXmlObject = { root: { data: 'test' } }
       // eslint-disable-next-line xss/no-mixed-html
       const mockXmlString =
@@ -1359,7 +1359,7 @@ describe('GinisService', () => {
     })
 
     it('should not upload XML source file when electronic source exists', async () => {
-      const form = formBase as Forms
+      const form = formBase
 
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')

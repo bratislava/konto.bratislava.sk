@@ -16,7 +16,7 @@ export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
     ]),
 )
 
-type MailgunConfig = {
+interface MailgunConfig {
   template: string
   subject: string
   renderLocally?: boolean

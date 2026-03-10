@@ -230,7 +230,7 @@ export default class GinisService {
       // eslint-disable-next-line no-await-in-loop
       await this.uploadAttachmentToGinis(
         file,
-        form.ginisDocumentId!,
+        form.ginisDocumentId,
         minioFilePath,
       )
     }
@@ -312,7 +312,7 @@ export default class GinisService {
     routingKey: RABBIT_NASES.ROUTING_KEY,
     queue: RABBIT_NASES.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
-      // eslint-disable-next-line no-console
+       
       const logger = new LineLoggerSubservice('Rabbit')
       logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
       channel.reject(message, false)

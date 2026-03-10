@@ -14,7 +14,6 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
-// eslint-disable-next-line import/no-cycle
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import PrismaService from '../prisma/prisma.service'
@@ -346,7 +345,7 @@ export default class FilesService {
       )
     }
 
-    return <string>decoded.fileId
+    return decoded.fileId as string
   }
 
   async downloadFile(fileId: string): Promise<Readable> {
@@ -505,7 +504,7 @@ export default class FilesService {
   async deleteFileMany(fileIds: string[]): Promise<void> {
     let file: Files
 
-    // eslint-disable-next-line no-restricted-syntax
+     
     for (const fileId of fileIds) {
       try {
         // eslint-disable-next-line no-await-in-loop

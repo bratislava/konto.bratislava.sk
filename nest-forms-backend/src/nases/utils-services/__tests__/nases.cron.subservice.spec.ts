@@ -297,7 +297,7 @@ describe('NasesCronSubservice', () => {
       ]
       formDefinitionsModule.formDefinitions = extendedMockFormDefinitions
 
-      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation((pospID) => {
+      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation(async (pospID) => {
         if (pospID === 'test.form.definition.3') {
           return Promise.resolve({
             data: { status: 'Nepublikovaný' },
@@ -338,7 +338,7 @@ describe('NasesCronSubservice', () => {
       ]
       formDefinitionsModule.formDefinitions = extendedMockFormDefinitions
 
-      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation((pospID) => {
+      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation(async (pospID) => {
         if (pospID === 'test.form.definition.3') {
           return Promise.resolve({
             data: { status: 'Nepublikovaný' },

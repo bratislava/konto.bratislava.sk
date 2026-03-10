@@ -22,12 +22,12 @@ type DocumentHistoryElementWithAssignedCategory =
     assignedCategory: GinisDocumentChangeType
   }
 export type MappedDocumentHistory =
-  Array<DocumentHistoryElementWithAssignedCategory>
+  DocumentHistoryElementWithAssignedCategory[]
 
 // likely more functions will be added to this file
 export const mapGinisHistory = (
   document: SslDetailDokumentuResponse,
-): Array<DocumentHistoryElementWithAssignedCategory> =>
+): DocumentHistoryElementWithAssignedCategory[] =>
   // document history contains events such as "this document was viewed by someone"
   // we want to filter the uninteresting ones out
   // we also want to map to a small-enough enum of types of changes which FE can reference from here

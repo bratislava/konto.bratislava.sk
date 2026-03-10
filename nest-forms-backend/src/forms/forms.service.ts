@@ -7,7 +7,6 @@ import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/ve
 
 import { AuthUser } from '../auth-v2/types/user'
 import { getUserIco } from '../auth-v2/utils/user-utils'
-// eslint-disable-next-line import/no-cycle
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
@@ -290,7 +289,7 @@ export default class FormsService {
     })
 
     total.forEach((rec) => {
-      // eslint-disable-next-line no-underscore-dangle
+       
       result[rec.state] = rec._count._all
     })
 

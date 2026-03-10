@@ -24,7 +24,7 @@ export default class FormRegistrationStatusRepository {
         },
       })
 
-    return !!registrationStatus?.isRegistered
+    return Boolean(registrationStatus?.isRegistered)
   }
 
   async setStatus(

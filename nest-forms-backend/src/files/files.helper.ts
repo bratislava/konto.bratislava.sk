@@ -57,9 +57,7 @@ export default class FilesHelper {
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList: string = <string>(
-      this.configService.get(`MIMETYPE_WHITELIST`)
-    )
+    const mimeTypeList: string = this.configService.get(`MIMETYPE_WHITELIST`) as string
     this.supportedMimeTypes = mimeTypeList.split(' ')
   }
 
@@ -243,7 +241,7 @@ export default class FilesHelper {
           ],
         },
       })
-      return !!file
+      return Boolean(file)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
@@ -255,7 +253,7 @@ export default class FilesHelper {
   }
 
   async checkInfectedFiles(formId: string): Promise<boolean> {
-    const infectedFiles: Array<Files> = await this.prisma.files.findMany({
+    const infectedFiles: Files[] = await this.prisma.files.findMany({
       where: {
         formId,
         status: {
@@ -278,7 +276,7 @@ export default class FilesHelper {
   }
 
   async areErrorFilesInForm(formId: string): Promise<boolean> {
-    const errorFiles: Array<Files> = await this.prisma.files.findMany({
+    const errorFiles: Files[] = await this.prisma.files.findMany({
       where: {
         formId,
         status: {
@@ -383,13 +381,13 @@ export default class FilesHelper {
   // optional status
   getBucketUid(status?: string): string {
     if (status === 'SAFE') {
-      return <string>this.configService.get('MINIO_SAFE_BUCKET')
+      return this.configService.get('MINIO_SAFE_BUCKET') as string
     }
     if (status === 'INFECTED') {
-      return <string>this.configService.get('MINIO_INFECTED_BUCKET')
+      return this.configService.get('MINIO_INFECTED_BUCKET') as string
     }
 
-    return <string>this.configService.get('MINIO_UNSCANNED_BUCKET')
+    return this.configService.get('MINIO_UNSCANNED_BUCKET') as string
   }
 
   forms2formInfo(form: Forms): FormInfo {

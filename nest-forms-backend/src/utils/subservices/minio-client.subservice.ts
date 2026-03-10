@@ -60,8 +60,8 @@ export default class MinioClientSubservice {
     this.logger.debug(`Listing files in bucket ${bucketName} in path ${path}`)
 
     try {
-      let files: Array<string> = await new Promise((resolve, reject) => {
-        const objectsListTemp: Array<string> = []
+      let files: string[] = await new Promise((resolve, reject) => {
+        const objectsListTemp: string[] = []
         const stream = this.minioService.client.listObjectsV2(
           bucketName,
           path,
@@ -122,7 +122,7 @@ export default class MinioClientSubservice {
   ): Promise<false | void> {
     // delete folder in mino bucket in desired path
     try {
-      return await this.minioService.client.removeObject(bucket, path)
+      await this.minioService.client.removeObject(bucket, path); 
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(

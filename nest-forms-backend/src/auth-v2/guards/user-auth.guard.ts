@@ -16,7 +16,7 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     super()
   }
 
-  canActivate(context: ExecutionContext) {
+  async canActivate(context: ExecutionContext) {
     const allowedUserTypes = this.reflector.getAllAndOverride<
       UserType[] | undefined
     >(ALLOWED_USER_TYPES_KEY, [context.getHandler(), context.getClass()])
@@ -63,7 +63,7 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     const allowedUserTypes = this.reflector.getAllAndOverride<UserType[]>(
       ALLOWED_USER_TYPES_KEY,
       [context.getHandler(), context.getClass()],
-    )!
+    )
 
     if (allowedUserTypes.includes(typedUser.type)) {
       return typedUser as TUser

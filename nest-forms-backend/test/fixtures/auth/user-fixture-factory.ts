@@ -20,14 +20,14 @@ import { CognitoJwtVerifyService } from '../../../src/auth-v2/services/cognito-j
 import { CognitoUserService } from '../../../src/auth-v2/services/cognito-user.service'
 import { AuthUser, GuestUser, UserType } from '../../../src/auth-v2/types/user'
 
-export type GuestFixtureUser = {
+export interface GuestFixtureUser {
   identityId: string
   headers: {
     'X-Cognito-Guest-Identity-Id': string
   }
   user: GuestUser
 }
-export type AuthFixtureUser = {
+export interface AuthFixtureUser {
   sub: string
   headers: {
     Authorization: string

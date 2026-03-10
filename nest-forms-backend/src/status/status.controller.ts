@@ -41,7 +41,7 @@ export default class StatusController {
     type: ServiceRunningDto,
   })
   @Get('prisma')
-  isPrismaRunning(): Promise<ServiceRunningDto> {
+  async isPrismaRunning(): Promise<ServiceRunningDto> {
     return this.statusService.isPrismaRunning()
   }
 
@@ -55,7 +55,7 @@ export default class StatusController {
     type: ServiceRunningDto,
   })
   @Get('minio')
-  isMinioRunning(): Promise<ServiceRunningDto> {
+  async isMinioRunning(): Promise<ServiceRunningDto> {
     return this.statusService.isMinioRunning()
   }
 
@@ -68,7 +68,7 @@ export default class StatusController {
     type: ServiceRunningDto,
   })
   @Get('scanner')
-  isFormsRunning(): Promise<ServiceRunningDto> {
+  async isFormsRunning(): Promise<ServiceRunningDto> {
     return this.statusService.isScannerRunning()
   }
 }

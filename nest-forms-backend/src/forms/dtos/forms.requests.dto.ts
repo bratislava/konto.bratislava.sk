@@ -75,7 +75,7 @@ export class FormUpdateBodyDto {
 
   @ApiPropertyOptional({
     description: 'Concrete error type',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+     
     default: FormError.NONE,
   })
   @IsOptional()

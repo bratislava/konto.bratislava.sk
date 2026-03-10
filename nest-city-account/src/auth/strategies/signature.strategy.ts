@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy as CustomStrategy } from 'passport-custom'
@@ -160,7 +160,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       }
 
       // Validate nonce if required (for mutating endpoints)
-      if (!req.requireNonce) {
+      if (req.requireNonce) {
         const nonce = req.headers['x-nonce']
         if (typeof nonce === 'string') {
           await this.nonceService.validateAndMarkUsed(nonce, envVarName)
@@ -176,7 +176,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       return true
     } catch (error) {
       // Re-throw if it's already our exception
-      if (error instanceof Error && error.name === 'UnauthorizedException') {
+      if (error instanceof HttpException) {
         throw error
       }
 

@@ -5,7 +5,7 @@ import {
 } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import IntroPageContent from '@/src/components/page-contents/IntroPageContent/IntroPageContent'
+import HomepageContent from '@/src/components/page-contents/HomepageContent/HomepageContent'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { isDefined } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
@@ -73,7 +73,7 @@ const AccountIntroPage = ({
 }: AccountIntroPageProps) => {
   return (
     <PageLayout>
-      <IntroPageContent
+      <HomepageContent
         services={services}
         servicesLegalPerson={servicesLegalPerson}
         announcements={announcements}

@@ -87,7 +87,7 @@ const Carousel = ({
               <li
                 key={item.key}
                 className={cn(
-                  'shrink-0 transform transition-all duration-200 first:pl-4 last:pr-4 lg:scroll-mx-2 lg:first:pl-0 lg:last:pr-0 [&>*:first-child]:h-full',
+                  'shrink-0 transform transition-all duration-200 lg:scroll-mx-2 [&>*:first-child]:h-full',
                   {
                     // 1rem represents 1 gap-4, if gap is changed, also change card width
                     // changed to see bigger part of next card,

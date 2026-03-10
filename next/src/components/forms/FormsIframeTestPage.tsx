@@ -3,6 +3,7 @@ import IframeResizer from '@iframe-resizer/react'
 import { useQueryState } from 'nuqs'
 import React, { useEffect } from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SelectField from '@/src/components/widget-components/SelectField/SelectField'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -40,27 +41,29 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-(--breakpoint-xl) items-center justify-between p-4 lg:px-8">
-          <a href="#" className="font-semibold text-black">
-            LOGO
-          </a>
+        <SectionContainer className="py-4">
+          <div className="flex items-center justify-between">
+            <a href="#" className="font-semibold text-black">
+              LOGO
+            </a>
 
-          <nav className="hidden gap-6 lg:flex">
-            <a href="#" className="font-semibold">
-              Hlavná stránka
-            </a>
-            <a href="#" className="font-semibold">
-              Informácie
-            </a>
-            <a href="#" className="font-semibold">
-              Kontakt
-            </a>
-          </nav>
-        </div>
+            <nav className="hidden gap-6 lg:flex">
+              <a href="#" className="font-semibold">
+                Hlavná stránka
+              </a>
+              <a href="#" className="font-semibold">
+                Informácie
+              </a>
+              <a href="#" className="font-semibold">
+                Kontakt
+              </a>
+            </nav>
+          </div>
+        </SectionContainer>
       </header>
 
       <main className="flex-1">
-        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-6 lg:px-8">
+        <SectionContainer className="py-6">
           <h1 className="mb-6 text-h1 font-semibold">Formuláre</h1>
 
           <SelectField
@@ -77,11 +80,11 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
             src={iframeUrl}
             style={{ width: '100%', height: '100vh' }}
           />
-        </div>
+        </SectionContainer>
       </main>
 
-      <footer className="bg-gray-900 text-white">
-        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-8 lg:px-8">
+      <footer>
+        <SectionContainer className="bg-gray-900 py-8 text-white">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div>
               <div className="mb-4 font-semibold">LOGO</div>
@@ -129,7 +132,7 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
               </div>
             </div>
           </div>
-        </div>
+        </SectionContainer>
       </footer>
     </div>
   )

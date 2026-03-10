@@ -5,6 +5,11 @@ export default [
     tsconfigRootDir: import.meta.dirname,
   }),
   {
+    rules: {
+      '@darraghor/nestjs-typed/injectable-should-be-provided': 'warn', // 14 occurences
+    },
+  },
+  {
     files: ['**/*.spec.ts', '**/*_test_.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',

@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-phone-number */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
@@ -88,8 +87,6 @@ export class EidUpdateSendFormRequestDto extends UpdateFormRequestDto {
 }
 
 export class GetFormResponseDto {
-  /* For some reason, eslint-disable-next-line is not working here. */
-  /* eslint-disable pii/no-email */
   @ApiProperty({
     description: 'Change email, on which you can be contacted',
     default: 'janko.mrkvicka@bratislava.sk',
@@ -98,7 +95,6 @@ export class GetFormResponseDto {
   @IsOptional()
   @IsString()
   declare email: string | null
-  /* eslint-enable pii/no-email */
 
   @ApiProperty({
     description: 'Id of record',
@@ -435,4 +431,3 @@ export class SendFormResponseDto {
   @IsEnum(FormState)
   declare state: FormState
 }
-/* eslint-enable pii/no-phone-number */

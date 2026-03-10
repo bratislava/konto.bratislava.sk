@@ -1,3 +1,4 @@
+/* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common'
 import { Prisma, PrismaClient } from '@prisma/client'
 
@@ -49,10 +50,9 @@ export default class PrismaService
     await this.$queryRaw`SELECT 1`
   }
 
-  async enableShutdownHooks(app: INestApplication): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    process.on('beforeExit', async () => {
-      await app.close()
+  enableShutdownHooks(app: INestApplication): void {
+    process.on('beforeExit', () => {
+      void app.close()
     })
   }
 }

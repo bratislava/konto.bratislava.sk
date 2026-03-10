@@ -1,3 +1,4 @@
+/* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { HttpException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files } from '@prisma/client'
@@ -31,7 +32,7 @@ export default class ScannerClientService {
         timeout: 5000,
       })
       this.logger.debug(
-        `ScannerClientService.health response.data: ${response.data.toString()}`,
+        `ScannerClientService.health response.data: ${JSON.stringify(response.data)}`,
       )
       return response.status === 200
     } catch (error) {
@@ -64,7 +65,7 @@ export default class ScannerClientService {
           },
         })
       this.logger.debug(
-        `ScannerClientService.scanFiles response.data: ${response.data.toString()}`,
+        `ScannerClientService.scanFiles response.data: ${JSON.stringify(response.data)}`,
       )
       return response.data
     } catch (error) {

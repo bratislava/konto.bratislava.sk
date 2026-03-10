@@ -25,25 +25,19 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FormUpdateBodyDto } from './dtos/forms.requests.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
-import FormsHelper from './forms.helper'
 
 @Injectable()
 export default class FormsService {
-  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly formsHelper: FormsHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-  ) {
-    this.logger = new LineLoggerSubservice('FormsService')
-  }
+  ) {}
 
   async updateForm(id: string, data: FormUpdateBodyDto): Promise<Forms> {
     // Try if this form with such id exists and is not archived
@@ -86,7 +80,7 @@ export default class FormsService {
       )
     }
 
-    if (!FormsHelper.isEditable(form)) {
+    if (!this.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
         FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
@@ -162,8 +156,8 @@ export default class FormsService {
   ): Promise<GetFormsResponseDto> {
     const { formDefinitionSlug, currentPage, pagination, states, userCanEdit } =
       query
-    const take = +(pagination ?? DEFAULT_PAGE_SIZE)
-    const skip = (+(currentPage ?? DEFAULT_PAGE) - 1) * take
+    const take = Number(pagination ?? DEFAULT_PAGE_SIZE)
+    const skip = (Number(currentPage ?? DEFAULT_PAGE) - 1) * take
 
     const editableStates = [
       { state: FormState.DRAFT },
@@ -264,7 +258,7 @@ export default class FormsService {
     return {
       countPages: Math.ceil(total / take),
       items: dataWithLatestFlag,
-      currentPage: +(currentPage ?? DEFAULT_PAGE),
+      currentPage: Number(currentPage ?? DEFAULT_PAGE),
       pagination: take,
       meta: {
         countByState: await this.getFormsCount(where),
@@ -307,7 +301,7 @@ export default class FormsService {
       )
     }
 
-    if (!FormsHelper.isEditable(form)) {
+    if (!this.isEditable(form)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
         `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} Current form state is: ${form.state}.`,
@@ -325,7 +319,7 @@ export default class FormsService {
       )
     }
 
-    if (!FormsHelper.isEditable(form)) {
+    if (!this.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
         FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
@@ -362,5 +356,12 @@ export default class FormsService {
         ),
       },
     })
+  }
+
+  isEditable(form: Forms): boolean {
+    return (
+      form.state === FormState.DRAFT ||
+      (form.state === FormState.ERROR && EDITABLE_ERRORS.includes(form.error))
+    )
   }
 }

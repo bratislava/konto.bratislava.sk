@@ -416,6 +416,7 @@ export default class FilesHelper {
 
   createMinioFileName(file: BufferedFileDto, fileName: string): string {
     const timestamp = Date.now().toString()
+    // eslint-disable-next-line sonarjs/hashing -- this is not used in a sensitive context
     const hash = createHash('sha1').update(timestamp).digest('hex').slice(0, 8)
     const extension = file.originalname.slice(
       file.originalname.lastIndexOf('.'),

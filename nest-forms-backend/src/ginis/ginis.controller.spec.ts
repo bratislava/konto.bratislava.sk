@@ -44,7 +44,6 @@ describe('GinisController', () => {
     expect(controller).toBeDefined()
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('getGinisDocumentByFormId (GET :formId)', () => {
     it('should throw error if form not found', async () => {
       controller['formsService'].getUniqueForm = jest

@@ -5,6 +5,7 @@ import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clie
 import { ChevronLeftIcon, DownloadIcon } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Button from '@/src/components/simple-components/Button'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
@@ -46,11 +47,7 @@ const MyApplicationDetailsHeader = ({
   const exportPdf = async () => {
     openSnackbarInfo(t('forms:info_messages.pdf_export'))
     try {
-      if (!formId)
-        throw new Error(
-          // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No form id.`,
-        )
+      if (!formId) throw new Error(`No form id.`)
       const response = await formsClient.convertControllerConvertToPdf(
         formId,
         {},
@@ -67,8 +64,8 @@ const MyApplicationDetailsHeader = ({
   }
 
   return (
-    <div className="bg-gray-50">
-      <div className="m-auto flex size-full max-w-(--breakpoint-lg) flex-col justify-end gap-4 py-4 lg:gap-6 lg:px-0 lg:py-8">
+    <SectionContainer className="bg-gray-50">
+      <div className="flex size-full flex-col justify-end gap-4 py-4 lg:gap-6 lg:py-8">
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
           <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
             <ChevronLeftIcon className="size-5" />
@@ -125,7 +122,7 @@ const MyApplicationDetailsHeader = ({
           </div>
         </div>
       </div>
-    </div>
+    </SectionContainer>
   )
 }
 

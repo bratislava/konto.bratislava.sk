@@ -3,16 +3,15 @@ import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import { ArrowLeftIcon } from '@/src/assets/ui-icons'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
-import { getLanguageKey } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
-  currentLanguage?: string
   backButtonHidden?: boolean
   desktopNavbarRef: RefObject<HTMLDivElement | null>
   mobileNavbarRef: RefObject<HTMLDivElement | null>
@@ -38,13 +37,11 @@ const BackButton = () => {
 
 export const AuthNavBar = ({
   className,
-  currentLanguage = 'sk',
   backButtonHidden,
   desktopNavbarRef,
   mobileNavbarRef,
 }: Props) => {
   const { t } = useTranslation('account')
-  const languageKey = getLanguageKey(currentLanguage)
 
   const { isOAuthLogin } = useAmplifyClientOAuthContext()
 
@@ -65,27 +62,27 @@ export const AuthNavBar = ({
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto flex h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between">
-          <div className="flex">
-            {!backButtonHidden && <BackButton />}
-            <Brand
-              className="group"
-              url={brandLinkHref}
-              title={
-                <p
-                  className={cn('text-p2 text-font', {
-                    'group-hover:text-gray-600': brandLinkHref,
-                  })}
-                >
-                  {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
-                  {t('NavBar.capitalCityOfSR')}
-                  {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
-                </p>
-              }
-            />
+        <SectionContainer>
+          <div className="flex h-[57px] w-full items-center justify-between">
+            <div className="flex">
+              {!backButtonHidden && <BackButton />}
+              <Brand
+                className="group"
+                url={brandLinkHref}
+                title={
+                  <p
+                    className={cn('text-p2 text-font', {
+                      'group-hover:text-gray-600': brandLinkHref,
+                    })}
+                  >
+                    {t('NavBar.capitalCityOfSR')} <span className="font-semibold">Bratislava</span>
+                  </p>
+                }
+              />
+            </div>
+            <OAuthLogo />
           </div>
-          <OAuthLogo />
-        </div>
+        </SectionContainer>
       </div>
       {/* Mobile */}
       <div

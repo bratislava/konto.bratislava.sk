@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/PaymentData'
@@ -64,7 +65,7 @@ const TaxFeePaymentPageContent = () => {
           { title: getTitle(), path: null },
         ]}
       />
-      <div className="m-auto w-full max-w-(--breakpoint-lg) px-4 py-6 lg:px-0 lg:py-12">
+      <SectionContainer className="py-6 lg:py-12">
         {isIdentityVerified ? (
           showChannelNeededBanner ? (
             <OfficialCorrespondenceChannelNeededBanner />
@@ -76,7 +77,7 @@ const TaxFeePaymentPageContent = () => {
         ) : (
           <IdentityVerificationBanner variant="verification-needed" />
         )}
-      </div>
+      </SectionContainer>
     </div>
   )
 }

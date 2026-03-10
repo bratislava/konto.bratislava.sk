@@ -57,7 +57,7 @@ data:
   start-master.sh: |
     #!/bin/bash
 
-    [[ -f $REDIS_PASSWORD_FILE ]] && export REDIS_PASSWORD="$(< "${REDIS_PASSWORD_FILE}")"
+    [[ -f "$REDIS_PASSWORD_FILE" ]] && export REDIS_PASSWORD="$(< "${REDIS_PASSWORD_FILE}")"
     if [[ -f /opt/bitnami/redis/mounted-etc/master.conf ]];then
         cp /opt/bitnami/redis/mounted-etc/master.conf /opt/bitnami/redis/etc/master.conf
     fi
@@ -165,7 +165,6 @@ spec:
         service: redis
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "vsan-default-storage-policy"
       resources:
         requests:
           storage: 10Gi

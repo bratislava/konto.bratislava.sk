@@ -119,10 +119,11 @@ export default class MinioClientSubservice {
   public async deleteFolder(
     bucket: string,
     path: string,
-  ): Promise<false | void> {
+  ): Promise<boolean> {
     // delete folder in mino bucket in desired path
     try {
       await this.minioService.client.removeObject(bucket, path); 
+      return true
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
@@ -137,7 +138,7 @@ export default class MinioClientSubservice {
   }
 
   // function which deletes file in minio bucket
-  public async deleteFile(bucket: string, path: string): Promise<false | void> {
+  public async deleteFile(bucket: string, path: string): Promise<boolean> {
     // delete file in mino bucket in desired path
     return this.deleteFolder(bucket, path)
   }

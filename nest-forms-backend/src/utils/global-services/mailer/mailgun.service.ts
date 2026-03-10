@@ -1,3 +1,4 @@
+/* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError } from '@prisma/client'
@@ -78,9 +79,9 @@ export default class MailgunService implements Mailer {
           }
 
       const mailgunResponse = await this.mailgunClient.messages.create(
-        process.env.MAILGUN_DOMAIN!,
+        this.configService.getOrThrow<string>('MAILGUN_DOMAIN'),
         {
-          from: emailFrom || process.env.MAILGUN_EMAIL_FROM!,
+          from: emailFrom || this.configService.getOrThrow<string>('MAILGUN_EMAIL_FROM'),
           to: data.to,
           subject: subject ?? MAILGUN_CONFIG[data.template].subject,
           attachment: mailgunAttachments,

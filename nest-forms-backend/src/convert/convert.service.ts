@@ -230,7 +230,6 @@ export default class ConvertService {
         const { error: errorEnum, message: errorMessage } =
           extractJsonErrorMapping[error.type]
         throw this.throwerErrorGuard.BadRequestException(
-          // eslint-disable-next-line custom-rules/thrower-error-guard-enum
           errorEnum,
           errorMessage,
         )

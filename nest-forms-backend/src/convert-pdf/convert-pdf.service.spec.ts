@@ -13,7 +13,6 @@ import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import PrismaService from '../prisma/prisma.service'
@@ -67,7 +66,6 @@ describe('ConvertPdfService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FormsHelper,
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),

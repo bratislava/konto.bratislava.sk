@@ -1,3 +1,4 @@
+/* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { Readable } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'

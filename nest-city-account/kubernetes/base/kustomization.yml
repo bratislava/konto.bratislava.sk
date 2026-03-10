@@ -6,6 +6,9 @@ resources:
 - stateful-set.yml
 - service-database.yml
 - rabbitmq.yml
+# Redis configuration
+- stateful-set-redis.yml
+- service-redis.yml
 configurations:
 - configuration.yml
 

@@ -72,7 +72,7 @@ export default class SharepointSubservice {
           error: FormError.SHAREPOINT_SEND_ERROR,
         },
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             SharepointErrorsEnum.GENERAL_ERROR,
@@ -292,7 +292,7 @@ export default class SharepointSubservice {
         },
       })
       .then(
-        (response: AxiosResponse<{ value: any[] }, object>) =>
+        (response: AxiosResponse<{ value: { displayName: string, name: string }[] }, object>) =>
           response.data.value,
       )
 
@@ -428,7 +428,7 @@ export default class SharepointSubservice {
         (response: AxiosResponse<{ access_token: string }, object>) =>
           response.data.access_token,
       )
-      .catch((error) => {
+      .catch((error: unknown) => {
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
           SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,

@@ -1,4 +1,5 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Test } from '@nestjs/testing'
 import { FormDefinitionSlovenskoSk } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -19,15 +20,26 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormSendOnlyRegisteredGuard } from './guards/form-send-only-registered.guard'
 import { CreateFormService } from './services/create-form.service'
 
+class FormSendOnlyRegisteredResponseDto {
+  formId: string
+}
+
 @Controller('test-form-send-e2e')
+@ApiTags('test-form-send-e2e')
 class TestFormSendController {
   @Get('form-send-only-registered/:formId')
   @UseGuards(FormSendOnlyRegisteredGuard)
+  @ApiOkResponse({
+    type: FormSendOnlyRegisteredResponseDto,
+  })
   getFormSendOnlyRegistered(@Param('formId') formId: string) {
     return { formId }
   }
 
   @Get('form-send/:formId')
+  @ApiOkResponse({
+    type: FormSendOnlyRegisteredResponseDto,
+  })
   getFormSend(@Param('formId') formId: string) {
     return { formId }
   }

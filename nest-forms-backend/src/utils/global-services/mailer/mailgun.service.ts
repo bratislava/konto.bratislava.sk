@@ -1,4 +1,3 @@
-/* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError } from '@prisma/client'

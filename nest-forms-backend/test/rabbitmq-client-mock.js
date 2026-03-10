@@ -1,3 +1,4 @@
+/* eslint-disable no-undef, @typescript-eslint/no-extraneous-class, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
 const mockPublish = jest.fn().mockResolvedValue({})
 
 class AmqpConnection {

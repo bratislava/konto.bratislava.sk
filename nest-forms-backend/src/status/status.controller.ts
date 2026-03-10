@@ -22,7 +22,7 @@ export default class StatusController {
   @Get()
   async status(): Promise<StatusResponseDto> {
     const prisma = await this.statusService.isPrismaRunning()
-    const minio = await this.statusService.isMinioRunning()
+    const minio = this.statusService.isMinioRunning()
     const scanner = await this.statusService.isScannerRunning()
     return {
       prisma,
@@ -55,7 +55,7 @@ export default class StatusController {
     type: ServiceRunningDto,
   })
   @Get('minio')
-  async isMinioRunning(): Promise<ServiceRunningDto> {
+  isMinioRunning(): ServiceRunningDto {
     return this.statusService.isMinioRunning()
   }
 

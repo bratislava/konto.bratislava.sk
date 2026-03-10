@@ -1,4 +1,3 @@
-/* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { HttpException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files } from '@prisma/client'

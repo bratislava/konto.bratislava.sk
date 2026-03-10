@@ -1,4 +1,3 @@
-/* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common'
 import { Prisma, PrismaClient } from '@prisma/client'
 

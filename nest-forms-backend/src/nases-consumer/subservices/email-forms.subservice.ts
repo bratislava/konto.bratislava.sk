@@ -90,7 +90,7 @@ export default class EmailFormsSubservice {
       default:
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Unsupported mailer: ${formDefinition.email.mailer}`,
+          `Unsupported mailer: ${formDefinition.email.mailer as string}`,
         )
     }
   }
@@ -127,8 +127,7 @@ export default class EmailFormsSubservice {
     }
 
     if (
-      formDefinition.type !== FormDefinitionType.Email ||
-      !formDefinition.email.address
+      formDefinition.type !== FormDefinitionType.Email
     ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         EmailFormsErrorsEnum.NOT_EMAIL_FORM,
@@ -271,7 +270,7 @@ export default class EmailFormsSubservice {
           error: FormError.NONE,
         },
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -333,7 +332,6 @@ export default class EmailFormsSubservice {
           ),
           firstName: null,
           slug: formDefinition.slug,
-          // eslint-disable-next-line xss/no-mixed-html
           htmlData: renderedSummary,
           formSentAt: form.formSentAt,
         },

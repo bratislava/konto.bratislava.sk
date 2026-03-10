@@ -44,7 +44,7 @@ const FormPageContent = ({ nonce }: { nonce?: string }) => {
           <ThankYouFormPageContent />
         ) : isFormOutdated ? (
           // It is not possible to display outdated form in any meaningful way,
-          // se the user needs to first make an action (if possible)
+          // so the user needs to first make an action (if possible)
           <FormVersionCompareAction />
         ) : (
           <FormContent />

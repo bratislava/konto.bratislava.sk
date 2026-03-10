@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import ImageMestskeKontoSituacia from '@/src/assets/images/mestske-konto-situacia.png'
-import AnnouncementBlock from '@/src/components/page-contents/IntroPageContent/Announcements/AnnouncementBlock'
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
+import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 
 const OfficialCorrespondenceChannelNeededBanner = () => {
   const { t } = useTranslation('account')

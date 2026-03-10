@@ -68,6 +68,7 @@ describe('UpvsQueueService', () => {
         edeskNumber: null,
         processedAt: null,
         failCount: 0,
+        norisId: 1,
       }
 
       // First call for urgent items, second call for high priority items
@@ -135,6 +136,7 @@ describe('UpvsQueueService', () => {
         edeskNumber: null,
         processedAt: null,
         failCount: 0,
+        norisId: 1,
       }
 
       // First call for urgent items (empty), second call for high priority items
@@ -172,8 +174,9 @@ describe('UpvsQueueService', () => {
         id: 'entity-1',
         userId: 'user1',
         birthNumber: '123456/7890',
+        externalId: '12345',
         uri: null,
-      } as PhysicalEntity
+      } as PhysicalEntity & { externalId: string }
 
       // First call for urgent items, second call for high priority items (empty)
       prismaMock.$queryRaw.mockResolvedValueOnce([mockEntity]).mockResolvedValueOnce([])
@@ -321,9 +324,10 @@ describe('UpvsQueueService', () => {
         id: `urgent-${i}`,
         userId: `user${i}`,
         birthNumber: `12345${i}/7890`,
+        externalId: `externalId${i}`,
         uri: null,
         createdAt: new Date(),
-      })) as PhysicalEntity[]
+      })) as (PhysicalEntity & { externalId: string })[]
 
       // First call returns urgent items, second call returns empty for high priority
       prismaMock.$queryRaw.mockResolvedValueOnce(mockUrgentEntities).mockResolvedValueOnce([])
@@ -363,17 +367,19 @@ describe('UpvsQueueService', () => {
         id: `urgent-${i}`,
         userId: `user${i}`,
         birthNumber: `12345${i}/7890`,
+        externalId: `externalId${i}`,
         uri: null,
         createdAt: new Date(),
-      })) as PhysicalEntity[]
+      })) as (PhysicalEntity & { externalId: string })[]
 
       // 4 high priority items
       const mockHighPriorityEntities = Array.from({ length: 4 }, (_, i) => ({
         id: `high-${i}`,
         userId: `user${i}`,
         uri: `rc://sk/${i}`,
+        externalId: `externalId${i}`,
         activeEdeskUpdatedAt: new Date('2020-01-01'),
-      })) as PhysicalEntity[]
+      })) as (PhysicalEntity & { externalId: string })[]
 
       // First call returns urgent items, second call returns high priority items
       prismaMock.$queryRaw

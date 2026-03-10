@@ -30,7 +30,7 @@ const Banner = ({
   return (
     <div
       className={cn(
-        'm-auto flex h-full w-full max-w-(--breakpoint-lg) flex-col items-center justify-end rounded-none bg-gray-800 py-6 lg:flex-row lg:rounded-3xl lg:py-0',
+        'm-auto flex h-full w-full flex-col items-center justify-end rounded-2xl bg-gray-800 py-6 lg:flex-row lg:py-0',
         className,
       )}
     >

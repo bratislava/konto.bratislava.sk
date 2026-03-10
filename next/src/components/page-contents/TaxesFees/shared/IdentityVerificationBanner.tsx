@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import ImageMestskeKontoSituacia from '@/src/assets/images/mestske-konto-situacia.png'
-import AnnouncementBlock from '@/src/components/page-contents/IntroPageContent/Announcements/AnnouncementBlock'
+import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {

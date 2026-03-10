@@ -4,7 +4,6 @@ import {
   TaxStatusEnum,
   TaxType,
 } from 'openapi-clients/tax'
-import React from 'react'
 
 import { formatDate } from '@/src/components/formatting/FormatDate'
 import TaxFeePaymentMethodsItem from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
@@ -35,31 +34,15 @@ const TaxFeePaymentMethods = () => {
         <TaxFeePaymentMethodsItem
           title={
             taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? (
-              taxData.type === TaxType.Dzn ? (
-                // temporary hide payment by card for KO, so translations are different
-                <Trans
-                  ns="account"
-                  i18nKey="tax_detail_section.tax_payment_rest.dzn"
-                  components={{ strong: <strong className="font-semibold" /> }}
-                />
-              ) : (
-                <Trans
-                  ns="account"
-                  i18nKey="tax_detail_section.tax_payment_rest.ko"
-                  components={{ strong: <strong className="font-semibold" /> }}
-                />
-              )
-            ) : taxData.type === TaxType.Dzn ? (
-              // temporary hide payment by card for KO, so translations are different
               <Trans
                 ns="account"
-                i18nKey="tax_detail_section.tax_payment_full.dzn"
+                i18nKey="tax_detail_section.tax_payment_rest"
                 components={{ strong: <strong className="font-semibold" /> }}
               />
             ) : (
               <Trans
                 ns="account"
-                i18nKey="tax_detail_section.tax_payment_full.ko"
+                i18nKey="tax_detail_section.tax_payment_full"
                 components={{ strong: <strong className="font-semibold" /> }}
               />
             )
@@ -82,24 +65,15 @@ const TaxFeePaymentMethods = () => {
           buttonVariant="solid"
           buttonHref={`${paymentPagePath}?sposob-uhrady=zvysna-suma`}
         />
-        {installmentPayment?.isPossible &&
+        {installmentPayment.isPossible &&
           installmentPayment.activeInstallment?.remainingAmount !== undefined && (
             <TaxFeePaymentMethodsItem
               title={
-                taxData.type === TaxType.Dzn ? (
-                  // temporary hide payment by card for KO, so translations are different
-                  <Trans
-                    ns="account"
-                    i18nKey="tax_detail_section.tax_payment_installment.dzn"
-                    components={{ strong: <strong className="font-semibold" /> }}
-                  />
-                ) : (
-                  <Trans
-                    ns="account"
-                    i18nKey="tax_detail_section.tax_payment_installment.ko"
-                    components={{ strong: <strong className="font-semibold" /> }}
-                  />
-                )
+                <Trans
+                  ns="account"
+                  i18nKey="tax_detail_section.tax_payment_installment"
+                  components={{ strong: <strong className="font-semibold" /> }}
+                />
               }
               subtitle={
                 installmentPayment.activeInstallment?.dueDate
@@ -114,8 +88,8 @@ const TaxFeePaymentMethods = () => {
               buttonHref={`${paymentPagePath}?sposob-uhrady=splatky`}
             />
           )}
-        {!installmentPayment?.isPossible &&
-          installmentPayment?.reasonNotPossible ===
+        {!installmentPayment.isPossible &&
+          installmentPayment.reasonNotPossible ===
             ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold &&
           taxData.type === TaxType.Dzn && (
             <div className="p-4 lg:p-6 lg:pt-0">
@@ -126,8 +100,8 @@ const TaxFeePaymentMethods = () => {
               />
             </div>
           )}
-        {!installmentPayment?.isPossible &&
-          installmentPayment?.reasonNotPossible ===
+        {!installmentPayment.isPossible &&
+          installmentPayment.reasonNotPossible ===
             ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.AfterDueDate && (
             <div className="p-4 lg:p-6 lg:pt-0">
               <Alert

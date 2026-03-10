@@ -222,9 +222,8 @@ export default class GinisService {
       return
     }
 
-    // ginis can't handle parallel uploads, it's causing race conditions on their side
-    for (let i = 0; i < form.files.length; i += 1) {
-      const file = form.files[i]
+    // ginis can't handle parallel uploads, it's causing race conditions on their side    
+    for (const file of form.files) {
       const minioFilePath = `${pospID}/${form.id}/${file.minioFileName}`
 
       // eslint-disable-next-line no-await-in-loop

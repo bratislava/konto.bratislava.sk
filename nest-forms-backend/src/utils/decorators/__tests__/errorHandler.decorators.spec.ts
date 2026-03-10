@@ -1,3 +1,5 @@
+import { noop } from 'lodash'
+
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import HandleErrors from '../errorHandler.decorators'
@@ -5,8 +7,8 @@ import HandleErrors from '../errorHandler.decorators'
 describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
 
-  beforeEach(async () => {
-    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(() => {})
+  beforeEach(() => {
+    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(noop)
   })
 
   afterEach(() => {
@@ -17,7 +19,7 @@ describe('HandleErrors', () => {
     class TestClass {
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
-        throw new Error('This is a test error')
+        return Promise.reject(new Error('This is a test error'))
       }
     }
 
@@ -39,12 +41,12 @@ describe('HandleErrors', () => {
 
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
-        throw this.throwerErrorGuard.BadRequestException(
+        return Promise.reject(this.throwerErrorGuard.BadRequestException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Error message',
           'Console error',
           new Error('Caused by error message test'),
-        )
+        ))
       }
     }
 

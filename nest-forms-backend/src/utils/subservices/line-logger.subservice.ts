@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as process from 'node:process'
 
 import { LoggerService } from '@nestjs/common'

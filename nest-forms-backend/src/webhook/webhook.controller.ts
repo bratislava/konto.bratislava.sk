@@ -17,7 +17,7 @@ export default class WebhookController {
     description: 'Endpoint to receive webhook data and log it',
   })
   @Post()
-  async receiveWebhook(@Body() data: WebhookDto): Promise<void> {
+  receiveWebhook(@Body() data: WebhookDto): void {
     this.logger.log('Received webhook data succesfully', {
       formId: data.formId,
     })

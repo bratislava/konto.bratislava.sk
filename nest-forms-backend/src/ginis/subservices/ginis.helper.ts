@@ -14,7 +14,7 @@ export default class GinisHelper {
         state: FormState.ERROR,
         error: FormError.GINIS_SEND_ERROR,
       })
-    } catch (error) {
+    } catch {
       // ignore
     }
   }

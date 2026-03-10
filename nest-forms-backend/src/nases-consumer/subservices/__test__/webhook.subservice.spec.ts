@@ -10,6 +10,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
+import { noop } from 'lodash'
 
 import prismaMock from '../../../../test/singleton'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
@@ -54,10 +55,10 @@ describe('WebhookSubservice', () => {
     } as unknown as LineLoggerSubservice
     service['logger'] = mockLogger
 
-    jest.spyOn(console, 'log').mockImplementation(() => {})
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    jest.spyOn(console, 'warn').mockImplementation(() => {})
-    jest.spyOn(console, 'info').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(noop)
+    jest.spyOn(console, 'error').mockImplementation(noop)
+    jest.spyOn(console, 'warn').mockImplementation(noop)
+    jest.spyOn(console, 'info').mockImplementation(noop)
   })
 
   afterEach(() => {

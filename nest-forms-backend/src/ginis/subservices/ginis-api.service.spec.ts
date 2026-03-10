@@ -84,18 +84,17 @@ describe('GinisAPIService', () => {
 
   describe('getOwnerDetail', () => {
     it('should call both functions', async () => {
-      const { detailFunkcnihoMista, detailReferenta } = service['ginis'].gin
-
+      const gin = service['ginis'].gin
       const detailFunkcnihoMistaSpy = jest
-        .spyOn(service['ginis'].gin, 'detailFunkcnihoMista')
+        .spyOn(gin, 'detailFunkcnihoMista')
         .mockResolvedValue({
           'Detail-funkcniho-mista': { 'Id-referenta': '1' },
-        } as Awaited<ReturnType<typeof detailFunkcnihoMista>>)
+        } as Awaited<ReturnType<typeof gin.detailFunkcnihoMista>>)
       const detailReferentaSpy = jest
-        .spyOn(service['ginis'].gin, 'detailReferenta')
+        .spyOn(gin, 'detailReferenta')
         .mockResolvedValue({
           'Detail-referenta': { 'Id-osoby': 'id1' },
-        } as Awaited<ReturnType<typeof detailReferenta>>)
+        } as Awaited<ReturnType<typeof gin.detailReferenta>>)
 
       const result = await service.getOwnerDetail('fun123')
 

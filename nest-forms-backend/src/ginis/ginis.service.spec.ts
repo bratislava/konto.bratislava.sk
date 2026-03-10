@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-email */
 import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 
@@ -64,6 +63,7 @@ describe('GinisService', () => {
       MAILGUN_HOST: 'test',
       MAILGUN_EMAIL_FROM: 'test',
       RABBIT_MQ_USERNAME: 'test',
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
       RABBIT_MQ_PASSWORD: 'test',
       RABBIT_MQ_HOST: 'test',
       RABBIT_MQ_PORT: 'test',
@@ -502,7 +502,8 @@ describe('GinisService', () => {
       const sendToSharepointSpy = jest.spyOn(service['sharepointQueue'], 'add')
 
       let result = await service.onQueueConsumption({
-        ...messageBase,
+        formId: messageBase.formId,
+        tries: messageBase.tries,
         userData: {
           firstName: 'first',
           email: null,
@@ -569,7 +570,8 @@ describe('GinisService', () => {
       const sendToSharepointSpy = jest.spyOn(service['sharepointQueue'], 'add')
 
       let result = await service.onQueueConsumption({
-        ...messageBase,
+        formId: messageBase.formId,
+        tries: messageBase.tries,
         userData: {
           firstName: 'first',
           email: null,
@@ -888,7 +890,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1011,7 +1012,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1234,7 +1234,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1256,7 +1255,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1289,7 +1287,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1318,7 +1315,6 @@ describe('GinisService', () => {
       )
       const form = formBase
       const mockXmlObject = { root: { data: 'test' } }
-      // eslint-disable-next-line xss/no-mixed-html
       const mockXmlString =
         '<?xml version="1.0"?><root><data>test</data></root>'
 
@@ -1496,4 +1492,3 @@ describe('GinisService', () => {
     })
   })
 })
-/* eslint-enable pii/no-email */

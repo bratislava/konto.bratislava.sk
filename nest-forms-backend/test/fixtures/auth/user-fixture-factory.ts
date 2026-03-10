@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { UnauthorizedException } from '@nestjs/common'
 import { TestingModuleBuilder } from '@nestjs/testing'
 import {
@@ -248,6 +249,7 @@ export class UserFixtureFactory {
     let ico: string
     do {
       const randomNumber =
+        // eslint-disable-next-line sonarjs/pseudo-random
         Math.floor(Math.random() * 9_000_000_000) + 1_000_000_000
       ico = `ico://sk/${randomNumber}`
     } while (this.generatedIcos.has(ico))
@@ -281,7 +283,7 @@ export class UserFixtureFactory {
             (fixture) =>
               fixture.headers.Authorization === `Bearer ${bearerToken}`,
           )
-          if (userFixture) return userFixture.user.cognitoJwtPayload
+          if (userFixture) return Promise.resolve(userFixture.user.cognitoJwtPayload)
           throw new UnauthorizedException('Invalid bearer token')
         },
       } satisfies Partial<CognitoJwtVerifyService>)
@@ -291,7 +293,7 @@ export class UserFixtureFactory {
           const userFixture = this.authUsers.find(
             (fixture) => fixture.sub === sub,
           )
-          if (userFixture) return userFixture.user.cognitoUser
+          if (userFixture) return Promise.resolve(userFixture.user.cognitoUser)
           throw new UnauthorizedException('Invalid sub')
         },
       } satisfies Partial<CognitoUserService>)
@@ -302,18 +304,18 @@ export class UserFixtureFactory {
             (fixture) =>
               fixture.headers.Authorization === `Bearer ${bearerToken}`,
           )
-          if (userFixture) return userFixture.user.cityAccountUser
+          if (userFixture) return Promise.resolve(userFixture.user.cityAccountUser)
           throw new UnauthorizedException('Invalid bearer token')
         },
       } satisfies Partial<CityAccountUserService>)
       .overrideProvider(CognitoGuestIdentityService)
       .useValue({
         verifyGuestIdentityId: async (guestIdentityId: string) =>
-          this.guestUsers.some(
+          Promise.resolve(this.guestUsers.some(
             (fixture) =>
               fixture.headers['X-Cognito-Guest-Identity-Id'] ===
               guestIdentityId,
-          ),
+          )),
       } satisfies Partial<CognitoGuestIdentityService>)
 
     return module

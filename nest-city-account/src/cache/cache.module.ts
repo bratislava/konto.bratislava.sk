@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { CacheModule as NestCacheModule } from '@nestjs/cache-manager'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { redisStore } from 'cache-manager-redis-yet'
+import KeyvRedis from '@keyv/redis'
 
 /**
  * Redis-based cache module for the application
@@ -30,18 +30,7 @@ import { redisStore } from 'cache-manager-redis-yet'
         }
 
         return {
-          store: await redisStore({
-            url: redisUrl,
-            socket: {
-              connectTimeout: 5000,
-              reconnectStrategy: (retries: number) => {
-                if (retries > 10) {
-                  return new Error('Max retry attempts reached for Redis connection')
-                }
-                return Math.min(100 * 2 ** retries, 3000)
-              },
-            },
-          }),
+          stores: [new KeyvRedis(redisUrl)],
         }
       },
     }),

@@ -14,7 +14,6 @@ import {
 } from 'openapi-clients/slovensko-sk'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import { parseBirthNumberFromUri } from '../utils/upvs'
 import _ from 'lodash'
 
 export type CreateManyParam = {
@@ -116,93 +115,51 @@ export class NasesService {
   // for successful requests, the uri that was returned by UPVS is saved - this might be different from the one that was requested (i.e. when the surname changes)
   // eslint-disable-next-line sonarjs/cognitive-complexity
   async createMany(inputs: CreateManyParam): Promise<CreateManyResult> {
-    if (inputs.length === 0 || inputs.length > 100) {
+    const uniqueInputs = _.uniqBy(inputs, 'uri')
+    const inputsByUri = _.keyBy(uniqueInputs, 'uri')
+
+    if (inputs.length === 0 || inputs.length > 10) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
-        'Must provide between 1 and 100 URIs to validate'
+        'Must provide between 1 and 10 URIs to validate'
       )
     }
 
-    const inputsByBirthNumbers = _.groupBy(inputs, (input) => {
-      const parsedBirthNumber = parseBirthNumberFromUri(input.uri)
-      if (!parsedBirthNumber) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          `Invalid uri found among inputs: ${input.uri}`
-        )
-      }
-      return parsedBirthNumber
-    })
+    const results = await this.searchUpvsIdentitiesByUri(uniqueInputs.map((input) => input.uri))
 
-    const results = await this.searchUpvsIdentitiesByUri(inputs.map((input) => input.uri))
-
-    if (!Array.isArray(results)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
-        VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
-        JSON.stringify(results)
+    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = results
+      .filter(
+        (result): result is Omit<ApiIamIdentitiesIdGet200Response, 'uri'> & { uri: string } =>
+          !!result.uri
       )
-    }
-
-    // for each db write we collect the written object into result that we return
-    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = []
-    // we collect birthNumbersWithSuccessfulUris so that we can easily filter those out and create db records marking a failed request for all the rest
-    const birthNumbersWithSuccessfulUris = new Set<string>()
-    for (const result of results) {
-      try {
-        if (!result.uri) continue
-
-        const parsedBirthNumber = parseBirthNumberFromUri(result.uri)
-        if (parsedBirthNumber === null) continue
-
-        const physicalEntityIds = _.uniq(
-          inputsByBirthNumbers[parsedBirthNumber].map((input) => input.physicalEntityId)
-        )
-        if (physicalEntityIds.length > 1) {
-          this.logger.error(
-            'Multiple physicalEntityIds found for the same birthNumber. We must assign manually - ignoring these in results'
-          )
-          continue
-        } else {
-          // either we found just one physicalEntityId or there were no physicalEntityIds provided for this birth number
-          const successfulPhysicalEntityId = physicalEntityIds[0] ?? null
-          // we'll not add any uris with this birth number among the unsuccessful ones
-          birthNumbersWithSuccessfulUris.add(parsedBirthNumber)
-          // if we have a match, we ignore all the variants of the uris provided and save only the result with the return uri
-          // IMPORTANT NOTE - this uri might be different from any in the inputs - i.e. when the surename changes, the old uri still matches
-          // if matching back to the requested uris, use birthNumbers as guides
-          resultDataSuccess.push({
-            physicalEntityId: successfulPhysicalEntityId,
-            uri: result.uri,
-            data: result,
-          })
+      .map((result) => {
+        return {
+          uri: result.uri,
+          data: result,
+          physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
         }
-      } catch (error) {
-        this.logger.error('Failed to save data. Will continue to next result. Error: ', error)
-      }
-    }
+      })
 
-    // you can test up to 100 uris, but you'll get max 10 entities back
-    // if we get back (at least) 10 entities, we can't say anything about the validity of the rest of the uris, we don't store any as 'failed'
     if (resultDataSuccess.length >= 10) {
+      this.logger.error({
+        message:
+          'Received at least 10 successful results, cannot determine validity of the rest of the uris',
+        alert: 1,
+      })
       return {
         success: resultDataSuccess,
         failed: [],
       }
     }
-    // if we get less than 10 entities, it means that the rest of the tested uris did not match - we store those so that we know what not to test
-    const failedBirthNumbers = Object.keys(inputsByBirthNumbers).filter(
-      (birthNumber) => !birthNumbersWithSuccessfulUris.has(birthNumber)
-    )
-    const resultDataFailed: { physicalEntityId?: string; uri: string }[] = []
-    for (const failedBirthNumber of failedBirthNumbers) {
-      for (const failedInput of inputsByBirthNumbers[failedBirthNumber]) {
-        resultDataFailed.push({
-          physicalEntityId: failedInput.physicalEntityId ?? undefined,
-          uri: failedInput.uri,
-        })
-      }
-    }
+
+    const successfulUris = new Set(resultDataSuccess.map((r) => r.uri))
+
+    const resultDataFailed = uniqueInputs
+      .filter((input) => !successfulUris.has(input.uri))
+      .map((input) => ({
+        physicalEntityId: input.physicalEntityId ?? undefined,
+        uri: input.uri,
+      }))
 
     return {
       success: resultDataSuccess,

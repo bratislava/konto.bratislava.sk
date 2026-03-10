@@ -20,5 +20,5 @@ async function main(): Promise<void> {
   logger.log(`RabbitMQ uri: ${process.env.RABBIT_MQ_URI as string}`)
 }
 
-// eslint-disable-next-line unicorn/prefer-top-level-await, @typescript-eslint/no-floating-promises
-main()
+ 
+void main()

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 import { ConvertErrorsEnum } from '../../../convert/errors/convert.errors.enum'
 import { FilesErrorsEnum } from '../../../files/files.errors.enum'
 import { FormsErrorsEnum } from '../../../forms/forms.errors.enum'

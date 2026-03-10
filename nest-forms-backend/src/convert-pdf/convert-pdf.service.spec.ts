@@ -56,7 +56,7 @@ describe('ConvertPdfService', () => {
     updatedAt: new Date(),
   } as const
 
-  beforeAll(async () => {
+  beforeAll(() => {
     process.env = {
       ...process.env,
       MIMETYPE_WHITELIST: 'a b c',

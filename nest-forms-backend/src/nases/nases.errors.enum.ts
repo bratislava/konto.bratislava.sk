@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values -- Intentional: many error codes map to same message */
 export enum NasesErrorsEnum {
   UNABLE_ADD_FORM_TO_RABBIT = 'UNABLE_ADD_FORM_TO_RABBIT',
   FORM_ASSIGNED_TO_OTHER_USER = 'FORM_ASSIGNED_TO_OTHER_USER',

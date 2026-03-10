@@ -133,10 +133,16 @@ export class NasesService {
           !!result.uri
       )
       .map((result) => {
+        if (!inputsByUri[result.uri]) {
+          this.logger.warn({
+            message: `Failed to find input for URI: ${result.uri}`,
+            inputs: inputs,
+          })
+        }
         return {
           uri: result.uri,
           data: result,
-          physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
+          physicalEntityId: inputsByUri[result.uri]?.physicalEntityId || null,
         }
       })
 

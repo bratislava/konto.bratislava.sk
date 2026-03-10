@@ -51,7 +51,7 @@ import {
 
 export interface NaturalPersonData {
   given_names?: string[]
-  family_names?: Array<{ value?: string; primary?: boolean }>
+  family_names?: { value?: string; primary?: boolean }[]
   birth?: {
     date?: string
   }
@@ -135,13 +135,13 @@ export default class NasesUtilsService {
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-      // eslint-disable-next-line no-underscore-dangle
+       
       const _buf = new Array<any>()
 
       stream.on('data', (chunk) => _buf.push(chunk))
-      stream.on('end', () => resolve(Buffer.concat(_buf)))
-      // eslint-disable-next-line prefer-promise-reject-errors, @typescript-eslint/restrict-template-expressions
-      stream.on('error', (err) => reject(`error converting stream - ${err}`))
+      stream.on('end', () => { resolve(Buffer.concat(_buf)); })
+       
+      stream.on('error', (err) => { reject(`error converting stream - ${err}`); })
     })
   }
 
@@ -164,14 +164,14 @@ export default class NasesUtilsService {
       },
     })
 
-    // eslint-disable-next-line no-restricted-syntax
+     
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
       const fileStream = await this.minioClientSubservice.loadFileStream(
         this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET'),
         `${file.pospId}/${form.id}/${file.minioFileName}`,
       )
-      // eslint-disable-next-line no-restricted-syntax
+       
       const fileBuffer = await this.stream2buffer(fileStream)
       const fileBase64 = fileBuffer.toString('base64')
       result.push({

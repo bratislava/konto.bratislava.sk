@@ -235,7 +235,7 @@ export default class EmailFormsSubservice {
             formId: form.id,
             messageSubject: extractFormSubjectPlain(
               formDefinition,
-              form.formDataJson as GenericObjectType,
+              form.formDataJson,
             ),
             firstName: userName,
             slug: formDefinition.slug,

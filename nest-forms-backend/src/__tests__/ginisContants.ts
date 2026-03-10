@@ -1,6 +1,6 @@
 import { SslDetailDokumentuResponse } from '@bratislava/ginis-sdk'
 
-// eslint-disable-next-line import/prefer-default-export
+ 
 export const mockGinisDocumentData: SslDetailDokumentuResponse = {
   'Wfl-dokument': {
     'Id-dokumentu': 'MAG0X03RZDEB',

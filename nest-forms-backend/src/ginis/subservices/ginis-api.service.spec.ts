@@ -14,11 +14,11 @@ import GinisAPIService, { GinContactType } from './ginis-api.service'
 jest.mock('@bratislava/ginis-sdk', () => ({
   Ginis: class {
     ssl = {
-      detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
-      pridatSouborMtom: jest.fn(async (bodyObj: object) => bodyObj),
-      prehledDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
-      prideleni: jest.fn(async (bodyObj: object) => bodyObj),
-      zalozPisemnost: jest.fn(async () => ({
+      detailDokumentu: jest.fn((bodyObj: object) => bodyObj),
+      pridatSouborMtom: jest.fn((bodyObj: object) => bodyObj),
+      prehledDokumentu: jest.fn((bodyObj: object) => bodyObj),
+      prideleni: jest.fn((bodyObj: object) => bodyObj),
+      zalozPisemnost: jest.fn(() => ({
         'Zaloz-pisemnost': {
           'Id-dokumentu': 'test-doc-id',
         },
@@ -26,10 +26,10 @@ jest.mock('@bratislava/ginis-sdk', () => ({
     }
 
     gin = {
-      detailFunkcnihoMista: jest.fn(async (bodyObj: object) => bodyObj),
-      detailReferenta: jest.fn(async (bodyObj: object) => bodyObj),
-      najdiEsu: jest.fn(async (bodyObj: object) => bodyObj),
-      editEsu: jest.fn(async (bodyObj: object) => bodyObj),
+      detailFunkcnihoMista: jest.fn((bodyObj: object) => bodyObj),
+      detailReferenta: jest.fn((bodyObj: object) => bodyObj),
+      najdiEsu: jest.fn((bodyObj: object) => bodyObj),
+      editEsu: jest.fn((bodyObj: object) => bodyObj),
     }
   },
 }))
@@ -121,13 +121,10 @@ describe('GinisAPIService', () => {
       })
 
       const filename_first50 =
-        // eslint-disable-next-line no-secrets/no-secrets
         'B01abcdefghijABCDEFGHIJ1-B02klmnopqrstuvWXYZabcd2-'
       const filename_middle204 =
-        // eslint-disable-next-line no-secrets/no-secrets
         'B03LMNOP12345qrstuvABCD7-B04wxyzJKLMN6789opqrHIJ1-B05ZYXWVUTSRQ0987654321A-B06mnopqABCDEF123456789W-B07ijklLMNOPQR98765432S3-B08GHIJK1234mnopWXYZ5678-B09abcdEFGH567890ijklmNO-B10uvwxYZABCD345678stuv1-B11Z'
       const filename_last50 =
-        // eslint-disable-next-line no-secrets/no-secrets
         'YXWVUTonmlkjihgfed01-B12PQRSxyz1234567890ABCD_.pdf'
 
       await service.uploadFile(
@@ -758,11 +755,9 @@ describe('GinisAPIService', () => {
     it('should try uri first, then identifier, then email', async () => {
       const uriSpy = jest
         .spyOn(service as any, 'findAndUpdateContactByUri')
-        // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       const identifierSpy = jest
         .spyOn(service as any, 'findAndUpdateContactByIdentifier')
-        // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       const emailSpy = jest
         .spyOn(service as any, 'findAndUpdateContactByEmail')
@@ -806,15 +801,12 @@ describe('GinisAPIService', () => {
     it('should return undefined when all searches fail', async () => {
       jest
         .spyOn(service as any, 'findAndUpdateContactByUri')
-        // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       jest
         .spyOn(service as any, 'findAndUpdateContactByIdentifier')
-        // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       jest
         .spyOn(service as any, 'findAndUpdateContactByEmail')
-        // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
 
       const result = await service.findAndUpdateContact({
@@ -941,7 +933,6 @@ describe('GinisAPIService', () => {
     it('should create contact when not found', async () => {
       jest
         .spyOn(service, 'findAndUpdateContact')
-        // eslint-disable-next-line unicorn/no-useless-undefined
         .mockResolvedValue(undefined)
       jest.spyOn(service, 'createContact').mockResolvedValue('new-contact-id')
 

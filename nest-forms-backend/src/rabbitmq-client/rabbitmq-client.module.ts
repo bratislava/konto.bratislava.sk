@@ -42,9 +42,7 @@ export default class RabbitmqClientModule {
     this.rabbitmqClientService = new RabbitmqClientService(amqpConnection)
     this.logger = new LineLoggerSubservice('RabbitmqClientModule')
     this.logger.log(
-      `Setting up rabbit mq connection to: ${<string>(
-        process.env.RABBIT_MQ_URI
-      )}`,
+      `Setting up rabbit mq connection to: ${process.env.RABBIT_MQ_URI as string}`,
     )
   }
 }

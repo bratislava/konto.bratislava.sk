@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/dot-notation */
+ 
 import { GinisError } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -157,4 +157,4 @@ describe('GinisController', () => {
     })
   })
 })
-/* eslint-enable @typescript-eslint/dot-notation */
+ 

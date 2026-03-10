@@ -292,7 +292,7 @@ export default class SharepointSubservice {
         },
       })
       .then(
-        (response: AxiosResponse<{ value: Array<any> }, object>) =>
+        (response: AxiosResponse<{ value: any[] }, object>) =>
           response.data.value,
       )
 

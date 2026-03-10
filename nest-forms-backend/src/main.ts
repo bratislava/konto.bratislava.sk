@@ -17,7 +17,7 @@ async function main(): Promise<void> {
 
   await app.listen(baConfigService.self.port)
   logger.log(`Nest is running on port: ${baConfigService.self.port}`)
-  logger.log(`RabbitMQ uri: ${<string>process.env.RABBIT_MQ_URI}`)
+  logger.log(`RabbitMQ uri: ${process.env.RABBIT_MQ_URI as string}`)
 }
 
 // eslint-disable-next-line unicorn/prefer-top-level-await, @typescript-eslint/no-floating-promises

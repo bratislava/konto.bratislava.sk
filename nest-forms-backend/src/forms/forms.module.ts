@@ -2,7 +2,6 @@ import { forwardRef, Module } from '@nestjs/common'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
-// eslint-disable-next-line import/no-cycle
 import FilesModule from '../files/files.module'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'

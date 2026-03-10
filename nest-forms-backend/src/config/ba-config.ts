@@ -3,7 +3,7 @@ import EnvironmentVariables from './environment-variables'
 export default class BaConfig {
   constructor(protected validatedConfig: EnvironmentVariables) {}
 
-  /* eslint-disable @typescript-eslint/explicit-function-return-type */
+   
   get environment() {
     return {
       nodeEnv: this.validatedConfig.NODE_ENV,
@@ -169,5 +169,5 @@ export default class BaConfig {
       versioning: this.validatedConfig.FEATURE_TOGGLE_VERSIONING,
     }
   }
-  /* eslint-enable @typescript-eslint/explicit-function-return-type */
+   
 }

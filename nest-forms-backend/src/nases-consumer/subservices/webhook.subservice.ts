@@ -4,7 +4,7 @@ import { FormState } from '@prisma/client'
 import axios from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
@@ -79,7 +79,7 @@ export default class WebhookSubservice {
       )
     }
 
-    const formData = omitExtraData(
+    const formData = baOmitExtraData(
       formDefinition.schema,
       form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),

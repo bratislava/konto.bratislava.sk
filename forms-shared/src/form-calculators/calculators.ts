@@ -1,4 +1,4 @@
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with { 'resolution-mode': 'import' }
 import { Expression, Parser } from 'expr-eval'
 import { clone } from 'lodash'
 

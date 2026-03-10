@@ -13,15 +13,16 @@ describe('RF01 -', { testIsolation: false }, () => {
   })
 
   devices
-    .filter((device) => Cypress.env('devices')[`${device}`])
+    .filter((device) => Cypress.expose('devices')[`${device}`])
     .forEach((device) => {
-      context(device, Cypress.env('resolution')[`${device}`], () => {
+      context(device, Cypress.expose('resolution')[`${device}`], () => {
         const emailDomain = 'cypress.test'
         const emailHash = `${Date.now() + device}@${emailDomain}`
         const wrongEmailHash = `${Date.now() + device}wrongemail@${emailDomain}`
 
         it('1. Submitting a empty registration form.', () => {
           cy.visit('/registracia')
+          cy.waitForHydration()
           cy.hideNavbar(device)
 
           cy.dataCy('registration-container').should('be.visible') //.matchImage()
@@ -105,6 +106,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
           it('4. Changing password.', () => {
             cy.visit('/moj-profil')
+            cy.waitForHydration()
             cy.get('[data-cy=change-password-button]').click()
             cy.location('pathname', { timeout: 4000 }).should('eq', '/zmena-hesla')
             cy.dataCy('change-password-form').then((form) => {
@@ -166,6 +168,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
           it('1. Submitting wrong value.', () => {
             cy.visit('/zabudnute-heslo')
+            cy.waitForHydration()
             cy.hideNavbar(device)
 
             cy.dataCy('forgotten-password-form').then((form) => {

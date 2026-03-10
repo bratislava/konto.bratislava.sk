@@ -1,6 +1,8 @@
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { SharepointData } from './sharepointTypes'
-import { type RJSFSchema } from '@rjsf/utils'
+import type { RJSFSchema } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { FormSendPolicy } from '../send-policy/sendPolicy'
 import {
   SchemaFormDataExtractor,

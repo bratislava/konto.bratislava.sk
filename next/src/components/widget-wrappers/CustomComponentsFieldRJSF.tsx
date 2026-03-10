@@ -4,8 +4,8 @@ import { CustomComponentFieldUiOptions } from 'forms-shared/generator/uiOptionsT
 import CustomComponents from '@/src/components/widget-components/CustomComponents/CustomComponents'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-const CustomComponentsFieldRJSF = ({ idSchema, uiSchema }: FieldProps) => {
-  const id = idSchema.$id
+const CustomComponentsFieldRJSF = ({ fieldPathId, uiSchema }: FieldProps) => {
+  const id = fieldPathId.$id
   const options = getUiOptions(uiSchema) as CustomComponentFieldUiOptions
   const { customComponents } = options
 

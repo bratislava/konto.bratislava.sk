@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
 import {
   AuthFixtureUser,
@@ -32,7 +32,7 @@ jest.mock('../files/files.service')
 jest.mock('../utils/subservices/minio-client.subservice')
 jest.mock('../scanner-client/scanner-client.service')
 jest.mock('forms-shared/form-utils/omitExtraData', () => ({
-  omitExtraData: jest.fn(),
+  baOmitExtraData: jest.fn(),
 }))
 jest.mock('../form-validator-registry/form-validator-registry.service')
 
@@ -277,7 +277,7 @@ describe('FormsService', () => {
       ).mockReturnValue(mockRegistry)
 
       const omittedData = { existingData: true }
-      ;(omitExtraData as jest.Mock).mockReturnValue(omittedData)
+      ;(baOmitExtraData as jest.Mock).mockReturnValue(omittedData)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         jsonVersion: '1.1.0',
         schema: { type: 'object' },
@@ -286,7 +286,7 @@ describe('FormsService', () => {
       const updateSpy = jest.spyOn(prismaMock.forms, 'update')
       await service.bumpJsonVersion(formId)
 
-      expect(omitExtraData).toHaveBeenCalledWith(
+      expect(baOmitExtraData).toHaveBeenCalledWith(
         { type: 'object' },
         formDataJson,
         mockRegistry,

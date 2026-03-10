@@ -11,7 +11,9 @@ import {
 } from '../summary-renderer/SummaryRenderer'
 import Markdown from 'react-markdown'
 import cx from 'classnames'
-import { GenericObjectType, ValidationData } from '@rjsf/utils'
+import type { GenericObjectType, ValidationData } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { FileInfoSummary } from '../form-files/fileStatus'
 import { FormSummary } from '../summary/summary'
 

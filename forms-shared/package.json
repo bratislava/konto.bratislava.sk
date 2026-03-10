@@ -76,7 +76,7 @@
     "@types/json-schema": "7.0.15",
     "@types/json-schema-merge-allof": "^0.6.5",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^25.3.5",
+    "@types/node": "^24.12.0",
     "@types/object-hash": "^3.0.6",
     "@types/prompts": "^2.4.9",
     "@types/react": "19.2.14",
@@ -121,11 +121,11 @@
     "react-dom": ">=19.0.0"
   },
   "engines": {
-    "node": ">=22.21.x",
-    "npm": ">=10.9.x"
+    "node": ">=24.14.x",
+    "npm": ">=11.9.x"
   },
   "volta": {
-    "node": "22.21.1",
-    "npm": "10.9.4"
+    "node": "24.14.0",
+    "npm": "11.9.0"
   }
 }

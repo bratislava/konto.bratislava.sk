@@ -56,20 +56,22 @@ metadata:
 data:
   start-master.sh: |
     #!/bin/bash
+    # Shell variables use $${blank} escaping to prevent bratiska-cli envsubst
+    # from substituting them at deploy time (same pattern as nginx configs).
 
-    [[ -f "$REDIS_PASSWORD_FILE" ]] && export REDIS_PASSWORD="$(< "${REDIS_PASSWORD_FILE}")"
+    [[ -f "$${blank}REDIS_PASSWORD_FILE" ]] && export REDIS_PASSWORD="$(< "$${blank}{REDIS_PASSWORD_FILE}")"
     if [[ -f /opt/bitnami/redis/mounted-etc/master.conf ]];then
         cp /opt/bitnami/redis/mounted-etc/master.conf /opt/bitnami/redis/etc/master.conf
     fi
     if [[ -f /opt/bitnami/redis/mounted-etc/redis.conf ]];then
         cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
     fi
-    ARGS=("--port" "${REDIS_PORT}")
-    ARGS+=("--requirepass" "${REDIS_PASSWORD}")
-    ARGS+=("--masterauth" "${REDIS_PASSWORD}")
+    ARGS=("--port" "$${blank}{REDIS_PORT}")
+    ARGS+=("--requirepass" "$${blank}{REDIS_PASSWORD}")
+    ARGS+=("--masterauth" "$${blank}{REDIS_PASSWORD}")
     ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
     ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
-    exec redis-server "${ARGS[@]}"
+    exec redis-server "$${blank}{ARGS[@]}"
 ---
 apiVersion: apps/v1
 kind: StatefulSet

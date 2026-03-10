@@ -1,31 +1,25 @@
 import { PropsWithChildren } from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import cn from '@/src/utils/cn'
 
 type AccountSectionHeaderBase = PropsWithChildren<{
   title: string
   text?: string
+  className?: string
   /** This is used when page contains other h1, such as homepage */
   titleAsParagraph?: boolean
   /** Temporary added before better solution is implemented */
   titleWrapperClassName?: string
-  /** Temporary added before better solution is implemented */
-  wrapperClassName?: string
 }>
 
 const PageHeader = (props: AccountSectionHeaderBase) => {
-  const { title, text, titleAsParagraph, titleWrapperClassName, wrapperClassName, children } = props
+  const { title, text, className, titleAsParagraph, titleWrapperClassName, children } = props
+
   return (
-    <div className="bg-gray-50">
-      <div
-        className={cn(
-          'm-auto flex max-w-(--breakpoint-lg) flex-col gap-4 lg:gap-6',
-          wrapperClassName,
-        )}
-      >
-        <span
-          className={cn('size-full justify-end py-6 pl-4 lg:px-0 lg:py-16', titleWrapperClassName)}
-        >
+    <SectionContainer className={cn('bg-gray-50', className)}>
+      <div className="flex flex-col gap-4 lg:gap-6">
+        <span className={cn('size-full justify-end py-6 lg:px-0 lg:py-16', titleWrapperClassName)}>
           {titleAsParagraph ? (
             <p className="text-h1">{title}</p>
           ) : (
@@ -35,7 +29,7 @@ const PageHeader = (props: AccountSectionHeaderBase) => {
         </span>
         {children}
       </div>
-    </div>
+    </SectionContainer>
   )
 }
 

@@ -6,10 +6,6 @@ export const isBrowser = () => !isServer()
 
 export const isProductionDeployment = () => !environment.isStaging
 
-export const getLanguageKey = (currentLanguage?: string) => {
-  return currentLanguage === 'sk' ? 'sk' : 'en'
-}
-
 export const base64ToArrayBuffer = (base64: string) => {
   const binaryString = window.atob(base64)
   const binaryLen = binaryString.length

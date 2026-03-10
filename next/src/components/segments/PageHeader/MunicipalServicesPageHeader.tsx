@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SelectFieldNew, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
@@ -20,12 +21,12 @@ const MunicipalServicesPageHeader = ({
   setSelectorValue,
 }: Props) => {
   return (
-    <div className="bg-gray-50">
-      <div className="m-auto flex size-full max-w-(--breakpoint-lg) flex-col justify-end pt-6 pb-4 pl-4 lg:px-0 lg:pt-16 lg:pb-8">
+    <SectionContainer className="bg-gray-50 pt-6 pb-4 lg:pt-16 lg:pb-8">
+      <div className="flex size-full flex-col justify-end">
         <h1 className="mb-4 text-h1 md:mb-6">{title}</h1>
         <SelectFieldNew
           label=""
-          className="max-w-none pr-4 xs:max-w-[400px]"
+          className="max-w-none pr-4 sm:max-w-[400px]"
           value={selectorValue}
           onChange={(value) => {
             if (!value) return
@@ -36,7 +37,7 @@ const MunicipalServicesPageHeader = ({
           displayOptionalLabel={false}
         />
       </div>
-    </div>
+    </SectionContainer>
   )
 }
 

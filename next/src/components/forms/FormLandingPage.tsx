@@ -9,6 +9,7 @@ import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -59,25 +60,21 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
 
   return (
     <PageLayout>
-      <div className="relative flex flex-col">
-        <div className="size-full bg-gray-50 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
-          <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
-            <div className="flex flex-col gap-2 lg:gap-4">
-              <h1 className="text-h1-form">{formDefinition.title}</h1>
-              {strapiForm.moreInformationUrl ? (
-                <Link
-                  className="w-max text-p1 underline"
-                  href={strapiForm.moreInformationUrl}
-                  target="_blank"
-                >
-                  {t('form_header.services_link')}
-                </Link>
-              ) : null}
-            </div>
-          </div>
+      <SectionContainer className="size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
+        <div className="flex flex-col gap-2 lg:gap-4">
+          <h1 className="text-h1-form">{formDefinition.title}</h1>
+          {strapiForm.moreInformationUrl ? (
+            <Link
+              className="w-max text-p1 underline"
+              href={strapiForm.moreInformationUrl}
+              target="_blank"
+            >
+              {t('form_header.services_link')}
+            </Link>
+          ) : null}
         </div>
-      </div>
-      <div className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-10 p-4 pb-6 lg:flex-row lg:gap-20 lg:p-0 lg:py-10">
+      </SectionContainer>
+      <SectionContainer className="py-6 lg:py-10">
         <div className="flex max-w-[800px] flex-col gap-10">
           {strapiForm.landingPage.text && (
             <AccountMarkdown content={strapiForm.landingPage.text} variant="sm" />
@@ -95,7 +92,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             />
           </div>
         </div>
-      </div>
+      </SectionContainer>
     </PageLayout>
   )
 }

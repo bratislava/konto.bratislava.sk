@@ -8,7 +8,7 @@ import { CrossIcon } from '@/src/assets/ui-icons'
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import WarningIcon from '@/src/components/icon-components/WarningIcon'
-import { SectionContainer } from '@/src/components/layouts/SectionContainer'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Button from '@/src/components/simple-components/Button'
 import { environment } from '@/src/environment'
 

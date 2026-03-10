@@ -65,20 +65,18 @@ const TaxFeePaymentPageContent = () => {
           { title: getTitle(), path: null },
         ]}
       />
-      <SectionContainer>
-        <div className="py-6 lg:py-12">
-          {isIdentityVerified ? (
-            showChannelNeededBanner ? (
-              <OfficialCorrespondenceChannelNeededBanner />
-            ) : (
-              <PaymentData paymentMethod={paymentMethodParam} />
-            )
-          ) : isInQueue ? (
-            <IdentityVerificationBanner variant="verification-in-process" />
+      <SectionContainer className="py-6 lg:py-12">
+        {isIdentityVerified ? (
+          showChannelNeededBanner ? (
+            <OfficialCorrespondenceChannelNeededBanner />
           ) : (
-            <IdentityVerificationBanner variant="verification-needed" />
-          )}
-        </div>
+            <PaymentData paymentMethod={paymentMethodParam} />
+          )
+        ) : isInQueue ? (
+          <IdentityVerificationBanner variant="verification-in-process" />
+        ) : (
+          <IdentityVerificationBanner variant="verification-needed" />
+        )}
       </SectionContainer>
     </div>
   )

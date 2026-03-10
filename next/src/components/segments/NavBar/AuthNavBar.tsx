@@ -8,12 +8,10 @@ import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
-import { getLanguageKey } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
-  currentLanguage?: string
   backButtonHidden?: boolean
   desktopNavbarRef: RefObject<HTMLDivElement | null>
   mobileNavbarRef: RefObject<HTMLDivElement | null>
@@ -39,13 +37,11 @@ const BackButton = () => {
 
 export const AuthNavBar = ({
   className,
-  currentLanguage = 'sk',
   backButtonHidden,
   desktopNavbarRef,
   mobileNavbarRef,
 }: Props) => {
   const { t } = useTranslation('account')
-  const languageKey = getLanguageKey(currentLanguage)
 
   const { isOAuthLogin } = useAmplifyClientOAuthContext()
 
@@ -79,9 +75,7 @@ export const AuthNavBar = ({
                       'group-hover:text-gray-600': brandLinkHref,
                     })}
                   >
-                    {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
-                    {t('NavBar.capitalCityOfSR')}
-                    {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
+                    {t('NavBar.capitalCityOfSR')} <span className="font-semibold">Bratislava</span>
                   </p>
                 }
               />

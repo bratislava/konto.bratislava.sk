@@ -40,7 +40,7 @@ export class DpbController {
   }
 
   @Get('list-user-logins')
-  @SignatureAuth('DPB_CLIENT_PUBLIC_KEY', { requireNonce: true })
+  @SignatureAuth('DPB_CLIENT_PUBLIC_KEY')
   @ApiOperation({
     summary: 'List all user logins for DPB',
     description: `Returns a list of all user logins with statistics.

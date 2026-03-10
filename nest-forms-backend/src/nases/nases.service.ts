@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common'
+/* eslint-disable @typescript-eslint/no-misused-spread */
+import { HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
@@ -95,7 +96,7 @@ export default class NasesService {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data)
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -389,7 +390,6 @@ export default class NasesService {
           const { error: errorEnum, message: errorMessage } =
             verifyFormSignatureErrorMapping[error.type]
           throw this.throwerErrorGuard.UnprocessableEntityException(
-            // eslint-disable-next-line custom-rules/thrower-error-guard-enum
             errorEnum,
             errorMessage,
           )
@@ -575,7 +575,7 @@ export default class NasesService {
       sender,
     )
 
-    if ((sendData && sendData.status !== 200) || !sendData) {
+    if (sendData.status !== HttpStatus.OK) {
       await this.formsService.updateForm(data.formId, {
         state: FormState.DRAFT,
         error: FormError.NASES_SEND_ERROR,

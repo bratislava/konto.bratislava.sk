@@ -53,4 +53,4 @@ COPY --chown=node:node .env.*.local ./
 COPY --chown=node:node --from=build /build/.next/standalone ./
 COPY --chown=node:node --from=build /build/public ./public
 COPY --chown=node:node --from=build /build/.next/static ./.next/static
-CMD [ "node", "server.js" ]
+CMD [ "node", "next/server.js" ]

@@ -197,6 +197,9 @@ export default class NotificationsEventsSubservice {
     )
 
     if (taxIdsSent.length === 0) {
+      this.logger.log(
+        `No taxes sent for installment: ${installmentNumber} ${installmentDate.format('YYYY-MM-DD')}, dueDateType: ${dueDateType}, tax type: ${taxType}.`,
+      )
       return
     }
 
@@ -225,6 +228,10 @@ export default class NotificationsEventsSubservice {
       },
       data: { bloomreachUnpaidReminderSent: newReminderSent },
     })
+
+    this.logger.log(
+      `Updated ${taxIdsSent.length} taxes for installment: ${installmentNumber} ${installmentDate.format('YYYY-MM-DD')}, dueDateType: ${dueDateType}, tax type: ${taxType}, tax IDs: ${taxIdsSent.join(', ')}`,
+    )
   }
 
   async sendUnpaidTaxInstallmentReminders() {
@@ -239,17 +246,18 @@ export default class NotificationsEventsSubservice {
     )
 
     const nextInstallment = this.findInstallment(taxType, this.isWithinNextWeek)
-    if (nextInstallment) {
-      this.logger.log(
-        `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
-      )
-      await this.processInstallmentReminders(
-        nextInstallment,
-        taxType,
-        INSTALLMENT_DUE_DATE_TYPE.NEXT,
-        year,
-      )
+    if (!nextInstallment) {
+      return
     }
+    this.logger.log(
+      `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
+    )
+    await this.processInstallmentReminders(
+      nextInstallment,
+      taxType,
+      INSTALLMENT_DUE_DATE_TYPE.NEXT,
+      year,
+    )
 
     const pastInstallment = this.findInstallment(taxType, this.isWithinPastWeek)
     if (!pastInstallment) {

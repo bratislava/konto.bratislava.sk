@@ -1,6 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FileStatus } from '@prisma/client'
-import { IsEnum, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator'
+import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator'
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
@@ -50,10 +49,12 @@ class SimplifiedClientFileInfoDto {
   id: string
 
   @IsObject()
-  file: File
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  file: Record<string, any>
 
-  @IsEnum(FileStatus)
-  status: FileStatus
+  @IsObject()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  status: Record<string, any>
 }
 
 export class ConvertToPdfRequestDto {

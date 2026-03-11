@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @darraghor/nestjs-typed/injectable-should-be-provided */
 import { Readable } from 'node:stream'
 
@@ -548,7 +549,7 @@ export default class FilesService {
         bucket,
         pathWithMinioFileName,
       )
-      if (deleteStatus === false) {
+      if (!deleteStatus) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           FilesErrorsEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
           FilesErrorsResponseEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,

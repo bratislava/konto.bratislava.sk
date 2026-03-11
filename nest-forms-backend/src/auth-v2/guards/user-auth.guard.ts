@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import {
   ExecutionContext,
   Injectable,
@@ -6,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
+import { Observable } from 'rxjs'
 
 import { ALLOWED_USER_TYPES_KEY } from '../decorators/allowed-user-types.decorator'
 import { User, UserType } from '../types/user'
@@ -16,7 +18,7 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     super()
   }
 
-  async canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const allowedUserTypes = this.reflector.getAllAndOverride<
       UserType[] | undefined
     >(ALLOWED_USER_TYPES_KEY, [context.getHandler(), context.getClass()])
@@ -45,11 +47,11 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
   }
 
   handleRequest<TUser = User>(
-    err: any,
-    user: any,
-    info: any,
+    err: Error | null,
+    user: unknown,
+    info: unknown,
     context: ExecutionContext,
-  ) {
+  ): TUser {
     if (err) {
       throw err
     }

@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-secrets/no-secrets */
 import type { WithImplicitCoercion } from 'node:buffer'
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
@@ -141,7 +139,7 @@ export default class NasesUtilsService {
       stream.on('data', (chunk) => _buf.push(chunk))
       stream.on('end', () => { resolve(Buffer.concat(_buf)); })
        
-      stream.on('error', (err) => { reject(`error converting stream - ${err}`); })
+      stream.on('error', (err) => { reject(new Error(`error converting stream - ${err}`)); })
     })
   }
 
@@ -337,14 +335,14 @@ export default class NasesUtilsService {
   }
 
   private getSenderId(sender: SendMessageNasesSender): string {
-    if (sender.type === SendMessageNasesSenderType.Eid) {
-      return sender.senderUri
+    switch (sender.type) {
+      case SendMessageNasesSenderType.Eid:
+        return sender.senderUri
+      case SendMessageNasesSenderType.Self:
+        return this.configService.getOrThrow<string>('NASES_SENDER_URI')
+      default:
+        throw new Error('Invalid sender type')
     }
-    if (sender.type === SendMessageNasesSenderType.Self) {
-      return this.configService.getOrThrow<string>('NASES_SENDER_URI')
-    }
-
-    throw new Error('Invalid sender type')
   }
 
   /**
@@ -433,6 +431,7 @@ export default class NasesUtilsService {
     const template = {
       SKTalkMessage: {
         $: {
+          // eslint-disable-next-line sonarjs/no-clear-text-protocols
           xmlns: 'http://gov.sk/SKTalkMessage',
           'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
           'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
@@ -450,6 +449,7 @@ export default class NasesUtilsService {
         Body: {
           MessageContainer: {
             $: {
+              // eslint-disable-next-line sonarjs/no-clear-text-protocols
               xmlns: 'http://schemas.gov.sk/core/MessageContainer/1.0',
             },
             MessageId: form.id,
@@ -489,15 +489,15 @@ export default class NasesUtilsService {
   }
 
   private getSendMessageNasesEndpoint = (sender: SendMessageNasesSender) => {
-    if (sender.type === SendMessageNasesSenderType.Eid) {
-      return this.clientsService.slovenskoSkApi
-        .apiSktalkReceiveAndSaveToOutboxPost
+    switch (sender.type) {
+      case SendMessageNasesSenderType.Eid:
+        return this.clientsService.slovenskoSkApi
+          .apiSktalkReceiveAndSaveToOutboxPost
+      case SendMessageNasesSenderType.Self:
+        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
+      default:
+        throw new Error('Invalid sender type')
     }
-    if (sender.type === SendMessageNasesSenderType.Self) {
-      return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
-    }
-
-    throw new Error('Invalid sender type')
   }
 
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
@@ -513,7 +513,7 @@ export default class NasesUtilsService {
       return {
         status: 500,
         data: {
-          message: `Failed to create envelope for nases message: ${(error as Error)?.message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
+          message: `Failed to create envelope for nases message: ${(error as Error).message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
         },
       }
     }
@@ -532,9 +532,7 @@ export default class NasesUtilsService {
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         console.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
-            response.data
-          }, message: ${message}`,
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY, message: ${message}`,
         )
 
         return {
@@ -550,7 +548,7 @@ export default class NasesUtilsService {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         console.log(
           `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
-            response.data
+            JSON.stringify(response.data)
           }, message: ${message}`,
         )
 
@@ -589,7 +587,7 @@ export default class NasesUtilsService {
         },
       })
       .then((response) => response.data.length > 0)
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             NasesErrorsEnum.SEND_TO_NASES_ERROR,
@@ -685,5 +683,3 @@ export default class NasesUtilsService {
     return result
   }
 }
-/* eslint-enable no-secrets/no-secrets */
-/* eslint-enable no-await-in-loop */

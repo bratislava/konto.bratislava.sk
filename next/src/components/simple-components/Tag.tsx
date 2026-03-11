@@ -64,7 +64,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
     >
       <p className="tag inline-block cursor-default select-none">{tagText}</p>
       {removable && (
-        // TODO implement correct variant larger clickable area
+        // TODO implement correct variant and larger clickable area
         <Button
           icon={<CrossIcon className={iconClassStyles} />}
           onPress={onRemove}

@@ -159,19 +159,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
         )
       }
 
-      // Validate nonce if required (for mutating endpoints)
-      if (req.requireNonce) {
-        const nonce = req.headers['x-nonce']
-        if (typeof nonce === 'string') {
-          await this.nonceService.validateAndMarkUsed(nonce, envVarName)
-        } else {
-          throw this.throwerErrorGuard.UnauthorizedException(
-            ErrorsEnum.UNAUTHORIZED_ERROR,
-            ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-            'Missing X-Nonce header. This endpoint requires nonce-based replay protection.'
-          )
-        }
-      }
+      await this.validateNonceOrThrow(req, envVarName)
 
       return true
     } catch (error) {
@@ -188,6 +176,24 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
         error instanceof Error ? error : undefined
       )
     }
+  }
+
+  private async validateNonceOrThrow (req: SignatureRequest,envVarName: string){
+    const nonce = req.headers['x-nonce']
+
+    if ( req.requireNonce && typeof nonce === 'undefined' ) {
+      return // Nonce is not required and is not present
+    }
+
+    if ( typeof nonce !== 'string' ) {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        'Missing X-Nonce header or header is not string. This endpoint requires nonce-based replay protection.'
+      )
+    }
+
+    await this.nonceService.validateAndMarkUsed(nonce, envVarName)
   }
 
   private isValidPublicKeyPem(value: string): boolean {

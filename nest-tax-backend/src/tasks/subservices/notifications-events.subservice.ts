@@ -41,21 +41,23 @@ export default class NotificationsEventsSubservice {
     this.logger = new LineLoggerSubservice(NotificationsEventsSubservice.name)
   }
 
-  private readonly isWithinNextWeek = (installmentDate: Dayjs, now: Dayjs) => {
+  private readonly isWithinNextWeek = (installmentDate: Dayjs) => {
+    const now = dayjs().tz('Europe/Bratislava')
     const oneWeekFromNow = now.add(1, 'week')
     return (
       installmentDate.isAfter(now) && installmentDate.isBefore(oneWeekFromNow)
     )
   }
 
-  private readonly isWithinPastWeek = (installmentDate: Dayjs, now: Dayjs) => {
+  private readonly isWithinPastWeek = (installmentDate: Dayjs) => {
+    const now = dayjs().tz('Europe/Bratislava')
     const oneWeekAgo = now.subtract(1, 'week')
     return installmentDate.isAfter(oneWeekAgo) && installmentDate.isBefore(now)
   }
 
   private findInstallment(
     taxType: TaxType,
-    dateInclusionPredicate: (installmentDate: Dayjs, now: Dayjs) => boolean,
+    dateInclusionPredicate: (installmentDate: Dayjs) => boolean,
   ): InstallmentInfo | null {
     const taxDefinition = getTaxDefinitionByType(taxType)
     const now = dayjs().tz('Europe/Bratislava')
@@ -70,7 +72,7 @@ export default class NotificationsEventsSubservice {
         return { installmentNumber: INSTALLMENT_NUMBERS[key], installmentDate }
       })
       .find((installmentInfo) =>
-        dateInclusionPredicate(installmentInfo.installmentDate, now),
+        dateInclusionPredicate(installmentInfo.installmentDate),
       )
 
     return found ?? null

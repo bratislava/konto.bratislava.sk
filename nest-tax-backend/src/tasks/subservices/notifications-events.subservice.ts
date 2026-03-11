@@ -246,18 +246,17 @@ export default class NotificationsEventsSubservice {
     )
 
     const nextInstallment = this.findInstallment(taxType, this.isWithinNextWeek)
-    if (!nextInstallment) {
-      return
+    if (nextInstallment) {
+      this.logger.log(
+        `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
+      )
+      await this.processInstallmentReminders(
+        nextInstallment,
+        taxType,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
+        year,
+      )
     }
-    this.logger.log(
-      `Processing next installment: ${nextInstallment.installmentNumber} ${nextInstallment.installmentDate.format('YYYY-MM-DD')}`,
-    )
-    await this.processInstallmentReminders(
-      nextInstallment,
-      taxType,
-      INSTALLMENT_DUE_DATE_TYPE.NEXT,
-      year,
-    )
 
     const pastInstallment = this.findInstallment(taxType, this.isWithinPastWeek)
     if (!pastInstallment) {

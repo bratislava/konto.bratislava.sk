@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
     ],
   },
   output: 'standalone',
+  // Workaround: Turbopack file tracer misses `module-sync` exports condition files (e.g. require.mjs)
+  // on Node.js >= 22.10. Will be fixed when Next.js bumps @vercel/nft to >= 0.30.0.
+  // https://github.com/vercel/next.js/issues/90567
+  outputFileTracingIncludes: {
+    '/**': [
+      './node_modules/**/require.mjs',
+      '../forms-shared/node_modules/**/require.mjs',
+      '../openapi-clients/node_modules/**/require.mjs',
+    ],
+  },
   turbopack: {
     // https://github.com/vercel/next.js/issues/73360
     root: path.join(__dirname, '..'),

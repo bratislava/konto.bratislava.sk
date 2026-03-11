@@ -105,7 +105,7 @@
   "signer_deploying_modal.content": "Čakajte, prosíme, práve prebieha spúšťanie podpisovej aplikácie. Ak by spúšťanie trvalo dlhšie ako obvykle, skontrolujte, či máte aplikáciu nainštalovanú alebo aktualizovanú (<a target='_blank' href='https://www.slovensko.sk/sk/na-stiahnutie'>aktuálne verzie aplikácií na prihlásenie a podpisovanie</a>). V prípade, že sa aplikácia vôbec nespustí, prosíme, <a target='_blank' href='https://www.slovensko.sk/sk/pomoc/technicka-podpora-pre-pouzivat'>postupujte podľa krokov v návode, ako vyriešiť problém s podpisovou aplikáciou</a>.",
   "signer_deploying_modal.title": "Spúšťa sa podpisovacia aplikácia",
   "StepperView.all_steps": "Všetky kroky",
-  "StepperView.close_button.aria": "Zavrieť",
+  "StepperView.aria.close": "Zavrieť",
   "steps.current_sr": "Aktuálny: ",
   "steps.submitted_sr": "Dokončený: ",
   "success_messages.concept_delete": "Koncept bol vymazaný.",

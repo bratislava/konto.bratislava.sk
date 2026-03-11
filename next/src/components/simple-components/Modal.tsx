@@ -95,7 +95,7 @@ const Modal = ({
                   <Button
                     variant="icon-wrapped-negative-margin"
                     icon={<CrossIcon className="size-6" />}
-                    aria-label={t('Modal.CloseButtton.aria')}
+                    aria-label={t('Modal.aria.close')}
                     onPress={close}
                     data-cy="close-modal"
                     className="absolute top-3 right-3 md:top-4 md:right-4"

@@ -40,7 +40,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
                   variant="icon-wrapped-negative-margin"
                   icon={<CrossIcon />}
                   onPress={close}
-                  aria-label={t('StepperView.close_button.aria')}
+                  aria-label={t('StepperView.aria.close')}
                 />
               </div>
               <nav className="w-full overflow-auto bg-white p-4" data-cy="stepper-mobile">

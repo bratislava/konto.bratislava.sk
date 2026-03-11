@@ -48,7 +48,7 @@ const BottomSheetMenuModal = ({
                   size="large"
                   icon={<CrossIcon />}
                   onPress={close}
-                  aria-label={t('BottomSheetMenuModal.close_button.aria')}
+                  aria-label={t('BottomSheetMenuModal.aria.close')}
                 />
               </div>
               <nav className="w-full overflow-auto bg-white px-4">

@@ -123,7 +123,7 @@ const Alert = ({
             variant="icon-wrapped-negative-margin"
             icon={<CrossIcon className="size-6" />}
             onPress={close}
-            aria-label={t('Alert.close_button.aria')}
+            aria-label={t('Alert.aria.close')}
           />
         )}
       </div>

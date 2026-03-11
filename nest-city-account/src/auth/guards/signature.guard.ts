@@ -41,13 +41,13 @@ export class SignatureGuard extends AuthGuard('signature') {
       )
     }
 
-    const requireNonce = this.reflector.getAllAndOverride<boolean>(REQUIRE_NONCE, [
+    const requireNonce = this.reflector.getAllAndOverride<boolean | undefined>(REQUIRE_NONCE, [
       context.getHandler(),
       context.getClass(),
     ])
 
     request.signaturePublicKeyEnvVar = envVarName
-    request.requireNonce = requireNonce || false
+    request.requireNonce = !!requireNonce
 
     return !!(await super.canActivate(context))
   }

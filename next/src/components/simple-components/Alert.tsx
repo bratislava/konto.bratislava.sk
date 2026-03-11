@@ -2,6 +2,7 @@ import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
 import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@/src/assets/ui-icons'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 type AlertButtonBase = {
@@ -29,13 +30,13 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
               {button.title}
             </Link>
           ) : (
-            <button
-              type="button"
+            <Button
+              variant="unstyled"
               className="w-max text-16-medium underline underline-offset-4"
               onClick={button.handler}
             >
               {button.title}
-            </button>
+            </Button>
           )}
         </React.Fragment>
       ))}

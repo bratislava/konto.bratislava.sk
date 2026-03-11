@@ -1,16 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
 import { mergeProps } from 'react-aria'
-import {
-  Button as AriaButton,
-  Dialog,
-  Modal as AriaModal,
-  ModalOverlay,
-  ModalOverlayProps,
-} from 'react-aria-components'
+import { Dialog, Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
@@ -97,14 +92,14 @@ const Modal = ({
             {({ close }) => (
               <>
                 {noCloseButton ? null : (
-                  <AriaButton
-                    className="absolute top-3 right-3 cursor-pointer md:top-4 md:right-4"
+                  <Button
+                    variant="icon-wrapped-negative-margin"
+                    icon={<CrossIcon className="size-6" />}
+                    aria-label={t('Modal.CloseButtton.aria')}
                     onPress={close}
                     data-cy="close-modal"
-                  >
-                    <CrossIcon className="size-6" aria-hidden />
-                    <span className="sr-only">{t('Modal.aria.close')}</span>
-                  </AriaButton>
+                    className="absolute top-3 right-3 md:top-4 md:right-4"
+                  />
                 )}
                 {children}
               </>

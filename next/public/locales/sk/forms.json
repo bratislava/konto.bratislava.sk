@@ -128,6 +128,7 @@
   "summary.virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
   "summary.virus_alert_plural": "Súbory “{{files}}“ obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
   "summary.vop_agreement_title": "Ochrana osobných údajov",
+  "SummaryRow.EditButton.aria": "Upraviť",
   "tax_form_pdf_export_modal.account_create": "Vytvorte si Bratislavské konto a ušetrite cestu na poštu",
   "tax_form_pdf_export_modal.account_create_button": "Vytvoriť Bratislavské konto",
   "tax_form_pdf_export_modal.action_1": "<strong>Skontrolujte si, vytlačte a podpíšte priznanie.</strong> Ak podávate priznanie aj za ostatných spoluvlastníkov/čky, priložte k nemu splnomocnenie alebo dohodu o určení zástupcu.",
@@ -150,7 +151,6 @@
   "tax_form_pdf_export_modal.tax_assessed_statement_authenticated": "Vaša daň bude vyrubená a <strong>odoslaná do Bratislavského konta na konci apríla.</strong>",
   "useFormRedirects.save_concept.on_error_snackbar_message": "Nepodarilo sa presmerovať.",
   "useFormRedirects.save_concept.on_mutate_snackbar_message": "Presmerovávam.",
-  "xml_import_version_confirmation_modal.button_cancel": "Zrušiť",
   "xml_import_version_confirmation_modal.button_title": "Importovať",
   "xml_import_version_confirmation_modal.content": "Od vytvorenia tohto XML súboru prešiel formulár zmenami. Niektoré údaje sa môžu zobraziť inak alebo môžu chýbať. Chcete pokračovať s importom?",
   "xml_import_version_confirmation_modal.title": "Upozornenie na zmenu formulára"

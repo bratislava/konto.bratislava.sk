@@ -102,7 +102,7 @@ export default class NasesCronSubservice {
                 },
               },
             )
-          await (validated.data.status === FormRegistrationStatus.PUBLISHED
+          await (validated.data.status === FormRegistrationStatus.PUBLISHED.toString()
             ? addToResult('valid', formDefinition, true)
             : addToResult('not-published', formDefinition, false))
         } catch (error) {

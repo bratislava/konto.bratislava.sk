@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Readable } from 'node:stream'
 import { setTimeout } from 'node:timers/promises'
 
@@ -663,9 +664,9 @@ export default class GinisService {
     return params
   }
 
-  private async sanitizeEmployeeContactParams(
+  private sanitizeEmployeeContactParams(
     contactParams: GinContactParams,
-  ): Promise<GinContactParams> {
+  ): GinContactParams {
     let department: string | undefined
     if (contactParams.ico === 'Bratislava-OKM') {
       department = 'OSO'
@@ -713,7 +714,7 @@ export default class GinisService {
     }
     // ginis would refuse ICO if it contains anything other than digits
     // employees have their department abbreviated in ICO, so we need to sanitize it
-    contactParams = await this.sanitizeEmployeeContactParams(contactParams)
+    contactParams = this.sanitizeEmployeeContactParams(contactParams)
     return this.ginisApiService.upsertContact(contactParams)
   }
 
@@ -721,7 +722,8 @@ export default class GinisService {
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSkGeneric,
   ) {
-    if (form.formDataJson === null) {
+    const { formDataJson } = form
+    if (!formDataJson) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.EMPTY_FORM_DATA,
         `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
@@ -737,7 +739,7 @@ export default class GinisService {
           form.id,
           formDefinition.ginisDocumentTypeId,
           form.updatedAt,
-          extractFormSubjectTechnical(formDefinition, form.formDataJson!),
+          extractFormSubjectTechnical(formDefinition, formDataJson),
           senderId,
         ),
       ))
@@ -756,7 +758,7 @@ export default class GinisService {
 
     if (
       detail['Wfl-dokument']['Priznak-el-obrazu'] !==
-      SslWflDocumentElectronicSourceExistence.EXISTS
+      SslWflDocumentElectronicSourceExistence.EXISTS.toString()
     ) {
       const message =
         await this.convertService.convertJsonToXmlObjectForForm(form)

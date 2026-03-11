@@ -48,18 +48,17 @@ export default class MailgunHelper {
     Object.entries(MAILGUN_CONFIG[data.template].variables).forEach(
       ([key, val]) => {
         switch (val.type) {
-          case MailgunConfigVariableType.PARAMETER:
+          case MailgunConfigVariableType.PARAMETER: {
+            const base = response[key as keyof SendEmailVariablesDto] || val.value
+            let baseStr = String(base)
             Object.entries(data.data).forEach(([k, v]) => {
               if (v) {
-                response[key as keyof SendEmailVariablesDto] = (
-                  response[key as keyof SendEmailVariablesDto] || val.value
-                )
-                  .toString()
-                  .replace(`{{${k}}}`, v)
+                baseStr = baseStr.replace(`{{${k}}}`, v.toString())
               }
             })
-
+            response[key as keyof SendEmailVariablesDto] = baseStr
             break
+          }
 
           case MailgunConfigVariableType.SELECT:
             if (
@@ -67,13 +66,14 @@ export default class MailgunHelper {
               Object.prototype.hasOwnProperty.call(val.value, data.data.slug)
             ) {
               response[key as keyof SendEmailVariablesDto] =
-                val.value[data.data.slug as keyof typeof val.value]
+                val.value?.[data.data.slug as keyof typeof val.value]
             }
 
             break
 
           case MailgunConfigVariableType.STRING:
             response[key as keyof SendEmailVariablesDto] = val.value
+              // eslint-disable-next-line @typescript-eslint/no-base-to-string
               ? val.value.toString()
               : ''
 
@@ -107,7 +107,7 @@ export default class MailgunHelper {
       { active: 'yes' } as TemplateQuery, // There is an error when importing mailgun.js/Enums, thus this is needed
     )
 
-    if (!response || !response.version?.template) {
+    if (!response.version?.template) {
       throw this.throwerErrorGuard.NotFoundException(
         MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
         `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,

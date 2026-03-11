@@ -13,7 +13,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     response.locals.middlewareUsed = 'true'
 
     const { send } = response
-    response.send = (exitData: string | object | Buffer | any[]) => {
+    response.send = (exitData: string | object | Buffer | unknown[]) => {
       response.locals.middlewareUsed = undefined
 
       const { responseData, logData, returnExitData } = this.parseExitData(
@@ -56,10 +56,12 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     ip: string
     userAgent: string
     originalUrl: string
-    body: any
+    body: unknown
     userId: string
   } {
-    const { method, originalUrl, body } = request
+    const method = request.method
+    const originalUrl = request.originalUrl
+    const body = request.body as unknown
     const ip = request.ip ?? '<NO IP>'
     const userAgent = request.get('user-agent') || ''
 
@@ -68,10 +70,12 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     try {
       if (request.headers.authorization) {
         const token = request.headers.authorization.split('.')[1]
-        const tokenData = JSON.parse(Buffer.from(token, 'base64').toString())
-        userId = tokenData.sub
+        const tokenData = JSON.parse(
+          Buffer.from(token, 'base64').toString(),
+        ) as { sub?: string }
+        userId = tokenData.sub ?? '<NO USER ID>'
       }
-    } catch (error) {
+    } catch {
       /* empty */
     }
 
@@ -80,7 +84,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
   private parseExitData(
     response: Response,
-    exitData: string | object | Buffer | any[],
+    exitData: string | object | Buffer | unknown[],
   ): {
     returnExitData: typeof exitData
     responseData: string
@@ -88,7 +92,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
   } {
     if (
       !response
-        ?.getHeader('content-type')
+        .getHeader('content-type')
         ?.toString()
         .includes('application/json')
     ) {
@@ -99,13 +103,13 @@ export default class AppLoggerMiddleware implements NestMiddleware {
       }
     }
 
-    let data = exitData
+    let data: unknown = exitData
 
     // Parse string-type exitData if it is JSON
     if (typeof exitData === 'string') {
       try {
-        data = JSON.parse(exitData)
-      } catch (error) {
+        data = JSON.parse(exitData) as unknown
+      } catch {
         // If parsing fails, assume it's a plain string
         return {
           responseData: exitData,

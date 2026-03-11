@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { WithImplicitCoercion } from 'node:buffer'
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
@@ -492,9 +496,9 @@ export default class NasesUtilsService {
     switch (sender.type) {
       case SendMessageNasesSenderType.Eid:
         return this.clientsService.slovenskoSkApi
-          .apiSktalkReceiveAndSaveToOutboxPost
+          .apiSktalkReceiveAndSaveToOutboxPost.bind(this.clientsService.slovenskoSkApi)
       case SendMessageNasesSenderType.Self:
-        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
+        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost.bind(this.clientsService.slovenskoSkApi)
       default:
         throw new Error('Invalid sender type')
     }

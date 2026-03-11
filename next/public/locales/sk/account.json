@@ -268,6 +268,8 @@
   "menu_links.logout": "Odhlásiť sa",
   "menu_links.profile": "Môj profil",
   "menu_links.register": "Registrácia",
+  "MobileNavBar.close": "Zavrieť menu",
+  "MobileNavBar.open": "Otvoriť menu",
   "Modal.aria.close": "Zavrieť",
   "Modal.CloseButtton.aria": "",
   "my_application.details.download_pdf": "Stiahnuť PDF",

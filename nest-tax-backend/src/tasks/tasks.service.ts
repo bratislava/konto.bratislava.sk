@@ -21,7 +21,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
-import { stateHolidays } from '../tax/utils/unified-tax.util'
+import { DUE_DATE_OFFSET, stateHolidays } from '../tax/utils/unified-tax.util'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
@@ -281,7 +281,10 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async sendUnpaidTaxReminders() {
-    const FIFTEEN_DAYS_AGO = dayjs().subtract(15, 'day').toDate()
+    const DUE_DATE_OFFSET_DATE = dayjs()
+      .tz('Europe/Bratislava')
+      .subtract(DUE_DATE_OFFSET, 'day')
+      .toDate()
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
@@ -306,7 +309,7 @@ export class TasksService {
           {
             deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
             createdAt: {
-              lte: FIFTEEN_DAYS_AGO,
+              lte: DUE_DATE_OFFSET_DATE,
             },
           },
           {
@@ -314,13 +317,13 @@ export class TasksService {
               not: DeliveryMethodNamed.CITY_ACCOUNT,
             },
             dateTaxRuling: {
-              lte: FIFTEEN_DAYS_AGO,
+              lte: DUE_DATE_OFFSET_DATE,
             },
           },
           {
             deliveryMethod: null,
             dateTaxRuling: {
-              lte: FIFTEEN_DAYS_AGO,
+              lte: DUE_DATE_OFFSET_DATE,
             },
           },
         ],

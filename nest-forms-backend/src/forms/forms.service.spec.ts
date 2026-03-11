@@ -25,7 +25,6 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('@nestjs/config')
-jest.mock('./forms.helper')
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
 jest.mock('../utils/subservices/minio-client.subservice')

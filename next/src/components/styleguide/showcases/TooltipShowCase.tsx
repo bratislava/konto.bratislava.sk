@@ -36,7 +36,7 @@ const getSampleText = (placement: string) => {
 
 const TooltipShowCase = () => (
   <Wrapper title="Tooltip" direction="column">
-    <Stack direction="row">
+    <Stack direction="row" className="gap-4">
       {placements.map((placement) => (
         <BATooltip key={placement} placement={placement}>
           {getSampleText(placement)}

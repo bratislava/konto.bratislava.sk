@@ -1,8 +1,9 @@
 import { useTranslation } from 'next-i18next'
-import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
+import { Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
+import Button from '@/src/components/simple-components/Button'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 
 type BottomSheetMenuModalProps = {
@@ -42,12 +43,13 @@ const BottomSheetMenuModal = ({
                 <h6 className="grow text-h6">
                   {t('account_section_applications.mobile_modal_menu.title')}
                 </h6>
-                <AriaButton
-                  className="flex h-full cursor-pointer flex-col justify-center"
+                <Button
+                  variant="icon-wrapped-negative-margin"
+                  size="large"
+                  icon={<CrossIcon />}
                   onPress={close}
-                >
-                  <CrossIcon className="size-6" />
-                </AriaButton>
+                  aria-label={t('BottomSheetMenuModal.close_button.aria')}
+                />
               </div>
               <nav className="w-full overflow-auto bg-white px-4">
                 <ul>

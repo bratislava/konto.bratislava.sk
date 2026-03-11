@@ -1,34 +1,43 @@
-import Link from 'next/link'
-
 import { useFormMenuItems } from '@/src/components/forms/useFormMenuItems'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
+
+/**
+ * Figma: TODO
+ */
 
 const FormBottomMenu = () => {
   const menuItems = useFormMenuItems()
 
   return (
     <ul className="mt-4 flex flex-col gap-3 border-t-2 border-gray-200 pt-4 lg:hidden">
-      {menuItems.map((menuItem, index) =>
-        menuItem.url ? (
-          <li className="w-max" key={index}>
-            <Link href={menuItem.url}>
-              <div className={cn('flex items-center gap-3', menuItem.className)}>
-                {menuItem.icon}
-                <span className="text-p2">{menuItem.title}</span>
-              </div>
-            </Link>
-          </li>
-        ) : (
-          <li className="w-max" key={index}>
-            <button type="button" onClick={menuItem.onPress} data-cy={menuItem.dataCy ?? ''}>
-              <div className={cn('flex items-center gap-3', menuItem.className)}>
-                {menuItem.icon}
-                <span className="text-p2">{menuItem.title}</span>
-              </div>
-            </button>
-          </li>
-        ),
-      )}
+      {menuItems.map((menuItem, index) => (
+        // TODO use button variants correctly (design needed)
+        <li key={index}>
+          {menuItem.url ? (
+            <Button
+              variant="link"
+              data-cy={menuItem.dataCy ?? ''}
+              href={menuItem.url}
+              hasLinkIcon={false}
+              startIcon={menuItem.icon}
+              className={cn('flex items-center gap-3 text-p2', menuItem.className)}
+            >
+              {menuItem.title}
+            </Button>
+          ) : (
+            <Button
+              variant="unstyled"
+              data-cy={menuItem.dataCy ?? ''}
+              onPress={menuItem.onPress}
+              startIcon={menuItem.icon}
+              className={cn('flex items-center gap-3 text-p2', menuItem.className)}
+            >
+              {menuItem.title}
+            </Button>
+          )}
+        </li>
+      ))}
     </ul>
   )
 }

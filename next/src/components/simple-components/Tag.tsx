@@ -1,6 +1,8 @@
+import { useTranslation } from 'next-i18next'
 import { FC, useState } from 'react'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 interface TagProps {
@@ -12,7 +14,14 @@ interface TagProps {
   onRemove?: () => void
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-13191&m=dev
+ * TODO align with design system
+ */
+
 const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove }: TagProps) => {
+  const { t } = useTranslation('account')
+
   // STATE
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
@@ -34,9 +43,9 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
     },
   )
 
-  const iconClassStyles = cn('tag mx-1 inline-block cursor-pointer self-center', {
-    'h-3 w-3 text-16': size === 'large',
-    'h-2.5 w-2.5 text-p3': size === 'small' || !size,
+  const iconClassStyles = cn('tag', {
+    'size-3 text-16': size === 'large',
+    'size-2.5 text-p3': size === 'small' || !size,
   })
 
   const MAX_TEXT_SIZE = 10
@@ -54,7 +63,15 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
       onMouseLeave={() => setIsHovered(false)}
     >
       <p className="tag inline-block cursor-default select-none">{tagText}</p>
-      {removable && <CrossIcon className={iconClassStyles} onClick={onRemove} />}
+      {removable && (
+        // TODO implement correct variant larger clickable area
+        <Button
+          icon={<CrossIcon className={iconClassStyles} />}
+          onPress={onRemove}
+          aria-label={t('Tag.remove_button.aria')}
+          className="shrink-0"
+        />
+      )}
     </div>
   )
 }

@@ -152,8 +152,7 @@ export const stateHolidays: Record<number, { dates: Dayjs[] }> = {
   },
 }
 
-const dueDateOffsetPostEdesk = 21
-const dueDateOffsetCityAccount = 16
+export const DUE_DATE_OFFSET = 15
 
 const isStateHoliday = (date: Dayjs): boolean => {
   const year = date.year()
@@ -194,7 +193,7 @@ const calculateDueDate = (
     const dueDateBase = createdAt
       .tz(bratislavaTimeZone)
       .startOf('day')
-      .add(dueDateOffsetCityAccount, 'day')
+      .add(DUE_DATE_OFFSET, 'day')
     return ensureWorkingDay(dueDateBase)
   }
 
@@ -207,7 +206,7 @@ const calculateDueDate = (
   const dueDateBase = dateOfValidity
     .tz(bratislavaTimeZone)
     .startOf('day')
-    .add(dueDateOffsetPostEdesk, 'day')
+    .add(DUE_DATE_OFFSET, 'day')
   return ensureWorkingDay(dueDateBase)
 }
 

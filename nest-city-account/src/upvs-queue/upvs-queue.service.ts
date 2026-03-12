@@ -112,7 +112,7 @@ export class UpvsQueueService {
       await Promise.all(
         successExternal.map(async (item) => {
           await this.prismaService.externalEdeskCheck.updateMany({
-            where: { uri: item.uri },
+            where: { uri: item.inputUri },
             data: {
               queueStatus: QueueItemStatusEnum.COMPLETED,
               upvsStatus: item.data.status ?? null,
@@ -134,8 +134,8 @@ export class UpvsQueueService {
       }
 
       const failedExternalUris = upvsResult.failed
-        .filter((item) => externalUris.has(item.uri))
-        .map((item) => item.uri)
+        .filter((item) => externalUris.has(item.inputUri))
+        .map((item) => item.inputUri)
 
       if (failedExternalUris.length > 0) {
         await this.prismaService.externalEdeskCheck.updateMany({

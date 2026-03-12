@@ -124,8 +124,34 @@ export class UpvsQueueService {
         })
       )
 
-      // handle failures both internal and external
-      const failedInternalIds = upvsResult.failed
+      // HANDLE FAILURE
+      const failedWithPossibleUriChange = upvsResult.failed.filter((item) => item.possibleUriChange)
+      const failed = upvsResult.failed.filter((item) => !item.possibleUriChange)
+
+      // Requeue possible URI changes
+      if (failedWithPossibleUriChange.length > 0) {
+        await this.prismaService.externalEdeskCheck.updateMany({
+          where: {
+            uri: { in: failedWithPossibleUriChange.map((item) => item.inputUri) },
+            queueStatus: QueueItemStatusEnum.PENDING,
+          },
+          data: {
+            queueStatus: QueueItemStatusEnum.NEW_URI_CHECK_REQUIRED,
+            failCount: 0,
+          },
+        })
+        await this.prismaService.physicalEntity.updateMany({
+          where: {
+            uri: { in: failedWithPossibleUriChange.map((item) => item.inputUri) },
+          },
+          data: {
+            uriPossiblyOutdated: true,
+          },
+        })
+      }
+
+      // Handle regular failures
+      const failedInternalIds = failed
         .filter((item) => item.physicalEntityId)
         .map((item) => item.physicalEntityId!)
 
@@ -133,7 +159,7 @@ export class UpvsQueueService {
         await this.physicalEntityService.updateFailedActiveEdeskUpdateInDatabase(failedInternalIds)
       }
 
-      const failedExternalUris = upvsResult.failed
+      const failedExternalUris = failed
         .filter((item) => externalUris.has(item.inputUri))
         .map((item) => item.inputUri)
 

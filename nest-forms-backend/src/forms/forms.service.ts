@@ -30,7 +30,6 @@ import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
 
 @Injectable()
 export default class FormsService {
-
   constructor(
     private readonly prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -283,7 +282,6 @@ export default class FormsService {
     })
 
     total.forEach((rec) => {
-       
       result[rec.state] = rec._count._all
     })
 

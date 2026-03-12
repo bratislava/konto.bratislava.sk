@@ -38,7 +38,6 @@ export default class NasesCronSubservice {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @HandleErrors('CronError')
-   
   async validateFormRegistrations(): Promise<ValidateFormRegistrationsResultDto> {
     const result: ValidateFormRegistrationsResultDto = {
       'not-found': [],
@@ -102,7 +101,8 @@ export default class NasesCronSubservice {
                 },
               },
             )
-          await (validated.data.status === FormRegistrationStatus.PUBLISHED.toString()
+          await (validated.data.status ===
+          FormRegistrationStatus.PUBLISHED.toString()
             ? addToResult('valid', formDefinition, true)
             : addToResult('not-published', formDefinition, false))
         } catch (error) {

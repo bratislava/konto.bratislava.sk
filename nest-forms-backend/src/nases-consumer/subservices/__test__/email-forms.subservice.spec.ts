@@ -171,9 +171,7 @@ describe('EmailFormsSubservice', () => {
 
     service = module.get<EmailFormsSubservice>(EmailFormsSubservice)
     mailgunService = module.get(MailgunService)
-    oloMailerService = module.get(
-      OloMailerService,
-    )
+    oloMailerService = module.get(OloMailerService)
     configService = module.get(ConfigService)
 
     jest.spyOn(configService, 'get').mockReturnValue('production')
@@ -212,7 +210,8 @@ describe('EmailFormsSubservice', () => {
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockImplementation((slug: string) => {
-          if (slug === 'test-form-email') return mockFormDefinitionWithSendEmail as FormDefinitionEmail
+          if (slug === 'test-form-email')
+            return mockFormDefinitionWithSendEmail as FormDefinitionEmail
           if (slug === 'test-form-olo')
             return mockFormDefinitionWithSendOloEmail as FormDefinitionEmail
           return null

@@ -49,7 +49,8 @@ export default class MailgunHelper {
       ([key, val]) => {
         switch (val.type) {
           case MailgunConfigVariableType.PARAMETER: {
-            const base = response[key as keyof SendEmailVariablesDto] || val.value
+            const base =
+              response[key as keyof SendEmailVariablesDto] || val.value
             let baseStr = String(base)
             Object.entries(data.data).forEach(([k, v]) => {
               if (v) {
@@ -73,8 +74,8 @@ export default class MailgunHelper {
 
           case MailgunConfigVariableType.STRING:
             response[key as keyof SendEmailVariablesDto] = val.value
-              // eslint-disable-next-line @typescript-eslint/no-base-to-string
-              ? val.value.toString()
+              ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
+                val.value.toString()
               : ''
 
             break

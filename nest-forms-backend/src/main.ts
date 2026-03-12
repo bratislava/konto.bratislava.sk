@@ -20,5 +20,4 @@ async function main(): Promise<void> {
   logger.log(`RabbitMQ uri: ${process.env.RABBIT_MQ_URI as string}`)
 }
 
- 
 void main()

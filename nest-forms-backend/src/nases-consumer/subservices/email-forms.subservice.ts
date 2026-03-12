@@ -126,9 +126,7 @@ export default class EmailFormsSubservice {
       )
     }
 
-    if (
-      formDefinition.type !== FormDefinitionType.Email
-    ) {
+    if (formDefinition.type !== FormDefinitionType.Email) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         EmailFormsErrorsEnum.NOT_EMAIL_FORM,
         `${EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM} Form id: ${form.id}.`,

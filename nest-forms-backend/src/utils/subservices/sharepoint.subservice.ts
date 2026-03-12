@@ -292,8 +292,12 @@ export default class SharepointSubservice {
         },
       })
       .then(
-        (response: AxiosResponse<{ value: { displayName: string, name: string }[] }, object>) =>
-          response.data.value,
+        (
+          response: AxiosResponse<
+            { value: { displayName: string; name: string }[] },
+            object
+          >,
+        ) => response.data.value,
       )
 
     columns.forEach((col) => {

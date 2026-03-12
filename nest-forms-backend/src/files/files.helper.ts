@@ -57,7 +57,9 @@ export default class FilesHelper {
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList: string = this.configService.get(`MIMETYPE_WHITELIST`) as string
+    const mimeTypeList: string = this.configService.get(
+      `MIMETYPE_WHITELIST`,
+    ) as string
     this.supportedMimeTypes = mimeTypeList.split(' ')
   }
 

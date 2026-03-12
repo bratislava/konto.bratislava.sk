@@ -41,12 +41,14 @@ describe('HandleErrors', () => {
 
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
-        return Promise.reject(this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error message',
-          'Console error',
-          new Error('Caused by error message test'),
-        ))
+        return Promise.reject(
+          this.throwerErrorGuard.BadRequestException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Error message',
+            'Console error',
+            new Error('Caused by error message test'),
+          ),
+        )
       }
     }
 

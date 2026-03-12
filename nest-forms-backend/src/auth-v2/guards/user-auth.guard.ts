@@ -18,7 +18,9 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     super()
   }
 
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
     const allowedUserTypes = this.reflector.getAllAndOverride<
       UserType[] | undefined
     >(ALLOWED_USER_TYPES_KEY, [context.getHandler(), context.getClass()])

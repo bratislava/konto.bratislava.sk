@@ -506,7 +506,6 @@ export default class FilesService {
   async deleteFileMany(fileIds: string[]): Promise<void> {
     let file: Files
 
-     
     for (const fileId of fileIds) {
       try {
         // eslint-disable-next-line no-await-in-loop

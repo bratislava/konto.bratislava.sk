@@ -137,13 +137,16 @@ export default class NasesUtilsService {
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-       
       const _buf = new Array<any>()
 
       stream.on('data', (chunk) => _buf.push(chunk))
-      stream.on('end', () => { resolve(Buffer.concat(_buf)); })
-       
-      stream.on('error', (err) => { reject(new Error(`error converting stream - ${err}`)); })
+      stream.on('end', () => {
+        resolve(Buffer.concat(_buf))
+      })
+
+      stream.on('error', (err) => {
+        reject(new Error(`error converting stream - ${err}`))
+      })
     })
   }
 
@@ -166,14 +169,13 @@ export default class NasesUtilsService {
       },
     })
 
-     
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
       const fileStream = await this.minioClientSubservice.loadFileStream(
         this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET'),
         `${file.pospId}/${form.id}/${file.minioFileName}`,
       )
-       
+
       const fileBuffer = await this.stream2buffer(fileStream)
       const fileBase64 = fileBuffer.toString('base64')
       result.push({
@@ -495,10 +497,13 @@ export default class NasesUtilsService {
   private getSendMessageNasesEndpoint = (sender: SendMessageNasesSender) => {
     switch (sender.type) {
       case SendMessageNasesSenderType.Eid:
-        return this.clientsService.slovenskoSkApi
-          .apiSktalkReceiveAndSaveToOutboxPost.bind(this.clientsService.slovenskoSkApi)
+        return this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost.bind(
+          this.clientsService.slovenskoSkApi,
+        )
       case SendMessageNasesSenderType.Self:
-        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost.bind(this.clientsService.slovenskoSkApi)
+        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost.bind(
+          this.clientsService.slovenskoSkApi,
+        )
       default:
         throw new Error('Invalid sender type')
     }
@@ -551,9 +556,9 @@ export default class NasesUtilsService {
       if (response.data.receive_result !== 0) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         console.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
-            JSON.stringify(response.data)
-          }, message: ${message}`,
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${JSON.stringify(
+            response.data,
+          )}, message: ${message}`,
         )
 
         return {

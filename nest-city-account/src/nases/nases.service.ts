@@ -117,10 +117,6 @@ export class NasesService {
     return result
   }
 
-  // takes an array of uris with optional physicalEntityId, validates them against UPVS and keeps the record of both the successful and the failed uris
-  // multiple uris with same birthnumber can be passed in, but these should always be assigned to the same physicalEntityId
-  // for successful requests, the uri that was returned by UPVS is saved - this might be different from the one that was requested (i.e. when the surname changes)
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   async createMany(inputs: CreateManyParam): Promise<CreateManyResult> {
     const uniqueInputs = _.uniqBy(inputs, 'uri')
     const inputsByUri = _.keyBy(uniqueInputs, 'uri')

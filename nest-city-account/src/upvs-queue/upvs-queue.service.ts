@@ -15,11 +15,11 @@ import { parseName } from '../magproxy/dtos/uri'
 export class UpvsQueueService {
   private readonly logger: LineLoggerSubservice
 
-  private readonly CACHE_TTL_HOURS = 96 // Configurable cache TTL
+  private readonly CACHE_TTL_HOURS = 144 // Configurable cache TTL
 
   private readonly BATCH_SIZE = 8 // 8 requests per batch
 
-  private readonly HIGH_PRIORITY_RESERVED_SLOTS = 6 // Reserve 6 slots for high priority
+  private readonly HIGH_PRIORITY_RESERVED_SLOTS = 5 // Reserve 6 slots for high priority
 
   constructor(
     private readonly prismaService: PrismaService,

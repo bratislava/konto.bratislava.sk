@@ -61,6 +61,7 @@ enum LoginClientEnum {
 
 enum QueueItemStatusEnum {
   PENDING
+  NEW_URI_CHECK_REQUIRED
   COMPLETED
   FAILED
 }

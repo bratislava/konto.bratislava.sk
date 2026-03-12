@@ -29,7 +29,7 @@ export type UpvsIdentityByUriSuccessType = {
 
 export type CreateManyResultFailed = {
   physicalEntityId?: string
-  uri: string
+  inputUri: string
   possibleUriChange: boolean
 }
 
@@ -155,35 +155,33 @@ export class NasesService {
     }
 
     const unmatchedResults = resultsWithUri.filter((result) => !matchedUris.has(result.uri))
-    const unmatchedInputUris = uniqueInputs
-      .map((input) => input.uri)
-      .filter((uri) => !matchedUris.has(uri))
+    const unmatchedInputs = uniqueInputs.filter((input) => !matchedUris.has(input.uri))
 
     // If we have exactly one unmatched result and one unmatched input URI, we can safely assume they represent the same
     // identity.
-    if (unmatchedResults.length === 1 && unmatchedInputUris.length === 1) {
+    if (unmatchedResults.length === 1 && unmatchedInputs.length === 1) {
       const unmatchedResult = unmatchedResults.pop()!
-      const unmatchedInputUri = unmatchedInputUris.pop()!
+      const unmatchedInput = unmatchedInputs.pop()!
       this.logger.log({
-        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInputUri}`,
+        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInput}`,
       })
       resultDataSuccess.push({
-        inputUri: unmatchedResult.uri,
+        inputUri: unmatchedInput.uri,
         data: unmatchedResult,
-        physicalEntityId: inputsByUri[unmatchedInputUri]?.physicalEntityId || null,
+        physicalEntityId: inputsByUri[unmatchedInput.uri]?.physicalEntityId || null,
       })
-      matchedUris.add(unmatchedInputUri)
+      matchedUris.add(unmatchedInput.uri)
     }
 
     let possibleUriChanges: CreateManyResultFailed[] = []
-    if (unmatchedResults.length > 0 && unmatchedInputUris.length > 0) {
+    if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
       this.logger.warn({
         message: `Failed to find input for URIs: ${unmatchedResults.map((r) => r.uri).join(', ')}`,
-        unmatchedInputUris: unmatchedInputUris,
+        unmatchedInputUris: unmatchedInputs.map((input) => input.uri),
       })
-      possibleUriChanges = unmatchedInputUris.map((uri) => ({
-        physicalEntityId: inputsByUri[uri]?.physicalEntityId,
-        uri,
+      possibleUriChanges = unmatchedInputs.map((input) => ({
+        physicalEntityId: inputsByUri[input.uri]?.physicalEntityId,
+        inputUri: input.uri,
         possibleUriChange: true,
       }))
     }
@@ -191,11 +189,11 @@ export class NasesService {
     const failedWithoutPossibleUriChanges = uniqueInputs
       .filter(
         (input) =>
-          !matchedUris.has(input.uri) && !possibleUriChanges.some((p) => p.uri === input.uri)
+          !matchedUris.has(input.uri) && !possibleUriChanges.some((p) => p.inputUri === input.uri)
       )
       .map((input) => ({
         physicalEntityId: input.physicalEntityId ?? undefined,
-        uri: input.uri,
+        inputUri: input.uri,
         possibleUriChange: false,
       }))
 
@@ -215,7 +213,7 @@ export class NasesService {
     const matchedUris = new Set(directMatches.map((result) => result.uri))
 
     const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.map((result) => ({
-      inputUri: result.uri,
+      inputUri: inputsByUri[result.uri].uri,
       data: result,
       physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
     }))

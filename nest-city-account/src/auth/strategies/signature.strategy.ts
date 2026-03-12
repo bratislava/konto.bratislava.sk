@@ -178,14 +178,14 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     }
   }
 
-  private async validateNonceOrThrow (req: SignatureRequest,envVarName: string){
+  private async validateNonceOrThrow(req: SignatureRequest, envVarName: string) {
     const nonce = req.headers['x-nonce']
 
-    if ( req.requireNonce && typeof nonce === 'undefined' ) {
+    if (!req.requireNonce && typeof nonce === 'undefined') {
       return // Nonce is not required and is not present
     }
 
-    if ( typeof nonce !== 'string' ) {
+    if (typeof nonce !== 'string') {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,

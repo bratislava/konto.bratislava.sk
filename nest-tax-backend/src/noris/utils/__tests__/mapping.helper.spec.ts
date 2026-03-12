@@ -284,7 +284,10 @@ describe('mapNorisToDatabaseBaseTax', () => {
   it('should set paidByInkaso to false when forma_uhrady is not I', () => {
     const paymentMethods = ['P', 'H', 'Z', 'S', null] as const
     paymentMethods.forEach((paymentMethod) => {
-      const data = { ...baseMockData, forma_uhrady: paymentMethod } as NorisBaseTax
+      const data = {
+        ...baseMockData,
+        forma_uhrady: paymentMethod,
+      } as NorisBaseTax
       const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
       expect(result.paidByInkaso).toBe(false)
     })

@@ -255,7 +255,10 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw error for invalid forma_uhrady', () => {
           expect(() => {
-            service.validateNorisData(NorisCommunalWasteTaxSchema, invalidNorisCommunalWasteTax3)
+            service.validateNorisData(
+              NorisCommunalWasteTaxSchema,
+              invalidNorisCommunalWasteTax3,
+            )
           }).toThrow(HttpException)
         })
       })

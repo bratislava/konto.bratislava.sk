@@ -755,6 +755,7 @@ export default class GinisService {
       )
     }
 
+    // TODO - try and make Priznak-el-obrazu to be of ENUM type so this comparison can be done with the enum value
     if (
       detail['Wfl-dokument']['Priznak-el-obrazu'] !==
       SslWflDocumentElectronicSourceExistence.EXISTS.toString()

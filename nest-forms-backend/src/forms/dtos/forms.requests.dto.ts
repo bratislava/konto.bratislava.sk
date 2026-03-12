@@ -72,7 +72,6 @@ export class FormUpdateBodyDto {
 
   @ApiPropertyOptional({
     description: 'Concrete error type',
-
     default: FormError.NONE,
   })
   @IsOptional()

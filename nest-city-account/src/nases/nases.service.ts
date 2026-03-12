@@ -23,13 +23,19 @@ export type CreateManyParam = {
 
 export type UpvsIdentityByUriSuccessType = {
   physicalEntityId: string | null
-  uri: string
+  inputUri: string
   data: ApiIamIdentitiesIdGet200Response
+}
+
+export type CreateManyResultFailed = {
+  physicalEntityId?: string
+  uri: string
+  possibleUriChange: boolean
 }
 
 export type CreateManyResult = {
   success: UpvsIdentityByUriSuccessType[]
-  failed: { physicalEntityId?: string; uri: string; possibleUriChange?: boolean }[]
+  failed: CreateManyResultFailed[]
 }
 
 export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<

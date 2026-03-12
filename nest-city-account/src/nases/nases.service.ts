@@ -148,7 +148,6 @@ export class NasesService {
       }
     }
 
-    const successfulUris = new Set(resultDataSuccess.map((r) => r.uri))
     const unmatchedResults = resultsWithUri.filter((result) => !matchedUris.has(result.uri))
     const unmatchedInputUris = uniqueInputs
       .map((input) => input.uri)
@@ -163,13 +162,25 @@ export class NasesService {
         message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInputUri}`,
       })
       resultDataSuccess.push({
-        uri: unmatchedResult.uri,
+        inputUri: unmatchedResult.uri,
         data: unmatchedResult,
         physicalEntityId: inputsByUri[unmatchedInputUri]?.physicalEntityId || null,
       })
       matchedUris.add(unmatchedInputUri)
     }
 
+    let possibleUriChanges: CreateManyResultFailed[] = []
+    if (unmatchedResults.length > 0 && unmatchedInputUris.length > 0) {
+      this.logger.warn({
+        message: `Failed to find input for URIs: ${unmatchedResults.map((r) => r.uri).join(', ')}`,
+        unmatchedInputUris: unmatchedInputUris,
+      })
+      possibleUriChanges = unmatchedInputUris.map((uri) => ({
+        physicalEntityId: inputsByUri[uri]?.physicalEntityId,
+        uri,
+        possibleUriChange: true,
+      }))
+    }
 
     const resultDataFailed = uniqueInputs
       .filter((input) => !successfulUris.has(input.uri))

@@ -130,27 +130,11 @@ export class NasesService {
 
     const results = await this.searchUpvsIdentitiesByUri(uniqueInputs.map((input) => input.uri))
 
-    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = results
-      .filter(
-        (result): result is Omit<ApiIamIdentitiesIdGet200Response, 'uri'> & { uri: string } =>
-          !!result.uri
-      )
-      .map((result) => {
-        if (!inputsByUri[result.uri]) {
-          this.logger.warn({
-            message: `Failed to find input for URI: ${result.uri}`,
-            inputs: inputs,
-          })
-        }
-        return {
-          uri: result.uri,
-          data: result,
-          physicalEntityId: inputsByUri[result.uri]?.physicalEntityId || null,
-        }
-      })
     const resultsWithUri = results.filter(
       (result): result is ApiIamIdentitiesIdGet200ResponseWithUri => !!result.uri
     )
+
+    const { resultDataSuccess, matchedUris } = this.matchDirectResults(resultsWithUri, inputsByUri)
 
     if (resultDataSuccess.length >= 10) {
       this.logger.error({
@@ -177,5 +161,21 @@ export class NasesService {
       success: resultDataSuccess,
       failed: resultDataFailed,
     }
+  }
+
+  private matchDirectResults(
+    resultsWithUri: ApiIamIdentitiesIdGet200ResponseWithUri[],
+    inputsByUri: Record<string, CreateManyParam[number]>
+  ) {
+    const directMatches = resultsWithUri.filter((result) => !!inputsByUri[result.uri])
+    const matchedUris = new Set(directMatches.map((result) => result.uri))
+
+    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.map((result) => ({
+      uri: result.uri,
+      data: result,
+      physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
+    }))
+
+    return { resultDataSuccess, matchedUris }
   }
 }

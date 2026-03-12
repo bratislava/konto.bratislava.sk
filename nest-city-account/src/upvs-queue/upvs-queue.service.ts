@@ -99,10 +99,11 @@ export class UpvsQueueService {
 
       const upvsResult = await this.nasesService.createMany(createManyJoinedInput)
 
-      // success: separate urgent and high priority from external
+      // Success: separate urgent and high priority from external
+      // Filters are not strict, because any potential overlap will not cause any issues
       const externalUris = new Set(externalItems.map((item) => item.uri))
-      const successInternal = upvsResult.success.filter((item) => item.physicalEntityId !== null)
-      const successExternal = upvsResult.success.filter((item) => externalUris.has(item.uri))
+      const successInternal = upvsResult.success.filter((item) => !!item.physicalEntityId)
+      const successExternal = upvsResult.success.filter((item) => externalUris.has(item.inputUri))
 
       // handle success
       await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(successInternal)

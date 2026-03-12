@@ -149,7 +149,8 @@ model ExternalEdeskCheck {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  uri         String?
+  uri         String?             @unique
+  newUri      String?
   queueStatus QueueItemStatusEnum @default(PENDING)
 
   upvsStatus  String?

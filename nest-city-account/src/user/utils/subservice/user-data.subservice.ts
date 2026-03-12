@@ -371,12 +371,25 @@ export class UserDataSubservice {
       )
     }
 
+    const gdrpDataTaxesFormalCommunication = await this.prisma.userGdprData.findFirst({
+      take: 1,
+      where: {
+        userId: user.id,
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+      },
+      orderBy: { createdAt: 'desc' },
+    })
+
     const active = user.physicalEntity?.activeEdesk
       ? { deliveryMethod: DeliveryMethodEnum.EDESK }
-      : user.taxDeliveryMethod
+      : gdrpDataTaxesFormalCommunication
         ? {
-            deliveryMethod: user.taxDeliveryMethod,
-            date: user.taxDeliveryMethodCityAccountDate ?? undefined,
+            deliveryMethod:
+              gdrpDataTaxesFormalCommunication?.subType === GDPRSubTypeEnum.subscribe
+                ? DeliveryMethodEnum.CITY_ACCOUNT
+                : DeliveryMethodEnum.POSTAL,
+            date: gdrpDataTaxesFormalCommunication?.createdAt ?? undefined,
           }
         : undefined
 
@@ -402,7 +415,16 @@ export class UserDataSubservice {
         id: userId,
       },
       select: {
-        taxDeliveryMethod: true,
+        userGdprData: {
+          take: 1,
+          where: {
+            userId: userId,
+            category: GDPRCategoryEnum.TAXES,
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+          },
+          // not needed, but to be consistent
+          orderBy: { createdAt: 'desc' },
+        },
       },
     })
     const hasEdesk = await this.prisma.physicalEntity.findUnique({
@@ -410,7 +432,9 @@ export class UserDataSubservice {
         userId,
       },
     })
-    return !(user?.taxDeliveryMethod || hasEdesk?.activeEdesk)
+
+    const gdrpDataTaxesFormalCommunication = user?.userGdprData && user?.userGdprData?.length > 0
+    return !(gdrpDataTaxesFormalCommunication || hasEdesk?.activeEdesk)
   }
 
   private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
@@ -457,18 +481,6 @@ export class UserDataSubservice {
         ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
         'Delivery method set more than once at the same time'
       )
-    }
-
-    if (taxDeliveryData.length > 0) {
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          taxDeliveryMethod: taxDeliveryData[0],
-          ...(taxDeliveryData[0] === DeliveryMethodUserEnum.CITY_ACCOUNT && {
-            taxDeliveryMethodCityAccountDate: new Date(),
-          }),
-        },
-      })
     }
 
     await this.prisma.userGdprData.createMany({

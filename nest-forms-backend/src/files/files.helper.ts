@@ -57,9 +57,8 @@ export default class FilesHelper {
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList: string = this.configService.get(
-      `MIMETYPE_WHITELIST`,
-    ) as string
+    const mimeTypeList: string =
+      this.configService.getOrThrow<string>(`MIMETYPE_WHITELIST`)
     this.supportedMimeTypes = mimeTypeList.split(' ')
   }
 
@@ -383,13 +382,13 @@ export default class FilesHelper {
   // optional status
   getBucketUid(status?: string): string {
     if (status === 'SAFE') {
-      return this.configService.get('MINIO_SAFE_BUCKET') as string
+      return this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET')
     }
     if (status === 'INFECTED') {
-      return this.configService.get('MINIO_INFECTED_BUCKET') as string
+      return this.configService.getOrThrow<string>('MINIO_INFECTED_BUCKET')
     }
 
-    return this.configService.get('MINIO_UNSCANNED_BUCKET') as string
+    return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
   }
 
   forms2formInfo(form: Forms): FormInfo {

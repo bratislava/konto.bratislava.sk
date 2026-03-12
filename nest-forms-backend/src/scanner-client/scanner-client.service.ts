@@ -26,7 +26,7 @@ export default class ScannerClientService {
   // create function which will check health status of forms client with axios and using forms client url NEST_FORMS_BACKEND
   public async isRunning(): Promise<boolean> {
     try {
-      const url = `${this.configService.get('NEST_CLAMAV_SCANNER') as string}/health`
+      const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/health`
       const response: AxiosResponse<ServiceRunningDto> = await axios.get(url, {
         timeout: 5000,
       })
@@ -52,7 +52,7 @@ export default class ScannerClientService {
     filesList: Files,
   ): Promise<PostScanFileResponseDto[] | undefined> {
     try {
-      const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER') as string}/api/scan/files`
+      const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/files`
       const response: AxiosResponse<PostScanFileResponseDto[]> =
         await axios.post(url, filesList, {
           timeout: 10_000,
@@ -82,7 +82,7 @@ export default class ScannerClientService {
     bucketUid: string,
     userUid: string | null | undefined,
   ): Promise<PostScanFileResponseDto | undefined> {
-    const url = `${this.configService.get('NEST_CLAMAV_SCANNER') as string}/api/scan/file`
+    const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/file`
     // scanner needs fileUid key
     const postData = {
       fileUid: minioFileName,
@@ -115,7 +115,7 @@ export default class ScannerClientService {
   public async getScanFile(
     scannerId: string,
   ): Promise<GetScanFileDto | undefined> {
-    const url = `${this.configService.get('NEST_CLAMAV_SCANNER') as string}/api/scan/file/${scannerId}`
+    const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/file/${scannerId}`
     try {
       const response: AxiosResponse<GetScanFileDto> = await axios.get(url, {
         timeout: 10_000,
@@ -136,7 +136,7 @@ export default class ScannerClientService {
   public async deleteFile(
     scannerId: string,
   ): Promise<GetScanFileDto | undefined> {
-    const url = `${this.configService.get('NEST_CLAMAV_SCANNER') as string}/api/scan/file/${scannerId}`
+    const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/file/${scannerId}`
     try {
       const response: AxiosResponse<GetScanFileDto> = await axios.delete(url, {
         timeout: 10_000,

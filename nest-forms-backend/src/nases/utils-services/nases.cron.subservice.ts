@@ -101,6 +101,7 @@ export default class NasesCronSubservice {
                 },
               },
             )
+          // TODO open an issue in slovensko.sk to make the type of status response an enum
           await (validated.data.status ===
           FormRegistrationStatus.PUBLISHED.toString()
             ? addToResult('valid', formDefinition, true)

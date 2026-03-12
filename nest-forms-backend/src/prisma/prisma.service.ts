@@ -50,8 +50,9 @@ export default class PrismaService
   }
 
   enableShutdownHooks(app: INestApplication): void {
-    process.on('beforeExit', () => {
-      void app.close()
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    process.on('beforeExit', async () => {
+      await app.close()
     })
   }
 }

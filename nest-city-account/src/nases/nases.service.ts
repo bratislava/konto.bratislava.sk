@@ -188,12 +188,18 @@ export class NasesService {
       }))
     }
 
-    const resultDataFailed = uniqueInputs
-      .filter((input) => !successfulUris.has(input.uri))
+    const failedWithoutPossibleUriChanges = uniqueInputs
+      .filter(
+        (input) =>
+          !matchedUris.has(input.uri) && !possibleUriChanges.some((p) => p.uri === input.uri)
+      )
       .map((input) => ({
         physicalEntityId: input.physicalEntityId ?? undefined,
         uri: input.uri,
+        possibleUriChange: false,
       }))
+
+    const resultDataFailed = [...possibleUriChanges, ...failedWithoutPossibleUriChanges]
 
     return {
       success: resultDataSuccess,

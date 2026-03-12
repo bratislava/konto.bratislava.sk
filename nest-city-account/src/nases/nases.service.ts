@@ -148,6 +148,9 @@ export class NasesService {
           physicalEntityId: inputsByUri[result.uri]?.physicalEntityId || null,
         }
       })
+    const resultsWithUri = results.filter(
+      (result): result is ApiIamIdentitiesIdGet200ResponseWithUri => !!result.uri
+    )
 
     if (resultDataSuccess.length >= 10) {
       this.logger.error({

@@ -86,17 +86,17 @@ describe('UpvsQueueService', () => {
         success: [
           {
             physicalEntityId: 'urgent-1',
-            uri: 'rc://sk/1234567890_doe_john',
+            inputUri: 'rc://sk/1234567890_doe_john',
             data: { status: 'activated', upvs: { edesk_status: 'active', edesk_number: '123' } },
           },
           {
             physicalEntityId: 'high-1',
-            uri: 'rc://sk/1234567890_doe_john',
+            inputUri: 'rc://sk/1234567890_doe_john',
             data: { status: 'activated', upvs: { edesk_status: 'active', edesk_number: '456' } },
           },
           {
             physicalEntityId: null,
-            uri: 'rc://sk/external',
+            inputUri: 'rc://sk/external',
             data: { status: 'activated', upvs: { edesk_status: 'active', edesk_number: '789' } },
           },
         ],
@@ -146,8 +146,12 @@ describe('UpvsQueueService', () => {
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
         failed: [
-          { physicalEntityId: 'entity-1', uri: 'rc://sk/1234567890_doe_john' },
-          { uri: 'rc://sk/external-fail' },
+          {
+            physicalEntityId: 'entity-1',
+            inputUri: 'rc://sk/1234567890_doe_john',
+            possibleUriChange: false,
+          },
+          { inputUri: 'rc://sk/external-fail', possibleUriChange: false },
         ],
       })
 

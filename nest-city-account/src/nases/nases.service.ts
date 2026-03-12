@@ -127,7 +127,7 @@ export class NasesService {
     const uniqueInputs = _.uniqBy(inputs, 'uri')
     const inputsByUri = _.keyBy(uniqueInputs, 'uri')
 
-    if (inputs.length === 0 || inputs.length > 10) {
+    if (uniqueInputs.length === 0 || uniqueInputs.length > 10) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
         'Must provide between 1 and 10 URIs to validate'

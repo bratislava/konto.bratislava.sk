@@ -306,6 +306,7 @@ export default class NotificationsEventsService {
       where: {
         bloomreachUnpaidTaxReminderSent: false,
         isCancelled: false,
+        paidByInkaso: false,
         taxPayments: {
           none: {
             status: PaymentStatus.SUCCESS,

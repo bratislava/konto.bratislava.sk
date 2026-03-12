@@ -1,11 +1,16 @@
 import { createNestConfig } from '@bratislava/eslint-config-nest'
+import customRules from './eslint-custom-rules/index.js'
 
 export default [
   ...createNestConfig({
     tsconfigRootDir: import.meta.dirname,
   }),
   {
+    plugins: {
+      'custom-rules': customRules,
+    },
     rules: {
+      'custom-rules/thrower-error-guard-enum': 'error',
       '@darraghor/nestjs-typed/injectable-should-be-provided': 'warn', // 14 occurrences
       '@typescript-eslint/no-unnecessary-condition': 'warn', // 8 occurrences
       'no-await-in-loop': 'warn', // 7 occurrences
@@ -25,7 +30,7 @@ export default [
     },
   },
   {
-    files: ['**/*.spec.ts', '**/*_test_.ts'],
+    files: ['**/*.spec.ts', '**/*.e2e-spec.ts', 'test/**/*.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',

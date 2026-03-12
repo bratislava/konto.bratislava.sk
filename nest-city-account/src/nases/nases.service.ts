@@ -149,6 +149,27 @@ export class NasesService {
     }
 
     const successfulUris = new Set(resultDataSuccess.map((r) => r.uri))
+    const unmatchedResults = resultsWithUri.filter((result) => !matchedUris.has(result.uri))
+    const unmatchedInputUris = uniqueInputs
+      .map((input) => input.uri)
+      .filter((uri) => !matchedUris.has(uri))
+
+    // If we have exactly one unmatched result and one unmatched input URI, we can safely assume they represent the same
+    // identity.
+    if (unmatchedResults.length === 1 && unmatchedInputUris.length === 1) {
+      const unmatchedResult = unmatchedResults.pop()!
+      const unmatchedInputUri = unmatchedInputUris.pop()!
+      this.logger.log({
+        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInputUri}`,
+      })
+      resultDataSuccess.push({
+        uri: unmatchedResult.uri,
+        data: unmatchedResult,
+        physicalEntityId: inputsByUri[unmatchedInputUri]?.physicalEntityId || null,
+      })
+      matchedUris.add(unmatchedInputUri)
+    }
+
 
     const resultDataFailed = uniqueInputs
       .filter((input) => !successfulUris.has(input.uri))

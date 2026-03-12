@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { e2eGlobalShared } from './e2e-global-shared'
 
 export default async function e2eGlobalTeardown(): Promise<void> {

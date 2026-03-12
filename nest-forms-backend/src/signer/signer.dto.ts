@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-clear-text-protocols */
 import { ApiProperty } from '@nestjs/swagger'
 import {
   IsBoolean,

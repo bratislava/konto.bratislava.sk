@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { UnauthorizedException } from '@nestjs/common'
 import { TestingModuleBuilder } from '@nestjs/testing'
 import {

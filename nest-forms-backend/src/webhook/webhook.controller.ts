@@ -18,7 +18,7 @@ export default class WebhookController {
   })
   @Post()
   receiveWebhook(@Body() data: WebhookDto): void {
-    this.logger.log('Received webhook data succesfully', {
+    this.logger.log('Received webhook data successfully', {
       formId: data.formId,
     })
   }

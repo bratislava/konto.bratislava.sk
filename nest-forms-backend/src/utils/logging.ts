@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable sonarjs/function-return-type */
 import { HttpException } from '@nestjs/common'
 
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'

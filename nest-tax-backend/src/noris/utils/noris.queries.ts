@@ -28,6 +28,7 @@ WITH NorisRows AS (
         z_vybav.telefon_prace vyb_telefon_prace, 
         z_vybav.e_mail vyb_email, 
         dp_conf.vybavuje vyb_id,
+        lcs.dane21_priznanie.forma_uhrady AS forma_uhrady,
         lcs.fn21_dec2string( dsum.dan_spolu , 2) as dan_spolu, 
         lcs.fn21_dec2string(dsum.dan_byty, 2) dan_byty, 
         lcs.fn21_dec2string(dsum.dan_pozemky, 2) dan_pozemky, 

@@ -11,6 +11,7 @@ import {
   DeliveryMethodNoris,
 } from '../../types/noris.enums'
 import {
+  NorisBaseTax,
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
 } from '../../types/noris.types'
@@ -18,6 +19,7 @@ import {
   convertCurrencyToInt,
   mapDeliveryMethodToNoris,
   mapNorisToCommunalWasteDatabaseDetail,
+  mapNorisToDatabaseBaseTax,
   mapNorisToRealEstateDatabaseDetail,
   mapNorisToTaxAdministratorData,
   mapNorisToTaxInstallmentsData,
@@ -216,6 +218,113 @@ describe('mapNorisToTaxInstallmentsData', () => {
       order: 4,
       text: 'Fourth',
     })
+  })
+})
+
+describe('mapNorisToDatabaseBaseTax', () => {
+  const baseMockData: NorisBaseTax = {
+    dan_spolu: '150,50',
+    variabilny_symbol: '2024000123',
+    akt_datum: '2024-01-15',
+    datum_platnosti: new Date('2024-02-01'),
+    cislo_konania: 'KON-2024-001',
+    stav_dokladu: 'Z',
+    forma_uhrady: 'P',
+  } as NorisBaseTax
+
+  it('should map Noris data to DatabaseBaseTaxData with all fields', () => {
+    const result = mapNorisToDatabaseBaseTax(baseMockData, 2024, 42)
+
+    expect(result).toEqual({
+      amount: 15_050,
+      year: 2024,
+      taxPayerId: 42,
+      variableSymbol: '2024000123',
+      dateCreateTax: '2024-01-15',
+      dateTaxRuling: new Date('2024-02-01'),
+      taxId: 'KON-2024-001',
+      isCancelled: false,
+      paidByInkaso: false,
+    })
+  })
+
+  it('should convert dan_spolu currency string to integer amount', () => {
+    const data = { ...baseMockData, dan_spolu: '99,99' } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.amount).toBe(9999)
+  })
+
+  it('should handle dan_spolu with dot decimal separator', () => {
+    const data = { ...baseMockData, dan_spolu: '100.25' } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.amount).toBe(10_025)
+  })
+
+  it('should set isCancelled to true when stav_dokladu is S', () => {
+    const data = { ...baseMockData, stav_dokladu: 'S' } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.isCancelled).toBe(true)
+  })
+
+  it('should set isCancelled to false when stav_dokladu is not S', () => {
+    const statuses = ['Z', 'P', 'O'] as const
+    statuses.forEach((stav_dokladu) => {
+      const data = { ...baseMockData, stav_dokladu } as NorisBaseTax
+      const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+      expect(result.isCancelled).toBe(false)
+    })
+  })
+
+  it('should set paidByInkaso to true when forma_uhrady is I', () => {
+    const data = { ...baseMockData, forma_uhrady: 'I' } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.paidByInkaso).toBe(true)
+  })
+
+  it('should set paidByInkaso to false when forma_uhrady is not I', () => {
+    const paymentMethods = ['P', 'H', 'Z', 'S', null] as const
+    paymentMethods.forEach((paymentMethod) => {
+      const data = { ...baseMockData, forma_uhrady: paymentMethod } as NorisBaseTax
+      const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+      expect(result.paidByInkaso).toBe(false)
+    })
+  })
+
+  it('should pass through year and taxPayerId', () => {
+    const result1 = mapNorisToDatabaseBaseTax(baseMockData, 2023, 100)
+    expect(result1.year).toBe(2023)
+    expect(result1.taxPayerId).toBe(100)
+
+    const result2 = mapNorisToDatabaseBaseTax(baseMockData, 2025, 999)
+    expect(result2.year).toBe(2025)
+    expect(result2.taxPayerId).toBe(999)
+  })
+
+  it('should handle null dateCreateTax (akt_datum)', () => {
+    const data = { ...baseMockData, akt_datum: null } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.dateCreateTax).toBeNull()
+  })
+
+  it('should handle null dateTaxRuling (datum_platnosti)', () => {
+    const data = { ...baseMockData, datum_platnosti: null } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.dateTaxRuling).toBeNull()
+  })
+
+  it('should handle null taxId (cislo_konania)', () => {
+    const data = { ...baseMockData, cislo_konania: null } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.taxId).toBeNull()
+  })
+
+  it('should map variableSymbol from variabilny_symbol', () => {
+    const data = {
+      ...baseMockData,
+      variabilny_symbol: 'VS-12345',
+    } as NorisBaseTax
+    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
+    expect(result.variableSymbol).toBe('VS-12345')
   })
 })
 

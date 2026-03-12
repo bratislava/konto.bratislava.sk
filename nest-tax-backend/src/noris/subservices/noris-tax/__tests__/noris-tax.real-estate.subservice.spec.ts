@@ -136,6 +136,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       TXTSPL4_4: 'Test spl 4.4',
       SPL4_4: '4',
       uhrazeno: 0,
+      forma_uhrady: 'P',
     },
   ]
 

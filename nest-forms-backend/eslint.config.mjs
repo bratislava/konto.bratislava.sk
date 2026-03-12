@@ -1,5 +1,7 @@
 import { createNestConfig } from '@bratislava/eslint-config-nest'
 
+// TODO - add custom rules from eslint-custom-rules folder
+
 export default [
   ...createNestConfig({
     tsconfigRootDir: import.meta.dirname,

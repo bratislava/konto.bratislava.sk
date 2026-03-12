@@ -209,7 +209,7 @@ export class NasesService {
     const matchedUris = new Set(directMatches.map((result) => result.uri))
 
     const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.map((result) => ({
-      uri: result.uri,
+      inputUri: result.uri,
       data: result,
       physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
     }))

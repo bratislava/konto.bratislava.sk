@@ -223,7 +223,7 @@ export default class GinisService {
       return
     }
 
-    // ginis can't handle parallel uploads, it's causing race conditions on their side    
+    // ginis can't handle parallel uploads, it's causing race conditions on their side
     for (const file of form.files) {
       const minioFilePath = `${pospID}/${form.id}/${file.minioFileName}`
 
@@ -312,7 +312,6 @@ export default class GinisService {
     routingKey: RABBIT_NASES.ROUTING_KEY,
     queue: RABBIT_NASES.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
-       
       const logger = new LineLoggerSubservice('Rabbit')
       logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
       channel.reject(message, false)

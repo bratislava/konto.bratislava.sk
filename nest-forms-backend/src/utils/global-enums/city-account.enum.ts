@@ -1,4 +1,3 @@
- 
 export enum Tier {
   NEW = 'NEW',
   QUEUE_IDENTITY_CARD = 'QUEUE_IDENTITY_CARD',

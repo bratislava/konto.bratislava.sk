@@ -80,7 +80,9 @@ export default class MailgunService implements Mailer {
       const mailgunResponse = await this.mailgunClient.messages.create(
         this.configService.getOrThrow<string>('MAILGUN_DOMAIN'),
         {
-          from: emailFrom || this.configService.getOrThrow<string>('MAILGUN_EMAIL_FROM'),
+          from:
+            emailFrom ||
+            this.configService.getOrThrow<string>('MAILGUN_EMAIL_FROM'),
           to: data.to,
           subject: subject ?? MAILGUN_CONFIG[data.template].subject,
           attachment: mailgunAttachments,

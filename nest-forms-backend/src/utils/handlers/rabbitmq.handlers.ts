@@ -1,6 +1,4 @@
-export default function rabbitmqRequeueDelay(
-  requeueNumber: number,
-): number {
+export default function rabbitmqRequeueDelay(requeueNumber: number): number {
   if (requeueNumber === 1) {
     return 120_000
   }

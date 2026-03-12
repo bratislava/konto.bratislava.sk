@@ -930,9 +930,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should create contact when not found', async () => {
-      jest
-        .spyOn(service, 'findAndUpdateContact')
-        .mockResolvedValue(undefined)
+      jest.spyOn(service, 'findAndUpdateContact').mockResolvedValue(undefined)
       jest.spyOn(service, 'createContact').mockResolvedValue('new-contact-id')
 
       const result = await service.upsertContact({

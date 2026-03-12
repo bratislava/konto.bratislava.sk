@@ -106,7 +106,7 @@ export default class ScannerClientService {
       return response.data
     } catch (error) {
       throw this.errorHandling(
-        (error as AxiosError),
+        error as AxiosError,
         `minioFileName: ${minioFileName}, userUid: ${userUid as string}`,
       )
     }
@@ -129,7 +129,7 @@ export default class ScannerClientService {
 
       return response.data
     } catch (error) {
-      throw this.errorHandling((error as AxiosError), scannerId)
+      throw this.errorHandling(error as AxiosError, scannerId)
     }
   }
 
@@ -150,7 +150,7 @@ export default class ScannerClientService {
 
       return response.data
     } catch (error) {
-      throw this.errorHandling((error as AxiosError), scannerId)
+      throw this.errorHandling(error as AxiosError, scannerId)
     }
   }
 
@@ -160,28 +160,28 @@ export default class ScannerClientService {
         return this.throwerErrorGuard.NotFoundException(
           ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
           `File  ${scannerId} was not found at the scanner: ${error.message}`,
-          (error.response.data as string),
+          error.response.data as string,
         )
       }
       if (error.response.status === 413) {
         return this.throwerErrorGuard.PayloadTooLargeException(
           ScannerClientErrorsEnum.FILE_SIZE_TOO_LARRGE,
           `File ${scannerId} is too big for scannig: ${error.message}`,
-          (error.response.data as string),
+          error.response.data as string,
         )
       }
       if (error.response.status === 410) {
         return this.throwerErrorGuard.GoneException(
           ScannerClientErrorsEnum.FILE_WAS_PROCESSED,
           `File ${scannerId} was already processed: ${error.message}`,
-          (error.response.data as string),
+          error.response.data as string,
         )
       }
       if (error.response.status === 400) {
         return this.throwerErrorGuard.BadRequestException(
           ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
           `Params which where sent was not accepted by scanner: ${error.message}`,
-          (error.response.data as string),
+          error.response.data as string,
         )
       }
     }

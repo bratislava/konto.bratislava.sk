@@ -126,9 +126,8 @@ describe('ConvertPdfService', () => {
 
       expect(putObject).toHaveBeenCalled()
       // TODO should this rule be disabled for tests globally ? or am I doing something wrong ?
-       
+
       expect(convertService.generatePdf).toHaveBeenCalled()
-       
       expect(filesHelper.upsertFileByUid).toHaveBeenCalled()
     })
   })

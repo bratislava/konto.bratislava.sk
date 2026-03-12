@@ -1,6 +1,5 @@
 import { SslDetailDokumentuResponse } from '@bratislava/ginis-sdk'
 
- 
 export const mockGinisDocumentData: SslDetailDokumentuResponse = {
   'Wfl-dokument': {
     'Id-dokumentu': 'MAG0X03RZDEB',

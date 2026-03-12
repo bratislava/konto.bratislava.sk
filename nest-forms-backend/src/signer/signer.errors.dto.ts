@@ -6,7 +6,6 @@ import {
   SignerErrorsResponseEnum,
 } from './signer.errors.enum'
 
- 
 export class XmlValidationErrorDto extends BadRequestErrorDto {
   @ApiProperty({
     example: SignerErrorsEnum.XML_VALIDATION_ERROR,

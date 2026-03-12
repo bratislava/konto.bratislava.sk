@@ -21,8 +21,7 @@ type DocumentHistoryElementWithAssignedCategory =
   SslDetailDokumentuHistorieDokumentuItem & {
     assignedCategory: GinisDocumentChangeType
   }
-export type MappedDocumentHistory =
-  DocumentHistoryElementWithAssignedCategory[]
+export type MappedDocumentHistory = DocumentHistoryElementWithAssignedCategory[]
 
 // likely more functions will be added to this file
 export const mapGinisHistory = (

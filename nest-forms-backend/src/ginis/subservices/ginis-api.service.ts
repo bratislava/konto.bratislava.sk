@@ -243,7 +243,6 @@ export default class GinisAPIService {
     extended = false,
     contactDatabases: GinContactDatabase[] = this.defaultContactDatabaseOrder,
   ): Promise<string | undefined> {
-     
     for (const database of contactDatabases) {
       // contact database search must happen one by one, not in parallel, in specified order
       // eslint-disable-next-line no-await-in-loop

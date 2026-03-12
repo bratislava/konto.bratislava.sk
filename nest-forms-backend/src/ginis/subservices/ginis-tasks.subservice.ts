@@ -129,7 +129,9 @@ export default class GinisTasksSubservice {
     })
 
     await Promise.allSettled(
-      submissions.map(async (submission) => this.updateSubmissionState(submission)),
+      submissions.map(async (submission) =>
+        this.updateSubmissionState(submission),
+      ),
     )
   }
 }

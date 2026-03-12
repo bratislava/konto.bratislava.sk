@@ -559,7 +559,9 @@ export const getCommunalWasteTaxesFromNoris = `
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,
-        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov, 
+        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov,
+
+        poplatok.forma_uhrady AS forma_uhrady,
 
         /* ----------------------------Texty splátok výmeru start------------------------------------*/   
         

@@ -306,7 +306,7 @@ export default class NotificationsEventsService {
       where: {
         bloomreachUnpaidTaxReminderSent: false,
         isCancelled: false,
-        paymentMethodIsInkaso: false,
+        paymentMethodIsInkaso: false, // Such taxes are not paid directly by the tax payer, therefore we do not send reminders for them
         taxPayments: {
           none: {
             status: PaymentStatus.SUCCESS,

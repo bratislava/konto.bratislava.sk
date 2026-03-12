@@ -243,7 +243,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
       dateTaxRuling: new Date('2024-02-01'),
       taxId: 'KON-2024-001',
       isCancelled: false,
-      paidByInkaso: false,
+      paymentMethodIsInkaso: false,
     })
   })
 
@@ -274,13 +274,13 @@ describe('mapNorisToDatabaseBaseTax', () => {
     })
   })
 
-  it('should set paidByInkaso to true when forma_uhrady is I', () => {
+  it('should set paymentMethodIsInkaso to true when forma_uhrady is I', () => {
     const data = { ...baseMockData, forma_uhrady: 'I' } as NorisBaseTax
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
-    expect(result.paidByInkaso).toBe(true)
+    expect(result.paymentMethodIsInkaso).toBe(true)
   })
 
-  it('should set paidByInkaso to false when forma_uhrady is not I', () => {
+  it('should set paymentMethodIsInkaso to false when forma_uhrady is not I', () => {
     const paymentMethods = ['P', 'H', 'Z', 'S', null] as const
     paymentMethods.forEach((paymentMethod) => {
       const data = {
@@ -288,7 +288,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
         forma_uhrady: paymentMethod,
       } as NorisBaseTax
       const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
-      expect(result.paidByInkaso).toBe(false)
+      expect(result.paymentMethodIsInkaso).toBe(false)
     })
   })
 

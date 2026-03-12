@@ -79,7 +79,7 @@ const FormContentInner = () => {
           data-cy="form-container"
         >
           <StepperView />
-          <div className="grow px-4 lg:px-0">
+          <div className="grow">
             {currentStepperStep.index === 'summary' ? <FormSummary /> : <FormStep />}
             {displayHeaderAndMenu && <FormBottomMenu />}
           </div>

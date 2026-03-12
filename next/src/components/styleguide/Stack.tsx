@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import cn from '@/src/utils/cn'
 
 type StackProps = {
-  bg?: 'white' | 'dark'
   width?: 'desktop' | 'mobile' | 'full' | null
   direction?: 'column' | 'row'
   children: ReactNode

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Readable } from 'node:stream'
 import { setTimeout } from 'node:timers/promises'
 

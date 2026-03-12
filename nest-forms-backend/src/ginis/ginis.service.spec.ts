@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-spread */
 import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 

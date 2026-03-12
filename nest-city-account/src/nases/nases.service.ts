@@ -29,7 +29,14 @@ export type UpvsIdentityByUriSuccessType = {
 
 export type CreateManyResult = {
   success: UpvsIdentityByUriSuccessType[]
-  failed: { physicalEntityId?: string; uri: string }[]
+  failed: { physicalEntityId?: string; uri: string; possibleUriChange?: boolean }[]
+}
+
+export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<
+  ApiIamIdentitiesIdGet200Response,
+  'uri'
+> & {
+  uri: string
 }
 
 @Injectable()

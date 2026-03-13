@@ -3,10 +3,10 @@ import { Module } from '@nestjs/common'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import ClientsModule from '../clients/clients.module'
 import { PrismaModule } from '../prisma/prisma.module'
+import { QrCodeModule } from '../qrcode/qrcode.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
-import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import { NorisService } from './noris.service'
 import { NorisConnectionSubservice } from './subservices/noris-connection.subservice'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
@@ -17,7 +17,7 @@ import { NorisTaxRealEstateSubservice } from './subservices/noris-tax/noris-tax.
 import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
 
 @Module({
-  imports: [PrismaModule, BloomreachModule, ClientsModule],
+  imports: [PrismaModule, BloomreachModule, ClientsModule, QrCodeModule],
   providers: [
     NorisService,
     NorisConnectionSubservice,
@@ -27,7 +27,6 @@ import { NorisValidatorSubservice } from './subservices/noris-validator.subservi
     ThrowerErrorGuard,
     DatabaseSubservice,
     CityAccountSubservice,
-    QrCodeSubservice,
     NorisTaxRealEstateSubservice,
     NorisTaxCommunalWasteSubservice,
     NorisValidatorSubservice,

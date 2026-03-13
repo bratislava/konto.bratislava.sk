@@ -39,7 +39,7 @@ export default class NorisSyncTasksService {
       variableSymbol: string
       id: number
       year: number
-    }[] = []
+    }[]
 
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this function will overwrite the testing taxes payments which is not desired

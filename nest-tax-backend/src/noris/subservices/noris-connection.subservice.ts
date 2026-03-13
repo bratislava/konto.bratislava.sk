@@ -54,7 +54,7 @@ export class NorisConnectionSubservice {
 
   private async waitForConnection(
     connection: ConnectionPool,
-    maxWaitTime: number = 10_000,
+    maxWaitTime = 10_000,
   ): Promise<void> {
     const startTime = Date.now()
 
@@ -87,8 +87,8 @@ export class NorisConnectionSubservice {
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
-    errorHandler: (error: any) => never,
-    useOptimized: boolean = false,
+    errorHandler: (error: unknown) => never,
+    useOptimized = false,
   ): Promise<T> {
     const connection = useOptimized
       ? await this.createOptimizedConnection()

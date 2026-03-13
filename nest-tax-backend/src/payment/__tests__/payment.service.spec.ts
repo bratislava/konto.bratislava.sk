@@ -2,7 +2,6 @@ import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, TaxPaymentSource, TaxType } from '@prisma/client'
-import noop from 'lodash/noop'
 
 import prismaMock from '../../../test/singleton'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -12,7 +11,6 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxPaymentWithTaxInfo } from '../../utils/types/types.prisma'
 import { RetryService } from '../../utils-module/retry.service'
-import { PaymentResponseQueryDto } from '../dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from '../dtos/redirect.payent.dto'
 import { PaymentService } from '../payment.service'
 import { GpWebpaySubservice } from '../subservices/gpwebpay.subservice'
@@ -27,7 +25,7 @@ describe('PaymentService', () => {
 
   beforeEach(async () => {
     jest.resetModules()
-    jest.spyOn(console, 'log').mockImplementation(noop)
+    jest.spyOn(console, 'log').mockImplementation(() => {})
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -84,7 +82,7 @@ describe('PaymentService', () => {
       })
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.resetAllMocks()
   })
 
@@ -104,7 +102,7 @@ describe('PaymentService', () => {
     it('should update bloomreachEventSent flag and track event when externalId is provided and tracking succeeds', async () => {
       const externalId = 'external-id-123'
       const mockUpdate = jest.fn()
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: mockUpdate,
@@ -146,7 +144,7 @@ describe('PaymentService', () => {
         source: null,
       } as TaxPaymentWithTaxInfo
 
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: jest.fn(),
@@ -180,7 +178,7 @@ describe('PaymentService', () => {
 
     it('should only update bloomreachEventSent flag when externalId is not provided', async () => {
       const mockUpdate = jest.fn()
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: mockUpdate,
@@ -205,7 +203,7 @@ describe('PaymentService', () => {
     it('should throw InternalServerErrorException when tracking fails (returns false)', async () => {
       const externalId = 'external-id-123'
       const mockInternalServerError = new Error('Internal Server Error')
-      const mockTransaction = jest.fn().mockImplementation(async (callback) => {
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
         const mockTx = {
           taxPayment: {
             update: jest.fn(),
@@ -241,7 +239,7 @@ describe('PaymentService', () => {
         try {
           const result = await callback(mockTx)
           return result
-        } catch (error) {
+        } catch {
           transactionThrow = true
           throw new Error('Transaction error')
         }
@@ -267,7 +265,7 @@ describe('PaymentService', () => {
   })
 
   describe('processPaymentResponse', () => {
-    const mockQuery: PaymentResponseQueryDto = {
+    const mockQuery = {
       OPERATION: 'CREATE_ORDER',
       ORDERNUMBER: '123456789',
       PRCODE: '0',

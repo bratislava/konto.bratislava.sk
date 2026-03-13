@@ -104,7 +104,7 @@ export default class TaxImportHelperService {
   async getPrioritizedBirthNumbersWithMetadata(
     taxType: TaxType,
     year: number,
-    isImportPhase: boolean = true,
+    isImportPhase = true,
   ): Promise<{
     birthNumbers: string[]
     newlyCreated: string[]

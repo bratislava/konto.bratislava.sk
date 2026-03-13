@@ -100,7 +100,7 @@ export class NorisService {
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    return this.deliveryMethodSubservice.removeDeliveryMethodsFromNoris(
+    await this.deliveryMethodSubservice.removeDeliveryMethodsFromNoris(
       birthNumber,
     )
   }

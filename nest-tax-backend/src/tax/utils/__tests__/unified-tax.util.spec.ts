@@ -1,19 +1,16 @@
-/* eslint-disable no-param-reassign */
-
 import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
-import noop from 'lodash/noop'
 
 import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
+import { QrPaymentNoteEnum } from '../../../qrcode/dtos/qrcode.dto'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
 } from '../../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -238,12 +235,12 @@ function createExpectedOutput(
 function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
   const stringifiedOutput = JSON.stringify(
     received,
-    Object.keys(received).sort(),
+    Object.keys(received).sort((a, b) => a.localeCompare(b)),
     2,
   )
   const stringifiedExpected = JSON.stringify(
     expected,
-    Object.keys(expected).sort(),
+    Object.keys(expected).sort((a, b) => a.localeCompare(b)),
     2,
   )
 
@@ -484,7 +481,7 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-01-21 21:00'),
           })
 
-          const expected = createExpectedOutput(noop)
+          const expected = createExpectedOutput(() => {})
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -862,18 +859,16 @@ describe('UnifiedTaxUtil', () => {
         ],
       }
 
-      // eslint-disable-next-line unicorn/no-array-reduce
-      const combinations = Object.entries(testInputArrays).reduce(
-        (acc, [key, values]) => {
-          if (acc.length === 0) {
-            return values.map((value) => ({ [key]: value }))
-          }
-          return acc.flatMap((combo) =>
-            values.map((value) => ({ ...combo, [key]: value })),
-          )
-        },
-        [] as Array<Partial<typeof defaultInputRealEstate>>,
-      )
+      const combinations = Object.entries(testInputArrays).reduce<
+        Partial<typeof defaultInputRealEstate>[]
+      >((acc, [key, values]) => {
+        if (acc.length === 0) {
+          return values.map((value) => ({ [key]: value }))
+        }
+        return acc.flatMap((combo) =>
+          values.map((value) => ({ ...combo, [key]: value })),
+        )
+      }, [])
 
       test.each(combinations.map((combination) => [combination]))(
         'should return total amount for all installments equal to the overall amount for input: %j',
@@ -1401,18 +1396,16 @@ describe('UnifiedTaxUtil', () => {
           ],
         }
 
-        // eslint-disable-next-line unicorn/no-array-reduce
-        const combinations = Object.entries(testInputArrays).reduce(
-          (acc, [key, values]) => {
-            if (acc.length === 0) {
-              return values.map((value) => ({ [key]: value }))
-            }
-            return acc.flatMap((combo) =>
-              values.map((value) => ({ ...combo, [key]: value })),
-            )
-          },
-          [] as Array<Partial<typeof defaultInput4Installments>>,
-        )
+        const combinations = Object.entries(testInputArrays).reduce<
+          Partial<typeof defaultInput4Installments>[]
+        >((acc, [key, values]) => {
+          if (acc.length === 0) {
+            return values.map((value) => ({ [key]: value }))
+          }
+          return acc.flatMap((combo) =>
+            values.map((value) => ({ ...combo, [key]: value })),
+          )
+        }, [])
 
         test.each(combinations.map((combination) => [combination]))(
           'should return total amount for all installments equal to the overall amount for input: %j',
@@ -1785,5 +1778,3 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
     )
   })
 })
-
-/* eslint-enable no-param-reassign */

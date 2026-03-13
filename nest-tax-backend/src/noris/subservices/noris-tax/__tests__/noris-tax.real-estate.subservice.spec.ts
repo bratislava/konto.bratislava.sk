@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
@@ -8,6 +7,7 @@ import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'ope
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
+import { QrCodeService } from '../../../../qrcode/qrcode.service'
 import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpers/tax.helper'
 import { createTestingRealEstateTaxMock } from '../../../../tax/utils/testing-tax-mock'
 import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
@@ -16,7 +16,6 @@ import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
-import { QrCodeSubservice } from '../../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../../utils/types/types.prisma'
 import { CustomErrorNorisTypesEnum } from '../../../noris.errors'
 import { AreaTypesEnum } from '../../../types/noris.enums'
@@ -182,7 +181,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           provide: BloomreachService,
           useValue: createMock<BloomreachService>(),
         },
-        { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
+        { provide: QrCodeService, useValue: createMock<QrCodeService>() },
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: NorisValidatorSubservice,
@@ -272,7 +271,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -369,17 +368,17 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(() => {})
+        .mockImplementation(async () => {
+          return Promise.resolve()
+        })
     })
 
     it('should process Noris tax data and return birth numbers', async () => {
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(
-          async (taxDefinition, birthNumbersResult, norisItem) => {
-            ;(birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
-          },
-        )
+        .mockImplementation((taxDefinition, birthNumbersResult, norisItem) => {
+          ;(birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
+        })
 
       const result = await service.processNorisTaxData(mockNorisData, 2023, {})
 
@@ -462,7 +461,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         },
       ] as any)
 
-      prismaMock.$transaction.mockImplementation(async (callback: any) => {
+      prismaMock.$transaction.mockImplementation((callback: any) => {
         const mockTx = {
           taxInstallment: {
             deleteMany: jest.fn().mockResolvedValue({}),
@@ -589,7 +588,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -617,7 +616,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -697,7 +696,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         },
       ] as any)
 
-      prismaMock.$transaction.mockImplementation(async (callback: any) => {
+      prismaMock.$transaction.mockImplementation((callback: any) => {
         const mockTx = {
           taxInstallment: {
             deleteMany: jest.fn().mockResolvedValue({}),
@@ -800,9 +799,8 @@ describe('NorisTaxRealEstateSubservice', () => {
       }
 
       beforeEach(() => {
-        // eslint-disable-next-line prefer-destructuring
-        const qrCodeSubservice = service['qrCodeSubservice']
-        qrCodeSubservice.createQrCode = jest.fn().mockResolvedValue('qr-code')
+        const qrCodeService = service['qrCodeService']
+        qrCodeService.createQrCode = jest.fn().mockResolvedValue('qr-code')
 
         prismaMock.taxAdministrator.upsert.mockResolvedValue({
           id: 1,
@@ -922,14 +920,13 @@ describe('NorisTaxRealEstateSubservice', () => {
       let bloomreachService: any
 
       beforeEach(() => {
-        // eslint-disable-next-line prefer-destructuring
-        const qrCodeSubservice = service['qrCodeSubservice']
-        qrCodeSubservice.createQrCode = jest.fn().mockResolvedValue('qr-code')
+        const qrCodeService = service['qrCodeService']
+        qrCodeService.createQrCode = jest.fn().mockResolvedValue('qr-code')
 
         bloomreachService = service['bloomreachService']
         bloomreachService.trackEventTax = jest.fn().mockResolvedValue(true)
 
-        prismaMock.$transaction.mockImplementation(async (callback: any) => {
+        prismaMock.$transaction.mockImplementation((callback: any) => {
           const mockTx = {
             taxAdministrator: {
               upsert: jest.fn().mockResolvedValue({
@@ -1067,5 +1064,3 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -257,7 +256,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       jest
         .spyOn(connectionService, 'withConnection')
         .mockImplementation(async () => {
-          throw connectionError
+          return Promise.reject(connectionError)
         })
 
       await expect(
@@ -568,7 +567,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn, errorHandler) => {
             errorHandler(connectionError)
-            throw connectionError
+            return Promise.reject(connectionError)
           })
 
         await expect(
@@ -766,7 +765,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           .spyOn(connectionService, 'withConnection')
           .mockImplementation(async (fn, errorHandler) => {
             errorHandler(connectionError)
-            throw connectionError
+            return Promise.reject(connectionError)
           })
 
         await expect(
@@ -797,4 +796,3 @@ describe('NorisDeliveryMethodSubservice', () => {
     })
   })
 })
-/* eslint-enable no-secrets/no-secrets */

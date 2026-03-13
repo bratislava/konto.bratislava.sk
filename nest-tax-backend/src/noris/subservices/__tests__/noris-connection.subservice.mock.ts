@@ -16,7 +16,6 @@ export const createNorisConnectionSubserviceMock = () => {
   const mock = {
     createConnection: jest.fn().mockResolvedValue(mockConnectionPool),
     createOptimizedConnection: jest.fn().mockResolvedValue(mockConnectionPool),
-    // eslint-disable-next-line unicorn/no-useless-undefined
     waitForConnection: jest.fn().mockResolvedValue(undefined),
   }
 
@@ -26,10 +25,11 @@ export const createNorisConnectionSubserviceMock = () => {
 // Mock dependencies
 export const mockConfigService = {
   getOrThrow: jest.fn((key: string) => {
-    const mockEnvs: { [key: string]: string } = {
+    const mockEnvs: Record<string, string> = {
       MSSQL_HOST: 'localhost',
       MSSQL_DB: 'test_db',
       MSSQL_USERNAME: 'test_user',
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
       MSSQL_PASSWORD: 'test_password',
     }
     return mockEnvs[key] || 'default_value'
@@ -39,7 +39,7 @@ export const mockConfigService = {
 export const mockThrowerErrorGuard = {
   InternalServerErrorException: jest
     .fn()
-    .mockImplementation((error, message) => {
+    .mockImplementation((error, message: string) => {
       return new Error(message)
     }),
 }

@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 /**
  * Returns one DZN tax record per (birth number, year). When Noris has multiple
  * records for the same person/year, we keep a single row deterministically
@@ -747,4 +746,3 @@ export const getCommunalWasteTaxesFromNoris = `
         doklad.rok_podkladu = @year AND
         (nadoba.objem IS NOT NULL AND nadoba.pocet_nadob IS NOT NULL AND nadoba.pocet_odvozov IS NOT NULL AND nadoba.sadzba_mena IS NOT NULL AND nadoba.suma_uhrada_mena IS NOT NULL AND nadoba.druh_nadoby IS NOT NULL)
 `
-/* eslint-enable no-secrets/no-secrets */

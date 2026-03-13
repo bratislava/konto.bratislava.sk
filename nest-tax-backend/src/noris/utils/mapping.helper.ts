@@ -29,7 +29,7 @@ export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   }
 }
 
-type NorisTaxAdministratorData = {
+interface NorisTaxAdministratorData {
   email: string
   externalId: string
   id: number
@@ -51,7 +51,7 @@ export const mapNorisToTaxAdministratorData = (
     : undefined
 }
 
-export type DatabaseBaseTaxData = {
+export interface DatabaseBaseTaxData {
   amount: number
   year: number
   taxPayerId: number
@@ -62,7 +62,7 @@ export type DatabaseBaseTaxData = {
   isCancelled: boolean
 }
 
-type TaxInstallment = {
+interface TaxInstallment {
   taxId: number
   amount: number
   text: string | null
@@ -120,7 +120,7 @@ export const mapDeliveryMethodToNoris = (
 ): DeliveryMethodNoris | null => {
   if (deliveryMethod === null) return null
 
-  const mapping: Record<DeliveryMethod, DeliveryMethodNoris> = {
+  const mapping: Partial<Record<DeliveryMethod, DeliveryMethodNoris>> = {
     [DeliveryMethod.EDESK]: DeliveryMethodNoris.EDESK,
     [DeliveryMethod.CITY_ACCOUNT]: DeliveryMethodNoris.CITY_ACCOUNT,
     [DeliveryMethod.POSTAL]: DeliveryMethodNoris.EDESK, // Postal is saved in Noris as EDESK ('E')

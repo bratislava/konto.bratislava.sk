@@ -1,6 +1,7 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import type { Request, Response } from 'express'
 
 import { AppModule } from './app.module'
 import {
@@ -54,10 +55,11 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
-  app.getHttpAdapter().get('/spec-json', (req, res) => res.json(document))
+  app
+    .getHttpAdapter()
+    .get('/spec-json', (_req: Request, res: Response) => res.json(document))
 
   await app.listen(port)
   logger.log(`Nest is running on port: ${port}`)
 }
-// eslint-disable-next-line unicorn/prefer-top-level-await
-bootstrap()
+void bootstrap()

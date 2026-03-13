@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
@@ -6,11 +5,11 @@ import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
+import { QrCodeService } from '../../../../qrcode/qrcode.service'
 import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
-import { QrCodeSubservice } from '../../../../utils/subservices/qrcode.subservice'
 import {
   NorisCommunalWasteTax,
   NorisCommunalWasteTaxGrouped,
@@ -56,8 +55,8 @@ describe('NorisTaxCommunalWasteSubservice', () => {
           useValue: createMock<NorisValidatorSubservice>(),
         },
         {
-          provide: QrCodeSubservice,
-          useValue: createMock<QrCodeSubservice>(),
+          provide: QrCodeService,
+          useValue: createMock<QrCodeService>(),
         },
         {
           provide: ThrowerErrorGuard,
@@ -116,7 +115,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     it('should have all dependencies injected', () => {
       expect(service['connectionService']).toBeDefined()
       expect(service['norisValidatorSubservice']).toBeDefined()
-      expect(service['qrCodeSubservice']).toBeDefined()
+      expect(service['qrCodeService']).toBeDefined()
       expect(service['throwerErrorGuard']).toBeDefined()
       expect(service['prismaService']).toBeDefined()
       expect(service['bloomreachService']).toBeDefined()
@@ -377,7 +376,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -407,7 +406,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       })
 
       connectionService.withConnection.mockImplementation(
-        async (callback, errorHandler) => {
+        (callback, errorHandler) => {
           return errorHandler(mockError)
         },
       )
@@ -719,5 +718,3 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

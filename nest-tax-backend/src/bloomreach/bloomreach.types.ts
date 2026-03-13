@@ -9,7 +9,7 @@ export enum BloomreachEventNameEnum {
   UNPAID_TAX_INSTALLMENT_REMINDER = 'unpaid_tax_installment_reminder',
 }
 
-export type TaxPaymentBloomreachData = {
+export interface TaxPaymentBloomreachData {
   year: number
   amount: number
   payment_source: TaxPaymentSource
@@ -18,7 +18,7 @@ export type TaxPaymentBloomreachData = {
   suppress_email: boolean
 }
 
-export type TaxBloomreachData = {
+export interface TaxBloomreachData {
   year: number
   amount: number
   delivery_method: DeliveryMethodNamed | null
@@ -26,13 +26,13 @@ export type TaxBloomreachData = {
   order: number
 }
 
-export type UnpaidTaxReminderBloomreachData = {
+export interface UnpaidTaxReminderBloomreachData {
   year: number
   tax_type: TaxType
   order: number
 }
 
-export type UnpaidTaxInstallmentReminderBloomreachData = {
+export interface UnpaidTaxInstallmentReminderBloomreachData {
   year: number
   tax_type: TaxType
   order: number

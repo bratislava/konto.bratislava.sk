@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
@@ -687,5 +686,3 @@ describe('TaxImportTasksService', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

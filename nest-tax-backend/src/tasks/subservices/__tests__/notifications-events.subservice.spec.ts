@@ -4,7 +4,6 @@ import { PaymentStatus, TaxType, UnpaidReminderSent } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
-import noop from 'lodash/noop'
 
 import prismaMock from '../../../../test/singleton'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
@@ -32,7 +31,7 @@ function setNowBratislava(localDateTime: string): void {
 
 /** Assert taxInstallment.updateMany was called twice with the given alreadyOtherSent and newReminderSent (and BOTH). */
 function assertUpdateManyUsesReminderEnums(
-  updateManyMock: jest.Mock,
+  updateManyMock: jest.SpyInstance,
   alreadyOtherSent: UnpaidReminderSent,
   newReminderSent: UnpaidReminderSent,
 ): void {
@@ -108,7 +107,7 @@ describe('NotificationsEventsSubservice', () => {
     bloomreachService = module.get(BloomreachService)
     cityAccountSubservice = module.get(CityAccountSubservice)
 
-    jest.spyOn(service['logger'], 'log').mockImplementation(noop)
+    jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
     ;(getTaxDefinitionByType as jest.Mock).mockImplementation((taxType) => {
       if (taxType === TaxType.KO) {
         return mockTaxDefinitionKO
@@ -562,7 +561,7 @@ describe('NotificationsEventsSubservice', () => {
         [birthNumber]: { externalId: 'ext-1' },
       } as any)
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockImplementation(
-        () => Promise.resolve(true),
+        async () => Promise.resolve(true),
       )
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
@@ -590,8 +589,9 @@ describe('NotificationsEventsSubservice', () => {
       ).toHaveBeenCalledWith(expectedPayload, 'ext-1')
 
       expect(prismaMock.taxInstallment.updateMany).toHaveBeenCalledTimes(2)
+      const updateManySpy = jest.spyOn(prismaMock.taxInstallment, 'updateMany')
       assertUpdateManyUsesReminderEnums(
-        prismaMock.taxInstallment.updateMany as jest.Mock,
+        updateManySpy,
         UnpaidReminderSent.AFTER_DUE,
         UnpaidReminderSent.BEFORE_DUE,
       )
@@ -643,8 +643,9 @@ describe('NotificationsEventsSubservice', () => {
       ).toHaveBeenCalledWith(expectedPayload, 'ext-1')
 
       expect(prismaMock.taxInstallment.updateMany).toHaveBeenCalledTimes(2)
+      const updateManySpy = jest.spyOn(prismaMock.taxInstallment, 'updateMany')
       assertUpdateManyUsesReminderEnums(
-        prismaMock.taxInstallment.updateMany as jest.Mock,
+        updateManySpy,
         UnpaidReminderSent.BEFORE_DUE,
         UnpaidReminderSent.AFTER_DUE,
       )
@@ -892,7 +893,7 @@ describe('NotificationsEventsSubservice', () => {
             externalId: 'external-id-123',
           },
         } as any)
-      jest.spyOn(service['logger'], 'log').mockImplementation(noop)
+      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
       await service.sendUnpaidTaxReminders()
 
@@ -945,7 +946,7 @@ describe('NotificationsEventsSubservice', () => {
             externalId: 'external-id-2',
           },
         } as any)
-      jest.spyOn(service['logger'], 'log').mockImplementation(noop)
+      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
       await service.sendUnpaidTaxReminders()
 
@@ -969,8 +970,8 @@ describe('NotificationsEventsSubservice', () => {
   describe('resendBloomreachEvents', () => {
     beforeEach(() => {
       jest.clearAllMocks()
-      jest.spyOn(service['logger'], 'log').mockImplementation(noop)
-      jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+      jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
     })
 
     it('should not process anything when there are no payments', async () => {

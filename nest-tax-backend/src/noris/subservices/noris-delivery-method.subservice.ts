@@ -37,7 +37,7 @@ export class NorisDeliveryMethodSubservice {
   ): Promise<string[]> {
     const updatedSubjects = await this.connectionService.withConnection(
       async (connection) => {
-        const updatePromises = data.map((dataItem) =>
+        const updatePromises = data.map(async (dataItem) =>
           this.executeDeliveryMethodUpdate(connection, dataItem),
         )
         return Promise.all(updatePromises)
@@ -135,7 +135,7 @@ export class NorisDeliveryMethodSubservice {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to get birth numbers for updated subjects',
           undefined,
-          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? undefined : (error as string),
           error instanceof Error ? error : undefined,
         )
       },
@@ -184,7 +184,7 @@ export class NorisDeliveryMethodSubservice {
       .filter(
         ([deliveryMethod, birthNumbers]) =>
           birthNumbers.length > 0 &&
-          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT,
+          (deliveryMethod as DeliveryMethod) !== DeliveryMethod.CITY_ACCOUNT,
       )
       .map(([deliveryMethod, birthNumbers]) => {
         return {

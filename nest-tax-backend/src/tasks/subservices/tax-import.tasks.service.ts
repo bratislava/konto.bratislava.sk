@@ -252,7 +252,7 @@ export default class TaxImportTasksService {
         this.logger.log(
           `Importing ${group.taxType} taxes for ${group.birthNumbers.length} users for year ${group.year}`,
         )
-        return this.taxImportHelperSubservice.importTaxes(
+        return this.taxImportHelperService.importTaxes(
           group.taxType,
           group.birthNumbers,
           group.year,

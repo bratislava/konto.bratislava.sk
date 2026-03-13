@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next'
 import type { CSSProperties } from 'react'
 import {
   Text,
@@ -8,7 +9,6 @@ import {
   UNSTABLE_ToastRegion as ToastRegion,
 } from 'react-aria-components'
 import { flushSync } from 'react-dom'
-import { useTranslation } from 'next-i18next'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import Button from '@/src/components/simple-components/Button'
@@ -36,20 +36,13 @@ export const toastQueue = new ToastQueue<AppToastContent>({
   },
 })
 
-const toastVariantClassNames: Record<ToastVariant, string> = {
-  error: 'bg-[var(--color-negative-700)]',
-  info: 'bg-[var(--color-gray-700)]',
-  success: 'bg-[var(--color-success-700)]',
-  warning: 'bg-[var(--color-warning-700)]',
-}
-
 const Toast = ({ className, ...props }: ToastProps<AppToastContent>) => {
   return (
     <ReactAriaToast
       {...props}
       style={{ viewTransitionName: props.toast.key } as CSSProperties}
       className={cn(
-        'pointer-events-auto flex w-full max-w-[672px] items-center rounded-[4px] text-white shadow-[0_3px_5px_-1px_rgba(0,0,0,0.2),0_6px_10px_0_rgba(0,0,0,0.14),0_1px_18px_0_rgba(0,0,0,0.12)] [view-transition-class:toast] outline-none sm:w-auto sm:min-w-[334px]',
+        'pointer-events-auto flex w-full max-w-[672px] items-center rounded text-white shadow-lg outline-none [view-transition-class:toast] sm:w-auto sm:min-w-[334px]',
         className,
       )}
     />
@@ -65,11 +58,19 @@ const AppToastRegion = () => {
       className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex flex-col items-center px-2 outline-none"
     >
       {({ toast }) => (
-        <Toast className={toastVariantClassNames[toast.content.variant]} toast={toast}>
+        <Toast
+          className={cn({
+            'bg-gray-700': toast.content.variant === 'info',
+            'bg-negative-700': toast.content.variant === 'error',
+            'bg-success-700': toast.content.variant === 'success',
+            'bg-warning-700': toast.content.variant === 'warning',
+          })}
+          toast={toast}
+        >
           <ToastContent className="flex min-w-0 flex-1 items-center">
             <Text
               slot="title"
-              className="flex-1 px-4 py-[14px] text-left text-sm font-normal leading-5"
+              className="flex-1 px-4 py-[14px] text-left text-sm leading-5 font-normal"
             >
               {toast.content.message}
             </Text>
@@ -77,7 +78,7 @@ const AppToastRegion = () => {
           <Button
             slot="close"
             variant="icon-wrapped"
-            icon={<CrossIcon className="size-3" aria-hidden />}
+            icon={<CrossIcon className="size-2" aria-hidden />}
             aria-label={t('Toast.aria.close')}
             className="mr-2 text-white"
           />

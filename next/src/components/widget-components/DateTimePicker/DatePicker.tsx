@@ -43,8 +43,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     const state = useDatePickerState({
       value: parsedValue,
       onChange: (date) => setValueControlled(date ? date.toString() : null),
-      isRequired: rest.isRequired,
-      isDisabled: rest.isDisabled,
       ...rest,
       shouldCloseOnSelect: false,
     })

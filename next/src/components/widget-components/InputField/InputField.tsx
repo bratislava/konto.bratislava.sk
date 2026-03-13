@@ -71,8 +71,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             }
           }
         },
-        isRequired: rest.isRequired,
-        isDisabled: rest.isDisabled,
         autoComplete,
       },
       ref,

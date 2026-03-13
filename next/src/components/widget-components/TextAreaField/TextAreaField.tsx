@@ -47,8 +47,6 @@ const TextAreaField = ({
       onFocusChange: (value) => {
         setIsFocused(value)
       },
-      isRequired: rest.isRequired,
-      isDisabled: rest.isDisabled,
     },
     ref,
   )

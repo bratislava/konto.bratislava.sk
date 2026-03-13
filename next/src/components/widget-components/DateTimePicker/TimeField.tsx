@@ -24,11 +24,8 @@ const TimeField = (props: TimeFieldProps) => {
 
   const propsReactAria = {
     description: rest.helptext,
-    isRequired: rest.isRequired,
-    isDisabled: rest.isDisabled,
     value,
     onChange,
-    errorMessage: rest.errorMessage,
     ...rest,
   }
 

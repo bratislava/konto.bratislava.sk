@@ -9,6 +9,7 @@ type ToastOptions = {
 }
 
 export const defaultToastDuration = 5000
+export const toastReplacementDelay = 250
 
 export default function useToast() {
   const closeToasts = useCallback(() => {
@@ -17,23 +18,27 @@ export default function useToast() {
     })
   }, [])
 
-  const showToast = useCallback((options: ToastOptions) => {
-    const hasVisibleToasts = toastQueue.visibleToasts.length > 0
-    if (hasVisibleToasts) {
-      closeToasts()
-    }
+  const showToast = useCallback(
+    (options: ToastOptions) => {
+      const hasVisibleToasts = toastQueue.visibleToasts.length > 0
+      if (hasVisibleToasts) {
+        closeToasts()
+      }
 
-    toastQueue.add(
-      {
-        message: options.message,
-        variant: options.variant,
-        isDelayedToast: hasVisibleToasts,
-      },
-      {
-        timeout: options.duration ?? defaultToastDuration,
-      },
-    )
-  }, [closeToasts])
+      const additionalDelay = hasVisibleToasts ? toastReplacementDelay : 0
+      toastQueue.add(
+        {
+          message: options.message,
+          variant: options.variant,
+          isDelayedToast: hasVisibleToasts,
+        },
+        {
+          timeout: (options.duration ?? defaultToastDuration) + additionalDelay,
+        },
+      )
+    },
+    [closeToasts],
+  )
 
   return { showToast, closeToasts }
 }

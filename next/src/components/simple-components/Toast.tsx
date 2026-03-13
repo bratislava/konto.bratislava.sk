@@ -22,8 +22,6 @@ export type AppToastContent = {
   isDelayedToast: boolean
 }
 
-export const toastReplacementDelay = 250
-
 export const toastQueue = new ToastQueue<AppToastContent>({
   wrapUpdate(fn) {
     if ('startViewTransition' in document) {

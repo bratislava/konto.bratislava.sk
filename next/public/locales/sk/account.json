@@ -262,7 +262,6 @@
   "IdentityVerificationStatus.verification_status_required": "Neoverený používateľ",
   "IdentityVerificationStatus.verification_status_required_alert": "Vaša totožnosť zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
   "IdentityVerificationStatus.verification_status_success": "Overený používateľ",
-  "InputField.aria.reset": "Vymazať hodnotu",
   "menu_links.help": "Pomoc",
   "menu_links.login": "Prihlásenie",
   "menu_links.logout": "Odhlásiť sa",

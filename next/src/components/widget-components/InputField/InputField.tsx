@@ -3,9 +3,8 @@ import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/src/assets/ui-icons'
+import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon } from '@/src/assets/ui-icons'
 import MailIcon from '@/src/assets/ui-icons/custom_mail.svg'
-import Button from '@/src/components/simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
 
@@ -18,7 +17,6 @@ export type InputFieldProps = FieldWrapperProps & {
   capitalize?: boolean
   value?: string
   leftIcon?: LeftIconVariants
-  resetIcon?: boolean
   onChange?: (value?: string) => void
   onBlur?: () => void
   endIcon?: ReactNode
@@ -43,7 +41,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       value = '',
       disabled,
       leftIcon,
-      resetIcon,
       className,
       onChange,
       endIcon,
@@ -122,7 +119,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       {
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
-        'pr-12 sm:pr-[52px]': resetIcon,
         // hover
         'hover:border-gray-400': !disabled,
 
@@ -174,16 +170,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             className={style}
             data-cy={`input-${name}`}
           />
-          {resetIcon && valueState && (
-            <Button
-              onPress={resetIconHandler}
-              variant="unstyled"
-              className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
-            >
-              <RemoveIcon />
-              <span className="sr-only">{t('InputField.aria.reset')}</span>
-            </Button>
-          )}
           {endIcon}
         </div>
       </FieldWrapper>

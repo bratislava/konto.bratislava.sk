@@ -31,7 +31,6 @@ const NumberWidgetRJSF = ({
     helptextFooter,
     helptextFooterMarkdown,
     className,
-    resetIcon,
     leftIcon,
     size,
     labelSize,
@@ -74,7 +73,6 @@ const NumberWidgetRJSF = ({
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
         className={className}
-        resetIcon={resetIcon}
         leftIcon={leftIcon}
         onChange={(newValue) => onChange(newValue ?? undefined)}
         size={size}

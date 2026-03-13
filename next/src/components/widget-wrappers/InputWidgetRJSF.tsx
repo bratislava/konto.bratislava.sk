@@ -30,7 +30,6 @@ const InputWidgetRJSF = ({
     helptextFooter,
     helptextFooterMarkdown,
     className,
-    resetIcon,
     leftIcon,
     inputType,
     size,
@@ -61,7 +60,6 @@ const InputWidgetRJSF = ({
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
         className={className}
-        resetIcon={resetIcon}
         leftIcon={leftIcon}
         onChange={handleOnChange}
         size={size}

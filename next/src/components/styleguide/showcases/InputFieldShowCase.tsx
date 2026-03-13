@@ -45,20 +45,13 @@ const InputFieldShowCase = () => {
         />
       </Stack>
       <Stack direction="column">
-        <InputField
-          label="Label"
-          placeholder="Placeholder"
-          helptext="Help text"
-          leftIcon="mail"
-          resetIcon
-        />
+        <InputField label="Label" placeholder="Placeholder" helptext="Help text" leftIcon="mail" />
         <InputField
           label="Label"
           placeholder="Placeholder"
           value="Value"
           helptext="Help text"
           leftIcon="call"
-          resetIcon
         />
         <InputField
           label="Label"
@@ -66,7 +59,6 @@ const InputFieldShowCase = () => {
           placeholder="Placeholder"
           helptext="Help text"
           leftIcon="lock"
-          resetIcon
           errorMessage={['Error message']}
         />
         <InputField
@@ -74,7 +66,6 @@ const InputFieldShowCase = () => {
           placeholder="Placeholder"
           helptext="Help text"
           leftIcon="person"
-          resetIcon
           errorMessage={['Error message']}
           disabled
         />

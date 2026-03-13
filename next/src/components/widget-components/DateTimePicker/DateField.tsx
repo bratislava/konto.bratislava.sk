@@ -30,7 +30,6 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
       helptextFooterMarkdown,
       isOpen,
       required,
-      customErrorPlace,
       popover,
       size,
       labelSize,
@@ -78,7 +77,6 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
         descriptionProps={descriptionProps}
         required={required}
         disabled={disabled}
-        customErrorPlace={customErrorPlace}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}

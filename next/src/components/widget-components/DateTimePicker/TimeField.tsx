@@ -33,7 +33,6 @@ const TimeField = (props: TimeFieldProps) => {
     value,
     // setIsInputEdited,
     readOnly,
-    customErrorPlace,
     size,
     labelSize,
     displayOptionalLabel,
@@ -83,7 +82,6 @@ const TimeField = (props: TimeFieldProps) => {
       descriptionProps={descriptionProps}
       required={required}
       disabled={disabled}
-      customErrorPlace={customErrorPlace}
       errorMessage={errorMessage}
       errorMessageProps={errorMessageProps}
       size={size}

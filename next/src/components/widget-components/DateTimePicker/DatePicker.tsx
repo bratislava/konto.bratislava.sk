@@ -37,7 +37,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       minValue,
       maxValue,
       onChange = () => {},
-      customErrorPlace = false,
       size,
       labelSize,
       displayOptionalLabel,
@@ -114,7 +113,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           tooltip={tooltip}
           errorMessage={errorMessage}
           isOpen={state?.isOpen}
-          customErrorPlace={customErrorPlace}
           popover={
             <>
               {state?.isOpen && (

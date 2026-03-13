@@ -48,7 +48,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       className,
       onChange,
       endIcon,
-      customErrorPlace = false,
       capitalize = false,
       autoComplete,
       size,
@@ -151,7 +150,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         required={required}
         tooltip={tooltip}
         disabled={disabled}
-        customErrorPlace={customErrorPlace}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}

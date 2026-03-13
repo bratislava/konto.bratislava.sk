@@ -9,7 +9,6 @@ export type FieldFooterProps = FieldErrorMessageProps & {
   helptextFooter?: string
   helptextFooterMarkdown?: boolean
   disabled?: boolean
-  customErrorPlace?: boolean
   descriptionProps?: DOMAttributes<never>
 }
 
@@ -18,13 +17,12 @@ const FieldFooter = ({
   helptextFooterMarkdown,
   descriptionProps,
   disabled,
-  customErrorPlace,
   errorMessage,
   errorMessageProps,
 }: FieldFooterProps) => {
   return (
     <>
-      {!disabled && !customErrorPlace && (
+      {!disabled && (
         <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
       )}
       {helptextFooter && (

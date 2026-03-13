@@ -53,7 +53,6 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       className,
       onChange,
       endIcon,
-      customErrorPlace = false,
       size,
       labelSize,
       displayOptionalLabel,
@@ -146,7 +145,6 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         required={required}
         tooltip={tooltip}
         disabled={disabled}
-        customErrorPlace={customErrorPlace}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}

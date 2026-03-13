@@ -86,7 +86,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     norisItem: TaxTypeToNorisData[TTaxType],
     existingTax: Pick<Tax, 'id' | 'isCancelled'>,
     year: number,
-    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>,
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    >,
   ): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       await tx.taxInstallment.deleteMany({
@@ -438,7 +440,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     taxDefinition: TaxDefinition<TTaxType>,
     birthNumbersResult: Set<string>,
     norisItem: TaxTypeToNorisData[TTaxType],
-    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>,
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    >,
     year: number,
   ) => {
     try {

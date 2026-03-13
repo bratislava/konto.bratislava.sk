@@ -1,4 +1,3 @@
-
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerService', () => {

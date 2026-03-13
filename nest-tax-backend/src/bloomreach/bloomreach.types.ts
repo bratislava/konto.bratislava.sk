@@ -32,7 +32,7 @@ export interface UnpaidTaxReminderBloomreachData {
   order: number
 }
 
-export type UnpaidTaxInstallmentReminderBloomreachData = {
+export interface UnpaidTaxInstallmentReminderBloomreachData {
   year: number
   tax_type: TaxType
   order: number

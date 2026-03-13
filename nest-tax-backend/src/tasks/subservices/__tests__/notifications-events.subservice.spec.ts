@@ -562,7 +562,7 @@ describe('NotificationsEventsSubservice', () => {
         [birthNumber]: { externalId: 'ext-1' },
       } as any)
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockImplementation(
-        () => Promise.resolve(true),
+        async () => Promise.resolve(true),
       )
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
@@ -591,7 +591,7 @@ describe('NotificationsEventsSubservice', () => {
 
       expect(prismaMock.taxInstallment.updateMany).toHaveBeenCalledTimes(2)
       assertUpdateManyUsesReminderEnums(
-        prismaMock.taxInstallment.updateMany as jest.Mock,
+        prismaMock.taxInstallment.updateMany.bind(prismaMock.taxInstallment),
         UnpaidReminderSent.AFTER_DUE,
         UnpaidReminderSent.BEFORE_DUE,
       )
@@ -644,7 +644,7 @@ describe('NotificationsEventsSubservice', () => {
 
       expect(prismaMock.taxInstallment.updateMany).toHaveBeenCalledTimes(2)
       assertUpdateManyUsesReminderEnums(
-        prismaMock.taxInstallment.updateMany as jest.Mock,
+        prismaMock.taxInstallment.updateMany.bind(prismaMock.taxInstallment),
         UnpaidReminderSent.BEFORE_DUE,
         UnpaidReminderSent.AFTER_DUE,
       )

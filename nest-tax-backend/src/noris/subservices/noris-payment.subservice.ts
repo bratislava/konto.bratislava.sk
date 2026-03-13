@@ -248,7 +248,9 @@ export class NorisPaymentSubservice {
   private async processNorisPaymentData(
     norisPaymentData: NorisTaxPayment[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>> = {},
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    > = {},
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
@@ -272,7 +274,9 @@ export class NorisPaymentSubservice {
   private async processIndividualPayment(
     norisPayment: NorisTaxPayment,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>= {},
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    > = {},
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
@@ -344,7 +348,9 @@ export class NorisPaymentSubservice {
   private async trackPaymentIfNeeded(
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
-    userDataFromCityAccount: Partial<Record<string, ResponseUserByBirthNumberDto>>,
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    >,
     bloomreachSettings?: {
       suppressEmail?: boolean
     },

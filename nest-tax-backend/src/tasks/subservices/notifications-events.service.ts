@@ -33,7 +33,7 @@ const INSTALLMENT_NUMBERS = {
   fourth: 4 as const,
 }
 
-type InstallmentInfo = {
+interface InstallmentInfo {
   installmentNumber: 2 | 3 | 4
   installmentDate: Dayjs
 }
@@ -77,7 +77,7 @@ export default class NotificationsEventsService {
 
     const installmentDueDates = Object.entries(
       taxDefinition.installmentDueDates,
-    ) as Array<[keyof typeof taxDefinition.installmentDueDates, string]>
+    ) as [keyof typeof taxDefinition.installmentDueDates, string][]
 
     const found = installmentDueDates
       .map(([key, dueDate]) => {

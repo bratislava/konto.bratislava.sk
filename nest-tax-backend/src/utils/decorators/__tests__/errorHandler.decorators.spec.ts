@@ -1,4 +1,3 @@
-
 import { ErrorsEnum } from '../../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../guards/errors.guard'
 import HandleErrors from '../errorHandler.decorator'

@@ -7,8 +7,10 @@ import {
   UnpaidReminderSent,
 } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
+import pLimit from 'p-limit'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
   DUE_DATE_OFFSET,
@@ -19,11 +21,9 @@ import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
 import { getNextTaxType } from '../utils/tax-type-switch'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../utils/types'
-import { PaymentService } from '../../payment/payment.service'
-import pLimit from 'p-limit'
-import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
 
 const UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT = 50
 

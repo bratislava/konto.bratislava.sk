@@ -31,30 +31,7 @@ export type NumberFieldProps = FieldWrapperProps & {
  * The component handles conversion between our `null` value and React Aria's `NaN` value.
  */
 const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
-  (
-    {
-      name,
-      label,
-      placeholder,
-      errorMessage = [],
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      isRequired,
-      value,
-      isDisabled,
-      leftIcon,
-      className,
-      onChange,
-      endIcon,
-      size,
-      labelSize,
-      displayOptionalLabel,
-      ...rest
-    },
-    forwardedRef,
-  ) => {
+  ({ name, value, leftIcon, onChange, endIcon, placeholder, className, ...rest }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { locale } = useLocale()
 
@@ -66,14 +43,10 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       ...rest,
       placeholder,
       value: valueControlled ?? NaN,
-      label,
-      errorMessage,
-      description: helptext,
+      description: rest.helptext,
       onChange: (newValue: number) => {
         setValueControlled(Number.isNaN(newValue) ? null : newValue)
       },
-      isRequired,
-      isDisabled,
       isWheelDisabled: true,
     }
     const state = useNumberFieldState({
@@ -109,35 +82,25 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
         // hover
-        'hover:border-gray-400': !isDisabled,
+        'hover:border-gray-400': !rest.isDisabled,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !isDisabled,
+          rest.errorMessage?.length && !rest.isDisabled,
 
         // disabled
-        'border-gray-300 bg-gray-100': isDisabled,
+        'border-gray-300 bg-gray-100': rest.isDisabled,
       },
       className,
     )
 
     return (
       <FieldWrapper
-        label={label}
+        {...rest}
         labelProps={labelProps}
         htmlFor={inputProps.id}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
-        isRequired={isRequired}
-        isDisabled={isDisabled}
-        errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel={displayOptionalLabel}
       >
         <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
@@ -145,7 +108,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
               className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
-                  'opacity-50': isDisabled,
+                  'opacity-50': rest.isDisabled,
                 },
               )}
             >

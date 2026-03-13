@@ -3,18 +3,15 @@ import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
 
-import FieldHelptext from '@/src/components/widget-components/FieldHelptext'
+import FieldHelptext, { FieldHelptextProps } from '@/src/components/widget-components/FieldHelptext'
 import cn from '@/src/utils/cn'
 
-export type FieldHeaderProps = {
+export type FieldHeaderProps = FieldHelptextProps & {
   label: string
   required?: boolean
   labelSize?: LabelSize
   htmlFor?: string
   labelProps?: DOMAttributes<never>
-  helptext?: string
-  helptextMarkdown?: boolean
-  descriptionProps?: DOMAttributes<never>
   /**
    * Some field types (radio, checkbox, upload...) need more spacing between the title and the field itself.
    */
@@ -76,13 +73,13 @@ const FieldHeader = ({
           )}
         </div>
       </div>
-      {helptext && (
+      {helptext ? (
         <FieldHelptext
           helptext={helptext}
           helptextMarkdown={helptextMarkdown}
           descriptionProps={descriptionProps}
         />
-      )}
+      ) : null}
     </div>
   )
 }

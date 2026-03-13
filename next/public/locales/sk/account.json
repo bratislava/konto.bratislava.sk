@@ -303,7 +303,6 @@
   "phone_number_modal.description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte.",
   "phone_number_modal.title": "Doplnenie telefónneho čísla",
   "RadioGroup.resetChoice": "Vymazať výber",
-  "SearchField.aria.reset": "Vymazať hodnotu",
   "SelectField.noOptions": "Žiadne možnosti",
   "sso_page.sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. <a href='/'>Späť domov</a>.",
   "StatusBar.aria.close": "Zavrieť upozornenie",

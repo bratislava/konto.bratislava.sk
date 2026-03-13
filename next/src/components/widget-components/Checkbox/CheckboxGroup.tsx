@@ -22,8 +22,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
   return (
     <div
       {...groupProps}
-      // eslint-disable-next-line react/destructuring-assignment
-      data-cy={`checkbox-group-${props.label.toLowerCase().replaceAll(' ', '-').replaceAll('?', '')}`}
+      data-cy={`checkbox-group-${rest.label.toLowerCase().replaceAll(' ', '-').replaceAll('?', '')}`}
     >
       <FieldWrapper
         {...rest}

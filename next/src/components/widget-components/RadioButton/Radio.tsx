@@ -10,7 +10,6 @@ import { RadioContext } from './RadioGroup'
 type RadioProps = {
   variant?: 'basic' | 'boxed' | 'card'
   className?: string
-  tooltip?: string
   description?: string
   /**
    * Whether any of other radios in the group has a description. If they do, we want to display the label in semi-bold.

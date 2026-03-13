@@ -20,7 +20,6 @@ export type TimePickerProps = FieldWrapperProps & {
   onBlur?: () => void
   minValue?: string
   maxValue?: string
-  readOnly?: boolean
 }
 
 const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(

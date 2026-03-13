@@ -73,7 +73,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
               onFileRemove={onFileRemove}
               onFileRetry={onFileRetry}
               onFileDownload={onFileDownload}
-              disabled={rest.isDisabled}
+              isDisabled={rest.isDisabled}
             />
           </div>
         </FieldWrapper>

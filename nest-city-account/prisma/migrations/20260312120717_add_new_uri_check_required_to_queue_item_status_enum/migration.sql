@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "QueueItemStatusEnum" ADD VALUE 'NEW_URI_CHECK_REQUIRED';

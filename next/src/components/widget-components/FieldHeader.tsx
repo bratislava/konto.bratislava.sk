@@ -8,7 +8,7 @@ import cn from '@/src/utils/cn'
 
 export type FieldHeaderProps = FieldHelptextProps & {
   label: string
-  required?: boolean
+  isRequired?: boolean
   labelSize?: LabelSize
   htmlFor?: string
   labelProps?: DOMAttributes<never>
@@ -27,7 +27,7 @@ export type FieldHeaderProps = FieldHelptextProps & {
 const FieldHeader = ({
   label,
   htmlFor,
-  required,
+  isRequired,
   labelProps,
   labelSize = 'default',
   helptext,
@@ -48,8 +48,8 @@ const FieldHeader = ({
     'mb-8': !useCustomBottomMargin,
   })
 
-  const showOptionalLabel = displayOptionalLabel && !required
-  const displayAsterisk = !displayOptionalLabel && required
+  const showOptionalLabel = displayOptionalLabel && !isRequired
+  const displayAsterisk = !displayOptionalLabel && isRequired
 
   const labelStyle = cn('relative text-gray-800', {
     'text-p3-semibold after:text-p3-semibold sm:text-16-semibold sm:after:text-16-semibold':

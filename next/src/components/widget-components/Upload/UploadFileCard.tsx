@@ -29,7 +29,7 @@ type UploadedFileProps = {
   onFileRemove?: () => void
   onFileRetry?: () => void
   onFileDownload?: () => void
-  disabled?: boolean
+  isDisabled?: boolean
 }
 
 const useGetErrorMessage = (fileInfo: FileInfo) => {
@@ -83,7 +83,7 @@ const UploadFileCard = ({
   onFileRetry,
   onFileRemove,
   onFileDownload,
-  disabled = false,
+  isDisabled = false,
 }: UploadedFileProps) => {
   const { t } = useTranslation('account')
   const errorMessage = useGetErrorMessage(fileInfo)
@@ -161,7 +161,7 @@ const UploadFileCard = ({
                   'hover:bg-success-200 focus:bg-success-300': isDoneStatus,
                 })}
                 onPress={onFileRemove}
-                isDisabled={disabled}
+                isDisabled={isDisabled}
               />
             </div>
           </div>
@@ -182,7 +182,7 @@ const UploadFileCard = ({
               onPress={onFileRetry}
               size="small"
               className="font-semibold"
-              isDisabled={disabled}
+              isDisabled={isDisabled}
             >
               {t('Upload.retry')}
             </Button>

@@ -30,8 +30,8 @@ const RadioGroup = (props: RadioGroupProps) => {
 
   const propsReactAria = {
     ...props,
-    isDisabled: rest.disabled,
-    isRequired: rest.required,
+    isDisabled: rest.isDisabled,
+    isRequired: rest.isRequired,
     // it may receive "undefined" as value, which would make it uncontrolled
     value: value == null ? null : value,
   } as ReactStatelyRadioGroupProps
@@ -72,7 +72,7 @@ const RadioGroup = (props: RadioGroupProps) => {
               {children}
             </div>
 
-            {rest.required ? null : (
+            {rest.isRequired ? null : (
               <Button
                 variant="plain"
                 size="small"

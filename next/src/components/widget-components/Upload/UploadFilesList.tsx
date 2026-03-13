@@ -48,7 +48,7 @@ const UploadFilesList = ({
               onFileRetry={() => onFileRetry(fileId)}
               onFileRemove={() => onFileRemove(fileId)}
               onFileDownload={() => onFileDownload(fileId)}
-              disabled={disabled}
+              isDisabled={disabled}
             />
           </li>
         ))}

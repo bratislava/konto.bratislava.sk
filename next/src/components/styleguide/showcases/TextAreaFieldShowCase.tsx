@@ -27,20 +27,20 @@ const TextAreaFieldShowCase = () => {
           placeholder="Placeholder"
           errorMessage={['Error message']}
           helptext="Help text"
-          disabled
+          isDisabled
         />
       </Stack>
       <Stack direction="column">
-        <TextAreaField label="Label" required placeholder="Placeholder" />
+        <TextAreaField label="Label" isRequired placeholder="Placeholder" />
         <TextAreaField label="Label" placeholder="Placeholder" value="Value" />
         <TextAreaField label="Label" placeholder="Placeholder" errorMessage={['Error message']} />
         <TextAreaField
           label="Label"
-          required
+          isRequired
           placeholder="Placeholder"
           helptext="Help text"
           errorMessage={['Error message']}
-          disabled
+          isDisabled
         />
       </Stack>
     </Wrapper>

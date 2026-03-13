@@ -49,7 +49,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
                 ref={ref}
                 sizeLimit={sizeLimit}
                 supportedFormats={supportedFormats}
-                disabled={rest.disabled}
+                isDisabled={rest.isDisabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
                 errorMessage={rest.errorMessage}
@@ -60,7 +60,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
                 ref={ref}
                 sizeLimit={sizeLimit}
                 supportedFormats={supportedFormats}
-                disabled={rest.disabled}
+                isDisabled={rest.isDisabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
                 errorMessage={rest.errorMessage}
@@ -73,7 +73,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
               onFileRemove={onFileRemove}
               onFileRetry={onFileRetry}
               onFileDownload={onFileDownload}
-              disabled={rest.disabled}
+              disabled={rest.isDisabled}
             />
           </div>
         </FieldWrapper>

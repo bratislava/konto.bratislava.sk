@@ -47,18 +47,18 @@ const TextAreaField = ({
       onFocusChange: (value) => {
         setIsFocused(value)
       },
-      isRequired: rest.required,
-      isDisabled: rest.disabled,
+      isRequired: rest.isRequired,
+      isDisabled: rest.isDisabled,
     },
     ref,
   )
   const containerStyle = cn(
     'flex resize-none flex-col overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-0 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden sm:text-16',
     {
-      'hover:border-gray-400': !rest.disabled && !isFocused,
+      'hover:border-gray-400': !rest.isDisabled && !isFocused,
       'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-        rest.errorMessage?.length && !rest.disabled,
-      'border-gray-700 hover:border-gray-700': !rest.disabled && isFocused,
+        rest.errorMessage?.length && !rest.isDisabled,
+      'border-gray-700 hover:border-gray-700': !rest.isDisabled && isFocused,
     },
     className,
   )
@@ -66,7 +66,7 @@ const TextAreaField = ({
   const textareaStyle = cn(
     'h-full w-full resize-none overflow-y-scroll rounded-lg bg-white px-3 py-2 caret-gray-700 focus:outline-hidden focus:placeholder:text-transparent sm:px-4 sm:py-3',
     {
-      'border-gray-300 bg-gray-100': rest.disabled,
+      'border-gray-300 bg-gray-100': rest.isDisabled,
     },
   )
 

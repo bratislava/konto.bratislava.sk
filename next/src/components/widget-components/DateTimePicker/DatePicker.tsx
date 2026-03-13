@@ -43,8 +43,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     const state = useDatePickerState({
       value: parsedValue,
       onChange: (date) => setValueControlled(date ? date.toString() : null),
-      isRequired: rest.required,
-      isDisabled: rest.disabled,
+      isRequired: rest.isRequired,
+      isDisabled: rest.isDisabled,
       ...rest,
       shouldCloseOnSelect: false,
     })
@@ -53,7 +53,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
         {
           minValue: minValue ? parseDate(minValue) : undefined,
           maxValue: maxValue ? parseDate(maxValue) : undefined,
-          isDisabled: rest.disabled,
+          isDisabled: rest.isDisabled,
           ...rest,
         },
         state,
@@ -107,7 +107,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           <Button
             variant="icon-wrapped-negative-margin"
             {...buttonPropsFixed}
-            isDisabled={rest.disabled}
+            isDisabled={rest.isDisabled}
             icon={<CalendarIcon />}
             // TODO investigate why t can return undefined
             aria-label={t('DatePicker.aria.openCalendar') ?? 'Open calendar'}

@@ -14,7 +14,7 @@ const FieldHeaderShowCase = () => {
           <FieldHeader label="Simple" htmlFor="input-name" />
         </Stack>
         <Stack>
-          <FieldHeader label="Required" htmlFor="input-name" required />
+          <FieldHeader label="Required" htmlFor="input-name" isRequired />
         </Stack>
         <Stack>
           <FieldHeader
@@ -28,7 +28,7 @@ const FieldHeaderShowCase = () => {
             label="Everything"
             htmlFor="input-name"
             helptext="This is is simple description"
-            required
+            isRequired
           />
         </Stack>
         <Stack>

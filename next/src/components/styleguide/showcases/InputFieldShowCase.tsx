@@ -16,7 +16,7 @@ const InputFieldShowCase = () => {
           label="Label"
           placeholder="Placeholder"
           errorMessage={['Error message']}
-          disabled
+          isDisabled
         />
       </Stack>
       <Stack direction="column">
@@ -26,22 +26,22 @@ const InputFieldShowCase = () => {
           placeholder="Placeholder"
           value="Value"
           helptext="Help text"
-          required
+          isRequired
         />
         <InputField
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          required
+          isRequired
           errorMessage={['Error message']}
         />
         <InputField
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          required
+          isRequired
           errorMessage={['Error message']}
-          disabled
+          isDisabled
         />
       </Stack>
       <Stack direction="column">
@@ -67,7 +67,7 @@ const InputFieldShowCase = () => {
           helptext="Help text"
           leftIcon="person"
           errorMessage={['Error message']}
-          disabled
+          isDisabled
         />
       </Stack>
     </Wrapper>

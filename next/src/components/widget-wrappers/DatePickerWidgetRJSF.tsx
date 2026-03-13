@@ -33,8 +33,8 @@ const DatePickerWidgetRJSF = ({
       <DatePicker
         label={label}
         errorMessage={rawErrors}
-        required={required}
-        disabled={disabled || readonly}
+        isRequired={required}
+        isDisabled={disabled || readonly}
         helptext={helptext}
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}

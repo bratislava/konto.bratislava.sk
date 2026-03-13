@@ -14,17 +14,17 @@ const DatePickerShowCase = () => {
       <Stack direction="column">
         <DatePicker label="Label" />
         <DatePicker label="Label" errorMessage={ERROR_MESSAGES} />
-        <DatePicker label="Label" errorMessage={ERROR_MESSAGES} disabled />
+        <DatePicker label="Label" errorMessage={ERROR_MESSAGES} isDisabled />
       </Stack>
       <Stack direction="column">
-        <DatePicker label="Label" helptext="Help text" required />
-        <DatePicker label="Label" errorMessage={ERROR_MESSAGES} helptext="Help text" required />
+        <DatePicker label="Label" helptext="Help text" isRequired />
+        <DatePicker label="Label" errorMessage={ERROR_MESSAGES} helptext="Help text" isRequired />
         <DatePicker
           label="Label"
           errorMessage={ERROR_MESSAGES}
           helptext="Help text"
-          required
-          disabled
+          isRequired
+          isDisabled
         />
         <DatePicker label="Label" value={value} onChange={setValue} />
       </Stack>

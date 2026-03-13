@@ -193,7 +193,7 @@ const UserProfileDetailEdit = ({
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    required
+                    isRequired
                     capitalize
                     label={t('my_profile.profile_detail.given_name')}
                     {...field}
@@ -208,7 +208,7 @@ const UserProfileDetailEdit = ({
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    required
+                    isRequired
                     capitalize
                     label={t('my_profile.profile_detail.family_name')}
                     {...field}
@@ -227,8 +227,8 @@ const UserProfileDetailEdit = ({
             control={control}
             render={({ field }) => (
               <InputField
-                disabled
-                required
+                isDisabled
+                isRequired
                 label={t('my_profile.profile_detail.email')}
                 autoComplete="username"
                 {...field}

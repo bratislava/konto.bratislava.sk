@@ -27,9 +27,9 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   (
     {
       label,
-      disabled,
+      isDisabled,
       errorMessage,
-      required,
+      isRequired,
       helptext,
       helptextMarkdown,
       helptextFooter,
@@ -74,8 +74,8 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             helptextMarkdown={helptextMarkdown}
             helptextFooter={helptextFooter}
             helptextFooterMarkdown={helptextFooterMarkdown}
-            required={required}
-            disabled={disabled}
+            isRequired={isRequired}
+            isDisabled={isDisabled}
             errorMessage={errorMessage}
             onChange={(time) =>
               setValueControlled(time ? removeSecondsFromTime(time.toString()) : null)

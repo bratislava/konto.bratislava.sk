@@ -30,7 +30,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
           <PasswordEyeButton
             isPasswordHidden={isPasswordHidden}
             onToggle={setIsPasswordHidden}
-            isDisabled={rest.disabled}
+            isDisabled={rest.isDisabled}
             className="absolute inset-y-1/2 right-1 aspect-square h-full -translate-y-2/4"
           />
         }

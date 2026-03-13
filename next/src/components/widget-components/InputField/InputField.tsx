@@ -71,8 +71,8 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             }
           }
         },
-        isRequired: rest.required,
-        isDisabled: rest.disabled,
+        isRequired: rest.isRequired,
+        isDisabled: rest.isDisabled,
         autoComplete,
       },
       ref,
@@ -100,14 +100,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
         // hover
-        'hover:border-gray-400': !rest.disabled,
+        'hover:border-gray-400': !rest.isDisabled,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          rest.errorMessage?.length && !rest.disabled,
+          rest.errorMessage?.length && !rest.isDisabled,
 
         // disabled
-        'border-gray-300 bg-gray-100': rest.disabled,
+        'border-gray-300 bg-gray-100': rest.isDisabled,
       },
       className,
     )
@@ -126,7 +126,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
-                  'opacity-50': rest.disabled,
+                  'opacity-50': rest.isDisabled,
                 },
               )}
             >

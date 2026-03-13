@@ -41,9 +41,9 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       helptextMarkdown,
       helptextFooter,
       helptextFooterMarkdown,
-      required,
+      isRequired,
       value,
-      disabled,
+      isDisabled,
       leftIcon,
       className,
       onChange,
@@ -72,8 +72,8 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       onChange: (newValue: number) => {
         setValueControlled(Number.isNaN(newValue) ? null : newValue)
       },
-      isRequired: required,
-      isDisabled: disabled,
+      isRequired,
+      isDisabled,
       isWheelDisabled: true,
     }
     const state = useNumberFieldState({
@@ -109,14 +109,14 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
         // hover
-        'hover:border-gray-400': !disabled,
+        'hover:border-gray-400': !isDisabled,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
+          errorMessage?.length > 0 && !isDisabled,
 
         // disabled
-        'border-gray-300 bg-gray-100': disabled,
+        'border-gray-300 bg-gray-100': isDisabled,
       },
       className,
     )
@@ -131,8 +131,8 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
-        required={required}
-        disabled={disabled}
+        isRequired={isRequired}
+        isDisabled={isDisabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}
@@ -145,7 +145,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
               className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
-                  'opacity-50': disabled,
+                  'opacity-50': isDisabled,
                 },
               )}
             >

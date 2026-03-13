@@ -8,7 +8,7 @@ import FieldHelptext from '@/src/components/widget-components/FieldHelptext'
 export type FieldFooterProps = FieldErrorMessageProps & {
   helptextFooter?: string
   helptextFooterMarkdown?: boolean
-  disabled?: boolean
+  isDisabled?: boolean
   descriptionProps?: DOMAttributes<never>
 }
 
@@ -16,13 +16,13 @@ const FieldFooter = ({
   helptextFooter,
   helptextFooterMarkdown,
   descriptionProps,
-  disabled,
+  isDisabled,
   errorMessage,
   errorMessageProps,
 }: FieldFooterProps) => {
   return (
     <>
-      {!disabled && (
+      {!isDisabled && (
         <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
       )}
       {helptextFooter && (

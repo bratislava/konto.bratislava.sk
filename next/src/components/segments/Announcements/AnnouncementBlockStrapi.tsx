@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import { HomepageAnnouncementEntityFragment } from '@/src/clients/graphql-strapi/api'
-import AnnouncementBlock from '@/src/components/page-contents/IntroPageContent/Announcements/AnnouncementBlock'
+import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 import { AnchorProps } from '@/src/components/simple-components/Button'
 
 type AnnouncementBlockStrapiProps = {

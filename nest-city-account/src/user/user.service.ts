@@ -196,13 +196,6 @@ export class UserService {
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
 
-    await this.bloomreachService.trackEventConsents(
-      gdprData.map((elem) => ({ ...elem, subType: gdprSubType })),
-      user.externalId,
-      user.id,
-      false
-    )
-
     const officialCorrespondenceChannel =
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
@@ -255,13 +248,6 @@ export class UserService {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
-
-    await this.bloomreachService.trackEventConsents(
-      gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe })),
-      user.externalId,
-      user.id,
-      false
-    )
 
     return { id: id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
   }
@@ -695,5 +681,9 @@ export class UserService {
     const birthNumbers = users.map((user) => user.birthNumber!)
 
     return { birthNumbers, nextSince }
+  }
+
+  async getUserLoginClientList(client: LoginClientEnum) {
+    return await this.userDataSubservice.getUserLoginClientList(client)
   }
 }

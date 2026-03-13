@@ -1,4 +1,4 @@
-FROM node:22.21-slim AS base
+FROM node:24.14-slim AS base
 
 # Install build tools and Python needed for native npm dependencies (e.g., deasync)
 # Note: pdf-to-img v5.0.0+ no longer uses node-canvas, but we keep build tools for other deps, as canvas is still a peer dependency of for example jsdom.
@@ -17,6 +17,7 @@ WORKDIR /app
 FROM base AS prod
 
 COPY package.json package-lock.json ./
+COPY patches ./patches
 RUN npm ci --include=dev --frozen-lockfile
 COPY . ./
 RUN npm run build
@@ -67,6 +68,7 @@ ENV SLOVENSKO_SK_METADATA_PATH=/opt/slovensko-metadata/mef.json
 
 # Install dependencies and Playwright
 COPY package.json package-lock.json ./
+COPY patches ./patches
 RUN npm ci --include=dev --frozen-lockfile
 RUN npx playwright install chromium --with-deps
 COPY . ./

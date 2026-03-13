@@ -12,6 +12,7 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormErrorTranslations } from '@/src/components/forms/useFormErrorTranslations'
 import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormModals from '@/src/components/modals/FormModals/FormModals'
 import FormBottomMenu from '@/src/components/simple-components/FormBottomMenu'
 import FormHeader from '@/src/components/simple-components/FormHeader'
@@ -65,7 +66,6 @@ const FormContentInner = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
     // We don't want popScrollToFieldId to trigger the effect
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex])
 
   return (
@@ -73,16 +73,18 @@ const FormContentInner = () => {
       <FormModals />
       <FormUploadXmlJson />
       {displayHeaderAndMenu && <FormHeader />}
-      <div
-        className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-10 pt-0 pb-6 lg:flex-row lg:gap-20 lg:py-10"
-        data-cy="form-container"
-      >
-        <StepperView />
-        <div className="grow px-4 lg:px-0">
-          {currentStepperStep.index === 'summary' ? <FormSummary /> : <FormStep />}
-          {displayHeaderAndMenu && <FormBottomMenu />}
+      <SectionContainer>
+        <div
+          className="flex flex-col gap-10 pt-0 pb-6 lg:flex-row lg:gap-20 lg:py-10"
+          data-cy="form-container"
+        >
+          <StepperView />
+          <div className="grow">
+            {currentStepperStep.index === 'summary' ? <FormSummary /> : <FormStep />}
+            {displayHeaderAndMenu && <FormBottomMenu />}
+          </div>
         </div>
-      </div>
+      </SectionContainer>
     </>
   )
 }

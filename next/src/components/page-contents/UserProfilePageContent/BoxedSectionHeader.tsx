@@ -31,7 +31,7 @@ const BoxedSectionHeader = ({
   return (
     <div
       className={cn(
-        'flex flex-col gap-6 border-gray-200 p-4',
+        'flex flex-col gap-6 border-gray-200 py-4',
         'md:flex-row md:flex-wrap md:px-8 md:py-6',
         {
           'border-b-2': underline,

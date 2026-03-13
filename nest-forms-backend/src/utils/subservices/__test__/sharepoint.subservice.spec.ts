@@ -11,7 +11,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { SharepointRelationData } from 'forms-shared/definitions/sharepointTypes'
-import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
@@ -377,7 +377,7 @@ describe('SharepointSubservice', () => {
         .mockReturnValue({})
       const updateFormSpy = jest.spyOn(service['prismaService'].forms, 'update')
       jest
-        .spyOn(omitExtraData, 'omitExtraData')
+        .spyOn(baOmitExtraData, 'baOmitExtraData')
         .mockReturnValue({ omitted: true })
 
       await service.postNewRecord('formId')

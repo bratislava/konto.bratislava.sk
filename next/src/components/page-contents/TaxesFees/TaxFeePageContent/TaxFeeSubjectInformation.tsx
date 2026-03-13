@@ -55,7 +55,7 @@ const TaxFeeSubjectInformation = () => {
   ]
 
   return (
-    <div className="flex w-full flex-col items-start gap-4 px-4 lg:gap-6 lg:px-0">
+    <div className="flex w-full flex-col items-start gap-4 lg:gap-6">
       <div className="text-h5">{title}</div>
       <ul className="flex w-full flex-col rounded-lg border-2 border-gray-200 px-5 py-2 lg:px-6">
         {rows.map((row, index) => {

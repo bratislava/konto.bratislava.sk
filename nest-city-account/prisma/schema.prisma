@@ -151,6 +151,8 @@ model ExternalEdeskCheck {
   edeskStatus String?
   edeskNumber String?
 
+  norisId Int
+
   processedAt DateTime?
   failCount   Int       @default(0)
 
@@ -212,6 +214,7 @@ model UserLoginClient {
 
   @@unique([userId, loginClient])
   @@index([userId])
+  @@index([loginClient])
 }
 
 model LegalPersonLoginClient {

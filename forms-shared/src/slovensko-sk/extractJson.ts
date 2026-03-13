@@ -2,7 +2,9 @@ import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
 import { Parser } from 'xml2js'
 import Ajv from 'ajv'
 import { parseSlovenskoSkXmlnsString } from './urls'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { isValidVersion } from '../versioning/version-compare'
 
 const baseFormXmlSchema = {

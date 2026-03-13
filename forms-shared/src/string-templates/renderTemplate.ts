@@ -1,4 +1,6 @@
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { safeArray, safeBoolean, safeNumber, safeString } from '../form-utils/safeData'
 import { Eta } from 'eta'
 import { FormDefinition } from '../definitions/formDefinitionTypes'

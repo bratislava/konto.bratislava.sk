@@ -66,7 +66,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should alternate between DZN and KO on subsequent calls', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -104,7 +104,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should import newly created users immediately regardless of window or limit', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const newlyCreated = ['123456/7890', '111111/2222']
       const birthNumbers = ['987654/3210']
 
@@ -148,7 +148,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should import newly created users immediately when outside window and under limit', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
@@ -192,7 +192,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should import newly created users immediately when within window and over limit', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
@@ -237,7 +237,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should import newly created users even when within window and under limit', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
@@ -281,7 +281,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should process remaining users based on window and limit when no newly created users', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const birthNumbers = ['987654/3210', '555555/6666']
 
       jest
@@ -315,7 +315,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should prepare remaining users when outside window or over limit', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
@@ -358,7 +358,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should return early when no birth numbers found', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
 
       jest
         .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
@@ -389,7 +389,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should only import newly created users when no other users are found', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const newlyCreated = ['123456/7890']
       const birthNumbers: string[] = []
 
@@ -427,7 +427,7 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should handle KO tax type on second call', async () => {
-      const mockTaxImportHelper = service['taxImportHelperSubservice']
+      const mockTaxImportHelper = service['taxImportHelperService']
       const birthNumbers = ['987654/3210']
 
       jest

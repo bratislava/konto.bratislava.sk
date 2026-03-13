@@ -6,6 +6,7 @@ import {
   MunicipalServiceCategoryEntityFragment,
   MunicipalServiceEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
 import MunicipalServicesPageHeader from '@/src/components/segments/PageHeader/MunicipalServicesPageHeader'
 import Pagination from '@/src/components/simple-components/Pagination/Pagination'
@@ -84,9 +85,9 @@ const MunicipalServicesPageContent = ({
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="mx-auto w-full max-w-(--breakpoint-lg) pt-4 lg:pt-8">
+      <SectionContainer className="w-full pt-4 lg:pt-8">
         <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
-        <div className="grid grid-cols-1 gap-3 px-4 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4 lg:px-0">
+        <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4">
           {filteredServices
             .filter(
               (_, i) =>
@@ -103,7 +104,7 @@ const MunicipalServicesPageContent = ({
             onPageChange={setCurrentPage}
           />
         </div>
-      </div>
+      </SectionContainer>
     </div>
   )
 }

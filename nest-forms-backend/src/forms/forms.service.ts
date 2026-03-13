@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
 import { AuthUser } from '../auth-v2/types/user'
@@ -356,7 +356,7 @@ export default class FormsService {
       where: { id: form.id },
       data: {
         jsonVersion: formDefinition.jsonVersion,
-        formDataJson: omitExtraData(
+        formDataJson: baOmitExtraData(
           formDefinition.schema,
           form.formDataJson ?? {},
           this.formValidatorRegistryService.getRegistry(),

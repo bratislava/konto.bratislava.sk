@@ -24,15 +24,16 @@ describe('F05 -', { testIsolation: false }, () => {
   for (let i = 1; i <= jsonSources.length; i++) {
     context(`Source file ${i}`, () => {
       devices
-        .filter((device) => Cypress.env('devices')[`${device}`])
+        .filter((device) => Cypress.expose('devices')[`${device}`])
         .forEach((device) => {
-          context(device, Cypress.env('resolution')[`${device}`], () => {
+          context(device, Cypress.expose('resolution')[`${device}`], () => {
             before(() => {
               cy.fixture(jsonSources[i - 1]).then((fileData) => {
                 this.fileData = fileData
               })
 
               cy.visit('/mestske-sluzby/priznanie-k-dani-z-nehnutelnosti')
+              cy.waitForHydration()
             })
 
             beforeEach(() => {
@@ -190,7 +191,7 @@ describe('F05 -', { testIsolation: false }, () => {
                               pozemky,
                               'select-druh-pozemku',
                               landTax.priznania[indexPriznania].pozemky[indexPozemky].druhPozemku +
-                                ' – ',
+                              ' – ',
                             )
                             cy.wrap(
                               Cypress.$('[data-cy=number-celkovaVymeraPozemku]', pozemky),
@@ -312,7 +313,7 @@ describe('F05 -', { testIsolation: false }, () => {
                       ).type(
                         onePurposeTax.priznania[indexPriznania]
                           .pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia +
-                          '{enter}',
+                        '{enter}',
                       )
                       cy.focused().blur()
                       if (
@@ -452,7 +453,7 @@ describe('F05 -', { testIsolation: false }, () => {
                     cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
                       if (
                         multiPurposeTax.priznania[indexPriznania].spoluvlastnictvo ===
-                          'podieloveSpoluvlastnictvo' &&
+                        'podieloveSpoluvlastnictvo' &&
                         multiPurposeTax.priznania[indexPriznania].naZakladeDohody
                       ) {
                         cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile(
@@ -644,7 +645,7 @@ describe('F05 -', { testIsolation: false }, () => {
                       ) {
                         cy.wrap(Cypress.$('[data-cy=number-pocetSpoluvlastnikov]', priznania)).type(
                           flatAndNonResTax.priznania[indexPriznania].pocetSpoluvlastnikov +
-                            '{enter}',
+                          '{enter}',
                         )
                         cy.focused().blur()
                         cy.clickRadio(
@@ -658,7 +659,7 @@ describe('F05 -', { testIsolation: false }, () => {
                     cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
                       if (
                         flatAndNonResTax.priznania[indexPriznania].spoluvlastnictvo ===
-                          'podieloveSpoluvlastnictvo' &&
+                        'podieloveSpoluvlastnictvo' &&
                         flatAndNonResTax.priznania[indexPriznania].naZakladeDohody
                       ) {
                         cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile(

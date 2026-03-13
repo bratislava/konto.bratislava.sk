@@ -85,6 +85,7 @@ const ThankYouPageContent = () => {
     if (type === TaxType.Ko) {
       return feedbackLinkKo
     }
+
     return null
   }, [type, feedbackLinkDzn, feedbackLinkKo])
 

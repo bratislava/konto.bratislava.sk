@@ -10,7 +10,7 @@ import {
   SharepointRelationData,
 } from 'forms-shared/definitions/sharepointTypes'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   getArrayForOneToMany,
   getValuesForFields,
@@ -207,7 +207,7 @@ export default class SharepointSubservice {
     )
     const fields = await this.getAllFieldsMappings(sharepointData, accessToken)
 
-    const jsonDataExtraDataOmitted = omitExtraData(
+    const jsonDataExtraDataOmitted = baOmitExtraData(
       schema,
       form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),

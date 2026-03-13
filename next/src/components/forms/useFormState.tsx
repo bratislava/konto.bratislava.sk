@@ -1,7 +1,7 @@
 import { GenericObjectType } from '@rjsf/utils'
 import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
 import React, {
   createContext,
@@ -131,7 +131,7 @@ const useGetContext = () => {
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
-    const sanitizedFormData = omitExtraData(schema, importedFormData, validatorRegistry)
+    const sanitizedFormData = baOmitExtraData(schema, importedFormData, validatorRegistry)
 
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, sanitizedFormData, validatorRegistry)
     const afterImportStepperData = getStepperData(evaluatedSchemas)

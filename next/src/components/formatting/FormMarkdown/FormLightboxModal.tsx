@@ -1,8 +1,7 @@
 import 'yet-another-react-lightbox/styles.css'
 
 import { useTranslation } from 'next-i18next'
-import React, { PropsWithChildren, useState } from 'react'
-import { Button as AriaButton } from 'react-aria-components'
+import { PropsWithChildren, useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
@@ -40,10 +39,14 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
           buttonNext: () => null,
           buttonZoom: () => null,
           buttonClose: () => (
-            <AriaButton onPress={() => setIsOpen(false)} className="p-2">
-              <CrossIcon className="size-6" aria-hidden />
-              <span className="sr-only">{t('Modal.aria.close')}</span>
-            </AriaButton>
+            <Button
+              variant="icon-wrapped-negative-margin"
+              size="large"
+              onPress={() => setIsOpen(false)}
+              icon={<CrossIcon className="size-6" />}
+              aria-label={t('Modal.aria.close')}
+              className="text-content-active-primary-inverted-default hover:text-content-active-primary-inverted-hover active:text-content-active-primary-inverted-pressed"
+            />
           ),
           iconLoading: () => <Spinner />,
         }}

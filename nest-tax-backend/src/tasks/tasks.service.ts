@@ -10,9 +10,9 @@ import {
 import { stateHolidays } from '../tax/utils/unified-tax.util'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import BloomreachMessagingTasksService from './subservices/bloomreach-messaging.tasks.service'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
+import NotificationsEventsService from './subservices/notifications-events.service'
 import ReportingTasksService from './subservices/reporting.tasks.service'
 import TaxImportTasksService from './subservices/tax-import.tasks.service'
 
@@ -21,10 +21,10 @@ export class TasksService {
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configService: ConfigService,
+    private readonly notificationsEventsService: NotificationsEventsService,
     private readonly reportingTasksService: ReportingTasksService,
     private readonly norisSyncTasksService: NorisSyncTasksService,
     private readonly cityAccountIngestionTasksService: CityAccountIngestionTasksService,
-    private readonly bloomreachMessagingTasksService: BloomreachMessagingTasksService,
     private readonly taxImportTasksService: TaxImportTasksService,
   ) {
     this.configService.getOrThrow<string>(
@@ -54,7 +54,13 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async sendUnpaidTaxReminders() {
-    await this.bloomreachMessagingTasksService.sendUnpaidTaxReminders()
+    await this.notificationsEventsService.sendUnpaidTaxReminders()
+  }
+
+  @Cron('*/10 7-20 * * *') // every 10 minutes between 7:00 and 20:00
+  @HandleErrors('Cron Error')
+  async sendUnpaidTaxInstallmentReminders() {
+    await this.notificationsEventsService.sendUnpaidTaxInstallmentReminders()
   }
 
   @Cron('0 9-17 1-23 12 1-5')
@@ -100,6 +106,6 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async resendBloomreachEvents() {
-    await this.bloomreachMessagingTasksService.resendBloomreachEvents()
+    await this.notificationsEventsService.resendBloomreachEvents()
   }
 }

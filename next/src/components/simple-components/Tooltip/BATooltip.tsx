@@ -1,10 +1,10 @@
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
+import { useState } from 'react'
+import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
 
 import { HelpIcon } from '@/src/assets/ui-icons'
-// eslint-disable-next-line import/no-cycle
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Button from '@/src/components/simple-components/Button'
 import HorizontalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-vertical-arrow.svg'
 import cn from '@/src/utils/cn'
@@ -71,8 +71,10 @@ const BATooltip = ({ placement, children }: BATooltipProps) => {
   return (
     <TooltipTrigger isOpen={isOpen} onOpenChange={setOpen} delay={0} closeDelay={0}>
       <Button
-        className="-m-1.5 flex cursor-pointer items-center justify-center rounded-lg p-1.5"
+        variant="icon-wrapped-negative-margin"
+        // className="-m-1.5 flex cursor-pointer items-center justify-center rounded-lg p-1.5"
         aria-label={t('Tooltip.aria.tooltip')}
+        icon={<HelpIcon className="size-5 lg:size-6" />}
         // If the tooltip is open, and we click on it, it's first closed and then onPress is triggered, onPressStart
         // is triggered before the tooltip is closed, so it won't reopen again.
         onPressStart={() => {
@@ -80,9 +82,7 @@ const BATooltip = ({ placement, children }: BATooltipProps) => {
             setOpen(true)
           }
         }}
-      >
-        <HelpIcon className="size-5 lg:size-6" />
-      </Button>
+      />
       <InnerTooltip placement={placement} offset={8}>
         {children}
       </InnerTooltip>

@@ -981,10 +981,6 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                       "value": "bolt",
                     },
                     {
-                      "label": "Dott",
-                      "value": "dott",
-                    },
-                    {
                       "label": "Svišť",
                       "value": "svist",
                     },
@@ -996,7 +992,6 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
               },
               "enum": [
                 "bolt",
-                "dott",
                 "svist",
               ],
               "title": "Poskytovateľ kolobežky",

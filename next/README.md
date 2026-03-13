@@ -133,3 +133,7 @@ diff --git a/src/Snackbar.js b/src/Snackbar.js
              <div className={styles.snackbar__text}>{text}</div>
 
 ```
+
+## `RJSF` patched package
+
+We are using a patched version of `@rjsf/core`. This patch must be present until [RJSF PR #4978](https://github.com/rjsf-team/react-jsonschema-form/pull/4978) is released.

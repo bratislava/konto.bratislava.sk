@@ -17,6 +17,7 @@ import {
 } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { getNextTaxType } from '../utils/tax-type-switch'
 
 @Injectable()
 export default class NorisSyncTasksService {
@@ -156,8 +157,7 @@ export default class NorisSyncTasksService {
       return
     }
 
-    this.lastUpdateTaxType =
-      this.lastUpdateTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+    this.lastUpdateTaxType = getNextTaxType(this.lastUpdateTaxType)
 
     await this.updateTaxesFromNorisByTaxType(this.lastUpdateTaxType)
   }

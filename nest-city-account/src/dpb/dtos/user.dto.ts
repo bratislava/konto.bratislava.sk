@@ -45,3 +45,31 @@ export class DpbUserDto {
   })
   family_name?: string
 }
+
+export class DPBUserLoginStatistics {
+  @ApiProperty({
+    description: 'Number of times the user has logged in',
+    example: 5,
+  })
+  loginCount!: number
+
+  @ApiProperty({
+    description: 'Date of first login',
+    example: '2024-01-15T10:30:00.000Z',
+  })
+  firstLogin!: Date
+
+  @ApiProperty({
+    description: 'Date of latest login',
+    example: '2024-02-20T14:45:00.000Z',
+  })
+  latestLogin!: Date
+
+  @ApiProperty({
+    name: 'id',
+    description: 'User ID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+    nullable: true,
+  })
+  id: string
+}

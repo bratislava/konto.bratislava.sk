@@ -124,7 +124,7 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
     isPossible: true,
     type: OneTimePaymentTypeEnum.ONE_TIME_PAYMENT,
     amount: 6600,
-    dueDate: new Date('2025-01-21T23:00:00.000Z'),
+    dueDate: new Date('2025-01-15T23:00:00.000Z'),
     qrCode: {
       amount: 6600,
       variableSymbol: '1234567890',
@@ -139,7 +139,7 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
     installments: [
       {
         installmentNumber: 1,
-        dueDate: new Date('2025-01-21T23:00:00.000Z'),
+        dueDate: new Date('2025-01-15T23:00:00.000Z'),
         status: InstallmentPaidStatusEnum.NOT_PAID,
         remainingAmount: 2200,
         totalInstallmentAmount: 2200,
@@ -162,7 +162,7 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
     activeInstallment: {
       remainingAmount: 2200,
       variableSymbol: '1234567890',
-      dueDate: new Date('2025-01-21T23:00:00.000Z'),
+      dueDate: new Date('2025-01-15T23:00:00.000Z'),
       qrCode: {
         amount: 2200,
         variableSymbol: '1234567890',

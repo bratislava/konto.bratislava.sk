@@ -91,8 +91,8 @@ import ziadostOUzemnoplanovaciuInformaciu, {
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 import webhookShowcase from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
-  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
   nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
@@ -635,7 +635,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
     title: 'Nahlásenie podnetu k elektrickým kolobežkám',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: nahlaseniePodnetuKElektrickymKolobezkam,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     subject: {

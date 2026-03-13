@@ -31,7 +31,7 @@ export default class TaxImportTasksService {
   constructor(
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
-    private readonly taxImportHelperSubservice: TaxImportHelperService,
+    private readonly taxImportHelperService: TaxImportHelperService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configSubservice: TasksConfigSubservice,
     private readonly retryService: RetryService,
@@ -55,9 +55,9 @@ export default class TaxImportTasksService {
     const thisYear = new Date().getFullYear()
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
-      this.taxImportHelperSubservice.isWithinImportWindow(),
-      this.taxImportHelperSubservice.getTodayTaxCount(),
-      this.taxImportHelperSubservice.getDailyTaxLimit(),
+      this.taxImportHelperService.isWithinImportWindow(),
+      this.taxImportHelperService.getTodayTaxCount(),
+      this.taxImportHelperService.getDailyTaxLimit(),
     ])
     const isLimitReached = todayTaxCount >= dailyLimit
     const importPhase = isWithinWindow && !isLimitReached
@@ -67,7 +67,7 @@ export default class TaxImportTasksService {
     )
 
     const { birthNumbers, newlyCreated } =
-      await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
+      await this.taxImportHelperService.getPrioritizedBirthNumbersWithMetadata(
         taxType,
         thisYear,
         firstHistoricalYear,
@@ -83,13 +83,13 @@ export default class TaxImportTasksService {
       for (let year = firstHistoricalYear; year <= thisYear; year += 1) {
         // Intentionally sequential: avoid hammering slow DB
         // eslint-disable-next-line no-await-in-loop
-        await this.taxImportHelperSubservice.importTaxes(
+        await this.taxImportHelperService.importTaxes(
           TaxType.DZN,
           newlyCreated,
           year,
         )
         // eslint-disable-next-line no-await-in-loop
-        await this.taxImportHelperSubservice.importTaxes(
+        await this.taxImportHelperService.importTaxes(
           TaxType.KO,
           newlyCreated,
           year,
@@ -102,12 +102,12 @@ export default class TaxImportTasksService {
         `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'}`,
       )
       await (importPhase
-        ? this.taxImportHelperSubservice.importTaxes(
+        ? this.taxImportHelperService.importTaxes(
             taxType,
             birthNumbers,
             thisYear,
           )
-        : this.taxImportHelperSubservice.prepareTaxes(
+        : this.taxImportHelperService.prepareTaxes(
             taxType,
             birthNumbers,
             thisYear,

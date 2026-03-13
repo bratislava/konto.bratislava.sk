@@ -25,6 +25,12 @@ declare namespace Cypress {
      * @example cy.showNavbar('desktop')
      */
     showNavbar(device: string): Chainable<any>
+
+    /**
+     * Custom command to wait for Next.js hydration.
+     * @example cy.waitForHydration()
+     */
+    waitForHydration(): Chainable<any>
   }
 }
 
@@ -39,4 +45,8 @@ Cypress.Commands.add('hideNavbar', (device) => {
 
 Cypress.Commands.add('showNavbar', (device) => {
   cy.get(`#${device}-navbar`).invoke('attr', 'style', '')
+})
+
+Cypress.Commands.add('waitForHydration', () => {
+  cy.get('body[data-cy-hydrated="true"]', { timeout: 10000 })
 })

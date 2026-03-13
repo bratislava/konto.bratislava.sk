@@ -193,23 +193,21 @@ export default class TaxImportHelperService {
       (bn) => !foundInNoris.includes(bn),
     )
 
-    if (notFoundInNoris.length === 0) {
-      this.logger.log(`No birth numbers were added to tax backend.`)
-    }
-
-    await this.prismaService.historicalTaxImportAttempt.updateMany({
-      where: {
-        taxPayer: {
-          birthNumber: { in: notFoundInNoris },
+    if (notFoundInNoris.length > 0) {
+      await this.prismaService.historicalTaxImportAttempt.updateMany({
+        where: {
+          taxPayer: {
+            birthNumber: { in: notFoundInNoris },
+          },
+          year,
+          taxType,
         },
-        year,
-        taxType,
-      },
-      data: {
-        updatedAt: new Date(),
-        status: HistoricalTaxImportStatus.NOT_FOUND,
-      },
-    })
+        data: {
+          updatedAt: new Date(),
+          status: HistoricalTaxImportStatus.NOT_FOUND,
+        },
+      })
+    }
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,

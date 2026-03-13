@@ -92,6 +92,12 @@ export class TasksService {
     await this.taxImportTasksService.loadTaxesForUsers()
   }
 
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
+  async loadHistoricalTaxes() {
+    await this.taxImportTasksService.loadHistoricalTaxes()
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async loadOverpaymentsFromNoris() {

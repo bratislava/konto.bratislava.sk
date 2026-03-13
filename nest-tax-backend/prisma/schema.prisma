@@ -26,20 +26,21 @@ model TaxPayer {
   permanentResidenceStreet String?
   permanentResidenceZip    String?
   permanentResidenceCity   String?
-  readyToImportDZN         Boolean  @default(false)
-  readyToImportKO          Boolean  @default(false)
-  lastUpdatedAtDZN         DateTime @default(now())
-  lastUpdatedAtKO          DateTime @default(now())
 
-  taxes             Tax[]
-  taxAdministrators TaxPayerTaxAdministrator[]
+  lastUpdatedAtDZN DateTime @default(now())
+  lastUpdatedAtKO  DateTime @default(now())
+  readyToImportDZN Boolean  @default(false)
+  readyToImportKO  Boolean  @default(false)
+
+  taxes                       Tax[]
+  taxAdministrators           TaxPayerTaxAdministrator[]
+  historicalTaxImportAttempts HistoricalTaxImportAttempt[]
 
   @@unique([birthNumber])
   @@unique([uuid])
-  @@index([readyToImportDZN])
-  @@index([readyToImportKO])
   @@index([lastUpdatedAtDZN])
   @@index([lastUpdatedAtKO])
+  @@index([updatedAt, id])
 }
 
 model Tax {
@@ -99,8 +100,8 @@ model TaxInstallment {
   text                         String?
   bloomreachUnpaidReminderSent UnpaidReminderSent @default(NONE)
 
-  @@index([taxId, order])
   @@unique([taxId, order])
+  @@index([taxId, order])
 }
 
 model TaxAdministrator {
@@ -141,6 +142,23 @@ model Config {
   updatedAt  DateTime @default(now()) @updatedAt
 }
 
+model HistoricalTaxImportAttempt {
+  id           Int                       @id @default(autoincrement())
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @default(now()) @updatedAt
+  taxPayerId   Int
+  taxPayer     TaxPayer                  @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
+  year         Int
+  taxType      TaxType
+  status       HistoricalTaxImportStatus
+  errorMessage String?
+
+  @@unique([taxPayerId, year, taxType])
+  // TODO what indexes do we need here?
+  @@index([status, updatedAt])
+  @@index([taxPayerId, taxType])
+}
+
 enum TaxPaymentSource {
   CARD
   QRCODE
@@ -171,4 +189,11 @@ enum UnpaidReminderSent {
   BEFORE_DUE
   AFTER_DUE
   BOTH
+}
+
+enum HistoricalTaxImportStatus {
+  READY_TO_IMPORT // Found in Noris during prepare phase, ready to import
+  SUCCESS // Successfully imported
+  NOT_FOUND // No tax found in Noris for this year
+  FAILED // Failed due to an error
 }

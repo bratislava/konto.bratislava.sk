@@ -93,8 +93,6 @@ export type TaxDefinition<TTaxType extends TaxType> = {
   /** Threshold for allowing installment payments (splátková hranica) in eurocents */
   paymentCalendarThreshold: number
 
-  readyToImportDatabaseFieldName: string
-
   lastUpdatedAtDatabaseFieldName: string
 
   /** IBAN of the beneficiary */

@@ -27,7 +27,7 @@ export default class TaxImportTasksService {
   constructor(
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
-    private readonly taxImportHelperSubservice: TaxImportHelperService,
+    private readonly taxImportHelperService: TaxImportHelperService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configSubservice: TasksConfigSubservice,
     private readonly retryService: RetryService,
@@ -50,9 +50,9 @@ export default class TaxImportTasksService {
     const year = new Date().getFullYear()
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
-      this.taxImportHelperSubservice.isWithinImportWindow(),
-      this.taxImportHelperSubservice.getTodayTaxCount(),
-      this.taxImportHelperSubservice.getDailyTaxLimit(),
+      this.taxImportHelperService.isWithinImportWindow(),
+      this.taxImportHelperService.getTodayTaxCount(),
+      this.taxImportHelperService.getDailyTaxLimit(),
     ])
     const isLimitReached = todayTaxCount >= dailyLimit
     const importPhase = isWithinWindow && !isLimitReached
@@ -62,7 +62,7 @@ export default class TaxImportTasksService {
     )
 
     const { birthNumbers, newlyCreated } =
-      await this.taxImportHelperSubservice.getPrioritizedBirthNumbersWithMetadata(
+      await this.taxImportHelperService.getPrioritizedBirthNumbersWithMetadata(
         taxType,
         year,
         importPhase,
@@ -73,12 +73,12 @@ export default class TaxImportTasksService {
       this.logger.log(
         `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
       )
-      await this.taxImportHelperSubservice.importTaxes(
+      await this.taxImportHelperService.importTaxes(
         TaxType.DZN,
         newlyCreated,
         year,
       )
-      await this.taxImportHelperSubservice.importTaxes(
+      await this.taxImportHelperService.importTaxes(
         TaxType.KO,
         newlyCreated,
         year,
@@ -90,16 +90,8 @@ export default class TaxImportTasksService {
         `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'}`,
       )
       await (importPhase
-        ? this.taxImportHelperSubservice.importTaxes(
-            taxType,
-            birthNumbers,
-            year,
-          )
-        : this.taxImportHelperSubservice.prepareTaxes(
-            taxType,
-            birthNumbers,
-            year,
-          ))
+        ? this.taxImportHelperService.importTaxes(taxType, birthNumbers, year)
+        : this.taxImportHelperService.prepareTaxes(taxType, birthNumbers, year))
     }
 
     if (birthNumbers.length === 0 && newlyCreated.length === 0) {

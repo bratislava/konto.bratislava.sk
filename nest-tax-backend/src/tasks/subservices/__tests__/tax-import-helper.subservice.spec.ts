@@ -11,7 +11,7 @@ import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import TaxImportHelperService from '../tax-import-helper.service'
 
-describe('TaxImportHelperSubservice', () => {
+describe('TaxImportHelperService', () => {
   let service: TaxImportHelperService
   let prismaService: PrismaService
   let databaseSubservice: DatabaseSubservice

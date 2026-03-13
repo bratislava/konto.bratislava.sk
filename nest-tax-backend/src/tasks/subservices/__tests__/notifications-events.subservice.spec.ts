@@ -13,7 +13,7 @@ import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitio
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
-import NotificationsEventsSubservice from '../notifications-events.subservice'
+import NotificationsEventsService from '../notifications-events.service'
 
 jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
   getTaxDefinitionByType: jest.fn(),
@@ -48,7 +48,7 @@ function assertUpdateManyUsesReminderEnums(
 }
 
 describe('NotificationsEventsSubservice', () => {
-  let service: NotificationsEventsSubservice
+  let service: NotificationsEventsService
   let bloomreachService: jest.Mocked<BloomreachService>
   let cityAccountSubservice: jest.Mocked<CityAccountSubservice>
 
@@ -84,7 +84,7 @@ describe('NotificationsEventsSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        NotificationsEventsSubservice,
+        NotificationsEventsService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: BloomreachService,
@@ -98,7 +98,7 @@ describe('NotificationsEventsSubservice', () => {
       ],
     }).compile()
 
-    service = module.get(NotificationsEventsSubservice)
+    service = module.get(NotificationsEventsService)
     bloomreachService = module.get(BloomreachService)
     cityAccountSubservice = module.get(CityAccountSubservice)
 

@@ -6,9 +6,9 @@ import pLimit from 'p-limit'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import { DUE_DATE_OFFSET } from '../../tax/utils/unified-tax.util'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
-import { DUE_DATE_OFFSET } from '../../tax/utils/unified-tax.util'
 
 @Injectable()
 export default class BloomreachMessagingTasksService {

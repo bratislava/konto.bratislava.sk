@@ -10,7 +10,7 @@ import {
 import { stateHolidays } from '../tax/utils/unified-tax.util'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import NotificationsEventsSubservice from './subservices/notifications-events.subservice'
+import NotificationsEventsService from './subservices/notifications-events.service'
 
 import BloomreachMessagingTasksService from './subservices/bloomreach-messaging.tasks.service'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
@@ -23,7 +23,7 @@ export class TasksService {
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configService: ConfigService,
-    private readonly notificationsEventsSubservice: NotificationsEventsSubservice,
+    private readonly notificationsEventsSubservice: NotificationsEventsService,
     private readonly reportingTasksService: ReportingTasksService,
     private readonly norisSyncTasksService: NorisSyncTasksService,
     private readonly cityAccountIngestionTasksService: CityAccountIngestionTasksService,

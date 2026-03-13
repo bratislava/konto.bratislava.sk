@@ -27,7 +27,7 @@ type InstallmentInfo = {
 }
 
 @Injectable()
-export default class NotificationsEventsSubservice {
+export default class NotificationsEventsService {
   private readonly logger: LineLoggerSubservice
 
   private lastInstallmentReminderTaxType: TaxType = TaxType.DZN
@@ -38,7 +38,7 @@ export default class NotificationsEventsSubservice {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new LineLoggerSubservice(NotificationsEventsSubservice.name)
+    this.logger = new LineLoggerSubservice(NotificationsEventsService.name)
   }
 
   private readonly isWithinNextWeek = (installmentDate: Dayjs) => {

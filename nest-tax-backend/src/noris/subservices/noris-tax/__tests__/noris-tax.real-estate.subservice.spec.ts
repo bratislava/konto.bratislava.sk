@@ -965,6 +965,44 @@ describe('NorisTaxRealEstateSubservice', () => {
       it('should process tax record from Noris successfully', async () => {
         const birthNumbersResult = new Set<string>()
 
+        prismaMock.$transaction.mockImplementation(async (callback: any) => {
+          const mockTx = {
+            taxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                name: 'Test Administrator',
+              }),
+            },
+            taxPayer: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                birthNumber: '123456/7890',
+              }),
+            },
+            taxPayerTaxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+            tax: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                order: 1,
+                taxPayer: { id: 1 },
+                isCancelled: false,
+              }),
+            },
+            taxInstallment: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            taxDetail: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            historicalTaxImportAttempt: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+          }
+          return callback(mockTx as any)
+        })
+
         await service['processTaxRecordFromNoris'](
           mockTaxDefinitionForProcess,
           birthNumbersResult,
@@ -982,6 +1020,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum.Edesk,
             tax_type: TaxType.DZN,
             order: 1,
+            suppress_email: undefined,
           },
           'ext123',
         )
@@ -1005,6 +1044,44 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       it('should handle bloomreach tracking failure', async () => {
         const birthNumbersResult = new Set<string>()
+
+        prismaMock.$transaction.mockImplementation(async (callback: any) => {
+          const mockTx = {
+            taxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                name: 'Test Administrator',
+              }),
+            },
+            taxPayer: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                birthNumber: '123456/7890',
+              }),
+            },
+            taxPayerTaxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+            tax: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                order: 1,
+                taxPayer: { id: 1 },
+                isCancelled: false,
+              }),
+            },
+            taxInstallment: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            taxDetail: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            historicalTaxImportAttempt: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+          }
+          return callback(mockTx as any)
+        })
 
         bloomreachService.trackEventTax = jest.fn().mockResolvedValue(false)
 

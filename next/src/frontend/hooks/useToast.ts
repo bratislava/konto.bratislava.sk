@@ -8,34 +8,48 @@ type ToastOptions = {
   duration?: number
 }
 
-export const defaultToastDuration = 5000
-export const toastReplacementDelay = 250
+const defaultToastDuration = 5000
+const toastReplacementDelay = 250
+
+let pendingToastTimer: ReturnType<typeof setTimeout> | null = null
 
 export default function useToast() {
   const closeToasts = useCallback(() => {
     toastQueue.visibleToasts.forEach((toast) => {
       toastQueue.close(toast.key)
     })
+    if (pendingToastTimer) {
+      clearTimeout(pendingToastTimer)
+      pendingToastTimer = null
+    }
   }, [])
 
   const showToast = useCallback(
     (options: ToastOptions) => {
+      if (pendingToastTimer) {
+        clearTimeout(pendingToastTimer)
+        pendingToastTimer = null
+      }
+
+      const addToast = () => {
+        toastQueue.add(
+          {
+            message: options.message,
+            variant: options.variant,
+          },
+          {
+            timeout: options.duration ?? defaultToastDuration,
+          },
+        )
+      }
+
       const hasVisibleToasts = toastQueue.visibleToasts.length > 0
       if (hasVisibleToasts) {
         closeToasts()
+        pendingToastTimer = setTimeout(addToast, toastReplacementDelay)
+      } else {
+        addToast()
       }
-
-      const additionalDelay = hasVisibleToasts ? toastReplacementDelay : 0
-      toastQueue.add(
-        {
-          message: options.message,
-          variant: options.variant,
-          isDelayedToast: hasVisibleToasts,
-        },
-        {
-          timeout: (options.duration ?? defaultToastDuration) + additionalDelay,
-        },
-      )
     },
     [closeToasts],
   )

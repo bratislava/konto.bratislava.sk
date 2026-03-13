@@ -1,5 +1,4 @@
 import { useTranslation } from 'next-i18next'
-import type { CSSProperties } from 'react'
 import {
   Text,
   type ToastProps,
@@ -19,7 +18,6 @@ export type ToastVariant = 'info' | 'success' | 'error' | 'warning'
 export type AppToastContent = {
   message: string
   variant: ToastVariant
-  isDelayedToast: boolean
 }
 
 export const toastQueue = new ToastQueue<AppToastContent>({
@@ -38,7 +36,7 @@ const Toast = ({ className, ...props }: ToastProps<AppToastContent>) => {
   return (
     <ReactAriaToast
       {...props}
-      style={{ viewTransitionName: props.toast.key } as CSSProperties}
+      style={{ viewTransitionName: props.toast.key }}
       className={cn(
         'pointer-events-auto flex w-full max-w-[672px] items-center rounded text-white shadow-lg outline-none [view-transition-class:toast] sm:w-auto sm:min-w-[334px]',
         className,

@@ -26,6 +26,7 @@ import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByTyp
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
+  NORIS_SILENT_CONNECTION_ERRORS_KEY,
   OVERPAYMENTS_LOOKBACK_DAYS,
 } from '../utils/constants'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
@@ -41,6 +42,8 @@ import TaxImportHelperSubservice from './subservices/tax-import-helper.subservic
 import { getNextTaxType } from './utils/tax-type-switch'
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
+
+const NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD = 20
 
 @Injectable()
 export class TasksService {
@@ -593,6 +596,7 @@ export class TasksService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @HandleErrors('Cron Error')
   async resendBloomreachEvents() {
     this.logger.log('Starting resendBloomreachEvents task')
     const payments = await this.prismaService.taxPayment.findMany({
@@ -651,6 +655,42 @@ export class TasksService {
 
     this.logger.log(
       `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events.`,
+    )
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  @HandleErrors('Cron Error')
+  async alertSilentNorisConnectionErrors() {
+    const numberOfErrorsValue = await this.databaseSubservice.getConfigByKeys([
+      NORIS_SILENT_CONNECTION_ERRORS_KEY,
+    ])
+    const numberOfErrors = Number(
+      numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY],
+    )
+
+    if (numberOfErrors.toString() === 'NaN') {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,
+      )
+    }
+
+    await this.prismaService.config.updateMany({
+      where: {
+        key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
+      },
+      data: {
+        value: '0',
+      },
+    })
+
+    if (numberOfErrors < NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD) {
+      return
+    }
+
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
     )
   }
 }

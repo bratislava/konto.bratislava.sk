@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { config, connect, ConnectionPool } from 'mssql'
+import { config, connect, ConnectionPool, MSSQLError } from 'mssql'
 
+import { PrismaService } from '../../prisma/prisma.service'
+import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisConnectionSubservice {
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly prismaService: PrismaService,
   ) {
     if (
       !process.env.MSSQL_HOST ||
@@ -76,6 +80,80 @@ export class NorisConnectionSubservice {
     })
   }
 
+  private addMssqlErrorDetailsToErrorMessage(
+    errorMessage: string,
+    error: any,
+  ): string {
+    if (error instanceof MSSQLError) {
+      const mssqlErrorDetails = {
+        code: error.code,
+        message: error.message,
+        number: error.name,
+      }
+      return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
+    }
+    return errorMessage
+  }
+
+  private getNorisUrgentError(errorMessage: string, error: any) {
+    return this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+      undefined,
+      error instanceof Error ? undefined : <string>error,
+      error instanceof Error ? error : undefined,
+    )
+  }
+
+  private async handleDatabaseError(
+    error: any,
+    errorMessage: string,
+  ): Promise<never> {
+    // https://www.npmjs.com/package/mssql#errors
+    if (!(error instanceof MSSQLError)) {
+      throw this.getNorisUrgentError(errorMessage, error)
+    }
+
+    if (
+      [
+        'ETIMEOUT',
+        'ENOTOPEN',
+        'ECONNCLOSED',
+        'EABORT',
+        'ECANCEL',
+        'ETIMEOUT',
+      ].includes(error.code)
+    ) {
+      await this.prismaService.$transaction(async (tx) => {
+        const configValue = await tx.config.findFirst({
+          where: {
+            key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
+          },
+        })
+        const currentValue = configValue ? Number(configValue.value) : 0
+
+        await tx.config.updateMany({
+          where: {
+            key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
+          },
+          data: {
+            value: (currentValue + 1).toString(),
+          },
+        })
+      })
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    }
+
+    throw this.getNorisUrgentError(errorMessage, error)
+  }
+
   /**
    * Executes a function within a database connection context.
    * Creates a connection, executes the function, and ensures proper cleanup.
@@ -87,7 +165,7 @@ export class NorisConnectionSubservice {
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
-    errorHandler: (error: any) => never,
+    errorMessage: string,
     useOptimized: boolean = false,
   ): Promise<T> {
     const connection = useOptimized
@@ -99,7 +177,7 @@ export class NorisConnectionSubservice {
       const result = await operation(connection)
       return result
     } catch (error) {
-      return errorHandler(error)
+      return await this.handleDatabaseError(error, errorMessage)
     } finally {
       await connection.close()
     }

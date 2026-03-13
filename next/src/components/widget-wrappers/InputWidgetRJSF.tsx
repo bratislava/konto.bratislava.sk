@@ -15,7 +15,7 @@ const InputWidgetRJSF = ({
   id,
   label,
   options,
-  placeholder = '',
+  placeholder,
   required,
   value,
   disabled,

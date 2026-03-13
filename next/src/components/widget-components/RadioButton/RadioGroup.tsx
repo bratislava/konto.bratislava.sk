@@ -18,7 +18,6 @@ type RadioGroupProps = FieldWrapperProps & {
   children: ReactNode
   value?: string | null
   defaultValue?: string
-  isReadOnly?: boolean
   onChange: (value: string | null) => void
   orientation?: Orientation
   className?: string
@@ -27,28 +26,12 @@ type RadioGroupProps = FieldWrapperProps & {
 const RadioGroup = (props: RadioGroupProps) => {
   const { t } = useTranslation('account')
 
-  const {
-    children,
-    className,
-    orientation = 'vertical',
-    required,
-    label,
-    disabled,
-    errorMessage,
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-    value,
-    size,
-    labelSize,
-    displayOptionalLabel,
-  } = props
+  const { children, value, orientation = 'vertical', className, ...rest } = props
 
   const propsReactAria = {
     ...props,
-    isDisabled: disabled,
-    isRequired: required,
+    isDisabled: rest.disabled,
+    isRequired: rest.required,
     // it may receive "undefined" as value, which would make it uncontrolled
     value: value == null ? null : value,
   } as ReactStatelyRadioGroupProps
@@ -65,27 +48,17 @@ const RadioGroup = (props: RadioGroupProps) => {
     <div
       {...radioGroupProps}
       className={className}
-      data-cy={`radio-group-${label
+      data-cy={`radio-group-${rest.label
         .toLowerCase()
         .replaceAll(' ', '-')
         .replaceAll(/[(),./?§]/g, '')}`}
     >
       <FieldWrapper
-        label={label}
+        {...rest}
         labelProps={labelProps}
         htmlFor={radioGroupProps.id}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
-        required={required}
-        disabled={disabled}
-        errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
-        size={size}
-        labelSize={labelSize}
         customHeaderBottomMargin="mb-4"
-        displayOptionalLabel={displayOptionalLabel}
       >
         <RadioContext.Provider value={state}>
           <div className="flex flex-col gap-2">
@@ -99,7 +72,7 @@ const RadioGroup = (props: RadioGroupProps) => {
               {children}
             </div>
 
-            {required ? null : (
+            {rest.required ? null : (
               <Button
                 variant="plain"
                 size="small"

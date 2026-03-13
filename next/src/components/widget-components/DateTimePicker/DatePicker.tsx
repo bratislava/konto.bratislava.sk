@@ -22,27 +22,7 @@ export type DatePickerProps = FieldWrapperProps & {
 }
 
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
-  (
-    {
-      label,
-      disabled,
-      errorMessage,
-      required,
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      value,
-      minValue,
-      maxValue,
-      onChange = () => {},
-      size,
-      labelSize,
-      displayOptionalLabel,
-      ...rest
-    },
-    forwardedRef,
-  ) => {
+  ({ value, minValue, maxValue, onChange = () => {}, ...rest }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const dateFieldRef = useObjectRef<HTMLDivElement>(null)
     const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
@@ -61,27 +41,24 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     }, [valueControlled])
 
     const state = useDatePickerState({
-      label,
-      errorMessage,
       value: parsedValue,
       onChange: (date) => setValueControlled(date ? date.toString() : null),
-      isRequired: required,
-      isDisabled: disabled,
+      isRequired: rest.required,
+      isDisabled: rest.disabled,
       ...rest,
       shouldCloseOnSelect: false,
     })
-    const { fieldProps, buttonProps, calendarProps, dialogProps } = useDatePicker(
-      {
-        errorMessage,
-        minValue: minValue ? parseDate(minValue) : undefined,
-        maxValue: maxValue ? parseDate(maxValue) : undefined,
-        isDisabled: disabled,
-        label,
-        ...rest,
-      },
-      state,
-      ref,
-    )
+    const { fieldProps, buttonProps, calendarProps, dialogProps, errorMessageProps } =
+      useDatePicker(
+        {
+          minValue: minValue ? parseDate(minValue) : undefined,
+          maxValue: maxValue ? parseDate(maxValue) : undefined,
+          isDisabled: rest.disabled,
+          ...rest,
+        },
+        state,
+        ref,
+      )
     const buttonPropsFixed = {
       ...buttonProps,
       children: undefined,
@@ -101,15 +78,11 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     return (
       <div className="relative" ref={ref}>
         <DateField
+          ref={dateFieldRef}
           {...fieldProps}
-          label={label}
-          helptext={helptext}
-          helptextMarkdown={helptextMarkdown}
-          helptextFooter={helptextFooter}
-          helptextFooterMarkdown={helptextFooterMarkdown}
-          required={required}
-          disabled={disabled}
-          errorMessage={errorMessage}
+          {...rest}
+          errorMessage={rest.errorMessage}
+          errorMessageProps={errorMessageProps}
           isOpen={state?.isOpen}
           popover={
             <>
@@ -130,15 +103,11 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
               )}
             </>
           }
-          size={size}
-          labelSize={labelSize}
-          displayOptionalLabel={displayOptionalLabel}
-          ref={dateFieldRef}
         >
           <Button
             variant="icon-wrapped-negative-margin"
             {...buttonPropsFixed}
-            isDisabled={disabled}
+            isDisabled={rest.disabled}
             icon={<CalendarIcon />}
             // TODO investigate why t can return undefined
             aria-label={t('DatePicker.aria.openCalendar') ?? 'Open calendar'}

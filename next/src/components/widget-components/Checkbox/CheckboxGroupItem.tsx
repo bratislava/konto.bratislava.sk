@@ -7,7 +7,7 @@ import cn from '@/src/utils/cn'
 
 import { CheckboxGroupContext } from './CheckboxGroup'
 
-type CheckBoxBase = {
+type CheckBoxGroupItemProps = {
   variant?: 'basic' | 'boxed'
   className?: string
   error?: boolean
@@ -16,7 +16,6 @@ type CheckBoxBase = {
   isDisabled?: boolean
   children: React.ReactNode
   value: string
-  tooltip?: string
 }
 const CheckboxGroupItem = ({
   error = false,
@@ -24,7 +23,7 @@ const CheckboxGroupItem = ({
   children,
   variant = 'basic',
   ...rest
-}: CheckBoxBase) => {
+}: CheckBoxGroupItemProps) => {
   const state = React.useContext(CheckboxGroupContext)
   const ref = useRef<HTMLInputElement>(null)
   const { inputProps } = useCheckboxGroupItem({ ...rest, isIndeterminate, children }, state, ref)

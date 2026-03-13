@@ -16,7 +16,7 @@ const NumberWidgetRJSF = ({
   schema,
   label,
   options,
-  placeholder = '',
+  placeholder,
   required,
   value,
   disabled,

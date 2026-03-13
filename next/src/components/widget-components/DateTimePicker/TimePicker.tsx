@@ -39,7 +39,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       value,
       minValue,
       maxValue,
-      readOnly,
       size,
       labelSize,
       displayOptionalLabel,
@@ -83,7 +82,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             }
             onBlur={onBlur}
             value={parsedValue}
-            readOnly={readOnly}
             size={size}
             labelSize={labelSize}
             displayOptionalLabel={displayOptionalLabel}

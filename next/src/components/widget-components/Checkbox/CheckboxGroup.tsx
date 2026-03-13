@@ -15,44 +15,22 @@ type CheckboxGroupProps = FieldWrapperProps & {
 }
 
 const CheckboxGroup = (props: CheckboxGroupProps) => {
-  const {
-    children,
-    className,
-    errorMessage,
-    disabled,
-    label,
-    required,
-    size,
-    labelSize,
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-    displayOptionalLabel,
-  } = props
-  const state: CheckboxGroupState = useCheckboxGroupState(props)
+  const { children, className, ...rest } = props
+  const state = useCheckboxGroupState(props)
   const { groupProps, labelProps, errorMessageProps } = useCheckboxGroup(props, state)
+
   return (
     <div
       {...groupProps}
-      data-cy={`checkbox-group-${label.toLowerCase().replaceAll(' ', '-').replaceAll('?', '')}`}
+      // eslint-disable-next-line react/destructuring-assignment
+      data-cy={`checkbox-group-${props.label.toLowerCase().replaceAll(' ', '-').replaceAll('?', '')}`}
     >
       <FieldWrapper
-        label={label}
+        {...rest}
         labelProps={labelProps}
         htmlFor={groupProps.id}
-        required={required}
-        disabled={disabled}
-        errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
-        size={size}
-        labelSize={labelSize}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
         customHeaderBottomMargin="mb-4"
-        displayOptionalLabel={displayOptionalLabel}
       >
         <div className={cn('flex flex-col gap-3', className)}>
           <CheckboxGroupContext.Provider value={state}>{children}</CheckboxGroupContext.Provider>

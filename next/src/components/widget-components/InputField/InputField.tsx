@@ -1,5 +1,4 @@
 import { useObjectRef } from '@react-aria/utils'
-import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
@@ -28,34 +27,22 @@ export type InputFieldProps = FieldWrapperProps & {
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
     {
-      name,
-      label,
       type = 'text',
-      placeholder,
-      errorMessage = [],
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      required,
+      name,
+      capitalize = false,
       value = '',
-      disabled,
       leftIcon,
-      className,
       onChange,
       endIcon,
-      capitalize = false,
       autoComplete,
-      size,
-      labelSize,
-      displayOptionalLabel,
+      placeholder,
+      className,
       ...rest
     },
     forwardedRef,
   ) => {
     const ref = useObjectRef(forwardedRef)
     const [valueState, setValueState] = useState<string>(value)
-    const { t } = useTranslation('account')
 
     useEffect(() => {
       setValueState(onChange ? value : valueState)
@@ -67,9 +54,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         placeholder,
         value: onChange && value ? value : valueState,
         type,
-        label,
-        errorMessage,
-        description: helptext,
+        description: rest.helptext,
         onChange(inputValue) {
           if (onChange) {
             onChange(inputValue.startsWith(' ') ? inputValue.trim() : inputValue)
@@ -86,8 +71,8 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             }
           }
         },
-        isRequired: required,
-        isDisabled: disabled,
+        isRequired: rest.required,
+        isDisabled: rest.disabled,
         autoComplete,
       },
       ref,
@@ -109,46 +94,31 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       }
     }
 
-    const resetIconHandler = () => {
-      if (onChange) onChange('')
-      else setValueState('')
-    }
-
     const style = cn(
       'w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 sm:text-16',
       {
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
         // hover
-        'hover:border-gray-400': !disabled,
+        'hover:border-gray-400': !rest.disabled,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
+          rest.errorMessage?.length && !rest.disabled,
 
         // disabled
-        'border-gray-300 bg-gray-100': disabled,
+        'border-gray-300 bg-gray-100': rest.disabled,
       },
       className,
     )
 
     return (
       <FieldWrapper
-        label={label}
+        {...rest}
         labelProps={labelProps}
         htmlFor={inputProps.id}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
-        required={required}
-        disabled={disabled}
-        errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel={displayOptionalLabel}
       >
         <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
@@ -156,7 +126,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
-                  'opacity-50': disabled,
+                  'opacity-50': rest.disabled,
                 },
               )}
             >

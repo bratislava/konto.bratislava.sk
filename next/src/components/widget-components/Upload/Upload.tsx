@@ -26,56 +26,33 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
   (
     {
       type,
-      label,
-      required,
       multiple,
       value,
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      disabled,
       sizeLimit,
       supportedFormats,
-      className,
       getFileInfoById,
-      errorMessage,
       onUpload = () => {},
       onFileRemove = () => {},
       onFileRetry = () => {},
       onFileDownload = () => {},
-      size,
-      labelSize,
-      displayOptionalLabel,
+      className,
+      ...rest
     },
     ref,
   ) => {
     return (
       <div className={cn('h-fit w-full', className)} style={{ transition: '0.2 all linear' }}>
-        <FieldWrapper
-          label={label}
-          required={required}
-          helptext={helptext}
-          helptextMarkdown={helptextMarkdown}
-          helptextFooter={helptextFooter}
-          helptextFooterMarkdown={helptextFooterMarkdown}
-          disabled={disabled}
-          errorMessage={errorMessage}
-          size={size}
-          labelSize={labelSize}
-          customHeaderBottomMargin="mb-2"
-          displayOptionalLabel={displayOptionalLabel}
-        >
+        <FieldWrapper {...rest} customHeaderBottomMargin="mb-2">
           <div className="flex flex-col gap-6">
             {type === 'button' && (
               <UploadButton
                 ref={ref}
                 sizeLimit={sizeLimit}
                 supportedFormats={supportedFormats}
-                disabled={disabled}
+                disabled={rest.disabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
-                errorMessage={errorMessage}
+                errorMessage={rest.errorMessage}
               />
             )}
             {type === 'dragAndDrop' && (
@@ -83,10 +60,10 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
                 ref={ref}
                 sizeLimit={sizeLimit}
                 supportedFormats={supportedFormats}
-                disabled={disabled}
+                disabled={rest.disabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
-                errorMessage={errorMessage}
+                errorMessage={rest.errorMessage}
               />
             )}
 
@@ -96,7 +73,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
               onFileRemove={onFileRemove}
               onFileRetry={onFileRetry}
               onFileDownload={onFileDownload}
-              disabled={disabled}
+              disabled={rest.disabled}
             />
           </div>
         </FieldWrapper>

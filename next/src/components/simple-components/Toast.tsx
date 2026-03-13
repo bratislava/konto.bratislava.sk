@@ -19,9 +19,9 @@ export type ToastVariant = 'info' | 'success' | 'error' | 'warning'
 export type AppToastContent = {
   message: string
   variant: ToastVariant
+  isDelayedToast: boolean
 }
 
-export const defaultToastDuration = 5000
 export const toastReplacementDelay = 250
 
 export const toastQueue = new ToastQueue<AppToastContent>({

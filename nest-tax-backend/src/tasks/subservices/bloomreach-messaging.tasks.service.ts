@@ -8,6 +8,7 @@ import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
+import { DUE_DATE_OFFSET } from '../../tax/utils/unified-tax.util'
 
 @Injectable()
 export default class BloomreachMessagingTasksService {
@@ -23,7 +24,10 @@ export default class BloomreachMessagingTasksService {
   }
 
   async sendUnpaidTaxReminders() {
-    const FIFTEEN_DAYS_AGO = dayjs().subtract(15, 'day').toDate()
+    const DUE_DATE_OFFSET_DATE = dayjs()
+      .tz('Europe/Bratislava')
+      .subtract(DUE_DATE_OFFSET, 'day')
+      .toDate()
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
@@ -48,7 +52,7 @@ export default class BloomreachMessagingTasksService {
           {
             deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
             createdAt: {
-              lte: FIFTEEN_DAYS_AGO,
+              lte: DUE_DATE_OFFSET_DATE,
             },
           },
           {
@@ -56,13 +60,13 @@ export default class BloomreachMessagingTasksService {
               not: DeliveryMethodNamed.CITY_ACCOUNT,
             },
             dateTaxRuling: {
-              lte: FIFTEEN_DAYS_AGO,
+              lte: DUE_DATE_OFFSET_DATE,
             },
           },
           {
             deliveryMethod: null,
             dateTaxRuling: {
-              lte: FIFTEEN_DAYS_AGO,
+              lte: DUE_DATE_OFFSET_DATE,
             },
           },
         ],

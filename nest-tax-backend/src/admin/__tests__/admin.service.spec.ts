@@ -1,7 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
-import { noop } from 'lodash'
 import isArray from 'lodash/isArray'
 
 import prismaMock from '../../../test/singleton'
@@ -529,7 +528,7 @@ describe('AdminService', () => {
 
       const loggerErrorSpy = jest
         .spyOn(adminService['logger'], 'error')
-        .mockImplementation(noop)
+        .mockImplementation(() => {})
 
       await adminService.deleteTax({
         birthNumber: mockBirthNumber,

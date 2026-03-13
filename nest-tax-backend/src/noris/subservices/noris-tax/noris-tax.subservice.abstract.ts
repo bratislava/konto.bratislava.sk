@@ -306,7 +306,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
 
     // Include birth numbers found in Noris (regardless of whether they were processed)
     return {
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- we are spreading a DTO object, which is not a problem
       ...birthNumbersResult,
       foundInNoris: [...new Set(norisData.map((item) => item.ICO_RC))],
     }

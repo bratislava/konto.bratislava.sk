@@ -92,8 +92,17 @@ export default class AppLoggerMiddleware implements NestMiddleware {
         ?.toString()
         .includes('application/json')
     ) {
+      let responseData: string
+      if (typeof exitData === 'string') {
+        responseData = exitData
+      } else if (Buffer.isBuffer(exitData)) {
+        responseData = `<Buffer length=${exitData.length}>`
+      } else {
+        responseData = JSON.stringify(exitData)
+      }
+
       return {
-        responseData: exitData as string,
+        responseData,
         returnExitData: exitData,
         logData: {},
       }

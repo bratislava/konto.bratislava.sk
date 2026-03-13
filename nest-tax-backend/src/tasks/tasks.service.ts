@@ -68,7 +68,7 @@ export class TasksService {
   sendAlertsIfHolidaysAreNotSet() {
     const nextYear = dayjs().year() + 1
 
-    const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
+    const stateHolidaysForNextYear = !!stateHolidays[nextYear]
 
     if (!stateHolidaysForNextYear) {
       this.throwerErrorGuard.InternalServerErrorException(

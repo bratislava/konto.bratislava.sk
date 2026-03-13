@@ -26,6 +26,8 @@ export default [
       '@typescript-eslint/no-base-to-string': 'warn', // 1 occurrence
       '@typescript-eslint/no-non-null-assertion': 'warn', // 1 occurrence
       '@typescript-eslint/no-unsafe-argument': 'warn', // 1 occurrence
+      '@typescript-eslint/no-empty-function': 'warn', // 17 occurrences
+      'no-implicit-coercion': 'warn', // 1 occurrence
     },
   },
   // Project-specific rule overrides

@@ -1,4 +1,3 @@
-import noop from 'lodash/noop'
 
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
@@ -9,7 +8,7 @@ describe('LineLoggerService', () => {
   beforeEach(() => {
     service = new LineLoggerSubservice('LineLogger TEST')
     consoleSpy = jest.spyOn(console, 'log')
-    consoleSpy.mockImplementation(noop)
+    consoleSpy.mockImplementation(() => {})
   })
 
   afterEach(() => {

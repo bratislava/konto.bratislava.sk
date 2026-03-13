@@ -1,5 +1,4 @@
 import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
-import noop from 'lodash/noop'
 
 import {
   RealEstateTaxAreaType,
@@ -482,7 +481,7 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-01-21 21:00'),
           })
 
-          const expected = createExpectedOutput(noop)
+          const expected = createExpectedOutput(() => {})
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })

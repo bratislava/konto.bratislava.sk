@@ -1,7 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
-import { noop } from 'lodash'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
@@ -664,7 +663,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
       jest
         .spyOn(service as any, 'processTaxRecordFromNoris')
-        .mockImplementation(noop)
+        .mockImplementation(() => {})
 
       await service.processNorisTaxData(mockNorisData, 2023, {})
 

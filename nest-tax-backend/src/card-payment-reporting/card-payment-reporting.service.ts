@@ -319,7 +319,7 @@ export class CardPaymentReportingService {
       }
     })
 
-    const validOutputFilesSorted = [...validOutputFiles].sort((a, b) => {
+    validOutputFiles.sort((a, b) => {
       if (a.date.isBefore(b.date)) {
         return a.date.isAfter(b.date) ? 1 : -1
       }
@@ -329,7 +329,7 @@ export class CardPaymentReportingService {
     const message =
       attachments.length === 0
         ? 'Dnes nie je čo reportovať.'
-        : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
+        : `Report z dní:\n  - ${validOutputFiles.map((file) => [file.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
       emailRecipients,

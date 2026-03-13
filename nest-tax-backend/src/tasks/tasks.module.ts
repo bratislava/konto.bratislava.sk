@@ -10,6 +10,7 @@ import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservi
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { UtilsModule } from '../utils-module/utils.module'
 import TasksConfigSubservice from './subservices/config.subservice'
+import NotificationsEventsSubservice from './subservices/notifications-events.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
 import { TasksService } from './tasks.service'
 
@@ -29,6 +30,7 @@ import { TasksService } from './tasks.service'
     CityAccountSubservice,
     TasksConfigSubservice,
     TaxImportHelperSubservice,
+    NotificationsEventsSubservice,
   ],
   exports: [TasksService],
 })

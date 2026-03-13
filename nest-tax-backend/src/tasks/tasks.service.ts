@@ -36,7 +36,9 @@ import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
 import TasksConfigSubservice from './subservices/config.subservice'
+import NotificationsEventsSubservice from './subservices/notifications-events.subservice'
 import TaxImportHelperSubservice from './subservices/tax-import-helper.subservice'
+import { getNextTaxType } from './utils/tax-type-switch'
 
 const LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
@@ -61,6 +63,7 @@ export class TasksService {
     private readonly configService: ConfigService,
     private readonly retryService: RetryService,
     private readonly paymentService: PaymentService,
+    private readonly notificationsEventsSubservice: NotificationsEventsSubservice,
   ) {
     this.logger = new Logger('TasksService')
     // Check if the required environment variable is set
@@ -196,8 +199,7 @@ export class TasksService {
       return
     }
 
-    this.lastUpdateTaxType =
-      this.lastUpdateTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+    this.lastUpdateTaxType = getNextTaxType(this.lastUpdateTaxType)
 
     await this.updateTaxesFromNorisByTaxType(this.lastUpdateTaxType)
   }
@@ -374,6 +376,12 @@ export class TasksService {
     })
   }
 
+  @Cron('*/10 7-20 * * *') // every 10 minutes between 7:00 and 20:00
+  @HandleErrors('Cron Error')
+  async sendUnpaidTaxInstallmentReminders() {
+    await this.notificationsEventsSubservice.sendUnpaidTaxInstallmentReminders()
+  }
+
   @Cron('0 9-17 1-23 12 1-5')
   @HandleErrors('Cron Error')
   async sendAlertsIfHolidaysAreNotSet() {
@@ -447,8 +455,7 @@ export class TasksService {
   @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
-    this.lastLoadedTaxType =
-      this.lastLoadedTaxType === TaxType.KO ? TaxType.DZN : TaxType.KO
+    this.lastLoadedTaxType = getNextTaxType(this.lastLoadedTaxType)
 
     this.logger.log(
       `Starting LoadTaxForUsers task for TaxType: ${this.lastLoadedTaxType}`,

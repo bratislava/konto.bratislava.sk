@@ -21,6 +21,7 @@ import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from '../subservices/config.subservice'
+import NotificationsEventsSubservice from '../subservices/notifications-events.subservice'
 import TaxImportHelperSubservice from '../subservices/tax-import-helper.subservice'
 import { TasksService } from '../tasks.service'
 
@@ -72,6 +73,10 @@ describe('TasksService', () => {
         {
           provide: RetryService,
           useValue: createMock<RetryService>(),
+        },
+        {
+          provide: NotificationsEventsSubservice,
+          useValue: createMock<NotificationsEventsSubservice>(),
         },
       ],
     }).compile()

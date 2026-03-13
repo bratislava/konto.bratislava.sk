@@ -482,6 +482,9 @@ export class UserDataSubservice {
         'Delivery method set more than once at the same time'
       )
     }
+    if (taxDeliveryData.length > 0) {
+      await this.processDeliveryMethodMayHaveChanged(userId)
+    }
 
     await this.prisma.userGdprData.createMany({
       data: gdprData.map((elem) => ({
@@ -630,5 +633,16 @@ export class UserDataSubservice {
           return !!userLoginListItem.id
         })
     )
+  }
+
+  async processDeliveryMethodMayHaveChanged(userId: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { externalId: true },
+    })
+    if (user?.externalId) {
+      return (await this.bloomreachService.trackCustomer(user.externalId)) ?? false
+    }
+    return false
   }
 }

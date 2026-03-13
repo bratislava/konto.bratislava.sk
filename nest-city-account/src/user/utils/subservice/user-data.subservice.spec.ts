@@ -57,7 +57,7 @@ describe('UserDataSubservice', () => {
       [UserOfficialCorrespondenceChannelEnum.EMAIL, GDPRSubTypeEnum.subscribe],
       [UserOfficialCorrespondenceChannelEnum.POSTAL, GDPRSubTypeEnum.unsubscribe],
     ] as const)(
-      'should return %s when subtype is %s (as in subUnsubUser with gdprData category TAXES, type FORMAL_COMMUNICATION)',
+      'should return %s when subtype is %s (with gdprData category TAXES, type FORMAL_COMMUNICATION)',
       async (expectedChannel, subtype) => {
         prisma.user.findUnique.mockResolvedValue(mockUser as unknown as User)
         prisma.userGdprData.findFirst.mockResolvedValue({
@@ -84,6 +84,31 @@ describe('UserDataSubservice', () => {
       const result = await subservice.getOfficialCorrespondenceChannel(userId)
 
       expect(result).toBe(UserOfficialCorrespondenceChannelEnum.EDESK)
+    })
+  })
+
+  describe('changeUserGdprData', () => {
+    it('should call processDeliveryMethodMayHaveChanged when gdprData contains tax delivery data (category TAXES, type FORMAL_COMMUNICATION)', async () => {
+      const gdprData = [
+        {
+          ...gdprParams,
+          subType: GDPRSubTypeEnum.subscribe,
+        },
+      ]
+      prisma.user.findUnique.mockResolvedValue({
+        id: userId,
+        externalId: 'ext-123',
+      } as unknown as User)
+      prisma.userGdprData.createMany.mockResolvedValue({ count: 1 })
+
+      const processDeliverySpy = jest.spyOn(
+        subservice,
+        'processDeliveryMethodMayHaveChanged'
+      )
+
+      await subservice.changeUserGdprData(userId, gdprData)
+
+      expect(processDeliverySpy).toHaveBeenCalledWith(userId)
     })
   })
 })

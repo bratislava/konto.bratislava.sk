@@ -6,4 +6,10 @@ export interface SignatureRequest extends Request {
    * Set by @SignaturePublicKeyEnvVarName decorator via SignatureGuard
    */
   signaturePublicKeyEnvVar?: string
+
+  /**
+   * Whether nonce-based replay protection is required for this endpoint
+   * Set by @RequireNonce() decorator via SignatureGuard
+   */
+  requireNonce?: boolean
 }

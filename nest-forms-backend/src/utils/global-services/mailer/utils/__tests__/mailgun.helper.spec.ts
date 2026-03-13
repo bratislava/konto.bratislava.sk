@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-email */
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
@@ -185,7 +184,6 @@ describe('MailgunHelper', () => {
       const result = MailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('OLO Test Application')
-      // eslint-disable-next-line xss/no-mixed-html
       expect(result.htmlData).toBe('<p>Form HTML data</p>')
     })
 
@@ -215,7 +213,6 @@ describe('MailgunHelper', () => {
   describe('getFilledTemplate', () => {
     it('should retrieve template and compile it with provided variables', async () => {
       // Mock template response
-      // eslint-disable-next-line xss/no-mixed-html
       const mockTemplate =
         '<p>Hello {{firstName}}, your application {{applicationName}} is being processed.</p>'
       mockMailgunClient.domains.domainTemplates.get.mockResolvedValue({
@@ -225,7 +222,6 @@ describe('MailgunHelper', () => {
       })
 
       // Mock Handlebars.compile
-      // eslint-disable-next-line xss/no-mixed-html
       const mockCompiledTemplate = jest
         .fn()
         .mockReturnValue(
@@ -255,7 +251,6 @@ describe('MailgunHelper', () => {
       expect(mockCompiledTemplate).toHaveBeenCalledWith(variables)
 
       // Check the result is as expected
-      // eslint-disable-next-line xss/no-mixed-html
       expect(result).toBe(
         '<p>Hello John, your application Test Application is being processed.</p>',
       )
@@ -275,4 +270,3 @@ describe('MailgunHelper', () => {
     })
   })
 })
-/* eslint-enable pii/no-email */

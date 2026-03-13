@@ -3,6 +3,7 @@ import { CognitoJwtVerifier } from 'aws-jwt-verify'
 import { CognitoJwtVerifierSingleUserPool } from 'aws-jwt-verify/cognito-verifier'
 
 import BaConfigService from '../../config/ba-config.service'
+import { errorToLogfmt } from '../../utils/logging'
 
 @Injectable()
 export class CognitoJwtVerifyService {
@@ -24,7 +25,9 @@ export class CognitoJwtVerifyService {
     try {
       return await this.verifier.verify(bearerToken)
     } catch (error) {
-      throw new UnauthorizedException(`Failed to verify JWT: ${error}`)
+      throw new UnauthorizedException(
+        `Failed to verify JWT: ${errorToLogfmt(error)}`,
+      )
     }
   }
 }

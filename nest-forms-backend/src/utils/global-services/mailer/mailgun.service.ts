@@ -61,7 +61,7 @@ export default class MailgunService implements Mailer {
     }))
 
     try {
-      const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocally
+      const renderLocally = Boolean(MAILGUN_CONFIG[data.template].renderLocally)
       const { template } = MAILGUN_CONFIG[data.template]
       const variables = MailgunHelper.createEmailVariables(data)
 
@@ -78,9 +78,11 @@ export default class MailgunService implements Mailer {
           }
 
       const mailgunResponse = await this.mailgunClient.messages.create(
-        process.env.MAILGUN_DOMAIN!,
+        this.configService.getOrThrow<string>('MAILGUN_DOMAIN'),
         {
-          from: emailFrom || process.env.MAILGUN_EMAIL_FROM!,
+          from:
+            emailFrom ||
+            this.configService.getOrThrow<string>('MAILGUN_EMAIL_FROM'),
           to: data.to,
           subject: subject ?? MAILGUN_CONFIG[data.template].subject,
           attachment: mailgunAttachments,

@@ -70,7 +70,7 @@ export default class NasesConsumerService {
         throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Error during NasesConsumerService handling',
-          error.message,
+          (error as Error).message,
           error,
         ),
       )
@@ -317,7 +317,7 @@ export default class NasesConsumerService {
             error: FormError.EMAIL_SEND_ERROR,
           },
         })
-        .catch((error_) => {
+        .catch((error_: unknown) => {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
               NasesErrorsEnum.DATABASE_ERROR,
@@ -355,7 +355,7 @@ export default class NasesConsumerService {
             error: FormError.WEBHOOK_SEND_ERROR,
           },
         })
-        .catch((error_) => {
+        .catch((error_: unknown) => {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
               NasesErrorsEnum.DATABASE_ERROR,

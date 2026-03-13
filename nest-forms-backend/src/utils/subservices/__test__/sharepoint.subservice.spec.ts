@@ -14,6 +14,7 @@ import { SharepointRelationData } from 'forms-shared/definitions/sharepointTypes
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
+import { noop } from 'lodash'
 
 import prismaMock from '../../../../test/singleton'
 import BaConfigService from '../../../config/ba-config.service'
@@ -30,7 +31,7 @@ describe('SharepointSubservice', () => {
   let service: SharepointSubservice
 
   beforeEach(async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(noop)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -61,7 +62,7 @@ describe('SharepointSubservice', () => {
     service = module.get<SharepointSubservice>(SharepointSubservice)
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.resetAllMocks()
   })
 
@@ -73,7 +74,7 @@ describe('SharepointSubservice', () => {
     it('should just post new record', async () => {
       const spy = jest
         .spyOn(service, 'postNewRecord')
-        .mockImplementation(async () => {})
+        .mockImplementation(async () => Promise.resolve())
       await service.transcode({ data: { formId: 'formIdValue' } } as Bull.Job<{
         formId: string
       }>)
@@ -210,7 +211,7 @@ describe('SharepointSubservice', () => {
           columns.forEach((column) => {
             result[column] = `${column}_val`
           })
-          return result
+          return Promise.resolve(result)
         },
       )
       const result = await service['getAllFieldsMappings'](
@@ -369,7 +370,7 @@ describe('SharepointSubservice', () => {
           columns.forEach((column) => {
             result[column] = `${column}_val`
           })
-          return result
+          return Promise.resolve(result)
         },
       )
       const getValuesSpy = jest

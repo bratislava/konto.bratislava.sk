@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms, FormState } from '@prisma/client'
+import { FormState } from '@prisma/client'
 import axios from 'axios'
 import {
   FormDefinition,
@@ -10,6 +10,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
+import { noop } from 'lodash'
 
 import prismaMock from '../../../../test/singleton'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
@@ -17,6 +18,7 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { FormWithFiles } from '../../../utils/types/prisma'
 import { WebhookErrorsResponseEnum } from '../dtos/webhook.errors.enum'
 import WebhookSubservice from '../webhook.subservice'
 
@@ -54,10 +56,10 @@ describe('WebhookSubservice', () => {
     } as unknown as LineLoggerSubservice
     service['logger'] = mockLogger
 
-    jest.spyOn(console, 'log').mockImplementation(() => {})
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    jest.spyOn(console, 'warn').mockImplementation(() => {})
-    jest.spyOn(console, 'info').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(noop)
+    jest.spyOn(console, 'error').mockImplementation(noop)
+    jest.spyOn(console, 'warn').mockImplementation(noop)
+    jest.spyOn(console, 'info').mockImplementation(noop)
   })
 
   afterEach(() => {
@@ -76,15 +78,16 @@ describe('WebhookSubservice', () => {
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: {},
-      }
+        files: [],
+      } as unknown as FormWithFiles
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
         schema: {},
         slug: 'test-slug',
       } as FormDefinition
-      prismaMock.forms.findUnique.mockResolvedValue(mockForm as Forms)
-      prismaMock.forms.update.mockResolvedValue(mockForm as Forms)
+      prismaMock.forms.findUnique.mockResolvedValue(mockForm)
+      prismaMock.forms.update.mockResolvedValue(mockForm)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(mockFormDefinition)
@@ -122,6 +125,7 @@ describe('WebhookSubservice', () => {
     it('should throw NotFoundException when form definition is not found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         formDefinitionSlug: 'test-slug',
+        files: [],
       } as any)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
@@ -139,6 +143,7 @@ describe('WebhookSubservice', () => {
     it('should throw UnprocessableEntityException when form is not a webhook form', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         formDefinitionSlug: 'test-slug',
+        files: [],
       } as any)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
@@ -158,7 +163,8 @@ describe('WebhookSubservice', () => {
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: null,
-      }
+        files: [],
+      } as unknown as FormWithFiles
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
@@ -166,7 +172,7 @@ describe('WebhookSubservice', () => {
         slug: 'test-slug',
       } as FormDefinition
 
-      prismaMock.forms.findUnique.mockResolvedValue(mockForm as Forms)
+      prismaMock.forms.findUnique.mockResolvedValue(mockForm)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(mockFormDefinition)

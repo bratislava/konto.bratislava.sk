@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-email */
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 
 import { SendEmailInputDto } from '../../../../../global-dtos/mailgun.dto'
@@ -222,4 +221,3 @@ export const testEmailDefinitions: Record<string, SendEmailInputDto> = {
     },
   },
 }
-/* eslint-enable pii/no-email */

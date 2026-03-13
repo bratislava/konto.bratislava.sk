@@ -17,6 +17,7 @@ class DOMParserMock {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class JSDOM {
   constructor() {
     this.window = {
@@ -25,7 +26,6 @@ class JSDOM {
   }
 }
 
-// eslint-disable-next-line unicorn/prefer-module
 module.exports = {
   JSDOM,
 }

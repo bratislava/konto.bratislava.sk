@@ -31,18 +31,12 @@ const TextAreaFieldShowCase = () => {
         />
       </Stack>
       <Stack direction="column">
-        <TextAreaField label="Label" required tooltip="InputField" placeholder="Placeholder" />
-        <TextAreaField label="Label" tooltip="InputField" placeholder="Placeholder" value="Value" />
-        <TextAreaField
-          label="Label"
-          tooltip="InputField"
-          placeholder="Placeholder"
-          errorMessage={['Error message']}
-        />
+        <TextAreaField label="Label" required placeholder="Placeholder" />
+        <TextAreaField label="Label" placeholder="Placeholder" value="Value" />
+        <TextAreaField label="Label" placeholder="Placeholder" errorMessage={['Error message']} />
         <TextAreaField
           label="Label"
           required
-          tooltip="InputField"
           placeholder="Placeholder"
           helptext="Help text"
           errorMessage={['Error message']}

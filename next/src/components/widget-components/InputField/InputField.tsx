@@ -39,7 +39,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       helptextMarkdown,
       helptextFooter,
       helptextFooterMarkdown,
-      tooltip,
       required,
       value = '',
       disabled,
@@ -148,7 +147,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
         required={required}
-        tooltip={tooltip}
         disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}

@@ -30,7 +30,6 @@ const TextAreaWidgetRJSF = ({
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
-    tooltip,
     className,
     size,
     labelSize,
@@ -58,7 +57,6 @@ const TextAreaWidgetRJSF = ({
             helptextMarkdown={helptextMarkdown}
             helptextFooter={helptextFooter}
             helptextFooterMarkdown={helptextFooterMarkdown}
-            tooltip={tooltip}
             className={cn('h-[196px]', className)}
             onChange={wrapperOnChange}
             onBlur={onBlur}

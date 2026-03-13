@@ -17,18 +17,11 @@ const DatePickerShowCase = () => {
         <DatePicker label="Label" errorMessage={ERROR_MESSAGES} disabled />
       </Stack>
       <Stack direction="column">
-        <DatePicker label="Label" tooltip="Date Picker" helptext="Help text" required />
+        <DatePicker label="Label" helptext="Help text" required />
+        <DatePicker label="Label" errorMessage={ERROR_MESSAGES} helptext="Help text" required />
         <DatePicker
           label="Label"
           errorMessage={ERROR_MESSAGES}
-          tooltip="Date Picker"
-          helptext="Help text"
-          required
-        />
-        <DatePicker
-          label="Label"
-          errorMessage={ERROR_MESSAGES}
-          tooltip="Date Picker"
           helptext="Help text"
           required
           disabled

@@ -3,7 +3,6 @@ import * as React from 'react'
 import { useContext, useRef } from 'react'
 import { useRadio } from 'react-aria'
 
-import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import cn from '@/src/utils/cn'
 
 import { RadioContext } from './RadioGroup'
@@ -22,7 +21,6 @@ type RadioProps = {
 const Radio = ({
   variant = 'basic',
   className,
-  tooltip,
   description,
   radioGroupHasDescription,
   ...rest
@@ -71,7 +69,6 @@ const Radio = ({
   return (
     <div className="w-full">
       {/* The input is inside of label, therefore it doesn't need an id. */}
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className={containerStyle}>
         <input
           {...inputProps}
@@ -85,8 +82,6 @@ const Radio = ({
           </span>
           {description && <span>{description}</span>}
         </span>
-        {/* TODO Tooltip should have bigger top padding in 'card' variant */}
-        {tooltip && <BATooltip>{tooltip}</BATooltip>}
       </label>
     </div>
   )

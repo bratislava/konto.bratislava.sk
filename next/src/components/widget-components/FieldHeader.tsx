@@ -3,14 +3,12 @@ import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
 
-import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import FieldHelptext from '@/src/components/widget-components/FieldHelptext'
 import cn from '@/src/utils/cn'
 
 export type FieldHeaderProps = {
   label: string
   required?: boolean
-  tooltip?: string
   labelSize?: LabelSize
   htmlFor?: string
   labelProps?: DOMAttributes<never>
@@ -34,7 +32,6 @@ const FieldHeader = ({
   htmlFor,
   required,
   labelProps,
-  tooltip,
   labelSize = 'default',
   helptext,
   helptextMarkdown,
@@ -78,16 +75,6 @@ const FieldHeader = ({
             <span className="text-p3 sm:text-16">{t('FieldHeader.optional')}</span>
           )}
         </div>
-        {tooltip && (
-          <div
-            className={cn('flex-column flex shrink-0 items-center', {
-              'ml-5': showOptionalLabel,
-              'ml-2': !showOptionalLabel,
-            })}
-          >
-            <BATooltip>{tooltip}</BATooltip>
-          </div>
-        )}
       </div>
       {helptext && (
         <FieldHelptext

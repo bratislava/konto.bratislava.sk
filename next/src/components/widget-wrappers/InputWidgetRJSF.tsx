@@ -29,7 +29,6 @@ const InputWidgetRJSF = ({
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
-    tooltip,
     className,
     resetIcon,
     leftIcon,
@@ -61,7 +60,6 @@ const InputWidgetRJSF = ({
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
-        tooltip={tooltip}
         className={className}
         resetIcon={resetIcon}
         leftIcon={leftIcon}

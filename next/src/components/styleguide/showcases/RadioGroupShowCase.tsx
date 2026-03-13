@@ -9,7 +9,7 @@ import { Wrapper } from '../Wrapper'
 const RadioGroupShowCase = () => {
   const mock = [
     { value: 'one', label: 'One' },
-    { value: 'two', label: 'Two', tooltip: 'Tooltip' },
+    { value: 'two', label: 'Two' },
     { value: 'three', label: 'Three', isDisabled: true },
     {
       value: 'four',
@@ -45,11 +45,7 @@ const RadioGroupShowCase = () => {
         </Stack>
         <Stack>
           <RadioGroup required defaultValue="one" onChange={() => {}} label="With default value">
-            <Radio
-              value="one"
-              variant="card"
-              tooltip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            >
+            <Radio value="one" variant="card">
               Lorem Ipsum is simply dummy text of the printing and typesetting industry.
             </Radio>
             <Radio value="two" variant="card" isDisabled>
@@ -84,13 +80,7 @@ const RadioGroupShowCase = () => {
           </RadioGroup>
         </Stack>
         <Stack direction="column">
-          <RadioGroup
-            required
-            onChange={() => {}}
-            label="With everything"
-            helptext="Helptext"
-            tooltip="Tooltip"
-          >
+          <RadioGroup required onChange={() => {}} label="With everything" helptext="Helptext">
             {mock.map((item) => (
               <Radio key={item.value} {...item} variant="boxed">
                 {item.label}

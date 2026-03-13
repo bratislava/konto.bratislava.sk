@@ -23,7 +23,6 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
       disabled,
       children,
       label,
-      tooltip,
       helptext,
       helptextMarkdown,
       helptextFooter,
@@ -69,7 +68,6 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
         label={label}
         htmlFor={fieldProps?.id}
         labelProps={labelProps}
-        tooltip={tooltip}
         helptext={helptext}
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}

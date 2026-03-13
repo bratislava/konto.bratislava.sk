@@ -20,25 +20,18 @@ const InputFieldShowCase = () => {
         />
       </Stack>
       <Stack direction="column">
-        <InputField
-          label="Label"
-          placeholder="Placeholder"
-          helptext="Help text"
-          tooltip="InputField"
-        />
+        <InputField label="Label" placeholder="Placeholder" helptext="Help text" />
         <InputField
           label="Label"
           placeholder="Placeholder"
           value="Value"
           helptext="Help text"
-          tooltip="InputField"
           required
         />
         <InputField
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
           required
           errorMessage={['Error message']}
         />
@@ -46,7 +39,6 @@ const InputFieldShowCase = () => {
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
           required
           errorMessage={['Error message']}
           disabled
@@ -57,7 +49,6 @@ const InputFieldShowCase = () => {
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
           leftIcon="mail"
           resetIcon
         />
@@ -66,7 +57,6 @@ const InputFieldShowCase = () => {
           placeholder="Placeholder"
           value="Value"
           helptext="Help text"
-          tooltip="InputField"
           leftIcon="call"
           resetIcon
         />
@@ -75,7 +65,6 @@ const InputFieldShowCase = () => {
           type="password"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
           leftIcon="lock"
           resetIcon
           errorMessage={['Error message']}
@@ -84,7 +73,6 @@ const InputFieldShowCase = () => {
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
           leftIcon="person"
           resetIcon
           errorMessage={['Error message']}

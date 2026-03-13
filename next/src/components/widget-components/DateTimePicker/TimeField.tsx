@@ -24,7 +24,6 @@ const TimeField = (props: TimeFieldProps) => {
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
-    tooltip,
     required,
     children,
     disabled,
@@ -74,7 +73,6 @@ const TimeField = (props: TimeFieldProps) => {
     <FieldWrapper
       label={label}
       labelProps={labelProps}
-      tooltip={tooltip}
       helptext={helptext}
       helptextMarkdown={helptextMarkdown}
       helptextFooter={helptextFooter}

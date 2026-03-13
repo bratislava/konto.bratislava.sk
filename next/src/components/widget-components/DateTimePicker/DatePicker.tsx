@@ -28,7 +28,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabled,
       errorMessage,
       required,
-      tooltip,
       helptext,
       helptextMarkdown,
       helptextFooter,
@@ -110,7 +109,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           helptextFooterMarkdown={helptextFooterMarkdown}
           required={required}
           disabled={disabled}
-          tooltip={tooltip}
           errorMessage={errorMessage}
           isOpen={state?.isOpen}
           popover={

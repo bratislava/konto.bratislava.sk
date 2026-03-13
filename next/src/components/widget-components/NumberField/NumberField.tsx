@@ -44,7 +44,6 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       helptextMarkdown,
       helptextFooter,
       helptextFooterMarkdown,
-      tooltip,
       required,
       value,
       disabled,
@@ -143,7 +142,6 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
         required={required}
-        tooltip={tooltip}
         disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}

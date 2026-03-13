@@ -65,7 +65,6 @@ export type WidgetSpacing = {
 }
 
 export type WidgetUiOptions = WidgetSpacing & {
-  tooltip?: string
   helptext?: string
   helptextMarkdown?: boolean
   helptextFooter?: string

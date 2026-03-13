@@ -30,7 +30,6 @@ const NumberWidgetRJSF = ({
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
-    tooltip,
     className,
     resetIcon,
     leftIcon,
@@ -74,7 +73,6 @@ const NumberWidgetRJSF = ({
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
-        tooltip={tooltip}
         className={className}
         resetIcon={resetIcon}
         leftIcon={leftIcon}

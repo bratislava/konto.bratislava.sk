@@ -3,7 +3,6 @@ import { useRef } from 'react'
 import { useCheckboxGroupItem, useFocusRing, VisuallyHidden } from 'react-aria'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
-import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import cn from '@/src/utils/cn'
 
 import { CheckboxGroupContext } from './CheckboxGroup'
@@ -22,7 +21,6 @@ type CheckBoxBase = {
 const CheckboxGroupItem = ({
   error = false,
   isIndeterminate = false,
-  tooltip,
   children,
   variant = 'basic',
   ...rest
@@ -73,7 +71,6 @@ const CheckboxGroupItem = ({
   return (
     <div data-cy={`checkbox-${inputProps.value as string}`}>
       {/* The input is inside of label, therefore it doesn't need an id. */}
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className={containerStyle}>
         <VisuallyHidden>
           <input {...inputProps} {...focusProps} ref={ref} />
@@ -105,7 +102,6 @@ const CheckboxGroupItem = ({
           </div>
           <div className="flex w-full items-center justify-between gap-3">
             <div className={labelStyle}>{children}</div>
-            {tooltip && <BATooltip>{tooltip}</BATooltip>}
           </div>
         </div>
       </label>

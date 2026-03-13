@@ -152,6 +152,7 @@ const UserProfileDetailEdit = ({
       //   postal_code: data.postal_code?.replaceAll(' ', ''),
       // }),
     }
+
     return onSubmit(newUserData)
     // }
     //
@@ -304,7 +305,6 @@ const UserProfileDetailEdit = ({
       {/*       control={control} */}
       {/*       render={({ field }) => ( */}
       {/*         <InputField */}
-      {/*           tooltip={t('my_profile.profile_detail.postal_code_tooltip')} */}
       {/*           label={t('my_profile.profile_detail.postal_code')} */}
       {/*           {...field} */}
       {/*           errorMessage={errors.postal_code} */}

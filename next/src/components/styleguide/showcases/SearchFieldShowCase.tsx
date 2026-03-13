@@ -25,21 +25,13 @@ const SearchFieldShowCase = () => {
           label="Label"
           required
           helptext="Help text"
-          tooltip="SearchField"
           placeholder="Placeholder"
           resetIcon
         />
+        <SearchField label="Label" helptext="Help text" placeholder="Placeholder" value="Value" />
         <SearchField
           label="Label"
           helptext="Help text"
-          tooltip="SearchField"
-          placeholder="Placeholder"
-          value="Value"
-        />
-        <SearchField
-          label="Label"
-          helptext="Help text"
-          tooltip="SearchField"
           placeholder="Placeholder"
           errorMessage={['Error message']}
         />
@@ -47,7 +39,6 @@ const SearchFieldShowCase = () => {
           label="Label"
           required
           helptext="Help text"
-          tooltip="SearchField"
           placeholder="Placeholder"
           errorMessage={['Error message']}
           disabled

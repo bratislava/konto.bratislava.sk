@@ -23,7 +23,6 @@ const SearchField = ({
   helptextMarkdown,
   helptextFooter,
   helptextFooterMarkdown,
-  tooltip,
   required,
   value = '',
   disabled,
@@ -82,7 +81,6 @@ const SearchField = ({
         helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
         required={required}
-        tooltip={tooltip}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         disabled={disabled}

@@ -21,7 +21,6 @@ const TextAreaField = ({
   helptextMarkdown,
   helptextFooter,
   helptextFooterMarkdown,
-  tooltip,
   required,
   value,
   disabled,
@@ -83,6 +82,7 @@ const TextAreaField = ({
       'border-gray-300 bg-gray-100': disabled,
     },
   )
+
   return (
     <div className="flex w-full flex-col">
       <FieldWrapper
@@ -95,7 +95,6 @@ const TextAreaField = ({
         helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
         required={required}
-        tooltip={tooltip}
         disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}

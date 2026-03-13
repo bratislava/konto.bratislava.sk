@@ -3,7 +3,9 @@ import { Readable } from 'node:stream'
 import { Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { Response } from 'express'
 import {
   FormDefinition,

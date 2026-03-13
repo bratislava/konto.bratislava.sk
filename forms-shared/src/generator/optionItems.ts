@@ -1,4 +1,6 @@
-import { EnumOptionsType } from '@rjsf/utils'
+import type { EnumOptionsType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 
 type ValueTypeBase = string | boolean
 

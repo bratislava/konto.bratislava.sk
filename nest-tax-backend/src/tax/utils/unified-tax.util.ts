@@ -152,8 +152,7 @@ export const stateHolidays: Record<number, { dates: Dayjs[] }> = {
   },
 }
 
-const dueDateOffsetPostEdesk = 21
-const dueDateOffsetCityAccount = 16
+export const DUE_DATE_OFFSET = 15
 
 const isStateHoliday = (date: Dayjs): boolean => {
   const year = date.year()
@@ -194,7 +193,7 @@ const calculateDueDate = (
     const dueDateBase = createdAt
       .tz(bratislavaTimeZone)
       .startOf('day')
-      .add(dueDateOffsetCityAccount, 'day')
+      .add(DUE_DATE_OFFSET, 'day')
     return ensureWorkingDay(dueDateBase)
   }
 
@@ -207,7 +206,7 @@ const calculateDueDate = (
   const dueDateBase = dateOfValidity
     .tz(bratislavaTimeZone)
     .startOf('day')
-    .add(dueDateOffsetPostEdesk, 'day')
+    .add(DUE_DATE_OFFSET, 'day')
   return ensureWorkingDay(dueDateBase)
 }
 
@@ -322,6 +321,11 @@ const calculateInstallmentStatus = (
   return result
 }
 
+export const parseInstallmentDueDate = (
+  taxYear: number,
+  dateString: string,
+): Dayjs => dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
+
 const calculateInstallmentPaymentDetails = (options: {
   overallAmount: number
   overallPaid: number
@@ -359,9 +363,6 @@ const calculateInstallmentPaymentDetails = (options: {
 
   // Calculate due dates for all installments
   // First installment due date is calculated from dateOfValidity (may be undefined)
-  const parseInstallmentDueDate = (dateString: string): Dayjs =>
-    dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
-
   const installmentDueDatesParsed: [
     dayjs.Dayjs | undefined,
     dayjs.Dayjs,
@@ -371,12 +372,12 @@ const calculateInstallmentPaymentDetails = (options: {
     // First installment due date is calculated from dateOfValidity
     dueDate,
     // Second installment:
-    parseInstallmentDueDate(installmentDueDates.second),
+    parseInstallmentDueDate(taxYear, installmentDueDates.second),
     // Third installment:
-    parseInstallmentDueDate(installmentDueDates.third),
+    parseInstallmentDueDate(taxYear, installmentDueDates.third),
     // Fourth installment (if exists):
     ...(installmentDueDates.fourth
-      ? [parseInstallmentDueDate(installmentDueDates.fourth)]
+      ? [parseInstallmentDueDate(taxYear, installmentDueDates.fourth)]
       : []),
   ]
 

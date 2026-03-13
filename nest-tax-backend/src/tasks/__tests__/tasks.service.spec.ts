@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import NotificationsEventsSubservice from '../subservices/notifications-events.subservice'
 import BloomreachMessagingTasksService from '../subservices/bloomreach-messaging.tasks.service'
 import CityAccountIngestionTasksService from '../subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from '../subservices/noris-sync.tasks.service'
@@ -38,6 +39,10 @@ describe('TasksService', () => {
         {
           provide: TaxImportTasksService,
           useValue: createMock<TaxImportTasksService>(),
+        },
+        {
+          provide: NotificationsEventsSubservice,
+          useValue: createMock<NotificationsEventsSubservice>(),
         },
       ],
     }).compile()

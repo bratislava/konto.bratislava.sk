@@ -6,6 +6,7 @@ import { ArrowLeftIcon } from '@/src/assets/ui-icons'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
+import Button from '@/src/components/simple-components/Button'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import cn from '@/src/utils/cn'
@@ -19,13 +20,20 @@ type Props = {
 }
 
 const BackButton = () => {
+  const { t } = useTranslation('account')
   const router = useRouter()
 
   return (
     <>
-      {/* FIXME we should use Button */}
-      <ArrowLeftIcon className="mx-1 cursor-pointer" onClick={() => router.back()} />
-      <div className="border-b-solid mx-6 hidden h-6 border-r-2 lg:flex" />
+      <Button
+        variant="icon-wrapped-negative-margin"
+        size="large"
+        icon={<ArrowLeftIcon />}
+        aria-label={t('BackButton.aria')}
+        onPress={() => router.back()}
+        className="max-lg:mx-1"
+      />
+      <div className="mx-6 h-6 border-r-2 max-lg:hidden" aria-hidden />
     </>
   )
 }

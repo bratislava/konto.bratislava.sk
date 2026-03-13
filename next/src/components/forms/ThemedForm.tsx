@@ -1,5 +1,5 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
-import { ArrayFieldTemplateItemType, FieldProps, WidgetProps } from '@rjsf/utils'
+import { FieldProps, WidgetProps } from '@rjsf/utils'
 import { defaultFormFields, DefaultFormFieldType } from 'forms-shared/form-utils/defaultFormFields'
 import { BaFieldType, BaWidgetType } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
@@ -47,9 +47,7 @@ const theme: ThemeProps = {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,
     FieldTemplate: BAFieldTemplate,
-    // It contains extra props that is not present in the original ArrayFieldItemTemplate, so we need to
-    // cast it to the original type
-    ArrayFieldItemTemplate: BAArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
+    ArrayFieldItemTemplate: BAArrayFieldItemTemplate,
   },
 }
 

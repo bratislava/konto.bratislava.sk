@@ -1,6 +1,8 @@
+import { useTranslation } from 'next-i18next'
 import { PropsWithChildren } from 'react'
 
 import { EditIcon } from '@/src/assets/ui-icons'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 type SummaryRowProps = PropsWithChildren<{
@@ -12,6 +14,7 @@ type SummaryRowProps = PropsWithChildren<{
 }>
 
 const SummaryRowSimple = (props: SummaryRowProps) => {
+  const { t } = useTranslation('forms')
   const { size = 'large', children, isError, label, isEditable = true, onGoToStep } = props
 
   const containerClassName = cn('flex flex-wrap gap-2 border-b-2 py-4 sm:flex-nowrap', {
@@ -35,7 +38,14 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
       <p className={labelClassName}>{label}</p>
       <div className="flex w-full flex-row items-center">
         <div className={valueClassName}>{children}</div>
-        {isEditable && <EditIcon className="hidden cursor-pointer" onClick={onGoToStep} />}
+        {isEditable && (
+          <Button
+            variant="icon-wrapped-negative-margin"
+            icon={<EditIcon />}
+            aria-label={t('SummaryRow.EditButton.aria')}
+            onPress={onGoToStep}
+          />
+        )}
       </div>
     </div>
   )

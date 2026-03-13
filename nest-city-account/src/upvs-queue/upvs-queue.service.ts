@@ -133,7 +133,7 @@ export class UpvsQueueService {
       }
 
       const failedExternalUris = upvsResult.failed
-        .filter((item) => !item.physicalEntityId && externalUris.has(item.uri))
+        .filter((item) => externalUris.has(item.uri))
         .map((item) => item.uri)
 
       if (failedExternalUris.length > 0) {

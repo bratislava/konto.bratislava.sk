@@ -16,20 +16,20 @@ datasource db {
 }
 
 model TaxPayer {
-  id                          Int      @id @default(autoincrement())
-  uuid                        String   @default(uuid()) @db.Uuid
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @default(now()) @updatedAt
-  birthNumber                 String // with slash
-  externalId                  String?
-  name                        String?
-  permanentResidenceStreet    String?
-  permanentResidenceZip       String?
-  permanentResidenceCity      String?
-  readyToImportDZN            Boolean  @default(false)
-  readyToImportKO             Boolean  @default(false)
-  lastUpdatedAtDZN            DateTime @default(now())
-  lastUpdatedAtKO             DateTime @default(now())
+  id                       Int      @id @default(autoincrement())
+  uuid                     String   @default(uuid()) @db.Uuid
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @default(now()) @updatedAt
+  birthNumber              String // with slash
+  externalId               String?
+  name                     String?
+  permanentResidenceStreet String?
+  permanentResidenceZip    String?
+  permanentResidenceCity   String?
+  readyToImportDZN         Boolean  @default(false)
+  readyToImportKO          Boolean  @default(false)
+  lastUpdatedAtDZN         DateTime @default(now())
+  lastUpdatedAtKO          DateTime @default(now())
 
   taxes             Tax[]
   taxAdministrators TaxPayerTaxAdministrator[]
@@ -89,14 +89,18 @@ model TaxPayment {
 }
 
 model TaxInstallment {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  taxId     Int
-  tax       Tax      @relation(fields: [taxId], references: [id], onDelete: Cascade)
-  order     Int
-  amount    Int
-  text      String?
+  id                           Int                @id @default(autoincrement())
+  createdAt                    DateTime           @default(now())
+  updatedAt                    DateTime           @default(now()) @updatedAt
+  taxId                        Int
+  tax                          Tax                @relation(fields: [taxId], references: [id], onDelete: Cascade)
+  order                        Int
+  amount                       Int
+  text                         String?
+  bloomreachUnpaidReminderSent UnpaidReminderSent @default(NONE)
+
+  @@index([taxId, order])
+  @@unique([taxId, order])
 }
 
 model TaxAdministrator {
@@ -160,4 +164,11 @@ enum DeliveryMethodNamed {
 enum TaxType {
   DZN // daň z nehnuteľnosti
   KO // komumálny odpad
+}
+
+enum UnpaidReminderSent {
+  NONE
+  BEFORE_DUE
+  AFTER_DUE
+  BOTH
 }

@@ -3,6 +3,7 @@ import { initPlugin as cypressVisualDiffPlugin } from '@frsource/cypress-plugin-
 import { unlinkSync } from 'fs'
 
 export default defineConfig({
+  allowCypressEnv: false,
   e2e: {
     // Allows to run all tests in open mode
     experimentalRunAllSpecs: true,
@@ -12,7 +13,8 @@ export default defineConfig({
       config.video = true
       config.baseUrl = config.env.BASEURL
 
-      config.env = {
+      config.expose = {
+        ...config.expose,
         devices: {
           desktop: ['all', 'desktop'].includes(config.env.DEVICE),
           mobile: ['all', 'mobile'].includes(config.env.DEVICE),

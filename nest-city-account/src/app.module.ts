@@ -9,7 +9,6 @@ import { VerificationModule } from './user-verification/verification.module'
 import { UserModule } from './user/user.module'
 import { IntegrationModule } from './integration/integration.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
-import ThrowerErrorGuard from './utils/guards/errors.guard'
 import { TaxSubservice } from './utils/subservices/tax.subservice'
 import { ConfigModule } from '@nestjs/config'
 import ClientsModule from './clients/clients.module'
@@ -40,7 +39,7 @@ import { NorisModule } from './noris/noris.module'
     NorisModule,
   ],
   controllers: [AppController],
-  providers: [TaxSubservice, ThrowerErrorGuard],
+  providers: [TaxSubservice],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

@@ -6,10 +6,10 @@ resources:
   - ./secrets/oauth2-dpb.secret.yml
   - ./secrets/oauth2-paas-mpa.secret.yml
   - ./secrets/noris.secret.yml
-
+  - ./secrets/redis.secret.yml
+  
 generatorOptions:
   disableNameSuffixHash: true
-
 configMapGenerator:
   - name: ${BUILD_REPOSITORY_NAME}-env
     namespace: ${NAMESPACE}

@@ -60,6 +60,7 @@ export type DatabaseBaseTaxData = {
   dateTaxRuling: Date | null
   taxId: string | null
   isCancelled: boolean
+  paymentMethodIsInkaso: boolean
 }
 
 type TaxInstallment = {
@@ -147,6 +148,7 @@ export const mapNorisToDatabaseBaseTax = (
     dateTaxRuling: data.datum_platnosti,
     taxId: data.cislo_konania,
     isCancelled: data.stav_dokladu === 'S',
+    paymentMethodIsInkaso: data.forma_uhrady === 'I',
   }
 }
 

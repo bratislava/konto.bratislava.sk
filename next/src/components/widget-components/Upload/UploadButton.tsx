@@ -10,8 +10,8 @@ import {
 } from '@/src/frontend/utils/formFileUpload'
 import cn from '@/src/utils/cn'
 
-interface UploadButtonProps {
-  disabled?: boolean
+type UploadButtonProps = {
+  isDisabled?: boolean
   sizeLimit?: number
   supportedFormats?: string[]
   fileBrokenMessage?: string[]
@@ -23,7 +23,7 @@ interface UploadButtonProps {
 const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
   (
     {
-      disabled,
+      isDisabled,
       sizeLimit,
       supportedFormats,
       fileBrokenMessage,
@@ -40,16 +40,16 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     const buttonClassNames = cn(
       'flex w-full items-center justify-center rounded-lg border-2 border-gray-300 bg-white px-6 py-2 lg:w-fit lg:py-3',
       {
-        'cursor-pointer': !disabled,
+        'cursor-pointer': !isDisabled,
         'hover:border-gray-400 focus:border-gray-700 active:border-gray-700':
-          !disabled && (!fileBrokenMessage || fileBrokenMessage.length === 0),
+          !isDisabled && (!fileBrokenMessage || fileBrokenMessage.length === 0),
         'border-red-500 hover:border-red-300':
-          !disabled && fileBrokenMessage && fileBrokenMessage.length > 0,
-        'cursor-not-allowed bg-gray-200 opacity-50': disabled,
+          !isDisabled && fileBrokenMessage && fileBrokenMessage.length > 0,
+        'cursor-not-allowed bg-gray-200 opacity-50': isDisabled,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
+          errorMessage?.length > 0 && !isDisabled,
       },
     )
 
@@ -58,12 +58,13 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     })
 
     const handleOnSelect = async (files: FileList | null) => {
-      if (disabled) {
+      if (isDisabled) {
         return
       }
 
       if (!files) {
         onUpload([])
+
         return
       }
 
@@ -77,7 +78,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
           acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
           allowsMultiple={allowsMultiple}
         >
-          <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={disabled}>
+          <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={isDisabled}>
             <div className="flex items-center justify-center gap-2">
               <span>
                 <UploadIcon />

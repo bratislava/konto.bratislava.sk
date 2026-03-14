@@ -71,6 +71,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       data-cy="verification-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
+
         return onSubmit(data.verificationCode).catch((error_) =>
           logger.error('Submit failed', error_),
         )
@@ -92,7 +93,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             autoComplete="off"
             label={t('auth.fields.verification_code_label')}
             placeholder={t('auth.fields.verification_code_placeholder')}

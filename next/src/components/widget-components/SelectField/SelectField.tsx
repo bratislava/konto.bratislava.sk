@@ -149,7 +149,6 @@ const SelectField = <
   helptextMarkdown,
   helptextFooter,
   helptextFooterMarkdown,
-  tooltip,
   errorMessage,
   options,
   onChange = () => null,
@@ -173,8 +172,7 @@ const SelectField = <
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
-        tooltip={tooltip}
-        required={rest.required}
+        isRequired={rest.isRequired}
         errorMessage={errorMessage}
         displayOptionalLabel={displayOptionalLabel}
         htmlFor={id}

@@ -13,43 +13,16 @@ type Props = FieldWrapperProps & {
 }
 
 const PasswordField = forwardRef<HTMLInputElement, Props>(
-  (
-    {
-      label,
-      placeholder,
-      errorMessage = [],
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      tooltip,
-      required,
-      value = '',
-      disabled,
-      className,
-      onChange,
-      autoComplete,
-      ...rest
-    },
-    ref,
-  ) => {
+  ({ value = '', autoComplete, onChange, placeholder, className, ...rest }, ref) => {
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
 
     return (
       <InputField
         type={isPasswordHidden ? 'password' : 'text'}
-        label={label}
+        {...rest}
         placeholder={placeholder}
-        errorMessage={errorMessage}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
         value={value}
         className={className}
-        required={required}
-        disabled={disabled}
-        tooltip={tooltip}
         onChange={onChange}
         ref={ref}
         autoComplete={autoComplete}
@@ -57,7 +30,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
           <PasswordEyeButton
             isPasswordHidden={isPasswordHidden}
             onToggle={setIsPasswordHidden}
-            isDisabled={disabled}
+            isDisabled={rest.isDisabled}
             className="absolute inset-y-1/2 right-1 aspect-square h-full -translate-y-2/4"
           />
         }

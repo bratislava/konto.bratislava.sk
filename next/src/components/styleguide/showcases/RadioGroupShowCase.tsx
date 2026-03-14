@@ -9,7 +9,7 @@ import { Wrapper } from '../Wrapper'
 const RadioGroupShowCase = () => {
   const mock = [
     { value: 'one', label: 'One' },
-    { value: 'two', label: 'Two', tooltip: 'Tooltip' },
+    { value: 'two', label: 'Two' },
     { value: 'three', label: 'Three', isDisabled: true },
     {
       value: 'four',
@@ -26,7 +26,7 @@ const RadioGroupShowCase = () => {
       </div>
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
         <Stack direction="column">
-          <RadioGroup required onChange={() => {}} label="Label">
+          <RadioGroup isRequired onChange={() => {}} label="Label">
             {mock.map((item) => (
               <Radio key={item.value} {...item}>
                 {item.label}
@@ -35,7 +35,7 @@ const RadioGroupShowCase = () => {
           </RadioGroup>
         </Stack>
         <Stack direction="column">
-          <RadioGroup required onChange={() => {}} label="Label" className="w-full">
+          <RadioGroup isRequired onChange={() => {}} label="Label" className="w-full">
             {mock.map((item) => (
               <Radio key={item.value} {...item} variant="boxed">
                 {item.label}
@@ -44,12 +44,8 @@ const RadioGroupShowCase = () => {
           </RadioGroup>
         </Stack>
         <Stack>
-          <RadioGroup required defaultValue="one" onChange={() => {}} label="With default value">
-            <Radio
-              value="one"
-              variant="card"
-              tooltip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            >
+          <RadioGroup isRequired defaultValue="one" onChange={() => {}} label="With default value">
+            <Radio value="one" variant="card">
               Lorem Ipsum is simply dummy text of the printing and typesetting industry.
             </Radio>
             <Radio value="two" variant="card" isDisabled>
@@ -71,7 +67,7 @@ const RadioGroupShowCase = () => {
         </Stack>
         <Stack direction="column">
           <RadioGroup
-            required
+            isRequired
             onChange={() => {}}
             label="With error"
             errorMessage={['Error message']}
@@ -84,13 +80,7 @@ const RadioGroupShowCase = () => {
           </RadioGroup>
         </Stack>
         <Stack direction="column">
-          <RadioGroup
-            required
-            onChange={() => {}}
-            label="With everything"
-            helptext="Helptext"
-            tooltip="Tooltip"
-          >
+          <RadioGroup isRequired onChange={() => {}} label="With everything" helptext="Helptext">
             {mock.map((item) => (
               <Radio key={item.value} {...item} variant="boxed">
                 {item.label}
@@ -101,7 +91,7 @@ const RadioGroupShowCase = () => {
       </div>
       <Stack direction="column">
         <RadioGroup
-          required
+          isRequired
           onChange={() => {}}
           label="Orientation - horizontal"
           orientation="horizontal"

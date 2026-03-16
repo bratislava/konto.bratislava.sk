@@ -51,7 +51,7 @@ const TextAreaField = ({
     ref,
   )
   const containerStyle = cn(
-    'flex resize-none flex-col overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-0 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden sm:text-16',
+    'flex resize-none flex-col overflow-hidden rounded-lg border border-gray-200 bg-gray-0 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden sm:text-16',
     {
       'hover:border-gray-400': !rest.isDisabled && !isFocused,
       'border-negative-700 hover:border-negative-700 focus:border-negative-700':

@@ -45,7 +45,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)
 
     const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
-      cn('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
+      cn('h-full w-full rounded-lg border border-dashed border-gray-300', {
         'bg-white': !isDisabled && !isDropTarget,
         'cursor-not-allowed bg-gray-200 opacity-50': isDisabled,
         'cursor-pointer': !isDisabled,

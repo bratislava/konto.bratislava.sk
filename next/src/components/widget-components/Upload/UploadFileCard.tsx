@@ -99,7 +99,7 @@ const UploadFileCard = ({
   return (
     <div className="flex w-full flex-col gap-2">
       <div
-        className={cn('flex w-full items-start gap-4 rounded-lg border-2 p-4', {
+        className={cn('flex w-full items-start gap-4 rounded-lg border p-4', {
           'bg-white': isUploadStatus || isScanStatus,
           'border-success-700 bg-success-50': isDoneStatus,
           'border-negative-600 bg-negative-50': isErrorStatus,

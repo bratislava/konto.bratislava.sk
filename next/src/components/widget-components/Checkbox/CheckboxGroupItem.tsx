@@ -52,7 +52,7 @@ const CheckboxGroupItem = ({
   )
 
   const containerStyle = cn('group flex flex-row', rest.className, {
-    'rounded-lg border-2 border-solid bg-white px-4 py-3': variant === 'boxed',
+    'rounded-lg border border-solid bg-white px-4 py-3': variant === 'boxed',
     'border-gray-300 group-hover:border-gray-500':
       variant === 'boxed' && !isSelected && isIndeterminate && !isDisabled && !error,
     'border-gray-700 group-hover:border-gray-500':

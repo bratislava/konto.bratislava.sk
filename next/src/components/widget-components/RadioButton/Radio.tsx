@@ -53,7 +53,7 @@ const Radio = ({
     'flex-row items-center': variant === 'basic' || variant === 'boxed',
     'p-3 lg:px-4 lg:py-3': variant === 'boxed',
     'flex-col items-start p-5 break-words': variant === 'card',
-    'rounded-8 border-2 border-solid': variant === 'boxed' || variant === 'card',
+    'rounded-8 border border-solid': variant === 'boxed' || variant === 'card',
     'border-gray-200': !isError && !isSelected,
     'border-negative-700': isError,
 

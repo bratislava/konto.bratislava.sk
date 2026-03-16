@@ -33,7 +33,7 @@ const BackButton = () => {
         onPress={() => router.back()}
         className="max-lg:mx-1"
       />
-      <div className="mx-6 h-6 border-r-2 max-lg:hidden" aria-hidden />
+      <div className="mx-6 h-6 border-r max-lg:hidden" aria-hidden />
     </>
   )
 }
@@ -98,7 +98,7 @@ export const AuthNavBar = ({
         className={cn(className, 'sticky top-0 left-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileNavbarRef}
       >
-        <div className="flex h-16 w-full items-center justify-between border-b-2 px-4">
+        <div className="flex h-16 w-full items-center justify-between border-b px-4">
           <div className="flex">
             {!backButtonHidden && <BackButton />}
             <Brand

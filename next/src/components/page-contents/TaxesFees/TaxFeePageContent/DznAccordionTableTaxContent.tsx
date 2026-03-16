@@ -42,14 +42,16 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
     ...(Object.keys(matchHeader).includes(dataType)
       ? (matchHeader[dataType] as
           | typeof matchHeader.GROUND
+          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
           | typeof matchHeader.CONSTRUCTION
+          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
           | typeof matchHeader.APARTMENT)
       : matchHeader.APARTMENT),
   ]
 
   return (
     <thead className="self-stretch bg-gray-50">
-      <tr className="lg:border-b-2">
+      <tr className="lg:border-b">
         {headerData.map((header, index) => (
           <th
             key={index}
@@ -113,7 +115,7 @@ const TableData = ({
             : taxDetail.type
 
         return (
-          <tr key={taxDetail.type} className="not-last:lg:border-b-2">
+          <tr key={taxDetail.type} className="not-last:lg:border-b">
             <td className="h-max p-4 not-first:text-center not-first:text-20-semibold lg:px-6 lg:py-5">
               <div className="inline h-0 font-semibold">{title}</div>
             </td>
@@ -154,7 +156,7 @@ const Table = ({
     <div className="relative w-full">
       <div
         className={cn(
-          'overflow-x-auto rounded-lg border-2 border-solid border-gray-200',
+          'overflow-x-auto rounded-lg border border-solid border-gray-200',
           scrollFadeClassNames,
         )}
         ref={tableWrapperRef}

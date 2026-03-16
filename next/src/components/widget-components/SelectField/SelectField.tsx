@@ -186,6 +186,7 @@ const SelectField = <
             value={value}
             onChange={onChange}
             options={options}
+            required={rest.isRequired}
             closeMenuOnSelect={!rest.isMulti}
             hideSelectedOptions={false}
             noOptionsMessage={() => t('SelectField.noOptions')}
